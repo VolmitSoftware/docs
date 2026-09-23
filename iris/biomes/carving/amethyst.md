@@ -2,13 +2,13 @@
 title: "Amethyst Cavern — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/amethyst"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/amethyst` is a direct cave root in the current Overworld 4009 and Underworld 1011 pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/amethyst` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -20,8 +20,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld 4009 | `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
-| Underworld 1011 | `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
+| Overworld | `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
+| Underworld | `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -31,11 +31,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..620`; sample step `2`; surface clearance `6`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `10`.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:amethyst_block`, `minecraft:budding_amethyst`, `minecraft:deepslate`. Decorator blocks: `minecraft:amethyst_cluster`, `minecraft:small_amethyst_bud`, `minecraft:medium_amethyst_bud`, `minecraft:large_amethyst_bud`. Object set: `clutter/amethyst-cluster1`, `clutter/amethyst-cluster2`, `clutter/amethyst-cluster3`, `clutter/amethyst-cluster4`, `clutter/amethyst-cluster5`, `clutter/rock1`, `clutter/rock2`, `clutter/rock3`, and 5 more.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:obsidian`, `minecraft:crying_obsidian`, `minecraft:glowstone`. Object set: `underworld/soul/clutter/amethyst-cluster1`, `underworld/soul/clutter/amethyst-cluster2`, `underworld/soul/clutter/amethyst-cluster3`, `underworld/soul/clutter/amethyst-cluster4`, `underworld/soul/clutter/amethyst-cluster5`, `underworld/soul/clutter/rock1`, `underworld/soul/clutter/rock2`, `underworld/soul/clutter/rock3`, and 5 more. Custom registered biome id: `underworld_carving_amethyst_c079f51d`.
 

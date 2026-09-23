@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Calm Plains"
-description: "Iris biome atlas entry for temperate/calmplains in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for temperate/calmplains in Overworld and Underworld"
 published: true
-date: 2026-09-16T03:11:58.172Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/calmplains` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/calmplains` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
-| Underworld 1010 | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
+| Overworld | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
+| Underworld | `temperate` (Temperate) | 1 | 1 | 1 | 6.15% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `mountain` (-15..10); combined authored contribution `-15..10` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -42,13 +42,13 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - `temperate/calmplains`: Low wet plains retain their smooth terrain.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:plains`; native-structure derivative `minecraft:plains`; no custom or scatter identities.
 - **Surface:** One grass block where slope is at most 4, then two dirt blocks, 1–3 dirt/coarse-dirt blocks, and 6–18 dirt/stone blocks. The lower layers have no slope gate, so steep columns retain soil when grass is rejected. Wall palette: `minecraft:andesite`, `minecraft:stone`, `minecraft:cobblestone`.
 - **Content:** 1 object placement rule(s) drawing from 12 object key(s), including `trees/mixed/pollup1`, `trees/mixed/pollup2`, `trees/mixed/pollup4`, `trees/mixed/pollup5`, `trees/mixed/pollup6`, `trees/mixed/pollup7`, `trees/mixed/pollup8`, and 5 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 6 more.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_calmplains_58839d0c`.
 - **Surface:** One netherrack block where slope is at most 4, then netherrack layers of 2, 1–3, and 6–18 blocks. These lower layers share Overworld thickness and noise settings without a slope gate. Wall palette: `minecraft:basalt`, `minecraft:netherrack`, `minecraft:blackstone`.

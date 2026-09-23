@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ Install the integration and its dependencies, load its content, then restart the
 
 | Use | Behavior |
 |---|---|
-| Reading a selection | Returns an Iris `Cuboid` for the player's current WorldEdit selection **in the world they stand in**. Returns `null` if WorldEdit is absent, the player has no session, or there is no selection in that world |
+| Selection | Select both corners with WorldEdit in the world where you run the import command |
 | Wand commands and outlines | Require an Iris wand in the main hand. WorldEdit wands and selections do not activate Iris selection commands or automatic particle outlines |
 | `/iris object we` | Checks WorldEdit is enabled, reads your current selection, and puts a **new Iris object wand into your inventory** already carrying those two corners |
 | After import | Hold the new Iris wand to edit, preview, or save its selection. Later WorldEdit selection changes do not change the copied corners |
@@ -117,7 +117,7 @@ Use CraftEngine 26.8.2. Use the named key from CraftEngine's content configurati
 
 Unknown properties and invalid values fail resolution instead of silently using the default state, and Studio schemas list installed blocks and their allowed properties. Wand saves, including imported WorldEdit selections, store CraftEngine's named block ID and complete properties. Object rotation updates standard orientation properties such as `axis` and `facing`. CraftEngine block paste, object previews and undo also work in vanilla worlds with CraftEngine installed.
 
-Use furniture IDs in generated palettes or objects with `variant`, `yaw`, `pitch`, `randomYaw`, and `randomPitch`. Angles must be finite, at least zero, and below 360 degrees. Random angles depend on the world seed and placement coordinates, and an omitted variant selects the first variant in sorted order. Furniture is placed during deferred generation updates; furniture entities are not captured by the wand or spawned by direct paste and previews.
+Use furniture IDs in generated palettes or objects with `variant`, `yaw`, `pitch`, `randomYaw`, and `randomPitch`. Angles must be finite, at least zero, and below 360 degrees. Random angles depend on the world seed and placement coordinates, and an omitted variant selects the first variant in sorted order. Furniture appears after chunk generation; furniture entities are not captured by the wand or spawned by direct paste and previews.
 
 ### Per-provider caveats
 
@@ -126,7 +126,6 @@ Use furniture IDs in generated palettes or objects with `variant`, `yaw`, `pitch
 | CraftEngine | Numbered native states such as `craftengine:custom_18` resolve only while CraftEngine has that state loaded in that runtime. They are **not portable pack identifiers** — save objects with named content keys, because Iris cannot identify an old numbered state once its original mapping is gone |
 | Oraxen | Oraxen 1.218.0 is incompatible with this Iris build and has no setting to disable its conflicting integration. Use a compatible Oraxen build ([Oraxen integration source](https://github.com/oraxen/oraxen/blob/v1.218.0/src/main/java/io/th0rgal/oraxen/compatibilities/CompatibilitiesManager.java)) |
 | ItemsAdder | Its glitched-block repair can reset generated `REAL_NOTE` states before Iris registers their custom identity. The block corrects itself when Iris's deferred placement pass reaches the chunk, which can take seconds or longer for a chunk outside the nearby-player or force-loaded area. Fix below |
-| Any custom-block carrier | Unrelated custom blocks can break on the first attempt in Creative and Survival when no loaded pack drop rule can match the material. A potentially matching rule or an unloaded historical pack still requires the saved-biome check ([Custom block drops](/iris/23-loot)). ItemsAdder retains control of its own break and drop handling |
 
 To stop the ItemsAdder note-block reset, update these keys in `plugins/ItemsAdder/config.yml` and restart:
 
@@ -137,9 +136,6 @@ blocks:
 ```
 
 This disables the repair across the server, including cleanup of old vanilla note blocks that use custom model states. `only-new-chunks: true` still runs repair on newly generated Iris chunks. See [ItemsAdder's repair configuration](https://wiki.itemsadder.com/faq/glitched-blocks/). Already-reset chunks still need Iris's placement pass once to restore their states.
-
-> A custom block in `rockPalette` fills the solid terrain beneath the surface, so even a flat world can require thousands of provider placements per chunk. With `dimensionHeight.min: -64`, `fluidHeight: -64`, and a flat generator whose `min` and `max` are both `64`, the surface is at world Y=0 and the fill is 65 layers x 16 x 16 = 16,640 custom blocks per chunk. Use the biome's surface layers when only the surface needs that block — a surface layer does not remove the rock fill underneath it.
-{.is-warning}
 
 ### Add another provider
 

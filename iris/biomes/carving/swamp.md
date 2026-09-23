@@ -2,13 +2,13 @@
 title: "Swamp Cavern — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/swamp"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/swamp` is a direct cave root in the current Overworld 4009 and Underworld 1011 pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/swamp` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -20,8 +20,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld 4009 | `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
-| Underworld 1011 | `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Overworld | `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Underworld | `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -31,11 +31,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..690`; sample step `2`; surface clearance `5`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `10`.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 Derivative `minecraft:lush_caves`; vanilla derivative `minecraft:lush_caves`. Primary cave palette: `minecraft:grass_block`, `minecraft:podzol`, `minecraft:dark_oak_wood`, `minecraft:spruce_wood`, `minecraft:rooted_dirt`, `minecraft:coarse_dirt`. Decorator blocks: `minecraft:short_grass`, `minecraft:fern`, `minecraft:brown_mushroom`, `minecraft:red_mushroom`. Object set: `clutter/jungleclutt11`, `clutter/jungleclutt12`, `clutter/jungleclutt13`, `clutter/jungleclutt5`, `trees/darkoak/medgeneric5`, `trees/darkoak/medgeneric6`, `trees/darkoak/medgeneric7`, `trees/darkoak/medgeneric8`, and 13 more.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:soul_soil`, `minecraft:warped_hyphae`. Decorator blocks: `minecraft:soul_fire`, `minecraft:warped_fungus`. Object set: `underworld/soul/clutter/jungleclutt11`, `underworld/soul/clutter/jungleclutt12`, `underworld/soul/clutter/jungleclutt13`, `underworld/soul/clutter/jungleclutt5`, `underworld/soul/trees/darkoak/medgeneric5`, `underworld/soul/trees/darkoak/medgeneric6`, `underworld/soul/trees/darkoak/medgeneric7`, `underworld/soul/trees/darkoak/medgeneric8`, and 13 more. Custom registered biome id: `underworld_carving_swamp_6594342d`.
 

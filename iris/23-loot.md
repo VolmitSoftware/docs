@@ -2,7 +2,7 @@
 title: "Loot"
 description: "Iris documentation: Loot"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -11,9 +11,9 @@ Loot tables decide what appears inside generated chests, what custom mobs drop, 
 
 Related: [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), [03 - Configuration](/iris/03-configuration), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
-## The mental model
+## Loot sources
 
-When a chunk finishes generating, Iris walks the blocks it recorded and fills every storage chest it placed. It builds a list of loot tables for that exact block, rolls each one, and drops the results into the inventory. The list comes from up to four sources in this order: the object placement that owns the block, then the dimension, region, surface biome, and cave biome the block sits in. Each source can add to the list, wipe it, or only contribute when nothing else did.
+Iris fills generated storage chests from loot tables assigned to the object placement, dimension, region, surface biome, and cave biome. Each source can add, replace, clear, or provide fallback tables.
 
 Everything is deterministic from the world seed and the block position, so the same chest at the same coordinates always contains the same items.
 
@@ -78,34 +78,17 @@ The goal is a chest inside one placed object that rolls your table and ignores t
 
 **3. Verify.** Open the pack in Studio, find a placement, and open the chest. Every chest in that object should hold 2-4 stacks drawn from the four entries. Diamonds show up in roughly one placement in six, swords in roughly one in eight. To check without hunting for a placement, stand on a block and run `/iris studio loot`: it previews the tables that would fill a chest at your feet and adds debug lore naming the source table and its combined chance. That command is Bukkit and Studio only.
 
-**4. If chests come up empty.**
+## Container loot selection
 
-- The block must be a storage chest. Iris only fills chest-family containers and only ever requests the `STORAGE` slot type, so `FUEL`/`FURNACE`/`BLAST_FURNACE`/`SMOKER` entries never land in a generated container.
-- `world.postLoadBlockUpdates` must be on in `iris.json`. The container fill runs as part of that pass.
-- The loot table key must resolve. A missing table logs a warning and contributes nothing.
-- Double chests fill from one half only (lower X, then lower Z). That half fills the combined inventory, so an empty-looking half is normal.
+Generated storage chests use `STORAGE` entries. Enable `world.postLoadBlockUpdates` in `iris.json` to fill them. Objects placed directly in Studio fill their chests immediately.
 
-## How a container actually gets filled
+An object placement selects at most one table. Matching `exact` block-state filters take priority over material filters, followed by entries without filters. `weight` selects among matches at the same priority. Placement `loot` and `vanillaLoot` compete together.
 
-Worth reading before tuning rarities, because two of these steps surprise people.
+With `overrideGlobalLoot: true`, a selected placement table excludes the other sources. Otherwise, dimension, region, surface biome, and cave biome tables contribute in that order. `ADD` appends, `REPLACE` replaces, `CLEAR` removes, and `FALLBACK` contributes only when no table is selected.
 
-1. **Trigger.** After a chunk's mantle materializes, the post-load update pass visits every block Iris flagged. Only storage chests proceed, and only the `STORAGE` slot type is ever requested. Objects placed into an already-live world (Studio placement, WorldEdit-driven placement) fill their chests immediately instead.
+Scope multipliers combine and scale the number of tables rolled, not item stack sizes. A factor of `0.5` drops half the tables on average, while `2` doubles them, up to 256 sources.
 
-2. **Source list.** Iris asks the object placement that owns the block for at most one table. Candidates are bucketed by how specifically they match: entries with an `exact` block-data filter that matches win outright, then entries whose filter matches the block's material, then entries with no filter. Within the winning bucket the pick is weighted by `weight`, and `loot` and `vanillaLoot` entries compete in the same buckets. If the placement sets `overrideGlobalLoot` and a table was picked, that is the entire list.
-
-3. **Environment sources.** Otherwise the dimension, region, and surface biome each inject their tables in that order. A cave biome injects too when the container is below terrain height and resolves to a different biome than the surface. `ADD` appends. `REPLACE` wipes the list first and then appends its own. `CLEAR` wipes the list and contributes nothing, so any tables listed on a `CLEAR` reference are dead and `/iris pack validate` warns about them. `FALLBACK` injects only when nothing already claimed the container.
-
-4. **Multiplier.** The multipliers from every contributing scope are multiplied together, and the resulting factor scales the **length of the table list**, not stack sizes. A factor of 0.5 randomly drops half the tables; 2 randomly duplicates entries until the list doubles. The list is capped at 256 sources and Iris throws rather than silently truncating past that.
-
-5. **Event hook.** On Bukkit, `art.arcane.iris.world.event.IrisLootEvent` fires with the engine, block, slot type, and the resolved mutable table list, so a plugin can add, remove, or clear tables before the roll. Rolled items are also bridged through Bukkit's `LootGenerateEvent`. Neither is part of the documented public API surface in the `90`-series pages.
-
-6. **Roll.** For each table: pick a random target count between `minPicked` and `maxPicked`, then loop up to `maxTries`. Each try picks a random entry index. The entry only counts if its `slotTypes` is `STORAGE` and it passes a 1-in-(table `rarity` x entry `rarity`) check. That check is derived from the loot seed, the table's key, the entry index, and the block coordinates, not from a running random sequence. **The same entry at the same block always gives the same answer**, so tries that re-roll a rare entry that already failed are wasted. This is why `maxTries` should sit well above `maxPicked` when a table has rare entries.
-
-7. **Scatter.** Items are inserted, one multi-item stack is split into a free slot, and all slots are shuffled so a chest reads like a hand-placed one.
-
-Modded servers run the same resolver and the same rarity math, so container contents match Bukkit for a given seed and position. Modded resolves `vanillaLoot` names against the server's loot-table registry; Bukkit resolves them through `Bukkit.getLootTable` and delegates the roll to Minecraft.
-
-If saved biome information is still loading, unfinished container updates stay pending and retry on a later pass. Already-completed updates are not rolled again.
+Each table makes up to `maxTries` attempts to reach a count between `minPicked` and `maxPicked`. Each entry has a 1-in-(`table rarity` × `entry rarity`) chance. Set `maxTries` above `maxPicked` to allow for unsuccessful attempts.
 
 ## Loot tables (`IrisLootTable`)
 
@@ -224,8 +207,6 @@ Items, enchantments, and potion effects added in a newer Minecraft do not exist 
 |-----------------|--------|
 | An item on an `IrisLoot` entry | That loot entry is dropped. The rest of the table still rolls. A loot table with no entries left is excluded, and `loot.tables` references to it are dropped |
 | An enchantment on a loot entry | The enchantment is dropped on its own. The item still generates, unenchanted by that entry |
-
-Dropping is silent at runtime. The complete list is printed once at startup and available from `/iris pack compat`.
 
 ## Add loot to a pack
 

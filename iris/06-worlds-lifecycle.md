@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-23T10:46:58.590Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,7 +30,7 @@ Install and validate the pack, then choose a world name and seed:
 
 Names are lowercased and spaces become underscores. `iris` and `benchmark` are reserved. Creation requires an unused world name.
 
-Creation reuses validation for unchanged packs and automatically checks changed content or validation settings before generation. It prepares the entry area’s hydrology before generating its terrain, reusing matching saved plans when available. On Bukkit, initial entry automatically uses multicore generation. A player who creates a world is teleported into it. If automatic teleport fails, the world remains loaded; wait for initial generation and use `/iris tp <world>` again. Complete any restart Iris requests before using the world.
+A player who creates a world is teleported into it. Use `/iris tp <world>` to enter a loaded world. Complete any restart Iris requests before using the world.
 
 You can preview a pack before creating a permanent world:
 
@@ -68,7 +68,7 @@ Install the pack and restart before creating its dimension. For custom packs wit
 | `/iris remove <name> delete=false` | Unload and unregister the world; keep its files |
 | `/iris remove <name>` | Unregister the world and delete its files |
 
-Loading requires the world's saved pack and registration data. Restore the complete backup if these are missing. Unloading and server shutdown wait for admitted generation and river planning to finish before releasing the world's generation data. Iris verifies the world's saved generation state before generation resumes. Chunk generation remains paused until these startup checks finish. Startup checks adapt to the server's available processors and Java heap without additional configuration; existing terrain remains unchanged.
+Loading requires the world's saved pack and registration data. Restore complete world backups, including these files.
 
 > `/iris remove` deletes world data by default. Back up first, and wait for unload or removal to finish before moving or deleting any world directory. If Iris requests a restart, complete it before retrying.
 {.is-warning}
@@ -100,19 +100,13 @@ On Fabric, Forge, or NeoForge:
 
 Restart to apply the update. Editing the installed pack alone does not update a production world. See [Pack Management](/iris/25-pack-management).
 
-## Generation updates and retained terrain
-
 Pack updates affect newly generated chunks. Existing terrain remains unchanged, including when you select an older pack again. `generator.generationTransitionWidthBlocks` controls the transition width between old and new terrain; large terrain changes can still leave visible seams.
 
 The world seed, height bounds, logical height, environment, dimension type, and coordinate scale cannot change through a pack update. Create a new world for those changes. New custom biomes or other registry content may require a restart.
 
-### Retained world data
-
-Back up the complete dimension directory, including `iris/generation`. Keep the saved pack definitions with the terrain they generated; do not edit or delete files inside the world's generation history.
-
-Older chunks without a recorded biome identity may report that biome information is unavailable.
-
 ## World folders and backups
+
+Back up the complete dimension directory, including `iris/generation`. Do not edit or delete the saved pack files inside it.
 
 | Data | Location |
 |---|---|

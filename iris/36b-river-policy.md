@@ -2,12 +2,12 @@
 title: "River Policy"
 description: "riverPolicy: where rivers may start, transit and end, their local budgets and geometry scales, and what content they carry"
 published: true
-date: 2026-09-22T01:02:51.164Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
-`riverPolicy` decides where rivers may start, transit and end, how many of them an area gets, how their geometry scales locally, and what biome content they carry. The physical system they are made of is on [36 - Rivers](/iris/36-rivers); inspection and troubleshooting are on [36c - River Inspection](/iris/36c-river-inspection).
+`riverPolicy` decides where rivers may start, transit and end, how many of them an area gets, how their geometry scales locally, and what biome content they carry. The physical system they are made of is on [36 - Rivers](/iris/36-rivers); river locators and Vision are on [36c - River Inspection](/iris/36c-river-inspection).
 
 The effective policy is resolved in this order:
 

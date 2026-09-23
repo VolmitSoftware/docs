@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-22T04:03:45.933Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,7 +41,7 @@ JitPack serves Iris under `com.github.VolmitSoftware:Iris:<tag-or-commit>`. Sele
 </dependencies>
 ```
 
-Set `iris.revision` to the selected tag or commit. The generated API jar contains class signatures and throwing method stubs. Use it only for compilation. Install the full Bukkit jar on the server.
+Set `iris.revision` to the selected tag or commit. Use the API jar only for compilation. Install the full Bukkit jar on the server.
 
 For a local source build, run `./gradlew publishToMavenLocal`. This installs `art.arcane:iris:<irisVersion>` into local Maven. Use those coordinates with `provided` when building against your own checkout. They do not identify the JitPack artifact.
 
@@ -57,7 +57,7 @@ Declare Iris as an optional dependency. Paper plugins that import the API need `
 
 ## Access Iris Toolbelt
 
-Toolbelt remains part of Iris. Its current package is `art.arcane.iris.world`.
+Import Toolbelt from `art.arcane.iris.world`.
 
 ```java
 import art.arcane.iris.generation.runtime.Engine;
@@ -70,10 +70,6 @@ if (engine == null || engine.isClosed()) {
     return;
 }
 ```
-
-Custom `PlatformChunkGenerator` implementations must implement `beginInitialEntry(boolean playerEntry)` and `completeInitialEntry()`. Creation passes whether its sender needs a player teleport, begins the scope before the generator initializes, and completes it after initial entry, before optional pregeneration. Implementations must release any scoped prefetch deferral on failure and close; ordinary server startup does not enter this scope.
-
-`IrisEngine.InitializationMode.WORLD_CREATION` warms generation caches as tracked background work for fresh normal world creation. `RUNTIME` retains synchronous warming for restored worlds and other runtime callers. Both modes retain normal world behavior; generation awaits cache readiness and propagates uncaught warmup task failures.
 
 The API jar includes the VolmLib types needed by these signatures. Toolbelt access does not require a separate VolmLib dependency. Prefer the terrain service below for terrain queries that do not need engine access.
 
@@ -94,11 +90,9 @@ When switching over Iris enums, include a `default` branch so future values do n
 
 `StudioSVC.installIntoWorld` returns `StudioSVC.GenerationPublication`, which contains the published `dimension()` and verified `history()`. Pass that history to `IrisWorldCreator.generationHistory(...)` before `create()`. It must match the target dimension directory and seed; transient worlds cannot accept a generation history.
 
-Without a supplied history, persistent and Studio creation open and validate the saved history. Generator startup retains its final active-pack verification in both paths.
-
 ## Engine save requests
 
-Call `Engine.requestSave()` from the appropriate world-owning thread. It returns `false` when lifecycle admission rejects the request; an accepted request runs mantle and world-manager hooks and saves engine metadata on the caller, while native structure ownership serialization runs as tracked background work. Acceptance does not mean the background write has finished. Reload and shutdown drain accepted writes before releasing their runtime. `Engine.save()` and `Engine.saveNow()` retain their synchronous behavior.
+Call `Engine.requestSave()` from the world-owning thread. It returns `false` when Iris cannot accept the request. An accepted request can finish writing in the background. Use `Engine.save()` or `Engine.saveNow()` when the write must finish before returning.
 
 ## Build an API artifact
 

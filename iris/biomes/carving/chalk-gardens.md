@@ -2,13 +2,13 @@
 title: "Chalk Gardens — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/chalk-gardens"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/chalk-gardens` is a direct cave root in the current Overworld and Underworld pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/chalk-gardens` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -20,8 +20,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld source | `estranged` (1/6 slots; region rarity 1, weight `1/1`); `temperate` (1/6 slots; region rarity 1, weight `1/1`); `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
-| Underworld source | `estranged` (1/6 slots; region rarity 1, weight `1/1`); `temperate` (1/6 slots; region rarity 1, weight `1/1`); `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
+| Overworld | `estranged` (1/6 slots; region rarity 1, weight `1/1`); `temperate` (1/6 slots; region rarity 1, weight `1/1`); `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
+| Underworld | `estranged` (1/6 slots; region rarity 1, weight `1/1`); `temperate` (1/6 slots; region rarity 1, weight `1/1`); `terralost` (1/5 slots; region rarity 5, weight `1/5`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -31,11 +31,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..700`; sample step `2`; surface clearance `5`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `10`.
 
-## Overworld source treatment
+## Overworld treatment
 
 Derivative `minecraft:lush_caves`; vanilla derivative `minecraft:lush_caves`. Primary cave palette: `minecraft:calcite`, `minecraft:clay`, `minecraft:diorite`, `minecraft:deepslate`. Decorator blocks: `minecraft:small_dripleaf`, `minecraft:glow_lichen`. Object set: `clutter/stoneclutt4`, `clutter/stoneclutt5`, `clutter/amethyst-cluster4`, `clutter/amethyst-cluster1`, `clutter/amethyst-cluster2`, `clutter/amethyst-cluster3`, `clutter/amethyst-cluster5`.
 
-## Underworld source treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:basalt`, `minecraft:soul_soil`, `minecraft:quartz_block`. Decorator blocks: `minecraft:nether_sprouts`, `minecraft:glowstone`. Object set: `underworld/soul/clutter/stoneclutt4`, `underworld/soul/clutter/stoneclutt5`, `underworld/soul/clutter/amethyst-cluster4`, `underworld/soul/clutter/amethyst-cluster1`, `underworld/soul/clutter/amethyst-cluster2`, `underworld/soul/clutter/amethyst-cluster3`, `underworld/soul/clutter/amethyst-cluster5`. Custom registered biome id: `underworld_carving_chalk_gardens_d73335c3`.
 

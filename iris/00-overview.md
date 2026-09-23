@@ -2,14 +2,14 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris replaces the vanilla chunk generator. Terrain, biomes, caves, structures, objects, and entities come from editable JSON packs. The same engine is available as a Bukkit plugin and as a Fabric, Forge, or NeoForge mod. This branch targets Minecraft 26.2 and requires Java 25.
+Iris replaces the vanilla chunk generator. Terrain, biomes, caves, structures, objects, and entities come from editable JSON packs. The same engine is available as a Bukkit plugin and as a Fabric, Forge, or NeoForge mod. Java 25 is required.
 
-The four platforms generate identical chunks when the Iris version, pack, seed, and area match. Pages `00`–`47` cover server operation and pack authoring; pages `90`–`94` cover the Java API.
+The guides cover server operation and pack authoring. Pages `90`–`94` cover the Java API.
 
 ## Choose a learning path
 
@@ -28,7 +28,7 @@ The four platforms generate identical chunks when the Iris version, pack, seed, 
 
 ## Platforms
 
-One plugin jar covers the whole Bukkit family; each mod loader gets its own jar. The generator is the same code on all of them.
+One plugin jar covers the Bukkit family. Each mod loader has its own jar.
 
 | Platform | Artifact | Minecraft | What is different |
 |---|---|---|---|
@@ -42,8 +42,6 @@ One plugin jar covers the whole Bukkit family; each mod loader gets its own jar.
 Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree felling uses `iris.treefeller`.
 
 ## Feature map
-
-Every Iris feature is on exactly one page.
 
 | Area | What it covers | Doc |
 |---|---|---|
@@ -61,12 +59,12 @@ Every Iris feature is on exactly one page.
 | Regions | Region-level content | [12 - Regions](/iris/12-regions) |
 | Biomes | Biome JSON, layers, custom biomes, spawns | [13 - Biomes](/iris/13-biomes) |
 | Generators and noise | Generators, styles, expressions, images | [14 - Generators & Noise](/iris/14-generators-noise) |
-| Volumetric terrain | Biome `terrain3D` profile, spans and ledges, validation, terrain probe | [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
+| Volumetric terrain | Biome `terrain3D` profiles, spans, and ledges | [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Noise atlas | All style previews, 3D slices, zoom and octave comparisons, PDF | [45 - Noise Atlas](/iris/45-noise-atlas) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
-| Rivers | Terrain-first routing, hydraulic transitions, caves, and deep fluids | [36 - Rivers](/iris/36-rivers) |
+| Rivers | River layout, waterfalls, caves, and deep fluids | [36 - Rivers](/iris/36-rivers) |
 | River policy | Where rivers start, transit and end, local budgets, and river content | [36b - River Policy](/iris/36b-river-policy) |
-| River inspection | Vision, `/iris find river`, rejection reasons, validation, and probes | [36c - River Inspection](/iris/36c-river-inspection) |
+| River inspection | Vision and `/iris find river` | [36c - River Inspection](/iris/36c-river-inspection) |
 | Image maps | Typed resources, applications, accepted PNG inputs, and the Image Map Studio workflow | [37 - Image Maps](/iris/37-image-maps) |
 | Image-map encodings | Grayscale and RGB heights, color legends, tolerance, alpha, and mask composition | [38 - Image Map Encodings](/iris/38-image-map-encodings) |
 | Image-map reference | Complete JSON, axes, transforms, sampling, and `worldBoundary` | [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |
@@ -80,16 +78,13 @@ Every Iris feature is on exactly one page.
 | Native structures | Vanilla / datapack structures on Iris | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Vanilla passthrough | Enable, deny, or replace vanilla features, mobs, loot, saplings, and gameplay | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | Loot and entities | Pack entities, loot, spawners, markers | [23 - Loot](/iris/23-loot), [23b - Entities & Spawners](/iris/23b-entities-spawners), [23c - Markers](/iris/23c-markers) |
-| Pack extensions | Reusable snippets and the inactive pack-mod schema | [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets) |
+| Pack extensions | Reusable JSON snippets | [24 - Snippets](/iris/24-pack-mods-snippets) |
 | Pack management | Download, validate, cleanup, package, update-world | [25 - Pack Management](/iris/25-pack-management) |
 | Minimal pack example | Walkthrough | [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
 | Overworld example | Editing the bundled overworld | [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |
 | Integrations | WorldEdit, Multiverse, Mythic, item plugins, tree feller | [28 - Integrations](/iris/28-integrations) |
-| Client HUD | Client mod HUD and protocol channel | [29 - Client HUD & Protocol](/iris/29-client-hud-protocol) |
+| Client HUD | Client HUD controls and maps | [29 - Client HUD & Maps](/iris/29-client-hud-protocol) |
 | Platform matrix | Bukkit vs Fabric / Forge / NeoForge differences | [30 - Platform Differences](/iris/30-platform-differences) |
-| Startup safeguard | Stable, Warning, and Danger modes and what they lock | [46 - Startup Safeguard](/iris/46-startup-safeguard) |
-| Determinism | Compare generation output | [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash) |
-| Performance | Iris settings and server configuration | [33 - Performance Tuning](/iris/33-performance-tuning) |
 | Multiverse | What Multiverse may and may not do with Iris worlds | [34 - Multiverse](/iris/34-multiverse) |
 | API — setup | Bukkit public API dependency | [90 - API - Getting Started](/iris/90-api-getting-started) |
 | API — terrain | Terrain query service | [91 - API - Terrain](/iris/91-api-terrain) |
@@ -103,7 +98,7 @@ Seven terms carry most of the documentation.
 
 | Term | What it is |
 |---|---|
-| Pack | A folder of JSON and `.iob` files under `packs/<key>/`. It needs at least one `dimensions/*.json` to count as a pack at all — a folder without one is treated as absent and will be re-downloaded |
+| Pack | A folder of JSON and `.iob` files under `packs/<key>/`. It needs at least one `dimensions/*.json` file |
 | Dimension | The root config for one world type: height range, generation modes, which regions it uses, what native content it imports. One dimension file is one world's ruleset |
 | Region / biome / generator | The authoring units under a dimension. Regions divide the map, biomes fill regions, generators produce the actual heightmap noise |
 | Object / structure | Placed content. An object is a single saved build (`.iob`). A structure is either an Iris jigsaw of several objects, or a vanilla/datapack/mod structure Iris allows through |

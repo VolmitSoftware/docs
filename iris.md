@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,11 +18,7 @@ jigsaw structures as JSON data packs. Iris assembles them when it generates a ch
 | Permissions | `iris.all` is the whole `/iris` tree. Grant it to administrators only |
 | Integrations | WorldEdit, Multiverse-Core, PlaceholderAPI, CraftEngine, Nexo, ItemsAdder, ExecutableItems, MMOItems, EcoItems, MythicMobs, MythicCrucible, KGenerators |
 
-> Iris declares `loadbefore: Multiverse-Core`. If you run Multiverse, Iris must start first.
-> If Multiverse starts first, it claims Iris worlds with the vanilla generator.
-> Multiverse cannot create, delete, regenerate, or clone Iris worlds — those commands are
-> refused. Read [Multiverse](/iris/34-multiverse) before running any of them.
-{.is-warning}
+Use Iris commands to create and remove worlds. For Multiverse commands and supported operations, see [Multiverse](/iris/34-multiverse).
 
 ## Start here
 
@@ -51,7 +47,7 @@ jigsaw structures as JSON data packs. Iris assembles them when it generates a ch
 - [Regions](/iris/12-regions)
 - [Biomes](/iris/13-biomes)
 - [Biome Catalog](/iris/44-biome-catalog)
-- [Pack Mods & Snippets](/iris/24-pack-mods-snippets)
+- [Snippets](/iris/24-pack-mods-snippets)
 - [Pack Management](/iris/25-pack-management)
 {.links-list}
 
@@ -100,11 +96,8 @@ jigsaw structures as JSON data packs. Iris assembles them when it generates a ch
 - [Example - Minimal Dimension](/iris/26-example-minimal-dimension)
 - [Example - Configuring Overworld](/iris/27-example-configuring-overworld)
 - [Integrations](/iris/28-integrations)
-- [Client HUD & Protocol](/iris/29-client-hud-protocol)
+- [Client HUD & Maps](/iris/29-client-hud-protocol)
 - [Platform Differences](/iris/30-platform-differences)
-- [Startup Safeguard](/iris/46-startup-safeguard)
-- [Determinism & Goldenhash](/iris/32-determinism-goldenhash)
-- [Performance Tuning](/iris/33-performance-tuning)
 - [Multiverse](/iris/34-multiverse)
 {.links-list}
 

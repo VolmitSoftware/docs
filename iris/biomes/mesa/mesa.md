@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Mesa"
-description: "Iris biome atlas entry for mesa/mesa in Overworld 4009 and Underworld 1011"
+description: "Iris biome atlas entry for mesa/mesa in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mesa/mesa` is a directly selected land biome in the current Overworld 4009 and Underworld 1011 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`mesa/mesa` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4009 | `hot` (Hot) | 1 | 2 | 0.5 | 2.91% |
-| Underworld 1011 | `hot` (Hot) | 1 | 2 | 0.5 | 2.91% |
+| Overworld | `hot` (Hot) | 1 | 2 | 0.5 | 2.91% |
+| Underworld | `hot` (Hot) | 1 | 2 | 0.5 | 2.91% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `highplains` (50..70), `highplains` (95..190); combined authored contribution `145..260` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4009 and Underworld 1011 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the start slope plus the fade range.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / fade | Density noise / Crack noise |
@@ -41,18 +41,18 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 | `mesa/red` | Mesa | 38 | 176 / 44 | 4 / 2 / 392 | 0.28 / 0.4 | `PERLIN` / `PERLIN` |
 | `mesa/yellow` | Mesa | 38 | 176 / 44 | 4 / 2 / 392 | 0.28 / 0.4 | `PERLIN` / `PERLIN` |
 
-Mesa density uses unwarped Perlin noise in both packs. The height generators, amplitude, scale, and crack settings are unchanged; the 3D cliff details use the new field.
+Mesa density uses unwarped Perlin noise in both packs.
 
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:badlands`; native-structure derivative `minecraft:badlands`; underground scatter `minecraft:badlands`, `minecraft:eroded_badlands`.
 - **Surface:** 2-3 block(s): `minecraft:clay`, `minecraft:light_gray_concrete_powder`, `minecraft:andesite`, `minecraft:stone`, `minecraft:light_gray_concrete`, `minecraft:orange_terracotta`, and 2 more; 2-3 block(s): `minecraft:light_gray_terracotta`; 2-3 block(s): `minecraft:terracotta`, `minecraft:light_gray_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:orange_terracotta`; 3-4 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:terracotta`, `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:light_gray_terracotta`; 1 block(s): `minecraft:terracotta`. Wall palette: none.
 - **Content:** 2 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_mesa_mesa_d10b8dba`.
 - **Surface:** 2-3 block(s): `minecraft:blackstone`, `minecraft:quartz_bricks`, `minecraft:basalt`, `minecraft:magma_block`, `minecraft:netherrack`; 2-3 block(s): `minecraft:quartz_bricks`; 2-3 block(s): `minecraft:netherrack`, `minecraft:quartz_bricks`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:magma_block`; 3-4 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:netherrack`, `minecraft:quartz_bricks`; 1 block(s): `minecraft:quartz_bricks`; 1 block(s): `minecraft:netherrack`. Wall palette: none.
@@ -86,8 +86,8 @@ Its two repeated child-list occurrences contribute `4` of `19` slots (21.05%) in
 
 **Shared terrain:** `highplains` (50..70), `mountain` (70..110); combined authored contribution `120..180` blocks relative to fluid height.
 
-- **Overworld 4009:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:pink_terracotta`; 2-3 block(s): `minecraft:red_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:light_gray_terracotta`; 2-3 block(s): `minecraft:brown_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`. 1 deposit rule(s).
-- **Underworld 1011:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:crimson_nylium`; 2-3 block(s): `minecraft:nether_bricks`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:quartz_bricks`; 2-3 block(s): `minecraft:soul_soil`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`. 1 deposit rule(s).
+- **Overworld:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:pink_terracotta`; 2-3 block(s): `minecraft:red_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:light_gray_terracotta`; 2-3 block(s): `minecraft:brown_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`. 1 deposit rule(s).
+- **Underworld:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:crimson_nylium`; 2-3 block(s): `minecraft:nether_bricks`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:quartz_bricks`; 2-3 block(s): `minecraft:soul_soil`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`. 1 deposit rule(s).
 
 ### Mesa Blue (`mesa/blue`)
 
@@ -96,8 +96,8 @@ Its two repeated child-list occurrences contribute `4` of `19` slots (21.05%) in
 
 **Shared terrain:** `highplains` (50..70), `mountain` (70..110); combined authored contribution `120..180` blocks relative to fluid height.
 
-- **Overworld 4009:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:cyan_terracotta`; 2-3 block(s): `minecraft:blue_terracotta`; 2-3 block(s): `minecraft:light_blue_terracotta`; 2-3 block(s): `minecraft:magenta_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`.
-- **Underworld 1011:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:warped_nylium`; 2-3 block(s): `minecraft:warped_wart_block`; 2-3 block(s): `minecraft:warped_wart_block`; 2-3 block(s): `minecraft:nether_wart_block`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
+- **Overworld:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:cyan_terracotta`; 2-3 block(s): `minecraft:blue_terracotta`; 2-3 block(s): `minecraft:light_blue_terracotta`; 2-3 block(s): `minecraft:magenta_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`.
+- **Underworld:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:warped_nylium`; 2-3 block(s): `minecraft:warped_wart_block`; 2-3 block(s): `minecraft:warped_wart_block`; 2-3 block(s): `minecraft:nether_wart_block`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
 
 ### Mesa Green (`mesa/green`)
 
@@ -106,8 +106,8 @@ In that immediate child choice it contributes `2` of `19` slots (10.53%); later 
 
 **Shared terrain:** `highplains` (50..70), `mountain` (70..110); combined authored contribution `120..180` blocks relative to fluid height.
 
-- **Overworld 4009:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:lime_terracotta`; 2-3 block(s): `minecraft:green_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:brown_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`.
-- **Underworld 1011:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:warped_nylium`; 2-3 block(s): `minecraft:warped_nylium`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:soul_soil`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
+- **Overworld:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:lime_terracotta`; 2-3 block(s): `minecraft:green_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:brown_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`.
+- **Underworld:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:warped_nylium`; 2-3 block(s): `minecraft:warped_nylium`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:soul_soil`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
 
 ### Mesa Yellow (`mesa/yellow`)
 
@@ -116,8 +116,8 @@ In that immediate child choice it contributes `2` of `19` slots (10.53%); later 
 
 **Shared terrain:** `highplains` (50..70), `mountain` (70..110); combined authored contribution `120..180` blocks relative to fluid height.
 
-- **Overworld 4009:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:white_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:red_terracotta`; 4 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:yellow_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:brown_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`.
-- **Underworld 1011:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:quartz_block`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:nether_bricks`; 4 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:glowstone`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:soul_soil`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
+- **Overworld:** `minecraft:windswept_savanna` identity; surface 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:white_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:red_terracotta`; 4 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:yellow_terracotta`; 2-3 block(s): `minecraft:terracotta`; 2-3 block(s): `minecraft:brown_terracotta`; 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:stone_button`, `minecraft:dead_bush`.
+- **Underworld:** `minecraft:basalt_deltas` identity; surface 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:quartz_block`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:nether_bricks`; 4 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:glowstone`; 2-3 block(s): `minecraft:netherrack`; 2-3 block(s): `minecraft:soul_soil`; 4 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`.
 
 Direct-root children continue on their own pages: [`mesa/dark`](/iris/biomes/mesa/dark).
 

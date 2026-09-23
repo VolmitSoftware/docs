@@ -2,13 +2,13 @@
 title: "Dripstone Cavern Child — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/drip-lite"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/drip-lite` is a direct cave root in the current Overworld 4009 and Underworld 1011 pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/drip-lite` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -18,8 +18,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld 4009 | `mushroom` (1/5 slots; region rarity 15, weight `1/15`); `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
-| Underworld 1011 | `mushroom` (1/5 slots; region rarity 15, weight `1/15`); `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Overworld | `mushroom` (1/5 slots; region rarity 15, weight `1/15`); `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Underworld | `mushroom` (1/5 slots; region rarity 15, weight `1/15`); `swamp` (1/5 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -29,11 +29,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..700`; sample step `2`; surface clearance `5`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `10`.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:dripstone_block`. Decorator blocks: `minecraft:pointed_dripstone`. Object set: `clutter/stoneclutt4`, `clutter/stoneclutt5`, `clutter/stoneclutt6`, `clutter/stoneclutt1`, `clutter/stoneclutt2`, `clutter/stoneclutt3`, `clutter/rock1`, `clutter/rock2`, and 4 more.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:basalt`. Decorator blocks: `minecraft:basalt`. Object set: `underworld/soul/clutter/stoneclutt4`, `underworld/soul/clutter/stoneclutt5`, `underworld/soul/clutter/stoneclutt6`, `underworld/soul/clutter/stoneclutt1`, `underworld/soul/clutter/stoneclutt2`, `underworld/soul/clutter/stoneclutt3`, `underworld/soul/clutter/rock1`, `underworld/soul/clutter/rock2`, and 4 more. Custom registered biome id: `underworld_carving_drip_lite_28b4a46a`.
 

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Swamp Marsh"
-description: "Iris biome atlas entry for swamp/marsh in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for swamp/marsh in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`swamp/marsh` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`swamp/marsh` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
-| Underworld 1010 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
+| Overworld | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
+| Underworld | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `mountain` (3..10); combined authored contribution `3..10` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -44,13 +44,13 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 - `swamp/marsh`: Marsh floors and banks retain their current terrain.
 - `swamp/marsh-rotten`: Flooded marsh floors retain their current terrain.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:swamp`; native-structure derivative `minecraft:swamp`; custom identities `swamp_marsh_rotten`.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:podzol`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 2 object placement rule(s) drawing from 11 object key(s), including `trees/jungle/lgeneric1`, `trees/jungle/lgeneric2`, `trees/jungle/lgeneric3`, `trees/jungle/lgeneric4`, `trees/jungle/lgeneric5`, `trees/jungle/lgeneric7`, `trees/jungle/lgeneric8`, and 4 more. 3 decorator rule(s) using `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:large_fern`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_swamp_marsh_e05fcd66`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.
@@ -68,8 +68,8 @@ In that immediate child choice it contributes `1` of `2` slots (50.00%); later c
 
 **Shared terrain:** `plain` (-5..4); combined authored contribution `-5..4` blocks relative to fluid height.
 
-- **Overworld 4007:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`, `minecraft:mud`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 3 object placement rule(s) drawing from 19 object key(s), including `trees/oak/dead1`, `trees/oak/dead2`, `trees/oak/dead3`, `trees/oak/dead4`, `trees/oak/dead5`, `trees/oak/dead6`, `clutter/shrub1`, and 12 more. 3 decorator rule(s) using `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:large_fern`, `minecraft:tall_grass`, `minecraft:dead_bush`, `minecraft:fern`.
-- **Underworld 1010:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`, `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 3 object placement rule(s) drawing from 19 object key(s), including `underworld/warped/trees/oak/dead1`, `underworld/warped/trees/oak/dead2`, `underworld/warped/trees/oak/dead3`, `underworld/warped/trees/oak/dead4`, `underworld/warped/trees/oak/dead5`, `underworld/warped/trees/oak/dead6`, `underworld/warped/clutter/shrub1`, and 12 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:nether_sprouts`.
+- **Overworld:** `minecraft:swamp` identity; surface 1 block(s): `minecraft:grass_block`, `minecraft:podzol`, `minecraft:mud`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`; 3 object placement rule(s) drawing from 19 object key(s), including `trees/oak/dead1`, `trees/oak/dead2`, `trees/oak/dead3`, `trees/oak/dead4`, `trees/oak/dead5`, `trees/oak/dead6`, `clutter/shrub1`, and 12 more. 3 decorator rule(s) using `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:large_fern`, `minecraft:tall_grass`, `minecraft:dead_bush`, `minecraft:fern`.
+- **Underworld:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`, `minecraft:netherrack`; 1 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`, `minecraft:basalt`; 3 object placement rule(s) drawing from 19 object key(s), including `underworld/warped/trees/oak/dead1`, `underworld/warped/trees/oak/dead2`, `underworld/warped/trees/oak/dead3`, `underworld/warped/trees/oak/dead4`, `underworld/warped/trees/oak/dead5`, `underworld/warped/trees/oak/dead6`, `underworld/warped/clutter/shrub1`, and 12 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:warped_fungus`, `minecraft:nether_sprouts`.
 
 ## Floating variants
 

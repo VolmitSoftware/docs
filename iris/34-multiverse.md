@@ -2,20 +2,16 @@
 title: "Multiverse"
 description: "Iris documentation: Multiverse"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
 ---
-Multiverse-Core can list, inspect, teleport to, and configure Iris worlds. **It cannot create, delete, regenerate, or clone them** — the commands you would reach for first are the ones Iris refuses.
+Multiverse-Core can list, inspect, teleport to, and configure Iris worlds. Use Iris commands to create or remove Iris worlds. Multiverse cannot create, delete, regenerate, or clone them.
 
-## Versions
+## Requirements
 
-| | |
-|---|---|
-| Tested and compiled against | Multiverse-Core **5.8.0** |
-| Server | Paper and Leaf 26.2 |
-| Multiverse 4.x | Not supported; use Multiverse 5 |
+Use Multiverse-Core 5.8.0 with Iris.
 
 ## World names and storage
 
@@ -40,8 +36,8 @@ There is no Iris equivalent of `/mv clone` for a generated world. Create a secon
 | `/mv unload` | Allowed. Nothing on disk is touched |
 | `/mv load` | Works. Iris performs the load and hands the world back to Multiverse |
 | `/mv remove` | Allowed. Removes the Multiverse entry only. The `bukkit.yml` entry stays, so the world returns on the next restart |
-| `/mv delete` | **Refused.** It would delete world-local generation history. Use `/iris remove world=<level>_iris_<key> delete=true`, which clears the folder, the `bukkit.yml` entry, the Iris registry entry, and the Multiverse entry in one step |
-| `/mv regen` | **Refused.** Same reason |
+| `/mv delete` | **Refused.** Use `/iris remove world=<level>_iris_<key> delete=true`, which clears the folder, the `bukkit.yml` entry, the Iris registry entry, and the Multiverse entry in one step |
+| `/mv regen` | **Refused.** Use Iris commands for world management |
 | `/mv clone` | **Refused**, both as source and as destination |
 | `/mv create -g Iris` | **Refused.** Use `/iris create <name> type=<pack>`. Iris registers the finished world with Multiverse itself, so it appears in `/mv list` without importing |
 | `/mv import -g Iris` | **Refused** unless the folder already holds Iris world storage |

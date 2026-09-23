@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,7 +20,7 @@ Related:
 - [17 - Procedural Objects](/iris/17-procedural-objects)
 - [19 - Objects](/iris/19-objects)
 - [20 - Object Placement](/iris/20-object-placement)
-- [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 
 ## Material selection
@@ -86,10 +86,7 @@ Start from the flat generator in [26 - Example - Minimal Dimension](/iris/26-exa
 
 1. Validate the pack and open Studio on seed `1337`.
 2. Generate fresh chunks and cut a cross-section. Success is exactly one grass block over three dirt blocks over stone. Dandelions scatter on the grass. Coal clumps appear only in the lower part of the column.
-3. If the column is wrong, delete `decorators` and `deposits` and get `layers` right first. Layer thickness is noise-fit between `minHeight` and `maxHeight` per column. Equal min and max is the way to get a guaranteed thickness while debugging.
-4. If flowers never appear, raise `chance` to `0.5` temporarily. Confirm the dimension has `decorate: true` (the default). `chance` is a noise-field cutoff, not a dice roll. A low value can produce nothing within one chunk.
-5. If deposits never appear, check the Y band. Deposit `minHeight` and `maxHeight` are **engine-local Y** (0 = bottom of the world). They do not automatically rescale when dimension height changes. `CLIPPED_UNIFORM` clips the origin band to the configured terrain clearance. `UNIFORM` and `TRIANGLE` sample the authored band first and discard cells outside the world or terrain.
-6. Remove `focus` once the biome behaves. Then tune each system on its own.
+3. Remove `focus` to return to normal biome selection.
 
 Keep the code spelling `varience`. It is the field name.
 
@@ -227,7 +224,7 @@ Vines get their attachment faces recomputed, and stacked weeping and twisting vi
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `chance` | double 0..1 | `0.1` | Fraction of the noise field that qualifies. Raise it while debugging, then dial back |
+| `chance` | double 0..1 | `0.1` | Fraction of the noise field that qualifies |
 | `palette` | block-entry array | grass | Blocks to place. Pack validation requires the field and at least one entry. An empty snippet places nothing |
 | `topPalette` | block-entry array | `[]` | Used for the upper part of a stack — bamboo tips, cactus flowers. Empty falls back to `palette` |
 | `topThreshold` | double 0.01..1 | `1` | Normalized stack position where `topPalette` takes over. `0.8` gives a tip roughly a fifth of the stack tall |
@@ -309,7 +306,7 @@ A reusable snippet at `snippet/decorator/bush.json`, using an air-weighted palet
 }
 ```
 
-Weighting air into the palette is a useful trick. The column still wins the bucket contest. It just places nothing. That lets one decorator hold a patch against competing decorators while still reading as sparse.
+An air entry leaves the selected column empty. Use its weight to make a decorator sparse within its patches.
 
 ## Deposits
 
@@ -412,21 +409,3 @@ Biome `slab` and `wall` palettes control surface smoothing. The dimension flags 
 - **Walls** are painted where a cardinal neighbor is three or more blocks lower, running down the exposed face until it hits air or water. This is the same `wall` palette the carve modifier uses for cave walls. A biome that wants different cliff and cave rock needs a dedicated cave biome.
 
 Both palettes default to empty, which disables the corresponding effect for that biome.
-
-## Tuning order
-
-Do these one at a time, on a focused biome that already produces correct height. Each stage makes a wrong palette, filter, or Y band independently visible.
-
-**Surface.** Define one to three `layers` covering soil down to subsoil and leave stone to `rockPalette`. Add `wall` for cliff biomes and `seaLayers` for oceans. Use `lockLayers` only for mesa stripes. Inspect flat ground, a steep slope, an exposed cliff face, and an underwater column before you move on.
-
-**Decorators.** Start with a single decorator, `STATIC` style, low `chance`. Confirm it appears, then switch to a wispy or cellular style to get patches. Add `partOf` variants for shore, sea, and ceiling content. Set `stackMin`/`stackMax` and `topPalette` for cane, cactus, and bamboo. The configured bounds are the actual inclusive block-count bounds. Extract repeated definitions into `snippet/decorator/*.json` (see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)). Always check somewhere the filter should *reject* the decorator, not just somewhere it should accept it.
-
-**Deposits.** Put broad stone blobs and common ores on the dimension, regional minerals on regions, signature ores on biomes. Translate vanilla absolute, bottom-relative and top-relative anchors into engine-local Y before you tune counts. When a dimension stretches the vanilla vertical span, normalize each vanilla anchor. Use the same fraction of the custom span. Do not copy the raw world Y. Use `replaceableBlocks` for the complete buried and cave-wall host set, `surfaceReplaceableBlocks` when exterior terrain needs a narrower set, and biome `surfaceOreReplaceableBlocks` for local overrides such as sand-bearing deserts. Raise `varience` only for `IRIS` shapes. Add `depositVariants` last, and only for ids automatic host-aware deepslate conversion does not handle.
-
-## Practical notes
-
-- Decorators place blocks only. Trees, boulders, and structures come from object placements ([20 - Object Placement](/iris/20-object-placement)) and procedural objects ([17 - Procedural Objects](/iris/17-procedural-objects)).
-- One decorator per `partOf` bucket places per column. More decorators in a bucket means each appears less often, not more total coverage.
-- Deposit `varience` is not `variance`. Generator styles use `multiplicitive`, not `multiplicative`. Both spellings are the actual field names.
-- Deposit palettes ignore `weight`. Other palettes honor it.
-- The dimension `explodeBiomePalettes` flag inserts barrier blocks between layer groups so you can count layer boundaries in a cross-section. It is a debug aid and should never be enabled in production.

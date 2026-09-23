@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -156,8 +156,6 @@ A failed or incomplete capture writes nothing.
 
 **Rewinding.** The newest five committed iterations are retained per project, deduplicated by content. **Undo Last Autosave** restores and removes the newest one, so clicking it repeatedly rewinds up to five saves.
 
-**When capture keeps failing.** A persistent failure leaves that mutation dirty and retries after 2, 4, 8, 16, then at most every 30 seconds. A later edit clears the failure state and a manual flush retries immediately. A planar connector-topology mismatch is ordinary authoring validation: it names the required and edited shape and points you at **Reset Connector Blocks**.
-
 ### Step 6 — Read the preview
 
 Every committed mutation triggers a background compile and a seed-`1337` assembly. The menu reports `PENDING`, `VALID`, `WARNING`, `INVALID`, or `STALE`, plus the selected theme, piece count, and current diagnostic.
@@ -233,8 +231,6 @@ Attach the structure to a dimension, region, or biome with a `structures[]` plac
 ```
 
 Wait for autosave, variant load, evaluation, or graph-update messages before replacing or closing Studio. `close` refuses tracked work unless it is clean; `discard=true` abandons pending edits.
-
-The walkthrough passes when autosave commits the edited object and marker data, automatic evaluation reaches `VALID` or an understood `WARNING`, the seed-`1337` preview renders the expected family, pack validation succeeds, and a natural instance appears in newly generated chunks.
 
 ## Opening a graph: which command
 
@@ -375,34 +371,3 @@ Rules with no in-game control (`branchFailurePolicy`, `placeMode`, structure `ed
 
 > **Do not hand-edit a project's files while Studio has it open.** Outside edits block further Studio changes. One player owns the active Studio; wait for a clean status before reloading, shutting down, or closing.
 {.is-warning}
-
-## Failure recovery
-
-| Symptom | Meaning | Recovery |
-|---|---|---|
-| Create reports occupied/conflicting files | Add-only ownership refused to overwrite existing resources | Choose a new structure key, or deliberately remove/migrate the old graph outside this workflow |
-| Create reports success but Studio does not open | The graph was created before the follow-up open request hit another owner, pending autosave, or a lifecycle transition | Resolve the active Studio guard, then run `open` for the new structure. Do not rerun `create` against its now-owned files |
-| A loaded variant is Read-only | Its graph is unowned or has managed datapack provenance | Close Studio, run `adopt inspect`, review the diagnostics, then apply the plan. Managed input must use a clone target |
-| Adoption plan is expired, unknown, or stale | Its 15-minute plan was consumed or expired, or a pinned source/target changed | Run `adopt inspect` again. No stale plan is written |
-| Conversion refuses the source | The key is absent, is not a live registered jigsaw, has an incomplete graph, or the add-only target is occupied | Keep it native, choose a valid registered jigsaw, repair its source datapack, or choose a new target. Use `/iris structure import` for non-jigsaw templates |
-| Ownership conflict on capture/edit | An owned file changed outside the last committed transaction | Restore the exact owned graph from version control or backup. Studio will not overwrite the mismatch |
-| Close refuses with pending work | An owned workcell is dirty or autosave/graph work is running | Wait for autosave, use **Flush Autosave Now**, or use `discard=true` only when losing pending edits is deliberate |
-| An external plugin edit is not captured | The plugin bypassed Bukkit's covered mutation events | Have the integration call `JigsawStudioService.markDirty(...)` for the affected coordinates, or `markAllDirty(...)` |
-| Autosave has no active/editable variant | The workcell is empty or its loaded variant is read-only | Load an owned variant, or adopt/clone the graph first |
-| Autosave reports Loading, Invalid, or not hydrated | Variant materialization or jigsaw block-entity hydration is incomplete or failed | Wait for completion, reopen or reload the variant, and do not build until the scoreboard reports a stable state |
-| Capacity succeeds but live regeneration reports a failure | The metadata committed, but one repaint or hydration step failed | Close and reopen Studio before editing. The persisted capacity remains authoritative |
-| Autosave says a chunk is not loaded | Part of the capture volume is unloaded | Visit or load the whole workcell, then use **Flush Autosave Now** |
-| Multi-chunk autosave aborts | A chunk unloaded, Studio changed, or marker/tile capture failed | Keep the complete capture volume loaded and fix the reported cause. No graph file is written from a partial capture |
-| Marker capture fails | Marker NBT is incomplete, the final state is invalid, or the server cannot serialize the tile | Fix the named marker field, or use a supported Bukkit build |
-| The chest GUI closes after an action | The accepted operation is asynchronous and the GUI does not live-refresh | Wait for its player message, then right-click the chest again |
-| A named stick stops working | Its request ID belongs to a closed or replaced Studio, or the bound workcell/variant/pool entry changed | Discard the stale stick and take a replacement from the current Toolbox |
-| A queued duplicate cancels | The Studio session or one pinned source variant changed before autosave completed | Reopen the controls, confirm the intended source variants, and request the duplicate again |
-| Another player cannot edit or run a mutating command | The active Jigsaw Studio belongs to its owner | Have the owner do the work or close the Studio |
-| Evaluation is `STALE` | A workcell edit is waiting for autosave | Wait for capture. Evaluation reruns from the new committed graph automatically |
-| Evaluation is `INVALID` | Compilation or the seed-`1337` assembly failed | Fix the displayed first diagnostic. Wrong pool, name, or facing, impossible rules, or an uncappable required fallback are the common causes |
-| Permanent preview is empty | Evaluation is pending or invalid, or seed `1337` intentionally produced no structure | Read the evaluation detail. Fix invalid data, or change chance/start rules if an empty result was not intended |
-| Project deletion is blocked | Another JSON resource or ownership manifest still references a resource owned by the project | Remove or repoint the reported external reference, let autosave finish, then inspect deletion again |
-| Studio closes but project deletion fails | The project could not be removed | The project files remain on disk. Reopen or back them up before retrying |
-| Transaction reports cleanup required | The authored graph committed but staging cleanup failed | Preserve console output and remove or recover only the named transaction with operator care. Do not re-author blindly |
-| Export is rejected | At least one strict portability blocker remains | Fix each reported diagnostic. Iris runtime success does not prove vanilla fidelity |
-| Export output name is rejected | The value is not one direct safe artifact name | Remove whitespace, separators, traversal, and unsupported characters, and keep the name within 128 characters |

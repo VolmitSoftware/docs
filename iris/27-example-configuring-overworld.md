@@ -2,12 +2,12 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A guided build on the built-in `overworld` pack: fork it, add one visible biome, prove the biome in Studio and in a disposable world, and leave the original pack untouched. It exercises references, hotload, immutable world epochs, and rollback. It does not touch height or registries.
+Copy the built-in `overworld` pack, add a meadow biome, and create a world from your edited pack.
 
 Related:
 
@@ -23,7 +23,7 @@ Related:
 - [23c - Markers](/iris/23c-markers)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [44 - Biome Catalog](/iris/44-biome-catalog)
-- [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
 - [25 - Pack Management](/iris/25-pack-management)
 - [04 - Commands & Permissions](/iris/04-commands-permissions)
 - [02 - Getting Started](/iris/02-getting-started)
@@ -126,35 +126,21 @@ These are field excerpts. Merge them into the existing files; do not replace eit
 
 **A biome file that no region lists never generates, and nothing warns you about it.** `regions/temperate.json` already carries 28 land biomes, so a new one would be rare enough to be annoying to find — the two focus fields force the entire world to that region and biome so you can confirm the biome is correct before worrying about selection frequency.
 
-If validation cannot resolve the biome, compare `tutorial/meadow` against the actual path and the region entry character for character. The folder prefix is part of the key.
-
-## 4. Prove the authoring result
+## 4. Preview the biome
 
 Generate untouched Studio chunks and run `/iris what region` and `/iris what biome`. Expect region `Temperate`, biome `Tutorial Meadow`, a grass-over-dirt surface, terrain visibly higher than the surrounding bundled plains, wildflower decoration, and no missing-key errors.
 
-If terrain is empty, confirm `generators/plain.json` still exists in the fork. If flowers are missing, confirm `snippet/decorator/wildflowers.json` exists and remove the decorator reference until the terrain baseline passes. One variable at a time.
+## 5. Create a world
 
-## 5. Prove natural selection and restart behavior
+1. Remove `focus` and `focusRegion` from the dimension.
+2. Close Studio.
+3. Create: Bukkit `/iris create name=overworld-test type=my-overworld seed=1337`, modded `/iris create overworld-test my-overworld 1337`.
+4. Teleport: Bukkit `/iris tp overworld-test`, modded `/iris tp irisworldgen:overworld-test`.
+5. Locate the biome with `/iris find biome tutorial/meadow`.
 
-1. Remove `focus` and `focusRegion`. Close Studio. Reopen on seed `1337`.
-2. Locate the biome naturally: `/iris find biome tutorial/meadow` (`/iris goto biome <key>` is the same command on modded).
-3. Create a disposable world: Bukkit `/iris create name=overworld-test type=my-overworld seed=1337`, modded `/iris create overworld-test my-overworld 1337`.
-4. Teleport: Bukkit `/iris tp overworld-test`, modded `/iris tp irisworldgen:overworld-test`. Folia creates the world in the current process, so it is available immediately.
-5. Generate new chunks. Stop the server cleanly. Restart. Verify another new area.
+## 6. Package the pack
 
-Focus mode proves the biome renders; only unfocused generation proves it is reachable through region selection. The disposable world proves the immutable epoch works outside Studio, and the restart proves the generated dimension type and custom biomes survive a registry reload.
-
-## 6. Package or recover
-
-Package with Bukkit `/iris pack package dimension=my-overworld` or modded `/iris studio package my-overworld`. The validated fork under `packs/` is the authoring source; the `.iris` export and each immutable world epoch are outputs.
-
-| Failure | Recovery |
-|---------|----------|
-| Fork creation fails or is partial | Move only the newly created incomplete `my-overworld` folder aside, confirm the source pack validates, then rerun |
-| Studio still shows old content | Generate untouched chunks. Close and reopen after a dimension-contract or registry change |
-| Natural selection cannot find the biome | Confirm it is still in `regions/temperate.json`, that both focus fields are gone, and sample a broader new area |
-| Disposable world differs from Studio | Check which pack version the world uses. Recreate the disposable world from the current validated fork |
-| A production update would change seed, height, environment, or dimension type | Create a new world and migrate deliberately |
+Export with Bukkit `/iris pack package dimension=my-overworld` or modded `/iris studio package my-overworld`. The `.iris` export can be distributed while the authoring files remain in `packs/my-overworld/`.
 
 ## What the bundled dimension actually sets
 
@@ -208,24 +194,7 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 
 `generators/plain.json` is the height source both that biome and your meadow use: a single `IRIS_DOUBLE` composite layer behind a `BILINEAR_STARCAST_9` interpolator at horizontal scale 12.
 
-## Editing safely
-
-### Author in Studio, on a fork
-
-1. Confirm `overworld` exists under `packs/overworld/`.
-2. Fork it: `/iris studio create name=my-overworld template=overworld`.
-3. Open Studio: `/iris studio open my-overworld seed=1337`.
-4. Edit under `packs/my-overworld/` with the generated VSCode workspace and schemas ([10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)).
-5. Save. Hotload picks the change up. Generate new chunks to see it. Existing blocks are never rewritten.
-6. Isolate with `"focus": "temperate/plains"` or `"focusRegion": "temperate"` while testing. Remove both afterwards.
-7. Make one small change at a time. Nudge `biomes/temperate/plains.json` generator `min`/`max` by a few blocks. Validate. Compare the same seed in fresh chunks.
-8. Close Studio. Create a disposable world from the fork. Restart-test it before touching anything real.
-
-### Do not edit world epochs
-
-Files below `<dimensionRoot>/iris/generation/` are immutable runtime state. **Never edit or replace them.** Author under `packs/`, validate there, and stage an activation.
-
-## Practical recipes
+## Edit terrain and content
 
 ### Change sea level
 
@@ -253,7 +222,7 @@ Mode `FALLBACK` only supplies tables when the object itself declared none. `ADD`
 
 ### Decorators via snippets
 
-Reuse `snippet/decorator/*` and `snippet/style/*` by string reference as in [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets). Existing examples: `biomes/vanilla/old_growth_birch_forest.json` and the dimension ore `chanceStyle` fields.
+Reuse `snippet/decorator/*` and `snippet/style/*` by string reference as in [24 - Snippets](/iris/24-pack-mods-snippets). Existing examples: `biomes/vanilla/old_growth_birch_forest.json` and the dimension ore `chanceStyle` fields.
 
 ### Entities and spawners
 
@@ -267,7 +236,7 @@ World creation records the first pack epoch. Changing `packs/` does **not** upda
 /iris dev update-world world=<world> pack=my-overworld confirm=true
 ```
 
-Without `confirm=true` it prints the warning and does nothing. It adds a content-addressed immutable epoch and pending activation, never overwriting an epoch that owns chunks, and requests a restart. Already generated chunks keep their old activation; new chunks blend to the new pack. **Back up the complete dimension root, including `iris/generation/`, first.**
+Without `confirm=true` it prints the warning and does nothing. The selected pack takes effect after a restart. Existing chunks keep their blocks, and new chunks use the updated pack. **Back up the complete dimension root, including `iris/generation/`, first.**
 
 On Fabric, Forge, and NeoForge use `/iris world update <dimension> my-overworld`, which stages the same transition and keeps the current runtime active until restart.
 

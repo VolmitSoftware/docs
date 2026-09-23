@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -87,7 +87,7 @@ Set `surfaceDetail: 0.5` on a generator to halve its deviation from a surface in
 
 The original grid heights and planar slopes remain exact. This control leaves the generator seed, feature scale, biome height range, and 3D density settings intact. Both built-in packs apply `0.5` to nonflat terrain generators.
 
-## Walkthrough: add a generator and prove it is wired
+## Walkthrough: add a generator
 
 Prerequisites: a validating pack, one biome you can `focus`, and a fixed seed.
 
@@ -111,7 +111,7 @@ Prerequisites: a validating pack, one biome you can `focus`, and a fixed seed.
 
 3. Validate. Open Studio on seed `1337`. Fly into new chunks.
 
-Observable result: a dead-flat surface at exactly 48 blocks above `fluidHeight`. `FLAT` returns 1.0 for every coordinate, so the link maps to `max`. Seeing 48 and not 16 or 32 proves the file path, the biome link and the band are all live.
+Observable result: a dead-flat surface at exactly 48 blocks above `fluidHeight`. `FLAT` returns 1.0 for every coordinate, so the link maps to `max`.
 
 4. Change only `style.style` from `FLAT` to `IRIS`. Then generate a fresh area. Keep the seeds and the band fixed so any change in relief is attributable to the style.
 
@@ -119,11 +119,7 @@ Observable result: rolling terrain filling the whole 16-48 band.
 
 5. Tune the generator `zoom` for feature size. Higher `zoom` divides the sample coordinates, so features get wider and smoother. Lower `zoom` packs more detail into the same space. Do not change the band in the same comparison.
 6. Add a second biome using the same generator with a different band. Look at the border. Only after both biomes look right on their own should you tune `interpolator.horizontalScale`.
-7. Add composite layers, `fracture`, expressions or image maps one at a time. Re-check chunk generation time after any nested fracture.
-
-The tutorial passes when seed `1337` reproduces the same terrain after a Studio restart. Borders must blend the way you intended. Validation must resolve every generator, expression and image key.
-
-If it is still flat after switching to `IRIS`, the biome is not actually using this generator. Check the key. If terrain drops to void, restore the baseline above and read validation output before you change noise values again.
+7. Add composite layers, `fracture`, expressions or image maps one at a time.
 
 ## Walkthrough: make the mountains taller
 
@@ -177,7 +173,7 @@ Prefer the first when only one biome needs to be flat. Prefer the second when yo
 
 Available methods: `NONE`, `BILINEAR`, `STARCAST_3/6/9/12`, `BILINEAR_STARCAST_3/6/9/12`, `HERMITE_STARCAST_3/6/9/12`, `BILINEAR_BEZIER`, `BILINEAR_PARAMETRIC_1_5/2/4`, `BICUBIC`, `HERMITE`, `CATMULL_ROM_SPLINE`, `HERMITE_TENSE`, `HERMITE_LOOSE`, and the four `HERMITE_LOOSE_HALF/FULL_POSITIVE/NEGATIVE_BIAS` variants.
 
-The bundled overworld uses `BILINEAR_STARCAST_9` almost everywhere and varies `horizontalScale` from 6 to 200. Higher starcast numbers cost more per column. `NONE` with scale `1` is the cheapest and gives hard borders, which is what `generators/flat.json` wants.
+The bundled overworld uses `BILINEAR_STARCAST_9` almost everywhere and varies `horizontalScale` from 6 to 200. `NONE` with scale `1` gives hard borders.
 
 ### Noise layer
 
@@ -198,7 +194,7 @@ Available as the `generator` snippet.
 | `parametric` | boolean | `false` | Symmetric S-curve remap with exponent 2. Preserves 0, 0.5, and 1; maps 0.25 to 0.1 and 0.75 to 0.9. |
 | `bezier` | boolean | `false` | Softer S-curve remap. `generators/plain.json` uses it to keep lowlands gentle. |
 | `sinCentered` | boolean | `false` | Maps 0 and 1 to 0 and 0.5 to 1 with a sine shape, turning a gradient into a ridge. |
-| `fracture` | noise-layer array | `[]` | Child layers whose output warps this layer input coordinates, producing the swirled, non-grid look. Children can nest; longer chains increase generation cost. |
+| `fracture` | noise-layer array | `[]` | Child layers whose output warps this layer input coordinates, producing the swirled, non-grid look. Children can nest. |
 
 Remap order inside a layer: sample the style, multiply by `opacity`, apply `negative`, apply `exponent`, add `offsetY`, then `parametric`, `bezier`, `sinCentered` in that order.
 
@@ -538,14 +534,3 @@ Dimensions also use generator styles for content placement. Their behavior belon
 ```
 
 The bundled overworld uses neither `expression` nor `imageMap` in any generator.
-
-## Practical notes
-
-- Share one generator across many biomes and vary `min`/`max` per biome. That is what makes a mountain range and its foothills look like the same landform.
-- Match `interpolator.horizontalScale` between neighboring biomes you want to blend smoothly. Deliberately mismatch it where you want a visible change in character.
-- Give a generator its own `horizontalScale` if you want its shape kept independent. Reuse an existing one only when you want the shapes averaged together.
-- Do not deploy two generator files whose settings are byte-for-byte identical, including `seed`. Generators are deduplicated by content when they are bucketed. Only one key survives. Biomes that reference the other key silently get a zero height band. `/iris pack validate` warns when it finds content-identical generators that are both referenced.
-- Nested `fracture` multiplies cost. Keep fracture chains short on generators that run for every column. Reach for `cacheSize` before you add a third level.
-- `STATIC` is white noise. Use it for palette scatter, never for terrain relief.
-- `multiplicitive` and the deposit field `varience` are intentional code spellings. The JSON must match them exactly.
-- Terrain changes only apply to newly generated chunks. Always compare in fresh territory on a fixed seed.

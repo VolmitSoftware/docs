@@ -2,13 +2,13 @@
 title: "Prismatic Caves"
 description: "Paired atlas entry for the 16 direct prismatic cave roots"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-The Prismatic region selects 16 color-specific cave roots, one slot each, in both Overworld 4009 and Underworld 1011. They share one cave design and differ primarily in their color material set, so this family page documents all 16 without hiding any direct key.
+The Prismatic region selects 16 color-specific cave roots, one slot each, in both Overworld and Underworld. They share one cave design and differ primarily in their color material set, so this family page documents all 16 without hiding any direct key.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 

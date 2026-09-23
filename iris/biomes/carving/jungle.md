@@ -2,13 +2,13 @@
 title: "Jungle Cavern — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/jungle"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/jungle` is a direct cave root in the current Overworld and Underworld pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/jungle` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -20,8 +20,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld source | `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
-| Underworld source | `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Overworld | `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Underworld | `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -31,11 +31,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..700`; sample step `2`; surface clearance `5`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `8`.
 
-## Overworld source treatment
+## Overworld treatment
 
 Derivative `minecraft:lush_caves`; vanilla derivative `minecraft:lush_caves`. Primary cave palette: `minecraft:grass_block`, `minecraft:jungle_wood`, `minecraft:stripped_jungle_wood`, `minecraft:rooted_dirt`, `minecraft:coarse_dirt`. Decorator blocks: `minecraft:big_dripleaf`, `minecraft:cave_vines`, `minecraft:jungle_sapling`, `minecraft:tall_grass`, `minecraft:fern`, `minecraft:short_grass`, `minecraft:azalea`, `minecraft:flowering_azalea`, and 4 more. Object set: `clutter/jungleclutt11`, `clutter/jungleclutt12`, `clutter/jungleclutt13`, `clutter/jungleclutt4`, `trees/jungle/mgeneric1`, `trees/jungle/mgeneric2`, `trees/jungle/mgeneric3`, `trees/jungle/mgeneric4`, and 16 more.
 
-## Underworld source treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:soul_soil`, `minecraft:warped_hyphae`, `minecraft:stripped_warped_hyphae`. Decorator blocks: `minecraft:nether_sprouts`, `minecraft:twisting_vines`, `minecraft:warped_fungus`, `minecraft:soul_fire`, `minecraft:warped_wart_block`, `minecraft:warped_hyphae`, `minecraft:shroomlight`. Object set: `underworld/soul/clutter/jungleclutt11`, `underworld/soul/clutter/jungleclutt12`, `underworld/soul/clutter/jungleclutt13`, `underworld/soul/clutter/jungleclutt4`, `underworld/soul/trees/jungle/mgeneric1`, `underworld/soul/trees/jungle/mgeneric2`, `underworld/soul/trees/jungle/mgeneric3`, `underworld/soul/trees/jungle/mgeneric4`, and 16 more. Custom registered biome id: `underworld_carving_jungle_4c175ea7`.
 

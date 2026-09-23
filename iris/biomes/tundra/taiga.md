@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Tundra Taiga"
-description: "Iris biome atlas entry for tundra/taiga in Overworld 4011 and Underworld 1013"
+description: "Iris biome atlas entry for tundra/taiga in Overworld and Underworld"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`tundra/taiga` is a directly selected land biome in the current Overworld 4011 and Underworld 1013 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`tundra/taiga` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4011 | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
-| Underworld 1013 | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
+| Overworld | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
+| Underworld | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `plain` (34..42); combined authored contribution `34..42` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4011 and Underworld 1013 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -41,13 +41,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4011 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:old_growth_spruce_taiga`; native-structure derivative `minecraft:taiga`; custom identities `tundra_taiga`.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 6 object placement rule(s) drawing from 35 object key(s), including `clutter/grave1`, `clutter/stoneclutt1`, `clutter/stoneclutt2`, `clutter/stoneclutt3`, `clutter/stoneclutt4`, `clutter/stoneclutt5`, `clutter/stoneclutt6`, and 28 more. 7 decorator rule(s) using `minecraft:white_tulip`, `minecraft:blue_orchid`, `minecraft:short_grass`, `minecraft:poppy`, `minecraft:sweet_berry_bush`, `minecraft:wither_rose`, `minecraft:oxeye_daisy`, `minecraft:pink_tulip`, `minecraft:large_fern`, and 2 more.
 
-## Underworld 1013 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_tundra_taiga_f3883e8a`.
 - **Surface:** 1 block(s): `minecraft:soul_soil`; 2-4 block(s): `minecraft:soul_soil`; 6-18 block(s): `minecraft:basalt`. Wall palette: `minecraft:basalt`.
@@ -60,7 +60,7 @@ Underworld keeps the terrain links but uses its Nether derivative, materials, ob
 
 ### Russet Poplar Woods
 
-`tundra/russet-poplar-woods` is a complete child biome introduced in Overworld 4011 and Underworld 1013. Its Underworld display name is **Sallow Hyphae Woods**. The existing `tundra/taiga` region memberships make it naturally reachable.
+`tundra/russet-poplar-woods` is a complete child biome introduced in Overworld and Underworld. Its Underworld display name is **Sallow Hyphae Woods**. The existing `tundra/taiga` region memberships make it naturally reachable.
 
 Its rarity is `3`. In the immediate parent selection it receives `1` of `4` slots (25.00%). Both packs retain the same child-list order and use a shrink factor of `2.4`. These weights describe selection slots, not a guaranteed percentage of terrain area.
 

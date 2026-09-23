@@ -2,13 +2,13 @@
 title: "Ice Cavern — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/ice-ravine"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/ice-ravine` is a direct cave root in the current Overworld 4009 and Underworld 1011 pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/ice-ravine` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -20,8 +20,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld 4009 | `frozen` (1/5 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
-| Underworld 1011 | `frozen` (1/5 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
+| Overworld | `frozen` (1/5 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
+| Underworld | `frozen` (1/5 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -31,13 +31,13 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..620`; sample step `2`; surface clearance `7`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `10`.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 The Overworld cave adds `snippet/procedural-objects/frozen/magical-ice-cave`; Underworld pairs the same role with `snippet/procedural-objects/frozen/magical-soul-cave`.
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:ice`, `minecraft:packed_ice`, `minecraft:blue_ice`, `minecraft:blackstone`. Decorator blocks: `minecraft:cornflower`, `minecraft:ice`, `minecraft:packed_ice`. Object set: `clutter/rock1`, `clutter/rock2`, `clutter/rock3`, `clutter/rock4`, `clutter/boulder1`, `clutter/boulder2`, `clutter/boulder3`, `clutter/boulder4`.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:soul_soil`, `minecraft:blackstone`. Decorator blocks: `minecraft:soul_fire`, `minecraft:soul_soil`. Object set: `underworld/soul/clutter/rock1`, `underworld/soul/clutter/rock2`, `underworld/soul/clutter/rock3`, `underworld/soul/clutter/rock4`, `underworld/soul/clutter/boulder1`, `underworld/soul/clutter/boulder2`, `underworld/soul/clutter/boulder3`, `underworld/soul/clutter/boulder4`. Custom registered biome id: `underworld_carving_ice_ravine_30a5be0c`.
 

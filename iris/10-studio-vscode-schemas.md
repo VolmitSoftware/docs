@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-22T05:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ Prerequisites: a writable packs directory, operator access on Bukkit or gamemast
    You enter the transient world in spectator mode at its fixed generator anchor, centered on `0,0` near Y 96. A fixed seed matters because you will be comparing the same coordinates across reloads.
 3. **Open the editor workspace.** `/iris studio vscode dimension=tutorial`
    Refreshes `<pack>/<pack>.code-workspace`, rewrites `.iris/schema/*`, and opens that workspace. Generation still completes when `studio.openVSCode` is false or the server is headless; only the desktop launch is skipped. Copy the pack folder to your machine and open the workspace file yourself.
-   *Success condition:* typing `"` inside any object in `biomes/starter.json` offers field names, and hovering a field shows its description, type, and default value. If it does not, run `/iris studio update dimension=tutorial`.
+   Type `"` inside an object in `biomes/starter.json` for field suggestions. Hover a field for its description, type, and default.
 4. **Make one change.** Edit `packs/tutorial/biomes/starter.json` and change only its display `name`. Save once.
 5. **Wait for the hotload result** before another save. A successful Bukkit hotload sends the amethyst-block break sound and an `Engine Hotloaded` action bar to players in the Studio world. Rejected edits leave the previous generation active.
 6. **Verify in fresh terrain.** Enter ungenerated chunks beyond the transition band and run `/iris what biome`.
@@ -48,8 +48,6 @@ Validate your changes and inspect new chunks before using the pack in a producti
 Complete any requested server restart and resolve blocking pack-validation errors before opening Studio. Bukkit ordinary Studio accepts `force=true` when only a registry restart is pending; it does not bypass pack validation or native-integration failures.
 
 Changes to height or dimension type require closing and reopening Studio, and may require a restart. See [Hotload rules](/iris/10-studio-vscode-schemas#hotload-rules). Studio worlds are temporary: reopening after a restart creates a new world from the saved pack.
-
-Studio opening reuses validation for unchanged packs and automatically checks changed content or validation settings before generation. It prepares the entry area’s hydrology before generating its terrain, then takes you into the world. On Bukkit, opening automatically uses multicore generation during world setup. Matching saved plans are reused automatically, including after a server restart. Normal Studio and production worlds can share plans when the pack, seed, generator, and relevant world settings match; biome-buffet layouts remain separate.
 
 ## What Studio is
 
@@ -99,7 +97,6 @@ Root: `/iris studio`, aliases `std` and `s`. Keyed arguments. The first column s
 | `map [world=<world>]` | `render` | Opens the external biome/terrain map GUI for an Iris world |
 | `regions [radius=500]` | | Samples region rarity over a chunk spiral. Player must be in an Iris world |
 | `loot [fast=false] [add=true]` | | Opens a virtual chest showing loot tables for the block under the player |
-| `profile [dimension=default]` | | Writes a pack performance profile report |
 | `spawn` | `summon` | Spawns a pack entity definition at the player |
 | `tpstudio` | `stp` | Teleports you to the fixed Studio entry anchor |
 | `objects` | `find-objects` | Captures a nearby-chunk object placement report |
@@ -231,7 +228,7 @@ Use `/iris jigsaw open` or `/iris jigsaw create` for Jigsaw Studio.
 
 Use `/iris jigsaw` to edit a structure graph with a control GUI and autosave. Close and reopen it to apply external pack edits. Only the session owner can edit the active Jigsaw Studio world.
 
-The whole workflow, commands, marker rules, portability blockers, and recovery steps are in [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The JSON is in [21b - Jigsaw Resources](/iris/21b-jigsaw-resources).
+The workflow, commands, and marker rules are in [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The JSON is in [21b - Jigsaw Resources](/iris/21b-jigsaw-resources).
 
 ## Platform notes
 

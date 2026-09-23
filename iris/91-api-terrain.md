@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,7 @@ Keys are stable pack IDs suitable for storage. Names are display text and may ch
 
 ## Surface biome metadata
 
-`surfaceBiomeInfo(world, x, z)` returns one immutable snapshot from a single history-aware surface environment. `IrisBiomeInfo` contains `key`, `name`, `regionKey`, `regionName`, `derivativeKey`, `vanillaDerivativeKey`, `type`, and `customDerivatives`. The type is lowercase `land`, `sea`, `shore`, or `cave`, or an empty string when unclassified. Saved biome records do not preserve this inferred category, so retained definitions can report an empty type.
+`surfaceBiomeInfo(world, x, z)` returns an immutable snapshot of the surface biome. `IrisBiomeInfo` contains `key`, `name`, `regionKey`, `regionName`, `derivativeKey`, `vanillaDerivativeKey`, `type`, and `customDerivatives`. The type is lowercase `land`, `sea`, `shore`, or `cave`, or an empty string when unclassified. Saved biome records do not preserve this inferred category, so retained definitions can report an empty type.
 
 Each `IrisCustomBiomeInfo` entry contains the authored `customDerivitives[].id` and its namespaced `registryKey`. The list preserves definition order and is immutable. It is empty for a biome without custom derivatives. These are all configured derivatives, not the randomly selected physical biome at an exact Y.
 
@@ -87,13 +87,11 @@ Columns inside an accepted river footprint carry the river plan as well as the t
 
 For biome [`terrain3D`](/iris/47-volumetric-terrain), natural-height queries return the highest solid block after volumetric shaping. `surfaceHeight` remains a single height per column. It does not enumerate lower ledges. River-owned columns report the accepted bed. Biome queries within a natural overhang gap and at its exposed floors retain the surface biome. A lower Y alone does not select a cave biome.
 
-Engine terrain-column queries expose the shaped solid spans in internal Y. Solidity and carving queries include their open gaps. Object-placement transactions use the same density openings in prerequisite carving queries, with saved geometry and hydrology overrides retaining precedence. Additional stacked, inverted or floating terrain supplies its own support volume. Generation-history records remain authoritative for saved terrain.
-
 ## River policy resolution
 
 `RiverPolicyResolver.resolveWithStatus(dimension, region, biome)` returns the inherited policy and a `complete` flag. The flag is false if a declared river-biome reference returns null during that resolution. Filtering and inheritance match `resolve(...)`.
 
-`IrisRiverPolicy.compatBiomes(declared, data, field, onUnresolvedReference)` calls the callback for each reference that the loader cannot resolve. The three-argument overload keeps its existing filtering behavior.
+`IrisRiverPolicy.compatBiomes(declared, data, field, onUnresolvedReference)` calls the callback for each reference that the loader cannot resolve.
 
 ## Engine biome previews
 
@@ -106,25 +104,3 @@ Engine terrain-column queries expose the shaped solid spans in internal Y. Solid
 `Engine.getObjectsAt(chunkX, chunkZ)` returns object keys recorded for a sealed chunk. `Engine.getPOIsAt(chunkX, chunkZ)` returns recorded POI keys and positions. These reads do not open an archived runtime or require its pack. A sealed empty record returns an empty set.
 
 POI positions use world X/Z and internal Y. Add the dimension minimum height to internal Y when converting to an absolute world height. The current mantle fallback uses the same coordinates for chunks without sealed records.
-
-Recorded cave facts include only cells that remain open after terrain reconciliation. These are generation facts, not a live inventory of player edits. Terrain placement queries in the transition band use resolved natural geometry. Speculative queries do not record generated ownership or native terrain capsules.
-
-## Engine terrain journals
-
-`TerrainMatterView.getComposedCavern(chunk, x, y, z)` reads cave intent under one chunk lock, using internal Y and chunk-local X/Z coordinates. It honors captured original values from object placement; non-null hydrology overrides the baseline cavern, including a seal guard that returns `null`. Missing chunks, sections, and out-of-range Y return `null`.
-
-## Engine mantle cleanup
-
-`EngineMantle.cleanupChunk(x, z)` and `forceCleanupChunk(x, z)` validate coverage before removing temporary slices. `cleanupChunksCoveredBy(x, z, force, callback)` visits candidates affected by a completed chunk and calls back only for newly cleaned chunks. Coordinates are chunk coordinates.
-
-`cleanupCoveredChunk(x, z, force)` requires the caller to have already verified the complete coverage halo. It performs the atomic cleaned-flag and slice update without checking coverage itself. Prefer the coverage-checking methods for ordinary callers. Retained mantle slices survive both normal and forced cleanup.
-
-## Hydrology core sampling
-
-`HydrologyRoutingTerrainSampler.supportsSharedGridSamples()` defaults to `false`. Return `true` only when matching coordinates and spacing produce identical terrain samples across grid requests, including grid edges. This permits reuse of neighboring grid samples during source selection.
-
-Custom `HydrologyNaturalTerrainSampler` implementations can override `sampleLandHeight(x, z)` to return the same natural land height as `sampleBasisWithoutSlope(x, z)` without constructing a full terrain sample. Return `Double.NaN` for ocean or unavailable terrain. The default implementation delegates to the basis sampler.
-
-`HydrologyCavePlan.estimatedRetainedBytes()` returns a conservative byte estimate for its compact storage and spatial index. Use it for cache weighting; it is not a JVM heap measurement.
-
-For repeated surface windows of one course, call `SurfaceFootprintCompiler.prepare(course)` once and pass the returned `PreparedCourse` to `compile(prepared, bounds)`. Reuse it sequentially with the same compiler instance.

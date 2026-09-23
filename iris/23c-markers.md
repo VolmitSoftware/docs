@@ -2,7 +2,7 @@
 title: "Markers"
 description: "Iris documentation: Markers"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -34,7 +34,7 @@ On an object placement's `markers[]`:
 |-------|------|---------|--------------|
 | `mark` | `IrisBlockData[]` | required | Block types to tag. Candidate blocks are shuffled, so which matching blocks get tagged varies by placement |
 | `marker` | string | required | The marker key to attach |
-| `maximumMarkers` | int 1..16 | `8` | Cap for this entry across all its `mark` types. Keep it low — each marker is a per-block write and a per-chunk scan cost |
+| `maximumMarkers` | int 1..16 | `8` | Cap for this entry across all its `mark` types |
 | `exact` | boolean | `false` | Match the full block state instead of just the material |
 
 ```json

@@ -1,17 +1,17 @@
 ---
-title: "Underworld 1011"
+title: "Underworld"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-09-16T03:10:02.513Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Underworld 1011 reuses the Overworld terrain graph at the same seed and coordinates, then replaces its presentation and ecology with Nether-safe content. It is an open, full-height world rather than a vanilla enclosed Nether, so its biome names describe recognizable terrain families rendered through a Nether material language.
+Underworld reuses the Overworld terrain graph at the same seed and coordinates, then replaces its presentation and ecology with Nether-safe content. It is an open, full-height world rather than a vanilla enclosed Nether, so its biome names describe recognizable terrain families rendered through a Nether material language.
 
 | Property | Current value |
 |---|---|
-| Built-in pack | Underworld 1011 |
+| Built-in pack | Underworld |
 | Environment | `NETHER` |
 | Terrain mode | `OVERWORLD` |
 | Coordinate scale | 1:1 with the paired Overworld seed |
@@ -25,16 +25,13 @@ Underworld 1011 reuses the Overworld terrain graph at the same seed and coordina
 | Dimension ores / deposits | 11 independent ore definitions and 12 deposit passes |
 | External datapacks | None |
 
-The preceding Underworld 1009 update normalized 148 resource paths and 273 references to lowercase. Lower Mountain uses `mountain/cute_cliffs`, and Mountain Middle uses `mountain/cute_cliffs+`. Underworld shares the paired 3D profiles and terrain selection. Materials, ecology, and the independent ore and deposit tables remain unchanged.
-
-Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain profiles retain their settings.
+Both packs use `surfaceDetail: 0.5` on nonflat terrain generators to smooth small surface variations.
 
 ## 3D terrain
 
 The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes retain their current terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
-
 
 Underworld mirrors the paired regional-river and three-dimensional-bank settings, with both disabled. River excavation limits match Overworld, and river shores use two layers of blackstone in place of sand.
 
@@ -54,6 +51,6 @@ Underworld does not copy Overworld ores, deposits, native structures, palettes, 
 
 Frozen surface decorations use compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Soul forms use soul soil and bone. Blackstone forms use blackstone and crying obsidian. Frozen cave rocks and Jungle cave trees use `scale.size: 0.375`. The tree placements in Jungle, Lush, Moss Pillars, and Swamp caves use `density: 2`, as do Mushroom cave fungi placements.
 
-The active biome keys, region display names, selector lists, and rarity weights match Overworld. Region name length contributes to shoreline noise. The shared names keep shore heights aligned at the same seed and coordinates. Estranged now uses the same shore heights, shore scale, and shore list. Coastal river geometry and Hot and Magnetics lava pools also match.
+The active biome keys, region display names, selector lists, and rarity weights match Overworld. Estranged uses the same shore heights, shore scale, and shore list. Coastal river geometry and Hot and Magnetics lava pools also match.
 
-Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Overworld 4009](/iris/biomes/overworld).
+Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Overworld](/iris/biomes/overworld).

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Lush Plains"
-description: "Iris biome atlas entry for temperate/lush-plains in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for temperate/lush-plains in Overworld and Underworld"
 published: true
-date: 2026-09-14T12:37:03.133Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`temperate/lush-plains` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`temperate/lush-plains` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
-| Underworld 1010 | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
+| Overworld | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
+| Underworld | `temperate` (Temperate) | 1 | 2 | 0.5 | 3.07% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `plain` (4..7); combined authored contribution `4..7` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -45,15 +45,15 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - `temperate/overflowed`: Flooded terrain retains its current floor and water.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:flower_forest`; native-structure derivative `minecraft:flower_forest`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 4 object placement rule(s) drawing from 53 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 46 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:allium`, `minecraft:pink_tulip`, and 9 more.
 
-Wildflower placement chance is `0.01` (1%) in the Overworld root and yellow child, reduced from `0.025` (2.5%). Both use `snippet/decorator/wildflowers-lush-plains`; flower amounts and facing choices are unchanged. The shared wildflower snippet and Underworld decorators keep their own settings.
+Wildflower placement chance is `0.01` (1%) in the Overworld root and yellow child. Both use `snippet/decorator/wildflowers-lush-plains`.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:nether_wastes`; native-structure derivative `minecraft:nether_wastes`; custom identities `underworld_temperate_lush_plains_9430edfe`.
 - **Surface:** 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`.
@@ -71,8 +71,8 @@ In that immediate child choice it contributes `1` of `6` slots (16.67%); later c
 
 **Shared terrain:** `plain` (4..7); combined authored contribution `4..7` blocks relative to fluid height.
 
-- **Overworld 4007:** `minecraft:flower_forest` identity; surface 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`; 4 object placement rule(s) drawing from 53 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 46 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:sunflower`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:oak_leaves`.
-- **Underworld 1010:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`; 4 object placement rule(s) drawing from 53 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/clutter/camp3`, `underworld/wastes/clutter/camp4`, `underworld/wastes/clutter/camp5`, `underworld/wastes/clutter/camp2`, `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, and 46 more. 7 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:fire`, `minecraft:nether_wart_block`.
+- **Overworld:** `minecraft:flower_forest` identity; surface 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`; 4 object placement rule(s) drawing from 53 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 46 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:sunflower`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:oak_leaves`.
+- **Underworld:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`; 4 object placement rule(s) drawing from 53 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/clutter/camp3`, `underworld/wastes/clutter/camp4`, `underworld/wastes/clutter/camp5`, `underworld/wastes/clutter/camp2`, `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, and 46 more. 7 decorator rule(s) (3 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:fire`, `minecraft:nether_wart_block`.
 
 ### Lush Plains Red (`temperate/lush-plains-red`)
 
@@ -81,8 +81,8 @@ In that immediate child choice it contributes `1` of `6` slots (16.67%); later c
 
 **Shared terrain:** `plain` (4..7); combined authored contribution `4..7` blocks relative to fluid height.
 
-- **Overworld 4007:** `minecraft:flower_forest` identity; surface 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`; 4 object placement rule(s) drawing from 53 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 46 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:rose_bush`, `minecraft:poppy`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:oak_leaves`.
-- **Underworld 1010:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`; 4 object placement rule(s) drawing from 53 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/clutter/camp3`, `underworld/wastes/clutter/camp4`, `underworld/wastes/clutter/camp5`, `underworld/wastes/clutter/camp2`, `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, and 46 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`, `minecraft:nether_wart_block`.
+- **Overworld:** `minecraft:flower_forest` identity; surface 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`; 4 object placement rule(s) drawing from 53 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 46 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:rose_bush`, `minecraft:poppy`, `minecraft:tall_grass`, `minecraft:short_grass`, `minecraft:fern`, `minecraft:oak_leaves`.
+- **Underworld:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`; 4 object placement rule(s) drawing from 53 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/clutter/camp3`, `underworld/wastes/clutter/camp4`, `underworld/wastes/clutter/camp5`, `underworld/wastes/clutter/camp2`, `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, and 46 more. 6 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`, `minecraft:nether_wart_block`.
 
 ### Overflowed (`temperate/overflowed`)
 
@@ -91,8 +91,8 @@ In that immediate child choice it contributes `2` of `6` slots (33.33%); later c
 
 **Shared terrain:** `mountain` (-10..-5); combined authored contribution `-10..-5` blocks relative to fluid height.
 
-- **Overworld 4007:** `minecraft:plains` identity; surface 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`; 7 object placement rule(s) drawing from 47 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 40 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 5 more.
-- **Underworld 1010:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`; 7 object placement rule(s) drawing from 47 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/clutter/camp3`, `underworld/wastes/clutter/camp4`, `underworld/wastes/clutter/camp5`, `underworld/wastes/clutter/camp2`, `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, and 40 more. 5 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
+- **Overworld:** `minecraft:plains` identity; surface 1 block(s): `minecraft:grass_block`; 2 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:dirt`, `minecraft:stone`; 7 object placement rule(s) drawing from 47 object key(s), including `clutter/camp1`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/camp2`, `trees/oak/hoakgeneric3`, `trees/oak/hoakgeneric4`, and 40 more. 4 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, `minecraft:white_tulip`, `minecraft:pink_tulip`, and 5 more.
+- **Underworld:** `minecraft:nether_wastes` identity; surface 1 block(s): `minecraft:netherrack`; 2 block(s): `minecraft:netherrack`; 1-3 block(s): `minecraft:netherrack`; 6-18 block(s): `minecraft:netherrack`; 7 object placement rule(s) drawing from 47 object key(s), including `underworld/wastes/clutter/camp1`, `underworld/wastes/clutter/camp3`, `underworld/wastes/clutter/camp4`, `underworld/wastes/clutter/camp5`, `underworld/wastes/clutter/camp2`, `underworld/wastes/trees/oak/hoakgeneric3`, `underworld/wastes/trees/oak/hoakgeneric4`, and 40 more. 5 decorator rule(s) (2 shared snippet reference(s)) using `minecraft:crimson_fungus`, `minecraft:nether_sprouts`, `minecraft:fire`.
 
 ## Floating variants
 

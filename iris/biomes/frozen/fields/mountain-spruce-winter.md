@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Mountain Forest"
-description: "Iris biome atlas entry for frozen/fields/mountain-spruce-winter in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for frozen/fields/mountain-spruce-winter in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`frozen/fields/mountain-spruce-winter` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`frozen/fields/mountain-spruce-winter` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
-| Underworld 1010 | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
+| Overworld | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
+| Underworld | `frozen` (Frozen) | 1 | 1 | 1 | 5.69% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `smooth-dunes` (20..30), `mountain` (1..5); combined authored contribution `21..35` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -42,13 +42,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:snowy_plains`; native-structure derivative `minecraft:snowy_plains`; custom identities `winter_mountain_forest1`, `winter_mountain_forest2`, `winter_mountain_forest3`.
 - **Surface:** 1 block(s) at slope 0-3.3: `minecraft:grass_block`, `minecraft:snow_block`; 3 block(s) at slope 0-3: `minecraft:dirt`; 3 block(s) at slope 0-3: `minecraft:dirt`, `minecraft:stone`. Wall palette: `minecraft:stone`, `minecraft:andesite`, `minecraft:gravel`, `minecraft:cyan_terracotta`.
 - **Content:** 5 object placement rule(s) drawing from 39 object key(s), including `clutter/camp1`, `clutter/camp2`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/sbush1`, `clutter/sbush2`, and 32 more. 10 decorator rule(s) using `minecraft:white_tulip`, `minecraft:cornflower`, `minecraft:blue_orchid`, `minecraft:lily_of_the_valley`, `minecraft:sweet_berry_bush`, `minecraft:snow`, `minecraft:stone_button`, `minecraft:tall_grass`, `minecraft:short_grass`, and 3 more.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_frozen_fields_mountain_spruce_winter_709741ec`.
 - **Surface:** 1 block(s) at slope 0-3.3: `minecraft:basalt`, `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`. Wall palette: `minecraft:blackstone`, `minecraft:basalt`, `minecraft:gravel`, `minecraft:warped_nylium`.
@@ -66,8 +66,8 @@ In that immediate child choice it contributes `1` of `2` slots (50.00%); later c
 
 **Shared terrain:** `smooth-dunes` (20..30), `mountain` (1..5); combined authored contribution `21..35` blocks relative to fluid height.
 
-- **Overworld 4007:** `minecraft:snowy_plains` identity; surface 1 block(s) at slope 0-3.3: `minecraft:grass_block`, `minecraft:snow_block`; 3 block(s) at slope 0-3: `minecraft:dirt`; 3 block(s) at slope 0-3: `minecraft:dirt`, `minecraft:stone`; 5 object placement rule(s) drawing from 39 object key(s), including `clutter/camp1`, `clutter/camp2`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/sbush1`, `clutter/sbush2`, and 32 more. 10 decorator rule(s) using `minecraft:white_tulip`, `minecraft:cornflower`, `minecraft:blue_orchid`, `minecraft:lily_of_the_valley`, `minecraft:sweet_berry_bush`, `minecraft:snow`, `minecraft:stone_button`, `minecraft:tall_grass`, `minecraft:short_grass`, and 3 more.
-- **Underworld 1010:** `minecraft:basalt_deltas` identity; surface 1 block(s) at slope 0-3.3: `minecraft:basalt`, `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 5 object placement rule(s) drawing from 39 object key(s), including `underworld/basalt/clutter/camp1`, `underworld/basalt/clutter/camp2`, `underworld/basalt/clutter/camp3`, `underworld/basalt/clutter/camp4`, `underworld/basalt/clutter/camp5`, `underworld/basalt/clutter/sbush1`, `underworld/basalt/clutter/sbush2`, and 32 more. 11 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_sprouts`, `minecraft:blackstone`, `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`, `minecraft:blackstone_slab`.
+- **Overworld:** `minecraft:snowy_plains` identity; surface 1 block(s) at slope 0-3.3: `minecraft:grass_block`, `minecraft:snow_block`; 3 block(s) at slope 0-3: `minecraft:dirt`; 3 block(s) at slope 0-3: `minecraft:dirt`, `minecraft:stone`; 5 object placement rule(s) drawing from 39 object key(s), including `clutter/camp1`, `clutter/camp2`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/sbush1`, `clutter/sbush2`, and 32 more. 10 decorator rule(s) using `minecraft:white_tulip`, `minecraft:cornflower`, `minecraft:blue_orchid`, `minecraft:lily_of_the_valley`, `minecraft:sweet_berry_bush`, `minecraft:snow`, `minecraft:stone_button`, `minecraft:tall_grass`, `minecraft:short_grass`, and 3 more.
+- **Underworld:** `minecraft:basalt_deltas` identity; surface 1 block(s) at slope 0-3.3: `minecraft:basalt`, `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 5 object placement rule(s) drawing from 39 object key(s), including `underworld/basalt/clutter/camp1`, `underworld/basalt/clutter/camp2`, `underworld/basalt/clutter/camp3`, `underworld/basalt/clutter/camp4`, `underworld/basalt/clutter/camp5`, `underworld/basalt/clutter/sbush1`, `underworld/basalt/clutter/sbush2`, and 32 more. 11 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_sprouts`, `minecraft:blackstone`, `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`, `minecraft:blackstone_slab`.
 
 ### Mountain Forest (`frozen/fields/mountain-spruce-frosty-extended`)
 
@@ -76,8 +76,8 @@ In that immediate child choice it contributes `1` of `2` slots (50.00%); later c
 
 **Shared terrain:** `smooth-dunes` (50..70), `mountain` (1..5); combined authored contribution `51..75` blocks relative to fluid height.
 
-- **Overworld 4007:** `minecraft:snowy_plains` identity; surface 1 block(s) at slope 0-3.3: `minecraft:grass_block`, `minecraft:snow_block`; 3 block(s) at slope 0-3: `minecraft:dirt`; 3 block(s) at slope 0-3: `minecraft:dirt`, `minecraft:stone`; 5 object placement rule(s) drawing from 39 object key(s), including `clutter/camp1`, `clutter/camp2`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/sbush1`, `clutter/sbush2`, and 32 more. 10 decorator rule(s) using `minecraft:white_tulip`, `minecraft:cornflower`, `minecraft:blue_orchid`, `minecraft:lily_of_the_valley`, `minecraft:sweet_berry_bush`, `minecraft:snow`, `minecraft:stone_button`, `minecraft:tall_grass`, `minecraft:short_grass`, and 3 more.
-- **Underworld 1010:** `minecraft:basalt_deltas` identity; surface 1 block(s) at slope 0-3.3: `minecraft:basalt`, `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 5 object placement rule(s) drawing from 39 object key(s), including `underworld/basalt/clutter/camp1`, `underworld/basalt/clutter/camp2`, `underworld/basalt/clutter/camp3`, `underworld/basalt/clutter/camp4`, `underworld/basalt/clutter/camp5`, `underworld/basalt/clutter/sbush1`, `underworld/basalt/clutter/sbush2`, and 32 more. 11 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_sprouts`, `minecraft:blackstone`, `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`, `minecraft:blackstone_slab`.
+- **Overworld:** `minecraft:snowy_plains` identity; surface 1 block(s) at slope 0-3.3: `minecraft:grass_block`, `minecraft:snow_block`; 3 block(s) at slope 0-3: `minecraft:dirt`; 3 block(s) at slope 0-3: `minecraft:dirt`, `minecraft:stone`; 5 object placement rule(s) drawing from 39 object key(s), including `clutter/camp1`, `clutter/camp2`, `clutter/camp3`, `clutter/camp4`, `clutter/camp5`, `clutter/sbush1`, `clutter/sbush2`, and 32 more. 10 decorator rule(s) using `minecraft:white_tulip`, `minecraft:cornflower`, `minecraft:blue_orchid`, `minecraft:lily_of_the_valley`, `minecraft:sweet_berry_bush`, `minecraft:snow`, `minecraft:stone_button`, `minecraft:tall_grass`, `minecraft:short_grass`, and 3 more.
+- **Underworld:** `minecraft:basalt_deltas` identity; surface 1 block(s) at slope 0-3.3: `minecraft:basalt`, `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 3 block(s) at slope 0-3: `minecraft:blackstone`; 5 object placement rule(s) drawing from 39 object key(s), including `underworld/basalt/clutter/camp1`, `underworld/basalt/clutter/camp2`, `underworld/basalt/clutter/camp3`, `underworld/basalt/clutter/camp4`, `underworld/basalt/clutter/camp5`, `underworld/basalt/clutter/sbush1`, `underworld/basalt/clutter/sbush2`, and 32 more. 11 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:fire`, `minecraft:nether_sprouts`, `minecraft:blackstone`, `minecraft:polished_blackstone_button`, `minecraft:crimson_fungus`, `minecraft:blackstone_slab`.
 
 ## Floating variants
 

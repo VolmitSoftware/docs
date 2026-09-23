@@ -2,13 +2,13 @@
 title: "Magnetic Hollows — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/magnetic-hollows"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/magnetic-hollows` is a direct cave root in the current Overworld 4009 and Underworld 1011 pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/magnetic-hollows` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -18,8 +18,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld 4009 | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
-| Underworld 1011 | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
+| Overworld | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
+| Underworld | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -29,17 +29,17 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..660`; sample step `2`; surface clearance `12`; surface breaking `disabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `10`.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:smooth_basalt`, `minecraft:andesite`, `minecraft:tuff`, `minecraft:calcite`, `minecraft:amethyst_block`, `minecraft:stone`, `minecraft:deepslate`. Decorator blocks: `minecraft:small_amethyst_bud`, `minecraft:medium_amethyst_bud`, `minecraft:large_amethyst_bud`, `minecraft:amethyst_cluster`. Object set: `clutter/stoneclutt1`, `clutter/stoneclutt2`, `clutter/stoneclutt3`, `clutter/stoneclutt4`, `clutter/stoneclutt5`, `clutter/stoneclutt6`, `clutter/rock1`, `clutter/rock2`, and 10 more.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 Derivative `minecraft:basalt_deltas`; vanilla derivative `minecraft:basalt_deltas`. Primary cave palette: `minecraft:smooth_basalt`, `minecraft:basalt`, `minecraft:blackstone`, `minecraft:crying_obsidian`, `minecraft:glowstone`, `minecraft:netherrack`, `minecraft:soul_soil`. Decorator blocks: `minecraft:crying_obsidian`, `minecraft:glowstone`. Object set: `underworld/basalt/clutter/rock1`, `underworld/basalt/clutter/rock2`, `underworld/basalt/clutter/rock3`, `underworld/basalt/clutter/rock4`, `underworld/basalt/clutter/boulder1`, `underworld/basalt/clutter/boulder2`, `underworld/basalt/clutter/boulder3`, `underworld/basalt/clutter/boulder4`, and 8 more.
 
 ## Child and floating variants
 
-No child or floating-child biome is declared by this root in either pinned pack.
+No child or floating-child biome is declared by this root in either pack.
 
 ## Inspect it in game
 

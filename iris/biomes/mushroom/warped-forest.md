@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Mushroom Warped Forest"
-description: "Iris biome atlas entry for mushroom/warped-forest in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for mushroom/warped-forest in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mushroom/warped-forest` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`mushroom/warped-forest` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `mushroom` (Mushroom) | 1 | 2 | 0.5 | 12.50% |
-| Underworld 1010 | `mushroom` (Mushroom) | 1 | 2 | 0.5 | 12.50% |
+| Overworld | `mushroom` (Mushroom) | 1 | 2 | 0.5 | 12.50% |
+| Underworld | `mushroom` (Mushroom) | 1 | 2 | 0.5 | 12.50% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `plain-cliffs` (6..25); combined authored contribution `6..25` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -41,13 +41,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:mushroom_fields`; custom identities `mushroom_warped_forest`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`; 8-9 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 45-65 block(s): `minecraft:blackstone`. Wall palette: `minecraft:warped_hyphae`.
 - **Content:** 6 object placement rule(s) drawing from 27 object key(s), including `trees/mushroom/mushclut1`, `trees/mushroom/mushclut2`, `trees/mushroom/mushclut3`, `trees/mushroom/mushclut4`, `trees/mushroom/mushclut5`, `trees/mushroom/mushclut6`, `trees/mushroom/mushclut7`, and 20 more. 4 decorator rule(s) using `minecraft:polished_blackstone_button`, `minecraft:warped_button`, `minecraft:warped_fungus`, `minecraft:warped_roots`, `minecraft:twisting_vines_plant`.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_mushroom_warped_forest_4744ac00`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`; 8-9 block(s): `minecraft:netherrack`; 45-65 block(s): `minecraft:blackstone`. Wall palette: `minecraft:warped_hyphae`.
@@ -65,8 +65,8 @@ In that immediate child choice it contributes `1` of `2` slots (50.00%); later c
 
 **Shared terrain:** `plain-cliffs` (54..95); combined authored contribution `54..95` blocks relative to fluid height.
 
-- **Overworld 4007:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 8-9 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 45-65 block(s): `minecraft:blackstone`; 6 object placement rule(s) drawing from 27 object key(s), including `trees/mushroom/mushclut1`, `trees/mushroom/mushclut2`, `trees/mushroom/mushclut3`, `trees/mushroom/mushclut4`, `trees/mushroom/mushclut5`, `trees/mushroom/mushclut6`, `trees/mushroom/mushclut7`, and 20 more. 4 decorator rule(s) using `minecraft:polished_blackstone_button`, `minecraft:warped_button`, `minecraft:warped_fungus`, `minecraft:warped_roots`, `minecraft:twisting_vines_plant`.
-- **Underworld 1010:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 8-9 block(s): `minecraft:netherrack`; 45-65 block(s): `minecraft:blackstone`; 6 object placement rule(s) drawing from 27 object key(s), including `underworld/warped/trees/mushroom/mushclut1`, `underworld/warped/trees/mushroom/mushclut2`, `underworld/warped/trees/mushroom/mushclut3`, `underworld/warped/trees/mushroom/mushclut4`, `underworld/warped/trees/mushroom/mushclut5`, `underworld/warped/trees/mushroom/mushclut6`, `underworld/warped/trees/mushroom/mushclut7`, and 20 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:warped_button`, `minecraft:warped_fungus`, `minecraft:warped_roots`, `minecraft:twisting_vines_plant`.
+- **Overworld:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 8-9 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 45-65 block(s): `minecraft:blackstone`; 6 object placement rule(s) drawing from 27 object key(s), including `trees/mushroom/mushclut1`, `trees/mushroom/mushclut2`, `trees/mushroom/mushclut3`, `trees/mushroom/mushclut4`, `trees/mushroom/mushclut5`, `trees/mushroom/mushclut6`, `trees/mushroom/mushclut7`, and 20 more. 4 decorator rule(s) using `minecraft:polished_blackstone_button`, `minecraft:warped_button`, `minecraft:warped_fungus`, `minecraft:warped_roots`, `minecraft:twisting_vines_plant`.
+- **Underworld:** `minecraft:warped_forest` identity; surface 1 block(s): `minecraft:warped_nylium`; 8-9 block(s): `minecraft:netherrack`; 45-65 block(s): `minecraft:blackstone`; 6 object placement rule(s) drawing from 27 object key(s), including `underworld/warped/trees/mushroom/mushclut1`, `underworld/warped/trees/mushroom/mushclut2`, `underworld/warped/trees/mushroom/mushclut3`, `underworld/warped/trees/mushroom/mushclut4`, `underworld/warped/trees/mushroom/mushclut5`, `underworld/warped/trees/mushroom/mushclut6`, `underworld/warped/trees/mushroom/mushclut7`, and 20 more. 5 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:polished_blackstone_button`, `minecraft:warped_button`, `minecraft:warped_fungus`, `minecraft:warped_roots`, `minecraft:twisting_vines_plant`.
 
 ## Floating variants
 

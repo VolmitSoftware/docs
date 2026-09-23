@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,11 +26,6 @@ Prerequisites: a writable pack, operator access on a Bukkit-family server, and s
    Expected result: a chat line naming the pack and the object, and a new file at `<data>/packs/<dimension load key>/objects/tutorial/lookout.iob`.
 4. **Verify it loads.** `/iris object analyze tutorial/lookout` reads the file back and reports width x height x depth, total block count, and the ten most common materials. If those numbers match what you selected, the file is good.
 5. **Verify it pastes.** `/iris object paste tutorial/lookout edit=true` stamps a copy where you are looking and hands you a wand already fitted to it. Walk the copy. Check the orientation. Check that chests still have contents and signs still have text. Fix anything wrong in place. Then re-save the same key with `overwrite=true`. `/iris object undo` removes the pasted copy.
-6. **Prove it survives a reload.** Close and reopen Studio, then paste again. Block states and block-entity data must come back identical. If a chest is empty now, the object was captured through a path that drops tile data (section 6).
-
-The object is finished when `analyze` reports the dimensions you expect. A fresh paste must line up on the target block. A save/reopen cycle must change nothing. Then continue with [20 - Object Placement](/iris/20-object-placement).
-
-Use a throwaway key like `scratch/test1` until the bounds and origin are right. Overwriting an object does not rewrite copies already generated into existing chunks.
 
 ## 1. What an object is
 
@@ -49,9 +44,9 @@ Not stored:
 
 **Clearing space.** Use `void_air` inside an object where placement should remove existing terrain. Plain `minecraft:air` is not saved. `cave_air` is saved but only clears terrain when the object is placed as an Iris jigsaw piece.
 
-### Format limits
+### Size limits
 
-`.iob` V2 writes an `Iris V2 IOB;` header, then short-typed centered coordinates and a short-counted palette. That gives a working range of +/- 32,767 blocks per axis from the center and 32,767 distinct block states per object. Exceeding either limit fails the save with an error naming the object and the offending size or coordinate, before the existing file is touched. A failed save never truncates or corrupts a previous `.iob`. Files written before V2 still load through a legacy reader, tried automatically when the V2 header is missing. Nothing caps the block count. The practical limits are memory and the wand scan budget, which processes 30 ms of blocks per tick by default (`-Diris.ms_per_tick`).
+Objects support coordinates up to 32,767 blocks from the center on each axis and up to 32,767 distinct block states.
 
 ### Where objects live and how they are named
 
@@ -198,7 +193,7 @@ The wand save reads live blocks, so it captures full block-entity NBT. This is t
 
 Details are in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
-## 7. Practical details
+## 7. Origin, rotation, and loot
 
 **Center and anchoring.** The center is always the middle of the bounding box. Wand saves keep the selection box, so asymmetric padding survives and shifts the center. `convert` and `shrink` shrinkwrap and re-center. At generation the object is centered on its column in X and Z and lifted so its bottom sits on the anchor. Everything past that is the placement `mode` ([20 - Object Placement](/iris/20-object-placement)).
 
@@ -211,24 +206,6 @@ When a non-solid directional block cannot represent the rotated orientation, rot
 **Blocks the running Minecraft does not have.** An object saved on a newer version can hold blocks an older server lacks. Iris excludes an object from generation if its placed result would contain an unavailable block. It stays in the pool when the placement's `edit` rules type-replace the block (a rule with `chance: 1` whose `find` matches it), or when a dimension `blockFallbacks` entry or a per-entry `backup` covers it. The `.iob` file is never rewritten and the object remains usable on a server that has the block. An emptied pool means the placement is skipped. See [20 - Object Placement](/iris/20-object-placement) and [25 - Pack Management](/iris/25-pack-management).
 
 **Applying edits.** Studio reloads saved object changes for newly generated chunks. Existing chunks remain unchanged. Production worlds require a staged pack update and restart; see [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
-
-## 8. Common failure modes
-
-1. **"You need to hold your wand!"**: hold an Iris wand in your main hand. To copy a WorldEdit selection, run `/iris object we` first.
-2. **"File already exists."**: pass `overwrite=true` (or `force=true`).
-3. **Save complains about a missing `dimension`**: you are not standing in a loaded Iris world. Pass `dimension=<pack>`.
-4. **Objects landed in the wrong pack folder**: the dimension load key is not the pack folder name (section 3).
-5. **`convert` did nothing**: the files are not in `<data>/convert/`, or do not end in `.schem`.
-6. **Converted objects have empty chests**: the converter never reads block entities. Use the paste-then-wand route (6.2).
-7. **The converter ate the schematic**: that is by design after a successful conversion.
-8. **The selection vanished**: corners live on the wand item. `paste edit=true` overwrites the held wand selection.
-9. **No selection outline appears**: hold an Iris wand with both corners set, in the world where you selected those corners.
-10. **Entities are gone**: objects never store entities. Use placement markers.
-11. **Jigsaw or structure-void blocks are gone**: they are filtered out when the file is read. Connectors are JSON, not blocks.
-12. **A paste is offset from where you expected**: the origin is the bounding-box center, so air padding inside the selection moves it. Re-select tightly or run `shrink`.
-13. **A sign lost its back side, or a spawner lost its settings**: saved with the default `legacy=true`. Re-save with `legacy=false`.
-14. **`shrink` rewrote a file in a pack you were not thinking about.** Outside an Iris world, a bare key resolves to the first visible pack that has it. That lookup is silent (section 1).
-15. **An object places on one server and not another.** Its palette needs a block the older server does not have. `/iris pack compat` names the object and the placement it was dropped from.
 
 ## Command reference
 

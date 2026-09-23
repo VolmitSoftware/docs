@@ -2,16 +2,16 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 A pack is a folder of JSON files, binary objects, and images that describes one or more worlds. Edit the authoring folder in Studio, then stage a pack update to apply those changes to new chunks in a production world.
 
-See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).
+See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).
 
-## What a pack actually is
+## Pack files
 
 There is no manifest file, no registry, and no build step. A pack is a directory whose subfolder names tell Iris what type each file is. `biomes/plains.json` is a biome because it sits in `biomes/`. Move that same file to `regions/` and Iris will try to parse it as a region.
 
@@ -19,7 +19,7 @@ The pack folder's own name is the pack key. A folder called `packs/myworld/` is 
 
 The only hard requirement is at least one `.json` file directly inside `dimensions/`. Everything else is optional. A folder you never create simply has no resources of that type.
 
-## A pack you can read in one screen
+## Pack example
 
 ```text
 packs/myworld/
@@ -39,7 +39,7 @@ Five files. `dimensions/myworld.json` lists `"main"` in its `regions` array. `re
 
 Note `hills/rolling`. Subfolders are yours to organize however you like. They become part of the key, and nothing else changes.
 
-## Keys: the one rule
+## Resource keys
 
 **A key is the file's path under its type folder, with the extension removed.**
 
@@ -52,13 +52,13 @@ Note `hills/rolling`. Subfolders are yours to organize however you like. They be
 
 There is no namespace and no type prefix. You never write `biomes/plains` or `iris:plains`. The field you fill in already knows it wants a biome, so it searches `biomes/` for you. Cross-references everywhere (region biome lists, object placements, spawner entity ids, structure piece pools) use exactly these keys.
 
-### What happens when the exact file is missing
+### Filenames
 
 Use exact filenames, including for nested resources. At the type-folder root, a file such as `plains.disabled.json` can still match the key `plains`; adding `.disabled` does not disable it. Keep one canonical filename per key and avoid `null.json`.
 
 ## How the pieces relate
 
-Generation walks a graph, and the graph starts at exactly one place: the dimension you named when you created the world.
+The dimension selected during world creation connects the pack resources:
 
 ```text
 dimension  ->  regions  ->  biomes  ->  generators   (terrain height/noise)
@@ -76,22 +76,7 @@ dimension  ->  regions  ->  biomes  ->  generators   (terrain height/noise)
 - **Object** — a `.iob` block model with its own placement rules.
 - **Structure / jigsaw pool / jigsaw piece** — multi-piece assemblies, either Iris-native or bridged to vanilla structures.
 
-The practical consequence: **a file that nothing references is inert.** It parses, it validates, it never generates. When a resource is not showing up, the first question is not whether the JSON is wrong — ask whether it is reachable from the dimension, working forward from `dimensions/<key>.json` until the chain breaks.
-
-## Trace one reference end to end
-
-Do this once on a pack you did not write. It takes two minutes and makes everything above concrete.
-
-Prerequisites: a loadable pack under the packs root, `iris.all` (Bukkit) or gamemaster (modded), and an editor that will not reformat your JSON.
-
-1. Validate the pack: `/iris pack validate pack=overworld` on Bukkit, `/iris pack validate overworld` on a mod loader.
-2. Open `dimensions/overworld.json`. Pick one key out of the `regions` array.
-3. Open `regions/<that key>.json`. Pick one key out of `landBiomes`.
-4. Open `biomes/<that key>.json`. Follow its first generator, object, decorator, or structure reference into the matching type folder.
-5. At each hop, confirm the key is the path under the type folder with the extension removed, with nothing else appended.
-6. Open the pack in Studio, focus that biome, save one valid edit, and wait for hotload. Re-validate.
-
-You are done when every reference resolved without guessing at a namespace or filename, hotload succeeded, and validation reports no blocking errors.
+A resource must be referenced by the selected dimension, directly or through its regions and biomes, to generate.
 
 ## Snippets
 
@@ -114,11 +99,11 @@ resolves to `<packRoot>/snippet/style/soft-hills.json`.
 
 The bundled overworld uses `snippet/decorator/*` and `snippet/style/*`.
 
-## Authoring packs and generation snapshots
+## Authoring and production worlds
 
-Edit the source pack under `packs/<key>/`. Production worlds and Bukkit Studio generate from immutable copies under `<world>/iris/generation/epochs/<epoch>/pack/`, not from your authoring folder. Selecting an earlier pack later adds another copy rather than reverting the world.
+Edit the source pack under `packs/<key>/`. Studio applies valid edits to new chunks. Production worlds use their saved pack until you stage an update and restart.
 
-Historical pack definitions remain on disk so saved biome and region identities can resolve their original content. **Include the complete `iris/generation` directory in world backups.**
+Include the complete `iris/generation` directory in world backups. Do not edit its saved pack files.
 
 | Mode | Generation source | How changes apply |
 |---|---|---|
@@ -126,7 +111,7 @@ Historical pack definitions remain on disk so saved biome and region identities 
 | Modded Studio | Live authoring pack | Uses the modded Studio hotload path |
 | Production | Saved world-local pack copies | Explicit update staging and restart |
 
-Studio editors, exports, presets, and schemas read the authoring folder while generation reads the active snapshot, so an invalid edit leaves the active generation unchanged.
+Invalid Studio edits leave the current pack active.
 
 Existing chunks keep their saved terrain. New chunks use the updated pack, with a transition beside existing terrain.
 
@@ -168,8 +153,6 @@ Use these folders and file extensions for pack resources.
 | `images/` | `.png` | PNG maps sampled as noise or as direct biome/height input |
 | `matter/` | `.mat` | Reserved; does not affect generation |
 | `mods/` | `.json` | Does not affect generation. Use [snippets](/iris/24-pack-mods-snippets) for reusable definitions |
-
-Anything else in a pack directory is not a resource type. The bundled Overworld pack contains empty `caves/`, `ravines/`, and `jigsaw-structures/` folders plus `README.md`, `Schema.json`, and a `.code-workspace` file. None of those names are keys, and none are loaded.
 
 ## What makes a pack loadable
 

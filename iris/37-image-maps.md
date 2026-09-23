@@ -2,12 +2,12 @@
 title: "Image Maps"
 description: "Drive Iris generation from PNG data: the resource model, accepted source images, and the Image Map Studio workflow"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
 ---
-Image maps let a pack author supply spatial generation data as pixels. Iris treats the image as data, not artwork: the map type, decoding rules, coordinate transform, sampling filter, legend, and masks are explicit pack configuration, compiled before chunk generation begins.
+Image maps let a pack author supply spatial generation data as pixels. Set the map type, height or color rules, coordinates, sampling, and masks in the pack configuration.
 
 - **This page** — the model, what PNG files Iris accepts, and the Studio workflow.
 - [38 - Image Map Encodings](/iris/38-image-map-encodings) — how each map type decodes its pixels.
@@ -60,12 +60,6 @@ Definitions are reusable: two dimensions may bind the same image-map resource to
 
 Each binding names the image-map resource in `map`; the binding `key` is the stable name shown in Studio previews and used by mask references and custom lookups.
 
-## One compiler defines behavior
-
-Studio preview, `/iris pack validate`, hotload, packaging preflight, and world generation all use the same image-map compiler, so a preview is the runtime interpretation of the exported resource — there is no separate editor simulation contract. The same pack bytes, seed, and coordinates produce the same result on every platform.
-
-Invalid input is a load-time blocking error. Unsupported formats, excessive dimensions, incompatible channel layouts, malformed legends, ambiguous color matches, invalid mask graphs, missing resources, and uncovered coordinates configured as `ERROR` **do not degrade into a flat or arbitrary world.**
-
 ## Source images
 
 PNG is the only canonical source format. Place files under the pack's `images/` folder and reference them without `.png`:
@@ -117,37 +111,24 @@ Indexed palette PNGs and layouts outside this matrix are rejected rather than si
 > An image editor that performs color-profile conversion, dithering, palette quantization, antialiasing, or lossy export can change data pixels even when the picture looks the same. **Export data maps with all of those disabled**, and do not resize an encoded heightmap with ordinary color-image filters — use `blocksPerPixel` and `sampling` instead.
 {.is-warning}
 
-### Validation failures
-
-| Error | Resolution |
-|---|---|
-| Unsupported or corrupt image | Re-export as a valid PNG and import again |
-| Width, height, or total pixels outside the limits | Crop, resample, split the authored area, or raise `blocksPerPixel` |
-| Grayscale height source is RGB | Export a real single-channel grayscale PNG or declare the correct type |
-| RGB height source is 16-bit per channel | Export exactly 8-bit RGB/RGBA; the canonical encoding is 24-bit total |
-| Alpha map has no alpha channel | Export RGBA or select a grayscale/binary mask type |
-| Indexed/palette source | Expand the source to canonical RGB/RGBA before import |
-| File looks correct but colors do not match | Disable profile conversion, antialiasing, and dithering, then inspect raw `#RRGGBB` values |
-
 ## Image Map Studio
 
 The guided desktop workflow writes canonical PNG assets, `image-maps` resources, and dimension bindings as one project update.
 
-**Prerequisites:** a graphical desktop host with `gui.useServerLaunchedGuis` enabled, work in the live pack under the platform packs directory (never a production world's immutable generation epoch), the server console visible, and a fixed Studio seed. On a headless server everything except the desktop window still works — author on a graphical Iris host or edit the typed JSON directly with [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
+Use a graphical server host with `gui.useServerLaunchedGuis` enabled. Edit the authoring pack under the platform's `packs/` directory. On a headless server, edit the JSON described in [Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
 
-1. **Import the PNG** to a destination key under `images/`. PNG stays the canonical asset; no lossy conversion is hidden.
-2. **Inspect the source.** Studio reports width, height, pixel count, format, bit depth, channel layout, alpha presence and transparency range, and embedded color-profile metadata before type compatibility is compiled. The profile is reported so you can spot an editor conversion; it is never applied to raw samples.
-3. **Choose the map type and the role** — a dimension binding key and application. Studio does not infer semantics from appearance.
-4. **Place the image.** Configure `origin`, `sourceOrigin`, `blocksPerPixel`, rotation, mirroring, sampling, and out-of-bounds behavior, using named Minecraft coordinates as checkpoints.
-5. **Configure decoding.** Height range, inversion, curve, smoothing and clamp; or a color legend and unknown-color policy; or a binary resource's threshold and falloff. Continuous grayscale and alpha thresholds belong to composed-mask rows so a reusable mask keeps its full weight range.
-6. **Compose masks.** Add named `MASK` bindings in the composed-mask table, choose each operation, inversion, threshold and falloff, and order the rows exactly as they should execute.
-7. **Preview interpreted data** — decoded Minecraft elevations, resolved target keys, or mask weights, not only the source picture — with the overlays below enabled.
-8. **Resolve diagnostics.** Unknown-pixel and clipped-height counts stay visible; ambiguous tolerance matches are blocking compiler errors that name their source pixel coordinates. Invalid pixels, transparent fallbacks, out-of-bounds samples, and uncovered boundary areas must be fixed or explicitly handled.
-9. **Export.** The PNG, typed image-map resource, dimension binding, and any preset updates commit atomically, and only when the project has no blocking image-map or pack-graph errors. A failed write leaves the previous project intact. A successful export writes the authoring pack and requests a Studio generation update; it never edits a retained generation snapshot.
-10. **Verify in Vision and terrain.** Select Height or Biome mode in the Vision map, compare checkpoint coordinates against the final runtime field, then generate fresh chunks on the same seed.
+1. Import the PNG to a key under `images/`.
+2. Inspect its dimensions, bit depth, channels, and alpha data.
+3. Choose the map type, dimension binding key, and application.
+4. Set `origin`, `sourceOrigin`, `blocksPerPixel`, rotation, mirroring, sampling, and out-of-bounds behavior.
+5. Configure the height range, color legend, or mask threshold for the selected type.
+6. Add any named mask bindings and set their composition order.
+7. Preview the interpreted heights, resource keys, or mask weights.
+8. Resolve the reported invalid pixels, ambiguous colors, and uncovered coordinates.
+9. Export the PNG, image-map resource, and dimension binding to the authoring pack.
+10. Open Vision and generate fresh chunks to view the result. Reopen Studio for a fresh world if you need to replace previously generated terrain.
 
-> The interpreted preview shows the current authored map. **Existing world chunks retain their saved terrain.** Fresh boundary chunks include three-dimensional reconciliation against it, so compare checkpoints beyond the finite transition band, or reopen Studio for a fresh world that uses only the latest pack.
-{.is-info}
+Export requires valid image maps and pack references. A failed export leaves the previous project intact.
 
 ### Preview modes
 
@@ -173,9 +154,9 @@ Studio warns when the image covers only part of the configured boundary, extends
 
 ### Presets and Replace Image
 
-A **preset** is reusable configuration, not copied runtime code: type, transform, decoding, legend, alpha, sampling, out-of-bounds, and mask settings. Save one after the transform and decoding are accepted, then apply it to another compatible PNG. A preset never turns a source into an implicitly different type.
+A **preset** saves reusable type, transform, decoding, legend, alpha, sampling, out-of-bounds, and mask settings. Save one after the transform and decoding are accepted, then apply it to another compatible PNG. A preset never turns a source into an implicitly different type.
 
-**Replace Image** changes the source asset while retaining the image-map resource, dimension binding, legend, masks, and preset association. Studio reinspects the new file and recompiles the complete map, and refuses the replacement when the new channel layout, bit depth, dimensions, legend coverage, or transparency violates the retained settings. The previous source and configuration stay active after a failed replacement.
+**Replace Image** changes the source asset while retaining the image-map resource, dimension binding, legend, masks, and preset association. The replacement must match the retained type, bit depth, dimensions, legend, and alpha settings. The previous source and configuration stay active after a failed replacement.
 
 ### Exported pack shape
 
@@ -185,27 +166,6 @@ image-maps/terrain.json
 dimensions/example.json
 ```
 
-Packaging runs the shared pack validator and image-map compiler before it clears staging or copies closure files, and includes every referenced PNG and image-map resource. Missing indirect mask resources, invalid maps, or missing image sources fail before an incomplete archive can be staged.
+Pack archives include referenced PNG files and image-map resources. Validate the pack before packaging it.
 
-### Recovery
-
-| Symptom | Action |
-|---|---|
-| Desktop tool does not open | Confirm a graphical host, `gui.useServerLaunchedGuis`, and platform GUI availability; use typed JSON on headless hosts |
-| Preview differs from an image editor | Trust raw Studio values; disable editor profile conversion, antialiasing, dithering, and resampling |
-| Unknown or ambiguous colors remain | Repair pixels or legend colors, reduce tolerance, or deliberately set the unknown fallback |
-| Terrain is shifted or mirrored | Check `origin`, `sourceOrigin`, axes, rotation, and mirror order against the coordinate checkpoints |
-| Export validation fails | Fix the first blocking diagnostic and export again; the previous project remains intact |
-| Existing terrain did not change | Generate chunks beyond the transition band, or reopen Studio for a fresh world. Hotload preserves existing chunks |
-
-See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for opening, saving, and closing a Studio session.
-
-## Authoring path
-
-1. Confirm the file meets [Source images](#source-images).
-2. Choose a type and follow [38 - Image Map Encodings](/iris/38-image-map-encodings).
-3. Import, inspect, preview, and export through [Image Map Studio](#image-map-studio).
-4. Validate the pack before opening Studio or creating a world.
-5. Check the interpreted image layer in the Vision map, then generate fresh chunks on a fixed seed.
-
-The workflow passes when validation reports no blocking errors, the Studio preview and Vision layer agree at named world coordinates, and the same seed reproduces the same generated result after a close and reopen.
+See [Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for opening, saving, and closing a Studio session.

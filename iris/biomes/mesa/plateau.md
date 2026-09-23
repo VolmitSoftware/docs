@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Mesa Plateau"
-description: "Iris biome atlas entry for mesa/plateau in Overworld 4009 and Underworld 1011"
+description: "Iris biome atlas entry for mesa/plateau in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mesa/plateau` is a directly selected land biome in the current Overworld 4009 and Underworld 1011 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`mesa/plateau` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4009 | `hot` (Hot) | 1 | 1 | 1 | 5.83% |
-| Underworld 1011 | `hot` (Hot) | 1 | 1 | 1 | 5.83% |
+| Overworld | `hot` (Hot) | 1 | 1 | 1 | 5.83% |
+| Underworld | `hot` (Hot) | 1 | 1 | 1 | 5.83% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `cracked-cliffs` (70..98); combined authored contribution `70..98` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4009 and Underworld 1011 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the start slope plus the fade range.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / fade | Density noise / Crack noise |
@@ -38,18 +38,18 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 | `mesa/plateau` | Mesa | 32 | 192 / 52 | 2 / 2 / 392 | 0.34 / 0.42 | `PERLIN` / `PERLIN` |
 | `mesa/plateau-dirt` | Mesa | 28 | 192 / 48 | 2 / 2 / 392 | 0.34 / 0.42 | `PERLIN` / `PERLIN` |
 
-Mesa density uses unwarped Perlin noise in both packs. The height generators, amplitude, scale, and crack settings are unchanged; the 3D cliff details use the new field.
+Mesa density uses unwarped Perlin noise in both packs.
 
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:badlands`; native-structure derivative `minecraft:badlands`; underground scatter `minecraft:badlands`, `minecraft:eroded_badlands`.
 - **Surface:** 5 block(s) at slope 0-3: `minecraft:red_terracotta`, `minecraft:terracotta`; 3-10 block(s) at slope 3-255: `minecraft:terracotta`; 2-10 block(s) at slope 3-255: `minecraft:orange_terracotta`; 1-10 block(s) at slope 3-255: `minecraft:white_terracotta`; 4-10 block(s) at slope 3-255: `minecraft:terracotta`; 3-10 block(s) at slope 3-255: `minecraft:yellow_terracotta`; 1-10 block(s) at slope 3-255: `minecraft:orange_terracotta`; 5-10 block(s) at slope 3-255: `minecraft:terracotta`; 3-10 block(s) at slope 3-255: `minecraft:brown_terracotta`; 2-10 block(s) at slope 3-255: `minecraft:terracotta`; 3-10 block(s) at slope 3-255: `minecraft:red_terracotta`; 3-10 block(s) at slope 3-255: `minecraft:terracotta`. Wall palette: none.
 - **Content:** 1 decorator rule(s) using `minecraft:tall_grass`.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_mesa_plateau_3e90d30f`.
 - **Surface:** 5 block(s) at slope 0-3: `minecraft:nether_bricks`, `minecraft:netherrack`; 3-10 block(s) at slope 3-255: `minecraft:netherrack`; 2-10 block(s) at slope 3-255: `minecraft:magma_block`; 1-10 block(s) at slope 3-255: `minecraft:quartz_block`; 4-10 block(s) at slope 3-255: `minecraft:netherrack`; 3-10 block(s) at slope 3-255: `minecraft:glowstone`; 1-10 block(s) at slope 3-255: `minecraft:magma_block`; 5-10 block(s) at slope 3-255: `minecraft:netherrack`; 3-10 block(s) at slope 3-255: `minecraft:soul_soil`; 2-10 block(s) at slope 3-255: `minecraft:netherrack`; 3-10 block(s) at slope 3-255: `minecraft:nether_bricks`; 3-10 block(s) at slope 3-255: `minecraft:netherrack`. Wall palette: none.
@@ -67,8 +67,8 @@ In that immediate child choice it contributes `1` of `2` slots (50.00%); later c
 
 **Shared terrain:** `cracked-cliffs` (73..98); combined authored contribution `73..98` blocks relative to fluid height.
 
-- **Overworld 4009:** `minecraft:badlands` identity; surface 5 block(s): `minecraft:grass_block`, `minecraft:coarse_dirt`, `minecraft:dirt`; 3-8 block(s): `minecraft:terracotta`; 2-8 block(s): `minecraft:orange_terracotta`; 1-8 block(s): `minecraft:white_terracotta`; 4-8 block(s): `minecraft:terracotta`; 3-8 block(s): `minecraft:yellow_terracotta`; 3-8 block(s): `minecraft:brown_terracotta`; 1 object placement rule(s) drawing from 3 object key(s), including `trees/acacia/vexed1`, `trees/acacia/vexed2`, `trees/acacia/vexed3`. 1 decorator rule(s) using `minecraft:tall_grass`.
-- **Underworld 1011:** `minecraft:basalt_deltas` identity; surface 5 block(s): `minecraft:basalt`, `minecraft:blackstone`; 3-8 block(s): `minecraft:netherrack`; 2-8 block(s): `minecraft:magma_block`; 1-8 block(s): `minecraft:quartz_block`; 4-8 block(s): `minecraft:netherrack`; 3-8 block(s): `minecraft:glowstone`; 3-8 block(s): `minecraft:soul_soil`; 1 object placement rule(s) drawing from 3 object key(s), including `underworld/basalt/trees/acacia/vexed1`, `underworld/basalt/trees/acacia/vexed2`, `underworld/basalt/trees/acacia/vexed3`. 2 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`.
+- **Overworld:** `minecraft:badlands` identity; surface 5 block(s): `minecraft:grass_block`, `minecraft:coarse_dirt`, `minecraft:dirt`; 3-8 block(s): `minecraft:terracotta`; 2-8 block(s): `minecraft:orange_terracotta`; 1-8 block(s): `minecraft:white_terracotta`; 4-8 block(s): `minecraft:terracotta`; 3-8 block(s): `minecraft:yellow_terracotta`; 3-8 block(s): `minecraft:brown_terracotta`; 1 object placement rule(s) drawing from 3 object key(s), including `trees/acacia/vexed1`, `trees/acacia/vexed2`, `trees/acacia/vexed3`. 1 decorator rule(s) using `minecraft:tall_grass`.
+- **Underworld:** `minecraft:basalt_deltas` identity; surface 5 block(s): `minecraft:basalt`, `minecraft:blackstone`; 3-8 block(s): `minecraft:netherrack`; 2-8 block(s): `minecraft:magma_block`; 1-8 block(s): `minecraft:quartz_block`; 4-8 block(s): `minecraft:netherrack`; 3-8 block(s): `minecraft:glowstone`; 3-8 block(s): `minecraft:soul_soil`; 1 object placement rule(s) drawing from 3 object key(s), including `underworld/basalt/trees/acacia/vexed1`, `underworld/basalt/trees/acacia/vexed2`, `underworld/basalt/trees/acacia/vexed3`. 2 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:crimson_fungus`.
 
 ## Floating variants
 

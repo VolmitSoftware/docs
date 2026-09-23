@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -71,7 +71,7 @@ Runtime matching never trims either side, so whitespace in schema-authored data 
 | Field | Default / range | What it does in world |
 |---|---|---|
 | `startPool` | required | Everything grows out of whatever piece this pool produces first |
-| `maxDepth` | `7`, range `1..30` | How many connector hops the assembler may chain outward before it stops adding rooms. Higher values make sprawling settlements and cost more generation time |
+| `maxDepth` | `7`, range `1..30` | How many connector hops the assembler may chain outward before it stops adding rooms. Higher values allow larger settlements |
 | `maxSizeChunks` | `8`, range `1..32` | A hard leash: no piece may sit further than this many chunks (times 16 blocks) from the start, no matter how much depth is left |
 | `mode` | Hand-authored schema fallback `SPATIAL_JIGSAW`. Studio `create` default `PLANAR_JIGSAW` | `PLANAR_JIGSAW` forces every piece onto a flat grid with face-center sockets and validates that shape. `SPATIAL_JIGSAW` lets pieces stack and branch in three dimensions |
 | `compatibility` | `IRIS_EXTENDED` | `VANILLA_PORTABLE` locks the graph down to what vanilla jigsaw resources can express, which is what makes datapack export possible |
@@ -206,7 +206,7 @@ Place an Iris jigsaw by adding an `IrisStructurePlacement` object to `structures
 
 `placementId` is the stable authored identity used for distribution. Set it when multiple placements share the same structure, or when you want field and list reordering to leave existing starts where they are. A placement listing several `structures` keys chooses one uniformly. Pool weights control pieces inside the chosen graph, not world-level start frequency.
 
-Only newly generated chunks use a changed placement. Direct `/iris structure place` and the Jigsaw Studio preview prove nothing about spacing, biome scope, height gates, or natural generation.
+Only newly generated chunks use a changed placement. `/iris structure place` and the Jigsaw Studio preview place assemblies directly without the natural placement settings.
 
 ### Cave anchors
 

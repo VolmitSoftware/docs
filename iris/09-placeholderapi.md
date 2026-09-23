@@ -2,7 +2,7 @@
 title: "PlaceholderAPI"
 description: "Iris documentation: PlaceholderAPI"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Install PlaceholderAPI before starting Iris, then restart the server. World plac
 
 Add a placeholder such as `%iris_world.biome%` to your scoreboard plugin's format and reload that plugin. Use `%iris_world.available%` as a display condition when supported.
 
-To inspect a value directly, run `/papi parse me %iris_world.biome%`. If it resolves there but differs on the scoreboard, check the scoreboard format and refresh interval. `/papi info iris` lists all available keys.
+To inspect a value directly, run `/papi parse me %iris_world.biome%`. `/papi info iris` lists all available keys.
 
 ## Registration
 
@@ -37,7 +37,7 @@ Install both plugins before starting the server. Installing PlaceholderAPI alone
 |---|---|
 | Path form | Dot-separated, lowercase `a-z`, `0-9`, and `-`. The path is lowercased before lookup, so `%iris_WORLD.BIOME%` resolves, but write it lowercase |
 | Plain text only | No color codes, no unit suffixes, no `%` character in any value, `.` as the decimal separator, no thousands separators |
-| Pack-name scrubbing | Section-sign sequences and `%` characters inside pack-authored names are removed before the value is returned. A mischievous biome name cannot inject formatting into a scoreboard |
+| Pack-name scrubbing | Section-sign sequences and `%` characters inside pack-authored names are removed before the value is returned. Pack names appear without embedded formatting |
 | Genuine zero | Returned as `0`, or `0.00` for two-decimal values. Never `---` |
 
 Every key answers in one of three ways:
@@ -101,7 +101,7 @@ One job runs per server, so these are global. Every player and the console see i
 
 | Placeholder | What it reports |
 |---|---|
-| `%iris_pregen.available%` | `true` while a job snapshot is published. Use this as the guard |
+| `%iris_pregen.available%` | `true` while pregeneration is active. Use this as the guard |
 | `%iris_pregen.world%` | Name of the world being pregenerated |
 | `%iris_pregen.percent%` | Completion from `0.00` to `100.00`, two decimals, no `%` character |
 | `%iris_pregen.eta%` | Whole seconds remaining |

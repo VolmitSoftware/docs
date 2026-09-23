@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -172,15 +172,3 @@ An Iris structure and a native structure both arrive through the same `structure
 **Command shape.** On Bukkit, Director optional parameters are always `key=value`. Use `/iris structure verify overworld radius=200`. Never use a bare trailing number. The modded loaders use brigadier literals instead.
 
 **Validate before release.** `/iris pack validate` covers every pack; check one with `pack=<pack>` on Bukkit or `/iris pack validate <pack>` on a modded loader. It compiles the jigsaw graph, checks native-replacement placements, and runs object surface-support, loot, spawner, and block-property checks.
-
-## Proving a structure path works
-
-1. Say in one sentence what you want: one repeated build, an assembled graph, or a registered Minecraft structure.
-2. Pick the matching system above. Do that guide smallest worked example in a disposable Studio or test world. Do not start by converting assets between systems.
-3. Validate the pack.
-4. Place or locate one instance directly. On Bukkit that is `/iris object paste <key>` for objects and `/iris structure place <dimension> <structure>` for structures.
-5. Then generate a natural instance in fresh chunks. Check again after a restart.
-
-Steps 4 and 5 are both required. A direct place proves geometry and nothing else. It does not prove spacing, biome eligibility, height gates, or native registry scope. Only natural generation does that.
-
-Add terrain adaptation, loot, markers, and suppression after the plain case generates. Debugging a stack of five features at once is how a broken key looks like a broken engine.

@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Pallid Necropolis"
-description: "Iris biome atlas entry for estranged/pallid-necropolis in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for estranged/pallid-necropolis in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`estranged/pallid-necropolis` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`estranged/pallid-necropolis` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 Estranged cave decoration includes Frostspar with three to five tapered shards, each five to nine blocks long, on continuous organic supports. Overworld uses solid quartz and calcite. Underworld retains its separate base and crying-obsidian tips.
 
@@ -17,14 +17,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
-| Underworld 1010 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
+| Overworld | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
+| Underworld | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `smooth-dunes` (8..20), `vascular-cracked-cliffs` (2..28), `spikes` (0..14); combined authored contribution `10..62` blocks relative to fluid height.
 
@@ -32,7 +32,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -42,13 +42,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:dark_forest`; native-structure derivative `minecraft:pale_garden`; custom identities `estranged_pallid_necropolis`.
 - **Surface:** 1 block(s): `minecraft:pale_moss_block`, `minecraft:calcite`, `minecraft:diorite`, `minecraft:bone_block`; 2-5 block(s): `minecraft:calcite`, `minecraft:diorite`, `minecraft:rooted_dirt`; 8-20 block(s): `minecraft:tuff`, `minecraft:calcite`, `minecraft:stone`. Wall palette: `minecraft:calcite`, `minecraft:diorite`, `minecraft:tuff`, `minecraft:bone_block`.
 - **Content:** 2 object placement rule(s) drawing from 2 object key(s), including `clutter/grave1`, `clutter/genericgrave1`. 2 decorator rule(s) using `minecraft:pale_moss_carpet`, `minecraft:air`, `minecraft:closed_eyeblossom`, `minecraft:open_eyeblossom`. Procedural content: 2 trees (pallid-willow, pallid-spindle), 1 formations (ossuary-spire), 1 ruins (pallid-marker).
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_estranged_pallid_necropolis_8bcbe4bc`.
 - **Surface:** 1 block(s): `minecraft:warped_wart_block`, `minecraft:netherrack`, `minecraft:quartz_block`, `minecraft:bone_block`; 2-5 block(s): `minecraft:netherrack`, `minecraft:quartz_block`; 8-20 block(s): `minecraft:netherrack`. Wall palette: `minecraft:netherrack`, `minecraft:quartz_block`, `minecraft:bone_block`.

@@ -2,7 +2,7 @@
 title: "Volumetric Terrain"
 description: "Iris documentation: Volumetric Terrain"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T12:00:00.000Z
@@ -15,7 +15,7 @@ Related:
 - [14 - Generators, Noise & Expressions](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
 - [25 - Pack Management](/iris/25-pack-management)
 - [36 - Rivers](/iris/36-rivers)
 - [Biome Terrain Shaping](/iris/biomes/terrain-shaping)
@@ -93,7 +93,7 @@ The field accepts an inline object or a snippet path:
 }
 ```
 
-The file is `<pack>/snippet/terrain-3d/cliff.json` and contains the profile object at the top level. Subfolders are allowed; the path in the reference is everything after `snippet/terrain-3d/`. The `densityStyle` and `crackStyle` fields inside it can themselves be `snippet/style/<key>` references, nesting further through `fracture`. Studio completions list available snippet files. See [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets).
+The file is `<pack>/snippet/terrain-3d/cliff.json` and contains the profile object at the top level. Subfolders are allowed; the path in the reference is everything after `snippet/terrain-3d/`. The `densityStyle` and `crackStyle` fields inside it can themselves be `snippet/style/<key>` references, nesting further through `fracture`. Studio completions list available snippet files. See [24 - Snippets](/iris/24-pack-mods-snippets).
 
 The modded `/iris studio package` export copies the entire `snippet/` tree so terrain profiles and the style snippets they reference survive; Bukkit `/iris pack package` includes their contents directly in the exported JSON.
 
@@ -154,7 +154,3 @@ This biome uses a flat generator at Y 128. The profile adds ledges above that he
 ```
 
 `minimumSlope: 0` allows shaping on flat ground. `fluidClearance: 0` and `fluidFade: 1` remove the elevation fade. The smaller vertical scale creates several folds within the 64-block displacement band.
-
-## Generation cost
-
-Larger `amplitude` and `crackDepth` values increase the amount of terrain shaped. Start with moderate values and increase them only as needed for the intended landform.

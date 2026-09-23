@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,13 +23,11 @@ Related:
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [44 - Biome Catalog](/iris/44-biome-catalog)
 
-## The mental model
+## Biome selection and content
 
-A biome file answers two separate questions. They fail in different ways.
+Add the biome key to a region list to select its role: land, sea, shore, or cave. The `rarity` field controls its relative frequency. See [12 - Regions](/iris/12-regions).
 
-**Where does this biome appear?** Not from anything in the file. The region lists it. The role (land, sea, shore, cave) comes from which list it was in. A noise value picks between the siblings in that list weighted by `1 / rarity`. See [12 - Regions](/iris/12-regions).
-
-**What does the world look like where it appears?** That is the whole rest of the file. It runs top to bottom per column:
+The biome fields control terrain shape, materials, and placed content:
 
 ```
 column (x, z)
@@ -49,9 +47,7 @@ column (x, z)
   derivative / customDerivitives  ->  what Minecraft calls this biome (colours, mobs, structure eligibility)
 ```
 
-Three of those steps regularly surprise people.
-
-- **Height is relative to `fluidHeight`, not to Y=0.** `min: 4, max: 10` means "4 to 10 blocks above the water line". Negative values put the natural surface under water. Terrain-first hydrology samples that natural height and publishes an accepted final bed only inside its owned footprint; see [36 - Rivers](/iris/36-rivers).
+- **Height is relative to `fluidHeight`, not to Y=0.** `min: 4, max: 10` means "4 to 10 blocks above the water line". Negative values put the natural surface under water. See [36 - Rivers](/iris/36-rivers) for river channels.
 - **A biome has no `type` field.** `carving/drip` is a cave biome only because a region put it in `caveBiomes`. The same file placed in `landBiomes` would generate as land.
 - **The role can be corrected after height is known.** If a land biome height lands below the water line, Iris swaps in a sea biome from the same region. If it lands in the shore band, a shore biome. A "land" biome with a negative generator will simply never render as itself.
 
@@ -90,15 +86,13 @@ Prerequisites: a validating dimension, a region it lists, and `generators/flat.j
 }
 ```
 
-`min` equal to `max` gives a dead-flat surface at 96 blocks above `fluidHeight`. That makes any height problem obvious later.
+`min` equal to `max` gives a dead-flat surface at 96 blocks above `fluidHeight`.
 
 2. Add `"tutorial/meadow"` to that region `landBiomes`.
 3. Set `"focus": "tutorial/meadow"` on the dimension. Validate. Open Studio on seed `1337`.
 4. Fly into new chunks and run `/iris what biome`.
 
 Success: the load key is `tutorial/meadow`. The surface is grass over 2-4 dirt over stone. The terrain is perfectly flat. There are no unresolved generator warnings.
-
-If nothing generates, compare the region entry, the file path and the `focus` string character for character. If the biome resolves but sits on void, the generator link is wrong. Check that `generators/flat.json` exists and the key matches.
 
 5. Remove `focus`. Reopen Studio. Travel until the biome turns up naturally. Only then add decorators, objects and children.
 
@@ -145,7 +139,7 @@ Observable result: rolling dunes 5-12 above water, with occasional hills adding 
 
 The resulting highest solid block becomes the natural height used by hydrology and ordinary surface placement. Additional exposed floors receive biome surface layers and decorators, overhang undersides use `caveCeilingLayers` or dimension rock, and trees, objects and structures keep their existing placement rules. Inspect a side cut in fresh Studio chunks when tuning — a top-down height preview cannot show covered ledges.
 
-All fourteen fields, their ranges, the fade rules, and the validator errors are in [47 - Volumetric Terrain](/iris/47-volumetric-terrain). Bundled profiles and each biome's numbers are in [Terrain shaping](/iris/biomes/terrain-shaping).
+Field ranges and fade rules are in [47 - Volumetric Terrain](/iris/47-volumetric-terrain). Bundled profiles and each biome's numbers are in [Terrain shaping](/iris/biomes/terrain-shaping).
 
 ## Walkthrough: turn it into an ocean floor
 
@@ -551,18 +545,3 @@ Needs `generators/flat.json` to exist. Everything else in the file has a working
 8. For variants, create the child file and list it in the parent `children`. Never list it in a region.
 9. For colors, tags or mob spawns, add `customDerivitives` with a unique `id` and `category`. Then reopen the world so the datapack installs.
 10. Remove `focus`. Confirm the biome still appears through ordinary region selection.
-
-## Common mistakes
-
-| Mistake | What you will see |
-|---------|-------------------|
-| `derivative` left at `minecraft:the_void` | Void colors, no mob spawning, no structure eligibility |
-| Generator key that does not resolve | The link silently contributes zero height. Terrain flattens instead of erroring |
-| Child biome also listed in a region | The child generates as a full-size root, so the nesting disappears |
-| Spelling `customDerivatives` | Field ignored entirely. The engine key is `customDerivitives` |
-| Sea biome with positive `min`/`max` | It generates above water, then gets replaced by a land biome anyway |
-| Sea biome with a non-ocean `vanillaDerivative` | No native ocean structures generate there |
-| Empty `palette` on the first layer | No surface block. The rock palette shows through |
-| Expecting a `type` field on the biome | Role comes from the region list that selected it |
-| Expecting `slopeCondition` to thin a layer gradually | Out-of-range columns skip the layer entirely. There is no taper |
-| Judging changes in already generated chunks | Biome and layer edits only apply to new chunks |

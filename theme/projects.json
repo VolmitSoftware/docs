@@ -81,7 +81,7 @@
             "href": "/iris/44-biome-catalog"
           },
           {
-            "title": "Pack Mods & Snippets",
+            "title": "Snippets",
             "href": "/iris/24-pack-mods-snippets"
           },
           {
@@ -202,24 +202,12 @@
             "href": "/iris/28-integrations"
           },
           {
-            "title": "Client HUD & Protocol",
+            "title": "Client HUD & Maps",
             "href": "/iris/29-client-hud-protocol"
           },
           {
             "title": "Platform Differences",
             "href": "/iris/30-platform-differences"
-          },
-          {
-            "title": "Startup Safeguard",
-            "href": "/iris/46-startup-safeguard"
-          },
-          {
-            "title": "Determinism & Goldenhash",
-            "href": "/iris/32-determinism-goldenhash"
-          },
-          {
-            "title": "Performance Tuning",
-            "href": "/iris/33-performance-tuning"
           },
           {
             "title": "Multiverse",

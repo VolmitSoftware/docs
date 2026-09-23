@@ -2,13 +2,13 @@
 title: "Flux Crystal Caverns — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/flux-crystal-caverns"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/flux-crystal-caverns` is a direct cave root in the current Overworld 4009 and Underworld 1011 pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/flux-crystal-caverns` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -20,8 +20,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld 4009 | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
-| Underworld 1011 | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
+| Overworld | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
+| Underworld | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -31,17 +31,17 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..680`; sample step `2`; surface clearance `12`; surface breaking `disabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `12`.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:calcite`, `minecraft:smooth_basalt`, `minecraft:amethyst_block`, `minecraft:tuff`. Object set: `clutter/amethyst-cluster1`, `clutter/amethyst-cluster2`, `clutter/amethyst-cluster3`, `clutter/amethyst-cluster4`, `clutter/amethyst-cluster5`, `clutter/stoneboulder1`, `clutter/stoneboulder2`, `clutter/stoneboulder3`, and 3 more.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:quartz_block`, `minecraft:smooth_basalt`, `minecraft:crying_obsidian`, `minecraft:blackstone`. Object set: `underworld/basalt/clutter/amethyst-cluster1`, `underworld/basalt/clutter/amethyst-cluster2`, `underworld/basalt/clutter/amethyst-cluster3`, `underworld/basalt/clutter/amethyst-cluster4`, `underworld/basalt/clutter/amethyst-cluster5`, `underworld/basalt/clutter/stoneboulder1`, `underworld/basalt/clutter/stoneboulder2`, `underworld/basalt/clutter/stoneboulder3`, and 3 more.
 
 ## Child and floating variants
 
-No child or floating-child biome is declared by this root in either pinned pack.
+No child or floating-child biome is declared by this root in either pack.
 
 ## Inspect it in game
 

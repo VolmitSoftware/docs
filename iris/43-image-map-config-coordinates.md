@@ -2,7 +2,7 @@
 title: "Image Map Configuration & Coordinates"
 description: "Complete Iris image-map, binding, coordinate, sampling, and world-boundary reference"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -203,7 +203,7 @@ For `TERRAIN_HEIGHT`, validation also calculates the minimum and maximum output 
 
 ## World boundary
 
-`worldBoundary` is an optional typed dimension field. When present, Iris applies it during world initialization and after a successful reload on the platform's correct server or region scheduling context.
+`worldBoundary` is an optional typed dimension field. When present, Iris applies it when the world loads and after a successful reload.
 
 | Field | Type | Present-key default | Contract |
 |---|---|---:|---|

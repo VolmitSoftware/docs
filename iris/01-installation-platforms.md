@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,18 +12,6 @@ Install the Iris jar matching your server platform and Minecraft version. Java 2
 Install a world pack with `/iris download`; startup does not download packs. Fresh Bukkit installations also need network access to download required libraries. Complete the pack and datapack restart prompts before creating a world.
 
 Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is already installed and you want a world, skip ahead.
-
-## What a good install looks like
-
-Whichever path you take, you are done when all three of these are true:
-
-1. Iris reached its enabled/ready state with no exception in the startup log.
-2. The data directory has a `iris.json`. After you install a pack, `packs/<key>/` is loadable.
-3. `/iris` prints help from the server console.
-
-On a modded client, the Iris keybind category shows that the client mod loaded. It does not prove that the server can generate chunks. Always check the server.
-
-Keep the old jar and complete world backups until you finish the upgrade checks. A new Iris build generates future chunks with the current generator and keeps the selected pack unless you stage a pack update; existing terrain is untouched. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
 
 ## Requirements
 
@@ -44,7 +32,7 @@ Before you replace an existing installation:
 3. Stop the server cleanly.
 4. Back up the Iris jar/mod, the Iris data directory, and every Iris world you intend to keep.
 
-Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That fails in confusing ways rather than picking a winner.
+Install only one Iris platform jar in the `plugins/` or `mods/` folder.
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 
@@ -52,27 +40,26 @@ Never put two Iris platform jars in the same `plugins/` or `mods/` folder. That 
 2. Start the server once.
 3. Install or download a pack, then restart before creating a world.
 
-Then verify from the server console:
+Validate installed packs from the server console:
 
 ```text
-/iris version
 /iris pack validate pack=overworld
 /iris pack validate pack=underworld
 ```
 
-`/iris version` prints `Iris v<version>` and proves command routing. Each `pack validate` must resolve the downloaded pack and finish with no blocking errors.
+Each `pack validate` must finish with no blocking errors.
 
 `/iris pack validate` with no argument validates every installed pack. Name one with `pack=<key>` to check a single pack.
 
-A command that responds is not proof the generator can produce chunks. Finish with the disposable-world walkthrough in [02 - Getting Started](/iris/02-getting-started).
+Create a world with [02 - Getting Started](/iris/02-getting-started).
 
-### Startup validation gates login
+### Startup requirements
 
-Players cannot join until startup validation completes. If Iris reports a native-integration or external-datapack failure, correct the reported issue and restart before creating worlds or opening Studio. `force=true` does not bypass native-integration failures.
+Players cannot join until startup validation completes. Complete the required console prompts and restart before creating worlds or opening Studio. Danger Mode blocks player login and Iris world and Studio operations until you correct the reported issue and fully restart.
 
 Changed external datapacks may cause Iris to restart the server during startup. On plain Spigot, Iris stops instead; start the server again. A pack with blocking validation errors cannot be opened, while other valid packs remain available.
 
-### Recover from a Java agent failure
+### Java agent option
 
 If Iris requests an explicit Java agent:
 
@@ -87,7 +74,7 @@ java -javaagent:plugins/Iris/agent.jar -jar server.jar nogui
 4. Start from the server directory, or use an absolute agent path.
 5. Complete any remaining pack or datapack restart prompt before opening worlds.
 
-Hosts that allow dynamic attachment can use `-XX:+EnableDynamicAgentLoading`. The explicit `-javaagent` option avoids needing dynamic attachment. See [46 - Startup Safeguard](/iris/46-startup-safeguard) for blocked actions and restart requirements.
+Hosts that allow dynamic attachment can use `-XX:+EnableDynamicAgentLoading`. The explicit `-javaagent` option avoids needing dynamic attachment.
 
 ### Permissions
 
@@ -127,15 +114,14 @@ Create your first world with [02 - Getting Started](/iris/02-getting-started).
 
 Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. The accepted 26.2 runtime is the official Youer build at commit `4eb14c90`, which bundles NeoForge 26.2.0.67.
 
-Verify server-side:
+Validate the installed packs:
 
 ```text
-/iris version
 /iris pack validate overworld
 /iris pack validate underworld
 ```
 
-Modded `/iris version` prints more than the Bukkit one. It prints mod version, platform, Minecraft version, and the count of loaded Iris dimensions. The install passes when that line looks right, both managed pack directories contain their primary dimension JSON, and validation reports no blocking errors.
+Resolve blocking pack-validation errors before creating a world.
 
 ### Restart once after installing a pack
 
@@ -147,7 +133,7 @@ Installed Iris packs show up as selectable World Types on the Create New World s
 
 ### Client HUD
 
-Installing the mod jar on a client adds a pregeneration HUD. It shows a progress bar, chunks done and total, percent, chunks per second, and ETA. It turns yellow while paused. `H` toggles it. The keybind category is "Iris" and also holds `M` (Iris Vision Map) and `J` (Iris What overlay). All three are rebindable. Details in [29 - Client HUD & Protocol](/iris/29-client-hud-protocol).
+Installing the mod jar on a client adds a pregeneration HUD. It shows a progress bar, chunks done and total, percent, chunks per second, and ETA. It turns yellow while paused. `H` toggles it. The keybind category is "Iris" and also holds `M` (Iris Vision Map) and `J` (Iris What overlay). All three are rebindable. Details in [29 - Client HUD & Maps](/iris/29-client-hud-protocol).
 
 The client HUD works with modded and Bukkit/Paper Iris servers. Players without the client mod use the server's boss bar instead.
 
@@ -214,7 +200,7 @@ Full key list: [03 - Configuration](/iris/03-configuration).
 
 ## Native runtime dependencies
 
-Fresh Bukkit installations download required libraries from dependency repositories, including JitPack. Allow outbound HTTPS and write access to `plugins/Iris/cache/libraries/`. If a repository is unavailable, wait for access to return and restart; first startup cannot finish without those libraries.
+Fresh Bukkit installations download required libraries from dependency repositories, including JitPack. Allow outbound HTTPS and write access to `plugins/Iris/cache/libraries/`.
 
 Keep this cache for subsequent offline starts. Changing Iris or Minecraft versions may require another download. Do not install dependency jars as separate plugins. Fabric, Forge and NeoForge jars include their required libraries.
 

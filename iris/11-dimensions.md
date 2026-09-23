@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-23T07:27:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,7 +26,7 @@ Related:
 
 ## Decide these before you create a world
 
-When a world binds to an engine, Iris pins the dimension type key, the exact `environment`, and the effective generated dimension type: minimum Y, total height (`max - min`), `logicalHeight`, every `dimensionOptions` value after base-template resolution, and the `fullbright` ambient-light override. Hotload refuses a change to any of them. Close and reopen Studio after a contract edit.
+Choose the dimension key, height, environment, dimension options, and lighting before creating a world. Close and reopen Studio after changing these fields.
 
 > On a production world the generated type is stored in Minecraft's registry. **Changing the contract means recreating the world.**
 {.is-warning}
@@ -116,11 +116,11 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 |-------|------|---------|------------------------------------|
 | `dimensionHeight` | `IrisRange` | `{ "min": -64, "max": 320 }` | The world build floor and ceiling in world Y. Raise `max` for tall mountain packs. Lower `min` for deep-cave packs. Contract field: pick it once per world |
 | `logicalHeight` | int | `256` | The vanilla logical height of the generated dimension type. Gameplay teleports respect this ceiling (nether portal search, chorus fruit). Usually set it equal to the total height. Contract field |
-| `fluidHeight` | int | `63` | World Y of the ocean surface. Every biome generator height is measured from this baseline. If you lower it, the same biome generators produce taller land. If you raise it, low biomes drown. Not a fixed world-contract field. A staged update blends new surface terrain from the frozen historical edge; existing chunks remain unchanged |
+| `fluidHeight` | int | `63` | World Y of the ocean surface. Every biome generator height is measured from this baseline. If you lower it, the same biome generators produce taller land. If you raise it, low biomes drown. Changes apply to new chunks after a pack update |
 | `bedrock` | boolean | `true` | Writes a bedrock layer at the build floor. Turn it off for void-bottom or stacked-dimension packs |
 | `caveLavaHeight` | int | `8` | Height above the build floor at or below which carved cave space fills with lava instead of air. Raise it to flood deep caves. Set it to 0 for dry caves. Explicit fluid intent from a carver overrides this |
 | `name` | string | `"A Dimension"` | Display name shown by commands and the studio scoreboard. Cosmetic |
-| `version` | int | `1` | A stamp you control. Iris does not act on it. It exists so pack updates can be recognized. It also helps operators avoid a silent swap of incompatible pack generations under an existing world |
+| `version` | int | `1` | A stamp you control. Iris does not act on it. It exists so pack updates can be recognized. Change it when publishing a new pack version |
 
 ## Terrain sampling
 
@@ -615,31 +615,18 @@ Resolution order for any block key in the pack is: the live registry, then the l
 
 Without a fallback, the biome, decorator, deposit, object, or placement that composes the missing block does not generate on that version. See [25 - Pack Management](/iris/25-pack-management) for the gate, the startup listing, and `/iris pack compat`.
 
-### When the dimension itself is the problem
+## Studio preview fields
 
-The gate normally removes content and leaves the rest of the pack generating. It stops being survivable in two cases:
-
-- The dimension composes a missing block directly — `rockPalette`, `fluidPalette`, or another block palette on the dimension file — and no fallback covers it. `blockDrops[].blocks` is a match list and is never gated; a `blockDrops[].drops` item that does not exist is dropped on its own.
-- Every region reachable from the dimension has been excluded, so no region is left to place.
-
-Either case makes the pack unusable on that version. It is a blocking validation error, and world creation and Studio open are refused through the same path as any other broken pack. Declare a `blockFallbacks` entry, or run the pack on a Minecraft version that has the content.
-
-## Studio and debug fields
-
-These exist to help you inspect the generator, not for production. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
+Use these fields to inspect terrain and objects in Studio. `studioMode` is applied only by the Bukkit chunk generator. On Fabric, Forge and NeoForge the field is ignored.
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
-| `studioMode` | `StudioMode` | `NORMAL` | Swaps in a debug generator. `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` lay supported pack biomes out by load key in cells of that many chunks. Cell coordinates select the biome and owner region without mutating `focus` or creating new generation activations. `OBJECT_BUFFET` lays out objects. `REGION_BUFFET` currently installs no generator and behaves exactly like `NORMAL`. Remove before packaging |
+| `studioMode` | `StudioMode` | `NORMAL` | Selects a preview layout. `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` lay supported pack biomes out by load key in cells of that many chunks. `OBJECT_BUFFET` lays out objects. `REGION_BUFFET` currently installs no generator and behaves exactly like `NORMAL`. Remove before packaging |
 | `debugChunkCrossSections` | boolean | `false` | Deletes whole chunks on a grid so you can walk up and read the terrain column like a diagram |
 | `debugCrossSectionsMod` | int | `3` | The X/Z modulus that decides which chunks get cut, 2 to 16. Larger values cut fewer chunks |
 | `explodeBiomePalettes` | boolean | `false` | Inserts air gaps between palette layers so you can count and identify them visually |
 | `explodeBiomePaletteSize` | int | `3` | Size of those gaps, 1 to 16 |
 | `debugSmartBore` | boolean | `false` | Fills the air volume objects carve for themselves with cobweb, making object footprints visible |
-
-## Annotations are editor hints, not runtime validation
-
-Schema ranges underline bad values in your editor but do not reject them at load. Only dimension-type constraints, `staticObjects`, `worldBoundary`, hydrology and `riverPolicy`, and image maps have runtime validators. Treat every other range in the tables above as design guidance and verify unusual values in Studio. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
 ## A complete minimal dimension
 
@@ -694,22 +681,3 @@ Path: `packs/overworld/dimensions/overworld.json` under the platform data direct
 8. Tune land/sea and zoom. Then add subsystems one at a time: caves, then ores and deposits, then objects, then structures. Validate after each new resource edge so a broken key is attributable.
 9. Close and reopen Studio after you edit `dimensionHeight`, `logicalHeight`, `environment`, `dimensionOptions`, `fullbright`, or the dimension file name in a way that changes the effective contract. Hotload rejects those changes by design.
 10. Create the production world only after Studio is clean: `/iris create name=mypack-test type=mypack seed=1337`. Recreate the world rather than edit its height contract later.
-
-The baseline passes when Studio opens clean. Validation must report no blocking errors. The same seed must reproduce the same terrain after a close and reopen.
-
-## Common author mistakes
-
-| Mistake | What actually happens |
-|---------|-----------------------|
-| Empty or unresolvable `regions` | No biome can be selected, so the dimension has nothing to place |
-| Region file exists but is not listed in `regions` | It never generates. Nothing warns you |
-| Treating `fluidHeight` as an offset from the build floor | It is world Y. The engine converts it to internal Y by subtracting `dimensionHeight.min` |
-| `dimensionHeight` span or `min` not a multiple of 16 | Blocked by `pack validate` (the same bounds the dimension-type compiler enforces) |
-| `logicalHeight` greater than `max - min` | Rejected when the dimension type is constructed |
-| Editing height, logical height, environment, effective dimension options, `fullbright`, or the dimension file name mid-Studio | Hotload is refused by the runtime contract. Close and reopen |
-| Treating `worldBoundary.size` as a radius | It is Minecraft's full border diameter. Each edge is half the size from the center |
-| Expecting `worldBoundary` to crop an image | Border and image coverage are separate. Set the image map `outOfBounds` policy |
-| Embedding image-map settings inside a generator style | `imageMap` is a first-class resource key under `image-maps/` |
-| Expecting decoration or caves from `SUPERFLAT`, `ENCLOSURE`, or `ISLANDS` | Those modes register only terrain and biome stages |
-| Leaving `focus` or `focusRegion` set when packaging | The included pack generates exactly one biome or region |
-| Changing pack files and expecting an existing world to change immediately | Production worlds run from their active immutable epoch. Stage an update and restart; see [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |

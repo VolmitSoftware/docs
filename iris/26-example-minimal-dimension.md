@@ -2,12 +2,12 @@
 title: "Example - Minimal Dimension"
 description: "Iris documentation: Example - Minimal Dimension"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-The smallest pack Iris will actually generate: one dimension, one region, one biome, one generator. Four files, validated, proven in Studio on a fixed seed, then proven again in a real world across a restart. Keep this four-file state as a rollback point before you add anything else.
+Create a pack with one dimension, one region, one biome, and one generator. This example produces a flat grass world at Y 159.
 
 Related:
 
@@ -22,8 +22,6 @@ Related:
 - [04 - Commands & Permissions](/iris/04-commands-permissions)
 
 Prerequisites: Iris running with its data folders present, operator access on Bukkit or gamemaster on a mod loader, no existing pack or world using the keys `minimal` or `minimal-test`, and a console you can watch.
-
-Do not add objects, caves, structures, custom biomes, or datapacks until this baseline generates and reloads cleanly. Each has its own failure mode and they are far easier to diagnose one at a time.
 
 ## 1. Create the pack root
 
@@ -163,7 +161,7 @@ With `fluidHeight` 63 and `min` = `max` = 96, every column resolves to 96 above 
 }
 ```
 
-A generator turns coordinates into a 0-to-1 noise value, which the biome `min`/`max` band maps into a height. `FLAT` returns a constant, and because `min` equals `max` the mapping is constant anyway, so the surface is perfectly level. The interpolator controls how neighboring biomes blend their heights; `NONE` gives hard edges, which is what you want while proving the plumbing. This file matches the bundled overworld `generators/flat.json` byte for byte.
+A generator turns coordinates into a 0-to-1 noise value, which the biome `min`/`max` band maps into a height. `FLAT` returns a constant, and because `min` equals `max` the mapping is constant anyway, so the surface is perfectly level. The interpolator controls how neighboring biomes blend their heights; `NONE` gives hard edges, which keeps this example flat. This file matches the bundled overworld `generators/flat.json` byte for byte.
 
 | Field | Why |
 |-------|-----|
@@ -176,34 +174,25 @@ A generator turns coordinates into a 0-to-1 noise value, which the biome `min`/`
 - Bukkit: `/iris pack validate pack=minimal`
 - Modded: `/iris pack validate minimal`
 
-Studio refuses to open a pack whose validation result is not loadable, and fails closed if validation never ran. Catching a broken key here costs seconds; catching it after a world exists costs a world.
+The pack must validate without blocking errors before Studio can open it.
 
 Expect no blocking errors. A missing region or biome means the key in the parent file and the file path under the type folder disagree — compare them character for character, including the folder prefix. Validation also checks that structure placements fit inside the declared height range, that both dimension-height values satisfy Minecraft's bounds and multiple-of-16 rules, and that `logicalHeight` fits inside the span.
 
-## 7. Prove it in Studio
+## 7. Preview in Studio
 
 1. Open: Bukkit `/iris studio open minimal seed=1337`, modded `/iris studio open minimal 1337`.
-2. Walk into chunks that have never generated.
-3. Run `/iris what region` and `/iris what biome`.
-4. Close Studio, reopen it on the same seed, and generate another new area.
+2. Run `/iris what region` and `/iris what biome`.
 
-Studio runs directly off `packs/minimal/` and is the only place where an edit is visible without recreating anything. The fixed seed is what makes step 4 meaningful.
+Expect a uniform grass surface at world Y 159, region `Starter`, and biome `Starter Plains`. Studio reads `packs/minimal/`; save edits there and generate new chunks to see them.
 
-Expect a uniform grass surface at world Y 159, region `Starter`, biome `Starter Plains`, and no missing-resource or parse errors. After the reopen, terrain in a fresh area must be identical to what the same coordinates produced before; if it is not, something in the pack is reading a non-deterministic input.
+## 8. Create the world
 
-## 8. Prove it in a real world
-
-1. Create: Bukkit `/iris create name=minimal-test type=minimal seed=1337`, modded `/iris create minimal-test minimal 1337`. Folia creates the world live without restarting.
+1. Create: Bukkit `/iris create name=minimal-test type=minimal seed=1337`, modded `/iris create minimal-test minimal 1337`.
 2. Teleport: Bukkit `/iris tp minimal-test`, modded `/iris tp irisworldgen:minimal-test`.
-3. Generate ordinary new chunks and confirm the same flat grass result you saw in Studio.
-4. Stop the server cleanly, start it again, teleport back, and generate another new area.
-5. Confirm `<dimensionRoot>/iris/generation/epochs/<epoch-id>/pack/` contains the four-file immutable epoch.
 
-World creation records the first immutable pack epoch, and later edits under `packs/minimal/` do not reach it until you stage an update. The restart in step 4 proves the generated dimension type survives a registry reload, which is the most common way a height or environment mistake surfaces.
+The world uses a saved copy of the pack. To apply later edits, use [Pack Management](/iris/25-pack-management#stage-a-production-world-update).
 
-The walkthrough passes only when validation, the Studio reopen, world creation, teleport, and the server restart all succeed.
-
-## 9. Extend without breaking the baseline
+## 9. Add content
 
 Add one thing at a time and re-validate after each, so a broken key is always attributable to the last edit.
 

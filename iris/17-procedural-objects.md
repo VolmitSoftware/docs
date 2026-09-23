@@ -2,37 +2,24 @@
 title: "Procedural Objects"
 description: "Iris documentation: Procedural Objects"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Procedural objects are structures Iris builds from JSON parameters instead of loading from `.iob` files. Each entry bakes a small pool of deterministic variant objects at engine start, then scatters them exactly like an object placement. Six families exist, all under `proceduralObjects` on a biome or a region: trees, fungi, coral, crystals, formations, ruins.
+Procedural objects are structures Iris builds from JSON parameters instead of loading from `.iob` files. Six families exist, all under `proceduralObjects` on a biome or a region: trees, fungi, coral, crystals, formations, ruins.
 
 Trees have their own page: [17b - Procedural Trees](/iris/17b-procedural-trees). This page covers the shared model, the other five families, and sapling overrides.
 
 Related: [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [15 - Caves & Carving](/iris/15-caves-carving), [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits), [18 - Structures Overview](/iris/18-structures-overview), [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
-## The mental model
+## Placement
 
-Two things happen at completely different times.
+Each entry generates `variants` different shapes from its settings and `seed`. Increase `variants` for more shapes, or change `seed` for a different set.
 
-**Bake.** The first time an entry is touched, Iris runs the family generator `variants` times and produces that many in-memory objects. The bake is a pure function of the entry fields and its `seed`, so the same JSON always produces byte-identical variants on every platform and every restart. An entry that bakes nothing (impossible dimensions, an empty palette) is silently skipped at placement time, so a family that never appears is worth checking in the logs first.
+`chance` controls how often an entry places in a chunk. `density` is the number of attempts in a chunk that passes. `chance: 0.5, density: 4` gives four attempts in half the chunks.
 
-**Place.** Per chunk, for each entry in scope:
-
-1. Roll `chance` once, with a small +/- 0.005 jitter, for the whole entry.
-2. If it passes, make `density` attempts.
-3. Each attempt picks a random baked variant and a random X/Z inside the chunk, or searches for a cave anchor, then hands the variant to the ordinary object placer. The entry supplies `mode`, `rotation`, `clamp`, `translate`, `underwater`, and stilt or vacuum settings.
-
-So `chance` is per chunk and `density` is per chunk-that-passed. `chance: 0.5, density: 4` gives four objects in half the chunks and none in the rest — clumpier than `chance: 1, density: 2`, which gives two everywhere.
-
-Placement runs in the same stage as `.iob` object placement, before terrain blocks exist. That is why procedural objects can be anchored to carved cave space, and why they respect the same surface-support rules as regular objects ([20 - Object Placement](/iris/20-object-placement)).
-
-**Scope.** Three lists are read per chunk, all resolved at the chunk center: the surface biome's `proceduralObjects`, the region's, and the cave biome's when it differs. All three are evaluated and they add rather than override. A biome-owned `CARVING_ONLY` entry may anchor only where that exact biome owns the cave cell; region-owned entries are intentionally region-wide.
-
-> **Cost.** The mantle object radius grows to cover the largest baked variant across the whole pack. One 60-block formation widens the generation footprint for every chunk in the world, not just the biome that uses it. Keep large shapes rare and large entries rarer.
-{.is-warning}
+Surface biome, region, and cave biome lists all contribute. A biome-owned `CARVING_ONLY` entry places only in that cave biome. Region-owned entries apply throughout the region. Use the [object placement settings](/iris/20-object-placement) to control terrain support and anchoring.
 
 ## Container (`IrisProceduralObjects`)
 
@@ -58,14 +45,14 @@ Snippet key: `procedural-objects`. Valid on biomes and regions.
 
 ## Shared placement fields
 
-Every family carries this same block of fields and converts them into an `IrisObjectPlacement` at placement time. Defaults differ per family and are noted where they diverge.
+Every family supports these placement fields. Defaults differ per family and are noted where they diverge.
 
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `name` | family name | Used in logs and as the variant load key. Must be unique within a pack if you want to identify variants in debug output |
 | `chance` | 0.4 (trees, fungi, coral), 0.2 (crystals), 0.05 (ruins), 0.02 (formations) | Probability the entry attempts anything at all in a given chunk. 0 never attempts. 1 attempts every chunk |
 | `density` | `1` | Attempts once the chance roll passes. Raising this clusters objects. Raising `chance` spreads them |
-| `variants` | 8 (trees), 6 (all others) | How many distinct shapes to bake, 1 to 64. Below about 4 the repetition is visible. Above about 16 you are paying memory for variation nobody sees |
+| `variants` | 8 (trees), 6 (all others) | Number of distinct shapes, 1 to 64 |
 | `seed` | `1337` | Bake seed. Change it to get an entirely different set of shapes from identical settings |
 | `mode` | `CENTER_HEIGHT`, except ruins `MIN_HEIGHT` | Terrain anchor mode. `MIN_HEIGHT` plants the lowest footprint corner, good for slabs and rubble on slopes. `CENTER_HEIGHT` averages, good for tall pillars |
 | `rotation` | identity | Rotates placements so variants do not all face the same direction |
@@ -76,8 +63,6 @@ Every family carries this same block of fields and converts them into an `IrisOb
 | `stiltSettings` | unset | Configuration for `STILT`, `MIN_STILT`, `FAST_STILT`, `FAST_MIN_STILT`, `CENTER_STILT`, `ERODE_STILT`, `ORGANIC_STILT` |
 | `vacuumSettings` | unset | Configuration for `VACUUM`, `VACUUM_HIGH`, `VACUUM_FAST`, `VACUUM_ORGANIC`, `VACUUM_WAVY` |
 | `surfaceSupportBuffer` | `3` (formations only) | Solid ground required around the footprint. Iris uses the larger of this and the dimension `objectSurfaceSupportBuffer` |
-
-Variant load keys are `procedural/tree/<name>#<i>` for trees and `procedural/<name>#<i>` for every other family.
 
 Only `CARVING_ONLY` entries take the cave path. Those search the chunk for an anchor using the active cave profile's `defaultObjectAnchor`, `anchorScanStep`, `anchorSearchAttempts`, and `objectMinDepthBelowSurface`; an entry that finds no anchor is skipped for that attempt. Dry entries reject water, explicit lava, and ordinary carved cells at or below the dimension cave-lava height. Set `underwater: true` only when a procedural object is intentionally allowed to anchor in cave fluid. The profile's `defaultObjectPlaceMode` overrides the entry `mode`, but only when the entry left `mode` at the default `CENTER_HEIGHT`. See [15 - Caves & Carving](/iris/15-caves-carving).
 
@@ -262,13 +247,3 @@ Dimension `treeSettings` gates the whole feature:
 4. Add palettes, accents, and decorators once the shape holds up from several angles.
 5. Match `carvingSupport` to the environment. Cave props also want a stilt place mode, either on the entry or through the cave profile's `defaultObjectPlaceMode`.
 6. Drop `chance` to production values, remove the dimension `focus`, and verify the family stays inside the biomes and regions that declare it.
-
-The pass condition: the same seed reproduces the same shapes across a Studio restart, the placement leaves believable negative space, and no variant is skipped in the log. When exact hand-authored geometry matters more than variation, use an `.iob` object instead ([19 - Objects](/iris/19-objects)).
-
-## Practical notes
-
-- Procedural objects are independent of `objects` placements, decorators, and jigsaw structures. Nothing is shared except the placement machinery.
-- `plausible` exists only on trees. The other five families always place with decay prevention active.
-- `IrisTree` (sapling to object) and `IrisProceduralTree` (worldgen bake) are unrelated types with similar names.
-- An entry whose bake produces no blocks is skipped silently at placement time. If a family never appears and `chance: 1` did not help, look for bake warnings in the console.
-- Every baked variant enlarges the mantle object radius for the entire engine. A single very large formation costs generation time everywhere, not just where it spawns.

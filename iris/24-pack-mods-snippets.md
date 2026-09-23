@@ -1,13 +1,13 @@
 ---
-title: "Pack Mods & Snippets"
-description: "Iris documentation: Pack Mods & Snippets"
+title: "Snippets"
+description: "Reuse palettes, decorators, noise styles, and other JSON definitions across an Iris pack."
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Snippets let you reuse nested JSON values by referencing files under `snippet/<type>/`. Supported fields accept an inline object or a snippet path. Files under `mods/` do not affect generation; edit pack resources directly instead.
+Snippets let you reuse nested JSON values by referencing files under `snippet/<type>/`. Supported fields accept an inline object or a snippet path.
 
 Related:
 
@@ -142,9 +142,7 @@ Each value is the folder name under `snippet/` and the required prefix for refer
 |---------------|-------|
 | `attribute-modifier` | Attribute modifier |
 | `axis-rotation` | Axis rotation clamp |
-| `biome-injector` | Mod biome injector |
 | `biome-palette` | Biome palette layer |
-| `biome-replacer` | Mod biome replacer |
 | `block-drops` | Block drops |
 | `cave-field-module` | Cave field module |
 | `cave-profile` | Cave profile |
@@ -175,15 +173,11 @@ Each value is the folder name under `snippet/` and the required prefix for refer
 | `image-map` | Image map |
 | `loot` | Loot |
 | `loot-registry` | Loot reference |
-| `noise-style-replacer` | Mod noise style replacer |
 | `object-block-replacer` | Object replace |
 | `object-limit` | Object limit |
 | `object-loot` | Object loot |
 | `object-marker` | Object marker |
-| `object-placement-biome-injector` | Mod object placement biome injector |
-| `object-placement-region-injector` | Mod object placement region injector |
 | `object-placer` | Object placement |
-| `object-replacer` | Mod object replacer |
 | `object-rotator` | Object rotation |
 | `object-scale` | Object scale |
 | `object-translator` | Object translate |
@@ -195,7 +189,6 @@ Each value is the folder name under `snippet/` and the required prefix for refer
 | `procedural-tree` | Procedural tree |
 | `range` | Range |
 | `rate` | Rate |
-| `region-replacer` | Mod region replacer |
 | `ruin` | Ruin |
 | `ruin-decorator` | Ruin decorator |
 | `shaped-style` | Shaped generator style |
@@ -216,51 +209,7 @@ Each value is the folder name under `snippet/` and the required prefix for refer
 | `tree-sub-branches` | Tree sub branches |
 | `vacuum-settings` | Vacuum settings |
 
-Whole-file resources (dimensions, regions, biomes, generators, loot tables, entities, spawners, markers, mods, objects, and structures) are not snippet types. They already have their own folders and are referenced by key. Only nested field types appear above.
-
-## Pack mods (inactive)
-
-Files under `mods/` do not change generated terrain, even when Studio offers completions for them. Edit the target dimension, region, biome, generator, or object placement directly.
-
-The following fields remain visible in the schema but are inactive:
-
-| Field | Type | Default | Intended meaning |
-|-------|------|---------|------------------|
-| `name` | string | `"A Pack Modification"` | Human name, at least 2 characters |
-| `forDimension` | string | `""` | Dimension load key to scope to. Empty means any |
-| `overrideFluidHeight` | int -1..512 | `-1` | Fluid height override. `-1` leaves it alone |
-| `removeBiomes` | string[] | `[]` | Biome keys to strip |
-| `removeObjects` | string[] | `[]` | Object keys to strip |
-| `removeRegions` | string[] | `[]` | Region keys to strip |
-| `injectRegions` | string[] | `[]` | Region keys to add to the dimension |
-| `biomeInjectors` | object array | `[]` | Add biomes to a region |
-| `biomeReplacers` | object array | `[]` | Swap one biome for another |
-| `objectReplacers` | object array | `[]` | Swap object keys |
-| `biomeObjectPlacementInjectors` | object array | `[]` | Add object placements to a biome |
-| `regionObjectPlacementInjectors` | object array | `[]` | Add object placements to a region |
-| `regionReplacers` | object array | `[]` | Swap regions |
-| `blockReplacers` | object array | `[]` | Block find/replace, same shape as object material replacers |
-| `styleReplacers` | object array | `[]` | Replace `NoiseStyle` usages |
-
-Shapes of the nested types, all of which are also registered snippet types:
-
-```json
-{ "region": "temperate", "inject": ["temperate/meadows"] }
-```
-```json
-{ "find": ["temperate/plains"], "replace": "temperate/lush-plains" }
-```
-```json
-{ "find": ["temperate"], "replace": "forests" }
-```
-```json
-{ "find": ["clutter/camp1"], "replace": "clutter/camp3" }
-```
-```json
-{ "biome": "temperate/plains", "place": [{ "chance": 0.01, "place": ["clutter/camp1"] }] }
-```
-
-In the inactive `regionObjectPlacementInjectors` schema, `biome` holds a region key. The `styleReplacers` schema contains `find` (a noise style name), `replace` (a style object), and `replaceTypeOnly` (whether to replace just the style name).
+Whole-file resources (dimensions, regions, biomes, generators, loot tables, entities, spawners, markers, objects, and structures) are not snippet types. They already have their own folders and are referenced by key. Only nested field types appear above.
 
 ## Related commands
 

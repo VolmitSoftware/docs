@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -50,9 +50,9 @@ Flat coastlines with a high `shoreHeightMax` produce wide beaches. Steep cliffs 
 
 Renaming a region, changing `landBiomeZoom`, or changing the number of land biomes can also alter the shore-height pattern.
 
-## Walkthrough: add a region and prove it generates
+## Add a region
 
-Prerequisites: a dimension that validates, and one biome that already validates and is listed as a root somewhere. Keep the new region content-free until selection works. That separates selection problems from placement problems.
+Start with a valid dimension and an existing root biome.
 
 1. Create `regions/tutorial.json`:
 
@@ -70,13 +70,11 @@ Prerequisites: a dimension that validates, and one biome that already validates 
 Replace `starter` with the exact load key of your existing biome. Use root parents only. Never list a biome that is already someone child.
 
 2. Add `"tutorial"` to the dimension `regions` array.
-3. Set `"focusRegion": "tutorial"` on the dimension. This pins every column to that region so nothing else can be blamed.
-4. Validate the pack. Then open Studio on seed `1337` (`/iris studio open <pack> 1337`. See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas) for the modded equivalent).
+3. Set `"focusRegion": "tutorial"` on the dimension. This selects that region for every column while you edit.
+4. Validate the pack. Then open Studio on seed `1337` (`/iris studio open <pack> seed=1337` on Bukkit or `/iris studio open <pack> 1337` on mod loaders).
 5. Fly into freshly generated chunks and run `/iris what region`.
 
 Success: it reports `tutorial` everywhere. `/iris what biome` reports `starter`. Validation logs no unresolved keys.
-
-If a different region appears, `focusRegion` does not match the file name. If the region resolves but terrain is missing, the problem is the biome or its generator, not the region. Region rarity and zoom cannot repair a broken resource reference.
 
 6. Remove `focusRegion`. Reopen Studio. Travel until `tutorial` shows up on its own. Now add sea and shore biomes together, then cave biomes. Validate after each group.
 

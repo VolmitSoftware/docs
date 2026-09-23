@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Calcite Peaks"
-description: "Iris biome atlas entry for mountain/calcite-base in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for mountain/calcite-base in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`mountain/calcite-base` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`mountain/calcite-base` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
-| Underworld 1010 | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
+| Overworld | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
+| Underworld | `tundra` (Tundra) | 1 | 1 | 1 | 6.12% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `mountain` (143..220); combined authored contribution `143..220` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -40,13 +40,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:windswept_hills`; native-structure derivative `minecraft:windswept_hills`; no custom or scatter identities.
 - **Surface:** 2 block(s) at slope 0-3.6: `minecraft:grass_block`; 2 block(s) at slope 3.6-13.6: `minecraft:calcite`. Wall palette: `minecraft:stone`.
 - **Content:** No biome-local object, decorator, procedural, deposit, or effect rules.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_mountain_calcite_base_2bae18be`.
 - **Surface:** 2 block(s) at slope 0-3.6: `minecraft:basalt`; 2 block(s) at slope 3.6-13.6: `minecraft:blackstone`. Wall palette: `minecraft:blackstone`.

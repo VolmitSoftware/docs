@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Prismatics Red"
-description: "Iris biome atlas entry for prismatics/red in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for prismatics/red in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`prismatics/red` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`prismatics/red` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `prismatics` (Prismatics) | 1 | 1 | 1 | 6.25% |
-| Underworld 1010 | `prismatics` (Prismatics) | 1 | 1 | 1 | 6.25% |
+| Overworld | `prismatics` (Prismatics) | 1 | 1 | 1 | 6.25% |
+| Underworld | `prismatics` (Prismatics) | 1 | 1 | 1 | 6.25% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `plain` (24..52), `highplains` (52..72); combined authored contribution `76..124` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -40,13 +40,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:plains`; native-structure derivative `minecraft:plains`; no custom or scatter identities.
 - **Surface:** 2-3 block(s): `minecraft:red_concrete_powder`; 4-8 block(s): `minecraft:red_concrete`. Wall palette: `minecraft:red_concrete`.
 - **Content:** 5 object placement rule(s) drawing from 34 object key(s), including `clutter/concretelith1`, `clutter/concretelith2`, `clutter/concretelith3`, `clutter/concretelith4`, `clutter/concretelith5`, `clutter/concretelith6`, `clutter/concretelith7`, and 27 more.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_prismatics_red_8444e193`.
 - **Surface:** 2-3 block(s): `minecraft:nether_bricks`; 4-8 block(s): `minecraft:nether_bricks`. Wall palette: `minecraft:nether_bricks`.

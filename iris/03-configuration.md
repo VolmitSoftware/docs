@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,6 @@ Missing groups use their defaults.
 | `gui` | Desktop windows opened on the server machine |
 | `autoConfiguration` | Bukkit server timeout settings |
 | `generator` | World creation defaults and generation transitions |
-| `concurrency` | Not configurable; any existing field is ignored |
 | `studio` | Studio world behavior |
 | `performance` | Caches and background maintenance |
 | `pregen` | Pregeneration scheduling, limits and timeouts |
@@ -130,7 +129,7 @@ These settings apply only to Bukkit servers. Disable them if you manage the corr
 
 ## `performance`
 
-These are advanced settings. Restart requirements are listed for each key. See [33 - Performance Tuning](/iris/33-performance-tuning).
+Restart requirements are listed for each key.
 
 | Key | Default | Takes effect | Use |
 |-----|---------|--------------|-----|
@@ -233,4 +232,3 @@ World-management commands also update this file. See [06 - Worlds & Lifecycle](/
 - [08 - Localization](/iris/08-localization)
 - [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
 - [25 - Pack Management](/iris/25-pack-management)
-- [33 - Performance Tuning](/iris/33-performance-tuning)

@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,6 @@ Iris supports Bukkit-family servers, Fabric, Forge and NeoForge. Pack content is
 | Settings | `plugins/Iris/iris.json` | `<configDir>/iris/iris.json` |
 | Packs | `plugins/Iris/packs/` | `<configDir>/irisworldgen/packs/` |
 | Mod config | — | `<configDir>/irisworldgen/modded.json` |
-| GoldenHash baselines | `plugins/Iris/golden/` | `<configDir>/irisworldgen/golden/` |
 | Studio pack exports | `plugins/Iris/packs/exports/` | `<configDir>/irisworldgen/exports/` |
 | Generated datapack | World `datapacks/` | `<configDir>/irisworldgen/generated/datapack/` |
 | Persistent dynamic-world registry | `<level-root>/iris/worlds.json` | `<world-root>/iris/iris-dimensions.json` |
@@ -50,8 +49,6 @@ Both platforms support `iris.json` hotload and Studio pack hotload. Use `/iris r
 Install packs with `/iris download` before creating worlds; startup does not download them. See [04 - Commands & Permissions](/iris/04-commands-permissions) for each platform's syntax.
 
 Replacement is available on Paper, Purpur, Leaf and Folia and requires a manual restart. You can stage several distinct targets before restarting. World creation and replacement commands are covered in [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
-
-Folia 26.2 cannot run some functions supplied by Dungeons & Taverns 5.3.0. Custom packs importing it may report function-load errors. See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
 ## Commands and permissions
 
@@ -100,12 +97,12 @@ Full command tables: [04 - Commands & Permissions](/iris/04-commands-permissions
 | Multiverse-Core | optional | no | no | no |
 | Item plugins (ItemsAdder, Mythic, and similar) | supported integrations | loader-specific / limited | limited | limited |
 | Integration API | [Plugin API](/iris/90-api-getting-started) | [Modded API](/iris/94-api-modded) | same | same |
-| Client HUD / protocol | optional client mod | optional client mod | optional | optional |
+| Client HUD and maps | optional client mod | optional client mod | optional | optional |
 | Tree feller | settings + `iris.treefeller` | settings + loader permission | same | same |
 | Auto Spigot/Paper timeout and watchdog config | yes | no | no | no |
 | Custom biome restart prompts | yes (`iris.all` / op) | different datapack flow | same | same |
 
-"Message only" means the command exists and prints an explanation of where to run it instead. It is not a silent failure.
+"Message only" means the command directs you to a supported platform.
 
 Jigsaw structures run on every platform; the authoring tools require Bukkit. Only the session owner can edit the active Jigsaw Studio world. A `VANILLA_PORTABLE` export targets Minecraft 26.3 on 26.3 servers and Minecraft 26.2 on earlier supported servers.
 
@@ -134,11 +131,9 @@ Jigsaw structures run on every platform; the authoring tools require Bukkit. Onl
 
 See [28 - Integrations](/iris/28-integrations) and [09 - PlaceholderAPI](/iris/09-placeholderapi).
 
-## Determinism and version gating
+## Pack compatibility
 
-Run `/iris pack compat` to check which pack content your server supports. Missing mods or differences in Minecraft versions can affect available content. See [25 - Pack Management](/iris/25-pack-management).
-
-For generation comparisons, use [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash).
+Run `/iris pack compat` to check which pack content your server supports. Missing mods or differences in Minecraft versions can affect available content. See [Pack Management](/iris/25-pack-management).
 
 ## Moving a pack between platform families
 
@@ -160,8 +155,7 @@ For generation comparisons, use [32 - Determinism & Goldenhash](/iris/32-determi
 - [21 - Jigsaw Structures](/iris/21-jigsaw-structures)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [28 - Integrations](/iris/28-integrations)
-- [29 - Client HUD & Protocol](/iris/29-client-hud-protocol)
-- [32 - Determinism & Goldenhash](/iris/32-determinism-goldenhash)
+- [29 - Client HUD & Maps](/iris/29-client-hud-protocol)
 - [37 - Image Maps](/iris/37-image-maps)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [94 - API - Modded](/iris/94-api-modded)

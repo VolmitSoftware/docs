@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -11,7 +11,7 @@ Entities describe a mob and its gear. Spawners decide when and where those entit
 
 Related: [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [03 - Configuration](/iris/03-configuration), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
-## The mental model
+## Entities and spawners
 
 A background loop ticks each Iris world roughly twice a second. If there is room, it picks a handful of loaded chunks and tries one spawn in each. A spawn attempt gathers every spawner the dimension, region, and surface biome list, throws out the ones whose time, weather, rate, or crowding gates fail, pools their entries, picks exactly one, and places one to a few mobs.
 
@@ -84,17 +84,7 @@ The entity's `loot` replaces the mob's vanilla drop table outright. Only `tables
 }
 ```
 
-**5. Verify.** Validate the pack first — the validator resolves the spawner-to-entity edge and names a broken link before you load a world. Then open Studio, focus `tutorial/meadow`, set night, and stand somewhere with block light under 8. Success is named zombies appearing within a few seconds and dropping iron nuggets when killed. On Bukkit you can prove the entity file loads on its own with `/iris studio spawn tutorial/zombie`; that command is not registered on Fabric/Forge/NeoForge.
-
-**6. If nothing spawns.** Work down the gate list in order rather than raising `rarity` or the rate:
-
-- **Difficulty.** Iris skips native entity types the server forbids in Peaceful. This is an expected rejection and logs nothing. Passive entities and native Peaceful exceptions remain eligible.
-- **World-wide crowding.** If living entities divided by loaded chunks exceeds `world.targetSpawnEntitiesPerChunk` (0.95 by default, scaled by 1.28), Iris stops spawning for five seconds. A test world full of mobs will starve your spawner.
-- **Chunk crowding.** `maxEntitiesPerChunk` is compared against the living entities already in that chunk.
-- **Time and weather.** Both are read from the world at attempt time.
-- **Light.** The check only runs when `allowedLightLevels` is narrower than 0-15, and it reads the combined maximum of sky and block light, not block light alone. A `max: 7` spawner will not fire on a surface block in daylight.
-- **Group versus biome.** A `NORMAL` spawner listed on a *dimension* is rejected in sea, shore, and cave biomes. Region- and biome-level spawners skip that check entirely. A mismatched `group` there produces mobs at odd heights rather than no mobs.
-- **Placement viability.** The chosen block's `surface` must match the entity's `surface`, and the entity's bounding box must be clear air.
+**5. Preview.** Validate the pack, open Studio, focus `tutorial/meadow`, and set night. Stand somewhere with light below 8. Named zombies spawn and drop iron nuggets when killed. On Bukkit, `/iris studio spawn tutorial/zombie` also spawns the entity directly.
 
 ## Entities (`IrisEntity`)
 
@@ -313,13 +303,11 @@ Attach it on a dimension, region, or biome:
 }
 ```
 
-### The ambient tick
+### Enabling spawning
 
-The loop runs once per Iris world every `world.asyncTickIntervalMS` milliseconds (700 by default, 3000 when both spawn systems are off). Each pass recounts living entities, computes saturation against `world.targetSpawnEntitiesPerChunk`, and — if there is room — runs one spawn attempt in each of 2 to 12 random loaded chunks. If the entity count cannot be completed, Iris pauses spawning rather than guessing. Pregeneration and world maintenance suppress spawning for that world entirely while they run.
+Enable `world.ambientEntitySpawningSystem` for ambient spawns. Studio also requires `studio.entitySpawning`. Pregeneration and world maintenance pause spawning in that world.
 
-In Studio worlds, spawning also requires `studio.entitySpawning`.
-
-`initialSpawns` runs from the chunk-maintenance pass, once per chunk, guarded so it never repeats. That pass returns early when `world.markerEntitySpawningSystem` is off, so `initialSpawns` needs **both** spawn settings enabled even though it is not marker-driven.
+`initialSpawns` run once per generated chunk and require both `world.ambientEntitySpawningSystem` and `world.markerEntitySpawningSystem`.
 
 ## Content unavailable on this Minecraft version
 
@@ -342,7 +330,7 @@ From `iris.json` under `world` (see [03 - Configuration](/iris/03-configuration)
 | `ambientEntitySpawningSystem` | `true` | Dimension, region, and biome `entitySpawners` |
 | `markerEntitySpawningSystem` | `true` | Marker-driven spawners, and the chunk pass that runs `initialSpawns` |
 | `effectSystem` | `true` | Biome and region `effects[]` |
-| `targetSpawnEntitiesPerChunk` | `0.95` | Saturation ceiling. Lower it on busy servers to stop Iris adding to entity load |
+| `targetSpawnEntitiesPerChunk` | `0.95` | Living entity saturation limit per loaded chunk |
 | `asyncTickIntervalMS` | `700` | How often the spawn loop runs per world |
 | `forcePersistEntities` | `true` | Marks every Iris-spawned entity persistent regardless of `keepEntity` |
 

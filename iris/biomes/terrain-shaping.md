@@ -2,19 +2,19 @@
 title: "Biome Terrain Shaping"
 description: "Shared 3D terrain profiles and protected terrain in the built-in Iris packs"
 published: true
-date: 2026-09-16T03:12:40.152Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biomes, terrain, overworld, underworld"
 editor: markdown
 dateCreated: 2026-09-08T07:14:15.291Z
 ---
-Overworld 4007 and Underworld 1010 explicitly configure 220 terrain identities. There are 197 active profiles and 23 protected identities.
-The audit covers every region-selected land biome, its ordinary children, and the floating-only Glass Shard child. Each paired atlas entry gives its dimensions and exact density and crack noise styles.
+Overworld and Underworld explicitly configure 220 terrain identities. There are 197 active profiles and 23 protected identities.
+These settings cover region-selected land biomes, their ordinary children, and the floating-only Glass Shard child. Each paired atlas entry gives its dimensions and exact density and crack noise styles.
 
-Both packs set nonflat terrain generators to `surfaceDetail: 0.5`. This halves the variation between original six-block grid heights and their interpolated surface. Generator seeds, broad feature scales, height bands, and 3D terrain profiles retain their settings.
+Both packs use `surfaceDetail: 0.5` on nonflat terrain generators to smooth small surface variations.
 
 ## Terrain profiles
 
-The original height generators supply broad mountains and valleys. Biome `terrain3D` settings add or remove rock around that shape.
+Height generators supply broad mountains and valleys. Biome `terrain3D` settings add or remove rock around that shape.
 Horizontal scale controls feature width. Vertical scale controls how quickly density changes with height, which permits shelves with air beneath them.
 
 | Profile | Biomes | Default density noise | Intended terrain |
@@ -35,7 +35,7 @@ Horizontal scale controls feature width. Vertical scale controls how quickly den
 
 Hills and Forest profiles use `NOWHERE` in tropical and swamp biomes, and `SIMPLEX` in frozen biomes. Their Estranged, Ether, and Magic Forest variants use `IRIS_HALF`.
 Cliff and Mountain profiles use `NOWHERE` in Hot, Savanna, and Tropical biomes.
-Stony Peaks keeps its original `SIMPLEX` density pattern at horizontal scale 144 and vertical scale 28 to avoid new detached formations. Its crack field uses reduced depth and greater spacing.
+Stony Peaks uses `SIMPLEX` density noise at horizontal scale 144 and vertical scale 28.
 Magnetic Noise uses `IRIS_HALF`, and Magnetic Mycelium uses `NOWHERE`. The paired biome tables list each override.
 
 `PERLIN` supplies 79 density profiles, `NOWHERE` 43, and `IRIS_HALF` 31. `HEXAGON` and `SIMPLEX` each supply 22.
@@ -86,19 +86,7 @@ The following land or floating identities explicitly set `enabled` to false. An 
 
 Both packs use identical terrain profiles, height generators, biome weights, ordinary children, and floating geometry. Each pack keeps its existing surface materials, objects, decoration, ecology, and ore settings.
 Underworld keeps lava river profiles and its own deep-fluid configuration. Its cave profile continues to disable ordinary cave-fluid admission. These are intentional environmental differences.
-Underworld 1010 aligns Estranged rarity and shore selection with Overworld. It also aligns river incision, coastal outlets, coastal grottos, sea-cave geometry, and mouth width.
-Hot and Magnetics now select the shared lava-pool geometry in both packs. The pools use lava in each pack.
-
-## Coverage validation
-
-The atlas validator follows hydrology references as well as region lists, children, floating targets, and carving entries. Both packs have 371 reachable biome identities.
-It checks paired terrain geometry and requires an explicit profile for each reachable land identity. It checks each configured profile's atlas row against its dimensions and exact noise styles. Disabled profiles show `None / None`, and disabled crack fields show `None`.
-
-```text
-ruby tools/validate_iris_biome_atlas.rb
-```
-
-Run the command from the central docs repository. JSON validation and atlas checks do not establish generation speed or in-game appearance.
-Generate fresh chunks to inspect changed terrain. Existing chunks retain their previous terrain until regenerated.
+Both packs share Estranged rarity and shore selection, river incision, coastal outlets, coastal grottos, sea-cave geometry, and mouth width.
+Hot and Magnetics select the shared lava-pool geometry in both packs. The pools use lava in each pack.
 
 Return to [Biome Catalog](/iris/44-biome-catalog), [Overworld](/iris/biomes/overworld), or [Underworld](/iris/biomes/underworld).

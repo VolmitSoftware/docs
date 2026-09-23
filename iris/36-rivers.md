@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Surface rivers, shaped valleys, underground rivers, grottos, deep fluids, and standing pools: the physical configuration"
 published: true
-date: 2026-09-22T01:02:51.164Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -11,12 +11,10 @@ Iris hydrology adds surface rivers in eroded valleys, underground rivers, coasta
 
 Surface rivers shape their channels and banks around descending water levels. They cut high ground and can fill low banks within the configured terrain limits, then blend back into the surrounding terrain. `channel.sink` sets the water level below the shaped banks. Rivers never write ocean terrain or raise ocean water. Water flows downhill in one-block steps; where the land falls faster than the channel can follow the reach becomes rapids, and where a natural cliff is tall enough, a waterfall. It reaches the sea through a drowned inlet rather than stopping at the shoreline. Underground rivers, grottos and deep fluids are contained features validated against carved cave matter.
 
-Hydrology is per-activation state: each production activation keeps its own plan, so a staged pack update never retrofits generated chunks and surface hydrology tapers inside the transition band beside saved terrain.
-
 This page is the physical configuration the dimension owns. The other two:
 
 - [36b - River Policy](/iris/36b-river-policy) — `riverPolicy`, which decides where rivers may start, transit, and end, and what content they carry.
-- [36c - River Inspection](/iris/36c-river-inspection) — Vision, `/iris find river`, rejection reasons, validation, probes, and troubleshooting.
+- [36c - River Inspection](/iris/36c-river-inspection): locate rivers, view them in Vision, and validate pack settings.
 
 Related:
 
@@ -26,7 +24,6 @@ Related:
 - [13 - Biomes](/iris/13-biomes)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [25 - Pack Management](/iris/25-pack-management)
-- [33 - Performance Tuning](/iris/33-performance-tuning)
 
 The dimension owns the physical system under `hydrology` and supplies the default `riverPolicy`. Region and biome files may contain only their own `riverPolicy` overrides. A [complete worked example](#complete-hydrology-example) is at the end of this page.
 
@@ -167,7 +164,7 @@ Per-area overrides for `blendSlope` and `shoreWidth` live on [36b - River Policy
 
 ### `surface.erosion`
 
-Erosion shapes the valley the banks describe. The reach of the valley comes from `banks.blendSlope` and the blend widths; these fields shape what happens inside that reach. The defaults reproduce the valley Iris has always cut, so a pack that omits the section changes nothing.
+Erosion shapes the valley the banks describe. The reach of the valley comes from `banks.blendSlope` and the blend widths; these fields shape what happens inside that reach.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
@@ -181,7 +178,7 @@ Erosion shapes the valley the banks describe. The reach of the valley comes from
 | `cliffFraction` | `0.5` | Share of the eroded band kept level at the bank top before the vertical wall when `style` is `CLIFF`, `0..1`; ignored by every other style |
 | `bedProfile` | `BOWL` | Cross-section of the wet channel bed from the centerline out to the waterline; `BOWL`, `FLAT`, `V` or `U`, described below |
 
-`erosion.style` decides the shape of the valley side across the blend band. `SMOOTH` is an eased S-curve, flat at the shore and at the top and steepest across the middle, and it is the shape Iris cut before the field existed. `LINEAR` is a straight slope with a sharp shoulder at the shore and a sharp lip at the top. `CONCAVE` climbs fast beside the shore and flattens toward natural terrain, hollowing the valley. `TERRACED` cuts the eased curve into `terraceSteps` level steps. `CLIFF` holds the band level at the bank top for `cliffFraction` of its width and then rises in one vertical wall. `blendCurve` skews all of them except `CLIFF`.
+`erosion.style` decides the shape of the valley side across the blend band. `SMOOTH` is an eased S-curve, flat at the shore and at the top and steepest across the middle. `LINEAR` is a straight slope with a sharp shoulder at the shore and a sharp lip at the top. `CONCAVE` climbs fast beside the shore and flattens toward natural terrain, hollowing the valley. `TERRACED` cuts the eased curve into `terraceSteps` level steps. `CLIFF` holds the band level at the bank top for `cliffFraction` of its width and then rises in one vertical wall. `blendCurve` skews all of them except `CLIFF`.
 
 `erosion.bedProfile` decides the cross-section of the wet bed. `BOWL` holds full depth over `thalwegFraction` of the half-width and eases up to a one-block edge. `FLAT` holds full depth to the waterline, so the channel edge drops straight to the bed. `V` slopes straight from full depth at the centerline to one block at the edge and ignores `thalwegFraction`. `U` holds the thalweg deep almost to the edge and then rises steeply, giving a trough with steep sides.
 
@@ -389,13 +386,13 @@ With `banks.exposeCutStrata: true`, eroded banks reveal deeper biome layers. Aft
 
 Surface rivers can cut high terrain and fill low banks to contain their planned water level. Bank fill is limited by both `surface.channel.maximumIncision` and `surface.banks.excavation.maximumDepth`, including local incision-policy limits. A course that cannot be contained within these limits is rejected. Existing natural depressions under the channel can remain deeper than the configured bed profile.
 
-The post-generation passes that place slabs, fill potholes, remove floating nibs, and dress walls skip every column inside a river footprint and its immediate neighbours. Automatic surface object placement is rejected when any transformed support column intersects an accepted river channel or shore band, **even with `forcePlace`, `underwater`, or `onwater`**, so biome and region scatter cannot bridge a channel or stand in the shore. Explicit-Y placement, including `/iris object paste`, still works for intentional authoring inside a river.
+Automatic surface objects cannot overlap river channels or shores, including with `forcePlace`, `underwater`, or `onwater`. Use explicit-Y placement, such as `/iris object paste`, to place an object there.
 
 ### Ocean boundary
 
-The accepted plan resolves the first true natural land/ocean crossing, and at that crossing the ocean reservoir takes over. River-owned terrain and fluid stop on the landward side, with at most `maximumOceanApron` blocks of non-owning connection footprint in the ocean: there are no writes at or below natural sea level and no ocean channel. With `inletLength` at `0` the head drops to sea level across the last station instead. Underground mouths may use `underground.mouthLevelingDistance` to reach sea level.
+Surface rivers end where they reach the ocean without changing ocean terrain or sea level. `maximumOceanApron` controls the connection footprint beyond the shoreline. Set `inletLength` to `0` for an abrupt drop to sea level at the final station. Underground mouths use `underground.mouthLevelingDistance` to reach sea level.
 
-Ocean classification is conservative. Any surface column whose natural height is at or below sea level rejects river-owned terrain, fluid, shore content, and bank writes; only the bounded non-owning mouth apron may remain. This applies to exposed hydrology only, so contained underground and deep-fluid features stay legal below sea level. A mouth or coastal grotto cannot turn along the coastline, raise the sea, place a wall across it, or excavate an ocean channel.
+Underground rivers and deep-fluid features can generate below sea level when enclosed by terrain.
 
 ### Mantle and cave containment
 
@@ -410,9 +407,7 @@ Underground rivers, sinkhole continuations, grottos, and deep-fluid bodies must 
 
 A complete feature may affect at most 262,144 blocks; larger candidates receive `VOLUME_LIMIT`. A grotto must also fit its configured `maximumVolume`.
 
-With `connectToExistingCaves` enabled, a planned dry boundary may open into suitable cave air without exposing the wet volume. Hydrology-owned cells and their seal guards stay protected from later object or structure writes, so the cave network never becomes a shared reservoir. Dry headroom above an underground river uses the `floodedCaveBiomes` content of the course.
-
-A generation update preserves accepted underground and deep-fluid layer coordinates while surface layers taper toward natural terrain height. See [generation update limits](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).
+With `connectToExistingCaves` enabled, a planned dry boundary may open into suitable cave air without exposing the wet volume. Objects and structures cannot replace river fluids or the blocks that contain them. Dry headroom above an underground river uses the `floodedCaveBiomes` content of the course.
 
 ### Decorators and freezing
 
@@ -422,11 +417,11 @@ Exposed water is published as ordinary water, and the standard freezing pass dec
 
 ## Adding rivers to a pack
 
-1. Enable `hydrology.rivers` on the dimension and set `routing.tileSize`, `sampleSpacing`, and at least one outlet family. Start from the [complete example](#complete-hydrology-example) and keep the defaults for everything you do not have an opinion about yet.
+1. Enable `hydrology.rivers` on the dimension and set `routing.tileSize`, `sampleSpacing`, and at least one outlet family. Start from the [complete example](#complete-hydrology-example).
 2. Give the dimension a `riverPolicy` with `placement: NATURAL`, `routing: ALLOW`, a profile, and the content pools you want everywhere by default.
 3. In regions and biomes, override only what differs. See [36b - River Policy](/iris/36b-river-policy).
 4. Run `/iris pack validate`, then inspect the rivers in Studio with Vision and the [river locator commands](/iris/36c-river-inspection).
-5. Create a new world, or stage an existing-world pack update and restart. **Existing chunks are never retrofitted.** New terrain reconciles with saved natural boundaries within the finite transition band.
+5. Create a new world, or stage an existing-world pack update and restart. Existing chunks keep their generated terrain.
 
 ## Managed pack profiles
 

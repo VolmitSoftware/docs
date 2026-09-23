@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Mangrove Swamp"
-description: "Iris biome atlas entry for vanilla/mangrove_swamp in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for vanilla/mangrove_swamp in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`vanilla/mangrove_swamp` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`vanilla/mangrove_swamp` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
-| Underworld 1010 | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
+| Overworld | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
+| Underworld | `swamp` (Swamp) | 1 | 1 | 1 | 11.67% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `plain` (-5..4); combined authored contribution `-5..4` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -42,13 +42,13 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - `vanilla/mangrove_swamp`: Mangrove water and rooted banks retain their current terrain.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:mangrove_swamp`; native-structure derivative `minecraft:mangrove_swamp`; custom identities `mangrove_swamp`.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:podzol`, `minecraft:mud`; 1 block(s): `minecraft:dirt`; 1-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.
 - **Content:** 3 object placement rule(s) drawing from 19 object key(s), including `trees/oak/dead1`, `trees/oak/dead2`, `trees/oak/dead3`, `trees/oak/dead4`, `trees/oak/dead5`, `trees/oak/dead6`, `clutter/shrub1`, and 12 more. 3 decorator rule(s) using `minecraft:brown_mushroom`, `minecraft:red_mushroom`, `minecraft:large_fern`, `minecraft:tall_grass`, `minecraft:dead_bush`, `minecraft:fern`.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:soul_sand_valley`; native-structure derivative `minecraft:soul_sand_valley`; custom identities `underworld_vanilla_mangrove_swamp_df7ec4c6`.
 - **Surface:** 1 block(s): `minecraft:soul_soil`; 1 block(s): `minecraft:soul_soil`; 1-3 block(s): `minecraft:soul_soil`; 6-18 block(s): `minecraft:basalt`. Wall palette: `minecraft:basalt`.

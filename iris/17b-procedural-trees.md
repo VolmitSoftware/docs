@@ -2,14 +2,14 @@
 title: "Procedural Trees"
 description: "Iris documentation: Procedural Trees"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
 `IrisProceduralTree` builds trees from JSON: a trunk, a canopy, optional branches, roots and forks. Entries live in `proceduralObjects.trees` on a biome or region.
 
-The shared bake/place model, the fields every procedural family has (`chance`, `density`, `variants`, `seed`, `mode`, `carvingSupport` and the rest), and the other five families are on [17 - Procedural Objects](/iris/17-procedural-objects). Sapling replacement is a different system, also documented there.
+The shared placement settings, the fields every procedural family has (`chance`, `density`, `variants`, `seed`, `mode`, `carvingSupport` and the rest), and the other five families are on [17 - Procedural Objects](/iris/17-procedural-objects). Sapling replacement is a different system, also documented there.
 
 Snippet key: `procedural-tree`.
 
@@ -50,9 +50,8 @@ Use a validating `OVERWORLD` pack with `useMantle` and `decorate` on. Save this 
 
 1. Reuse `generators/flat.json` from [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension). Validate the pack. Open Studio on seed `1337`.
 2. Fly out and generate fresh chunks. Success is two oaks per chunk, drawn from four distinct silhouettes, rooted on the grass, with leaves carrying normal decay distances.
-3. If nothing appears: confirm the biome is focused and the chunks are new, confirm `useMantle` is true, and check the console for bake failures. Keep `chance: 1` until you have seen a tree.
-4. Break a leaf block and watch the canopy. With `plausible: true`, leaves more than six blocks from wood are permanently persistent; everything closer decays normally when you cut the trunk.
-5. Tune height, profile, trunk shape, and canopy before you touch `chance` and `density`. Reopen Studio and confirm the same seed reproduces the same four shapes, then drop `chance` to something forest-like and remove `focus`.
+3. Break a leaf block and watch the canopy. With `plausible: true`, leaves more than six blocks from wood are permanently persistent; everything closer decays normally when you cut the trunk.
+4. Set height, profile, trunk shape, and canopy. Adjust `chance` and `density` for the desired coverage, then remove `focus`.
 
 Variant heights are not random per variant. Iris spreads them evenly across `heightMin..heightMax` and adds up to +/- 30% of one step of jitter, so four variants over `7..11` give roughly 7, 8, 10, 11 rather than four coin flips. Raising `variants` fills in the height range rather than just adding randomness.
 
@@ -186,7 +185,7 @@ Snippet key: `tree-decorator`.
 
 Targets: `BRANCH_TIP`, `TRUNK_SURFACE`, `CANOPY_TOP`, `CANOPY_BOTTOM`, `TRUNK_BASE`, `LEAF_SURFACE`, `CANOPY_HANG`, `BRANCH_SURFACE`, `TRUNK_TOP`, `GROUND_SCATTER`.
 
-An empty `decorators` list costs nothing, because branch endpoints are only collected when at least one decorator exists. `BRANCH_TIP` accents occupy the first free block outside the terminal leaf cluster in the branch's outward direction, preserving branch wood and leaves; repeated application stops at an existing accent instead of extending a chain.
+`BRANCH_TIP` accents occupy the first free block outside the terminal leaf cluster in the branch's outward direction, preserving branch wood and leaves; repeated application stops at an existing accent instead of extending a chain.
 
 ## Poplar biomes
 

@@ -2,13 +2,13 @@
 title: "Ember Rifts — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/ember-rifts"
 published: true
-date: 2026-09-03T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/ember-rifts` is a direct cave root in the current Overworld and Underworld pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/ember-rifts` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 ## Selection role and weight
 
@@ -16,8 +16,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld source | `hot` (1/7 slots; region rarity 3, weight `1/3`) | `1` | `1/1` |
-| Underworld source | `hot` (1/7 slots; region rarity 3, weight `1/3`) | `1` | `1/1` |
+| Overworld | `hot` (1/7 slots; region rarity 3, weight `1/3`) | `1` | `1/1` |
+| Underworld | `hot` (1/7 slots; region rarity 3, weight `1/3`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -27,11 +27,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..520`; sample step `2`; surface clearance `7`; surface breaking `enabled`; fluids `disabled`; lava `allowed`; a minimum depth below surface of `10`.
 
-## Overworld source treatment
+## Overworld treatment
 
 Derivative `minecraft:deep_dark`; vanilla derivative `minecraft:deep_dark`. Primary cave palette: `minecraft:blackstone`, `minecraft:magma_block`, `minecraft:deepslate`, `minecraft:basalt`. Decorator blocks: `minecraft:glow_lichen`, `minecraft:fire`. Object set: `clutter/lava-cup-1`, `clutter/lava-cup-2`, `clutter/magmaspire1`, `clutter/magmaspire2`, `clutter/magmaspire3`, `clutter/rock1`, `clutter/rock2`, `clutter/rock3`, and 8 more.
 
-## Underworld source treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:blackstone`, `minecraft:magma_block`, `minecraft:basalt`. Decorator blocks: `minecraft:glowstone`, `minecraft:fire`. Object set: `underworld/soul/clutter/lava-cup-1`, `underworld/soul/clutter/lava-cup-2`, `underworld/soul/clutter/magmaspire1`, `underworld/soul/clutter/magmaspire2`, `underworld/soul/clutter/magmaspire3`, `underworld/soul/clutter/rock1`, `underworld/soul/clutter/rock2`, `underworld/soul/clutter/rock3`, and 8 more. Custom registered biome id: `underworld_carving_ember_rifts_7883a594`.
 

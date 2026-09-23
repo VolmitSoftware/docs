@@ -2,12 +2,12 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
 ---
-Iris replaces the chunk generator, not every vanilla system. Native structures still generate unless you deny them, placed features stay off unless you opt in, carvers never run, and mob spawning, loot, saplings, and dimension-type gameplay each have their own default. This page is the pack-author recipe book for those switches.
+Iris replaces the chunk generator, not every vanilla system. Native structures still generate unless you deny them, placed features stay off unless you opt in, carvers never run, and mob spawning, loot, saplings, and dimension-type gameplay each have their own default. Use these settings to select vanilla features, mobs, loot, sapling growth, and dimension gameplay.
 
 Related:
 
@@ -34,8 +34,6 @@ Generation changes apply to new chunks. For a production world, stage edits with
 | Keep vanilla chest loot, replace it, or fill only empty chests | Task 3 |
 | Make grown saplings become pack trees | Task 4 |
 | Change beds, raids, piglins, portals, compasses, or clouds | Task 5 |
-| Check setting interactions and limits | [Compatibility notes](#compatibility-notes) |
-
 ## What vanilla still does
 
 Vanilla and mod worldgen run only where Iris runs them.
@@ -88,7 +86,7 @@ Use this when Iris terrain should also run Minecraft's placed-feature pass: ores
 
 Vanilla step order: `RAW_GENERATION`, `LAKES`, `LOCAL_MODIFICATIONS`, `UNDERGROUND_STRUCTURES`, `SURFACE_STRUCTURES`, `STRONGHOLDS`, `UNDERGROUND_ORES`, `UNDERGROUND_DECORATION`, `FLUID_SPRINGS`, `VEGETAL_DECORATION`, `TOP_LAYER_MODIFICATION`.
 
-The pass runs after Iris structures, so early-step features can cut into placed structures. Feature seeds match vanilla derivation, so denying one key does not shift another key's seed.
+The pass runs after Iris structures, so early-step features can cut into placed structures.
 
 A cold `derivative` tints grass and can freeze water but does **not** stamp snow layers. Snow layers need Iris decorators, object `snow`, or this task with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls from biome palettes.
 
@@ -257,35 +255,6 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 
 `/iris replace` of `minecraft:overworld` keeps vanilla portal pairing with `minecraft:the_nether`. A separately created `iris:*` world is outside that pair. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
-## Compatibility notes
-
-| Surprise | What actually happens |
-|---|---|
-| `underwater` on objects vs structures | Object `underwater: true` seats on the seafloor and refuses above water. Structure `underwater: true` **allows** submerged starts; `false` skips underwater columns |
-| `carvingBiome` on a surface biome | Does not select cave biomes. Use region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
-| Dimension `focus` | Forces the biome into the **land** role for the whole world. A sea biome under `focus` generates as land, so sea/shore structure eligibility never runs |
-| `carvingSupport: ANYWHERE` | The placement is in both the surface list and the cave list, so `chance` rolls twice per chunk |
-| Missing mineshafts or trial chambers | Iris buries underground-step structures below the lowest solid column unless `preserveSourceY` is true. The bundled overworld already pins mineshafts. Precedence: `preserveSourceY` > `yBand` > burial > `yShift`. Ocean monuments, desert pyramids, and jungle pyramids ignore `yBand`. Monuments sit 24 below Iris `fluidHeight` |
-| Duplicate villages | An Iris `nativeStructures` placement with `nativeSuppression: NONE` (the default) generates **alongside** native starts. Deny the family or use dimension-level `REPLACE_SOURCE` |
-| `REPLACE_SOURCE` on a biome placement | Ignored. Replacement suppression is valid only at dimension scope. Pack validation rejects it anywhere else |
-| `datapackImports` without a deny list | Declaring a URL never disables vanilla. Towns & Towers plus vanilla villages both generate until you deny `minecraft:village` |
-| `datapackOverrides: false` | If **any** loaded dimension sets this false, `minecraft:` datapack overrides are stripped from every installed copy, server-wide |
-| `frequencyOverrides` | Keys are registered **structure-set** ids (`minecraft:ruined_portals`), not structure ids (`minecraft:ruined_portal`) |
-| Sea biome with a land `vanillaDerivative` | Iris hands structure selection `minecraft:the_void`. Ocean monuments need an ocean-like key. See [13 - Biomes](/iris/13-biomes) |
-| `#minecraft:has_structure/*` tags | Not inherited onto custom biomes. Use `vanillaDerivative` to control native structure eligibility |
-| `customDerivitives` | That spelling is the engine key. `customDerivatives` is silently ignored |
-| Two `preventLeafDecay` flags | `iris.json` `generator.preventLeafDecay` defaults **true** and makes generated leaves persistent. Dimension `preventLeafDecay` defaults **false**. The bundled overworld sets the dimension flag true. They are unrelated |
-| `hideOresForHiddenOre` | Replaces every ore the generator would write — terrain ores, deposits, and ores inside objects — with host stone |
-| `forcePlace: true` | Skips slope, carving, surface support, water, clamp, bedrock, and collision gates. It never skips the native-structure volume veto. Trees still vanish inside villages |
-| `isDolphinTarget` | Only works with `underwater`. Marks placed storage chests as buried-treasure points of interest |
-| `caveProfile.enabled` | Defaults **false**. Carving is off until some winning profile sets `enabled: true`. `carvingEnabled: false` is the same as listing `CARVED` in `disabledComponents` |
-| `mode.type` `ISLANDS` / `ENCLOSURE` | Generate like `SUPERFLAT` (terrain and biome only). For floating islands, use biome `floatingChildBiomes` in `OVERWORLD` mode. A nether-like ceiling is `upperDimension` |
-| `mods/` | Does not affect generation. Use snippets with the full `snippet/<type>/<name>` reference matching the field |
-| Minecraft `generateStructures` | The world option still gates native structures even if the pack allows them |
-| `world.forcePersistEntities` | Default true. Iris-spawned mobs do not despawn like vanilla |
-| Pack file edits on a live world | Production worlds require a staged update and restart. Studio applies compatible authoring edits to new chunks. See [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
-| Deposit biome filters | `includedBiomes` accepts Iris load keys **or** vanilla derivative ids. The bundled overworld mixes both: emerald extra veins use `minecraft:cherry_grove`-style ids, copper dripstone bonus uses Iris paths such as `carving/drip`. `biomeScope` defaults to `CAVE` |
-
-## Field details already on other pages
+## Related reference
 
 See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Mod authors can find the `importedFeatures` API contract on [94 - API - Modded](/iris/94-api-modded).

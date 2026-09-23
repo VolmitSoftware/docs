@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,9 +49,9 @@ Some settings measure height from the build floor; others use absolute world Y:
 
 With the default `dimensionHeight` of `-64..320`, height `0` above the build floor is world Y `-64`, and height `64` is world Y `0`. A profile `verticalRange` of `{ "min": 0, "max": 64 }` therefore covers the deepslate band, not the surface.
 
-## Walkthrough: prove carving works before you tune it
+## Walkthrough: create caves
 
-Start from a validating `OVERWORLD` pack whose surface height and fluid level are already correct. The goal of this first pass is a visible void with nothing else changing. A wrong palette or a leaking aquifer cannot then be blamed on the density field.
+Start from an `OVERWORLD` pack with `carvingEnabled` and `useMantle` enabled. Do not list `CARVED` in `disabledComponents`.
 
 1. Record seed `1337` and a surface coordinate in Studio before you touch anything. You can then compare the same spot afterwards.
 2. Add this to the root object of `dimensions/<key>.json`. It uses production density defaults but seals the surface and disables both liquids:
@@ -72,7 +72,6 @@ Start from a validating `OVERWORLD` pack whose surface height and fluid level ar
 
 3. Validate the pack and reopen Studio. Only **freshly generated** chunks change. Fly out past your previously generated area or use a new Studio world.
 4. Dig down between world Y `-48` and `32` (engine-local 16 to 96 with the default height range). Success is open cave volume with intact grass overhead, no water pockets, and no lava at the bottom of the band.
-5. If nothing is carved, work down this list before you touch noise values. Confirm dimension `mode.type` is `OVERWORLD`. Confirm `carvingEnabled` and `useMantle` are both true. Confirm `CARVED` is not listed in `disabledComponents`. Confirm the profile you edited is the one that actually wins for those columns (see resolution order below). Confirm the chunks are new.
 
 ## Walkthrough: give one biome its own cave shape
 
@@ -230,7 +229,7 @@ Snippet key: `cave-profile`. Valid on **dimension**, **region**, and **biome**.
 | `densityThreshold` | `IrisStyledRange` | `-0.2..0.2`, cellular iris double | The carve cutoff, itself noise-varied across the world so cave size differs region to region. Set `min` equal to `max` for a constant threshold. Writing `{}` is rejected by validation. It would resolve to the shared 16..32 default and hollow the whole vertical range |
 | `thresholdBias` | double 0..1 | `0.16` | Subtracted from the sampled threshold before the test. Lower it for more carved space. Raise it for less. This is the single knob to reach for when caves are globally too big or too small |
 
-### Sampling and cost
+### Sampling
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
@@ -405,23 +404,3 @@ Cave anchors place structures underground without surface burial adjustments or 
 ## Vanilla carvers never run
 
 **Vanilla and datapack carvers have no effect on Iris terrain.** Use `caveProfile` and cave biomes instead. See [30 - Platform Differences](/iris/30-platform-differences).
-
-## Tuning quick reference
-
-| Goal | Change |
-|------|--------|
-| Bigger caverns everywhere | Raise `thresholdBias` toward `0.25`, or widen `densityThreshold` downward |
-| Thinner tunnels | Lower `thresholdBias`, lower `detailWeight`, add an inverted module to fill the middles |
-| Two distinct cave types in one profile | Add a module with a different `style` and its own `verticalRange` |
-| Fewer surface holes | Raise `surfaceBreakNoiseThreshold`, lower `surfaceBreakDepth`, or `allowSurfaceBreak: false` with a larger `surfaceClearance` |
-| Cave props stop floating | Set `defaultObjectPlaceMode` to a stilt mode and raise `objectMinDepthBelowSurface` |
-| No generated cave liquids | `allowFluid: false` and `allowLava: false`. Natural surface bodies remain contained at their wet boundary |
-| Lava-filled caverns instead of water | Change the dimension `fluidPalette` to lava. Leave the profile alone |
-| Cheaper carving | Keep `adaptiveSampling` on and simplify the styles. Prefer this over raising `sampleStep`, which degrades shape |
-
-## Practical notes
-
-- `enabled: false` is the default on every cave profile, including the dimension. Listing cave biomes without enabling a profile produces no caves at all.
-- Cave settings affect newly generated chunks only. Existing chunks do not change.
-- Cave biome layers do not create voids. They only replace blocks that carving already exposed.
-- Upper-dimension carving is off by default. That leaves an `upperDimension` ceiling as an untouched solid mass.

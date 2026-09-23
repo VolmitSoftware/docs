@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ See also:
 - [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
 - [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)
 - [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
-- [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
 - [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)
 
 ## Pack copies
@@ -181,10 +181,8 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 |-------|---------------------|
 | Pack folder missing, `dimensions/` missing, or no dimension JSON in it | Blocking, stops the rest of validation |
 | Dimension JSON integrity | As emitted |
-| Legacy cave-profile field names, in dimensions/regions/biomes and in `snippet/cave-profile/` | Blocking, names the replacement |
 | Biome `terrain3D` profiles and `snippet/terrain-3d/` files: unknown fields, wrong types, out-of-range numbers, unknown noise styles, nesting past 32 levels, snippet references that escape the pack | Blocking. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Loot graph: every referenced loot table resolves | Blocking |
-| Removed worldgen fields (currently `fluidBodies`) | Blocking |
 | Rivers (`hydrology` and `riverPolicy`): routing, channel, bank, bed, flow, mouth, pool, grotto and deep-fluid bounds, unique profile and pool IDs, biome and profile references, dimension-height fit | Blocking. See [36 - Rivers](/iris/36-rivers) |
 | Object surface support | Blocking |
 | `rotation` / `translate` / `scale` on surfaces that do not support them | Blocking |
@@ -209,22 +207,11 @@ Compatibility checks include content supplied by installed mods. Use `/iris pack
 
 Exclusion cascades. A container that referenced an excluded unit drops the reference, and if that empties a required pool the container is excluded in turn: an object placement with no placeable object left, a jigsaw pool with no pieces left, a structure whose start pool is excluded, a spawner with no spawns left, a loot table with no entries left, a region with no land biomes left. **If the cascade reaches the dimension the pack is unusable on that version** — a blocking validation error, and world and studio creation are refused.
 
-Legacy block renames (`minecraft:grass` to `minecraft:short_grass`, `grass_path` to `dirt_path`, and the rest of the rename table) are applied on every platform before anything is called missing, and are not reported. The full resolution order for a block key is the live registry, the rename table, the dimension `blockFallbacks`, then the entry's `backup`. Sounds and particles are not checked; an unknown effect already plays nothing.
-
 Lists that only select blocks which already exist are never gated: `edit[].find` and `markers[].mark` on an object placement, loot `filter` lists, `blockDrops[].blocks`, and decorator whitelists and blacklists. A missing key in one of those matches nothing and is not reported.
 
 ### Reading the report
 
 The pack validation line carries the summary, and each pack with findings prints one block, grouped by key and capped at three subjects per key with a `+N more` tail:
-
-```text
-Pack 'overworld' validated. 6 content keys unavailable on Minecraft 26.1.2: 11 excluded, 14 dropped.
-Pack 'overworld': content unavailable on Minecraft 26.1.2
-  minecraft:sulfur_cube (entity): excluded entity standard/passive/sulfur-cube at type
-  minecraft:sulfur_caves (biome): excluded biome carving/sulfur-hollows at derivative; excluded biome carving/sulfur at derivative; dropped biome carving/sulfur-hollows at vanillaDerivative; +1 more
-  minecraft:sulfur (block): excluded biome carving/sulfur-hollows at wall.palette[0]; excluded biome carving/sulfur at wall.palette[0]; dropped object carving/sulfur/pool-3 at carving/sulfur/pool-3 place[0]; +2 more
-  Update the server to a newer Minecraft to restore this content, or declare fallbacks (dimension blockFallbacks, block backup). /iris pack compat overworld lists everything.
-```
 
 Report entries identify the affected resource and JSON field. Substitutions name the replacement block. An `(incomplete: …)` result means compatibility could not be fully checked; validate again after startup.
 
@@ -237,9 +224,9 @@ For the full list with no per-key cap:
 
 It reads the published validation report and does not reload the pack, so it is safe on a live server and works from the console. Omitting the pack (or passing `*` on Bukkit) covers every pack with a published result; a pack without one prints a hint to run `/iris pack validate` first. Compatibility exclusions remain advisory unless they leave the dimension unusable, including when `general.strictContentKeys` is enabled.
 
-### Remedies
+### Content fallbacks
 
-| Remedy | Effect |
+| Choice | Effect |
 |--------|--------|
 | Update the server to a Minecraft version that has the content | Everything generates and the report goes empty |
 | `blockFallbacks` on the dimension | Pack-wide map from a base block key to the full block state to generate instead. Substitutes rather than excludes. See [11 - Dimensions](/iris/11-dimensions) |
@@ -259,8 +246,6 @@ A fallback that is itself missing on the running server counts as missing and is
 | | `apply` | Move candidates to quarantine |
 
 Folders scanned for unreferenced JSON: `biomes`, `regions`, `entities`, `spawners`, `loot`, `generators`, `expressions`, `markers`, `blocks`, `mods`.
-
-Excluded from the reference corpus entirely: `.iris-trash`, `datapack-imports`, `externaldatapacks`, `internaldatapacks`, `datapacks`, `cache`, `objects`, `.iris`.
 
 Applying re-scans from scratch rather than trusting an earlier preview, so a preview you ran an hour ago cannot quarantine something you have since started using. Quarantined files land under `<pack>/.iris-trash/<yyyyMMdd-HHmmss-SSS>/`. A failed apply rolls back what it can and reports any paths still quarantined so you can restore them by hand.
 
@@ -292,7 +277,7 @@ Output is `exports/<dimensionKey>.iris`, under the plugin data folder on Bukkit 
 
 **Written to the export:** `dimensions/`, `regions/`, `biomes/`, `generators/`, `expressions/`, `blocks/` (all block definitions in the pack, not just referenced ones), `loot/`, `entities/`, `objects/`, `spawners/`, `markers/`, `image-maps/`, referenced `images/` PNGs, the structure closure, and `package.json` (content hash, timestamp, dimension `version`). The ambient-spawning graph is exported in full — object placements on regions as well as biomes are followed, and spawner entities are collected from both `spawns` and `initialSpawns`.
 
-**Not included:** `mods/` (inactive; see [24 - Pack Mods & Snippets](/iris/24-pack-mods-snippets)), `caves/`, and other folders outside the collected set.
+The export contains only the resource folders listed above.
 
 Bukkit exports include snippet contents directly in the JSON. Modded exports include the `snippet/` JSON tree and keep snippet references. Validate the unpacked tree before you publish an `.iris` artifact.
 

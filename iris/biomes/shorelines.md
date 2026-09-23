@@ -2,13 +2,13 @@
 title: "Shorelines"
 description: "Paired atlas reference for 17 direct shoreline roots and two unselected shoreline assets"
 published: true
-date: 2026-09-16T03:11:58.172Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, shore"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-The pinned Overworld 4007 and Underworld 1010 each expose 17 direct shore roots. This consolidated reference keeps ordinary beaches together while preserving every load key, regional selection slot and materially distinct shoreline treatment.
+Overworld and Underworld each expose 17 direct shore roots. This consolidated reference keeps ordinary beaches together while preserving every load key, regional selection slot and materially distinct shoreline treatment.
 
 The Frozen Beach large-formation entries use organic supports with a 96-block scan. Overworld uses packed ice supports, and Underworld retains its Nether materials.
 
@@ -106,7 +106,7 @@ All four are direct Tropical slots. Bamboo vegetation, charred black surfaces an
 
 ### Tundra and nominal stony shores
 
-The tundra roots distinguish cold sediment from a deliberately stony coast. Despite its key and vanilla derivative, the pinned `vanilla/stony_shore` file is materially prismatic: its Overworld layers span every concrete-powder and concrete color, and its Underworld counterpart uses a broad Nether accent palette.
+The tundra roots distinguish cold sediment from a deliberately stony coast. Despite its key and vanilla derivative, the `vanilla/stony_shore` file is materially prismatic: its Overworld layers span every concrete-powder and concrete color, and its Underworld counterpart uses a broad Nether accent palette.
 
 **`tundra/shore/beach`: Tundra Beach.** `plain` maps to `-5..1` relative to the dimension fluid height. Overworld uses `minecraft:sand`, `minecraft:dirt`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, `minecraft:air`, decorates with `minecraft:turtle_egg`, `minecraft:stone_button`, `minecraft:air`, `minecraft:sugar_cane`, and places none declared. Underworld uses `minecraft:blackstone`, `minecraft:blackstone_slab`, `minecraft:air`, decorates with `minecraft:magma_block`, `minecraft:polished_blackstone_button`, `minecraft:air`, `minecraft:basalt`, and places none declared.
 
@@ -128,12 +128,12 @@ Use any key from the table:
 /iris edit biome tropical/beach-charred
 ```
 
-`what biome` confirms which shoreline root owns the current position. Compare newly generated chunks in both pinned packs when validating paired geometry or material changes.
+`what biome` shows the shoreline root at the current position.
 
 ## 3D terrain boundaries
 
 Shore biomes omit `terrain3D`. Adjacent land profiles reduce deformation near fluid level and on gentle slopes.
 
-Underworld 1010 now matches the Estranged shore list and shape settings in Overworld 4007. Both select Sand Beach or Temperate Oak Beach, with shore heights 0.75 to 2.25, shore-height zoom 3.2, and shore-biome zoom 2.5.
+Underworld matches the Estranged shore list and shape settings in Overworld. Both select Sand Beach or Temperate Oak Beach, with shore heights 0.75 to 2.25, shore-height zoom 3.2, and shore-biome zoom 2.5.
 
 Both packs select `temperate/shore/beach`, `temperate/shore/oak-beach`, or `ocean/shore/beach` for Temperate shores and for the Temperate and Estranged river-shore policies. Underworld retains its Nether palettes.

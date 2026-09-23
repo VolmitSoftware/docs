@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Tropical Mountain Extreme"
-description: "Iris biome atlas entry for tropical/mountain-extreme in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for tropical/mountain-extreme in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`tropical/mountain-extreme` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`tropical/mountain-extreme` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
-| Underworld 1010 | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
+| Overworld | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
+| Underworld | `tropical` (Tropical) | 1 | 1 | 1 | 8.33% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `mountain` (112..195); combined authored contribution `112..195` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -40,18 +40,17 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-
 ## Hydrology
 
 This biome inherits the tropical region’s denser surface river and lake policy. Hydrology cuts channels into its mountain terrain; there is no fluid-painted child biome. Overworld uses water and Underworld uses lava.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:sparse_jungle`; native-structure derivative `minecraft:jungle`; custom identities `tropical_mountain_extreme`.
 - **Surface:** 1 block(s) at slope 0-4.5: `minecraft:grass_block`; 2 block(s) at slope 0-4.5: `minecraft:dirt`. Wall palette: none.
 - **Content:** 3 object placement rule(s) drawing from 24 object key(s), including `clutter/sbush1`, `clutter/sbush2`, `clutter/sbush3`, `trees/jungle/lgeneric1`, `trees/jungle/lgeneric2`, `trees/jungle/lgeneric3`, `trees/jungle/lgeneric4`, and 17 more. 4 decorator rule(s) using `minecraft:short_grass`, `minecraft:tall_grass`, `minecraft:dandelion`, `minecraft:poppy`, `minecraft:blue_orchid`, `minecraft:allium`, `minecraft:azure_bluet`, `minecraft:red_tulip`, `minecraft:orange_tulip`, and 6 more.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_tropical_mountain_extreme_b321353c`.
 - **Surface:** 1 block(s) at slope 0-4.5: `minecraft:basalt`; 2 block(s) at slope 0-4.5: `minecraft:blackstone`. Wall palette: none.

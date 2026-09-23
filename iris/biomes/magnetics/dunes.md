@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Magnetics Dunes"
-description: "Iris biome atlas entry for magnetics/dunes in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for magnetics/dunes in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`magnetics/dunes` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`magnetics/dunes` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 ## Selection and weighting
 
@@ -15,14 +15,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
-| Underworld 1010 | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
+| Overworld | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
+| Underworld | `magnetics` (The Magnetics) | 1 | 1 | 1 | 16.67% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `magnetics/dunes` (-3..18); combined authored contribution `-3..18` blocks relative to fluid height.
 
@@ -30,7 +30,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -40,13 +40,13 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:desert`; native-structure derivative `minecraft:desert`; no custom or scatter identities.
 - **Surface:** 1 block(s): `minecraft:sandstone`, `minecraft:smooth_sandstone`; 1-4 block(s): `minecraft:sandstone`, `minecraft:cut_sandstone`; 4-8 block(s): `minecraft:smooth_sandstone`, `minecraft:sandstone`, `minecraft:terracotta`; 8-18 block(s): `minecraft:sandstone`, `minecraft:smooth_sandstone`, `minecraft:stone`, `minecraft:terracotta`. Wall palette: `minecraft:sandstone`, `minecraft:smooth_sandstone`, `minecraft:cut_sandstone`, `minecraft:chiseled_sandstone`.
 - **Content:** 4 object placement rule(s) drawing from 25 object key(s), including `clutter/desertpost1`, `clutter/desertpost2`, `clutter/desertpost3`, `clutter/boulder1`, `clutter/boulder2`, `clutter/boulder3`, `clutter/boulder4`, and 18 more. 1 decorator rule(s) using `minecraft:dead_bush`.
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:basalt_deltas`; native-structure derivative `minecraft:basalt_deltas`; custom identities `underworld_magnetics_dunes_a5367b36`.
 - **Surface:** 1 block(s): `minecraft:smooth_basalt`; 1-4 block(s): `minecraft:smooth_basalt`; 4-8 block(s): `minecraft:smooth_basalt`, `minecraft:netherrack`; 8-18 block(s): `minecraft:smooth_basalt`, `minecraft:blackstone`, `minecraft:netherrack`. Wall palette: `minecraft:smooth_basalt`.
@@ -61,8 +61,8 @@ No ordinary child biomes are declared.
 
 ## Floating variants
 
-- **Overworld 4007: [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
-- **Underworld 1010: [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
+- **Overworld: [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
+- **Underworld: [`magnetics/dunes`](/iris/biomes/magnetics/dunes):** rarity `1`, altitude `90..130` blocks above the surface, top mode `NOISE`, maximum thickness `72`, carving biome `carving/sand-hollows-child`; decorators inherit and objects do not inherit.
 
 This is an intentional floating self-target: the island reuses `magnetics/dunes` terrain and biome treatment above columns already owned by that biome. Floating-island evaluation is separate from ordinary child recursion and region selection, so the self-target does not add a land-list occurrence or change the direct `16.67%` conditional share above.
 

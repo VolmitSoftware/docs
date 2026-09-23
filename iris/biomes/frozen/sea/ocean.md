@@ -2,13 +2,13 @@
 title: "Frozen Ocean — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for frozen/sea/ocean"
 published: true
-date: 2026-09-14T01:41:00.322Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`frozen/sea/ocean` is a direct sea root in the current Overworld 4009 and Underworld 1011 pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`frozen/sea/ocean` is a direct sea root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs use matching compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Placement chances, variant seeds, dimensions, and support settings match. Large formations use continuous organic supports with a 96-block terrain scan. Underworld uses blackstone and crying obsidian for these forms.
 
@@ -18,28 +18,28 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld 4009 | `frozen` (1/4 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
-| Underworld 1011 | `frozen` (1/4 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
+| Overworld | `frozen` (1/4 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
+| Underworld | `frozen` (1/4 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
 
 ## Terrain and generator
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 `mountain` maps to `-32..-10` relative to the dimension fluid height.
 
-## Overworld 4009 treatment
+## Overworld treatment
 
 The Overworld root adds `snippet/procedural-objects/frozen/magical-ice-spikes-surface`; Underworld pairs the same role with `snippet/procedural-objects/frozen/magical-blackstone-spikes-surface`.
 
 Derivative `minecraft:frozen_ocean`; vanilla derivative `minecraft:frozen_ocean`. Primary sea palette: `minecraft:dirt`, `minecraft:gravel`, `minecraft:stone`, `minecraft:sand`, `minecraft:clay`, `minecraft:ice`, `minecraft:packed_ice`, `minecraft:blue_ice`.
 
-## Underworld 1011 treatment
+## Underworld treatment
 
 Derivative `minecraft:basalt_deltas`; vanilla derivative `minecraft:basalt_deltas`. Primary sea palette: `minecraft:blackstone`, `minecraft:gravel`. Entity spawners: `nether/lava`, `nether/cave`. Custom registered biome id: `underworld_frozen_sea_ocean_bdf64c5c`.
 
 ## Child and floating variants
 
-No child or floating-child biome is declared by this root in either pinned pack.
+No child or floating-child biome is declared by this root in either pack.
 
 ## Inspect it in game
 

@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,8 +60,6 @@ Prerequisite: the structure appears in `/iris structure list <dimension>`.
 
 **Success:** newly generated starts keep their native blocks, entities, processors, and loot, and the requested terrain operation is visible. Existing chunks are unchanged.
 
-Widen from an exact key to a prefix only after the exact-key test passes. A namespace or family prefix can hit many variants at once. If verify flips to `[disabled]`, remove the matching disable entry. If it says `[unreachable]`, fix the biome derivative mapping (see 1.2) before touching terrain.
-
 Field details are in 1.5.
 
 ## Task 2: Install a third-party datapack
@@ -100,9 +98,6 @@ Prerequisites: a Bukkit-family server and the Iris dimension pack that will use 
 
 Dimension-owned sources apply only to dimensions that declare them. Drop-folder sources apply to every Iris dimension. Neither source changes vanilla-world generation.
 
-If the key is absent after ingest, check that the managed pack appears in `/iris datapack list` and that the requested restart actually completed. Registry keys are never live on the boot that installs them. Removing a URL changes future per-world scope after a restart.
-It does not delete existing chunks or generated structures. Declaring the same URL in two Iris dimensions deliberately enables the source in both.
-
 To remove an optional source and return to vanilla placement, delete its URL from every `datapackImports` list or remove its ZIP from `plugins/Iris/datapacks/imports/`. Remove source-specific entries under `importedStructures`, such as namespace or vanilla-family disables and adjustments. Remove every `nativeStructures` placement that references the source. Validate the pack and stage a world activation.
 If you also want the managed files removed from disk, get the source ID from `/iris datapack list` and run `/iris datapack remove <id>` after deleting the URL or drop-folder ZIP. Restart before verifying the restored policy. Only newly generated chunks change.
 Existing starts remain.
@@ -127,7 +122,7 @@ Existing starts remain.
 **Success:** the key reports `[disabled]`, and `/iris goto structure <key>` answers that it is disabled by this dimension's `importedStructures` settings. New chunks no longer contain it.
 Old chunks keep whatever already generated.
 
-Two things catch people out. A namespace disable needs the trailing colon: `"nova_structures:"` works, `"nova_structures"` does not (see the prefix rules in 1.3). And neither deny list blocks an explicit `nativeStructures` placement, which is exactly what Task 4 relies on.
+Use a trailing colon for a namespace disable, such as `"nova_structures:"`. Neither deny list blocks an explicit `nativeStructures` placement.
 
 ## Task 4: Place registered structures only where Iris says
 
@@ -371,7 +366,7 @@ Among the vertical placement controls, three structures honor only `yShift`. `mi
 | `PRESERVE` | Disable terrain integration. |
 | `BORE` | Clear the padded piece volume (box) before placement. |
 | `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
-| `VACUUM` | Explicit raise-only fitting to processed structure ground planes with a fixed 12-block falloff. It never lowers ground and is unchanged by the bounded default `SOURCE` behavior. |
+| `VACUUM` | Explicit raise-only fitting to processed structure ground planes with a fixed 12-block falloff. It never lowers ground. |
 | `FLATTEN` | Cut high ground and fill low ground around exposed native structure foundations, including 3D terrain. `flattenRange` bounds vertical cut, fill, and foundation support; `horizontalPadding` is the blend distance. Buried and submerged pieces keep their terrain. |
 | `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional. Defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
 
@@ -477,15 +472,11 @@ For a custom pack with imports on Bukkit, the default `general.autoIngestDatapac
 
 Run `/iris datapack ingest` to check for updates. Local ZIP changes are detected automatically during startup.
 
-### 2.3 Optional Dungeons & Taverns caveat on Folia 26.2
-
-The built-in Iris packs do not include Dungeons & Taverns. Custom packs importing Dungeons & Taverns 5.3.0 have incomplete functionality on Folia 26.2, even though worlds and chunks still load. Use Paper, Leaf, or Canvas if you need its full behavior.
-
-### 2.4 Modded installation
+### 2.3 Modded installation
 
 On Fabric, Forge, and NeoForge, install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory, then restart with both the datapacks and Iris pack present. `/iris datapack ingest` and the Bukkit import folder do not install them on these platforms. The current built-in Overworld and Underworld need no external datapacks.
 
-### 2.5 Manual commands
+### 2.4 Manual commands
 
 ```
 /iris datapack ingest [restart=false]    (alias: pull)
@@ -495,7 +486,7 @@ On Fabric, Forge, and NeoForge, install every external datapack declared by a cu
 
 On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension while keeping the per-dimension ownership relationship used by generation and locate state. `restart` defaults to false, and Iris tells you a restart is required. `remove` refuses unmanaged datapacks. Also delete the URL, or a later startup ingest reinstalls it. Scope changes do not delete installed datapacks, previously generated chunks, or existing structures.
 
-### 2.6 Usage patterns
+### 2.5 Usage patterns
 
 **(a) Natural generation.** Import, restart. Check with `/iris structure list <dimension>` (which writes `<pack>/.iris/structure-index.json`) and `/iris structure verify <dimension>` (`[native-eligible]` versus `[unreachable]`). Fix unreachable biomes with `vanillaDerivative`, or use (c).
 
@@ -542,7 +533,7 @@ On Bukkit, `ingest` downloads each distinct URL declared by any loaded dimension
 }
 ```
 
-### 2.7 `datapackOverrides`
+### 2.6 `datapackOverrides`
 
 When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|template_pool/` and `data/minecraft/structure/` from every installed copy. This resolves **globally**: one dimension setting it `false` strips for all. Non-`minecraft:` content is unaffected, so disable those keys explicitly.
 
@@ -564,8 +555,6 @@ When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|templ
 Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
-
-On every platform, native placement is confined to the writable 3x3-chunk area around the generation chunk. A structure that probes farther reads deterministic Iris terrain instead, and distant block changes, entities, events, and scheduled ticks never reach the live level. Villager workstations and other point-of-interest blocks are reconciled when the affected chunk next loads; no pack setting is required.
 
 External datapacks can produce content warnings for unresolved `minecraft:grass` forms, invalid block properties, empty third-party pools, stale replacement identifiers, or stale block-attached-entity `block_pos` values. Iris reports those inputs and uses Minecraft's safe fallback where one exists rather than rewriting third-party source bytes.
 
@@ -687,8 +676,6 @@ No import command is needed for that case.
 
 Automatic import is off by default because native generation and `nativeStructures` do not need editable copies. Removing a URL from `datapackImports` can remove its managed imports, but an adopted clone remains independent.
 
-Third-party templates using the legacy slab property `half=top|bottom`, or the misspelling `minecraft:chisled_polished_blackstone`, are corrected during conversion. Other invalid final states are omitted and reported as fidelity losses.
-
 ## Structure diagnostics
 
 ```
@@ -703,16 +690,6 @@ Third-party templates using the legacy slab property `half=top|bottom`, or the m
 `structure place` resolves the graph and edit resources from the named dimension pack, then stamps the assembled pieces into the player's current world. The pack's Studio and generation engine do not need to stay open for this explicit placement.
 
 `verify` tags: `[iris-planned]`, `[iris-not-found]`, `[iris-search-limit]`, `[disabled]`, `[unreachable]`, `[native-eligible]`, `[error]`. Placements are checked first, so a disabled-but-placed key shows as `[iris-planned]`.
-
-### Traps
-
-- Worlds retain immutable pack epochs. Stage changes with `/iris developer update-world world=<w> pack=<dim> confirm=true` or the modded `/iris world update` form, then restart. Back up first.
-- Optional args are keyed: `radius=200`, not a bare `200`.
-- New datapack structures need a restart before the registry knows them.
-- Only new chunks change.
-- Namespace disables need the colon: `"nova_structures:"`.
-- `REPLACE_SOURCE` has no fallback, so validate the graph before release.
-- `datapackOverrides: false` anywhere strips `minecraft:` overrides server-wide.
 
 ## Command reference
 
@@ -736,7 +713,3 @@ Third-party templates using the legacy slab property `half=top|bottom`, or the m
 | `/iris world update` | | `<dimension> <pack>` — modded only |
 
 Related dimension fields: `datapackImports`, `importedStructures`, `structures[]`. Settings in `plugins/Iris/iris.json`: `general.autoIngestDatapacks` (default true), `general.autoImportDatapackStructures` (default false).
-
-## Native content beside generation updates
-
-A generation update uses saved natural terrain as its boundary. New native structure starts require their complete footprint to avoid historical chunks, and native feature decoration skips its pass when the surrounding 3x3 chunk area contains a completed historical chunk. Starts saved from an earlier activation can finish their remaining chunk-local placement without the new-start footprint check, and completed stages are not rerun. See [generation updates and retained terrain](/iris/06-worlds-lifecycle#generation-updates-and-retained-terrain).

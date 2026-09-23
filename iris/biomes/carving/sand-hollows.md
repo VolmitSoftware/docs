@@ -2,13 +2,13 @@
 title: "Sunken Oasis Hollows — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/sand-hollows"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-`carving/sand-hollows` is a direct cave root in the current Overworld and Underworld pack sources. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
+`carving/sand-hollows` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -18,8 +18,8 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 
 | Pack | Role and regional slots | Declared biome rarity | Relative biome weight |
 |------|-------------------------|-----------------------|-----------------------|
-| Overworld source | `hot` (1/7 slots; region rarity 3, weight `1/3`); `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
-| Underworld source | `hot` (1/7 slots; region rarity 3, weight `1/3`); `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Overworld | `hot` (1/7 slots; region rarity 3, weight `1/3`); `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
+| Underworld | `hot` (1/7 slots; region rarity 3, weight `1/3`); `tropical` (1/6 slots; region rarity 2, weight `1/2`) | `1` | `1/1` |
 
 ## Terrain and generator
 
@@ -29,11 +29,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 **Underworld carving.** Enabled local cave profile with declared vertical range `6..700`; sample step `2`; surface clearance `4`; surface breaking `enabled`; aquifers `disabled`; lava `allowed`; a minimum depth below surface of `2`.
 
-## Overworld source treatment
+## Overworld treatment
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:sand`, `minecraft:red_sand`, `minecraft:smooth_sandstone`, `minecraft:sandstone`, `minecraft:terracotta`, `minecraft:cut_sandstone`, `minecraft:red_sandstone`, `minecraft:smooth_red_sandstone`, and 1 more. Decorator blocks: `minecraft:dead_bush`, `minecraft:sand`, `minecraft:red_sand`, `minecraft:cactus`, `minecraft:short_grass`, `minecraft:tall_grass`. Object set: `clutter/jungleclutt11`, `clutter/jungleclutt12`, `clutter/jungleclutt13`, `clutter/junglestone1`, `clutter/junglestone2`, `clutter/rdesertpost1`, `clutter/rdesertpost2`, `clutter/rdesertpost3`, and 8 more.
 
-## Underworld source treatment
+## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:soul_sand`, `minecraft:smooth_basalt`, `minecraft:netherrack`, `minecraft:basalt`. Decorator blocks: `minecraft:nether_sprouts`, `minecraft:warped_stem`, `minecraft:soul_fire`. Object set: `underworld/soul/clutter/jungleclutt11`, `underworld/soul/clutter/jungleclutt12`, `underworld/soul/clutter/jungleclutt13`, `underworld/soul/clutter/junglestone1`, `underworld/soul/clutter/junglestone2`, `underworld/soul/clutter/rdesertpost1`, `underworld/soul/clutter/rdesertpost2`, `underworld/soul/clutter/rdesertpost3`, and 8 more. Custom registered biome id: `underworld_carving_sand_hollows_08e8740e`.
 

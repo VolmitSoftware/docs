@@ -2,13 +2,13 @@
 title: "Sulfur Galleries — Cave Biome"
 description: "Sulfur Galleries and Sulfur Hollows, with native sulfur pools, spikes and cube ecology"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas, cave, sulfur"
 editor: markdown
 dateCreated: 2026-09-03T00:00:00.000Z
 ---
 
-`carving/sulfur` is a regional cave root in the current Overworld and Underworld pack sources, with `carving/sulfur-hollows` as its child. Both require Minecraft 26.2. Existing worlds need the updated pack snapshot and fresh chunks; updating Iris alone does not add this content.
+`carving/sulfur` is a regional cave root in the Overworld and Underworld packs, with `carving/sulfur-hollows` as its child. Both require Minecraft 26.2.
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
@@ -19,7 +19,7 @@ Both packs disable standalone cave aquifers in this family and its children. Con
 | Overworld | Estranged 1/6; Hot 1/7; Temperate 1/6; Tropical 1/6 | `1` | `1/1` |
 | Underworld | Estranged 1/6; Hot 1/7; Temperate 1/6; Tropical 1/6 | `1` | `1/1` |
 
-Slot fractions describe the regional lists, not whole-world probabilities. The root has one child selected with Simplex noise at zoom `0.62` and shrink factor `1.3`. The new selector entries change cave selection in newly generated areas of those regions.
+Slot fractions describe the regional lists, not whole-world probabilities. The root has one child selected with Simplex noise at zoom `0.62` and shrink factor `1.3`.
 
 Both caves use dripstone-derived profiles with a declared engine-local vertical range `12..620`, sample step `2`, minimum surface depth `18`, surface clearance `12`, and surface breaks disabled. The root retains the larger dripstone profile; the hollows use the companion child profile. Profiles, child layout, regional selectors, formation dimensions and pool silhouettes match across both packs.
 
@@ -50,11 +50,11 @@ Three authored objects provide sealed, irregular mineral pools. The ordinary poc
 
 Ordinary pool placements attempt at chance `0.12` in galleries and `0.34` in hollows; geyser placements use `0.025` and `0.06`. Each successful roll attempts one object, subject to cave anchor and placement checks. These values do not guarantee a pool in every selected chunk. Pools anchor to dry cave floors, with `bottom: false` and `translate.y: -2`: their lowest bed is four blocks below the sampled anchor, their water surface and rim are one below it, and their rim spikes reach the anchor.
 
-The ordinary bowls store potent sulfur in its native `wet` state. The magma-backed bowl stores it in `dormant`, which allows the native countdown to begin. Minecraft supplies the gas, nausea and geyser behavior; Iris does not run an additional hazard task. Underlying source water is contained by the object even when its surrounding cave opens into a larger space. Final cave cleanup removes spike chains whose support was replaced by a pool, leaving the water pocket clear.
+The ordinary bowls store potent sulfur in its native `wet` state. The magma-backed bowl stores it in `dormant`, which allows the native countdown to begin. Minecraft supplies the gas, nausea and geyser behavior. Underlying source water is contained by the object even when its surrounding cave opens into a larger space.
 
 ### Sulfur cubes
 
-Both cave variants inherit the native sulfur-cave spawn table, including sulfur cubes and cave spiders. There is no additional Iris ambient spawner multiplying that table. Natural spawning still obeys Minecraft's mob caps, difficulty, light and placement rules.
+Both cave variants inherit the native sulfur-cave spawn table, including sulfur cubes and cave spiders. Natural spawning still obeys Minecraft's mob caps, difficulty, light and placement rules.
 
 `entities/standard/passive/sulfur-cube.json` defines a reusable unmodified `minecraft:sulfur_cube`. Pack objects, markers and spawners may reference this entity key where explicit placement is desired. On Bukkit, a player can check the template with:
 
@@ -62,7 +62,7 @@ Both cave variants inherit the native sulfur-cave spawn table, including sulfur 
 /iris studio spawn standard/passive/sulfur-cube
 ```
 
-Feeding, block absorption, shearing, buckets, splitting and physics are the native Minecraft behaviors. No pre-fed block, custom name or artificial combat ability is imposed.
+Feeding, block absorption, shearing, buckets, splitting and physics are the native Minecraft behaviors.
 
 ## Underworld treatment
 
@@ -70,9 +70,9 @@ The same cave geometry and spike distributions use sulfur, cinnabar, blackstone 
 
 The derivative is `minecraft:basalt_deltas`, retaining native Nether ecology including magma cubes. Custom ids are `underworld:underworld_sulfur_galleries` and `underworld:underworld_sulfur_hollows`, with warm brown fog. The Overworld sulfur cube template is not copied into this lava habitat.
 
-## Inspect and validate
+## Inspect in game
 
-Use an updated local pack on a 26.2 server. Validate it before opening a studio or creating a world, then inspect fresh chunks:
+Use these commands on a Minecraft 26.2 server:
 
 ```text
 /iris find biome carving/sulfur
@@ -80,6 +80,6 @@ Use an updated local pack on a 26.2 server. Validate it before opening a studio 
 /iris edit biome carving/sulfur
 ```
 
-Descend to the selected cave volume if the locator leaves the player above it. Inspect both the galleries and hollows; the latter have fewer floor spikes and more pool attempts. If a custom biome id is missing, restart after installing the pack so its biome registrations are available before world creation.
+Descend to the selected cave volume if the locator leaves the player above it. Inspect both the galleries and hollows; the latter have fewer floor spikes and more pool attempts.
 
 For the general placement and ecology contracts, see [15 - Caves & Carving](/iris/15-caves-carving), [16 - Surfaces, Decorators, Deposits](/iris/16-surfaces-decorators-deposits), and [23b - Entities & Spawners](/iris/23b-entities-spawners).

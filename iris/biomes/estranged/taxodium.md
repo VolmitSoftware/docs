@@ -1,13 +1,13 @@
 ---
 title: "Biome Atlas — Taxodium Stand"
-description: "Iris biome atlas entry for estranged/taxodium in Overworld 4007 and Underworld 1010"
+description: "Iris biome atlas entry for estranged/taxodium in Overworld and Underworld"
 published: true
-date: 2026-09-14T01:45:50.873Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-`estranged/taxodium` is a directly selected land biome in the current Overworld 4007 and Underworld 1010 packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
+`estranged/taxodium` is a directly selected land biome in the Overworld and Underworld packs. Overworld and Underworld use the same terrain with different materials, Minecraft biome identities, decorations, and ecology.
 
 Estranged cave decoration includes Frostspar with three to five tapered shards, each five to nine blocks long, on continuous organic supports. Overworld uses solid quartz and calcite. Underworld retains its separate base and crying-obsidian tips.
 
@@ -17,14 +17,14 @@ The percentage is this biome's weighted share after Iris selects its region and 
 
 | Pack | Region | List occurrences | Rarity divisor | Combined raw weight | Effective land-list share |
 |---|---|---:|---:|---:|---:|
-| Overworld 4007 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
-| Underworld 1010 | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
+| Overworld | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
+| Underworld | `estranged` (Estranged) | 1 | 4 | 0.25 | 5.28% |
 
 Each repeated entry contributes another `1 / rarity` weight.
 
 ## Shared terrain
 
-The referenced terrain generators retain 50% of their detail between six-block grid anchors through `surfaceDetail: 0.5`. Anchor heights, biome height ranges, and large terrain features retain their settings. See [Generators and noise](/iris/14-generators-noise).
+The terrain generators use `surfaceDetail: 0.5` to smooth small surface variations. See [Generators and noise](/iris/14-generators-noise).
 
 Both packs use the same generator links: `plain` (2..7), `rare-hills` (0..28); combined authored contribution `2..35` blocks relative to fluid height.
 
@@ -32,7 +32,7 @@ Biome identity scatter uses `SIMPLEX` noise in the Overworld configuration. Gene
 
 ## 3D terrain
 
-Overworld 4007 and Underworld 1010 share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
+Overworld and Underworld share these `terrain3D` settings. Amplitude, feature scales, and crack dimensions use blocks.
 The slope gate uses rise divided by horizontal distance. Strength reaches its configured value at the full slope.
 
 | Biome | Treatment | Amplitude | Horizontal / vertical scale | Crack depth / width / scale | Slope start / full | Density noise / Crack noise |
@@ -44,13 +44,13 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 - `estranged/taxodium`: Wetland floors and tree supports retain their current terrain.
 
-## Overworld 4007 treatment
+## Overworld treatment
 
 - **Minecraft identity:** derivative `minecraft:savanna`; native-structure derivative `minecraft:savanna`; custom identities `estranged_taxodium`.
 - **Surface:** 1 block(s): `minecraft:grass_block`, `minecraft:coarse_dirt`, `minecraft:gravel`, `minecraft:podzol`; 2-3 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`. Wall palette: `minecraft:stone`, `minecraft:andesite`, `minecraft:cobblestone`.
 - **Content:** 3 decorator rule(s) (1 shared snippet reference(s)) using `minecraft:short_grass`, `minecraft:dead_bush`, `minecraft:brown_mushroom`. Procedural content: 1 trees (taxodium).
 
-## Underworld 1010 treatment
+## Underworld treatment
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:warped_forest`; custom identities `underworld_estranged_taxodium_218d7d2e`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`, `minecraft:netherrack`, `minecraft:gravel`; 2-3 block(s): `minecraft:netherrack`. Wall palette: `minecraft:netherrack`, `minecraft:basalt`, `minecraft:blackstone`.

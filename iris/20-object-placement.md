@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-23T05:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -83,12 +83,7 @@ Merge this into one focused biome, keeping the biome other fields:
 3. Open or hotload Studio and fly into fresh chunks whose center column uses the edited biome. At `chance: 1` you get one in nearly every such chunk.
 4. Confirm ownership: run `/iris find object tutorial/lookout`, or get `/iris object dust` and right-click a placed block. Iris names the placement that owns that block.
 5. Pick the terrain mode that fixes what you see. Use `PAINT` for ground-hugging clutter. Use a stilt mode for support over uneven ground. Use `CEILING_HANG` for cave roofs. Use a `VACUUM` mode to pull the terrain up to a flat base.
-6. Test the negative cases: steep slopes, water, cave mouths, and the neighboring biomes where the object should not appear at all.
-7. Drop `chance` and `density` to production values. Validate again. Generate one more fresh area.
-
-The placement is done when a manual paste and natural generation agree on orientation. The object must sit on the ground the way you want. It must stay absent outside its configured scope.
-
-If validation cannot resolve the object, the `place` key does not match the path under `objects/`. If nothing generates, work section 10 top to bottom. If a non-Studio world still generates the old placement, confirm the update was staged and activated on restart. See [18 - Structures Overview](/iris/18-structures-overview).
+6. Adjust `chance` and `density` to set how often the object appears.
 
 ## 1. Which files carry placements
 
@@ -184,7 +179,7 @@ Overlapping surface and cave objects on the main terrain use a repeatable placem
 
 **Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the automatic surface-river veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
 
-## 4. Surface support: the silent rejection
+## 4. Surface support
 
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
 
@@ -223,7 +218,7 @@ A second guard rejects surface-anchored placements that resolve to y <= 1 in a b
 }
 ```
 
-`STILT` is `MAX_HEIGHT` plus columns. `MIN_STILT` is `MIN_HEIGHT` plus columns. `CENTER_STILT` is `CENTER_HEIGHT` plus columns and is the cheapest one worth using. The `FAST_` variants are cheaper and less accurate, so pair them with `overStilt` to drive the legs further under the surface. `ERODE_STILT` tapers the legs like a cone: deepest at the footprint centroid, dropping off toward the edges, with the lower portion randomly broken up.
+`STILT` is `MAX_HEIGHT` plus columns. `MIN_STILT` is `MIN_HEIGHT` plus columns. `CENTER_STILT` is `CENTER_HEIGHT` plus columns. The `FAST_` variants sample fewer columns. Use `overStilt` to extend the legs below the surface. `ERODE_STILT` tapers the legs like a cone: deepest at the footprint centroid, dropping off toward the edges, with the lower portion randomly broken up.
 
 Occluding blocks and full ice or glass blocks can stilt; containers, block entities, stairs, slabs, and dirt paths cannot, and `stiltSettings.exclude` adds more material keys to that list. Grass, mycelium, podzol, and dirt-path bottoms are substituted with dirt so you do not get grass columns, and a `palette` overrides the column material entirely. A column stops as soon as it hits a fluid, so stilts never punch through a lake floor.
 
@@ -268,7 +263,7 @@ Jigsaw structure pieces are excluded from `allObjectScaleFactor` and retain thei
 { "scale": { "size": 1, "minimumScale": 0.75, "maximumScale": 1.25, "variations": 7, "interpolation": "TRILINEAR" } }
 ```
 
-`size` is a fixed multiplier and overrides the range when it is not 1. With `size: 1` and a min/max spread, each placement uses one of `variations` evenly spaced sizes across the range. `interpolation` only matters when scaling up. `NONE` gives blocky output. `TRILINEAR` smooths it. `TRICUBIC` and `TRIHERMITE` are smoother and much slower.
+`size` is a fixed multiplier and overrides the range when it is not 1. With `size: 1` and a min/max spread, each placement uses one of `variations` evenly spaced sizes across the range. `interpolation` only matters when scaling up. `NONE` gives blocky output. `TRILINEAR` smooths it. `TRICUBIC` and `TRIHERMITE` provide additional smoothing.
 
 `heightmap` replaces terrain height sampling with a noise generator, so the object seats against a virtual surface. Surface support still samples the real terrain.
 
@@ -310,7 +305,7 @@ The value scales to vanilla eight layers. Each column gets a random count from 0
 }
 ```
 
-A `chance: 1` rule whose `find` matches a block that does not exist on this Minecraft version also rescues the object from the version content gate, because the block is rewritten before it is ever written to the world. See [11. Content unavailable on this Minecraft version](#11-content-unavailable-on-this-minecraft-version).
+A `chance: 1` rule whose `find` matches a block that does not exist on this Minecraft version also rescues the object from the version content gate, because the block is rewritten before it is ever written to the world. See [11. Content unavailable on this Minecraft version](#10-content-unavailable-on-this-minecraft-version).
 
 `exact: false` matches on material alone. `exact: true` requires a full block-data match. When the replacement resolves to the *same* material as the matched block, Iris merges the two block states. It does not overwrite. Facing and other properties survive. A different material replaces outright and clears saved block-entity data unless the replacement supplies its own. `chance` is rolled once per rule per block.
 
@@ -339,7 +334,7 @@ A `chance: 1` rule whose `find` matches a block that does not exist on this Mine
 
 `loot[].name` is a key under the pack `loot/` folder. `vanillaLoot[].name` is a vanilla or datapack loot-table key. For each chest, an `exact: true` full block-data match wins over a material match, which wins over an entry with no `filter` at all. Among the survivors one table is picked by `weight`. `overrideGlobalLoot: true` makes the placement table the only one, suppressing dimension, region, and biome loot for the containers it matched. An unresolvable name logs `Couldn't find loot table <name>` and is skipped.
 
-Iris fills these chests during the post-generation chunk update pass, reading the placement recorded in the mantle at that block. It does not fill when a player opens the chest. Separately, a chest saved into the `.iob` with a vanilla loot table already on it keeps that table ([19 - Objects](/iris/19-objects)).
+Iris fills storage chests after generation. Separately, a chest saved into the `.iob` with a vanilla loot table already on it keeps that table ([19 - Objects](/iris/19-objects)).
 
 **Markers.** Placements have no entity field. `markers[]` tags matching blocks with a marker resource. The marker carries the spawners.
 
@@ -528,36 +523,7 @@ Ground-hugging mushroom carpet:
 }
 ```
 
-## 10. Placement checks
-
-Use `/iris object paste` to inspect the object's saved geometry, then test its placement settings in new Studio terrain. Studio applies JSON and `.iob` edits to new chunks; existing chunks keep their blocks.
-
-| Setting | Authoring guidance |
-|---------|--------------------|
-| `place` | Use case-sensitive paths relative to `objects/`, without `.iob` |
-| `chance` / `density` | Start with `"chance": 1, "density": 4` to make test placements easy to find, then reduce them |
-| Biome | Test in the biome containing the placement. Selection uses the biome at the chunk center |
-| `carvingSupport` | Use `SURFACE_ONLY` for surface objects or `CARVING_ONLY` for cave objects |
-| Surface support | Provide a supported base; see section 4 |
-| Water | Enable `underwater` or `onwater` for water placements |
-| `clamp` | Use the engine-relative Y range described in section 3 |
-| `slopeCondition` | Choose a slope range that includes the terrain where you want the object |
-
-Objects cannot overwrite vanilla or datapack structure pieces, including with `force: true`.
-
-| Desired placement | Settings to use |
-|-------------------|-----------------|
-| Support on uneven ground | A stilt mode or `VACUUM` mode |
-| Shallower burial | Reduce negative `translate.y` or choose a mode other than `MIN_HEIGHT` |
-| Cave floor | `ORGANIC_STILT` with `carvingSupport: "CARVING_ONLY"` |
-| Cave ceiling | `CEILING_HANG` with `carvingSupport: "CARVING_ONLY"` |
-| Ground clutter | `PAINT`; use `translate.y: -1` when the object's saved origin sits above the surface |
-| Clear terrain from interiors | `bore` for a full clearing or `smartBore` for enclosed rooms |
-| Stronger warping | Increase `warp.multiplier` |
-
-Placement loot fills storage chests. Reference an existing loot table, and use `exact: true` only when the filter matches the saved block state exactly.
-
-## 11. Content unavailable on this Minecraft version
+## 10. Content unavailable on this Minecraft version
 
 A `.iob` saved on a newer Minecraft can contain blocks an older server does not have. Iris reads only the object palette header when it builds a placement's pool, checks every key against the live registry, and decides per object per placement. There are no version fields; see [25 - Pack Management](/iris/25-pack-management) for the gate, the startup listing, and `/iris pack compat`.
 

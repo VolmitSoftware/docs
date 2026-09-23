@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,12 +13,6 @@ Command syntax differs between the plugin and the mods. Each step gives both for
 
 Full command trees and permissions: [04 - Commands & Permissions](/iris/04-commands-permissions). World lifecycle detail: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle). Studio detail: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
-## What you end up with
-
-One disposable Iris world built from the `overworld` pack, entered and generating chunks. It has roughly a 45×45-chunk pregenerated area. A separate Studio session points at the live pack. Use seed `1337` throughout. If you change seeds while you still diagnose something, every comparison becomes meaningless.
-
-Work through the sections in order and confirm each one before moving on. Iris failures surface late and in the wrong place, so skipping a check does not save time.
-
 ## Prerequisites
 
 - Iris installed and verified per [01 - Installation & Platforms](/iris/01-installation-platforms)
@@ -27,13 +21,12 @@ Work through the sections in order and confirm each one before moving on. Iris f
 - The managed `overworld` and `underworld` packs present, or your own pack installed under the platform's packs directory
 - Any external datapacks declared by a custom pack installed through the platform-specific workflow. The current built-in Overworld and Underworld releases declare none
 
-## The one syntax rule that trips everyone up
+## Command syntax
 
 On Bukkit, use `key=value` for optional and contextual parameters. Required parameters also accept their bare positional form. Extra positional values fail.
 
 ```text
-/iris create name=myworld type=overworld seed=1337     canonical
-/iris create myworld overworld 1337               fails: unexpected argument
+/iris create name=myworld type=overworld seed=1337
 ```
 
 Parameters marked contextual, like `world` on pregen, normally come from where you stand. They also never take a positional. Name them with `key=` when you need to override them.
@@ -67,7 +60,7 @@ Create has one purpose: make a new managed dimension. A normal bare name such as
 
 **Names Iris refuses.** `iris` and `benchmark` are rejected outright (case-insensitive) and Iris suggests something like `irisworld`. Before those checks, the logical name has to be a safe single path segment matching `[a-z0-9_-]`, so anything containing `/`, `\`, or `..` is rejected. Names that collide with the selected save's Bukkit aliases (`<level-name>`, `<level-name>_nether`, and `<level-name>_the_end`) are also rejected, as are `minecraft:*` and foreign namespaced keys.
 
-**Already exists.** Create aborts if the managed dimension folder is already there. On Paper-family servers that folder is `<level-root>/dimensions/iris/<name>`. Plain Spigot uses `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>` so CraftBukkit can bind the outer world and the canonical `iris:<name>` storage together. Use the separate replacement command when replacing an existing safe slot is intentional. Exact vanilla-slot replacement is unavailable on Spigot.
+Choose an unused world name. Use `/iris replace` to replace an existing world on Paper-family servers. Spigot does not support replacement.
 
 The managed `iris:*` world is built immediately on every Bukkit-family server, including Folia and Spigot. Progress appears as a labeled action-bar meter for players and a text bar in the console.
 
@@ -75,7 +68,7 @@ The managed `iris:*` world is built immediately on every Bukkit-family server, i
 /iris create name=myworld type=overworld seed=1337
 ```
 
-Create does not report success as soon as the world object exists. Iris waits for the real initial-spawn chunk (up to 10 minutes) and applies the spawn location before registering the world, so a generation or placement failure fails the create rather than publishing a false ready state.
+Wait for creation to finish before entering the world.
 
 Now run `/iris worlds` (alias `accesslist`). It prints two lists: Iris worlds and plain Bukkit worlds. `myworld` must appear under Iris worlds immediately after creation completes, including on Folia.
 
@@ -87,7 +80,7 @@ Now run `/iris worlds` (alias `accesslist`). It prints two lists: Iris worlds an
 
 `replace` has command aliases `override` and `overwrite`. It accepts an existing safe `iris:*` target or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`. It never creates a missing target. Friendly targets `main`/`overworld`, `nether`/`the_nether`, and `end`/`the_end` resolve to those three vanilla identities. The configured Bukkit names `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` resolve the same way and take priority if a level name happens to equal a friendly alias. Other bare names resolve to `iris:<name>`. Omit `seed` to keep the authoritative seed already saved for that target. Provide any signed 64-bit integer to give the fresh replacement terrain an explicit seed.
 
-Every replacement is staged for cold publication: stage as many distinct targets as needed, then restart once. Replacing `minecraft:overworld` is how you make Iris generate the selected server main world, and it keeps `level-name`, shared player data, datapacks, and the other dimensions in the same save root. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+Stage each replacement, then restart once to apply them. Replacing `minecraft:overworld` is how you make Iris generate the selected server main world, and it keeps `level-name`, shared player data, datapacks, and the other dimensions in the same save root. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 #### Install the bundled Overworld and Nether pair
 
@@ -105,7 +98,7 @@ Wait for each download to finish before starting the next. Restart, then stage b
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart once more after both report staged. The target directories must already be initialized and `allow-nether=true` must stay enabled; omitting `seed=` keeps that target's existing saved seed. After the restart the worlds retain the exact `minecraft:overworld` and `minecraft:the_nether` identities, so Nether portals keep their canonical routing. Full procedure and recovery: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
+Restart once more after both report staged. The target directories must already be initialized and `allow-nether=true` must stay enabled; omitting `seed=` keeps that target's existing saved seed. After the restart the worlds retain the exact `minecraft:overworld` and `minecraft:the_nether` identities, so Nether portals keep their canonical routing. Full procedure: [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
 ### Mod
 
@@ -153,13 +146,13 @@ Modded worlds created with `/iris create` or `/iris world enable` are already in
 /iris teleport <world> [player=…]
 ```
 
-Alias `tp`. The world is positional. The player is optional and therefore keyed: `/iris tp myworld player=Notch`. Left out, it targets whoever ran the command, so console needs to name a player explicitly or it reports that the player does not exist. The teleport itself is performed asynchronously where the platform allows it.
+Alias `tp`. The world is positional. The player is optional and therefore keyed: `/iris tp myworld player=Notch`. Left out, it targets whoever ran the command, so console needs to name a player explicitly or it reports that the player does not exist.
 
 ```text
 /iris tp myworld
 ```
 
-You have passed this gate when the teleport completes and chunks generate normally around spawn. If the teleport target does not exist, go back to the create/load step. Do not push on to pregen.
+The command takes you to the world spawn.
 
 ### Mod
 
@@ -168,19 +161,19 @@ You have passed this gate when the teleport completes and chunks generate normal
 /iris tp <dimension> [player]
 ```
 
-Dimension is a loaded-level argument and tab-completes Iris dimensions. A non-Iris dimension is rejected. Console must name a player. You land at x=8.5, z=8.5 in that dimension, at the `MOTION_BLOCKING` height for that column. Iris force-loads the chunk with a ticket if it is not loaded yet.
+Dimension is a loaded-level argument and tab-completes Iris dimensions. A non-Iris dimension is rejected. Console must name a player. You land at the surface near X/Z 8.5, 8.5 in that dimension.
 
 ```text
 /iris tp irisworldgen:myworld
 ```
 
-Success is entry into `irisworldgen:myworld` with `/iris info myworld` still reporting the pack and seed you expect.
+Use `/iris info myworld` to display its pack and seed.
 
 ## 4. Pregenerate
 
 Radius is in **blocks**, measured from the center outward, and one pregeneration job runs server-wide at a time.
 
-The block radius is converted to an inclusive chunk box. A 352-block radius at `0,0` covers chunks -22 through 22 on both axes. That is **45 × 45 = 2,025 chunks**, or 720 × 720 blocks. The command's own feedback describes the request as 704 × 704 blocks (radius × 2). The extra chunk on each edge is the inclusive rounding. Pick your radius knowing that chunk count, not the block number, is what determines how long this takes.
+A 352-block radius at `0,0` covers chunks -22 through 22 on both axes: **45 × 45 = 2,025 chunks**. Chunk boundaries can extend the generated area beyond the requested square.
 
 ### Plugin
 
@@ -194,7 +187,7 @@ The block radius is converted to an inclusive chunk box. A 352-block radius at `
 | `world` | — | your current world | Target world. Contextual, so it must be keyed when you override it — typically when running from console |
 | `center` | `middle` | `0,0` | Center point. `me` uses the running player's position |
 | `gui` | — | `true` | Open the pregen progress window. Set false on a headless server |
-| `serial` | — | `false` | Generate one chunk at a time. Much slower, but the safe option when parallel generation is destabilizing the server. Requires a Paper-compatible server |
+| `serial` | — | `false` | Generate one chunk at a time. Requires a Paper-compatible server |
 
 ```text
 /iris pregen start radius=352 world=myworld center=0,0 gui=false
@@ -229,7 +222,7 @@ Run `/iris pregen status` right away and confirm the target dimension, total, an
 
 ## 5. Open a Studio
 
-Studio worlds are transient: they are discarded when you close them and any leftovers are purged at startup. A Studio world reads the **live** pack directory and hotloads JSON and object edits into newly generated chunks, while production worlds read immutable epochs. With the same pack and seed, Studio generates exactly the same terrain a production world would.
+Studio worlds are transient: they are discarded when you close them and any leftovers are purged at startup. Saving JSON and object edits in the pack folder updates newly generated Studio chunks. Production worlds require the [pack update workflow](/iris/25-pack-management).
 
 ### Plugin
 
@@ -242,7 +235,7 @@ Studio worlds are transient: they are discarded when you close them and any left
 
 | Command | Aliases | Notes |
 |---|---|---|
-| `create` | `+` | Both parameters are optional, so **neither takes a positional value** — use `name=mypack`. With no template it scaffolds a minimal starter pack (`dimensions/`, `regions/`, `biomes/`, `generators/` with one of each). With a template it copies an existing packs entry, downloading it if needed |
+| `create` | `+` | Both parameters are optional, so **neither takes a positional value** — use `name=mypack`. With no template it scaffolds a minimal starter pack (`dimensions/`, `regions/`, `biomes/`, `generators/` with one of each). With a template it copies an installed pack |
 | `open` | `o` | Opens a temporary studio world for a pack. `dimension` is required and positional. `seed` is optional (alias `s`) and defaults to `1337` |
 | `vscode` | `vsc` | Writes and opens a `.code-workspace` with live registry schemas. `dimension` is optional, so keyed only, and defaults to `default` |
 | `close` | `x` | Discards the studio world |
@@ -281,40 +274,7 @@ Group aliases are `std` and `s`.
 
 A number of Bukkit studio and content tools refuse on modded. They print an explanatory message rather than half-working. The list is `importvanilla` (`importv`, `iv`), `loot`, `profile`, `spawn`/`summon`, `objects`/`find-objects`, the object `we`, `studio`, and `convert` subcommands. Structure `import`/`import-all`/`reimport` and datapack `ingest`/`pull`/`remove` also refuse. Do authoring work on a Bukkit server and copy the pack folder across. External datapacks are separate: install each compatible archive directly in the target modded save's `datapacks/` directory before loading the Iris world.
 
-The Studio gate passes when the transient world opens. The workspace must point at the live `packs/overworld/` tree. Saving a valid JSON change must produce a hotload result in-game. Close it with `/iris studio close` and confirm your production `myworld` is still there and unaffected.
-
-## The whole first session
-
-1. Confirm the pack: `overworld` (or yours) exists under the platform packs directory.
-2. Create the world using the form for your platform.
-3. Teleport in and fly around a little to confirm chunks generate.
-4. Optional: `/iris pregen start radius=352 …` for a 45×45-chunk area.
-5. Optional: `/iris studio open <pack>` and use the VSCode schemas for block, item, and entity autocomplete. Mod content is included in those schemas on mod loaders.
-
-The session is finished when you restart the server cleanly. The production world must load its generation history and generate new chunks from the same active epoch. Remove a disposable world through the lifecycle command after evacuating players, never by deleting folders. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
-
-## Common pitfalls
-
-| Pitfall | What actually happens | What to do |
-|---|---|---|
-| Bukkit optional args passed positionally | Hard parse error, command does nothing | Write `seed=1337`, not a bare second token |
-| `/iris studio create mypack` | Fails — both params are optional so neither is positional | `/iris studio create name=mypack` |
-| `/iris pack validate` with no argument | Validates every installed pack | Name one with `pack=<key>` to check a single pack |
-| World named `iris` or `benchmark` | Create rejected | Pick another name, e.g. `irisworld` |
-| Editing `packs/<pack>` after creating a production world | No immediate effect | Production engines read their active immutable epoch. Stage an update and restart; only new chunks use it. Studio reads the live pack |
-| Expecting pack edits to change existing chunks | Only newly generated chunks use the new config | Fly to unexplored terrain, pregen a fresh radius, or use a Studio world |
-| Folia create reports `paper_like_runtime` unavailable | Iris cannot safely use Folia's unsupported public world creator | Keep the world data untouched and update to a compatible Folia/Iris build before retrying |
-| Modded: new pack's heights or biomes missing | The forced datapack was not applied before registries loaded | Restart once with the pack already installed |
-| A custom modded pack reports missing external registry keys | Bukkit-only ingest cannot install the pack's declared dependencies on a mod loader | Put the exact datapacks declared by that pack in the save's `datapacks/`, then restart before loading the Iris world |
-| `/iris load` from console | Player-origin only. Console cannot run it | Rely on the `bukkit.yml` registration plus a restart, or run it as a player |
-| `/iris load` on modded | No such subcommand | Use create or `world enable`, then teleport |
-| Modded `pack:dimension` unquoted | Brigadier rejects the colon | Quote a distinct pair, for example `"custom_pack:dimensions/sky"` |
-| Modded pregen flags before `at x z` | Syntax error | Put `at <x> <z>` before any flag |
-| Starting a pregen while one is running | Start fails | `/iris pregen stop` first |
-| `/iris pregen resume` expected to only resume | It is an alias of `pause`, which toggles | Check `/iris pregen status` instead of assuming |
-| Studio closed mid-edit | The studio world is discarded | Your edits are on disk in `packs/` and survive. Reopen the studio |
-| No pack exists after first boot | Normal: Iris never downloads packs during startup | Run `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=https://host/pack.zip`, then restart. An offline install must contain each complete pack tree |
-| Relying on `type=default` | Resolves through `generator.defaultWorldType`, which someone may have changed | Name the pack explicitly: `type=overworld` |
+Edit the pack files under `packs/overworld/`. Save a valid change and enter new chunks to see it. Close Studio with `/iris studio close`.
 
 ## Quick reference
 

@@ -2,7 +2,7 @@
 title: "Image Map Encodings"
 description: "How each Iris image-map type decodes its pixels: grayscale height, RGB height, color legends, and masks"
 published: true
-date: 2026-09-21T10:36:56.240Z
+date: 2026-09-23T11:12:42.385Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -85,15 +85,6 @@ Interpolation acts on decoded scalar values, not packed image bytes or final rou
 
 An 8-bit map spanning 384 blocks has steps of about 1.506 blocks before interpolation; a 16-bit map over the same range has steps of about 0.00586 blocks. Bilinear or bicubic sampling smooths spatial transitions but cannot restore precision removed during export.
 
-### Avoiding artifacts
-
-- Export a grayscale image, not an RGB image that only looks gray.
-- Use 16-bit source data when 8-bit steps are visible across a tall height range.
-- Do not blur in an editor unless the changed pixels are intentional data. Prefer `smoothingRadius` so the transformation stays in configuration.
-- Use `NEAREST` for authored terraces and cell boundaries, `BILINEAR` for ordinary slopes, and `BICUBIC` only when its wider smooth reconstruction is intended.
-- Preview source pixels clipped by the map's own offset/clamp settings and the world boundary overlay before export.
-- Compare only fresh chunks after a change; existing chunks retain their generated blocks.
-
 ## RGB heightmaps
 
 An RGB heightmap stores one unsigned 24-bit elevation across three 8-bit channels, using one fixed red-green-blue formula.
@@ -130,7 +121,7 @@ The scalar is decoded per source pixel, so bilinear and bicubic filters interpol
 
 RGBA sources use the same RGB formula, and the separate `alpha` setting decides what alpha does. An RGB source without alpha behaves as fully opaque.
 
-### Known-value check
+### Example elevations
 
 With `minimumHeight: -64` and `maximumHeight: 320`:
 
@@ -140,8 +131,6 @@ With `minimumHeight: -64` and `maximumHeight: 320`:
 | `#7FFFFF` | 8,388,607 | just below 128 |
 | `#800000` | 8,388,608 | just above 128 |
 | `#FFFFFF` | 16,777,215 | 320 |
-
-Use these four pixels as an import test when an external terrain tool claims to export compatible data. Image Map Studio must report the same values before you bind the source to terrain. Treat any preview from a conventional image viewer as illustrative only — the Studio interpreted-height preview is authoritative.
 
 Keep `clamp: true` unless values outside the configured range are an intentional downstream input.
 
@@ -195,7 +184,7 @@ Tolerance uses raw sRGB channel values. It is not Delta E, HSV distance, gamma-l
 | `FALLBACK` | The pixel resolves to `fallbackTarget` |
 | `IGNORE` | The map contributes no target at that pixel |
 
-With `FALLBACK`, `fallbackTarget` must be valid for the binding application. Studio reports the unknown-pixel count, and ambiguous tolerance matches are blocking compiler diagnostics that identify their source pixel coordinates, so the source or legend can be repaired without searching visually.
+With `FALLBACK`, `fallbackTarget` must be valid for the binding application. Studio reports the unknown-pixel count, and ambiguous tolerance matches are blocking validation errors that identify their source pixel coordinates, so the source or legend can be repaired without searching visually.
 
 ### Alpha behavior
 
