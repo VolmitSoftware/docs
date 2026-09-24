@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-24T00:44:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -89,6 +89,10 @@ When switching over Iris enums, include a `default` branch so future values do n
 ## World creation
 
 `StudioSVC.installIntoWorld` returns `StudioSVC.GenerationPublication`, which contains the published `dimension()` and verified `history()`. Pass that history to `IrisWorldCreator.generationHistory(...)` before `create()`. It must match the target dimension directory and seed; transient worlds cannot accept a generation history.
+
+Standalone integrations can use `art.arcane.iris.world.history.GenerationHistory.createUnpublished(FreshCreation)` for a fresh world held in private staging. The nested `FreshCreation` record supplies the dimension root, source pack, pack fingerprint, seed, dimension contract, and registry contract. The dimension root must not exist and its parent must exist. Saved-biome and semantic appends defer durable synchronization until the integration publishes the complete world; ordinary `GenerationHistory.create(...)` and `open(...)` retain immediate append durability.
+
+The integration must drain generation, close its resources, force every staged file and directory, atomically move the completed staging tree to its destination, and force the destination's parent before reporting successful publication. A failure before the move leaves the staging tree unpublished. A failure while forcing the parent can occur after the destination appears, so destination presence alone does not confirm successful publication.
 
 ## Engine save requests
 

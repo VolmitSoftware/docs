@@ -2,7 +2,7 @@
 title: "Hunks and coordinate math"
 description: "Shared three-dimensional storage, views, parallel computation, and integer coordinates."
 published: true
-date: 2026-09-14T13:42:11.591Z
+date: 2026-09-24T00:35:24.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -17,6 +17,8 @@ dateCreated: 2026-09-11T20:00:00.000Z
 `set(x, y, z, value)` ignores out-of-bounds writes. `setRaw(...)` and `getRaw(...)` require valid coordinates. `crop(...)` copies a region. `croppedView(...)` reads and writes through to the original storage. Both use inclusive minimum coordinates and exclusive maximum coordinates. Read-only views reject writes, while converted views apply the supplied conversion functions when reading or writing.
 
 Mapped hunks retain full-coordinate traversal through `iterateSync(...)` and `iterateSyncIO(...)`, including cells with no stored value. Their `empty(value)` operation fills all coordinates with that value. Use `iterateEntriesSync(...)` or `iterateEntriesSyncIO(...)` to visit only stored entries, `clear()` to discard all entries, and `getEntryCount()` to inspect the number stored. Mantle slices use these explicit sparse operations internally.
+
+`util.hunk.bits.DataContainer<T>.copyTo(int[] positions, T[] destination)` copies logical linear positions into the corresponding destination entries, preserving null values, repeated positions, and request order. Both arrays must have equal lengths, and every position must be within the container's bounds; these checks finish before any destination entry changes. Callers requiring a consistent snapshot must coordinate concurrent value mutations themselves.
 
 ## Parallel computation
 
