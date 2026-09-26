@@ -2,7 +2,7 @@
 title: "Multiplexor: Installation and updates"
 description: "Requirements, launchers, command syntax, and executable updates"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-09-25T00:00:00.000Z
 tags: servermultiplexor, installation
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -37,11 +37,15 @@ The pictured release is an example; use the latest release's matching archive.
 | Mac with Apple Silicon (M-series) | `multiplexor-v<version>-macos-arm64.tar.gz` |
 | Mac with an Intel processor | `multiplexor-v<version>-macos-x64.tar.gz` |
 | Windows x64 (Intel/AMD) | `multiplexor-v<version>-windows-x64.zip` |
-| Linux or another architecture | Use [Source builds](/servermultiplexor/10-workspace-and-source); no matching compiled release is currently published |
+| Linux x64 (Intel/AMD) | `multiplexor-v<version>-linux-x64.tar.gz` |
+| Linux ARM64 (aarch64) | `multiplexor-v<version>-linux-arm64.tar.gz` |
+| Another architecture | Use [Source builds](/servermultiplexor/10-workspace-and-source) |
+
+Linux release binaries target glibc-based distributions. The x64 build uses Ubuntu 22.04; the ARM64 build uses Ubuntu 24.04. Local server consoles require `tmux`, and servers require a compatible Java runtime.
 
 Extract the archive into a writable folder you want to use as the Minecraft workspace, such as `MinecraftWorkspace` in your home directory. Open a terminal in that folder and run the extracted executable. Compiled releases contain `multiplexor` or `multiplexor.exe` and need neither Dart nor the source launchers.
 
-**macOS:**
+**macOS and Linux:**
 
 ```bash
 cd ~/MinecraftWorkspace
@@ -88,7 +92,7 @@ From a [source checkout](/servermultiplexor/10-workspace-and-source), run `./sta
 
 The launchers resolve Dart dependencies and rebuild when Dart source, `pubspec.yaml`, or `pubspec.lock` is newer than the executable. Unchanged builds run immediately. They use Flutter's cached Dart SDK directly when available. Compilation failure preserves the previous executable, removes the partial build, and exits nonzero without launching stale code. `MULTIPLEXOR_REBUILD=1` forces recompilation; launcher diagnostics go to stderr, leaving stdout parseable.
 
-On macOS, the launcher installs missing tmux through Homebrew when available. Windows emits `multiplexor.exe`; macOS emits `multiplexor`. Node installation and repair for gameplay commands are covered under [Gameplay checks](/servermultiplexor/07-gameplay-checks).
+On macOS, the launcher installs missing tmux through Homebrew when available. On Linux, it uses apt-get, dnf, or pacman when running as root or with passwordless sudo. Otherwise, it prints the install command and continues; runtime consoles still require tmux. Windows emits `multiplexor.exe`; macOS and Linux emit `multiplexor`. Node installation and repair for gameplay commands are covered under [Gameplay checks](/servermultiplexor/07-gameplay-checks).
 
 ## Command syntax
 
@@ -118,7 +122,7 @@ Press **u** or select **CHECK FOR UPDATE** at the dashboard's bottom right to ch
 
 These commands run before workspace initialization and need neither a workspace nor Dart. Only releases built with `tool/build_exe.dart --version <semver>` can install updates. Source runs and ordinary development builds compile local source instead. Older downloads need one manual replacement with an updater-enabled release. Installation requires a writable executable directory and does not request elevation.
 
-Interactive launches with no arguments, `wizard`, or `runtime watch` check on first use, then at most once every six hours after a successful check. Updates select a newer stable semantic version for the current supported platform; they never downgrade or choose a prerelease. Downloads must pass `SHA256SUMS`, archive, and executable-version checks.
+Interactive launches with no arguments, `wizard`, or `runtime watch` check on first use, then at most once every six hours after a successful check. Updates select a newer stable semantic version for macOS x64/ARM64, Linux x64/ARM64, or Windows x64; they never downgrade or choose a prerelease. Downloads must pass `SHA256SUMS`, archive, and executable-version checks.
 
 Automatic installation replaces the executable and reopens the dashboard with the same arguments and working directory. A manual `update` installs the release; launch the executable again to open the dashboard. Windows completes replacement through a temporary helper after the process exits. Preparation failures retain the existing executable; replacement failures restore it. Network failures leave the dashboard usable and permit retry after fifteen minutes. Server instances, worlds, credentials, and workspace files are outside the update.
 

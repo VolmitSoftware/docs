@@ -2,7 +2,7 @@
 title: "Multiplexor: Workspace and source"
 description: "Workspace layout, source builds, validation, and release behavior"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-25T00:00:00.000Z
 tags: servermultiplexor, development
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -66,7 +66,7 @@ dart run bin/main.dart
 dart run tool/build_exe.dart
 ```
 
-The build writes `../multiplexor` (`../multiplexor.exe` on Windows). The implementation is native Dart, with no shell backend. Workspace detection is location-independent; running in an empty folder creates the workspace layout. Use `./start.sh <command>` from the root for end-to-end checks, or `dart run MultiplexorApp/bin/main.dart` for direct development runs.
+Build on the target operating system and architecture. Linux x64 and ARM64 use the same Dart commands as macOS. The build writes `../multiplexor` (`../multiplexor.exe` on Windows). The implementation is native Dart, with no shell backend. Workspace detection is location-independent; running in an empty folder creates the workspace layout. Use `./start.sh <command>` from the root for end-to-end checks, or `dart run MultiplexorApp/bin/main.dart` for direct development runs.
 
 If a Flutter `dart` launcher stalls, use its cached `bin/cache/dart-sdk/bin/dart` (`dart.exe` on Windows). Both root launchers select this SDK automatically. On macOS, neither the Windows executable, PowerShell launcher, nor MSYS tooling is required.
 
@@ -76,16 +76,19 @@ Dart tests do not run the Node harness or launcher checks. Run these separately 
 
 ```bash
 (cd MultiplexorApp/tool/mineflayer && npm ci --no-audit --no-fund && npm test && npm run doctor -- --json)
-/bin/bash MultiplexorApp/tool/test_launcher.sh
+/bin/bash MultiplexorApp/tool/test_launcher.sh darwin
+/bin/bash MultiplexorApp/tool/test_launcher.sh linux
 ```
 
-Run the shell suite on macOS. It uses isolated temporary tools and fixtures, including the Darwin startup path, without installing dependencies or starting Minecraft. The Node suite selects only `test/**/*_test.mjs`, excluding local live-server probes. Neither suite replaces a scenario against an actual server; see [Gameplay checks](/servermultiplexor/07-gameplay-checks).
+Run either shell suite on macOS or Linux. They use isolated temporary tools and fixtures for the selected platform, without installing dependencies or starting Minecraft. Linux checks cover apt-get, dnf, pacman, and noninteractive sudo. The Node suite selects only `test/**/*_test.mjs`, excluding local live-server probes. Neither suite replaces a scenario against an actual server; see [Gameplay checks](/servermultiplexor/07-gameplay-checks).
 
-CI pins Dart 3.10.0 and Node 22 and checks macOS, Windows, and Linux. Both Apple Silicon and Intel macOS runners execute launcher tests, Mineflayer installation/tests/diagnostics, executable builds, and Dart tests. Local checks cover only the current host. A Node or launcher failure blocks release even if executables compile.
+CI pins Dart 3.10.0 and Node 22 and checks macOS, Windows, and Linux. Both Apple Silicon and Intel macOS runners execute launcher tests, Mineflayer installation/tests/diagnostics, executable builds, and Dart tests. Linux x64 and ARM64 runners compile and test native executables; Linux also runs launcher and Mineflayer checks. Local checks cover only the current host. A Node or launcher failure blocks release even if executables compile.
 
 ## Release builds
 
-Each successful branch push assigns a monotonically increasing semantic patch version, embeds it, uploads versioned Apple Silicon macOS, Intel macOS, and Windows archives as GitHub Actions artifacts retained for thirty days, and publishes a GitHub Release at the exact pushed commit. The newest default-branch push becomes the latest release. Other branches and superseded default-branch builds publish prereleases.
+Each successful branch push assigns a monotonically increasing semantic patch version, embeds it, uploads versioned Apple Silicon macOS, Intel macOS, Linux x64, Linux ARM64, and Windows archives as GitHub Actions artifacts retained for thirty days, and publishes a GitHub Release at the exact pushed commit. The newest default-branch push becomes the latest release. Other branches and superseded default-branch builds publish prereleases.
+
+Linux archives use `linux-x64.tar.gz` and `linux-arm64.tar.gz` suffixes and contain an executable `multiplexor`. The x64 release builds on Ubuntu 22.04 and the ARM64 release on Ubuntu 24.04. Release archives include SHA-256 checksums for self-update verification.
 
 The checked-in version remains the release baseline; CI adds no version commits. Explicit `v*` tag pushes must match that baseline and publish at the existing tag. Build with `tool/build_exe.dart --version <semver>` to enable release self-installation; see [Executable updates](/servermultiplexor/01-installation-and-updates#executable-updates).
 
