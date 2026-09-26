@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-26T07:50:33.878Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,7 +15,7 @@ Compile against the API jar that matches the installed Gloss version. Do not inc
 
 ```gradle
 dependencies {
-    compileOnly(files("libs/Gloss-3.0.1-26.2-api.jar"))
+    compileOnly(files("libs/Gloss-3.0.4-26.2-api.jar"))
 }
 ```
 

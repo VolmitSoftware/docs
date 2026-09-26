@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-20T22:20:00.000Z
+date: 2026-09-26T07:50:33.878Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -21,13 +21,15 @@ Reloading the Gloss plugin jar through BileTools disconnects existing players wh
 | Server | Paper, Purpur, Leaf, Folia, Canvas or Spigot |
 | Minecraft | `26.1.2 - 26.3` |
 | Java | 25 |
-| Plugin version | `3.0.3-26.2`, api-version `26.1` |
+| Plugin version | `3.0.4-26.2`, api-version `26.1` |
 
 Use a build of your chosen server software that supports your Minecraft version.
 
 Gloss works without optional dependencies. PlaceholderAPI adds `%...%` tokens, Vault adds group conditions, and supported item plugins provide custom item icons.
 
 ## Install
+
+Install the `-packed.jar` as the only Gloss jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/Gloss/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
 1. Put the Gloss jar in `plugins/`.
 2. Start the server. Gloss creates `plugins/Gloss/` and its default files.

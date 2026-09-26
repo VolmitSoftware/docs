@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-23T12:00:00.000Z
+date: 2026-09-26T07:50:33.878Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -21,6 +21,37 @@ Run from the VolmitSoftware workspace:
 The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `build buildAll buildAllToOut`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
 
 VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
+
+## Build selected plugin jars
+
+Run `./gradlew packedJar` from a plugin project to create its selected `-packed.jar` beside the ordinary artifact in `build/libs/`. React's project root is `React/React/`. BileTools and Gloss produce one selected jar for both their server and Velocity editions. For the separate Wormholes proxy plugin, run `./gradlew :wormholes-proxy:packedJar` from `WormholesPlugin/`.
+
+Each build compares the complete ordinary package with its XZ package and writes the smaller candidate to `-packed.jar`. Selection is automatic and needs no flag. Iris includes the native adapters in both candidates, so either selected format remains portable.
+
+When XZ wins, startup verifies and extracts the bundled runtime into the plugin's writable `cache/runtime/` directory. Later starts verify and reuse that cache. The ordinary format loads directly without extraction. Required external libraries retain their normal download and cache behavior.
+
+`assemble` and `build` also produce the selected artifact. Existing plugin export tasks copy it under their usual filenames. Maven and API artifacts remain ordinary jars for compile-time use. Test fixtures and Iris mod jars retain their existing format. Install only one artifact for each plugin.
+
+Enable automatic package selection on the final runtime artifact in the shared packaging configuration:
+
+```groovy
+pluginPackaging {
+    artifacts {
+        create('distribution') {
+            taskName = 'shadowJar'
+            policyName = 'Adapt'
+            packed = true
+            packedJarAccessors = ['art/arcane/adapt/Adapt#getJarFile']
+        }
+    }
+}
+```
+
+Set `packed = true` on the final distribution only. For a combined Bukkit and Velocity jar, select `universalJar`. Descriptors supply the entrypoints automatically. Use `packedEntrypoints` to add class names when a platform loads additional startup classes.
+
+`packedJarAccessors` lists methods as `owner/internal/Class#method`. Each method must return `java.io.File` without parameters. The XZ candidate redirects these methods to the extracted runtime archive. Use them for class scanners that need the complete archive. Keep installed-jar identity and update paths separate.
+
+With one packed artifact, the task is `packedJar`. Multiple packed artifacts get a `packed<ArtifactName>Jar` task each. Output uses the producer's directory and filename with `-packed` before `.jar`, regardless of the selected format.
 
 ## Parallelism
 
@@ -115,7 +146,7 @@ Release compression compares Zopfli with level-9 DEFLATE for each entry and keep
 To inspect an existing jar without building or modifying it, run from the workspace:
 
 ```bash
-python3 gradle/jar_audit.py PluginOuts/Gloss-3.0.1-26.2.jar \
+python3 gradle/jar_audit.py PluginOuts/Gloss-3.0.4-26.2.jar \
   --report .buildlogs/jar-audit-gloss.json
 ```
 
