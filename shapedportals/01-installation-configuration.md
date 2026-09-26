@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -19,6 +19,8 @@ Install the plugin, open its in-game editor, or edit the TOML file directly. Eve
 {.grid-list}
 
 ## Install
+
+Install the `-packed.jar` as the only ShapedPortals jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/ShapedPortals/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
 1. Stop the server and make a backup.
 2. Place the Shaped Portals jar in `plugins/`.

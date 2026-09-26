@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-09-20T02:14:29.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,6 +13,8 @@ React supports Paper, Purpur, and Folia on Java 25.
 The same jar includes Minecraft 26.1.2, 26.2, and 26.3 support. Paper 26.3 currently uses alpha server builds; Folia 26.3 support has not been validated against a published server build.
 
 ## Install
+
+Install the `-packed.jar` as the only React jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/React/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
 1. Put the React jar in `plugins/`.
 2. Start the server once. React initializes its command system and creates the default configuration files.

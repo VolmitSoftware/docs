@@ -2,13 +2,13 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-20T02:20:00.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Copy `Wormholes-<version>.jar` into `plugins/` and start the server. Then edit `plugins/Wormholes/wormholes.toml`. A missing optional plugin disables only its integration.
+Copy `Wormholes-<version>-packed.jar` into `plugins/` and start the server. Then edit `plugins/Wormholes/wormholes.toml`. A missing optional plugin disables only its integration.
 
 ## Requirements
 
@@ -19,12 +19,14 @@ Copy `Wormholes-<version>.jar` into `plugins/` and start the server. Then edit `
 | Java | 25 (build toolchain and server launch) |
 | Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
 | Soft depends | PlaceholderAPI, Iris, Vault, Citizens (optional). Paper loads them before Wormholes when present |
-| Plugin file | `Wormholes-<version>.jar`; do not install the `-api.jar` |
+| Plugin file | `Wormholes-<version>-packed.jar`; do not install the `-api.jar` |
 | First start | Internet access for required libraries, or an existing SlimJar cache |
 
 ## Install
 
-1. Copy `Wormholes-<version>.jar` into `plugins/`.
+Install the `-packed.jar` as the only Wormholes jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/Wormholes/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
+
+1. Copy `Wormholes-<version>-packed.jar` into `plugins/`.
 2. Start the server so Wormholes creates its data folder and `wormholes.toml`.
 3. Edit `plugins/Wormholes/wormholes.toml`. Wormholes rejects files that
    have no schema or a wrong schema. The file must use `schema = 3`.

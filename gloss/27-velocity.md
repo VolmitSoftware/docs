@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -14,10 +14,12 @@ Gloss on Velocity provides network tablists, scoreboard sidebars, server-list MO
 
 Requirements: Java 25 and Velocity 3.4 or newer. Proxy scoreboards require Minecraft clients 1.20.3 or newer. Pause-menu server links require 1.21 or newer.
 
-1. Put `Gloss-<version>.jar` in the proxy's `plugins/` directory.
+1. Put `Gloss-<version>-packed.jar` in the proxy's `plugins/` directory.
 2. Start the proxy.
 3. Edit the generated files under `plugins/gloss/`.
 4. Run `/gloss reload` from the proxy console or an account with `gloss.admin`.
+
+Install the `-packed.jar` as the only Gloss jar. Each build automatically selects the smaller ordinary or XZ package. With XZ, startup verifies and extracts the bundled runtime into the writable `plugins/Gloss/cache/runtime/` directory. This cache is separate from the lowercase proxy settings folder. Later starts reuse the verified cache. Required library downloads still apply.
 
 The proxy edition covers the server-list MOTD and its pause-menu links, network tablists, conditional scoreboard sidebars, action bar, boss bar, and title surfaces, and join, switch, and leave messages. The shared emoji and named-animation catalogs render inside all of them. Fixed virtual tablist grids are not part of the proxy edition. Holograms, menus, chat effects, Vault groups, backend placeholders, and the web editor require the server edition.
 

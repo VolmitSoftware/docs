@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-26T06:29:51.520Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,6 +35,8 @@ Before you replace an existing installation:
 Install only one Iris platform jar in the `plugins/` or `mods/` folder.
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
+
+Install the `-packed.jar` as the only Iris plugin jar. Each build automatically selects the smaller ordinary or XZ package, with the native adapters included in either format. With XZ, startup verifies and extracts the bundled runtime into `plugins/Iris/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Other required libraries and packs can still need network access.
 
 1. Put the Iris plugin jar in `plugins/`.
 2. Start the server once.

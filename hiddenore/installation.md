@@ -2,7 +2,7 @@
 title: "HiddenOre: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-20T02:20:00.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,6 +19,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Folia 26.3 support awaits a published server build.
 
 ## Install
+
+Install the `-packed.jar` as the only HiddenOre jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/HiddenOre/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
 1. Put the HiddenOre jar in `plugins/`.
 2. Start the server once.

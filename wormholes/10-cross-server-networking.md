@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -151,6 +151,8 @@ Save `wormholes.toml` on both backends and wait for `Configuration hot-reloaded.
 4. Open each gateway's Destination menu. Export its fresh portal code and use Import on the opposite gateway to link it. Link both directions for return travel.
 5. Connect from `lobby` with `/wh server connect survival`. Use `/wh server connect lobby` to return.
 6. If gateway travel is denied, check Permission mode and Travel direction on both portals. Admin command access does not grant ordinary players portal access.
+
+For installations that use WormholesProxy, install `WormholesProxy-<version>-packed.jar` on Velocity or BungeeCord. Install only one WormholesProxy jar. Each build automatically selects the smaller ordinary or XZ package. With XZ, startup verifies and extracts the bundled runtime into the writable `plugins/WormholesProxy/cache/runtime/` directory. Later starts reuse the verified cache.
 
 The standard proxy transfer path uses Velocity's BungeeCord `Connect` support. It does not require the optional WormholesProxy module. Leave `[network.proxy] enabled = false` unless that module and its shared secret are configured.
 
