@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Hot reload for proxy plugins on Velocity"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "biletools, velocity"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -16,13 +16,15 @@ The same BileTools jar runs on Bukkit servers and on Velocity proxies. On the pr
 |---|---|
 | Proxy | Velocity 3.4 or newer, including 4.x |
 | Proxy JVM | Whatever the proxy build requires (Velocity 4.x runs on Java 25); the plugin is built for Java 17 and newer |
-| Jar | The same `BileTools-x.x.x.jar` used on Bukkit servers |
+| Jar | The same `BileTools-x.x.x-packed.jar` used on Bukkit servers |
 
 ## Install
 
 1. Copy the jar into the proxy's `plugins/` directory.
 2. Start the proxy. BileTools writes `plugins/biletools/biletools.json` on first run.
 3. Build a proxy plugin into the same `plugins/` directory, or use `/bile reload <id>`.
+
+Install the `-packed.jar` as the only BileTools jar. Each build automatically selects the smaller ordinary or XZ package. With XZ, startup verifies and extracts the bundled runtime into the writable `plugins/BileTools/cache/runtime/` directory. This cache is separate from the lowercase proxy settings folder. Later starts reuse the verified cache.
 
 Backend servers need nothing. A backend BileTools installation keeps its own separate settings, described in [Installation](/biletools/installation).
 

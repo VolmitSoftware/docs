@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-24T08:54:37.835Z
+date: 2026-09-26T07:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,11 +36,11 @@ Install only one Iris platform jar in the `plugins/` or `mods/` folder.
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 
+Install the `-packed.jar` as the only Iris plugin jar. Each build automatically selects the smaller ordinary or XZ package, with the native adapters included in either format. With XZ, startup verifies and extracts the bundled runtime into `plugins/Iris/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Other required libraries and packs can still need network access.
+
 1. Put the Iris plugin jar in `plugins/`.
 2. Start the server once.
 3. Install or download a pack, then restart before creating a world.
-
-The optional `-xz.jar` package installs in the same way and includes the native adapters. Install either the standard jar or the XZ jar, never both. The XZ package extracts its verified runtime into `plugins/Iris/cache/runtime/` on first startup; other required libraries and packs may still need network access.
 
 Validate installed packs from the server console:
 

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install Adapt and configure progression, storage, integrations, and Mutations"
 published: true
-date: 2026-09-20T02:20:00.000Z
+date: 2026-09-26T06:29:51.520Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,8 +20,10 @@ Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutat
 
 ## Installing
 
+Install the `-packed.jar` as the only Adapt jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/Adapt/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
+
 1. Run Paper, Purpur, or Folia for Minecraft 26.1 through 26.2, or Paper 26.3, on Java 25.
-2. Copy `Adapt-<version>.jar` into each backend server's `plugins/` folder, not the proxy.
+2. Copy `Adapt-<version>-packed.jar` into each backend server's `plugins/` folder, not the proxy.
 3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
 4. For a non-English server, set `language` in `plugins/Adapt/adapt.toml` to one of the supported locale names. Adapt downloads that locale from the current `master` language sources and installs it directly as `languages/<locale>.toml` only when the file is missing, then activates it without a restart. Existing files work offline and preserve local edits.
 5. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.
