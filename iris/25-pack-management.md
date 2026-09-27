@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-27T16:24:29.137Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -299,7 +299,7 @@ On Bukkit, `/iris developer update-world` and `/iris dev update-world` also run 
 > Back up the complete world before this operation, including its `iris/generation` directory.
 {.is-warning}
 
-Iris validates and stages the selected pack, then asks for a restart. The running world keeps its current pack until then. After restart, new chunks use the update with a transition beside existing terrain.
+Iris validates and stages the selected pack, then asks for a restart. The running world keeps its current pack until then. After restart, new chunks use the update. Their heights and water levels approach the saved terrain across the configured transition band. New objects and structures use the adjusted terrain. Their complete footprints must stay outside historical chunks.
 
 Updates must preserve the world seed, physical heights, environment, dimension type, and coordinate scale. Generation mode, fluid baseline, terrain content, and upper-terrain settings can change within that layout. New custom registry definitions can require a server restart.
 

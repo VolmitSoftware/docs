@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-27T16:24:29.137Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,6 +43,10 @@ This example shows where the fields belong; keep the other settings in your file
 | Invalid edit while running | Keeps the current settings. Correct the file and save again |
 | File deleted while running | Keeps current settings without recreating the file |
 | Debug command | `/iris debug toggle` on Bukkit or `/iris debug` on mod loaders changes debug mode and saves the settings |
+
+## Storage durability
+
+Iris forces generation-history and saved-biome writes to storage by default. The JVM option `-Diris.durability=relaxed` disables these forced writes and relies on operating-system buffering. It preserves the record formats, but a crash or power loss can lose recent writes. Remove the option to restore the default policy.
 
 ## Settings groups
 
@@ -123,9 +127,11 @@ These settings apply only to Bukkit servers. Disable them if you manage the corr
 
 | Key | Default | Takes effect | Use |
 |-----|---------|--------------|-----|
-| `generationTransitionWidthBlocks` | `256` | Next generation activation | Width of transitions beside saved terrain after generation updates. Range: 16–8192 blocks. Existing transitions keep their previous width |
+| `generationTransitionWidthBlocks` | `256` | Next generation activation | Width of terrain-height and water-level transitions beside saved chunks. Range: 16–8192 blocks. Existing transitions keep their recorded width |
 | `defaultWorldType` | `"overworld"` | Live | **Bukkit only.** Pack used when a world or Studio command omits one, or `bukkit.yml` uses the bare `Iris` generator. Mod loaders use `modded.json`'s `defaultPack` |
 | `preventLeafDecay` | `true` | **Restart** | Makes generated leaves persistent. Separate from the dimension's `preventLeafDecay` pack setting |
+
+Transitions change only new chunks. The new terrain keeps its local shape as its height meets the saved boundary. Cave openings and physical biome matching use only the first four blocks beside that boundary. The remaining band uses the new pack's materials and biomes.
 
 ## `performance`
 

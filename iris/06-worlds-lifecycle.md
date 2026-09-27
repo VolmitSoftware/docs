@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-27T18:54:47.925Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -100,7 +100,9 @@ On Fabric, Forge, or NeoForge:
 
 Restart to apply the update. Editing the installed pack alone does not update a production world. See [Pack Management](/iris/25-pack-management).
 
-Pack updates affect newly generated chunks. Existing terrain remains unchanged, including when you select an older pack again. `generator.generationTransitionWidthBlocks` controls the transition width between old and new terrain; large terrain changes can still leave visible seams.
+Pack updates affect newly generated chunks. Existing terrain remains unchanged, including when you select an older pack again. Iris adjusts new terrain heights and water levels toward the saved boundary. `generator.generationTransitionWidthBlocks` controls the band width. Cave openings and physical biome matching extend only four blocks into new terrain. Large terrain changes can still leave visible seams. Trees, floating and static objects, and Iris structure assemblies that extend beyond the saved frontier retain their pending pieces across updates. New object placements leave those pieces clear and must fit entirely outside saved chunks.
+
+A jar update starts a transition when its generation source or dependency identity changes. Changing only the Iris release label or archive timestamps does not start a transition. Iris retains each saved chunk's pack and biome history.
 
 The world seed, height bounds, logical height, environment, dimension type, and coordinate scale cannot change through a pack update. Create a new world for those changes. New custom biomes or other registry content may require a restart.
 
