@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-27T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -161,9 +161,9 @@ Changes apply to the next pregeneration job. See [07 - Pregeneration](/iris/07-p
 | `chunkLoadTimeoutSeconds` | `15` | Both | Bukkit slow-request warning threshold, clamped to 5–120 seconds; slow requests continue waiting. Mod loaders use a 120-second timeout |
 | `timeoutWarnIntervalMs` | `500` | Bukkit | Minimum interval between slow-request and failed-release warnings. Minimum: 250 ms |
 | `saveIntervalMs` | `30000` | Both | Progress-save interval, clamped to 5000–900000 ms |
-| `maxResidentTectonicPlates` | `96` | Both | Requested limit on resident generation regions. Minimum: 16. Iris may use a lower limit for the world and server |
+| `maxResidentTectonicPlates` | `96` | Both | Requested target for resident generation regions. Minimum: 16. Iris scales the target with world height and Java heap, reserving memory for active generation and server chunks. Regions still in use can temporarily exceed this target |
 | `mantleBackpressureWaitMs` | `25` | Both | How often pregeneration checks whether it can resume after reaching its region limit. Range: 5–1000 ms |
-| `mantleBackpressureTimeoutMs` | `60000` | Both | Wait limit before a region-limit warning. Range: 5000–600000 ms |
+| `mantleBackpressureTimeoutMs` | `60000` | Both | Warning interval while waiting for the region target or heap headroom. Range: 5000–600000 ms. Pinned regions may exceed the target to finish their work; high heap usage continues to block new requests until memory is available |
 | `moddedPregenInFlight` | `0` | Modded | Concurrent chunk limit. Positive values are capped at 512; nonpositive values choose automatically. Ignored on Bukkit |
 
 ## `treeFeller`

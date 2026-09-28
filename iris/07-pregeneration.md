@@ -2,12 +2,14 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-27T18:56:56.015Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Pregeneration creates chunks before players explore them. Each job covers a square around a center coordinate, with the radius measured in blocks. Iris runs one pregeneration job at a time per server.
+
+Iris limits concurrent chunk requests and retained generation data according to the Java heap. When memory is under pressure, it pauses new requests while active work finishes and saved data is released. A larger requested area increases the work and disk space needed, rather than reserving memory for the whole area.
 
 ## Start
 
@@ -38,6 +40,8 @@ The command root also accepts `/iris pregenerate`.
 ```
 
 Status reports the world, completed and total chunks, progress, generation rate, elapsed time, estimated time remaining, and pause state. Failed chunks are reported separately when present. Check the final console summary for the completed and failed counts.
+
+Slow generation tasks produce a warning and continue waiting for their required terrain data. River planning errors are logged and retried while the job remains active. Chunks wait for complete river plans; exceeding a warning interval does not discard a chunk or omit its rivers, caves, or objects.
 
 ## Pause, resume, or stop
 
