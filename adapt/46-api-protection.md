@@ -2,7 +2,7 @@
 title: "API - Protection"
 description: "Register protection and region policy services"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,6 +31,8 @@ Protector methods cover block breaking, block placement, interaction, damage, it
 Use `Protector` for location-specific rules. Use [Ability Use Policy](/adapt/43-api-ability-use-policy) for player state such as jail, duel, quest, or rank restrictions.
 
 Calls run on the owner of the player or location. Keep them fast and do not perform I/O.
+
+`Adaptation.checkRegion(player, location)` evaluates the active protectors at an explicit destination. `checkRegion(player)` uses the player's current location. Blink checks both region access and interaction at its proposed destination before teleporting, then honors the normal teleport cancellation events. A reactive Blink whose teleport is denied retains the incoming attack.
 
 `RegionPolicySource` is a separate single-provider service for region XP multipliers, power changes, and temporary adaptation grants. Publish immutable policy values and remove them when the player leaves the region.
 

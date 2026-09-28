@@ -2,31 +2,22 @@
 title: "Skill - Kinetics"
 description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Kinetics gains XP from mace smashes, spear charges, knockback, slime or bed bounces, piston launches, levitation, large survived falls, and falling anvils.
-
-Its 18 adaptations change movement, mace attacks, and spear combat. Most combat hooks require Paper events. Adapt tracks placed anvils through piston movement and falling, then credits the owner and nearby players when one hits a target.
+Kinetics gains XP from mace smashes, spear charges, knockback, slime or bed bounces, piston launches, levitation, large survived falls, and falling anvils. Its 18 adaptations change movement, mace attacks, and spear combat; most combat hooks require Paper events, and a placed anvil stays tracked through piston movement and falling so the owner and nearby players are credited when the anvil hits.
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and protection and region policy that allow the action. Several of these lean on modern attributes (gravity, bounciness, air drag, scale) and silently do nothing on a server version that lacks them.
-
-"Spear" means any of the seven spear items, wooden through netherite. "Mace" means the vanilla mace.
+A spear is any of the seven spear items, wooden through netherite, and a mace is the vanilla mace. Adaptations that use gravity, bounciness, air drag, or scale do nothing on a server version that lacks that attribute.
 
 ### Moon Jump (`kinetics-moon-jump`)
 
 5 levels · 2 knowledge, then 4 per level
 
-Every jump gets higher, half a block per level, and it stays applied as long as you have the adaptation. Sneak-jumping adds a short extra hop with reduced gravity on top, which turns the peak of the jump into a slow float. Good for getting around, and it pairs with the mace adaptations because height is what a smash attack needs.
-
-**How to use it**
-
-1. Jump normally for the passive height.
-2. Hold sneak and jump for the floaty low-gravity hop.
+Jump height increases by half a block per level and stays applied while the adaptation is learned. A sneak-jump adds a separate low-gravity hop.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -41,7 +32,7 @@ Every jump gets higher, half a block per level, and it stays applied as long as 
 
 5 levels · 2 knowledge, then 4 per level
 
-Your boots stay springy all the time, so every landing keeps more of your momentum. Landing on a slime block, honey block, or bed adds a bigger springload bonus for a couple of seconds on top.
+Passive bounciness is always applied. Effective bounciness caps at 1.0, so a slime bounce does not go higher; sneaking and honey blocks suppress bouncing, but a honey landing still arms the soft-block bonus for the next other surface, including a landing with no horizontal movement.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -55,7 +46,7 @@ Your boots stay springy all the time, so every landing keeps more of your moment
 
 5 levels · 2 knowledge, then 4 per level
 
-Landing on something soft cuts most of the fall damage and pays Kinetics XP for the damage you avoided. Soft surfaces are slime, honey, any bed, hay bale, powder snow, sponge, and wet sponge. Bouncing off a springy block also opens a short grace window, so the landing after a bounce is protected even if you come down on stone.
+Fall damage is reduced on slime, honey, any bed, a hay bale, powder snow, sponge, or wet sponge.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -69,14 +60,7 @@ Landing on something soft cuts most of the fall damage and pays Kinetics XP for 
 
 5 levels · 2 knowledge, then 4 per level
 
-Sprint on any ground surface and Surface Skate cancels a level-scaled percentage of that surface's normal friction loss. With the defaults, level 1 cancels 22% and level 5 cancels 50%. Stone, ice, soul sand, and every other supporting surface keep their own character. All become proportionally slicker. Pressing sneak while grounded applies a separate horizontal brake: its default 100% setting immediately sets X/Z motion to zero without changing Y motion. This is a one-time brake on the sneak press, not a movement lock while sneak remains held.
-
-Servers with the friction attribute use a native `MULTIPLY_SCALAR_1` modifier. Servers without it get the same percentage through a velocity fallback that never accelerates you from rest and never touches vertical motion.
-
-**How to use it**
-
-1. Sprint to slide.
-2. Press sneak while grounded to brake immediately.
+Sprinting cancels a fraction of the supporting surface's friction loss. Without the friction attribute, that same fraction of actual ground momentum is kept, vertical motion and stronger knockback stay, and the player is never accelerated from rest; a grounded sneak press brakes once rather than locking movement while sneak remains held, and on load `slideFrictionBase`, `slideFrictionFactor`, `gripFrictionBase`, and `gripFrictionFactor` are removed instead of kept as aliases.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -84,20 +68,11 @@ Servers with the friction attribute use a native `MULTIPLY_SCALAR_1` modifier. S
 | `slidePercentFactor` | `0.35` | Additional percentage at max level. Clamped to `0` through `1 - slidePercentBase`, so the total never exceeds 100%. |
 | `sneakBrakePercent` | `1.0` | Horizontal velocity removed on a grounded sneak press. Clamped to `0`-`1`. `1.0` is a complete stop and `0` disables the brake. |
 
-On load the old `slideFrictionBase`, `slideFrictionFactor`, `gripFrictionBase`, and `gripFrictionFactor` keys are removed from the config rather than kept as aliases.
-
 ### Terminal Toggle (`kinetics-terminal-toggle`)
 
 3 levels · 2 knowledge, then 4 per level
 
-While falling, sneaking flips you between two midair modes. Dive cuts air drag
-and increases gravity to get you down fast. Hang does the opposite and turns the
-fall into a drift. Each sneak press swaps modes. You need to have been airborne for a moment before the toggle arms, and landing clears the mode.
-
-**How to use it**
-
-1. Get airborne and wait a fraction of a second.
-2. Tap sneak to enter dive. Tap it again to switch to hang, and again to go back to dive.
+While falling, each sneak press swaps dive and hang: dive cuts air drag and raises gravity, and hang does the opposite. Landing clears the mode.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -111,16 +86,7 @@ fall into a drift. Each sneak press swaps modes. You need to have been airborne 
 
 5 levels · 2 knowledge, then 4 per level
 
-Sneak while holding a mace or a spear and you plant your feet. You get heavy
-knockback resistance, blast resistance, and a movement speed penalty for as long
-as you hold it. This is a passive transient-attribute stance, not a potion effect, so there is no status icon. A short chain sound and particle ring confirm entry and exit. Stand up or switch to a different item and it drops immediately.
-
-**How to use it**
-
-1. Hold a mace or spear in your main hand.
-2. Hold sneak. The stance stays up until you stop sneaking or change item.
-
-The stance uses transient `KNOCKBACK_RESISTANCE`, `EXPLOSION_KNOCKBACK_RESISTANCE`, and `MOVEMENT_SPEED` modifiers rather than a potion effect.
+Sneaking with a mace or spear in the main hand applies transient knockback resistance, explosion knockback resistance, and a movement-speed penalty until sneak is released or the held item changes. It is not a potion effect and shows no status icon.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -135,14 +101,7 @@ The stance uses transient `KNOCKBACK_RESISTANCE`, `EXPLOSION_KNOCKBACK_RESISTANC
 
 3 levels · 5 knowledge, then 6 per level
 
-Three persistent body forms you switch between with a gesture. Titan makes you bigger. It adds 20 percent to your attack damage and max health. It gives you a taller step height and a pulled-back camera. It saddles you with Slowness I. Pocket makes you smaller, takes 20 percent off damage and health, and gives you Speed I. Normal is normal. The form survives until you change it. It resets on death or logout.
-
-**How to use it**
-
-1. Hold sneak.
-2. Look up and press the swap-hands key (F by default) for Titan, look down for Pocket, or look level to go back to Normal. The offhand swap itself is cancelled while you do this.
-
-None of this is exposed in config. The 20 percent applies to attack damage and max health as `MULTIPLY_SCALAR_1`, Titan also gets step height `+1.0` and camera distance `+2.0`, and the look threshold is 25 degrees of pitch. Health is clamped to the new maximum on every form change.
+Sneak plus swap-hands cancels the offhand swap and picks a form from pitch: above 25 degrees selects Titan, below 25 selects Pocket, and a level look selects Normal. Titan adds 20% attack damage and max health (`MULTIPLY_SCALAR_1`), step height +1.0, camera distance +2.0, and Slowness I; Pocket subtracts 20% damage and health and grants Speed I; health clamps to the new maximum, the form lasts until it is changed, death or logout resets it, and those modifiers are not config keys.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -155,14 +114,7 @@ None of this is exposed in config. The 20 percent applies to attack damage and m
 
 5 levels · 2 knowledge, then 4 per level
 
-Hold sneak while falling with a mace and you drop like a rock. You get extra
-gravity, less air drag, and a hard downward push added every tick up to a
-terminal speed. Fall distance is what powers vanilla mace smash damage, so this is a setup move rather than a separate damage source. Releasing sneak or touching ground ends it.
-
-**How to use it**
-
-1. Get airborne with a mace in your main hand.
-2. Hold sneak while you are moving downward. Aim at what you want to hit.
+Holding sneak while falling with a mace in the main hand dives until sneak is released or the player touches ground. The dive adds no damage of its own; smash damage still comes from fall distance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -178,7 +130,7 @@ terminal speed. Fall distance is what powers vanilla mace smash damage, so this 
 
 5 levels · 2 knowledge, then 4 per level
 
-Landing a mace smash strips armor points and armor toughness off the target for several seconds, so your follow-up swings land much harder. One target can only be shredded once every few seconds.
+A landed mace smash removes armor and armor toughness from that target.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -194,9 +146,7 @@ Landing a mace smash strips armor points and armor toughness off the target for 
 
 5 levels · 2 knowledge, then 4 per level
 
-A smash landed after a big enough fall sets off a shockwave that throws every nearby living thing away from you. Your own pets and mobs protected as friendly are skipped. You also get a moment of full explosion knockback resistance so the burst does not throw you. Higher levels widen the radius, add force, and lower the fall distance needed. Works on its own once learned, though you have to be falling to trigger it.
-
-At most 16 entities are thrown by one burst, and you get `+1.0` explosion knockback resistance for 20 ticks.
+A mace smash past the fall-distance requirement throws at most 16 nearby living entities and grants +1.0 explosion knockback resistance for 20 ticks. The player's pets and mobs protected as friendly are skipped.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -213,7 +163,7 @@ At most 16 entities are thrown by one burst, and you get `+1.0` explosion knockb
 
 5 levels · 2 knowledge, then 4 per level
 
-Every smash you land braces you for a couple of seconds: knockback resistance, extra armor toughness, and extra safe fall distance. It is the adaptation that lets you smash into a crowd without immediately being knocked out of it.
+Each landed mace smash grants a short brace of knockback resistance, armor toughness, and extra safe fall distance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -230,7 +180,7 @@ Every smash you land braces you for a couple of seconds: knockback resistance, e
 
 3 levels · 4 knowledge, then 5 per level
 
-After a smash, your legs stay coiled for a short window: your bounciness goes way up and fall damage is cut. Land inside that window and you spring back up, ready to line up the next dive.
+After a mace smash, bounciness rises and fall damage is cut for a short window.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -245,8 +195,7 @@ After a smash, your legs stay coiled for a short window: your bounciness goes wa
 
 5 levels · 2 knowledge, then 4 per level
 
-While a spear is in your main hand, your entity interaction range grows. You hit
-things from farther away than the person swinging back at you. Drop the spear and the reach goes away.
+Entity interaction range is higher while a spear is in the main hand, and it drops when that spear leaves the hand.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -257,13 +206,7 @@ things from farther away than the person swinging back at you. Drop the spear an
 
 5 levels · 2 knowledge, then 4 per level
 
-Spear hits scale with how fast you are actually moving. Below a minimum speed there is no bonus at all. This rewards hitting at the end
-of a sprint or a lunge rather than standing still and poking. Does not apply while you are riding something. That is what Mounted Shock is for.
-
-**How to use it**
-
-1. Hold a spear.
-2. Hit the target while sprinting or right out of a lunge.
+Spear damage scales with recent horizontal speed and does not apply while riding. Standing still or teleporting does not build that speed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -278,13 +221,7 @@ of a sprint or a lunge rather than standing still and poking. Does not apply whi
 
 5 levels · 2 knowledge, then 4 per level
 
-Land a spear hit in the sweet band, not point-blank and not at the edge of your
-reach. The target gets heavy Slowness plus a chain-and-particle confirmation. Distance is measured from your eye to the nearest point on the target's hitbox. Elevation and large mobs do not distort the range check. Higher levels widen the band, raise the slowness tier, and hold the pin longer. The same target cannot be re-pinned for a couple of seconds.
-
-**How to use it**
-
-1. Hold a spear and keep the target a few blocks away.
-2. Hit them from inside the sweet band shown in the menu.
+A spear hit inside the distance band applies Slowness. Distance is measured from the eye to the nearest point on the target hitbox, so elevation and a large mob do not change the check.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -301,7 +238,7 @@ reach. The target gets heavy Slowness plus a chain-and-particle confirmation. Di
 
 3 levels · 3 knowledge, then 4 per level
 
-Your spear lunges hit with more power and carry you farther forward. The assist is horizontal only, so existing vertical motion is preserved. By default only one lunge every 2.5 seconds is boosted and the rest stay vanilla.
+A spear lunge gains power and a forward dash. The dash is horizontal only, so existing vertical motion stays, and a lunge during the cooldown is unchanged.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -315,7 +252,7 @@ Your spear lunges hit with more power and carry you farther forward. The assist 
 
 5 levels · 3 knowledge, then 4 per level
 
-Spear hits from the saddle scale with your mount's speed rather than your own. A galloping horse turns a jab into a real charge. This stacks with the Taming skill's mounted damage, which is why the bonus is capped.
+Spear hits while riding scale with the mount's speed, not the rider's, and stack with Taming mounted damage.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -329,7 +266,7 @@ Spear hits from the saddle scale with your mount's speed rather than your own. A
 
 3 levels · 4 knowledge, then 5 per level
 
-Something attacks you at knife range while you hold a spear and it gets shoved out and slightly up, back to where your spear works. The shove also arms a short riposte window: your next spear hit inside that window does bonus damage.
+An attacker inside the radius, while a spear is held, is shoved outward and slightly upward. That shove arms bonus damage on the next spear hit.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -402,11 +339,6 @@ Written to `plugins/Adapt/skills/kinetics.toml` on first load.
 |---|---|---|
 | `challenge_kinetics_anvil_drop` | 1 | `anvilDropReward` |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

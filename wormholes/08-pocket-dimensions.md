@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ access, and transit eligibility.
 | World key | `wormholes:pockets` |
 | Dimension type | `wormholes:fullbright_pockets` |
 | Generator | Flat void (`minecraft:the_void` biome, air layer) |
-| Ambient light | Fullbright (`ambient_light` 1.0). No potion effects required |
+| Ambient light | Fullbright (`ambient_light` 1.0) |
 | Time | Fixed. Skybox none |
 | Height | `min_y` −64, height 384 |
 | Beds / respawn anchors | Beds never. Respawn anchors disabled |
@@ -55,7 +55,7 @@ A pocket keeps the size and materials used when it was created. Later configurat
 The 8,192-block stride leaves room for any supported size, so a pocket never
 grows into its neighbour.
 
-## Layout (`PocketLayout`)
+## Layout
 
 | Property | Value | Meaning |
 |----------|-------|---------|
@@ -68,10 +68,7 @@ grows into its neighbour.
 
 The minimum corner stays fixed when a pocket changes size. The floor and minimum X/Z walls do not move; the opposite walls, ceiling, and return door do. Shell blocks are protected, while the interior remains editable.
 
-Larger rooms cost more per entry, because the shell integrity check reads every
-shell block before a traveler is allowed to arrive, and every chunk the room
-covers is loaded on entry. The default 16-block room covers 1×1 chunk
-horizontally; a 32-block room covers 2×2, and a 128-block room covers 8×8.
+Entry checks every shell block and loads every chunk the room covers. A 16-block room covers one chunk. A 32-block room covers 2×2. A 128-block room covers 8×8.
 
 ## Return door
 

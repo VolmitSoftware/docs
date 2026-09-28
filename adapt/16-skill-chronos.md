@@ -2,36 +2,20 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Chronos gains XP from movement, sleep, ender pearls, Speed effects, and survival time. A carried clock increases payouts, with the largest bonus in the off hand. Low movement reduces XP, while varied recent actions add a bonus.
-
-Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks. Chronos advancements track online time, distance, beds, and pearl teleports.
+Chronos gains XP from movement, sleep, ender pearls, Speed effects, and survival time; a carried clock raises payouts, most from the off hand, low movement cuts XP, and varied recent actions add a bonus. Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use` permission, and protection and region policy that allow the action.
 
 ### Time In A Bottle (`chronos-time-bottle`)
 
 5 levels · 6 knowledge
 
-A craftable bottle that slowly fills with stored time while you carry it, then dumps that time into something that would otherwise take a while. Furnaces, smokers, blast furnaces, brewing stands, campfires, growable blocks, and any Ageable entity such as a baby cow are all valid targets. It is the closest thing Adapt has to a personal fast-forward button.
-
-Spending time on a sapling can grow a whole tree, but only if nothing protects the space that tree would fill.
-
-**How to use it**
-
-1. Craft the bottle: Swiftness Potion, Clock, Glass Bottle, shapeless.
-2. Carry it. It charges on its own, once per second, up to the stored-time cap for your level.
-3. Right-click the furnace, brewing stand, campfire, growable block, or baby animal you want to speed up.
-
-Furnaces and brewing stands need container access, campfires and growables need block-place permission, so none of it works where you cannot build.
-
-Recipe key `chronos-time-bottle`, shapeless: `CLOCK` + `POTION` + `GLASS_BOTTLE`. Any potion fits the grid but the craft is refused unless it is `SWIFTNESS`.
+Shapeless recipe `chronos-time-bottle` is `CLOCK` + `POTION` + `GLASS_BOTTLE`, and the potion must be `SWIFTNESS`. Carried, the bottle charges. Right-click spends stored time on furnaces, smokers, blast furnaces, brewing stands, campfires, growable blocks, or Ageable entities. Furnaces and brewing stands need container access. Campfires and growables need block-place permission. A sapling generates a tree only when nothing protects the space that tree would fill.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -108,7 +92,7 @@ The stored-second price of one growth step is `naturalSeconds / steps`, times th
 
 5 levels · 6 knowledge, then 7 per level
 
-Every melee hit you land smears slowness onto the target, and the stacks build up. At 5 stacks the target is rooted in place for a moment. Each proc eats hunger, so you cannot spam it while starving, and PvP targets get much tighter duration and amplifier caps than mobs do.
+Melee hits apply stacking slowness, and the stack threshold roots the target.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -134,15 +118,7 @@ Every melee hit you land smears slowness onto the target, and the stacks build u
 
 5 levels · 3 knowledge
 
-Click with a clock and you snap back to where you were a few seconds ago. Health
-and hunger restore to what they were then. The clock is consumed and you lose half your remaining health, but the recall will never kill you: health is floored at 1. Your inventory is not rolled back.
-
-**How to use it**
-
-1. Hold a clock in either hand.
-2. Left-click or right-click, air or block. Both clicks and both target kinds are on by default.
-
-Three other triggers exist and are off by default: sprint plus click, a single sneak press, and a double-tap jump. Turn them on in the adaptation's config file if you prefer them to plain clicking.
+A clock click rewinds position, health, and hunger. Inventory is not restored. Sprint-click, one sneak press, and a double-tap jump are additional triggers and are off by default.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -197,15 +173,7 @@ Three other triggers exist and are off by default: sprint plus click, a single s
 
 5 levels · 7 knowledge, then 8 per level
 
-A thrown chrono bomb. It is a lingering potion item under the hood, so you throw it the vanilla way, and where it lands a temporal field opens up. Everything inside is slowed and given mining fatigue, players in the air are pinned, and projectiles entering the field stop dead. You get slowed by your own field too, just less.
-
-**How to use it**
-
-1. Craft the bomb: Clock, Snowball, Diamond, Sand, shapeless.
-2. Right-click to throw it.
-3. Wait out the cooldown. Trying to throw early plays a reject sound and cancels the throw.
-
-Recipe key `chronos-time-bomb`, shapeless: `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND`, producing a lingering potion item.
+Shapeless recipe `chronos-time-bomb` is `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND` and produces a lingering potion. Right-click throws it. The field slows entities, applies mining fatigue, pins airborne players, and stops projectiles that enter it. A throw during cooldown plays a reject sound and is cancelled.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -255,7 +223,7 @@ Recipe key `chronos-time-bomb`, shapeless: `SNOWBALL` + `CLOCK` + `DIAMOND` + `S
 
 5 levels · 5 knowledge
 
-Projectiles you fire get a second life. A short delay after the shot, the same projectile is replayed at reduced velocity. Handy for arrow volleys and for anything where a second hit at the same angle is worth having. Fire something.
+A fired projectile is replayed after a delay at a reduced velocity.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -272,14 +240,7 @@ Projectiles you fire get a second life. A short delay after the shot, the same p
 
 5 levels · 6 knowledge, then 7 per level
 
-Drops a bubble around you that freezes projectiles in midair and pins mobs inside it. Mobs get heavy slowness and a jump lock, so nothing walks or hops out. The amethyst shard you cast with is consumed.
-
-**How to use it**
-
-1. Hold an amethyst shard.
-2. Sneak and right-click.
-
-By default frozen projectiles get their motion back when the bubble expires rather than being deleted.
+Hold an amethyst shard and sneak-right-click air or a permitted block. The bubble freezes projectiles and pins mobs inside it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -305,14 +266,7 @@ By default frozen projectiles get their motion back when the bubble expires rath
 
 5 levels · 5 knowledge, then 6 per level
 
-A two-press panic button. The first press marks the moment. If you press again before the window closes, you snap back to that spot with the health and hunger you had at the mark. Each completed rewind costs food.
-
-**How to use it**
-
-1. Sneak and press the swap-hands key (F by default) to mark the moment.
-2. Sneak and press it again within the window to rewind.
-
-The cooldown after a rewind shrinks as the adaptation levels up, down to a floor.
+Sneak and press swap-hands (F by default) to mark position, health, and hunger. Sneak and press it again inside the window to return to that mark.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -329,7 +283,7 @@ The cooldown after a rewind shrinks as the adaptation levels up, down to a floor
 
 5 levels · 5 knowledge, then 6 per level
 
-Part of every hit you take is deferred instead of applied immediately, then drained back out of you one pulse per second afterwards. It buys you a couple of seconds to heal or run. Damage that is already deferred cannot be deferred again, so it does not spiral.
+A fraction of each hit is deferred and repaid one pulse per second. Damage that is already deferred is not deferred again. A repayment waits while post-hit damage immunity is active, and the unpaid damage stays queued.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -343,8 +297,7 @@ Part of every hit you take is deferred instead of applied immediately, then drai
 
 5 levels · 4 knowledge, then 5 per level
 
-Beneficial potion effects applied to you last longer. The extension is a fraction of the original duration and scales with level. A
-cap limits how many bonus ticks any single effect can gain. Once the adaptation is at max level, harmful effects applied to you are cut to half duration as well.
+Beneficial potion effects applied to the player gain extra duration. At max level, harmful effects are shortened as well.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -363,9 +316,7 @@ cap limits how many bonus ticks any single effect can gain. Once the adaptation 
 
 5 levels · 4 knowledge, then 5 per level
 
-A quiet aura that pulses around you and nudges time forward on whatever it samples. Crops advance a growth stage, furnaces and smokers and blast furnaces and brewing stands jump forward a chunk of their remaining cook or brew time. You do not aim it. It just makes working near your farm and your furnace row faster.
-
-Crops need block-place permission and processing stations need container access, so the aura does nothing in an area you cannot build in.
+An unaimed aura samples nearby blocks and advances crop growth or remaining cook and brew time on furnaces, smokers, blast furnaces, and brewing stands. Crops need block-place permission. Those stations need container access.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -387,8 +338,7 @@ Crops need block-place permission and processing stations need container access,
 
 3 levels · 8 knowledge, then 9 per level
 
-A death save. A blow that would kill you leaves you at half a heart instead. You get a brief
-window of invulnerability. Enemies standing around you slow. The cooldown is measured in minutes and drops with level, so it is a once-per-fight lifeline, not something to plan around. It caps at level 3 rather than 5.
+A hit that would kill the player instead leaves them at the configured health, applies a short invulnerability window, and slows nearby enemies.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -408,13 +358,7 @@ window of invulnerability. Enemies standing around you slow. The cooldown is mea
 
 5 levels · 3 knowledge, then 4 per level
 
-Turns any fall into a controlled drift. You get a slow-fall budget measured in seconds per airtime. It refills when you
-land. It covers a cliff drop but not an indefinite hover.
-
-**How to use it**
-
-1. Keep a clock anywhere in your inventory.
-2. Hold sneak while falling, after you have dropped far enough for it to engage.
+Sneak while falling spends a per-airtime slow-falling budget. Landing refills it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -430,7 +374,7 @@ land. It covers a cliff drop but not an indefinite hover.
 
 5 levels · 3 knowledge, then 4 per level
 
-Your body remembers recent pain. Taking the same damage cause again within a short window hurts noticeably less, and every repeat hit refreshes the memory. Good against anything that grinds you down with one repeated damage type.
+The same damage cause inside the memory window deals less damage, and each repeat refreshes that window.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -513,11 +457,6 @@ An existing `speedPotionBaseXP` of `45`, the old default, is rewritten to `120` 
 | `challenge_chronos_tp_50` | 50 | `challengeChronosReward` |
 | `challenge_chronos_tp_500` | 500 | `challengeChronosReward` x2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

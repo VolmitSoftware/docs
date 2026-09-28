@@ -2,30 +2,17 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-An RTP portal chooses a destination using its world, radius, height, biome, safety, and rotation settings. Set a portal's type to `RTP`, then open Random Destination from its home menu.
-
-## Switch type and open the editor
-
-1. Open the portal menu on a constructed portal.
-2. Set type to **RTP** (needs management access for that portal and
-   `wormholes.portals.portal`).
-3. Open **Random Destination** to run `RtpPortalEditor`.
-
-The editor groups settings into Destination, Landing, Routing, and Effects. Reset defaults requires confirmation.
-
-## Settings apply immediately
-
-Editor changes apply immediately. Manual rerolls, private-pool rebuilds, and Reset defaults require confirmation.
+An RTP portal chooses a destination from its world, radius, height, biome, safety, and rotation settings. Set the type to `RTP` with `wormholes.portals.portal`, then open Random Destination. The editor groups are Destination, Landing, Routing, and Effects. Changes apply immediately. A manual reroll, a private-pool rebuild, and Reset defaults ask for confirmation.
 
 ## Default RtpSettings
 
-Built by `RtpSettings.builder(world)` / `defaults(world)`:
+Defaults for a new RTP portal in its source world:
 
 | Field | Default |
 |-------|---------|
@@ -143,7 +130,7 @@ walls, trees, liquids, or hazards without requiring flat support outside the
 traveler's actual footprint. `UNSAFE` skips these environmental checks at both
 destination preparation and final traversal revalidation. It can therefore put
 a traveler in water, inside solid terrain, on a hazard, in the End void, or
-without supporting ground. This behavior is deliberate and portal-specific.
+without supporting ground.
 
 ## Target biome
 
@@ -212,7 +199,7 @@ Keys (portal-scoped. See
 | `%wormholes_rtp.state%` | `rerolling`, `warming`, `ready`, `cooldown`, `idle`. `---` when the portal is not RTP or not registered with RTP runtime |
 | `%wormholes_rtp.cooldown%` | Seconds until the next destination search is allowed (two-decimal style numeric). Unavailable when not RTP |
 
-Priority in `WormholesPortalSnapshot.rtpState`:
+State priority:
 
 1. not RTP / not registered → unavailable
 2. `rerolling`
@@ -220,8 +207,4 @@ Priority in `WormholesPortalSnapshot.rtpState`:
 4. `ready`
 5. `cooldown` if cooldown millis remain, else `idle`
 
-## Cross-references
 
-- Portal types and menus: [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings)
-- Projection of RTP destinations: [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings)
-- Commands: [09 - Commands & Permissions](/wormholes/09-commands-permissions)

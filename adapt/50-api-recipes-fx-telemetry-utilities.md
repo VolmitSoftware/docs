@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-27T00:06:18.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -97,6 +97,8 @@ When an adaptation launches or repurposes a projectile it stamps an ownership ke
 | `BrewingManager`, `BrewingTask`, `AdaptPotionRegistry` | Adapt-owned. Do not register a second manager or task, and do not call `record`, `forget`, `strip`, `retainActive` or `reset` |
 
 ### FX
+
+`FxEmitter.sound` and each note of `chord` use a 16-block delivery radius for volumes up to 1. Higher volumes use `16 * volume` blocks, capped at 48. Player effects opt-out and the sound budget still apply.
 
 | Type | Contract |
 |------|----------|

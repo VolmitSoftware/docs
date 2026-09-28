@@ -1,95 +1,44 @@
 ---
 title: "Installation & Configuration"
-description: "Install Adapt and configure progression, storage, integrations, and Mutations"
+description: "Adapt files, requirements, and settings"
 published: true
-date: 2026-09-26T06:29:51.520Z
+date: 2026-09-28T20:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt is a single Bukkit jar. It supports Paper, Purpur, and Folia on Minecraft 26.1 through 26.2, plus Paper 26.3, on Java 25. Folia 26.3 support awaits a published server build. Copy the jar into `plugins/`. Start the server once so it writes its defaults. Then edit the TOML files under `plugins/Adapt/`.
+Edit the TOML files under `plugins/Adapt/`. A valid save refreshes open menus. Invalid TOML is rejected and the current settings stay. SQL, Redis, metrics, update checks, and optional-plugin detection apply on restart.
 
-Most settings hot-reload. Valid edits refresh open Adapt menus; invalid TOML is rejected while the current settings stay active.
+| | |
+|---|---|
+| Server | Paper, Purpur, or Folia. Minecraft 26.1 through 26.2, and Paper 26.3. Folia 26.3 waits on a published server build |
+| Java | 25 |
+| Jar | `Adapt-<version>-packed.jar` in each backend `plugins/` folder |
+| Command | `/adapt`, behind `adapt.main`. `adapt.use.*` defaults to true and still needs that root node |
 
-SQL, Redis, metrics, update checks, and optional-plugin detection require a restart.
+An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That directory must be writable. A non-English `language` is downloaded to `languages/<locale>.toml` only when that file is missing.
 
-Every plugin Adapt talks to is optional. Without PlaceholderAPI you lose the `%adapt_...%` placeholders. Without Vault, learning stays knowledge-only. Without a protection plugin, Adapt never asks one for permission. An absent integration does not stop startup, but Adapt can warn when a configured or installed integration cannot be used, such as Vault pricing without an economy provider or an installed-but-disabled HiddenOre.
+`blacklistedWorlds` takes namespaced world keys, such as `minecraft:the_nether`. The two generated entries match nothing. Mutations use their own `worldBlacklist`.
 
-Configuration is split across root-level `adapt.toml`, `models.toml`, and `mutations.toml`, plus one TOML per skill and adaptation under `skills/` and `adaptations/`. The Mutation layer is off until you turn it on.
+`ignorePassiveMobs` in an adaptation file excludes passive and neutral mobs from that adaptation's area, reflected, or chain damage. Add the key at the top level of that file when it is absent. Default `false`. Provoked neutral mobs stay excluded. Direct attacks are unchanged. It applies to `axe-cleave`, `axe-ground-smash`, `axe-throwing-axe`, `sword-crimson-cyclone`, `excavation-earth-mover`, `ranged-heartseeker`, `nether-skull-toss`, `tragoul-thorns`, `tragoul-globe`, `tragoul-lance`, `tragoul-corpse-explosion`, and `tragoul-plague-bearer`. Skeletal servants, Shadow Decoys, and the attacker's tamed pets are excluded from those attacks either way. Grave Digger's unearthed enemies stay valid targets.
 
-## Installing
+SQL is authoritative when `sql.enabled` is true. Create the schema and grant `SELECT`, `INSERT`, `UPDATE`, `DELETE`, and `CREATE TABLE`. Adapt creates `ADAPT_DATA` and `ADAPT_DATA_FENCE` in that schema and refuses SQL until both are InnoDB. Credentials go in the JDBC URL. Adapt has no TLS switch of its own. Redis handoff runs only when `redis.enabled` is also true. A fenced write that exhausts its retries is kept as `data/players/<uuid>.json.pending-sql`. See [Cross-server SQL and Redis](/adapt/39-velocity-cross-server).
 
-Install the `-packed.jar` as the only Adapt jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/Adapt/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
+```sql
+ALTER TABLE ADAPT_DATA ENGINE=InnoDB;
+ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;
+```
 
-1. Run Paper, Purpur, or Folia for Minecraft 26.1 through 26.2, or Paper 26.3, on Java 25.
-2. Copy `Adapt-<version>-packed.jar` into each backend server's `plugins/` folder, not the proxy.
-3. Start the server, watch for the Adapt splash, and confirm it enables without an API-version or dependency complaint.
-4. For a non-English server, set `language` in `plugins/Adapt/adapt.toml` to one of the supported locale names. Adapt downloads that locale from the current `master` language sources and installs it directly as `languages/<locale>.toml` only when the file is missing, then activates it without a restart. Existing files work offline and preserve local edits.
-5. Stop the server again before you configure SQL, Redis, or metrics. Those are read once, at enable.
-6. Grant `adapt.main` to anyone who should reach `/adapt` at all, then add the specific command nodes. The gameplay `adapt.use.*` nodes default to true but do not get anyone past that root gate.
+Vault charges `knowledge cost * learningEconomy.moneyPerKnowledge` when `learningEconomy.enabled` is true and an economy provider is present. Otherwise learning stays knowledge-only. A failed withdrawal rejects the purchase. A failed refund is stored on the skill line and settled on the next learn or unlearn. `hardcoreNoRefunds` returns neither knowledge nor currency.
 
-## Sharing player data across servers
+Mutations stay off until `mutations.toml` sets `enabled = true`. That file hot-reloads. `/adapt mutations reload` does the same. Per-type behavior is in the [Mutations catalog](/adapt/35-mutations-catalog).
 
-By default a player's progression is a JSON file per player. Turning SQL on makes the database
-authoritative instead, and Redis hands live state between backends during a server switch. No proxy
-plugin is needed. Use the same schema on every backend that shares a player base.
-
-1. Create the database schema yourself and give the account SELECT, INSERT, UPDATE, DELETE, and CREATE TABLE on it. Adapt creates both tables inside the schema but never the schema.
-2. Fill in the `sql.*` host, port, database, username, and password keys, then set `sql.enabled = true`.
-3. For Redis, set `redis.host` and `redis.port`, add `redis.username` and `redis.password` only if your Redis uses ACLs, then set `redis.enabled = true`. Redis stays inert unless `sql.enabled` is also true.
-4. Restart. Both clients are only built during enable.
-5. Confirm both tables use InnoDB.
-
-Adapt puts the SQL credentials straight into the JDBC URL. It has no TLS switch of its own. Configure transport security on the database endpoint and in the driver environment. SQL startup fails closed unless both tables are InnoDB. After backing up the schema, convert legacy tables with `ALTER TABLE ADAPT_DATA ENGINE=InnoDB;` and `ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;`, then restart every backend.
-
-A fenced SQL write that exhausts its retries is retained beside the player file as `<uuid>.json.pending-sql`. Stop every backend, back up the database and file, decide which profile is authoritative, delete only the incompatible recovery file, then restart. See [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
-
-## Charging money for learning
-
-1. Install Vault and an economy plugin that registers with it, then set `learningEconomy.enabled = true`.
-2. Set `learningEconomy.moneyPerKnowledge` to the currency charged per knowledge point. An adaptation's bill is its knowledge cost times this number.
-3. Set `learningEconomy.refundPercent` to how much comes back on a normal unlearn, or `0` for no money refunds.
-
-Without Vault or an economy provider, learning falls back to knowledge only. A failed withdrawal rejects the purchase. A failed refund is written onto the player's skill line as a pending receipt. The next learning transaction on that line settles it. `hardcoreNoRefunds = true` suppresses knowledge and money refunds entirely.
-
-## Turning on Mutations
-
-1. Set `enabled = true` in `mutations.toml`.
-2. Set the gates. `slotOneUnlockLevel` and `slotTwoUnlockLevel` are master levels. `minimumAdaptationLevel` is the learned adaptation level needed in each of a mutation's two skill domains.
-3. Decide whether players may re-pick. `switchingEnabled` allows player-driven changes, `permanentSelection` locks the first choice until an admin clears it, and `switchCooldownMillis` and `combatLockMillis` throttle the rest.
-4. Set `cooperativeConsentMode` if you use group effects. Every mode also needs the recipient's own saved opt-in.
-5. Save. Mutation config hot-reloads and online players are reconciled. `/adapt mutations reload` does the same on demand.
-
-Player-facing behavior for each type is in [35 - Mutations Catalog](/adapt/35-mutations-catalog).
-
-## Turning Adapt off in a world
-
-Add the world's namespaced Bukkit key to `blacklistedWorlds`. These are keys, not folder names: `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or whatever key a custom world provider supplies. The two entries in the generated file are placeholders that match nothing. The change applies in the next eligible automatic batch, or immediately through explicit reload. Mutations have their own separate `worldBlacklist`, both globally and per type.
-
-## Config maintenance
-
-`/adapt configure` opens the config editor in a menu instead of a text editor, and needs `adapt.configurator` or op.
-
-`/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` delete that file, regenerate it from defaults, and reconcile mutations. `/adapt default all` archives `adapt.toml` and every skill and adaptation TOML into `config-archive/<timestamp>/` first, then deletes, regenerates, and reloads them. It leaves `mutations.toml`, `models.toml`, language files, SQL and Redis data, and player progression alone. All three need `adapt.configurator`.
-
-This layout is a hard break. Delete the obsolete `plugins/Adapt/adapt/` directory before upgrading, which permanently removes any local settings stored there, then start the server to generate `adapt.toml`, `models.toml`, `mutations.toml`, `skills/`, and `adaptations/` directly under `plugins/Adapt/`. Adapt does not migrate the old directory, JSON configuration files, or the former misspelled value-multiplier key; restart after applying the desired settings.
+`/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` regenerate that file. `/adapt default all` is described in [Updates](/adapt/40-operator-runbooks). All three need `adapt.configurator`.
 
 ## Reference
 
-### Identity
-
-| Property | Value |
-|---|---|
-| Version | `2.0.3-26.2` |
-| Main class | `art.arcane.adapt.Adapt` |
-| `api-version` | `26.1` |
-| Java toolchain | 25 |
-| Bukkit command root | `/adapt` |
-| Root permission | `adapt.main` (default op) |
-| `folia-supported` | `true` |
-
-### Optional plugins (all soft dependencies)
+### Optional plugins
 
 | Plugin | What it adds |
 |---|---|
@@ -102,7 +51,7 @@ This layout is a hard break. Delete the obsolete `plugins/Adapt/adapt/` director
 | AdvancedChests | Rift Access support for AdvancedChests containers |
 | MagicCosmetics | Excludes equipped cosmetic hat and bag slots from Adapt's armor-value math |
 
-Activation and failure behavior: [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [09 - Integrations](/adapt/09-integrations).
+Details: [Protection and region policy](/adapt/08-protection-region-policy) and [Integrations](/adapt/09-integrations).
 
 ### Data folder layout
 
@@ -139,10 +88,10 @@ plugins/Adapt/
 | `metrics` | `true` | Starts bStats and integration metrics during enable |
 | `language` | `en_US` | Server default locale. Players may override it with the shared in-game picker. Supported non-English values download automatically into `languages/<locale>.toml` only when the file is missing; edit that file to customize messages |
 | `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
-| `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the level-search cursor clamps to |
-| `playerXpPerSkillLevelUpBase` | `489` | Finite non-negative flat master XP granted per skill level crossed |
-| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Finite non-negative extra master XP per level already reached |
-| `powerPerLevel` | `0.65` | Finite non-negative power budget per master level, truncated to a whole number |
+| `experienceMaxLevel` | `1000` | Skill level cap. Lookups clamp to this value |
+| `playerXpPerSkillLevelUpBase` | `489` | Flat master XP granted per skill level crossed |
+| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Extra master XP per level already reached |
+| `powerPerLevel` | `0.65` | Power per master level, truncated to a whole number |
 | `xpInCreative` | `false` | Allows skill XP while in creative or spectator |
 | `allowAdaptationsInCreative` | `false` | Allows adaptation effects while in creative |
 | `blacklistedWorlds` | two placeholder keys | Namespaced world keys where Adapt gameplay is off |
@@ -256,7 +205,47 @@ GriefPrevention = false
 
 Both blocks are examples. `adaptationUsageConflicts` is empty by default. `protectionOverrides` contains one placeholder row, `"adaptation-name"` mapped to `WorldGuard = true`.
 
-Conflict pairs are symmetric at runtime. Listing `agility-air-dash` under `rift-blink` means holding either one blocks use of the other. The block is not only the direction the file reads. `protectionOverrides` starts from the currently enabled default protector set. Then it adds or removes protectors by exact `Protector.getName()` value. A `true` naming an unknown protector logs an error and is skipped. Full protector names and defaults: [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
+Conflict pairs are symmetric. Listing `agility-air-dash` under `rift-blink` blocks either adaptation while the other is learned. `protectionOverrides` starts from the default protector set, then adds or removes protectors by the names in [Protection and region policy](/adapt/08-protection-region-policy). An unknown name is skipped.
+
+### Player preferences
+
+Adaptations with player controls store their server policy in `adaptations/<adaptation-id>.toml` under `[playerPreferences.<control-id>]`. Rift Blink currently supplies these controls. Player edits save to player data; they do not edit the server file or hotload a skill.
+
+| Field | Meaning |
+|---|---|
+| `playerEditable` | `true` lets the player choose an unlocked allowed value; `false` forces `defaultValue`. |
+| `defaultValue` | Registered uppercase value used when locked or no saved permitted choice applies. Must appear in `allowedValues`. |
+| `allowedValues` | Nonempty list of registered values that the server permits. Level requirements still apply. |
+
+Blink's control IDs and values are:
+
+| ID | Values | Default |
+|---|---|---|
+| `enabled` | `ON`, `OFF` | `ON` |
+| `phasing` | `SNEAK`, `AIM`, `NEVER` | `SNEAK` |
+| `targeting` | `DISTANCE`, `VERTICALITY` | `DISTANCE` |
+| `activation` | `MANUAL`, `REACTIVE` | `MANUAL` |
+| `reactive-direction` | `LOOK`, `AWAY_FROM_ATTACKER` | `LOOK` |
+
+For example, allow both targeting preferences but force manual activation:
+
+```toml
+[playerPreferences.targeting]
+playerEditable = true
+defaultValue = "DISTANCE"
+allowedValues = ["DISTANCE", "VERTICALITY"]
+
+[playerPreferences.activation]
+playerEditable = false
+defaultValue = "MANUAL"
+allowedValues = ["MANUAL", "REACTIVE"]
+```
+
+Reactive activation and its direction choice require Blink level 2. A forced Reactive mode cannot grant that level; a lower-level player cannot trigger it. Setting `allowPhasing = false` prohibits phasing even if the player's saved choice is AIM. Skill/adaptation enable flags, use permissions, world restrictions, protection, costs, and cooldowns remain authoritative.
+
+A saved choice that becomes unavailable is retained but does not apply. When the player regains its required level or the server allows it again, it can apply again. Reset to server defaults removes that adaptation's saved choices. Turning Blink off preserves learned levels and spent knowledge/power. Existing progression resets preserve preferences; deleting or replacing the entire player record clears them.
+
+Invalid policy edits keep the last valid live configuration. Save valid policy changes using the normal adaptation configuration reload workflow.
 
 ### Other nested sections
 
@@ -320,14 +309,4 @@ Keys ending in `Millis` are milliseconds and keys ending in `Ticks` are server t
 
 ### Reload matrix
 
-Skill, adaptation, GUI, effects, progression, mutation, language, model and protection settings all
-hot-reload on save. SQL, Redis, metrics, and installing or removing an optional plugin need a
-restart. The full table is in [40 - Updates and Recovery](/adapt/40-operator-runbooks).
-
-## See also
-
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
-- [05 - Configuration Math](/adapt/05-configuration-math)
-- [06 - GUI Customization](/adapt/06-gui-customization)
-- [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
-- [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)
+Skill, adaptation, GUI, effects, progression, mutation, language, model, and protection settings apply on save. SQL, Redis, metrics, and installing or removing an optional plugin need a restart. See [Updates](/adapt/40-operator-runbooks).

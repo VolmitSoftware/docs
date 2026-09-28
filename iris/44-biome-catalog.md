@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-28T07:30:06.759Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -49,6 +49,8 @@ The paired catalog contains 375 reachable biome identities:
 | [Vanilla](/iris/biomes/vanilla) | 19 | 0 | Vanilla-compatible roots mixed into Iris selectors |
 
 The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. The cave root and its child contain ordinary short sulfur spikes, occasional taller clusters, tiny mineral pools, and rare banded spires. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
+
+Overworld [Tundra Autumn and its extended variant](/iris/biomes/tundra/autumn) scatter red shrubs on grass blocks, coarse dirt, and podzol, alongside the red shrub ground cover in the four poplar biomes. These plants require Minecraft 26.3.
 
 ## Read the atlas
 

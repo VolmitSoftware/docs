@@ -2,7 +2,7 @@
 title: "Skill - Swords"
 description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,28 +12,13 @@ Adaptations add dual-wield bonuses, low-health damage, counters, attack-speed ch
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the matching `adapt.use.*` permission, and protection and region policy that allow the action. Nearly every adaptation here also needs a sword in your main hand: wooden, stone, copper, iron, golden, diamond, or netherite.
+Nearly every adaptation needs a sword in the main hand: wooden, stone, copper, iron, golden, diamond, or netherite.
 
 ### Machete (`sword-machete`)
 
 3 levels · 7 knowledge, then 4 per level
 
-Left-click with a sword and you cut a sphere of foliage in front of you. That
-foliage includes grass, ferns, vines, flowers, leaves, bamboo, sugar cane,
-seagrass, mushrooms, and crops. Blocks nearer the center are more likely to be cut, and each block cut chews a bit of durability off the sword.
-
-Higher levels give a bigger radius, a shorter cooldown, and less wear per block. Every cut block pays skill XP, so clearing a jungle is a real levelling route.
-
-1. Learn Machete.
-2. Hold a sword.
-3. Left-click at the foliage in front of you.
-4. Wait for the item cooldown to clear before the next swing.
-
-Each block still goes through a normal block break event, so a region plugin that would deny you the break denies the cut.
-
-Menu stat lines: Slash Radius. Chop Cooldown. Tool Wear.
-
-The cut sphere is centered 2.25 blocks along your look vector and half a block below eye level, and each block inside it is cut with probability `levelPercent * 2.8 / distanceSquared`, so the center is reliable and the edge is sparse. It cuts grass and tall grass, fern and large fern, dead bush, vine, cactus, sugar cane, bamboo and bamboo sapling, seagrass and tall seagrass, lily pad, cocoa, carrot, potato, nether wart, brown and red mushroom, the six small flowers plus dandelion, cornflower, chorus flower, sunflower, lilac, peony, rose bush and wither rose, and the six vanilla leaf types plus mangrove leaves. Skill XP is `11.25` per block cut, and durability taken is `damagePerBlock * blocksCut`.
+Left-click with a sword to cut foliage in a sphere centered 2.25 blocks along your look and half a block below eye level; each block is cut with probability `levelPercent * 2.8 / distanceSquared`, pays 11.25 skill XP, and still fires a normal block-break, so a denied break denies the cut. It cuts grass and tall grass, fern and large fern, dead bush, vine, cactus, sugar cane, bamboo and bamboo sapling, seagrass and tall seagrass, lily pad, cocoa, carrot, potato, nether wart, brown and red mushroom, the six small flowers plus dandelion, cornflower, chorus flower, sunflower, lilac, peony, rose bush and wither rose, and the six vanilla leaf types plus mangrove leaves.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -48,17 +33,7 @@ The cut sphere is centered 2.25 blocks along your look vector and half a block b
 
 7 levels · 7 knowledge
 
-Sword hits apply Poison III to the target and spray a blood-and-fern visual. Mobs that vanilla treats as poison-immune take a small damaging bleed instead.
-Those mobs include zombies, skeletons, phantoms, wither, zoglin, giant, spiders,
-and skeleton and zombie horses. The bleed keeps the adaptation doing something.
-
-There is a cooldown between applications, so it is one proc per fight opener rather than a stack on every swing. Kills that happen while your poison is still on the target credit you a poison kill.
-
-Menu stat lines: Striking a Living entity with your Sword causes Poison. Poison Duration. Poison Cooldown.
-
-The applied potion effect is `POISON` at amplifier 2 for `50 * level` ticks. The menu's Poison Duration line instead shows `effectDuration * level`
-milliseconds. The displayed duration and the applied potion duration are
-computed from different numbers. They do not match at default settings. The cooldown is `max(cooldown, effectDuration * level)` milliseconds. Poison-immune targets take a bleed of 1 health per proc instead. A kill within `4000` ms of the poison expiring still credits a poison kill.
+Sword hits apply Poison at amplifier 2 for `50 * level` ticks; the menu duration instead shows `effectDuration * level` milliseconds, and those two durations do not match at the defaults. Poison-immune mobs (zombies, skeletons, phantoms, wither, zoglin, giant, spiders, and skeleton and zombie horses) take 1 health instead, and a kill within 4000 ms of the poison expiring still counts as a poison kill.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -69,13 +44,7 @@ computed from different numbers. They do not match at default settings. The cool
 
 7 levels · 7 knowledge
 
-Sword hits start a bleed on the target that ticks damage every quarter second for a level-scaled duration. It ignores armor because it is direct damage, which makes it strong against heavily armored targets.
-
-Every single bleed tick is re-authorized against your protection rules and your friendly-entity rules before it lands. A bleed cannot follow a target into a region where you are not allowed to hurt it. It never hurts your own tamed pets.
-
-Menu stat lines: Striking a Living entity with your Sword causes Bleeding. Bleed Duration. Bleed Cooldown.
-
-Bleed duration is `effectDuration * level` milliseconds and procs land every `5` ticks, so the proc count is `ceil(durationTicks / 5)` with a minimum of 1. The bleed damage stat records the health and absorption actually removed, and a kill within `4000` ms of the bleed expiring still credits a bleed kill.
+Sword hits start an armor-ignoring bleed that procs every 5 ticks, `ceil(durationTicks / 5)` times with a minimum of 1. Each proc is rechecked against protection and friendly rules, never hits your tamed pets, records the health and absorption actually removed, and a kill within 4000 ms of expiry still counts as a bleed kill.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -87,11 +56,7 @@ Bleed duration is `effectDuration * level` milliseconds and procs land every `5`
 
 5 levels · 5 knowledge
 
-Hold a sword in your main hand and a sword in your off hand and every melee hit is multiplied. Two swords of the same material give the bigger multiplier. A mismatched pair gives a smaller one. Fill both hands.
-
-Menu stat lines: Matching Sword Bonus. Mixed Sword Bonus.
-
-Matching means the exact same material. The multiplier is clamped to a minimum of 1, so a base below 1 cannot reduce your damage. XP is the final damage times `xpPerDamage`.
+A sword in each hand multiplies melee damage: the exact same material uses the matching multiplier, different materials use the mixed multiplier, and the result is clamped to at least 1.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -105,13 +70,7 @@ Matching means the exact same material. The multiplier is clamped to a minimum o
 
 6 levels · 4 knowledge, then 3 per level
 
-Sword hits against a target already below a health threshold deal extra damage. Both the threshold and the bonus grow with level, and the threshold is capped so it never turns into a full-health execute.
-
-Land five buffed hits inside ten seconds and you get an advancement.
-
-Menu stat lines: Bonus Damage. Health Threshold.
-
-The trigger is the target's current health over its maximum being at or below the threshold, and the stat counts every buffed hit, not only lethal ones. The `challenge_swords_execute_5in10` advancement comes from 5 buffed hits within 10 seconds and has no stat milestone.
+A sword hit deals bonus damage when the target's current health over its maximum is at or below the threshold, and the stat counts every buffed hit, not only kills.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -126,18 +85,7 @@ The trigger is the target's current health over its maximum being at or below th
 
 5 levels · 4 knowledge
 
-Raise a shield, eat a hit, and you arm a short riposte. The next sword strike you land inside that window deals a large bonus. The window opens on the block itself, not on a perfect parry, so it rewards actually using the shield rather than timing a frame.
-
-1. Learn Riposte Window.
-2. Hold a shield in either hand and raise it.
-3. Let an attack land on the shield. A gold ring shows the riposte is armed.
-4. Swap to your sword and hit back before the window closes. The window is short at low level and roughly a second at max.
-
-Land three ripostes inside five seconds and you get an advancement.
-
-Menu stat lines: Riposte Window. Riposte Damage Bonus.
-
-Arming needs a raised `SHIELD` in either hand, and the window is consumed on the first qualifying sword hit. The `challenge_swords_riposte_3in5` advancement comes from 3 ripostes within 5 seconds and has no stat milestone.
+Blocking a hit with a raised shield in either hand arms a riposte; the window starts when the block lands, not on a timed parry, and the first sword hit inside it consumes the window.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -151,25 +99,11 @@ Arming needs a raised `SHIELD` in either hand, and the window is consumed on the
 
 5 levels · 5 knowledge
 
-Land a critical hit with a sword, which in vanilla means swinging while falling, and you erupt a bleeding slash around your target. The primary target eats extra damage on the same swing. Everything else in the
-radius takes the cyclone damage. Every target it touches starts bleeding.
-
-It is not free. Each cyclone costs hunger and sword durability, and it is on a long cooldown. Both costs get cheaper as you level and the cooldown gets shorter.
-
-1. Learn Crimson Cyclone.
-2. Hold a sword and fill your hunger bar.
-3. Jump and hit a mob on the way down so the swing crits.
-4. The cyclone fires automatically. Hit six or more targets in one activation for an advancement.
-5. Wait out the cooldown.
-
-Secondary targets are individually authorized against your PvP and PvE rules, and your own tamed pets are never hit.
-
-Menu stat lines: Cyclone Radius. Cyclone Damage. Cyclone Cooldown.
-
-The cyclone adds its damage to the triggering hit, then damages nearby living entities for the same amount and starts a bleed on each. Hitting 6 or more targets in one activation grants the `challenge_swords_cyclone_6` advancement, which has no stat milestone.
+A falling sword swing adds cyclone damage to that hit, damages other living entities in the radius for the same amount, and bleeds each of them. Secondary targets are checked against PvP and PvE, your tamed pets are never hit, and provoked neutrals stay excluded when `ignore passiveMobs` is true.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
+| `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from secondary cyclone damage and bleed; the directly struck target is unchanged. |
 | `showBleedParticles` | `true` | Shows the crimson roots bleed particle on hit targets. |
 | `radiusBase` | `2.6` | Cyclone radius in blocks, before level scaling. |
 | `radiusFactor` | `2.4` | Extra radius gained at max level. |
@@ -194,19 +128,7 @@ The cyclone adds its damage to the triggering hit, then damages nearby living en
 
 5 levels · 4 knowledge
 
-Sprint-attack with a sword and you get thrown forward into the blow. A brief
-window of extra entity reach lets the swing that started the lunge connect at
-longer range. It is a gap closer bolted onto an attack you were making anyway.
-
-1. Learn Lunge Strike.
-2. Sprint at a target with a sword out.
-3. Attack while still sprinting. You surge forward and the reach bonus applies for the next few ticks.
-
-There is a short cooldown so you cannot chain-fling yourself across the map.
-
-Menu stat lines: Lunge Force. Bonus Reach.
-
-The horizontal surge is `lungeForce + (bonusReach * reachVelocityFactor)` capped at `maxSurge`, added to your current velocity with `verticalBoost` as the Y component. Bonus reach is an `ENTITY_INTERACTION_RANGE` modifier on the `reach` slot.
+A sprinting sword attack lunges you forward and grants bonus entity reach for the swing that started it. Horizontal surge is `lungeForce + (bonusReach * reachVelocityFactor)`, capped at `maxSurge`, added to your current velocity with `verticalBoost` on Y; reach is an `ENTITY_INTERACTION_RANGE` modifier on the `reach` slot.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -225,13 +147,7 @@ The horizontal surge is `lungeForce + (bonusReach * reachVelocityFactor)` capped
 
 5 levels · 5 knowledge
 
-Every sword hit adds a flow stack and each stack adds ten percent attack speed. Stacks decay if you stop hitting for a few seconds, and any damage you take drops the whole stack immediately. Level raises the ceiling on how many stacks you can hold.
-
-Passive, but it rewards not getting hit. Reach the stack cap once for an advancement.
-
-Menu stat lines: Max Flow Stacks. Attack Speed / Stack.
-
-Each stack is a fixed `0.10` of attack speed, applied as an `ADD_SCALAR` modifier on `ATTACK_SPEED` under the `flow` slot. Reaching the stack cap grants the `challenge_swords_flow_max` advancement, which has no stat milestone.
+Each sword hit adds a flow stack worth 0.10 attack speed, applied as `ADD_SCALAR` on `ATTACK_SPEED` in the `flow` slot, and any damage you take clears the stack.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -244,11 +160,7 @@ Each stack is a fixed `0.10` of attack speed, applied as an `ADD_SCALAR` modifie
 
 5 levels · 5 knowledge
 
-Works only in a one-on-one fight. If exactly one hostile mob or player is inside the engage radius, your sword damage goes up and incoming damage goes down. The attacker briefly glows so you can identify your duel partner. A second attacker inside that radius stops the effect. The defence half also needs a sword in your main hand.
-
-Menu stat lines: Bonus Damage. Damage Reduction.
-
-The count is `Monster` instances plus players inside `engageRadius`, and both halves need it to be exactly 1. The glow is a `GLOWING` effect on the attacker, or on a projectile's shooter, capped at 100 ticks and never shortening a longer glow.
+While exactly one hostile mob or player is inside the engage radius, sword damage rises and incoming damage falls; a second one stops both, and the defence half also requires a sword in the main hand. The attacker, or a projectile's shooter, receives Glowing that never shortens a longer existing glow.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -265,19 +177,7 @@ The count is `Monster` instances plus players inside `engageRadius`, and both ha
 
 5 levels · 5 knowledge
 
-Grind a temporary attack damage buff into yourself at a grindstone. It costs sword durability and experience levels, and it is on a one minute cooldown by default. The grindstone GUI does not open when the ritual fires.
-
-1. Learn Whetstone Ritual.
-2. Hold the sword you want to grind in your main hand.
-3. Stand at a grindstone with enough experience levels.
-4. Sneak and right-click the grindstone. The sword takes durability, you lose the XP levels, and the buff starts.
-5. Wait out the cooldown before grinding again.
-
-The ritual refuses if you are short on XP levels, and it refuses if the durability cost would break the sword.
-
-Menu stat lines: Sharpness Level. Buff Duration.
-
-The buff is an `ATTACK_DAMAGE` modifier on the `sharp` slot worth `3.0 * (amplifier + 1)` health points. It is not the vanilla Sharpness enchantment and not the Strength potion. Running out of XP levels plays a fail effect, and a durability cost that would break the sword aborts silently.
+Sneak-right-click a grindstone with a sword in the main hand to apply an `ATTACK_DAMAGE` modifier on the `sharp` slot worth `3.0 * (amplifier + 1)` health; it is not the Sharpness enchantment and not the Strength potion, and the grindstone GUI does not open. Missing XP levels plays a fail effect and aborts, and a durability cost that would break the sword aborts with no effect.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -294,11 +194,7 @@ The buff is an `ATTACK_DAMAGE` modifier on the `sharp` slot worth `3.0 * (amplif
 
 5 levels · 5 knowledge
 
-Every kill you land with a sword in your main hand hands you absorption hearts for a few seconds. It stacks up in a fight full of mobs, because each kill refreshes the guard rather than replacing it with something weaker. The tier and duration both grow with level. Kill with a sword.
-
-Menu stat lines: Absorption Hearts. Guard Duration.
-
-Applies `ABSORPTION` at the computed amplifier. An existing Absorption effect is never downgraded: the higher amplifier and the longer duration win, and an infinite effect stays infinite. Absorption points granted are `4 * (amplifier + 1)`, clamped to the player's max absorption attribute, and the player's absorption amount is only raised, never lowered.
+A kill with a sword in the main hand grants Absorption, and a later kill never replaces a higher amplifier, a longer duration, or an infinite effect. Points granted are `4 * (amplifier + 1)`, clamped to the max-absorption attribute, and current absorption only rises.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -312,14 +208,7 @@ Applies `ABSORPTION` at the computed amplifier. An existing Absorption effect is
 
 5 levels · 4 knowledge
 
-Hit something that is running and you slow it hard. A sprinting player also has their sprint cancelled outright. Non-players count as fleeing when their horizontal speed crosses a threshold, so it lands on anything actually trying to leave.
-
-The slow is a movement speed modifier rather than the Slowness potion. It does
-not show in the effect list and cannot be milked off.
-
-Menu stat lines: Slowness Tier. Slow Duration.
-
-A target counts as fleeing when it is a sprinting player, or when its horizontal velocity is at or above `fleeSpeedThreshold`. The slow is a `MOVEMENT_SPEED` modifier on the `slow` slot with a `MULTIPLY_SCALAR_1` value of `-0.15 * (tier + 1)`, clamped to -1.
+A sword hit slows a sprinting player or any other target at or above the flee speed, and a sprinting player's sprint is cancelled. The slow is a `MOVEMENT_SPEED` modifier on the `slow` slot (`MULTIPLY_SCALAR_1` of `-0.15 * (tier + 1)`, clamped to -1), not the Slowness potion, so it has no effect icon and milk does not remove it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -334,21 +223,7 @@ A target counts as fleeing when it is a sprinting player, or when its horizontal
 
 5 levels · 6 knowledge
 
-Turn one sword into your sword. Name it at an anvil and it is stamped as an heirloom with a gold lore line. From then on, every few kills you make while holding it bank a small permanent
-attack damage bonus straight onto the item. That bonus has a level-scaled cap.
-
-The bonus lives on the item, not on you. The blade keeps it if you drop it,
-store it, or hand it to someone else.
-
-1. Learn Heirloom Edge.
-2. Put a sword in an anvil and type any new name.
-3. Take the result. It now carries the Heirloom Edge lore line.
-4. Kill things while holding it. Every few kills banks another step of damage.
-5. Keep going until the blade hits its cap. Raising the adaptation level raises the cap.
-
-Menu stat lines: Damage Per Bank. Kills Per Bank. Banked Damage Cap.
-
-The item carries five persistent keys: `heirloom_edge` (the flag), `heirloom_edge_kills`, `heirloom_edge_bonus`, `heirloom_edge_damage` (the attribute modifier), and `heirloom_edge_lore`. The banked bonus is an `ATTACK_DAMAGE` `ADD_NUMBER` modifier on the item's own mainhand slot, added on top of the sword's vanilla damage rather than replacing it. Once the bonus reaches the cap, banked kills stop accumulating.
+Renaming a sword in an anvil stamps Heirloom Edge lore on that item, and kills while you hold it bank permanent attack damage onto the item, which keeps that bonus if dropped, stored, or given away. The item stores `heirloom_edge`, `heirloom_edge_kills`, `heirloom_edge_bonus`, `heirloom_edge_damage`, and `heirloom_edge_lore`; the bonus is an `ATTACK_DAMAGE` `ADD_NUMBER` on the item's mainhand slot, added on top of vanilla damage, and kills stop banking once the cap is reached.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -404,11 +279,6 @@ Written to `plugins/Adapt/skills/swords.toml` on first load.
 | `challenge_sword_heavy_25` | 25 | `challengeSwordHeavyReward` |
 | `challenge_sword_heavy_250` | 250 | `challengeSwordHeavyReward` x3 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

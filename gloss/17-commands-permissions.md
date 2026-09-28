@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -17,13 +17,11 @@ selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/langu
 
 ## Plugin version
 
-`/gloss debug version` displays `Gloss vVERSION`, using the installed plugin version and the Director help heading gradient. `/gloss version` runs the same command but stays hidden from help and command suggestions. Both routes use the normal root command permissions.
+`/gloss debug version` prints the installed version. `/gloss version` runs the same command and stays hidden from help.
 
 ## Diagnostic reports
 
-`/gloss debug dump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/gloss debug dump upload=false` to save it locally without uploading. The command requires `gloss.debugdump` (default `op`), independently of the root administration permission.
-
-Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
+`/gloss debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. Permission `gloss.debugdump` (default op). A failed upload keeps the file. Contents: [Shared diagnostic reports](/volmlib/api/diagnostics).
 
 ## Holograms
 

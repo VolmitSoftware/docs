@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-26T07:50:33.878Z
+date: 2026-09-26T13:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -18,9 +18,9 @@ Run from the VolmitSoftware workspace:
 ./build-psycho-lt.sh
 ```
 
-The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `build buildAll buildAllToOut`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
+The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `build buildAll buildAllToOut`. Wormholes also produces its compile-time API jar with `apiJar`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
 
-VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
+VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. ShapedPortals starts after Wormholes finishes so it can compile against the current Wormholes API jar. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
 
 ## Build selected plugin jars
 
@@ -63,7 +63,7 @@ With one packed artifact, the task is `packedJar`. Multiple packed artifacts get
 
 On a machine with 16 logical CPUs, the defaults are four plugin builds and four Gradle workers per build. The worker limit also reaches Iris's nested loader builds. Gradle workers cover build tasks and test processes; these limits do not cap every thread created by compiler plugins or application code.
 
-React uses one test JVM because its jqwik property tests share a replay database. Other suites can use two JVMs without enabling JUnit concurrency inside a JVM.
+React uses one test JVM because its jqwik property tests share a replay database. Iris and the other suites honor `--test-forks`, capped by `--max-workers`; `--test-forks 1` runs one JVM per test task. This does not enable JUnit concurrency inside a JVM.
 
 ```bash
 ./build-psycho-lt.sh --jobs 4 --max-workers 4 --test-forks 2
@@ -83,7 +83,7 @@ Other arguments are forwarded to each top-level Gradle invocation, including `--
 Iris's `moddedTest` is part of `check`, not `test`, so `--tests-only` does not run the `adapters/modded-common` suite. Run `./gradlew moddedTest` or `./gradlew build` from `Iris/` for that.
 
 
-This runs `test` in VolmLib and every plugin. It does not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
+This runs `test` in VolmLib and every plugin. It does not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run, including the Wormholes API jar consumed by ShapedPortals. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
 
 Add `--rerun` to execute the tests again even when their previous results are up to date, without forcing all compilation tasks to rerun.
 

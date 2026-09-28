@@ -2,153 +2,80 @@
 title: "Configuration Math"
 description: "XP multipliers, progression curves, knowledge, and ability power"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt applies location, repetition, permission, and boost multipliers before adding XP to a skill. A denied region cancels the award. Every setting on this page is in `plugins/Adapt/adapt.toml`.
+XP settings are in `plugins/Adapt/adapt.toml`. A region that denies XP zeroes the award. `xpCurve` converts skill XP and master XP into levels.
 
-The selected `xpCurve` converts both skill XP and master XP into levels. Master XP is granted when a skill gains a level. With the default anti-farm floors, heavily repeated work can fall to about one percent of its normal XP.
-
-## How an XP award is calculated
-
-Every award passes through five multipliers before it reaches the skill line:
-
-| Multiplier | What lowers it |
-|---|---|
-| Novelty | Repeating the same work in the same place |
-| Region policy | A WorldGuard region with `adapt-xp-multiplier`, or `adapt-xp deny` |
-| Monotony | Grinding one skill or one activity, from `[farmPrevention]` |
-| Line freshness and line boosts | Heavy recent use of that skill |
-| Player and global boosts, permission multipliers | Nothing — these only raise it |
-
-A region that denies XP zeroes the award immediately and nothing downstream runs.
-
-Boosts add together within a bracket and multiply across brackets. `/adapt boost` and
-`/adapt global-boost` land in the player bracket; API boosts land on the line. Both brackets are
-clamped to 0.01–1000, and both are snapshots refreshed about once a second, so a permission change
-or a fresh boost can lag by that much.
-
-Permission multipliers come from `[permissionXpMultipliers]`. With `stack = false` the single
-highest matched value wins; with `stack = true` every match multiplies together. Values below 1
-work as rank penalties.
-
-### Final multiplier
+## XP multiplier
 
 ```
 final = novelty
       * regionXpMultiplier
       * monotony
-      * clamp(rfreshness + lineBoosts, 0.01, 1000)
+      * clamp(freshness + lineBoosts, 0.01, 1000)
       * clamp((1 + playerBoosts + globalBoosts) * permissionMultiplier, 0.01, 1000)
 ```
 
-with `final = 0` if the region denies XP.
+`final` is 0 when the region denies XP. `/adapt boost` and `/adapt global-boost` are player boosts. API boosts are line boosts. Both brackets clamp to 0.01 through 1000 and refresh about once a second.
 
-### Payout pooling
+`[permissionXpMultipliers]`: `stack = false` uses the highest match. `stack = true` multiplies every match. Values below 1 reduce XP.
 
-With `xpIntegrity.pooledPayoutEnabled` on, awards collect in a pool and land together, which is why
-the action bar shows one figure instead of a stream of small ones. The pool flushes when it is older
-than `pooledWindowMillis` or idle longer than `pooledIdleFlushMillis`.
+`xpIntegrity.pooledPayoutEnabled` holds awards until the pool is older than `pooledWindowMillis` or idle longer than `pooledIdleFlushMillis`.
 
-## Freshness
+Line freshness falls while that skill is used and recovers while it is idle.
 
-Each skill line has a freshness term that falls as you use it and recovers when you stop. Recovery
-is fast and decay is slow, so a short break restores most of it. Level raises the ceiling slightly.
+`[farmPrevention]` tracks skill pressure and, when `perActivityTracking` is true, activity pressure. The two multiply. A `decayCurve` at or below 0 disables that tracker. The default floors are `0.08` and `0.12`.
 
-## Farm prevention
+## Provenance and novelty
 
-`[farmPrevention]` tracks *pressure*: it rises with each award and decays over time. Two trackers
-run, one per skill and one per activity, and they multiply together.
+Placed blocks are stamped for `placedBlockTtlMillis` and pay no harvest XP while the stamp lasts. A break stamps the position for `replaceDenyTtlMillis`. Re-placing there inside that window pays nothing. Bonemealed growth uses `bonemealTtlMillis` and pays `bonemealHarvestMultiplier`.
 
-With the defaults the combined floor is about 0.01, so a fully saturated farm still pays about one
-percent. Setting a tracker's `decayCurve` to zero or below disables it.
+Novelty is three multipliers. Spatial repeats reset after `spatialCellTtlMillis` idle. Entropy clears once the recent history holds three distinct activities. Stillness caps the combined multiplier at `stillnessFloorMultiplier` after `stillnessWindowMillis` spanning at least `stillnessMinEvents` awards. Yaw tolerance is a fixed 10 degrees. Movement restarts the still run.
 
-## XP integrity
+Placing against your own block adds `min(adjacencyBonusMax, streak * adjacencyBonusPerStreak)`. A non-adjacent place halves the streak. The streak grows only while that cell is under the spatial cap and the bonus is under `adjacencyBonusMax`.
 
-`[xpIntegrity]` is the anti-automation layer. Provenance answers "did this player create this block". Novelty answers "is this award actually new work".
+A crop cell harvested again before `fieldCycleMillis` pays from `fieldCycleFloorMultiplier` back to 1. The first harvest of a cell pays full.
 
-### Provenance
+## Adaptation use XP
 
-Blocks a player places are stamped so they cannot be re-harvested for XP. `placedBlockTtlMillis` is how long that stamp lives. Breaking a block also stamps the spot. Re-placing there within `replaceDenyTtlMillis` earns nothing, which closes the break-and-replace loop. Bonemealed growth gets its own stamp with its own TTL. Harvest of it pays `bonemealHarvestMultiplier`.
+`[adaptationXp]` pays `usageBaselineXp + (level - 1) * usageBaselineXpPerLevel` through `xpSilent`, reward key `adaptation:<id>:baseline-use`, after `usageBaselineCooldownMillis` (minimum 250 ms). That path skips novelty and the region multiplier. It still passes monotony, the boost snapshots, and the activity tracker.
 
-### Novelty
+## Level curve
 
-Three things reduce a reward, multiplied together:
-
-- **Spatial** — repeating in the same small area. Resets after `spatialCellTtlMillis` idle.
-- **Entropy** — repeating one kind of action. Saturates once you have three distinct activities in
-  your recent history.
-- **Stillness** — not moving at all. Caps the combined multiplier at `stillnessFloorMultiplier`.
-  Any real movement restarts the run.
-
-### Adjacency bonus
-
-Placing a block against one you already placed builds a streak worth `min(adjacencyBonusMax, streak * adjacencyBonusPerStreak)` on top of `1.0`. Placing somewhere not adjacent halves the streak. The streak only grows while the target cell is not already heavily repeated and the bonus has not hit its cap.
-
-### Field cycle
-
-Re-harvesting the same crop cell too soon pays `fieldCycleFloorMultiplier` and ramps linearly back to `1.0` over `fieldCycleMillis` since that cell was last harvested. The first harvest of a cell always pays full.
-
-### Adaptation usage baseline
-
-`[adaptationXp]` pays a small trickle for actually using an adaptation, so active abilities are not dead weight for progression. The reward is `usageBaselineXp + (level - 1) * usageBaselineXpPerLevel`, on a per-player, per-adaptation cooldown of `usageBaselineCooldownMillis` with a hard floor of 250 ms.
-
-It is paid through `xpSilent` under the reward key `adaptation:<adaptation-name>:baseline-use`. That path skips stage 1 entirely: no novelty term, no region multiplier. It still passes through monotony and the multiplier snapshots. The reward key still feeds the per-activity tracker.
-
-## Level curves
-
-A curve is a `NewtonCurve`: one function `getXPForLevel(level)` and one inverse `computeLevelForXP(xp, maxError)`. `xpCurve` picks the family.
-
-The default is `ADAPT_BALANCED`:
+Default `xpCurve` is `ADAPT_BALANCED`:
 
 ```
 xp(L) = 100 * L^2 + 1200 * L
 L(xp) = (sqrt(1440000 + 400 * xp) - 1200) / 200
 ```
 
-Both directions are closed form. Level 1 costs 1,300 XP, level 10 costs 22,000, level 100 costs 1,120,000.
+Level 1 is 1,300 XP. Level 10 is 22,000. Level 100 is 1,120,000. Other names are listed under Reference.
 
-### The level cap
+`experienceMaxLevel` defaults to 1000. On the one-second tick, XP past the cap grants 1 wisdom and sets that line to the XP for one level under the cap. Level lookups clamp to the cap.
 
-`experienceMaxLevel` defaults to 1000 and is checked once per second per skill line. If the line's XP exceeds `getXPForLevel(experienceMaxLevel)` and the player is not busy, the player gains 1 wisdom. The line's XP is set back to `getXPForLevel(experienceMaxLevel - 1)`.
+## Master XP and power
 
-Every runtime XP-to-level conversion clamps its result to this value, including the closed-form curve families. Level-to-XP conversion also clamps its input, so callers cannot request a threshold above the configured cap. Overflow still grants wisdom and resets the skill line on its one-second progression tick, but no public level lookup can report a value above the cap while that reset is pending.
-
-## Master XP, master level and power
-
-Master XP comes only from skill level-ups. On the one-second tick, for every level `i` the line just crossed (`lastLevel <= i < level`):
+On that tick, for each level `i` just left (`lastLevel <= i < level`):
 
 ```
-knowledge += (i / 13) + 1                                     // integer division
+knowledge += (i / 13) + 1
 masterXp  += playerXpPerSkillLevelUpBase + (i * playerXpPerSkillLevelUpLevelMultiplier)
 ```
 
-`i` is the level being left, not the level reached. The step from 9 to 10 uses `i = 9`. It grants `489 + 9*44 = 885` master XP. It also grants `(9 / 13) + 1 = 1` knowledge. The step from 49 to 50 grants `2645` master XP and `4` knowledge. A line that gains several levels in one tick runs the loop once per level.
-
-Master level uses the same `xpCurve`:
+The step from 9 to 10 uses `i = 9`: 885 master XP and 1 knowledge. The step from 49 to 50 grants 2,645 master XP and 4 knowledge. Several levels in one tick each run once.
 
 ```
-masterLevel = xpCurve.computeLevelForXP(masterXp)
+maxPower  = max(0, floor(masterLevel * powerPerLevel) + regionPowerBonus)
+usedPower = sum of learned adaptation levels that are not region-granted
 ```
 
-Power follows from it:
+`regionPowerBonus` is the current WorldGuard `adapt-power-bonus`. It is not saved. See [Protection and region policy](/adapt/08-protection-region-policy).
 
-```
-maxPower  = max(0, (int)(masterLevel * powerPerLevel) + regionPowerBonus)
-usedPower = sum of the level of every learned adaptation that is NOT region granted
-available = maxPower - usedPower
-```
-
-The `(int)` truncates. The default `powerPerLevel = 0.65` yields one power point roughly every other master level at low levels. `regionPowerBonus` is the transient WorldGuard `adapt-power-bonus` contribution. It is refreshed on the same tick and never persisted. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
-
-When your power budget drops below what you hold — usually after leaving a region that granted a
-bonus — Adapt demotes your lowest-level adaptations one level at a time until it fits. Nothing is
-refunded. Region-granted adaptations cost no power and are never pruned.
-
-Debug mode (`/adapt debug mode`) short-circuits `hasPowerAvailable`, `spendKnowledge`, and the pruner entirely.
+If max power falls below used power, the lowest learned adaptation levels are removed until it fits. Nothing is refunded. Region grants cost no power and are not removed. `/adapt debug mode` skips the power check, knowledge spend, and that removal.
 
 ## Reference
 
@@ -157,16 +84,14 @@ Debug mode (`/adapt debug mode`) short-circuits `hasPowerAvailable`, `spendKnowl
 | Key | Default | What it does |
 |---|---:|---|
 | `xpCurve` | `ADAPT_BALANCED` | Curve family used by every skill line and by master level |
-| `experienceMaxLevel` | `1000` | Skill level cap, and the ceiling the bisection cursor clamps to |
-| `playerXpPerSkillLevelUpBase` | `489` | Finite non-negative flat master XP per skill level crossed |
-| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Finite non-negative extra master XP per level already reached |
-| `powerPerLevel` | `0.65` | Finite non-negative power per master level, truncated to a whole number |
+| `experienceMaxLevel` | `1000` | Skill level cap. Lookups clamp to this value |
+| `playerXpPerSkillLevelUpBase` | `489` | Flat master XP per skill level crossed |
+| `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Extra master XP per level already reached |
+| `powerPerLevel` | `0.65` | Power per master level, truncated to a whole number |
 
 ### Curve families
 
-Accepted values for `xpCurve`. `ADAPT_BALANCED` is the default and the shipped balance point; the
-rest are alternatives, from near-linear (`L1K`, `L4K`, `L8K`, `L16K`) through polynomial (`X1D2`,
-`X1D5`, `X2` through `X7`) to preset curves borrowed from other games (`SKYRIM`, `WOW`).
+Accepted values for `xpCurve`. `ADAPT_BALANCED` is the default.
 
 ```
 ADAPT_BALANCED  LINEAR_EXPONENTIAL_1  LINEAR_EXPONENTIAL_2  LINEAR_EXPONENTIAL_3
@@ -176,8 +101,6 @@ L1K  L4K  L8K  L16K
 XL05L7  XL1L7  XL15L7  XL2L7  XL3L7  XL4L7  XL5L7  XL6L7  XL7L7  XL8L7  XL9L7
 XL20L7  XL40L7  XL80L7  XL100L7  XL160L7
 ```
-
-The default reaches level 1 at 1,300 XP, level 10 at 22,000, and level 100 at 1,120,000.
 
 ### `[farmPrevention]`
 
@@ -270,9 +193,3 @@ stack = false
 "adapt.xpmultiplier.vip" = 1.5
 "adapt.xpmultiplier.mvp" = 2.0
 ```
-
-## See also
-
-- [01 - Installation & Configuration](/adapt/01-installation-configuration)
-- [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
-- [00 - Overview](/adapt/00-overview)

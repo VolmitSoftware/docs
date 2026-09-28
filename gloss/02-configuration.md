@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-20T02:20:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -10,25 +10,7 @@ dateCreated: 2026-08-18T00:00:00.000Z
 
 Feature switches and general settings live in `plugins/Gloss/gloss.toml`. JSON documents hold content such as tablist text, MOTD lines, bubble styles, damage indicators, and real drops. See [Data Files & Hot Reload](/gloss/03-data-files).
 
-## The file model
-
-`gloss.toml` documents each setting above its value:
-
-```toml
-# Configuration - gloss
-# This file is canonicalized on load; comments and new keys may update automatically.
-#
-# Gloss runtime configuration. Every knob is emitted with a comment, values outside their documented range are clamped back on load, and edits hot-reload while the server runs.
-
-# Server-wide locale used for in-game text. Blank values fall back to en_US; edit messages in languages/<locale>.toml.
-language = "en_US"
-# Sends anonymous bStats usage metrics.
-metrics = true
-# Prints the Gloss splash screen during startup.
-splashScreen = true
-```
-
-Each key has a comment. Changes reload automatically, and invalid changes leave the current settings active. Settings marked restart-only still require a restart.
+A valid save reloads. Invalid TOML keeps the current settings. A startup load rewrites the file and drops custom comments. Values outside their range are clamped. Settings marked restart-only still need a restart.
 
 ## Root keys
 
@@ -36,10 +18,7 @@ Each key has a comment. Changes reload automatically, and invalid changes leave 
 |---|---|---|
 | `language` | `"en_US"` | Server default for players without a personal override. Official translations download when selected; custom IDs use their local file with English fallback. Blank values become `en_US`. Select defaults or player overrides with `/gloss language` |
 | `metrics` | `true` | Send anonymous bStats usage metrics |
-| `splashScreen` | `true` | Print the console splash banner during startup. `false` suppresses it for clean startups. A failed enable always prints it |
-
-> Set `metrics = false` to disable anonymous bStats reporting.
-{.is-info}
+| `splashScreen` | `true` | Console banner. A failed enable still prints it |
 
 ## `[features]`
 
@@ -349,22 +328,7 @@ Online profiles update immediately. Offline lookups time out after 15 seconds.
 
 The integration bridge only samples metric keys used by loaded content. Changes apply on the next config reload. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for its tokens and variables.
 
-## What is no longer in configuration
-
-Gloss no longer reads `config.yml` or HoloUi `settings.json` as live configuration. Use
-`/gloss import legacy` to copy supported settings, bubble content, and MOTD content into current files.
-
-Three groups of settings moved out of configuration. They are now content documents:
-
-| Was a config key | Now lives in | Documented on |
-|---|---|---|
-| `tablist.header`, `tablist.footer`, `tablist.use-header-footers`, `tablist.group-list-names` | `tablist.json` | [Tablist](/gloss/06-tablist) |
-| `motd.texts` | `motd.json` | [Tablist](/gloss/06-tablist) |
-| `chat-bubbles.message.*`, `word-wrap-break-chars`, `max-time-alive`, `follow-players`, `hide-own-messages` | `bubbles/<id>.json` | [Chat Bubbles](/gloss/08-chat-bubbles) |
-
-The `groups/` YAML directory is retired as well. Group membership is resolved live through Vault. Board schema 2 and tablist schema 2 express group-dependent behavior as ordinary conditions; `/gloss import legacy` does not convert old boards, groups or tablist formats.
-
-A bubble document renders one wrapped message as one multiline entity; translation, scale, rotation and opacity use its motion expressions. Supported prefix, offset, wrap, lifetime, follow and hide values can be imported into the current default document.
+Tablist text is `tablist.json`. MOTD lines are `motd.json`. Bubble layout is `bubbles/<id>.json`. Group conditions use Vault and the document `select` rules. `/gloss import legacy` copies supported older settings, bubble content, and MOTD content into the current files.
 
 ## Glyph pack format
 

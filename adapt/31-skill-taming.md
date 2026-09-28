@@ -2,14 +2,14 @@
 title: "Skill - Taming"
 description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Taming gains XP from taming, breeding, pet damage, and pet kills.
 
-Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, damage sharing, item retrieval, projectile protection, mounted combat, taming, and lethal-hit survival. Beast Recall uses a lead, Alpha's Command uses a bone, and Wild Empathy uses the animal's taming food.
+Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, damage sharing, item retrieval, projectile protection, mounted combat, taming, and lethal-hit survival; Beast Recall uses a lead, Alpha's Command uses a bone, and Wild Empathy uses the animal's taming food.
 
 ## How you earn Taming XP
 
@@ -18,21 +18,15 @@ Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, 
 - A tamed pet damaging something pays damage times `tameDamageXPMultiplier` and adds the raw damage to `taming.pet.damage`.
 - A mob killed by your pet pays `petKillXP` and counts toward `taming.pet.kills`. The credit only fires when no player is the mob's killer, and TragOul skeletal servants and Excavation grave mobs are excluded.
 
-Breeding XP and pet damage XP share one cooldown of `cooldownDelay`
-milliseconds. A long fight or a breeding spree pays on a steady drip rather than
-per event. Tame and pet-kill XP have no such cooldown.
+Breeding XP and pet damage XP share one `cooldownDelay` millisecond cooldown. Tame and pet-kill XP have no cooldown.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher from the Adapt menu (`/adapt`), the skill and the adaptation enabled in config, the `adapt.use` permission, and protection and region policy that allow the action.
 
 ### Tame Health (`tame-health`)
 
 5 levels · 3 knowledge, then 6 per level
 
-Every animal you own gets a large percentage boost to its maximum health, for as long as you are online and own it. Good first pick, because a dead wolf does no damage.
-
-Menu lore: "Increased Health".
+While you are online, every animal you own gets the max-health scalar.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -44,9 +38,7 @@ Menu lore: "Increased Health".
 
 5 levels · 5 knowledge, then 6 per level
 
-Your pets hit harder. Same idea as Tame Health, but on attack damage, and it pairs with anything that sends pets into a fight.
-
-Menu lore: "Increased Damage".
+While you are online, every animal you own gets the attack-damage scalar.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -58,11 +50,7 @@ Menu lore: "Increased Damage".
 
 3 levels · 8 knowledge, then 7 per level
 
-When one of your pets takes damage, it heals a chunk back a moment later. Each pet has its own 8 second window between heals, so it takes the edge off sustained fights instead of making pets unkillable. Caps at level 3.
-
-Menu lore: "HP/s".
-
-Per-pet heal cooldown is fixed at 8000 ms in code. Heal amount is `regenBase` plus level percent squared times `regenFactor`, capped by missing health.
+When one of your pets takes damage, it heals `regenBase` plus level percent squared times `regenFactor`, capped by missing health. Each pet has a fixed 8000 ms cooldown between heals.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -73,9 +61,7 @@ Per-pet heal cooldown is fixed at 8000 ms in code. Heal amount is `regenBase` pl
 
 5 levels · 3 knowledge
 
-Pets near you get speed and regeneration for as long as they stay in range. The radius and the effect strength both grow with level. Purely passive: stay near the pack and it applies itself.
-
-Menu lore: "Aura Radius", "Aura Strength".
+Pets inside the radius gain Speed and Regeneration for as long as they stay there.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -90,17 +76,7 @@ Menu lore: "Aura Radius", "Aura Strength".
 
 5 levels · 4 knowledge
 
-Pulls your nearest owned pet to a safe spot beside you. Handy when a wolf gets stuck on terrain or a horse wanders off during a fight.
-
-How to use it:
-
-1. Hold a lead in your main hand.
-2. Sneak and right-click.
-3. The nearest owned pet inside the recall radius teleports next to you. One pet per use.
-
-The recall needs a safe landing spot near you (open feet and head space over solid ground) and costs `hungerCost` food points. It puts a visible item cooldown on leads, which is what stops you from spamming it. Pets already closer than the minimum distance are ignored.
-
-Menu lore: "Recall Radius", "Recall Cooldown", and "Hunger cost per recall" when `hungerCost` is above 0.
+Sneak-right-click with a lead in the main hand to teleport the nearest owned pet to a safe spot beside you. The landing needs open feet and head space over solid ground, leads show an item cooldown, and pets inside the minimum distance are ignored.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -118,9 +94,7 @@ Menu lore: "Recall Radius", "Recall Cooldown", and "Hunger cost per recall" when
 
 5 levels · 4 knowledge
 
-Some of the damage aimed at you is split across nearby pets instead. The split never takes a pet below its health floor, and whatever the pack absorbs is subtracted from your own hit. You get Taming XP for the damage they eat for you.
-
-Menu lore: "Shared Damage", "Companion Health Floor".
+A share of damage aimed at you is split across nearby pets and removed from your hit, and no pet is taken below its health floor.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -138,16 +112,7 @@ Menu lore: "Shared Damage", "Companion Health Floor".
 
 5 levels · 4 knowledge
 
-Riding gets better in several ways at once. You deal more damage and take less while mounted on a horse, strider, or pig. Horses gain speed and jump strength. Striders gain speed and stop shivering over
-lava. You get fire resistance while riding a strider. Pigs give you resistance. Sprinting on a horse or a pig also adds a forward shove, so the mount actually feels like it is charging.
-
-How to use it:
-
-1. Ride a horse-type mount (donkeys, mules, and llamas count), a strider, or a pig.
-2. Fight from the saddle for the damage bonus and reduction.
-3. Sprint while mounted on a horse or pig for the extra push.
-
-Menu lore: "Mounted Damage Bonus", "Mounted Damage Reduction".
+While you ride a horse-type mount (horses, donkeys, mules, and llamas), a strider, or a pig, you deal more melee damage and take less; horses gain speed and jump, striders gain speed, stop shivering over lava, and grant you Fire Resistance, and pigs grant you Resistance. Bonuses apply when you mount and clear when you dismount, and sprinting on a horse or pig adds a forward shove.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -178,19 +143,7 @@ Menu lore: "Mounted Damage Bonus", "Mounted Damage Reduction".
 
 5 levels · 3 knowledge
 
-Your idle tamed wolves physically collect dropped items around you. A wolf must path to the drop, get within 1.5 blocks, and pick it up. Then it paths back within 2 blocks of you and drops the carried stack at its own position. Fetch never teleports an item to you. If no eligible wolf can reach it, the item stays where it is.
-
-How to use it:
-
-1. Keep tamed wolves near you. Sitting, leashed, and riding wolves are skipped.
-2. Drop items or walk near loose drops.
-3. Wolves work automatically on their own pass, subject to the carry chance roll.
-
-Anything a protection plugin would stop you picking up is not fetched either. Where the drop came from does not matter, but a wolf still has to make the trip. On a server with no pathfinder API, Fetch leaves drops alone rather than teleporting them.
-
-Menu lore: "Fetch Range", "Carry Chance".
-
-A fetch is abandoned if the wolf ends up more than 11 blocks from you, which is where vanilla yanks pets back, and anything it was carrying is dropped safely.
+Idle tamed wolves path to a drop, pick it up within 1.5 blocks, return to within 2 blocks of you, and drop the stack at the wolf; items are never teleported. Sitting, leashed, and riding wolves are skipped, anything a protection plugin would stop you picking up stays where it is, a server with no pathfinder API leaves drops in place, and a wolf more than 11 blocks from you abandons the fetch and drops what it carried.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -212,19 +165,7 @@ A fetch is abandoned if the wolf ends up more than 11 blocks from you, which is 
 
 5 levels · 4 knowledge
 
-Marks a target and sends every nearby combat pet at it. Only wolves, cats, and llamas answer the call. Commanded pets are stood up if they were sitting. They get a short attack damage and movement speed buff. They stay on the target until the focus runs out, the target dies, or the target stops being a legal thing for you to hit.
-
-How to use it:
-
-1. Hold a bone in your main hand.
-2. Sneak and left-click at what you want dead. You can also sneak and melee the target directly.
-3. The target glows red for you alone while your pack focuses it.
-
-Each successful command eats one bone (not in creative) and has its own cooldown. Your own pets, NPCs, invulnerable entities, and TragOul servants are never valid targets.
-
-Menu lore: "Command Range", "Focus Duration".
-
-Focus buffs are attack damage of 3.0 x (amplifier + 1) and a movement speed scalar of 0.2 x (amplifier + 1), re-checked against PvP and PvE policy for as long as the focus holds.
+With a bone in the main hand, sneak-left-click or sneak-melee to mark a target; nearby wolves, cats, and llamas stand up and chase it until focus ends, the target dies, or the hit is no longer legal. One bone is consumed outside creative mode; pets gain attack damage `3.0 * (amplifier + 1)` and movement speed `0.2 * (amplifier + 1)`, rechecked against PvP and PvE, and your pets, NPCs, invulnerable entities, and TragOul servants are never valid targets.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -241,10 +182,7 @@ Focus buffs are attack damage of 3.0 x (amplifier + 1) and a movement speed scal
 
 5 levels · 4 knowledge
 
-An arrow headed for you can be intercepted by a nearby pet. The pet leaps at you
-and eats the shot at reduced damage. Your hit is cancelled outright. It rolls per projectile, and a short cooldown stops one pet from soaking an entire barrage.
-
-Menu lore: "Intercept Chance", "Pet Damage Reduction".
+A nearby pet can intercept an incoming projectile, lunge toward you, take the shot at reduced damage, and cancel your hit.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -264,12 +202,7 @@ Menu lore: "Intercept Chance", "Pet Damage Reduction".
 
 5 levels · 3 knowledge, then 5 per level
 
-Animals you tame or breed keep a permanent bias toward better movement speed, jump strength, max health, and safe fall distance. The modifiers stay on the animal, so breeding programs compound over time. Tame or breed as usual and the bias applies itself, with a short chime to confirm.
-
-Menu lore: "Attribute Bias", "Safe Fall Blocks".
-
-The bias is applied as a scalar to movement speed, jump strength, and max
-health. It is also a flat block bonus to safe fall distance equal to bias x 10.
+Taming or breeding an animal permanently applies the bias as a scalar on movement speed, jump strength, and max health, plus `bias * 10` blocks of safe fall distance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -282,19 +215,7 @@ health. It is also a flat block bonus to safe fall distance equal to bias x 10.
 
 5 levels · 3 knowledge, then 4 per level
 
-Two effects. Taming can succeed instantly on a roll instead of grinding through vanilla's odds, and neutral mobs frequently give up on being angry at you.
-
-How to use it:
-
-1. Hold the animal's normal taming food: bone for wolves, cod or salmon for cats and ocelots, any of the seeds for parrots.
-2. Right-click the untamed animal.
-3. On a successful roll the animal is tamed immediately and one food item is consumed.
-
-The anger half applies to wolves, bees, polar bears, llamas, pandas, and goats and works on its own with no gesture.
-
-Menu lore: "Extra Taming Odds", "Anger Resistance".
-
-Taming foods in code: `BONE` for wolves. `COD` and `SALMON` for cats and ocelots. `WHEAT_SEEDS`, `MELON_SEEDS`, `PUMPKIN_SEEDS`, `BEETROOT_SEEDS`, `TORCHFLOWER_SEEDS`, and `PITCHER_POD` for parrots. Pacifiable neutrals: wolves, bees, polar bears, llamas, pandas, goats, and only while untamed.
+Right-click an untamed animal with its taming food to roll an instant tame that consumes one item: `BONE` for wolves, `COD` or `SALMON` for cats and ocelots, and `WHEAT_SEEDS`, `MELON_SEEDS`, `PUMPKIN_SEEDS`, `BEETROOT_SEEDS`, `TORCHFLOWER_SEEDS`, or `PITCHER_POD` for parrots. Untamed wolves, bees, polar bears, llamas, pandas, and goats can also be calmed with no gesture.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -310,12 +231,7 @@ Taming foods in code: `BONE` for wolves. `COD` and `SALMON` for cats and ocelots
 
 5 levels · 3 knowledge
 
-When one of your pets lands a kill, you and every owned pet nearby get speed,
-regeneration, and strength for a few seconds. The bonded pets briefly glow. It turns a pack fight into a snowball as long as kills keep coming.
-
-Menu lore: "Buff Tier", "Buff Duration".
-
-Buffs are Speed, Regeneration, and Strength where the server exposes it. The lore line shows tier as amplifier + 1, so the displayed tier 1 is potion amplifier 0.
+When one of your pets lands a kill, you and nearby owned pets gain Speed, Regeneration, and Strength where the server exposes Strength. The menu tier is the amplifier plus 1, so displayed tier 1 is amplifier 0.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -331,9 +247,7 @@ Buffs are Speed, Regeneration, and Strength where the server exposes it. The lor
 
 5 levels · 4 knowledge
 
-A killing blow on a pet is refused. The pet is set to 1 HP, made immune for a short window, and teleported to a safe spot next to you. Each pet has its own long cooldown, so it is a rescue, not a health bar.
-
-Menu lore: "Per-Pet Cooldown", "Invulnerability".
+A killing blow on a pet is refused: the pet is set to 1 HP, made immune for the invulnerability window, and teleported to a safe spot beside you.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -377,11 +291,6 @@ Written to `plugins/Adapt/skills/taming.toml` on first load.
 | `challenge_pet_kills_25` | 25 | `challengePetKillsReward` |
 | `challenge_pet_kills_250` | 250 | `challengePetKillsReward` x 5 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts) for levels, knowledge, and how adaptations are learned.
-- [03 - Player Usage](/adapt/03-player-usage) for the Adapt menu and general play.
-- [10 - Skills Catalog](/adapt/10-skills-catalog) for the full skill list.
-- [04 - Commands & Permissions](/adapt/04-commands-permissions) for the `adapt.use` nodes.
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

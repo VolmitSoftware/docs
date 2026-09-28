@@ -2,48 +2,32 @@
 title: "Skill - Architect"
 description: "Architect XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Architect gains XP from placing blocks, scaled by material value. Breaking blocks advances demolition challenges but does not award Architect XP.
+Architect gains XP from placing blocks, scaled by material value; breaks advance demolition challenges and pay no Architect XP. Adaptations cover glass drops, temporary floors, face fills, wireless redstone, elevators, rotation, scaffolds, hand refills, bridge protection, build guides, placement undo, and a portable stonecutter.
 
 ## How you earn Architect XP
 
-Placing a block does three things at once:
-
-1. It credits `blocks.placed` by one and `blocks.placed.value` by the block's value multiplied by `xpValueMultiplier`. Storage blocks are skipped entirely and pay nothing.
-2. If the block is above Y 128, it also credits `architect.builds.high`.
-3. It pays skill XP, but only once per `cooldownDelay`. The payout starts from `xpBase` plus the block's scaled value. Then it is multiplied by the block's placement integrity and by an adjacency bonus. Hollow spam-towers and re-placing the same block over and over are worth less than real building.
-
-Breaking a block credits `blocks.broken` and `architect.demolish.value` and nothing else.
+Placing a block credits `blocks.placed` by one and `blocks.placed.value` by the block's value times `xpValueMultiplier`. Storage blocks are skipped and pay nothing. A placement above Y 128 also credits `architect.builds.high`. Skill XP pays once per `cooldownDelay`, from `xpBase` plus the scaled block value, then multiplied by placement integrity and an adjacency bonus. A break credits `blocks.broken` and `architect.demolish.value` only.
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the matching `adapt.use` permission, and protection and region policy that allow the build. Adaptations that place or break world blocks re-check that permission for every block they touch.
+Placements and breaks re-check `adapt.use` on every block.
 
 ### Silk-Touch Glass (`architect-glass`)
 
 1 level · 0 knowledge
 
-Break glass with an empty hand, or with anything that is not a tool, and it drops itself instead of shattering. Tinted glass is excluded. It costs nothing to learn.
-
-Fires only when the main hand is empty or holding a non-tool. Matches any material whose name contains `GLASS` except `TINTED_GLASS`. No adaptation-specific config knobs.
+Breaking a block whose material name contains `GLASS`, except `TINTED_GLASS`, with an empty main hand or a non-tool drops the block. No adaptation-specific config keys.
 
 ### Magic Foundation (`architect-foundation`)
 
 5 levels · 1 knowledge, then 5 per level
 
-Runs a temporary floor out under your feet so you can cross a gap without carrying blocks.
-
-1. Hold shift. A charge ring plays and a block appears beneath you.
-2. Keep sneaking and walk. Each new block position you enter spends part of your block budget on more tinted glass under your feet.
-3. Release shift to stop. That starts a cooldown before you can charge again.
-
-Each block dissolves on its own timer. The budget scales from 9 blocks up to 35 across the level range. Pistons, explosions, and manual breaks all leave the temporary blocks alone.
-
-Placed blocks are `TINTED_GLASS`. Creative and Spectator cannot activate it. Every block passes a normal place check, and a denial leaves your block budget untouched.
+Sneak places `TINTED_GLASS` underfoot and keeps spending the block budget on new positions while sneak is held. Release starts the cooldown. Creative and Spectator cannot activate it. Pistons, explosions, and manual breaks do not remove the blocks. A denied place check spends no budget.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -56,13 +40,7 @@ Placed blocks are `TINTED_GLASS`. Creative and Spectator cannot activate it. Eve
 
 1 level · 4 knowledge
 
-Fills a whole flat face in one placement instead of one block at a time.
-
-1. Hold a stack of the block you want to extend.
-2. Sneak and look at a surface made of that same block, within 5 blocks. A preview of the fill appears.
-3. Place. Every previewed position is filled, consuming one matching item each.
-
-Containers are never targeted. If the preview does not appear, move slightly: it only recomputes when you move. Blocked or denied positions are skipped and the item is not consumed.
+Sneak while aiming at the same block within 5 blocks, with a matching stack held, previews a flat-face fill. The preview updates as aim or position changes. Placing consumes one matching item per filled position, including the block that starts the fill. Containers are never targeted. Denied positions are skipped and consume nothing.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -74,15 +52,7 @@ Containers are never targeted. If the preview does not appear, move slightly: it
 
 1 level · 0 knowledge
 
-A bound redstone torch that toggles a circuit from anywhere.
-
-1. Craft the remote: Redstone Torch plus Target plus Ender Pearl, shapeless.
-2. Sneak and left-click the block you want to toggle. The remote binds to it.
-3. Right-click anywhere to pulse the bound block.
-
-The pulse restores the block's previous state when it finishes or is cancelled. If the bound chunk cannot load, the target check fails, or the pulse cannot be scheduled, nothing fires. The remote's cooldown does not start. Free to learn and marked permanent, so it cannot be unlearned.
-
-Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a `BoundRedstoneTorch`. Every powered block, neighbouring component, and door half passes an interaction check before the pulse begins.
+Shapeless `REDSTONE_TORCH`, `TARGET`, and `ENDER_PEARL` craft a `BoundRedstoneTorch`. The adaptation is permanent and cannot be unlearned. Sneak-left-click binds a block. Right-click pulses it, then restores the previous state. A failed chunk load, target check, or schedule does not pulse and does not start cooldown. Every powered block, neighbour, and door half must pass an interaction check before the pulse.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -92,17 +62,7 @@ Recipe: shapeless `REDSTONE_TORCH` plus `TARGET` plus `ENDER_PEARL`, producing a
 
 1 level · 1 knowledge
 
-Vertical fast travel built from a crafted block.
-
-1. Craft Elevator Blocks: an Ender Pearl surrounded by 8 Wool.
-2. Place one at the bottom and one directly above it, within range. They link automatically.
-3. Stand on the lower one and jump to go up, or sneak on the upper one to go down.
-
-Range is `baseDistance` multiplied by your level and `multiplier`, which is 32 blocks at defaults. The teleport is refused if there is not enough headroom at the far end. It is also refused if the target is outside build height.
-
-Recipe: shaped 3x3, `XXX` / `XYX` / `XXX`, where X is any block in the vanilla `WOOL` tag and Y is `ENDER_PEARL`. An elevator block is found up to 2 blocks below your feet.
-
-A `challenge_architect_elevator_penthouse` advancement is registered and granted on a single trip of 50 blocks or more. With the defaults the maximum trip is 32 blocks, so it cannot be earned unless an operator raises `baseDistance` or `multiplier`.
+Shaped recipe `XXX` / `XYX` / `XXX`, where X is any block in the vanilla `WOOL` tag and Y is `ENDER_PEARL`. A pair stacked in range links on its own. Jump on the lower block goes up. Sneak on the upper block goes down. The elevator block is found up to 2 blocks below the feet. The trip is refused without enough headroom or when the target is outside build height. Advancement `challenge_architect_elevator_penthouse` is granted on a single trip of 50 blocks or more. With the defaults the maximum trip is 32 blocks, so it cannot be earned unless `baseDistance` or `multiplier` is raised.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -113,14 +73,7 @@ A `challenge_architect_elevator_penthouse` advancement is registered and granted
 
 1 level · 3 knowledge
 
-Fix a stair or log you placed facing the wrong way without breaking and replacing it.
-
-1. Empty your main hand.
-2. Sneak and left-click the block.
-
-Each click steps the block's facing or axis to its next orientation. XP scales with how many orientations the block actually has. Rotating a 16-way sign pays more than flipping a log axis.
-
-Rotation walks a fixed 16-step compass order for directional blocks and an X, Y, Z order for axis blocks.
+With an empty main hand, sneak-left-click steps facing or axis to the next orientation. Directional blocks walk a fixed 16-step compass order. Axis blocks walk X, then Y, then Z.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -131,14 +84,7 @@ Rotation walks a fixed 16-step compass order for directional blocks and an X, Y,
 
 5 levels · 2 knowledge, then 4 per level
 
-Temporary building blocks that clean themselves up.
-
-1. Sneak.
-2. Place blocks normally.
-
-Each sneak-placed block is marked as a scaffold. It ticks away. It coughs a warning puff shortly before it goes. Then it vanishes and returns the item to you. Breaking a scaffold yourself just un-marks it. Levels extend the lifetime from 5 seconds up to 30. Operators can whitelist or blacklist which materials qualify. Operators can charge exhaustion per scaffold.
-
-A scaffold whose material changed before expiry is left in place.
+Sneak-placed blocks become scaffolds, expire, and return the item. Breaking one clears the mark instead. A scaffold whose material changed before expiry is left in place.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -153,9 +99,7 @@ A scaffold whose material changed before expiry is left in place.
 
 5 levels · 2 knowledge, then 5 per level
 
-When the stack in your hand runs out mid-build, Adapt refills it from your own storage instead of making you stop. It looks for loose stacks first, then bundles, then Adapt backpacks, then shulker boxes. There is a refills-per-minute budget that grows with level. When you exceed it you hear a dispenser-fail click instead.
-
-The refill only triggers when the placed stack was down to its last item, and it works for both the main hand and the offhand.
+When the placed stack was on its last item, the main hand or offhand refills from loose stacks, then bundles, then Adapt backpacks, then shulker boxes. Over the per-minute budget, the refill is refused and a dispenser-fail sound plays.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -167,9 +111,7 @@ The refill only triggers when the placed stack was down to its last item, and it
 
 5 levels · 2 knowledge, then 4 per level
 
-Bridging insurance. Sneak-place a block with nothing under it. For a few seconds you get full knockback resistance, full explosion knockback resistance, extra safe fall distance, and a short mining-speed boost. Sneaking again while the grace is still running re-applies the knockback resistance. Letting go of sneak drops it. Build the way you already do.
-
-It only triggers on a sneak-placement whose block below is air.
+A sneak-placement with air below grants full knockback resistance, full explosion knockback resistance, extra safe fall distance, and a short mining-speed boost for the grace window. Sneaking again during that window reapplies the knockback resistance. Releasing sneak removes it.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -183,17 +125,7 @@ It only triggers on a sneak-placement whose block below is air.
 
 4 levels · 1 knowledge, then 3 per level
 
-Draws the shape in the air before you build it. Each level unlocks a new wand and immediately reveals its recipe in your vanilla recipe book. All four are one Stick plus one String, arranged differently in the grid.
-
-1. Craft the wand for the shape you want. Use Chalk Straightedge at level 1, Polyline Wand at level 2, Circle Compass at level 3, and Arc Bow at level 4.
-2. Hold it and left-click a block face to set the start point.
-3. Right-click to set the end point, add polyline vertices, or set the arc endpoint.
-4. The guide appears as private block markers only you can see, and only while that wand is held.
-5. Sneak-click the air to clear that wand's saved plan.
-
-Guides have no timer. Each wand keeps its own plan, so you can carry several.
-
-All four recipes are shaped, using `S` for `STRING` and `T` for `STICK`:
+Each level unlocks one shaped wand and reveals its recipe in the vanilla recipe book. `S` is `STRING` and `T` is `STICK`. Left-click a block face to set the start. Right-click sets the end, a polyline vertex, or the arc endpoint. Guides are private block markers with no timer, drawn only while that wand is held, and each wand keeps its own plan. Sneak-click air clears that wand's plan.
 
 | Wand | Required level | Shape |
 |------|----------------|-------|
@@ -216,9 +148,7 @@ All four recipes are shaped, using `S` for `STRING` and `T` for `STICK`:
 
 5 levels · 2 knowledge, then 4 per level
 
-Undo for building. Blocks you placed recently break near-instantly for you. They drop nothing on the ground. Instead they hand you back the exact item you placed plus whatever the block was holding. The window starts at 10 seconds and grows to 60 with level. Only your own most recent placements are tracked.
-
-Only you can insta-break your own marks. The break drops nothing on the ground and no XP, and overflow that does not fit in your inventory falls at your feet.
+The player's own recent placements break instantly for that player only, return the placed item plus the block's contents, and drop nothing and no XP. Overflow that does not fit falls at the player's feet.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -231,13 +161,7 @@ Only you can insta-break your own marks. The break drops nothing on the ground a
 
 1 level · 2 knowledge
 
-A stonecutter you never have to place.
-
-1. Carry a stonecutter item.
-2. Empty your main hand.
-3. Sneak and left-click.
-
-The stonecutter menu opens where you stand. Operators can require the stonecutter to sit in your offhand specifically.
+With an empty main hand, sneak-left-click air or a block to open a stonecutter at the player's position when interaction is permitted.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -275,11 +199,6 @@ Written to `plugins/Adapt/skills/architect.toml` on first load.
 | `challenge_high_build_100` | 100 | `challengePlace1kReward` |
 | `challenge_high_build_1k` | 1000 | `challengePlace1kReward` x 2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

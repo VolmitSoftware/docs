@@ -2,26 +2,22 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Hunter gains XP from killing mobs. Rewards scale with maximum health, with separate adjustments for creepers and spawner mobs.
-
-Its 14 adaptations add hunger-funded combat buffs, low-health bonuses, focused-target damage, boss loot, extra drops, blood trails, snares, and direct inventory collection. Killing an ender dragon, wither, elder guardian, or warden advances a separate challenge.
+Hunter gains XP from killing mobs, scaled by maximum health, with separate adjustments for creepers and spawner mobs, and an ender dragon, wither, elder guardian, or warden kill advances a boss challenge. Its 14 adaptations add hunger-funded combat buffs, low-health bonuses, focused-target damage, boss loot, extra drops, blood trails, snares, and direct inventory collection.
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and protection and region policy that allow the action.
-
-The seven "when struck" buffs share a few more rules. They fire on most damage. They never fire on fall, void, lava, hot floor, suffocation, cramming, melting, wither damage, thorns, sonic boom, flying into a wall, or `/kill`. If you already have the Hunger effect on you they stay quiet. That is what `preventHunterSkillsWhenHungerApplied` in the main Adapt config controls. With food in your bar you get the buff and a Hunger effect on top. With an empty bar you get Poison and no buff. Set `useConsumable` to true on any of them and they eat one rotten flesh from your inventory per activation instead of applying Hunger. None of them re-trigger while their own effect is still running unless you turn `stackBuff` on.
+The seven struck buffs fire on most damage, but not on fall, void, lava, hot floor, suffocation, cramming, melting, wither damage, thorns, sonic boom, flying into a wall, or `/kill`. They stay quiet while Hunger is already present, which `preventHunterSkillsWhenHungerApplied` in the main Adapt config controls; with food left they apply the buff and Hunger, and with an empty food bar they apply Poison and no buff.
 
 ### Adrenaline (`hunter-adrenaline`)
 
 5 levels · 8 knowledge, then 4 per level
 
-Your melee swings hit harder the lower your health is. At full health it does nothing at all. The bonus scales up as your health falls, so at half health you get half of the listed maximum. It reads melee only, meaning you have to be the one swinging, not a bow. Kills you land below 35 percent health count toward its challenges.
+Melee damage, not bow damage, rises as health falls, from nothing at full health to the configured maximum at zero health, so half health applies half of that maximum. Kills below 35 percent health count toward its challenges.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -32,7 +28,7 @@ Your melee swings hit harder the lower your health is. At full health it does no
 
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit gives you Regeneration at an amplifier equal to your adaptation level, running 1.5 seconds per level. The cost is a Hunger effect for 2.5 seconds per level. Good pick if you keep getting chipped down in long fights.
+Taking a hit applies Regeneration.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -51,7 +47,7 @@ Taking a hit gives you Regeneration at an amplifier equal to your adaptation lev
 
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit turns you invisible for 5 seconds per level, at the same Hunger cost as the other struck buffs. Useful for breaking off a fight you are losing.
+Taking a hit applies Invisibility.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -70,9 +66,7 @@ Taking a hit turns you invisible for 5 seconds per level, at the same Hunger cos
 
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit raises your jump strength and your safe fall distance for 5 seconds per level. It uses attributes rather than the Jump Boost potion, and it will not fire while you already have a Jump Boost potion on you.
-
-Applies two timed attribute modifiers rather than a potion: jump strength `+0.1 * (level + 1)` and safe fall distance `+(level + 1)` blocks. Blocked while a Jump Boost potion effect is present, or if either attribute is missing on the running server version.
+Taking a hit adds jump strength `+0.1 * (level + 1)` and safe fall distance `+(level + 1)` blocks, using attributes rather than a Jump Boost effect. It does not apply while a Jump Boost effect is present or either attribute is missing.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -91,9 +85,7 @@ Applies two timed attribute modifiers rather than a potion: jump strength `+0.1 
 
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit raises your Luck attribute for 5 seconds per level, which improves loot table rolls on fishing and chests. Starving instead applies Poison and a matching negative Luck penalty, so fighting on empty actively hurts your drops. Dying clears both timers.
-
-Applies a timed Luck attribute modifier of `+(level + 1)`. The starve path adds a negative Luck modifier of `-(basePoisonFromLevel - level + 1)` for `baseHungerDuration` ticks.
+Taking a hit adds Luck `+(level + 1)`, which affects fishing and chest loot rolls. An empty food bar instead adds Luck `-(basePoisonFromLevel - level + 1)` for `baseHungerDuration` ticks, and death clears both timers.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -112,9 +104,7 @@ Applies a timed Luck attribute modifier of `+(level + 1)`. The starve path adds 
 
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit shoves you along whatever direction you are steering, for 5 seconds per level. It is a forced velocity burst rather than the Speed potion. It accelerates you toward a target speed while you hold a movement key. It brakes when you let go. Higher levels raise the target speed, up to the configured cap.
-
-Target speed is `baseHorizontalSpeed * (1 + (level + 1) * 0.2)`, clamped to `maxHorizontalSpeed`.
+Taking a hit forces horizontal velocity toward `min(maxHorizontalSpeed, baseHorizontalSpeed * (1 + (level + 1) * 0.2))` blocks per tick while a movement key is held, and brakes when it is released. This is not the Speed effect.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -140,9 +130,7 @@ Target speed is `baseHorizontalSpeed * (1 + (level + 1) * 0.2)`, clamped to `max
 
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit adds a flat chunk of attack damage for a short burst, 1.25 seconds per level. The damage bonus is large and the window is short, so it rewards swinging back immediately. It will not fire while you already have a Strength potion on you.
-
-Applies a timed attack damage modifier of `+3.0 * (level + 1)`. Blocked while a Strength potion effect is present.
+Taking a hit adds attack damage `+3.0 * (level + 1)` unless a Strength effect is already present.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -161,7 +149,7 @@ Applies a timed attack damage modifier of `+3.0 * (level + 1)`. Blocked while a 
 
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit gives you Resistance at an amplifier equal to your level, for half a second per level. It is meant to blunt the follow-up hit in a chain, not to carry you through a whole fight.
+Taking a hit applies Resistance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -180,27 +168,13 @@ Taking a hit gives you Resistance at an amplifier equal to your level, for half 
 
 1 level · 2 knowledge
 
-Loot goes into your inventory instead of onto the ground. Any mob you kill sends its drops straight to you, whatever you are holding. Block drops only route to you while a sword is in your main hand, and a protection plugin that denies the pickup leaves the item on the floor as usual. Anything that does not fit drops at your feet. This one caps at level 1.
-
-**How to use it**
-
-1. Kill mobs normally. Their drops arrive in your inventory.
-2. Hold a sword while breaking blocks if you want block drops routed the same way.
-
-No adaptation-specific knobs. Shared keys only.
+Drops from any mob kill go to the inventory regardless of the held item; block drops route only while a sword is in the main hand. Protection-denied pickups stay on the ground, overflow drops at the feet, the level cap is 1, and there are no adaptation-specific config keys.
 
 ### Trophy Skinner (`hunter-trophy-skinner`)
 
 5 levels · 5 knowledge
 
-Clean kills pay extra. A kill is clean if you shot the mob from at least the listed distance, or if you were sneaking when you landed the blow. A clean kill rolls two chances: bonus trophy materials matched to the mob (gunpowder from creepers, bone from skeletons, string from spiders, leather as the fallback), and, much more rarely, the mob's head. Bow kills add one to the trophy stack, each trophy pays Hunter XP, and higher levels shorten the shot distance you need.
-
-**How to use it**
-
-1. Either shoot the mob from at least the distance shown in the menu, or stay sneaking as you land the killing blow.
-2. Collect the trophies and heads from the mob's normal death drop.
-
-Trophy material is chosen by entity type: `GUNPOWDER`, `BONE`, `ROTTEN_FLESH`, `STRING`, `BLAZE_POWDER`, `ENDER_PEARL`, `REDSTONE`, `PORKCHOP`, with `LEATHER` as the fallback. Heads exist only for creepers, skeletons, strays, bogged, wither skeletons, zombies, husks, drowned, zombified piglins, piglins, and piglin brutes.
+A kill is clean when the shot covered the minimum range or the killing blow was dealt while sneaking, and a clean kill rolls trophy materials and a head. Materials are `GUNPOWDER`, `BONE`, `ROTTEN_FLESH`, `STRING`, `BLAZE_POWDER`, `ENDER_PEARL`, `REDSTONE`, `PORKCHOP`, or `LEATHER` as the fallback; heads exist only for creepers, skeletons, strays, bogged, wither skeletons, zombies, husks, drowned, zombified piglins, piglins, and piglin brutes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -220,9 +194,7 @@ Trophy material is chosen by entity type: `GUNPOWDER`, `BONE`, `ROTTEN_FLESH`, `
 
 5 levels · 6 knowledge, then 5 per level
 
-Hitting the same target over and over ramps your melee damage. The first hit sets one stack and gives nothing. Every hit after that adds a flat percentage, up to a stack cap that grows with level. Switch targets or go quiet for longer than the decay window and the ramp resets to one. Melee only.
-
-Stack cap is `3 + round(levelPercent * 6)`, so 4 at level 1 and 9 at level 5. Bonus damage is `perStackBonus * (stacks - 1)`, meaning 21 percent at a full level 1 ramp and 56 percent at a full level 5 ramp.
+Melee hits on the same target add `perStackBonus * (stacks - 1)` damage after the first hit, which sets one stack and adds nothing, up to `rampCapBase + round(levelPercent * rampCapFactor)` stacks. A different target, or a gap longer than `decayMillis`, resets the ramp to one stack.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -236,9 +208,7 @@ Stack cap is `3 + round(levelPercent * 6)`, so 4 at level 1 and 9 at level 5. Bo
 
 5 levels · 7 knowledge, then 6 per level
 
-You hit harder against the six heavyweight mobs (ravager, iron golem, warden, wither, ender dragon, elder guardian) and their kills drop more. On a big-game kill each item already in the drop list gets a chance to be duplicated, up to a per-kill cap. You get a large flat XP payout on top. Melee only for the damage bonus. The drop bonus applies to any kill you are credited with.
-
-Big game is exactly `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `ENDER_DRAGON`, `ELDER_GUARDIAN`.
+Melee damage increases against `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `ENDER_DRAGON`, and `ELDER_GUARDIAN`. Any credited kill of those mobs can duplicate items already in the drop list.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -254,10 +224,7 @@ Big game is exactly `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `ENDER_DRAGON`,
 
 5 levels · 5 knowledge, then 4 per level
 
-Wound a mob down to half health or lower with a melee hit and it starts bleeding a glowing red line as it runs. Only you see it. The trail redraws four times a second along the mob's actual path. It fades when
-the mob leaves your tracking range, changes world, or the wound times out. Both the duration and the tracking range grow with level.
-
-Trail duration is `100 + round(levelPercent * 200)` ticks, so 7 seconds at level 1 and 15 at level 5. Tracking range is `16 + levelPercent * 32` blocks, so 22.4 at level 1 and 48 at level 5.
+A melee hit that leaves a mob at or below `woundHealthFraction` of max health starts a private trail along its path, redrawn four times a second, until the mob leaves tracking range, changes world, or the wound ends. Duration is `trailDurationTicksBase + round(levelPercent * trailDurationTicksFactor)` ticks and range is `rangeBase + levelPercent * rangeFactor` blocks.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -275,17 +242,7 @@ Trail duration is `100 + round(levelPercent * 200)` ticks, so 7 seconds at level
 
 5 levels · 6 knowledge, then 5 per level
 
-Learning this unlocks a crafting recipe for the Hunter's Snare, a tripwire hook you can plant on the ground. Hostile monsters that walk near a planted snare are pinned in place and have their momentum zeroed. Each snare holds a number of trigger charges and expires on its own after a couple of minutes. Good for choke points, mob farms, and buying yourself an escape.
-
-**How to use it**
-
-1. Craft Hunter's Snares: string in every slot of the grid except the middle, one iron ingot in the middle. Each craft gives you two.
-2. Hold a snare and right-click the top of a block where mobs will walk. The snare sits one block above what you clicked and consumes one item.
-3. Leave it. Every monster that comes within the trigger radius spends one charge and gets pinned.
-
-Recipe `hunter-snare` is shaped `S S` / `SIS` / `S S` with `S` = `STRING` and `I` = `IRON_INGOT`, producing 2 tripwire hooks named "Hunter's Snare" tagged `adapt:hunter-snare-item`. Only tagged items place snares.
-
-Root duration is `max(1, 30 + round(levelPercent * 50))` ticks, so 2 seconds at level 1 and 4 at level 5. Charges are `max(1, 3 + round(levelPercent * 5))`, so 4 at level 1 and 8 at level 5. Rooting applies a `MULTIPLY_SCALAR_1` movement speed modifier of `-min(1, 0.15 * (rootAmplifier + 1))`, a full stop at the default amplifier. Only `Monster` entities are affected, and mobs friendly to the snare owner are skipped.
+Learning it adds shaped recipe `hunter-snare` (`S S` / `SIS` / `S S`, `S` = `STRING`, `I` = `IRON_INGOT`) producing 2 tripwire hooks named Hunter's Snare and tagged `adapt:hunter-snare-item`; only a tagged item places a snare one block above a right-clicked block top and consumes one item. `Monster` entities in range are rooted, with momentum cleared, by a movement-speed multiplier of `-min(1, 0.15 * (rootAmplifier + 1))`, mobs friendly to the owner are skipped, root duration is `max(1, rootDurationTicksBase + round(levelPercent * rootDurationTicksFactor))` ticks, and charges are `max(1, chargesBase + round(levelPercent * chargesFactor))`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -351,11 +308,6 @@ The seven struck buffs also share this knob set:
 | `challenge_boss_1` | 1 | `bossKillReward` |
 | `challenge_boss_10` | 10 | `bossKillReward` x5 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

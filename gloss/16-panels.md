@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -14,7 +14,7 @@ A panel places a persistent hologram menu at a world location. Panel documents l
 
 | Feature | What it is | Where it lives | Command |
 |---|---|---|---|
-| Hologram | Lines of text on a `TextDisplay` | `holograms/` | `/gloss hologram` |
+| Hologram | Lines of text | `holograms/` | `/gloss hologram` |
 | Hologram menu | A layout of components, icons and actions | `menus/` | `/gloss menu` |
 | Panel | A menu anchored in the world, persistent and interactive | `panels/` | `/gloss panel` |
 | Scoreboard | A sidebar objective | `boards/` | `/gloss board` |

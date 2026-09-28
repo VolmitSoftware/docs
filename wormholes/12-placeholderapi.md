@@ -2,7 +2,7 @@
 title: "PlaceholderAPI"
 description: "%wormholes_…% keys for operators"
 published: true
-date: 2026-09-13T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ Ignore the player. Same answer for everyone and for a no-player parse.
 | `%wormholes_portals%` | integer | Local registered portals. Remote portals not counted |
 | `%wormholes_projections.active%` | integer | Portals currently rendering a projection |
 | `%wormholes_projections.observers%` | integer | Distinct players with a projection frame in flight (one player on two portals counts once) |
-| `%wormholes_peers.connected%` | integer | READY wire peers (`PeerConnection.State.READY`). Same count as `wormholes.peers-connected` |
+| `%wormholes_peers.connected%` | integer | Peers in the ready state. Same count as `wormholes.peers-connected` |
 | `%wormholes_peers.link%` | enum | Cross-server link health (see vocabularies) |
 | `%wormholes_transfers.in-flight%` | integer | Pending player admissions, dispatched players awaiting arrival receipts, and non-player entity transfers in progress |
 | `%wormholes_failures%` | integer | Cumulative internal failures since startup |
@@ -157,28 +157,4 @@ color or `%` cannot be recovered through this surface.
 **Does not resolve** means PlaceholderAPI leaves `%wormholes_…%` literal.
 **`---`** means the expansion answered "no value".
 
-## Configuration
-
-None for the expansion: no toggle, range, interval, or unavailable-marker
-setting. Selection range and facing threshold are shared with portal attendance
-and are not TOML-configurable. Server config still affects values indirectly
-(for example networking off → `peers.link` = `offline`).
-
-## Discover on a live server
-
-```
-/papi info wormholes
-/papi parse me %wormholes_portal.state%
-```
-
-## Operator examples
-
-Scoreboard / config line (no code required):
-
-```
-Portal: %wormholes_portal.name% (%wormholes_portal.state%)
-```
-
-Branch on availability before other player keys so "no portal" is not confused
-with an unnamed portal. Compare destination to `---` when a portal may be
-unlinked.
+The expansion has no settings. Selection range and the facing threshold are fixed. With networking off, `peers.link` is `offline`.

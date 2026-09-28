@@ -2,170 +2,74 @@
 title: "Mutations Catalog"
 description: "Benefits, burdens, controls, and settings for every Mutation"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt has fifteen Mutations. Each entry lists its benefit, burden, qualifying skill domains, controls, and configuration. See [Mutations Overview](/adapt/34-mutations-overview) for setup and slot rules.
-
-Perfect adaptation removes burdens at master level 200 by default. Temperbound and Masterwork Bond bind to player-crafted items, so losing the item also loses access to that binding.
+Adapt has fifteen mutations; perfect adaptation removes burdens at master level 200 by default, and losing a crafted Temperbound or Masterwork Bond item drops that binding. A control effect is Glowing, Weakness, Slowness, or Levitation from the weapon or tool family, and setup is on [Mutations Overview](/adapt/34-mutations-overview).
 
 ## The fifteen Mutations
 
-Everything below assumes the same starting conditions. The Mutation feature is enabled in `mutations.toml`. The type's own `enabled` flag is true. The player holds `adapt.mutations` and `adapt.use.mutation.<id>`. The type is equipped in an unlocked slot and reads as `EXPRESSED`.
-
-The player is in survival or adventure mode. The world is not blacklisted globally or for that type. Any protection plugin allows the block or entity action involved. PvP-facing effects also need both the global and per-type `pvpEnabled` flags. Where an entry says "control effect", that is a short potion effect on the target. The effect is chosen from the weapon or tool family: glowing, weakness, slowness, or levitation.
-
 ### Gale Lung (`gale-lung`)
 
-Sprinting and airborne travel fill Momentum. A hit at full Momentum slings you behind a melee target or knocks a projectile target off its line. Hits you take at full Momentum knock you harder. Perfect adaptation removes that burden. If you stand still, Momentum drains. Blocking empties it at any level. Teal wind gathers around your feet and weapon.
-
-How to use it:
-
-1. Keep moving. Sprinting fills Momentum fastest. Airborne movement fills it more slowly.
-2. Land a melee hit or a shot while Momentum is full.
-3. Keep off the shield. The shield clears the meter.
+Sprinting and airborne movement fill Momentum; standing still drains it, and blocking empties it at any level. A hit at full Momentum moves you behind a melee target or shoves a projectile target off its line. Hits you take at full Momentum knock you harder, and perfect adaptation removes that extra knockback.
 
 ### Bastion Spine (`bastion-spine`)
 
-If you stand still, you brace. While braced, you soak incoming damage into Stability. Your next heavy swing releases it as a cone-shaped shove. It suits a player who holds a doorway, not one who chases. While braced you cannot sprint or jump. Perfect adaptation gives sprint and jump back. A hit from behind always breaks the stance and dumps the stored force. Stone ribs and bright cracks show the charge.
-
-How to use it:
-
-1. Stand on solid ground. Do not fly, glide, swim, or stand in liquid. Hold still for the anchor time.
-2. Let enemies hit you. Each point of damage adds Stability.
-3. Attack with an empty hand, a shield, an axe, a pickaxe, a shovel, a hoe, or any block in your main hand. Swords and other items do not release the wave.
+Standing still on solid ground, not flying, gliding, swimming, or in liquid, braces you and stores incoming damage as Stability. A swing with an empty hand, a shield, an axe, a pickaxe, a shovel, a hoe, or a block in the main hand releases that force as a cone shove; swords and other items do not. While braced you cannot sprint or jump, a hit from behind always breaks the stance and dumps the stored force, and perfect adaptation restores sprint and jump.
 
 ### Verdant Molt (`verdant-molt`)
 
-Crouch on natural ground and hold still to shed every potion effect on you. This clears poison, wither, and stacked debuffs. It is not selective. Your good effects go with the bad. It also eats saturation. Perfect adaptation spares both. Either way, new effects are refused for a short window afterward. A friendly re-buff will not land at once. Leaves, scales, or spores burst away from you.
-
-How to use it:
-
-1. Stand on natural, unplaced ground.
-2. Hold sneak and stay in place for the charge time. Moving, taking damage, or letting go cancels it.
-3. Wait out the cooldown before the next cleanse.
+Crouch and hold still on natural, unplaced ground to remove every potion effect on you; moving, taking damage, or releasing sneak cancels the charge. The cleanse is not selective and also removes saturation, then new effects are refused for a short window, so a re-buff does not land at once. Perfect adaptation keeps beneficial effects and saturation; the refusal window remains.
 
 ### Temperbound (`temperbound`)
 
-Link four armor pieces you crafted yourself. They share durability as one set. A piece that would break becomes Cracked instead of vanishing. If you remove or swap a linked piece, the set switches off for a while. Perfect adaptation removes that shutdown. Only one set stays linked at a time. Glowing lines connect the linked pieces.
-
-How to use it:
-
-1. Craft and wear all four pieces yourself. The Mutation only accepts items you personally crafted.
-2. Right-click the Adapt activator block to authorize Mutation editing.
-3. In `/adapt mutations menu`, open the Temperbound card and click Link Current Armor. The same slot later shows Unlink Armor.
+Link four armor pieces you personally crafted, from the Temperbound card in `/adapt mutations menu` after right-clicking the Adapt activator, and they share durability; a piece that would break becomes Cracked instead of vanishing. Removing or swapping a linked piece shuts the set off, and only one set stays linked. Perfect adaptation removes that shutdown; the card action is Link Current Armor, and the same slot later shows Unlink Armor.
 
 ### Paradox Scar (`paradox-scar`)
 
-A long move or a teleport leaves a return point behind you. Sneak plus swap-hands snaps you back to it once. It turns an ender pearl or a bad landing into a round trip. The point is visible to everyone. Enemies can break it early by damaging it. While it exists, no other one forms. Perfect adaptation stops it blocking other Mutation return effects. A bright afterimage marks the spot.
-
-How to use it:
-
-1. Move or teleport at least the minimum distance in one go.
-2. While the afterimage is up, sneak and press the swap-hands key.
-3. You return only in the same world, within the maximum return distance, and only if protection allows both ends.
+A move or teleport of at least the minimum distance leaves one return point that everyone can see, and sneak plus swap-hands returns you to it once, only in the same world, within the maximum return distance, and only if protection allows both ends. Enemies can break it by damaging it, and while it exists no other return point forms. Perfect adaptation stops it from blocking other mutation return effects.
 
 ### Arsenal Cortex (`arsenal-cortex`)
 
-If you switch weapon or tool types between hits, you build a combo. The combo carries one control effect into your next hit. It rewards juggling your hotbar mid-fight. If you hit twice with the same type, the chain breaks and locks briefly. Perfect adaptation removes that lock. Switching types is still what builds the chain. A changing symbol spins around the held item.
-
-How to use it:
-
-1. Hit with one weapon or tool type.
-2. Switch to a different type and hit again before the chain times out.
-3. Keep alternating.
+Switching weapon or tool type between hits builds a combo that carries one control effect into the next hit. Two hits with the same type break the chain and lock it briefly. Perfect adaptation removes that lock; switching types is still what builds the chain.
 
 ### Packmind (`packmind`)
 
-Your first hit marks a target. Every pet or opted-in ally that hits the same mark slows it and builds Tempo. When Tempo fills, the mark takes a stronger slow and the meter resets. Until someone else joins in, your own damage is cut by `waitingDamageFactor`. Perfect adaptation removes that cut. Tempo clears whenever you are alone on the mark. Amber lines link the group to the mark.
-
-How to use it:
-
-1. Hit a target to mark it.
-2. Have a pet, or a player who opted in with `/adapt mutations cooperative on`, attack the same target within range.
-3. Keep the pressure on before the mark expires.
+Your first hit marks a target; each pet, or player who opted in with `/adapt mutations cooperative on`, that hits the same mark slows it and builds Tempo, and a full meter applies a stronger slow and then resets. Until someone else joins, your damage is multiplied by `waitingDamageFactor`, and Tempo clears when you are alone on the mark. Perfect adaptation removes that damage cut.
 
 ### Trophy Crucible (`trophy-crucible`)
 
-Kill naturally spawned hostiles. One of their drops comes away with a hidden trophy mark. Take that drop to a crafting table and you prepare a control effect aimed at that mob family. In exchange, that family notices you from farther away and sees through Mutation stealth. Perfect adaptation removes that notice. You still store only one trophy effect at a time. A mask of the stored mob type appears behind you.
-
-How to use it:
-
-1. Kill a naturally spawned monster or slime yourself. Six deaths of the same family in the same chunk within a minute count as farming and stop granting trophies.
-2. Pick up the drop that carries the mark.
-3. Sneak-right-click a crafting table while holding it. Doing the same with an empty hand clears a stored trophy after a confirmation.
+Kill a naturally spawned monster or slime yourself and one drop can carry a hidden trophy mark; sneak-right-click a crafting table while holding it to store one control effect for that mob family, or do the same with an empty hand to clear a stored trophy after confirmation. That family then notices you from farther away and sees through mutation stealth. Perfect adaptation removes that notice; you still store only one trophy effect, and six deaths of the same family in the same chunk within 60 seconds grant nothing.
 
 ### Umbral Echo (`umbral-echo`)
 
-Attack from a new angle or with a new weapon type. A weaker copy of your control effect fires again a moment later. This rewards circling a target instead of standing in front of it. If you repeat the same approach, it reveals you and shuts down Mutation stealth briefly. Perfect adaptation removes that reveal. A dark purple afterimage replays the effect.
-
-How to use it:
-
-1. Hit a target.
-2. Move so your next hit comes from a different angle bucket, or switch weapon type.
-3. Hit again before the technique memory expires.
+A hit from a new angle bucket or a new weapon type repeats a weaker copy of your control effect after a delay. Repeating the same approach reveals you and shuts off mutation stealth briefly. Perfect adaptation removes that reveal.
 
 ### Living Lattice (`living-lattice`)
 
-Harvesting and replanting earns Root Charge. Spend it to grow a short temporary walkway straight ahead at your feet. Use it as a bridge or a way over a gap. Then watch it rot. Fire and lava can wipe your charge. Perfect adaptation prevents that wipe. If you force a path to collapse early, you spend hunger and briefly lock new paths. Green roots turn brown just before they go.
-
-How to use it:
-
-1. Break a fully grown crop, or a natural log or stem, then replant on that exact spot within 30 seconds. A crop wants the same crop back, a log wants its matching sapling or a mangrove propagule. Each accepted replant banks one Root Charge.
-2. Face where you want the path.
-3. Sneak and use a sapling to spend one charge. The path only forms where protection allows placement.
+Breaking a fully grown crop, or a natural log or stem, then replanting that exact spot within 30 seconds banks one Root Charge: a crop must be the same crop, and a log wants its matching sapling or a mangrove propagule. Sneak-use a sapling to spend one charge and place a temporary path straight ahead where protection allows. Fire and lava can wipe stored charge; collapsing a path early spends hunger and briefly locks new paths, and perfect adaptation prevents only the wipe.
 
 ### Masterwork Bond (`masterwork-bond`)
 
-Bind one tool you crafted. It stops at one durability instead of breaking. It refuses to work until repaired. For a favorite pickaxe that is the difference between a repair trip and a loss. Only the bound tool is protected. If you lose it, you wait a long time before you bind another. Perfect adaptation lets your other tools work normally with Mutation effects. Runes on the tool crack as it approaches the limit.
-
-How to use it:
-
-1. Craft the tool yourself.
-2. Right-click the Adapt activator block, then open the Masterwork Bond card in `/adapt mutations menu`.
-3. Hold the tool and click Bind Held Tool. Unlink Masterwork frees the slot and starts the replacement cooldown.
+Bind one tool you crafted, from the Masterwork Bond card after right-clicking the Adapt activator, and it stops at 1 durability instead of breaking, then refuses to work until repaired. Only that tool is protected, losing it starts the replacement cooldown, and Unlink Masterwork frees the slot and starts that cooldown. Perfect adaptation lets your other tools keep working with mutation effects; the bind action is Bind Held Tool.
 
 ### Deepblood (`deepblood`)
 
-Mining deep, undisturbed stone and ore builds Deep Charge. That charge pays for your food-based healing while you are down there. It can also spend itself to save your bound tool from breaking. Underground healing is something you fund. With no charge and no perfect adaptation, food regeneration is cancelled below the depth line. Charge also decays on a half-life once you are back above it. Perfect adaptation restores underground healing at zero charge. Saving the tool still costs charge. Red cracks spread across you and the bound tool.
-
-How to use it:
-
-1. Mine naturally placed deepslate, obsidian, crying obsidian, or any ore at or below the configured depth.
-2. Right-click the Adapt activator block, open the Deepblood card, and click Bind Held Tool to link a durable tool.
-3. Stay underground to make the charge count.
+Mining naturally placed deepslate, obsidian, crying obsidian, or any material ending in `_ORE`, at or below the depth line, builds Deep Charge, which pays for food-based healing down there and can stop a bound tool from breaking. With no charge, food regeneration below that line is cancelled, and stored charge halves on a timer once you are back above the line. Perfect adaptation restores underground healing at zero charge; saving the tool still costs charge, and the tool is bound from the Deepblood card with Bind Held Tool after right-clicking the Adapt activator.
 
 ### Mycelial Nerve (`mycelial-nerve`)
 
-Beneficial potion effects you give yourself spread, at reduced duration, to nearby tamed animals and to players who opted in to cooperative effects. One brewing stand can carry a small group. Your own copy runs shorter than normal. Fire damage severs the link for a few seconds. Perfect adaptation removes both of those costs. Spore trails carry the effect outward.
-
-How to use it:
-
-1. Have the players you want covered run `/adapt mutations cooperative on`, or use the menu toggle.
-2. Stand within range of them or your tamed animals.
-3. Apply a beneficial, non-instant potion effect to yourself. Sharing happens on its own.
+A beneficial, non-instant potion effect you apply to yourself also reaches nearby tamed animals and players who opted in with `/adapt mutations cooperative on` or the menu toggle, at a shorter shared duration. Your own copy is shorter than normal, and fire damage stops sharing for a few seconds. Perfect adaptation removes both of those costs.
 
 ### Gravebloom (`gravebloom`)
 
-Kill a naturally spawned hostile. A short-lived bloom grows where it died. The bloom pushes nearby crops along and heals your tamed animals. Your own food-based healing is weaker while a bloom is active. Past the halfway point of its life, a bloom starts pulling monsters toward it. Perfect adaptation stops both. Pale flowers and soul particles rise from the kill spot.
-
-How to use it:
-
-1. Kill a naturally spawned monster or slime yourself, subject to the same anti-farm rule as Trophy Crucible.
-2. Stay near the bloom for the crop growth and pet healing.
-3. Expect company late in a bloom's life.
+Killing a naturally spawned monster or slime yourself, under the same anti-farm rule as Trophy Crucible, grows a short-lived bloom where it died that pushes nearby crops and heals your tamed animals. While a bloom is active your food-based healing is weaker, and past half its life it pulls monsters toward it. Perfect adaptation stops both of those.
 
 ### Resonant Formula (`resonant-formula`)
 
-Craft once, brew once, and enchant once inside the same window and you arm a combo. Your next non-damaging Anomaly effect then repeats at half strength after a short delay. If you repeat a step you already did, the combo breaks and strips your oldest helpful potion effect. Perfect adaptation removes that strip. Three symbols join when the combo is armed.
-
-How to use it:
-
-1. Craft any item.
-2. Brew a potion.
-3. Enchant an item. Order does not matter, but all three must land within the sigil lifetime and none may repeat.
+Crafting, brewing, and enchanting once each inside the sigil window, in any order and with no step repeated, arms a combo. Your next non-damaging Anomaly effect then repeats at half strength after a short delay. Repeating a step breaks the combo and strips your oldest helpful potion effect, and perfect adaptation removes that strip.
 
 ## Reference
 
@@ -350,6 +254,4 @@ Trophy Crucible and Gravebloom both need a kill the player landed on a naturally
 
 ## See also
 
-- [34 - Mutations Overview](/adapt/34-mutations-overview)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
-- [48 - API - Mutations](/adapt/48-api-mutations)
+Setup: [Mutations Overview](/adapt/34-mutations-overview).

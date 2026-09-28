@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,7 +12,7 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 
 ## Plugin version
 
-`/wormholes debug version` displays `Wormholes vVERSION`, using the installed plugin version and the Director help heading gradient. `/wormholes version` runs the same command but stays hidden from help and command suggestions. Both routes use the normal root command permissions.
+`/wormholes debug version` prints the installed version. `/wormholes version` runs the same command and stays hidden from help.
 
 ## Commands
 
@@ -55,17 +55,9 @@ removing portal storage. Queued saves cannot recreate deleted portal files.
 
 ## Diagnostic reports
 
-`/wormholes debug dump` writes a report to the plugin's `debug/` directory and uploads it to mclo.gs by default. Use `upload=false` to keep it local. A failed upload does not delete the report. See [Shared diagnostic reports](/volmlib/api/diagnostics) for its contents.
+`/wormholes debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. A failed upload keeps the file. Contents: [Shared diagnostic reports](/volmlib/api/diagnostics).
 
-### Live console debug mode
-
-Run `/wh debug toggle` in-game as an administrator or `wh debug toggle` in the server console. Run it again to stop. For cross-server problems, enable it on both backends before reproducing the problem.
-
-Console output includes projection work, packet rates, remote views, peer connections, queues, handoffs, and failure counts every second. Access-denial lines identify the rejected portal and check. Failure details appear when debug starts and when a reason's count changes. Exceptions retain their normal stack traces.
-
-The `render` value measures accumulated projection work per elapsed second. For example, `700 ms/s` means 0.7 seconds of projection work per second, not a single frame's duration.
-
-The toggle lasts until the next settings hot-reload or server restart. To keep debug enabled through either, set `verbose-logging = true` in the existing `[main]` table of `plugins/Wormholes/wormholes.toml`. Set it to `false` to disable persistent debug. File changes apply automatically. Live debug writes to the server console and log. It does not upload a report.
+`/wormholes debug toggle` prints projection, network, queue, and handoff counts to the console once a second until the next settings reload or restart. `verbose-logging = true` in `[main]` keeps that output across a reload. The `render` figure is accumulated projection work per elapsed second.
 
 ## Permissions
 
@@ -94,4 +86,4 @@ See [Languages](/languages).
 
 Portal traversal uses `wormholes.portal.<key>`, whose stable key starts from the sanitized portal name. Renaming the portal preserves that key. With `[access] legacy-name-node-enabled = true`, the current name-derived node also acts as an alias. Without OP or the literal `*` permission, either matching grant blocks travel in `BLACKLIST` mode and permits it in `WHITELIST` mode. OP and `*` bypass portal access and direction restrictions. Source-side privilege also applies to that admitted gateway crossing. See [Portal access](/wormholes/04-portal-types-menus-settings#per-portal-permission-node).
 
-See [Building Portals](/wormholes/03-building-portals), [Pocket Dimensions](/wormholes/08-pocket-dimensions), and [Cross-Server Networking](/wormholes/10-cross-server-networking).
+

@@ -2,30 +2,20 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Excavation gains XP from breaking blocks or dealing damage with a shovel. Block rewards scale with material value, hardness, and blast resistance.
-
-Its 12 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, and the multi-tool item OMNI - T.O.O.L.
+Excavation gains XP from breaking blocks or dealing damage with a shovel, and block XP scales with material value, hardness, and blast resistance. Its 12 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, and OMNI - T.O.O.L.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, an `adapt.use.` permission that has not been revoked, and protection and region policy that allow the action.
-
-Most of these also require a shovel in your main hand. Several restrict themselves to shovel-friendly blocks. Where that matters it is called out.
 
 ### Hasty Excavator (`excavation-haste`)
 
 3 levels · 3 knowledge, then 2 per level
 
-Starting to break a block gives you a block-break speed bonus that lasts long
-enough to finish the block. Mining speed does not stutter partway through a slow
-dig.
-
-The boost is an attribute modifier, not the vanilla Haste effect: `BLOCK_BREAK_SPEED` as an `ADD_SCALAR` of `0.20 * level`, lasting `hasteDurationTicks` clamped to 40 through 600 ticks. It applies to any block you start breaking, not only shovel work.
+Starting to break any block, not only shovel blocks, adds a block-break speed modifier of `0.20 * level` (`BLOCK_BREAK_SPEED` as `ADD_SCALAR`, not the Haste effect) for `hasteDurationTicks`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -35,18 +25,7 @@ The boost is an attribute modifier, not the vanilla Haste effect: `BLOCK_BREAK_S
 
 5 levels · 10 knowledge, then 5 per level
 
-Scans the ground around you for one specific ore type and outlines every hit with a glowing block so you can see them through terrain. You pick the ore by holding a sample of it.
-
-How to use it:
-
-1. Put the ore block you want to find in your off hand.
-2. Hold glow berries in your main hand.
-3. Sneak. The scan fires from where you stand.
-4. Matching ore lights up in an ore-appropriate color for a few seconds. Only you can see the markers.
-
-One glow berry is consumed per successful scan. If the scan finds nothing, or you swap items before it finishes, you keep the berry and get a dull click. Scan radius grows with level and is capped at 32 blocks.
-
-Scan radius is `rangeMultiplier * level`, clamped to 1 through 32 blocks. Markers are shown only to you, in a glow color chosen from the ore name.
+Sneak with glow berries in the main hand and one ore block in the off hand to outline matching ore from the player's position, visible only to that player and colored from the ore name, within `rangeMultiplier * level` blocks clamped to 1 through 32. One glow berry is consumed only after a scan that finds ore; finding nothing, or swapping items before the scan finishes, keeps the berry.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -62,19 +41,7 @@ Scan radius is `rangeMultiplier * level`, clamped to 1 through 32 blocks. Marker
 
 5 levels · 3 knowledge, then 10 per level
 
-Combines several tools into one item that switches heads based on what you are aiming at. Axe on wood. Shovel on dirt. Sword on webs and similar. Pickaxe on everything else. Hoe on crops. Flint and steel on burnable blocks. The merged item is identified by its "Leatherman" lore.
-
-How to use it:
-
-1. Learn it, then merge tools together in your inventory. Merged tools keep their names, enchantments, and damage values.
-2. Carry the merged item in your main hand and use it normally. It swaps heads on its own when you start breaking a block or right-click one.
-3. To take it apart, sneak and drop the merged item. It bursts into its component tools.
-
-Component tools do not break. A component at two durability from breaking is refused instead, and the action is cancelled with a puff of smoke. The merged item is also inert if you do not have the adaptation active: block breaks and attacks with it are cancelled outright.
-
-Merging is wired to a shift-left-click that reads the second tool from your cursor, but a shift-click leaves the cursor empty, so in practice the merge never runs. What does run is the capacity check, which cancels the shift-click with a failure sound when the clicked tool already holds more components than your slot budget allows.
-
-Merged items are recognized by `Leatherman` appearing in their lore. Component capacity is `startingSlots + level`. It picks an axe, shovel or sword to match the block and falls back to a pickaxe, swaps to a hoe on farmland and to flint and steel on burnable blocks, and refuses to use a head with two or less durability left.
+The main-hand item recognized by `Leatherman` in its lore swaps to an axe on wood, a shovel on dirt, a sword on webs and similar, a hoe on crops and farmland, flint and steel on burnable blocks, and a pickaxe otherwise, and refuses a head at 2 or less durability. Capacity is `startingSlots + level`; sneak-dropping returns the component tools with their names, enchantments, and damage, breaks and attacks are cancelled while the adaptation is inactive, and shift-left-click never merges because the cursor is empty, though that click is still cancelled when the tool already holds more components than the slot budget.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -84,22 +51,13 @@ Merged items are recognized by `Leatherman` appearing in their lore. Component c
 
 1 level · 3 knowledge
 
-Blocks you break with a shovel send their drops straight into your inventory instead of onto the ground. It works on its own once learned, and it is a single-level adaptation.
-
-Anything a protection plugin would stop you picking up stays on the ground, and items that do not fit drop at your feet with a failure sound.
-
-Awards a flat 2 skill XP per item caught. No adaptation-specific config knobs.
+Blocks broken with a shovel send their drops to the inventory and pay 2 skill XP per item caught. Protection-denied items stay on the ground, overflow drops at the feet, and there are no adaptation-specific config keys.
 
 ### Seismic Ping (`excavation-seismic-ping`)
 
 5 levels · 4 knowledge
 
-While you dig, the ground occasionally answers back. One nearby ore block lights
-up for two seconds in a color matched to the ore. Only you can see it. The ping sound is pitched by distance, so a high chime means the ore is close.
-
-Works with a shovel or a pickaxe in your main hand. Scan range grows with level, capped at 32 blocks. XP is paid per ping and scales with how valuable the revealed ore is. If HiddenOre is installed, its hidden veins are included as scan targets.
-
-Triggers on any block broken while holding an item whose name ends in `_SHOVEL` or `_PICKAXE`. Targets are `ANCIENT_DEBRIS` and anything ending in `_ORE`, plus the nearest HiddenOre vein when that plugin is present. Scan range is `round(scanRangeBase + levelPercent * scanRangeFactor)` clamped to 6 through 32. Ping chance is `min(maxPingChance, pingChanceBase + levelPercent * pingChanceFactor)`. Cooldown is `max(350, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` milliseconds and only starts once the reveal window closes.
+Breaking a block while holding an item whose name ends in `_SHOVEL` or `_PICKAXE` can reveal one nearby `ANCIENT_DEBRIS`, block whose name ends in `_ORE`, or nearest HiddenOre vein for two seconds, visible only to that player. Range is `round(scanRangeBase + levelPercent * scanRangeFactor)` clamped to 6 through 32, chance is `min(maxPingChance, pingChanceBase + levelPercent * pingChanceFactor)`, and cooldown `max(350, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` ms starts when the reveal window closes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -119,17 +77,7 @@ Triggers on any block broken while holding an item whose name ends in `_SHOVEL` 
 
 5 levels · 5 knowledge
 
-Turns a single dig into a whole plane. The plane is oriented off where you are looking: flat if you are looking up or down, vertical and aligned to your facing otherwise.
-
-How to use it:
-
-1. Hold a shovel and sneak.
-2. Break a shovel-friendly block: dirt, sand, gravel, clay, mud, snow, and their variants.
-3. One tick later the surrounding blocks in the plane break too, up to your bonus block budget.
-
-Each bonus block costs extra durability, and the sweep stops early if the shovel would break. Bonus blocks are re-checked against protection plugins individually, so anything denied is skipped and costs you nothing.
-
-Bonus blocks are `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` taken from the eight cells around the origin. The plane is horizontal when your pitch is at or beyond 50 degrees up or down, otherwise vertical and perpendicular to your yaw. Shovel-friendly blocks are clay, dirt, coarse dirt, rooted dirt, farmland, grass block, dirt path, gravel, mycelium, podzol, sand, red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
+Sneaking with a shovel, breaking a shovel-friendly block also breaks up to `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` of the eight surrounding cells one tick later, on a horizontal plane when pitch is 50 degrees or steeper and otherwise on a vertical plane perpendicular to yaw. The sweep stops if the shovel would break, a denied block is skipped at no cost, and shovel-friendly blocks are clay, dirt, coarse dirt, rooted dirt, farmland, grass block, dirt path, gravel, mycelium, podzol, sand, red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -141,11 +89,7 @@ Bonus blocks are `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` taken fr
 
 5 levels · 4 knowledge
 
-Digging sand, red sand, gravel, mud, or clay with a shovel sometimes turns up something buried. The table is mostly bones, flint, and clay, with pottery sherds and the odd emerald as the rare pulls.
-
-Rare finds get their own sparkle and level-up chime, so you know when something good came out.
-
-Eligible blocks are `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, and `CLAY`. Chance is `min(maxTreasureChance, treasureChanceBase + levelPercent * treasureChanceFactor)`. Entries with weight 6 or lower are treated as rare and get an extra effect burst.
+Breaking `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, or `CLAY` with a shovel can roll the loot table at `min(maxTreasureChance, treasureChanceBase + levelPercent * treasureChanceFactor)`. Entries with weight 6 or lower count as rare and play an extra effect.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -159,11 +103,7 @@ Eligible blocks are `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, and `CLAY`. Chance is `
 
 5 levels · 3 knowledge
 
-Landing on ground you could have dug reduces the fall damage, and at high levels removes it entirely.
-
-Soft ground is dirt and its variants, grass, podzol, mycelium, path, farmland, sand, red sand, gravel, clay, mud, muddy mangrove roots, soul sand, soul soil, and snow. Either the block you land in or the block beneath it qualifies, and XP is paid per point of damage prevented, so long falls onto sand pay well.
-
-Only `FALL` damage counts. Reduction is `min(maxReduction, reductionBase + levelPercent * reductionFactor)`.
+Only `FALL` damage is reduced, by `min(maxReduction, reductionBase + levelPercent * reductionFactor)`, when the block landed in or the block under it is dirt or a dirt variant, grass, podzol, mycelium, path, farmland, sand, red sand, gravel, clay, mud, muddy mangrove roots, soul sand, soul soil, or snow.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -176,20 +116,11 @@ Only `FALL` damage counts. Reduction is `min(maxReduction, reductionBase + level
 
 5 levels · 7 knowledge, then 6 per level
 
-Slams the ground and sends a ring of dirt outward, damaging every hostile mob in range, throwing them up and away, and slowing them. Damage comes from the tier of shovel you are holding, so a netherite shovel hits noticeably harder than a wooden one.
-
-How to use it:
-
-1. Hold a shovel and sneak.
-2. Right-click. Air or a block both work.
-3. Hunger is spent, the wave renders, and hostile mobs inside the radius are hit.
-
-Mobs that take no actual damage, for example because something absorbed it, are not launched and do not pay XP.
-
-Targets are hostile mobs (`Enemy`). Base shovel damage is 2.5 wooden and golden, 3.5 stone and copper, 4.5 iron, 5.5 diamond, and 6.5 netherite, multiplied by `max(0, damageMultiplierBase + levelPercent * damageMultiplierFactor)`. Cooldown is `max(500, round((cooldownMillisBase - levelPercent * cooldownMillisFactor) * cooldownScale))` milliseconds.
+Sneak-right-click with a shovel, in air or on a block, to damage hostile mobs, launch them, and slow them, using base shovel damage of 2.5 for wood and gold, 3.5 for stone and copper, 4.5 for iron, 5.5 for diamond, and 6.5 for netherite, times `max(0, damageMultiplierBase + levelPercent * damageMultiplierFactor)`. A mob that takes no damage is not launched; neutral species stay excluded even when provoked; cooldown is `max(500, round((cooldownMillisBase - levelPercent * cooldownMillisFactor) * cooldownScale))` ms.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
+| `ignorePassiveMobs` | `false` | Exclude neutral enemy species from the shockwave. Passive animals are always excluded. |
 | `radiusBase` | `3` | Horizontal wave radius in blocks at level 0 progress. |
 | `radiusFactor` | `5` | Blocks of radius added at full level. |
 | `verticalRange` | `3` | Blocks above and below the caster that the wave reaches. |
@@ -214,21 +145,7 @@ Targets are hostile mobs (`Enemy`). Base shovel damage is 2.5 wooden and golden,
 
 5 levels · 6 knowledge, then 5 per level
 
-Digs a shaft straight down under you, one block every couple of ticks, and stops before it drops you into something bad. It refuses to break into lava and stops when there is a two-block air gap below.
-You do not open a cave ceiling under your feet.
-
-How to use it:
-
-1. Hold a shovel and sneak.
-2. Right-click the soft block you want to dig through.
-3. The first block breaks immediately. If that fails, no hunger or cooldown is spent.
-4. The rest of the shaft digs itself out below you.
-
-Each block costs durability and the whole activation costs hunger. The dig stops at a safety margin above the world floor. Every delayed block is re-authorized before it breaks, so a protection plugin can stop the shaft partway.
-
-Depth is `max(2, round(depthBase + levelPercent * depthFactor))`. Cooldown is `max(2000, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` milliseconds. Planning stops at `worldMinHeight + safeFloorMargin`, at lava directly below,
-and at a two-block air gap below. It also stops at any non shovel-friendly block
-and at any block a protection plugin refuses. Shovel-friendly blocks match Tunneler's list.
+Sneak-right-click a Tunneler shovel-friendly block with a shovel to dig `max(2, round(depthBase + levelPercent * depthFactor))` blocks straight down, breaking the first immediately and spending no hunger or cooldown if that break fails. The shaft also stops at `worldMinHeight + safeFloorMargin`, at lava directly below, at a two-block air gap, at a non-shovel-friendly block, or at a denied block, and each later block is authorized again; cooldown is `max(2000, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` ms.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -246,11 +163,7 @@ and at any block a protection plugin refuses. Shovel-friendly blocks match Tunne
 
 5 levels · 4 knowledge
 
-Digging dirt, grass, coarse dirt, rooted dirt, podzol, mycelium, or dirt path with a shovel can turn up bone loot. Much more rarely it disturbs a grave and a zombie or skeleton claws out of the hole, already targeting you.
-
-Grave mobs are tagged in persistent data, so their deaths get a soul-and-ash effect. Grave spawns have their own cooldown independent of the loot roll.
-
-Eligible blocks are `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL`, `MYCELIUM`, and `DIRT_PATH`. Loot and grave rolls are independent. Grave mobs are a zombie or skeleton chosen at random, spawned already targeting you and tagged with `adapt:excavation_grave_mob` in persistent data.
+Digging `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL`, `MYCELIUM`, or `DIRT_PATH` with a shovel rolls loot and a grave independently. A grave spawns a zombie or skeleton that is already targeting the player and tagged `adapt:excavation_grave_mob`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -269,11 +182,7 @@ Eligible blocks are `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL
 
 5 levels · 3 knowledge
 
-Two things at once. Breaking clay, mud, muddy mangrove roots, soul sand, or soul soil with a shovel can drop an extra copy of that block's material. Separately, digging while wet gives you a block-break speed bonus.
-
-Wet means standing in water, or standing under open sky during a storm. The bonus is an Adapt attribute modifier at 20 percent per amplifier step, not the vanilla Haste effect.
-
-Bonus-drop blocks and their extra drop: `CLAY` gives a clay ball, `MUD` and `MUDDY_MANGROVE_ROOTS` give mud, `SOUL_SAND` gives soul sand, `SOUL_SOIL` gives soul soil. Bonus chance is `min(maxBonusChance, bonusChanceBase + levelPercent * bonusChanceFactor)`. The wet-dig bonus is `BLOCK_BREAK_SPEED` as an `ADD_SCALAR` of `0.20 * (amplifier + 1)`, where amplifier is `round(levelPercent * (maxHasteLevel - 1))`.
+Breaking `CLAY`, `MUD`, `MUDDY_MANGROVE_ROOTS`, `SOUL_SAND`, or `SOUL_SOIL` with a shovel can drop an extra clay ball, mud, mud, soul sand, or soul soil respectively, at `min(maxBonusChance, bonusChanceBase + levelPercent * bonusChanceFactor)`. Standing in water, or under open sky during a storm, also adds `BLOCK_BREAK_SPEED` as an `ADD_SCALAR` of `0.20 * (amplifier + 1)`, where amplifier is `round(levelPercent * (maxHasteLevel - 1))`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -337,11 +246,6 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | `challenge_dig_gravel_500` | 500 | `challengeExcavationReward` |
 | `challenge_dig_gravel_5k` | 5000 | `challengeExcavationReward` * 2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts) for skills, adaptations, and knowledge
-- [03 - Player Usage](/adapt/03-player-usage) for the Adapt menu and learning flow
-- [10 - Skills Catalog](/adapt/10-skills-catalog) for the full skill list
-- [04 - Commands & Permissions](/adapt/04-commands-permissions) for the `adapt.use` permission tree
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

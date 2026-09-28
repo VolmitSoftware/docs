@@ -2,43 +2,25 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-26T06:29:51.520Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Copy `Wormholes-<version>-packed.jar` into `plugins/` and start the server. Then edit `plugins/Wormholes/wormholes.toml`. A missing optional plugin disables only its integration.
+Edit `plugins/Wormholes/wormholes.toml`. Install `Wormholes-<version>-packed.jar` as the only Wormholes jar. A missing optional plugin disables only that integration.
 
 ## Requirements
 
-| Item | Value |
-|------|--------|
-| Runtime | Paper, Paper-compatible derivatives such as Purpur, and Folia (`folia-supported: true`) |
-| Minecraft | 26.1.2, 26.2, and 26.3; use a server build available for your chosen platform |
-| Java | 25 (build toolchain and server launch) |
-| Native access | Prefer `--enable-native-access=ALL-UNNAMED` so zstd-jni loads without restricted-access warnings |
-| Soft depends | PlaceholderAPI, Iris, Vault, Citizens (optional). Paper loads them before Wormholes when present |
-| Plugin file | `Wormholes-<version>-packed.jar`; do not install the `-api.jar` |
-| First start | Internet access for required libraries, or an existing SlimJar cache |
+| | |
+|---|---|
+| Server | Paper, Purpur, or Folia. Minecraft 26.1.2, 26.2, and 26.3 |
+| Java | 25 |
+| Jar | `Wormholes-<version>-packed.jar`. The `-api.jar` is a compile dependency, not a plugin |
+| JVM | `--enable-native-access=ALL-UNNAMED` lets zstd-jni load without a restricted-access warning |
+| Optional | PlaceholderAPI, Iris, Vault, Citizens, WorldGuard |
 
-## Install
-
-Install the `-packed.jar` as the only Wormholes jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/Wormholes/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
-
-1. Copy `Wormholes-<version>-packed.jar` into `plugins/`.
-2. Start the server so Wormholes creates its data folder and `wormholes.toml`.
-3. Edit `plugins/Wormholes/wormholes.toml`. Wormholes rejects files that
-   have no schema or a wrong schema. The file must use `schema = 3`.
-4. Save the file and wait for `Configuration hot-reloaded.` in the console.
-
-WorldGuard is optional and adds protection checks for RTP destinations.
-
-Legacy configuration is not migrated. Back up any values you need, remove the old `plugins/Wormholes/config/` directory, restart the server, and reapply them to `wormholes.toml`.
-
-The resource watcher applies direct edits to `languages/*.toml` automatically.
-Dimensional Doors pack and registry changes need a full server restart. See
-[07 - Dimensional Doors](/wormholes/07-dimensional-doors).
+An XZ packed jar extracts `plugins/Wormholes/cache/runtime/` on first start. That directory must be writable. The file must contain `schema = 3`. A valid save applies on its own. Invalid TOML is rejected and the current settings stay. WorldGuard, when present, checks RTP destinations. Edits to `languages/*.toml` apply on save. Dimensional Door pack changes need a restart. See [Dimensional Doors](/wormholes/07-dimensional-doors).
 
 ## Data folder layout
 
@@ -65,12 +47,12 @@ and trust under `routes/` and `trust/`. See
 | Property | Value |
 |----------|--------|
 | Path | `plugins/Wormholes/wormholes.toml` |
-| Schema | `schema = 3` (`WormholesConfigFile.CURRENT_SCHEMA`) |
-| Quality key | top-level `quality` (not inside a table) |
-| Sections | `[main]`, `[recipes]` (+ product tables), `[network]` (+ nested), `[projection]`, `[render]` |
-| Key form | kebab-case from Java field names (`teleportCooldownMillis` → `teleport-cooldown-millis`) |
+| Schema | `schema = 3` |
+| Quality key | Top-level `quality` |
+| Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]` |
+| Key form | kebab-case (`teleport-cooldown-millis`) |
 
-Startup rewrites the file with every known key. This removes custom comments and unknown or misspelled keys. Automatic hot reload does not rewrite the file. Invalid files leave the previous settings active.
+A startup load rewrites the file with every known key. Custom comments and unknown keys are removed. A hot reload does not rewrite the file.
 
 ## Visual quality (`quality`)
 
@@ -310,7 +292,7 @@ still schedule at most once per server tick.
 | `range` | `48.0` | Observer interest / projection range |
 | `refresh-interval-ticks` | `1` | Projection refresh cadence |
 | `near-plane-padding` | `2.0` | Near plane pad |
-| `aperture-padding-blocks` | `0.75` | Extra outward pad past aperture edges. Raise if rim bleed-through |
+| `aperture-padding-blocks` | `0.75` | Extra outward pad past aperture edges |
 | `frustum-culling-ratio` | `0.2` | Frustum cull ratio |
 | `depth-blocks` | `64` | Extra search distance for recursive portal candidates. Primary view depth is per portal |
 | `recursive-portal-depth` | `3` | Nested portal recursion (runtime min 3) |
@@ -323,8 +305,8 @@ still schedule at most once per server tick.
 | `max-portals-per-observer-tick` | `4` | Per-observer portal budget |
 | `max-new-observer-scans-per-tick` | `64` | Shared cap for player-owner projection and surface-skin reconciliation frames. Existing observer cleanup/continuation has priority while a rotating discovery lane remains reserved |
 | `interest-grace-ticks` | `5` | Ticks a projector stays open after live interest is lost (unrender-on-loss delay) |
-| `initial-resend-passes` | `1` | Full sends after view create (raise only to diagnose packet loss) |
-| `max-projected-cells` | `250000` | Hard scan ceiling. Budget drops lateral pad first then depth. `0` disables (not recommended) |
+| `initial-resend-passes` | `1` | Full sends after the view is created |
+| `max-projected-cells` | `250000` | Scan ceiling. Over budget, side padding drops first, then depth. `0` disables the ceiling |
 
 Projection behavior detail:
 [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
@@ -346,13 +328,4 @@ Projection behavior detail:
 
 ## Hot reload
 
-`wormholes.toml` reloads automatically after a complete save. The console confirms a successful update with `Configuration hot-reloaded.` Invalid files leave the current settings active and report the problem.
-
-If a reload leaves portals or projections in an inconsistent state, restart the server. Back up Wormholes data before a reset or manual restoration.
-
-## Related docs
-
-- [09 - Commands & Permissions](/wormholes/09-commands-permissions), debug, stats, and network commands
-- [10 - Cross-Server Networking](/wormholes/10-cross-server-networking), network keys in operation
-- [11 - Localization](/wormholes/11-localization), language and override behavior
-- [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events), traversal API contract
+`wormholes.toml` reloads after a complete save. The console prints `Configuration hot-reloaded.` Invalid files leave the current settings active.

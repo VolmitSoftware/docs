@@ -2,7 +2,7 @@
 title: "Bukkit inventory views and editors"
 description: "Inventory access, shared configuration menus, and menu shutdown"
 published: true
-date: 2026-09-14T00:37:05.833Z
+date: 2026-09-28T16:00:00.000Z
 tags: "volmlib, api, bukkit, inventory, compatibility"
 editor: markdown
 dateCreated: 2026-09-05T04:40:00.000Z
@@ -29,6 +29,12 @@ HumanEntity viewer = BukkitInventoryViews.player(event.getView());
 The utility resolves `getTopInventory` and `getPlayer` once through the runtime `InventoryView` type and caches the reflective methods. A missing required method fails class initialization. Reflective access or invocation failures throw `IllegalStateException` with the cause retained.
 
 Relocate `art.arcane.volmlib` into the consuming plugin's private namespace. See [VolmLib API](/volmlib/api) for dependency and threading conventions.
+
+## Update an open menu control
+
+`Window.updateElement(position, row, element)` replaces a control in an open `UIWindow` and computes only its visible slot. It updates the item only when its contents change, without reopening the inventory or rendering other controls. Coordinates use the window's centered horizontal positions and absolute layout rows. Pass `null` to restore the background decorator at that position.
+
+Calls from another thread are queued onto the viewing player's entity scheduler. A closed or replaced window discards the update, including when a replacement window reused the same inventory. Offscreen controls update the window model without sending an item. Use `setElement` to populate a window before opening it, and `updateElement` for toggles or mode controls after it is open.
 
 ## Close menus before disabling a plugin
 

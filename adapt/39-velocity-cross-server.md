@@ -2,74 +2,38 @@
 title: "Cross-Server SQL & Redis"
 description: "Fenced SQL storage and Redis handoff across backend servers"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt coordinates cross-server player progression directly between backend servers. SQL is the authority and Redis carries request-correlated snapshots for the exact SQL owner being replaced. There is no proxy companion; remove any old Adapt jar from the proxy.
 
-This path is active only when `sql.enabled` and `redis.enabled` are both true. Every participating backend must use the same SQL schema and Redis service. A backend with Redis disabled uses fenced SQL alone and cannot recover an uncommitted in-memory handoff snapshot from another backend.
+SQL is the authority for shared player data. Redis carries a request-correlated snapshot of the SQL owner being replaced. There is no proxy plugin. This path runs only when `sql.enabled` and `redis.enabled` are both true. Every backend that shares players uses the same schema, the same Redis service, and the same Adapt jar. `Adapt:data:v2` has no mixed-version decoder.
 
-## Ownership and handoff
+A backend with Redis disabled reads committed SQL only. It cannot recover an uncommitted in-memory snapshot from another backend.
 
-SQL holds the authoritative profile. When you switch servers, the destination asks the previous
-owner for your live state; Redis carries that handoff. If it cannot be verified, your Minecraft
-login still succeeds but Adapt stays inactive until you reconnect, rather than creating a second
-profile.
+On a server switch, the destination asks the previous owner for the live profile. If the handoff cannot be verified, the Minecraft login still succeeds and Adapt stays inactive for that player. Adapt does not create a second profile. It retries at most three times, after 2, 4, and 8 seconds. A reconnect starts a new claim.
 
-## Reset and purge
+A reset replaces the profile on the current backend. If the player is active on another backend, they reconnect there before Adapt resumes.
 
-A reset replaces the player's Adapt profile on the current backend. If the player is active on another backend, they must reconnect there before Adapt resumes.
-
-## Setting it up
-
-1. Stop every backend and back up the shared Adapt database plus each `plugins/Adapt/` directory.
-2. Remove any obsolete Adapt or Velocity companion jar from the proxy. Install the same current shaded Adapt jar on every backend.
-3. Configure identical SQL and Redis endpoints on every backend. Set `sql.enabled = true` and `redis.enabled = true`.
-4. Lock Redis down with network rules and ACL credentials. Adapt exposes no TLS, Redis database-number, or channel-name setting.
-5. Start one backend first. Confirm both SQL tables exist and use InnoDB.
-6. Start the remaining backends. Confirm SQL initialization and Redis subscription on each one, with no recovery or decoding errors.
-
-The `Adapt:data:v2` format is a hard break. Stop the whole network and replace every backend jar in one maintenance window. Mixed versions cannot exchange snapshots, and there is no compatibility decoder or proxy-side bridge.
-
-## Fixed Redis surfaces
+Redis has no TLS, database-number, or channel-name setting in Adapt. Separate networks that share one Redis service can see each other's traffic. Fence checks reject a snapshot for a different owner. Use a separate Redis service per network.
 
 | Surface | Purpose |
 |---|---|
-| `Adapt:data:v2` | Fenced transfer requests and epoch-only reset or purge notices |
-| `Adapt:data:v2:reply:<request-id>` | Request-scoped direct snapshot replies |
-| `Adapt:data:v2:stage:<player>:<owner>:<epoch>` | Exact-fence staged snapshot with a 60-second TTL |
+| `Adapt:data:v2` | Fenced transfer requests, and epoch-only reset or purge notices |
+| `Adapt:data:v2:reply:<request-id>` | Direct snapshot reply for one request |
+| `Adapt:data:v2:stage:<player>:<owner>:<epoch>` | Staged snapshot for that fence. TTL 60 seconds |
 
-The channel family and staging prefix are fixed. Separate Adapt networks sharing one Redis service can observe each other's traffic even though fence validation rejects unrelated player ownership. Use separate Redis services or network boundaries.
-
-## Failure boundaries
-
-Redis staging closes the lost-reply window only after `SETEX` completes. A source process failure after its runtime freezes but before that asynchronous write completes can still lose the final uncommitted delta. A staging failure followed by lost direct replies has the same limitation. Once staging succeeds, the exact predecessor is recoverable for 60 seconds; after the TTL, SQL and any matching fenced recovery envelope remain the available authorities.
-
-If Redis is intentionally disabled, the destination adopts from committed SQL and matching local fenced recovery only. If Redis is enabled but transfer verification errors, Adapt fails closed for that player without rejecting the Minecraft login. It makes at most three online retries after 2, 4, and 8 seconds plus deterministic 0-19 tick jitter; reconnecting starts a new claim cycle after the storage problem is fixed.
-
-| Symptom | What to check |
-|---|---|
-| Backend fails during Redis initialization | Redis host, port, ACL credentials, reachability, and the full backend exception |
-| Adapt is unavailable after a backend switch | Redis subscription and staging connection, exact predecessor fence, staged-record validation, and backend exceptions; the Minecraft session remains connected and reconnect can retry |
-| Stale data after a switch | Shared SQL identity, both InnoDB tables, Redis enablement on both backends, source shutdown timing, and matching `.pending-sql` recovery |
-| Decode errors after an update | At least one backend still uses the pre-v2 frame; stop the network and replace every backend jar together |
-| Traffic from an unrelated network | Multiple Adapt networks share the fixed channel family; isolate their Redis services |
-
-## Backend Redis config
+Staging covers a lost reply only after `SETEX` completes. A source that stops before that write can lose the last uncommitted change. After the 60 second TTL, SQL and a matching `data/players/<uuid>.json.pending-sql` file are the remaining copies.
 
 | Key | Default | What it does |
 |---|---|---|
-| `redis.enabled` | `false` | Enables fenced handoff only when SQL is also enabled |
-| `redis.host` | `"127.0.0.1"` | Redis address used by pub/sub and transfer staging |
-| `redis.port` | `6379` | Redis TCP port |
-| `redis.username` | `""` | Redis ACL username; credentials attach when username or password is non-empty |
-| `redis.password` | `""` | Redis password; stored in the backend configuration as plain text |
+| `redis.enabled` | `false` | Handoff. Ignored unless SQL is enabled |
+| `redis.host` | `"127.0.0.1"` | Redis address |
+| `redis.port` | `6379` | Redis port |
+| `redis.username` | `""` | ACL username. Sent when username or password is set |
+| `redis.password` | `""` | Redis password, stored in the config as plain text |
 
-SQL and Redis settings are restart-bound. Hotloading the core config preserves the startup values and does not enable, disable, or reconnect either service.
+SQL and Redis settings apply on restart. A later edit of those keys does not reconnect either service.
 
-## See also
-
-- [01 - Installation & Configuration](/adapt/01-installation-configuration)
-- [Updates and Recovery](/adapt/40-operator-runbooks)
+SQL keys, the InnoDB requirement, and the pending file are in [Installation and configuration](/adapt/01-installation-configuration).

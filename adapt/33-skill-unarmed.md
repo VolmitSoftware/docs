@@ -2,26 +2,22 @@
 title: "Skill - Unarmed"
 description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Unarmed gains XP from attacks made without a melee tool in the main hand. Axes, pickaxes, hoes, shovels, swords, tridents, spears, and maces disable the skill; other items still count. Some adaptations also require an empty off hand.
-
-Its 12 adaptations add punch damage, sprint charges, combos, disarms, slowing, shockwaves, block breaking, grappling, recovery, and meditation. Glass Cannon and Meditation also reward fighting without armor.
+Unarmed gains XP from attacks with no melee tool in the main hand; axes, pickaxes, hoes, shovels, swords, tridents, spears, and maces disable the skill, other items still count, and some adaptations also require an empty off hand. Its 12 adaptations add punch damage, sprint charges, combos, disarms, slowing, shockwaves, block breaking, grappling, recovery, and meditation; Glass Cannon scales with worn armor, and Meditation requires empty hands.
 
 ## How you earn Unarmed XP
 
-Every hit you land with a non-melee main hand counts. The skill adds 1 to `unarmed.hits` and the raw damage to `unarmed.damage`. Then it pays `damageXPMultiplier` times that damage, subject to a `cooldownDelay` cooldown between payouts.
+Every hit with a non-melee main hand adds 1 to `unarmed.hits` and the raw damage to `unarmed.damage`, then pays `damageXPMultiplier` times that damage. Payouts wait on `cooldownDelay`.
 
-Two extra counters track style. A hit landed while falling (fall distance above zero and not on the ground) adds to `unarmed.critical`. Any hit above 6 damage adds to `unarmed.heavy`. Killing anything while not holding a melee tool adds to `unarmed.kills`. Killing a boss that way plays a small celebration.
+A hit while falling (fall distance above zero and not on the ground) adds to `unarmed.critical`. A hit above 6 damage adds to `unarmed.heavy`. A kill while not holding a melee tool adds to `unarmed.kills`.
 
 Nothing is credited when the victim is already dead or invulnerable, or when you are invulnerable.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher from the Adapt menu (`/adapt`), the skill and the adaptation enabled in config, the `adapt.use` permission, and protection and region policy that allow the action.
 
 "Bare hands" means neither hand holds a melee tool. Blocks and other junk items are fine.
 
@@ -29,19 +25,7 @@ All of this needs the adaptation learned to level 1 or higher from the Adapt men
 
 5 levels · 4 knowledge, then 2 per level
 
-A sprinting punch with an empty main hand multiplies your damage. Killing a full-health target in one such punch counts toward a knockout milestone, complete with a flash and a shockwave ring.
-
-How to use it:
-
-1. Empty your main hand completely. Any item at all disables it.
-2. Sprint.
-3. Punch.
-
-Menu lore: "Damage", "Requires an empty main hand while sprinting".
-
-Stats and milestones: `unarmed.sucker-punch.sucker-punches` at 500 (reward 400). `unarmed.sucker-punch.one-punch-kills` at 50 (reward 1000), credited when the killing blow's final damage was at least the victim's max health.
-
-XP is hardcoded: 6.221 times the resulting damage per punch, plus 0.42 times the damage again when the punch exceeds 5. The main hand must be `AIR` exactly.
+A sprinting punch with the main hand exactly `AIR` multiplies damage. XP is 6.221 times the resulting damage, plus 0.42 times that damage when the punch exceeds 5, and a kill whose final damage was at least the victim's max health counts as a one-punch kill.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -52,13 +36,7 @@ XP is hardcoded: 6.221 times the resulting damage per punch, plus 0.42 times the
 
 7 levels · 6 knowledge, then 3 per level
 
-A flat percentage boost to your attack damage while neither hand holds a tool. The bonus is a timed attribute modifier that is reapplied whenever your hands change, so it comes and goes as you swap items. Nothing to press.
-
-Menu lore: "Damage".
-
-Stats and milestones: `unarmed.power.unarmed-kills` at 500 (reward 400) and 5000 (reward 1500).
-
-The bonus is an attack-damage `MULTIPLY_SCALAR_1` modifier of level percent times `damageFactor`. XP per hit is hardcoded at 0.321 times level percent times damage.
+While neither hand holds a melee tool, attack damage gains a `MULTIPLY_SCALAR_1` modifier of level percent times `damageFactor`, reapplied when your hands change. XP per hit is 0.321 times level percent times damage.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -68,16 +46,7 @@ The bonus is an attack-damage `MULTIPLY_SCALAR_1` modifier of level percent time
 
 7 levels · 6 knowledge, then 3 per level
 
-Punching hurts far more when you are naked. With zero armor equipped your damage is multiplied several times over. Wearing armor scales that bonus down toward nothing. The result never drops
-below your normal damage. It is purely upside with a large reward for going
-without.
-
-Menu lore: "x Damage at 0 armor", "PerLevel Bonus Damage".
-
-Stats and milestones: `unarmed.glass-cannon.naked-kills` at 100 (reward 300) and 500 (reward 1000).
-
-Armor value here is Adapt's own fraction, summed across the four slots. A
-leather helmet is 0.04. An iron helmet is 0.08. A diamond helmet is 0.12. With zero armor the damage becomes `damage x (maxDamageFactor + level x maxDamagePerLevelMultiplier)` plus the flat bonus. With any armor it becomes `damage - (damage x armor)` plus the flat bonus. Both branches take the higher of the result and your original damage, so this never reduces a hit.
+With no armor, damage is `damage * (maxDamageFactor + level * maxDamagePerLevelMultiplier)` plus `perLevelBonusMultiplier` per learned level; with any armor, damage is `damage - (damage * armor)` plus that same flat bonus, and both branches keep the higher of the result and the original damage. Armor is Adapt's fraction summed across the four slots; a leather helmet is 0.04, an iron helmet is 0.08, and a diamond helmet is 0.12.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -89,21 +58,7 @@ leather helmet is 0.04. An iron helmet is 0.08. A diamond helmet is 0.12. With z
 
 5 levels · 4 knowledge
 
-Sprint into something and the hit lands as an impact: extra damage plus a shove in the direction you are looking. A shield in either hand works as well as bare fists. While the charge is primed you leave a small dust trail so you can see it is ready.
-
-How to use it:
-
-1. Have both hands empty, or hold a shield in either hand.
-2. Sprint, and keep actually moving. Standing still while the sprint flag is on does not count.
-3. Hit something.
-
-Using a shield puts the cooldown on the shield itself as a visible item cooldown. With fists it is an internal cooldown instead. Riding anything disables the charge.
-
-Menu lore: "Impact Damage Bonus", "Impact Knockback", "Charge Cooldown".
-
-Stats and milestones: `unarmed.battering-charge.charges` at 300 (reward 400). `unarmed.battering-charge.charge-kills` at 100 (reward 1000).
-
-The movement sample must be under 750 ms old to count, which is why standing still with the sprint flag on does nothing.
+A sprinting hit with empty hands, or with a shield in either hand, adds flat damage and knockback along your look; the movement sample must be under 750 ms old, so a sprint flag while standing still does not count. A shield shows the cooldown on that item, fists use an internal cooldown, and riding disables the charge.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -121,13 +76,7 @@ The movement sample must be under 750 ms old to count, which is why standing sti
 
 6 levels · 4 knowledge, then 3 per level
 
-Consecutive punches stack up, and each stack adds damage to the next hit. Stacks reset if you go too long between hits, and swinging at nothing after the grace window drops the whole chain with a low note. Bigger chains have their own advancements at 10 and 25 stacks.
-
-Menu lore: "Max Combo Stacks", "Damage Per Stack", "Combo Window".
-
-Stats and milestones: `unarmed.combo-chain.total-combo-hits` at 5000 (reward 400). One-off advancements `challenge_unarmed_combo_10` and `challenge_unarmed_combo_25` at 10 and 25 stacks.
-
-Only the main hand is checked here. Dropping a combo below 3 stacks plays no effect.
+Only the main hand is checked: consecutive punches add stacks of bonus damage, and a missed swing after the grace window clears the chain.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -144,14 +93,7 @@ Only the main hand is checked here. Dropping a combo below 3 stacks plays no eff
 
 5 levels · 5 knowledge, then 4 per level
 
-Bare-hand hits can knock a target's held item to the ground. It takes the main-hand item, or an off-hand shield if the main hand is empty. Mobs can also lose one worn armor piece on the same disarm. The dropped item gets a pickup delay so the victim cannot instantly snatch it
-back. Each target has its own cooldown to stop chain-disarming. Skeletal servants are never disarmed.
-
-Menu lore: "Disarm Chance", "Per-Target Cooldown", "chance a disarmed mob also drops a worn armor piece".
-
-Stats and milestones: `unarmed.disarm.disarms` at 100 (reward 400) and 1000 (reward 1500).
-
-Players never lose armor.
+A bare-hand hit can knock the target's main-hand item to the ground, or an off-hand shield if the main hand is empty. Players never lose armor, and skeletal servants are never disarmed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -167,13 +109,7 @@ Players never lose armor.
 
 5 levels · 4 knowledge, then 3 per level
 
-Bare-hand hits apply Slowness that stacks up one amplifier at a time toward a level-based cap. Past a certain level, Weakness stacks on the same way. Good for softening something you cannot outrun.
-
-Menu lore: "Max Slowness Stacks", "Max Weakness Stacks", and "Weakness unlocks at higher levels" while it is still locked.
-
-Stats and milestones: `unarmed.pressure-point.pressure-strikes` at 500 (reward 400) and 5000 (reward 1500).
-
-Each hit raises the existing amplifier by one, up to the cap, and refreshes the duration.
+Bare-hand hits apply Slowness, and Weakness once it is unlocked, raising the current amplifier by one up to the cap and refreshing the duration.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -189,21 +125,7 @@ Each hit raises the existing amplifier by one, up to the cap, and refreshes the 
 
 5 levels · 6 knowledge, then 5 per level
 
-Clap your hands and everything in a cone in front of you gets thrown backward and upward. No damage, just displacement, which makes it an escape tool and a way to break up a pile of mobs.
-
-How to use it:
-
-1. Keep both hands free of tools.
-2. Sneak.
-3. Left-click the air or a block.
-
-Each clap costs hunger and fails with a dull cue if you are on cooldown or too hungry. Your own pets are never thrown.
-
-Menu lore: "Shockwave Range", "Knockback Force", "Clap Cooldown", "Hunger Cost".
-
-Stats and milestones: `unarmed.shockwave-clap.mobs-clapped` at 250 (reward 400) and 2500 (reward 1500). Every activation also increments `unarmed.shockwave-clap.claps`, which has no milestone.
-
-Hunger is spent on activation, before targets are resolved.
+With both hands free of tools, sneak and left-click air or a block to shove entities in a cone backward and upward, dealing no damage. Hunger is spent before targets are resolved, and your pets are never thrown.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -226,15 +148,7 @@ Hunger is spent on activation, before targets are resolved.
 
 5 levels · 4 knowledge, then 3 per level
 
-You deal flat extra damage on every bare-hand hit. Punching soft blocks such as
-dirt, sand, leaves, or anything under the hardness threshold gives you a short
-mining-speed buff. Nothing to activate.
-
-Menu lore: "Flat Punch Damage", "Soft Block Punch Haste".
-
-Stats and milestones: `unarmed.iron-fists.iron-hits` at 1000 (reward 400) and 10000 (reward 1500).
-
-The mining buff is a block-break-speed modifier of 0.2 x (amplifier + 1), not a Haste potion effect.
+Bare-hand hits deal flat bonus damage. Punching dirt, sand, leaves, or any block at or under the softness threshold applies a block-break-speed modifier of `0.2 * (amplifier + 1)`, not a Haste potion.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -249,21 +163,7 @@ The mining buff is a block-break-speed modifier of 0.2 x (amplifier + 1), not a 
 
 5 levels · 6 knowledge, then 5 per level
 
-Grab something with a sneak-punch, then throw it where you are looking. Works on players too, subject to PVP policy, but bosses cannot be grabbed.
-
-How to use it:
-
-1. Keep both hands free of tools.
-2. Sneak and punch a target. A line of particles connects you to it.
-3. Punch again, or release sneak, to hurl it.
-
-The grab expires on its own after a few seconds. Each throw adds exhaustion, so grappling a crowd will make you hungry, and the target must still be within throwing range when the hurl resolves.
-
-Menu lore: "Hurl Force", "Grapple Cooldown", "Hit again or release sneak to hurl", "Exhaustion per Throw".
-
-Stats and milestones: `unarmed.grapple.hurled-mobs` at 100 (reward 400) and 1000 (reward 1500).
-
-The cooldown is marked on the hurl, not the grab, and you get one hurl per second.
+With both hands free of tools, sneak-punch to grab a target, then punch again or release sneak to throw it along your look; players can be grabbed when PvP policy allows, and bosses cannot. The cooldown is spent on the hurl, not the grab, and you get one hurl per second.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -282,13 +182,7 @@ The cooldown is marked on the hurl, not the grab, and you get one hurl per secon
 
 5 levels · 4 knowledge, then 3 per level
 
-Killing a non-player mob with a direct bare-hand hit gives back some hunger and saturation and starts a short regeneration burst. It has its own cooldown so a fast kill chain does not turn into infinite food.
-
-Menu lore: "Hunger Restored", "Regeneration Duration".
-
-Stats and milestones: `unarmed.second-wind.second-winds` at 100 (reward 400) and 1000 (reward 1500).
-
-Friendly targets, including your own pets, are skipped. Food is clamped to 20 and saturation to your current food level.
+A direct bare-hand kill on a non-player mob restores hunger and saturation and starts Regeneration. Friendly targets, including your pets, are skipped, food is clamped to 20, and saturation is clamped to your current food level.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -305,22 +199,7 @@ Friendly targets, including your own pets, are skipped. Food is clamped to 20 an
 
 5 levels · 5 knowledge, then 4 per level
 
-Sit still and build absorption hearts. It is slow, but it stacks up to a real buffer over a minute or two of downtime.
-It pairs well with Glass Cannon since absorption is not armor.
-
-How to use it:
-
-1. Empty both hands completely.
-2. Stay out of combat for the lockout window.
-3. Sneak and stand still. Absorption ticks up once per second until you hit the cap.
-
-Moving, unsneaking, picking anything up, or taking or dealing a hit ends the session immediately.
-
-Menu lore: "Max Absorption", "Absorption Per Pulse", "Combat Lockout".
-
-Stats and milestones: `unarmed.meditation.absorption-gained` at 500 (reward 400) and 5000 (reward 1500).
-
-Both hands must be completely empty, not merely free of tools. XP from pulses is silent, so there is no XP popup.
+With both hands completely empty, after the combat lockout, sneak and stand still to gain absorption once per second up to the cap. Moving, releasing sneak, picking an item up, or dealing or taking a hit ends it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -365,11 +244,6 @@ Written to `plugins/Adapt/skills/unarmed.toml` on first load.
 | `challenge_unarmed_heavy_25` | 25 | `challengeUnarmedHeavyReward` |
 | `challenge_unarmed_heavy_250` | 250 | `challengeUnarmedHeavyReward` x 3 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts) for levels, knowledge, and how adaptations are learned.
-- [03 - Player Usage](/adapt/03-player-usage) for the Adapt menu and general play.
-- [10 - Skills Catalog](/adapt/10-skills-catalog) for the full skill list.
-- [04 - Commands & Permissions](/adapt/04-commands-permissions) for the `adapt.use` nodes.
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

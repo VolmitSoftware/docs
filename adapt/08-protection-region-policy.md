@@ -2,96 +2,43 @@
 title: "Protection & Region Policy"
 description: "WorldGuard flags, claim protection, and region policy"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt gives claim and region plugins two ways to control it. Registered protectors answer yes or no whenever an adaptation is about to break a block, hit something, or open a container. WorldGuard gets a second channel on top of that. Five region flags turn adaptations off, change XP, hand out extra power, and temporarily lend adaptations to whoever is standing inside.
+WorldGuard flags and claim protectors gate Adapt. A protector allows or denies a block break, a hit, a container open, or the activator click. WorldGuard also has five region flags.
 
-The flags are the interesting part. `use-adaptations deny` makes a region an Adapt-free zone. `adapt-xp-multiplier` turns a region into a training ground. `adapt-power-bonus` lets people hold more adaptations than their level normally affords, and takes them back when they leave. `adapt-unlock-adaptations` grants named adaptations at level 1 for free while a player is inside, and revokes them on the way out.
+Flags are registered when Adapt enables. Install or remove WorldGuard, then restart. `protectorSupport.worldguard = false` removes WorldGuard from the default set. A per-adaptation override of `WorldGuard = true` adds it back, and that protector still reads `use-adaptations`.
 
-Region lookups fail open. A missing plugin, a missing location, or a thrown exception all resolve to the default policy. The default allows XP, uses multiplier 1.0, and grants no power bonus and no unlocks. The default grants nothing. A fault revokes outstanding grants rather than freezing them in place.
+A missing plugin, a missing location, or a protector error uses the default policy: XP allowed, multiplier 1.0, no power bonus, no unlocks. A WorldGuard error stops flag use for the rest of the session and revokes grants on the next tick.
 
-Adapt also asks Bukkit. Indirect container and item actions dispatch the normal interaction, break, place, or pickup events before Adapt changes anything. An event-driven protection plugin can deny the same action without implementing Adapt's API.
-
-## Requirements
-
-WorldGuard has to be installed for any of the flags. Adapt registers them in `onLoad`. That is the only point WorldGuard accepts new flags. This cannot be done later by a reload.
-
-`protectorSupport.worldguard` in `adapt.toml` must be `true`, which it is by default. Turn it off and the region policy source short-circuits to the default policy on every lookup. Then `adapt-xp`, `adapt-xp-multiplier`, `adapt-power-bonus` and `adapt-unlock-adaptations` all go inert. The `use-adaptations` flag goes through the protector instead. Turning the setting off drops the WorldGuard protector out of the default-active set. A per-adaptation `WorldGuard = true` override still re-adds it. That protector keeps reading the flag.
-
-Registration is defensive. A flag name already claimed by another plugin with a matching type is reused. A name claimed with a different type disables that one flag for the session and leaves the rest working. If Adapt registers too late, it falls back to injecting the flag into WorldGuard's flag map by reflection, with a warning either way.
-
-## Turning adaptations off in a region
+## Flags
 
 ```
 /rg flag <region> use-adaptations deny
-```
-
-This flag runs through the normal protector path. A `deny` makes every adaptation resolve to level 0 for that player. It blocks each block, entity, and container the adaptation would touch. WorldGuard bypass applies. See [46 - API - Protection](/adapt/46-api-protection).
-
-## Controlling XP
-
-```
 /rg flag <region> adapt-xp deny
 /rg flag <region> adapt-xp-multiplier 2.5
-```
-
-`adapt-xp deny` zeroes the award before the skill line ever sees it. Only awards that carry a location are affected. The location used is whatever the awarding skill passed. For block work that is the block, not the player. A null location resolves to the default policy and the award goes through.
-
-WorldGuard bypass is honored for `adapt-xp` and nothing else. A player whose session has bypass always earns XP. The multiplier, power bonus and unlock flags do not consult bypass. An admin standing in a boosted region gets the boost.
-
-`adapt-xp-multiplier` scales the award. It lands immediately after the novelty multiplier and before the skill line's own multipliers. It stacks with them rather than replacing them. An absent flag is `1.0`. `0` does the same thing as `adapt-xp deny` for that award. WorldGuard resolves the value with its normal priority and inheritance rules. Overlapping regions do not compound. The winning region's value is used as written.
-
-Where this sits in the full award chain is in [05 - Configuration Math](/adapt/05-configuration-math), under "The XP multiplier chain."
-
-## Lending extra power
-
-```
 /rg flag <region> adapt-power-bonus 8
-```
-
-The bonus is read on the player's one-second tick from their current position. It is added straight into max power. It is a transient field. It is never serialized. It is cleared when the player's runtime unregisters. It is reset to `0` the moment a tick resolves a region that does not set it.
-
-Treat a positive bonus as a lease. The bonus disappears on the next tick after the player leaves. If they are then over budget the same tick prunes them back into it. The lowest-level learned adaptations are demoted level by level. Level 1 entries are removed outright, until used power fits again. No refunds are issued for pruned levels.
-
-The prune only fires when the bonus actually went down and the player no longer fits. Walking between regions with equal or higher bonuses never touches learned adaptations. Region-granted adaptations are exempt from the pruner and cost no power, so they never contribute to this. A player in `/adapt debug mode` is skipped by the pruner entirely.
-
-## Lending adaptations
-
-```
 /rg flag <region> adapt-unlock-adaptations stealth-shadowmeld,axe-chop
 ```
 
-Give it a set of adaptation registry ids, or the single entry `*` for every registered adaptation. Values are trimmed and lowercased. The union of every applicable region's set is used.
+`use-adaptations deny` forces active level 0 in that region. WorldGuard bypass applies to this flag.
 
-Inside the region, each listed adaptation is granted at level 1 within a second, as long as it and its skill are enabled. It is free — no knowledge cost, no Vault charge, no refund receipt — and it is marked `regionGranted`.
+`adapt-xp deny` zeroes awards that carry a location. The location is the one the skill passed, often the block. No location uses the default policy and the award is paid. Bypass applies to `adapt-xp` only. `adapt-xp-multiplier` applies after novelty and before the skill-line multipliers. Overlapping regions do not compound. `0` zeroes the award. Bypass does not apply to the multiplier, the power bonus, or unlocks. Where the multiplier sits in the award is in [Configuration math](/adapt/05-configuration-math).
 
-Grants are free in every sense. Used power skips region-granted adaptations and so does the power-budget pruner. A wildcard region cannot bankrupt a player's power budget.
+`adapt-power-bonus` is added to max power on the one-second tick from the player's position. It is not saved. The next tick outside a region that sets it clears the bonus. If used power then exceeds max power, the lowest learned levels are removed with no refund. Moving to an equal or higher bonus does not remove levels. Region grants are exempt. `/adapt debug mode` skips that removal.
 
-An adaptation the player learned normally is never marked `regionGranted`. It is never revoked. It keeps costing power. Being named by the flag does nothing to it.
+`adapt-unlock-adaptations` takes adaptation ids, or `*`. Names are trimmed and lowercased. Applicable regions are combined. Each listed adaptation is granted at level 1 while the player is inside, when the skill and adaptation are enabled. Grants cost no knowledge, currency, or power, and are removed on leave, quit, and profile load. An adaptation the player already learned is left as a normal learned adaptation.
 
-### Buying a granted adaptation
+Buying a grant charges from level 0, including the granted level, and the result is a normal learned adaptation. Unlearning a grant refunds nothing. Unlearning one while still inside grants it again on the next tick.
 
-Buying a region-granted adaptation makes it permanently yours, at the full price from zero.
+## Protectors
 
-Buying a region-granted adaptation for real is priced from level 0, so you pay for the free level 1 too. Once bought it costs power and it survives leaving the region, quitting and reloading. A failed purchase leaves you exactly as you were.
+`protectorSupport.*` selects the default set. A core-config reload rebuilds that set. Installing or removing a protection plugin needs a restart.
 
-Unlearning is symmetric. `paidLevel = 0` for a region-granted adaptation. The refund floor is `0`. No knowledge or currency comes back for a level that was never paid for. A player-initiated unlearn of a still-granted adaptation is allowed. It re-grants on the next tick while they remain inside.
-
-## Choosing which protectors apply
-
-Adapt registers a protector for every supported plugin that is enabled while Adapt enables. The matching `protectorSupport.*` value then decides whether that registered protector belongs to the default-active set. A core-config hotload rebuilds that snapshot. Installing or removing a protection plugin still requires a restart so Bukkit load order and Adapt's registries can be rebuilt.
-
-Normal adaptation checks and Mutation placement and occupancy checks use the default-active set. The configured activator block also checks every default-active protector before opening. Per-adaptation overrides do not apply to that GUI interaction because it has no adaptation context.
-
-To change the set for one adaptation:
-
-1. Add a table under `protectionOverrides` keyed by the exact adaptation registry id.
-2. Inside it, set a protector name to `true` to add it or `false` to remove it.
-3. Save. Overrides are read from the hotloaded core config at use time.
+`protectionOverrides.<adaptation id>` sets a protector name to `true` to add it or `false` to remove it for that adaptation. The activator click uses the default set only.
 
 ```toml
 [protectionOverrides.rift-blink]
@@ -99,23 +46,11 @@ WorldGuard = true
 GriefPrevention = false
 ```
 
-An override cannot activate a protector whose plugin was absent when Adapt enabled. An unknown name logs `Could not find protector <name> for adaptation <id>. Skipping...` and is ignored.
+An override cannot add a protector whose plugin was absent at enable. An unknown name is skipped.
 
-## Bukkit action-event checks
+Container and item actions also fire the normal Bukkit events before Adapt changes the world. Cancelling the event stops Adapt. Adapt ignores checks it marked itself. Remote inventories do not apply vanilla reach, chest obstruction, spectator, or lock rules. The dispatched events are listed in [API - Protection](/adapt/46-api-protection).
 
-Adapt asks other plugins for permission before it performs container and item work that vanilla
-would normally route through a player event, so an event-driven protection plugin can deny the same
-action without implementing anything Adapt-specific. Which features dispatch which events is in
-[46 - API - Protection](/adapt/46-api-protection#bukkit-checks-adapt-dispatches).
-
-Adapt ignores its own marked checks so an adaptation cannot trigger itself. Other plugins receive the ordinary Bukkit events.
-
-A marked interaction asks other plugins whether the action is allowed. It does not perform the vanilla block use itself. Remote inventories therefore do not simulate reach, obstructed-chest, spectator, or vanilla `Lockable` key behavior. Use a supported protection plugin when those rules must govern remote access.
-
-## Failure behavior
-
-If WorldGuard errors, Adapt stops using its region flags for the rest of the session and falls back
-to the default policy, which grants nothing. The next tick revokes anything it had granted.
+On Folia, an adaptation whose targets span more than one region is skipped. Air-click targeting is off. A direct block click still runs.
 
 ## Reference
 
@@ -134,11 +69,6 @@ A non-finite multiplier resolves to `1.0`. Max power itself floors at `0`. A lar
 ```
 maxPower = max(0, (int)(masterLevel * powerPerLevel) + regionPowerBonus)
 ```
-
-### Region-grant lifecycle
-
-A region grant disappears when you leave the region, when you quit, and again when your profile
-loads. It can never become permanent, and it never costs power.
 
 ### Default policy triggers
 
@@ -162,9 +92,7 @@ loads. It can never become permanent, and it never costs power.
 | `protectorSupport.griefprevention` | `true` | GriefPrevention | `GriefPrevention` |
 | `protectorSupport.lockettePro` | `true` | LockettePro | `LockettePro` |
 
-Protectors implement `art.arcane.adapt.api.protection.Protector` and are held by `ProtectorRegistry`. The interface has seven checks, all defaulting to allow: `checkRegion`, `canBlockBreak`, `canBlockPlace`, `canPVP`, `canPVE`, `canInteract`, `canAccessChest`. Region policy aggregation for XP, multipliers, power bonus, and temporary unlocks is separate and uses `RegionPolicy` and `RegionPolicySource`.
-
-The WorldGuard protector maps its checks onto stock WorldGuard flags. Every one of them also requires `use-adaptations` to not be `deny`:
+Each WorldGuard check also requires `use-adaptations` to be unset or `allow`:
 
 | Adapt check | WorldGuard flag |
 |---|---|
@@ -176,15 +104,3 @@ The WorldGuard protector maps its checks onto stock WorldGuard flags. Every one 
 | `canInteract` | `use-adaptations` + `INTERACT` |
 | `canAccessChest` | `use-adaptations` + `CHEST_ACCESS` |
 
-### Folia constraints
-
-On Folia, an adaptation whose targets span more than one region is skipped rather than crossing it,
-and air-click variants that resolve a target by ray trace are disabled. Direct block clicks still
-work.
-
-## See also
-
-- [09 - Integrations](/adapt/09-integrations)
-- [46 - API - Protection](/adapt/46-api-protection)
-- [05 - Configuration Math](/adapt/05-configuration-math)
-- [01 - Installation & Configuration](/adapt/01-installation-configuration)

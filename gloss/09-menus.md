@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -266,17 +266,4 @@ Grant `gloss.open.*` to let a group open everything, or grant individual nodes t
 
 `schema/gloss.schema.json` is an editor schema with `$id` `https://volmit.com/gloss/schema.json`. The server does not read it — map it in your IDE or add a `"$schema"` key, which the runtime ignores. `schema/gloss-preview.schema.json` sits beside it and describes [Container Previews](/gloss/15-container-previews) instead.
 
-## Migrating from HoloUi
-
-The document format is unchanged: menu files copied out of `plugins/holoui/menus/` load in Gloss as they are, and `/gloss import holoui` copies them into `plugins/Gloss/menus/` for you.
-
-What changed around them:
-
-- the folder is `plugins/Gloss/menus/`, not `plugins/holoui/menus/`
-- the commands are `/gloss menu …`, and `/holoui menu create` is now `/gloss menu new`
-- the permissions are `gloss.menus.*` and `gloss.open.<menuId>`
-- `uiScale` is `[menus] uiScale` in `gloss.toml`, not `UI_SCALE` in `settings.json`
-- HoloUi world-anchored **boards** are Gloss **panels**. `/gloss board` is the scoreboard tree and has nothing to do with menus
-- the id contract is enforced at load, so a menu path that HoloUi tolerated may now be refused
-
-The command and permission mapping tables are in [Commands & Permissions](/gloss/17-commands-permissions).
+`/gloss import holoui` copies `plugins/holoui/menus/` into `plugins/Gloss/menus/`. Those menu files load as they are. World-anchored HoloUi boards are Gloss panels. Menu scale is `[menus] uiScale`.

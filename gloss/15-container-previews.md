@@ -2,13 +2,12 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
-Container previews show a private holographic card when a player looks at a supported block or
-entity. The inventory never opens and no `InventoryOpenEvent` fires.
+Container previews show a private holographic card when a player looks at a supported block or entity. The inventory does not open.
 
 Preview layouts are JSON documents in `plugins/Gloss/previews/`. Gloss includes 14 layouts, supports
 custom ones, and reloads the folder while the server runs. `/gloss web edit container-preview <id>`

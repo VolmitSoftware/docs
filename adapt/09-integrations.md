@@ -2,126 +2,63 @@
 title: "Integrations"
 description: "Optional plugin integrations and their runtime behavior"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt detects thirteen optional plugins at startup. Missing integrations do not stop Adapt from enabling, but an unusable configured integration may produce a warning.
+Every integration is optional. Install, remove, enable, or disable one, then restart. A missing plugin does not stop Adapt. A configured integration that cannot run logs a warning.
 
-Restart after installing, removing, enabling, or disabling an integration. Protection plugins can deny adaptation actions. The other integrations add economy charges, placeholders, or support for specific abilities.
+| Plugin | What it adds |
+|---|---|
+| PlaceholderAPI | `%adapt_...%` placeholders |
+| WorldGuard | Region flags, region policy, and a protector |
+| Factions | Claim protector. Off unless `protectorSupport.factionsClaim` is true |
+| ChestProtect | Container protector |
+| Residence | Residence protector |
+| GriefDefender | Claim protector |
+| GriefPrevention | Claim protector |
+| LockettePro | Lock protector |
+| Vault | Currency charge and refund when learning |
+| HiddenOre | Hidden-vein mining XP and the pickaxe and excavation adaptations that target veins |
+| Iris | Registers `axe-iris-feller` |
+| AdvancedChests | `rift-access` can open an AdvancedChests container |
+| MagicCosmetics | Cosmetic hat and bag slots are left out of armor-value math |
+
+Protector names and defaults: [Protection and region policy](/adapt/08-protection-region-policy).
 
 ## PlaceholderAPI
 
-If PlaceholderAPI is enabled when Adapt enables, Adapt registers a persistent expansion under the identifier `adapt`. Placeholder paths are dot-separated segments after `%adapt_`. You get things like `%adapt_player.level%`, `%adapt_skill.agility.level%` and `%adapt_mutation.slot-1%`.
-
-Values refresh about once a second, so a scoreboard full of Adapt placeholders costs nothing. A player's values stay readable for sixty seconds after they leave, then become `---`. If their profile cannot be loaded, `%adapt_available%` is `false` and every value is `---` straight away. The complete key and result table is in [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi).
+The expansion id is `adapt`. Paths are dot-separated, as in `%adapt_player.level%` and `%adapt_skill.agility.level%`. Values refresh about once a second. After a player leaves, the last values stay readable for 60 seconds, then become `---`. If the profile cannot load, `%adapt_available%` is `false` and every value is `---`. An unknown key is left unchanged. Keys: [PlaceholderAPI](/adapt/47-api-placeholderapi).
 
 ## Vault
 
-Vault lets you charge economy currency for learning adaptations in addition to knowledge.
-
-1. Install Vault and an economy provider.
-2. Set `learningEconomy.enabled = true` in `adapt.toml`.
-3. Set `learningEconomy.moneyPerKnowledge` to the price per point of knowledge.
-4. Set `learningEconomy.refundPercent` to how much of that comes back on unlearn, or `0` for none.
-
-Adapt withdraws `knowledgeCost * moneyPerKnowledge` before spending knowledge. A failed withdrawal rejects the purchase.
-
-Each level bought stores its own refund receipt on the skill line. A normal unlearn pays back `refundPercent` of the receipts covering the levels being dropped, unless `hardcoreNoRefunds` is on. If the deposit itself fails, the amount is parked on the skill line and paid out by the next learn or unlearn that player performs.
-
-If Vault is missing, or Vault has no active economy provider, learning stays knowledge-only. Adapt warns once when prices are enabled with no provider available. It stops warning as soon as one appears.
-
-## HiddenOre
-
-The HiddenOre bridge only activates when Bukkit reports HiddenOre as enabled. Once it is, hidden veins stop being invisible to Adapt. Breaking one awards Pickaxes XP from the same material-value table normal ores use. Several pickaxe and excavation adaptations start seeing veins as real targets.
-
-Autosmelt turns raw iron, gold and copper drops into ingots. Drop to Inventory asks HiddenOre to deliver straight to the player's inventory. Pickaxe Veinminer chains through HiddenOre vein siblings. Quarry Sense and Excavation's Seismic Ping both include hidden veins in what they detect. Trophy Polish does not run through HiddenOre because hidden veins are not rare trophies.
-
-The bridge applies to pickaxe mining only. It does not act on HiddenOre's blast-mining rewards: an explosion awards no Pickaxes XP, its drops are not autosmelted, and Drop to Inventory does not apply to them.
-
-If HiddenOre is installed but disabled, Adapt logs a warning and runs without the bridge.
-
-## Iris
-
-Iris controls whether the `axe-iris-feller` adaptation exists at all. Adapt only registers it when Iris is enabled. The adaptation reports itself disabled if Iris goes away.
-
-Iris handles tree recognition and felling through `IrisTreeFellerService`. Adapt handles hunger, durability preservation, cooldowns, stopping, and refunds. Other axe veinminers ignore breaks owned by that service. Adapt has no general Iris biome integration.
-
-## AdvancedChests
-
-When AdvancedChests is enabled, `rift-access` checks the block it is about to open remotely through `AdvancedChestsAPI`. If that block is an AdvancedChests container, Adapt opens page 1 of that chest instead of a plain Bukkit inventory.
-
-A failed lookup is logged with a stack trace. The remote open fails safely rather than falling through to the vanilla inventory. Normal protection and active-adaptation checks still run either way. The remote session only activates once the API has actually replaced the player's top inventory.
-
-## MagicCosmetics
-
-Several Adapt abilities scale off how much armor a player is wearing. MagicCosmetics puts cosmetic items in the helmet and chestplate slots where they would otherwise read as real armor. When MagicCosmetics is enabled and reports an equipped `HAT` or `BAG`, Adapt drops the matching slot from its armor-value sum. Cosmetic carriers contribute nothing.
-
-## Protection plugins
-
-WorldGuard and six claim or container plugins are registered whenever they are present at enable. The `protectorSupport.*` keys then pick which of those registered protectors are active by default. Factions defaults off. The rest default on.
-
-Indirect Rift container use and transfers from live item entities also dispatch Bukkit's normal interaction or pickup events before committing. Event-driven protection plugins can deny the same action that way without implementing anything Adapt-specific. The registered protectors stay active as an extra gate.
-
-Flags, exact config names, per-adaptation overrides and failure behavior are in [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
-
-## Cross-server SQL and Redis
-
-Adapt needs no proxy plugin. SQL-backed backends use Redis directly during pre-login to request a response correlated to the exact preceding owner token and epoch. SQL remains authoritative, unsolicited payloads are ignored, and stale owners cannot overwrite a newer fence. A failed claim never rejects the Minecraft login: Adapt stays inactive and makes bounded online retries without creating a fallback profile. Installation, the `Adapt:data:v2` hard break, and operational limits are in [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server).
-
-## Third-party Java API
-
-Other Bukkit plugins can register `AbilityUsePolicy`, `AbilityCostProvider`, `Protector` and region-policy services. They can listen to Adapt's events. Registering a provider never grants an unlearned adaptation. See docs `41` through `50`.
-
-## Reference
-
-### Bukkit soft dependencies
-
-Detected when Adapt starts.
-
-| Plugin | Runtime behavior |
-|---|---|
-| PlaceholderAPI | Registers the persistent `adapt` placeholder expansion |
-| WorldGuard | Registers region flags, the region policy source, and a protector |
-| Factions | Registers the Factions claim protector |
-| ChestProtect | Registers its container protector |
-| Residence | Registers its residence protector |
-| GriefDefender | Registers its claim protector |
-| GriefPrevention | Registers its claim protector |
-| LockettePro | Registers its lock/sign protector |
-| Vault | Resolves the active economy provider for learning charges and refunds |
-| HiddenOre | Connects hidden veins to mining XP and applicable pickaxe/excavation adaptations |
-| Iris | Enables `axe-iris-feller` against Iris-managed trees |
-| AdvancedChests | Lets `rift-access` open an AdvancedChests container |
-| MagicCosmetics | Keeps cosmetic hat and bag equipment out of Adapt's armor-value sum |
-
-Protection registration and default-enable settings are defined in [08 - Protection & Region Policy](/adapt/08-protection-region-policy).
-
-### PlaceholderAPI behavior
-
-Values refresh about once a second per player. A player who just left reads their last values for a
-minute, then `---`. A key the expansion does not publish is left in the text unchanged.
-
-### Vault settings
+With `learningEconomy.enabled` and an economy provider, the charge is `knowledge cost * moneyPerKnowledge`. A failed withdrawal rejects the purchase. Each bought level stores receipt `vault-learning-refund-<adaptation>-level-<n>`. Unlearn pays `refundPercent` of those receipts unless `hardcoreNoRefunds` is true. A failed deposit is stored as `vault-learning-pending-refund` and paid on the next learn or unlearn on that line. No provider means learning stays knowledge-only.
 
 | Key | Default | What it does |
 |---|---|---|
-| `learningEconomy.enabled` | `false` | Turns on Vault charges for learning. With it off, learning is knowledge-only |
-| `learningEconomy.moneyPerKnowledge` | `1.0` | Currency charged per point of knowledge. Values at or below zero, or non-finite, disable the charge |
-| `learningEconomy.refundPercent` | `100.0` | Percentage of the recorded receipts returned on unlearn, capped at 100 |
-| `hardcoreNoRefunds` | `false` | When true, unlearning refunds neither knowledge nor currency |
+| `learningEconomy.enabled` | `false` | Vault charges for learning |
+| `learningEconomy.moneyPerKnowledge` | `1.0` | Currency per knowledge point. Zero, negative, or non-finite disables the charge |
+| `learningEconomy.refundPercent` | `100.0` | Percent of the recorded receipts returned on unlearn, capped at 100 |
+| `hardcoreNoRefunds` | `false` | Unlearn returns neither knowledge nor currency |
 
-Skill-line storage keys used by the economy: `vault-learning-refund-<adaptation>-level-<n>` for per-level receipts, and `vault-learning-pending-refund` for a deposit that failed and is awaiting retry.
+## HiddenOre
 
-### Iris tree feller
+HiddenOre must be enabled. Breaking a hidden vein pays Pickaxes XP from the same material value as the matching ore. Autosmelt converts raw iron, gold, and copper drops to ingots. Drop to Inventory asks HiddenOre to deliver to the inventory. Pickaxe Veinminer chains through vein siblings. Quarry Sense and Seismic Ping include hidden veins. Trophy Polish does not. Blast-mining rewards pay no Pickaxes XP, are not smelted, and are not sent to the inventory.
 
-`axe-iris-feller` is registered only when Iris is enabled, and delegates to `art.arcane.iris.api.tree.IrisTreeFellerService` from the Bukkit services manager. Max level 3, tick interval 6127 ms, durability preservation chance 0% / 25% / 75% by level. It skips any break that is already vein-mined or already managed by the Iris service.
+## Iris
 
-## See also
+`axe-iris-feller` is registered only while Iris is enabled. Iris recognizes and fells the tree. Adapt applies hunger, durability preservation, cooldowns, stopping, and refunds. Other axe veinminers skip breaks that service already owns. Max level 3. Tick interval 6127 ms. Durability preservation is 0%, 25%, and 75% by level.
 
-- [01 - Installation & Configuration](/adapt/01-installation-configuration)
-- [08 - Protection & Region Policy](/adapt/08-protection-region-policy)
-- [39 - Cross-Server SQL & Redis](/adapt/39-velocity-cross-server)
-- [47 - API - PlaceholderAPI](/adapt/47-api-placeholderapi)
+## AdvancedChests and MagicCosmetics
+
+When the block `rift-access` is about to open is an AdvancedChests container, Adapt opens page 1 of that chest. A failed lookup logs the error and the remote open stops. Protection checks still run.
+
+MagicCosmetics `HAT` and `BAG` slots are omitted from Adapt's armor-value sum.
+
+## Cross-server storage
+
+SQL remains the authority. Redis carries the handoff when both are enabled. There is no proxy plugin. See [Cross-server SQL and Redis](/adapt/39-velocity-cross-server).
+
+Other plugins can register ability policies, costs, and protectors. Registering one does not grant an unlearned adaptation. See [API](/adapt/41-api-getting-started).

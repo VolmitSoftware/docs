@@ -2,17 +2,13 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Each frame portal has menus for its type, orientation, destination, settings, cost, and appearance. The defaults below apply to new portals. Concepts:
-[02 - Concepts](/wormholes/02-concepts). Construction:
-[03 - Building Portals](/wormholes/03-building-portals).
-
-Atlas records nearby portal discoveries silently, without sending chat announcements.
+Each frame portal has menus for type, orientation, destination, settings, cost, and appearance. The defaults below apply to a new portal. Nearby portal discoveries are recorded without a chat message. Rules: [Concepts](/wormholes/02-concepts). Construction: [Building portals](/wormholes/03-building-portals).
 
 ## Default settings
 
@@ -151,7 +147,7 @@ Cross-server handoff detail:
 
 Linked frame arrivals preserve the traveler's position relative to the portal, including movement beyond the plane during the crossing. Position and velocity rotate with the linked frames. The configured momentum policy controls outgoing velocity, including very slow movement.
 
-Crossing occurs when movement passes through the portal plane inside its aperture. It is tested against your whole movement since the last check, so a laggy tick cannot carry you through without triggering. Teleports, reconnects, respawns, and destination changes reset that history.
+Crossing is tested against the whole movement since the last check. Teleports, reconnects, respawns, and destination changes reset that history.
 
 ## Type menu
 
@@ -241,24 +237,4 @@ Ambient RGB controls change a channel by 8 per click or 32 while shifting. The
 color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
-Blackout adds a concrete-colored background behind the projected view. The far boundary and the exposed floor, ceiling, and sides of the view are sent as concrete blocks through the same block updates as the rest of the projection, so the shell is present from the first frame and while the viewer moves. Destination blocks that are already opaque are left as they are. Opaque surface skins block projection.
-
-## Behavior notes
-
-- Destroy needs **shift-left-click** on the destroy element. A normal
-  left-click does not delete.
-- Wand box construction always starts as type `PORTAL` regardless of intent.
-  Wormhole Runes form `WORMHOLE`; already-placed legacy Portal Runes can still
-  form `PORTAL`.
-- There is no Gateway rune. Switch an existing portal to `GATEWAY` in the type
-  menu.
-- All frame types can project. Use projection mode OFF to disable the view.
-  Construction and type changes need `wormholes.portals.portal` (PORTAL/RTP),
-  `wormholes.portals.wormhole` (WORMHOLE), or `wormholes.gateway` (GATEWAY).
-  Traversal uses the portal's dynamic access policy instead.
-- If you enable mirror while type is RTP, Wormholes converts the portal to
-  `PORTAL`.
-- RTP and gateway destination menus are mutually exclusive paths. RTP cannot
-  tunnel-link.
-- Per-portal permission blacklist is the default. The node denies. It does not
-  grant. That policy applies to players only.
+Blackout places a concrete-colored background at the far boundary of the projected view, along the padded outer edge, only where the whole block stays clear of the opening. Opaque destination blocks stay as they are. An opaque surface skin blocks projection.

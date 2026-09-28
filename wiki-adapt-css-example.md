@@ -2,7 +2,7 @@
 title: "Adapt CSS Page Example"
 description: "A compact Wiki.js landing page example using Adapt content"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "meta, wikijs, css, layouts, adapt, examples"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,7 +43,7 @@ reference.
 - [Installation and configuration *Set up Adapt and change server-wide rules*](/adapt/01-installation-configuration)
 - [Skills *Browse every skill and its adaptations*](/adapt/10-skills-catalog)
 - [Commands and permissions *Control access for players and staff*](/adapt/04-commands-permissions)
-- [Troubleshooting *Check common setup and gameplay problems*](/adapt/40-operator-runbooks)
+- [Updates *Replace the jar and reload settings*](/adapt/40-operator-runbooks)
 {.links-list}
 
 ## TragOul skill tree example {#skill-tree}

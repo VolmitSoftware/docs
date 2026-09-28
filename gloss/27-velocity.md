@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-09-26T06:29:51.520Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -12,14 +12,15 @@ Gloss on Velocity provides network tablists, scoreboard sidebars, server-list MO
 
 ## Install
 
-Requirements: Java 25 and Velocity 3.4 or newer. Proxy scoreboards require Minecraft clients 1.20.3 or newer. Pause-menu server links require 1.21 or newer.
+| | |
+|---|---|
+| Proxy | Velocity 3.4 or newer |
+| Java | 25 |
+| Jar | `Gloss-<version>-packed.jar` in the proxy `plugins/` folder |
+| Files | `plugins/gloss/` |
+| Clients | Scoreboards need 1.20.3 or newer. Pause-menu server links need 1.21 or newer |
 
-1. Put `Gloss-<version>-packed.jar` in the proxy's `plugins/` directory.
-2. Start the proxy.
-3. Edit the generated files under `plugins/gloss/`.
-4. Run `/gloss reload` from the proxy console or an account with `gloss.admin`.
-
-Install the `-packed.jar` as the only Gloss jar. Each build automatically selects the smaller ordinary or XZ package. With XZ, startup verifies and extracts the bundled runtime into the writable `plugins/Gloss/cache/runtime/` directory. This cache is separate from the lowercase proxy settings folder. Later starts reuse the verified cache. Required library downloads still apply.
+Reload with `/gloss reload` (`gloss.admin`). An XZ jar extracts `plugins/Gloss/cache/runtime/`, separate from the lowercase `plugins/gloss/` settings folder. That cache directory must be writable.
 
 The proxy edition covers the server-list MOTD and its pause-menu links, network tablists, conditional scoreboard sidebars, action bar, boss bar, and title surfaces, and join, switch, and leave messages. The shared emoji and named-animation catalogs render inside all of them. Fixed virtual tablist grids are not part of the proxy edition. Holograms, menus, chat effects, Vault groups, backend placeholders, and the web editor require the server edition.
 
@@ -363,15 +364,6 @@ Gloss sends the list after every backend connection, on join and on each switch,
 | `/gloss reload` | `gloss.admin` | Reload all proxy documents and icons |
 | `/gloss board toggle` | Any connected player | Hide or show that player's proxy sidebar |
 
-The toggle lasts until the player disconnects. The proxy does not expose the server edition's `/board`, `/hologram`, or web editor commands.
+The toggle lasts until the player disconnects. The proxy does not expose `/board`, `/hologram`, or the web editor.
 
-## Troubleshooting
-
-| Symptom | Check |
-|---|---|
-| Nothing appears | `select.when` defaults to `false`, so a document without one never selects |
-| A board is missing | Client version, the feature switch, `show`, and `select.when` |
-| A condition never matches | It must use proxy values — backend names and proxy permissions, not backend ones |
-| An emoji is a blank box | It points at a resource-pack codepoint; the proxy serves none |
-| Tablist entries fight | Another plugin owns the same list. Pick one owner |
-| Reload fails | Fix the document named in the log, then `/gloss reload` again |
+A document with no `select.when` does not select, because that condition defaults to `false`. Conditions use proxy names and proxy permissions. Emoji glyphs need the resource pack on the client. The proxy does not serve one.

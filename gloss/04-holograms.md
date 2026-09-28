@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -159,6 +159,6 @@ Chat bubbles, damage indicators, entity overlays and drop labels use temporary h
 
 Temporary holograms also accept particle layers through the API, and rendered-only lines can supply their own measured span ranges with `setRenderedParticleText`. See [API: Getting Started](/gloss/21-api-getting-started), [Particle Layers](/gloss/25-particle-layers) and [Chat Bubbles](/gloss/08-chat-bubbles).
 
-## Migrating pre-envelope hologram files
+## Import
 
-The pre-envelope shape was `{"id": ..., "world": ..., "x": ..., "y": ..., "z": ..., "lines": [...]}`. Startup ignores it silently. Run `/gloss import legacy` to convert: `x`, `y`, `z` become `anchor.position`, `world` becomes `anchor.world`, the embedded `id` is dropped so the file name is the only id, and the rewritten file starts at `revision` 1. The original bytes are copied to `import-backups/<yyyyMMdd-HHmmss>/holograms/<file>`, and files that already use an envelope are skipped.
+`/gloss import legacy` converts an old hologram file into the current envelope and copies the original into `import-backups/<timestamp>/holograms/`. Files that already use an envelope are skipped.

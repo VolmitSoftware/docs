@@ -2,41 +2,26 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Crafting gains XP from crafted output and nearby furnaces. Craft rewards scale with material value, while both reward paths use cooldowns.
-
-Its 14 adaptations add recipes, salvage, bulk crafting, portable workstations, a bound compactor, backpacks, material refunds, equipment improvements, and food bonuses. Five adaptations are permanent by default.
+Crafting gains XP from crafted output and nearby furnaces, scaled by material value, and both paths use cooldowns. Its 14 adaptations add recipes, salvage, bulk crafting, portable workstations, a bound compactor, backpacks, material refunds, equipment improvements, and food bonuses, five of which are permanent by default.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use` permission, and protection and region policy that allow the action.
 
 ### Deconstruction (`crafting-deconstruction`)
 
 1 level · 8 knowledge
 
-Shears that work backwards. Point them at an item lying on the ground and you get back half of the recipe's most-used component. Armor has to be fully repaired first, and enchantments or other metadata do not hide the vanilla recipe.
-
-**How to use it**
-
-1. Drop the item you want to break down.
-2. Hold shears in your main hand, sneak, and right-click the dropped item.
-
-The dropped item has to be one you are allowed to pick up. If anything denies that, the item, your shears, your XP, and your stats are all left alone.
-
-Adapt picks the material occupying the most slots in the recipe, adjusts for the recipe's output count, and returns 50 percent. Where an item has several recipes, the one with the most occupied slots wins, and a recipe whose salvage is not worth less than the source is rejected. Large outputs come out as several stacks.
+Sneak-right-click a pickup-allowed dropped item with shears in the main hand to return 50 percent of the ingredient that occupies the most slots, adjusted for output count, as one or more stacks. Armor must be fully repaired, enchantments and other metadata do not hide the vanilla recipe, empty grid cells do not count, the recipe with the most occupied slots wins, a salvage worth at least as much as the source is rejected, and a denied pickup leaves the item, the shears, XP, and stats unchanged.
 
 ### Crafting XP (`crafting-xp`)
 
 7 levels · 3 knowledge, then 2 per level
 
-Taking a committed craft result can produce a bounded vanilla XP orb. The default reward is one point at level one plus one point per additional adaptation level, for 1-7 points, with a 30-second per-player cooldown. The nominal result must fit the player's storage and the reward does not scale with crafted stack size.
-
-The vanilla XP reward is `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)`.
+Taking a committed craft whose result fits the player's storage can spawn one vanilla XP orb of `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)` points, which is 1 through 7 on the defaults. The amount does not scale with crafted stack size.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -49,45 +34,19 @@ The vanilla XP reward is `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 
 
 1 level · 2 knowledge
 
-Rotten flesh becomes useful. Cook it on a campfire and you get leather. Zombie farms turn into a leather supply.
-
-**How to use it**
-
-1. Hold rotten flesh.
-2. Right-click a campfire to put it on.
-
-Without the adaptation the click is cancelled and the campfire hisses at you.
-
-Recipe key `crafting-leather`, campfire: `ROTTEN_FLESH` to `LEATHER`, cook time 100 ticks, 1 vanilla experience.
+Right-click a campfire with rotten flesh to cook it into leather (`crafting-leather`: `ROTTEN_FLESH` to `LEATHER`, 100 ticks, 1 vanilla experience). Without the adaptation, that click is cancelled.
 
 ### Craftable Skulls (`crafting-skulls`)
 
 1 level · 2 knowledge
 
-Unlocks shaped recipes for mob heads. Every one is a ring of eight of one material around a bone block. Bones make a skeleton skull. Nether bricks make a wither skeleton skull. Rotten flesh makes a zombie head. Gunpowder makes a creeper head. Dragon breath makes a dragon head. Decorating no longer requires a charged creeper or a dead dragon.
-
-Five shaped recipes each use eight of a ring material around one `BONE_BLOCK`.
-`crafting-skeletonskull` maps `BONE` to `SKELETON_SKULL`.
-`crafting-witherskeletonskull` maps `NETHER_BRICK` to `WITHER_SKELETON_SKULL`.
-`crafting-zombieskull` maps `ROTTEN_FLESH` to `ZOMBIE_HEAD`.
-`crafting-creeperhead` maps `GUNPOWDER` to `CREEPER_HEAD`. `crafting-dragonhead`
-maps `DRAGON_BREATH` to `DRAGON_HEAD`.
+Five shaped recipes place eight of a ring material around one `BONE_BLOCK`: `crafting-skeletonskull` maps `BONE` to `SKELETON_SKULL`, `crafting-witherskeletonskull` maps `NETHER_BRICK` to `WITHER_SKELETON_SKULL`, `crafting-zombieskull` maps `ROTTEN_FLESH` to `ZOMBIE_HEAD`, `crafting-creeperhead` maps `GUNPOWDER` to `CREEPER_HEAD`, and `crafting-dragonhead` maps `DRAGON_BREATH` to `DRAGON_HEAD`.
 
 ### Backpacks (`crafting-backpacks`)
 
 1 level · 2 knowledge
 
-A craftable container you carry. It opens as its own inventory rather than taking a slot per item, and it has two storage modes. Slot mode gives you one ordinary stack per slot and shows everything in one view. Bundle mode uses vanilla bundle weights, where a 64-stackable item costs 1 and an unstackable item costs 64, and pages the view.
-
-You can flip a backpack between modes by crafting it alone in a grid, as long as it is empty. Backpacks cannot be nested, and by default a shulker box or vanilla bundle holding a backpack cannot be put inside one either.
-
-**How to use it**
-
-1. Craft it from leather and a chest.
-2. Right-click with it in hand to open it.
-3. Craft it alone in a grid to switch storage modes, while it is empty.
-
-Two registered recipes: a shaped craft from `LEATHER` and `CHEST`, and a shapeless single-`BUNDLE` recipe for the mode cycle, which consumes exactly one backpack and returns one.
+Right-click a backpack crafted from `LEATHER` and `CHEST` to open its inventory. A shapeless single-`BUNDLE` recipe consumes exactly one backpack and returns one, cycling storage mode.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -101,19 +60,7 @@ Two registered recipes: a shaped craft from `LEATHER` and `CHEST`, and a shapele
 
 1 level · 2 knowledge
 
-Open a station straight out of your hand instead of placing it. Anvil, crafting table, grindstone, stonecutter, cartography table, and loom all work. Each open costs food, and the item goes on a short cooldown afterwards, so it is convenience rather than a free workshop.
-
-**How to use it**
-
-1. Hold the station block in your main hand.
-2. Right-click the air, left-click the air, or left-click a block.
-
-Anything left inside a portable station is lost when it closes. Not enough food and the click just puffs smoke.
-
-Recognized held items and the inventory each opens follow. `CRAFTING_TABLE`
-opens `WORKBENCH`. `GRINDSTONE` opens `GRINDSTONE`. `ANVIL` opens `ANVIL`.
-`STONECUTTER` opens `STONECUTTER`. `CARTOGRAPHY_TABLE` opens `CARTOGRAPHY`.
-`LOOM` opens `LOOM`. Main hand only.
+Right-click air, left-click air, or left-click a block with the station in the main hand to open it: `CRAFTING_TABLE` opens `WORKBENCH`, `GRINDSTONE` opens `GRINDSTONE`, `ANVIL` opens `ANVIL`, `STONECUTTER` opens `STONECUTTER`, `CARTOGRAPHY_TABLE` opens `CARTOGRAPHY`, and `LOOM` opens `LOOM`. Items left inside are lost when it closes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -124,22 +71,13 @@ opens `WORKBENCH`. `GRINDSTONE` opens `GRINDSTONE`. `ANVIL` opens `ANVIL`.
 
 1 level · 2 knowledge
 
-Turns drops back into ore blocks. Every recipe is shapeless: eight of the drop plus one host block gives one ore. The host is whatever the ore is normally encased in. Stone is used for overworld ores. Deepslate is used for the deepslate variants. Nether bricks are used for nether gold, nether quartz, and ancient debris.
-
-The in-game lore says scraps, quartz, and emeralds are excluded. That text is out of date. Emerald ore, deepslate emerald ore, nether quartz ore, and ancient debris from netherite scraps all have working recipes.
-
-Nineteen shapeless recipes, each one host block plus eight drops. `STONE` hosts `IRON_INGOT`, `GOLD_INGOT`, `COPPER_INGOT`, `LAPIS_LAZULI`, `REDSTONE`, `EMERALD`, `DIAMOND`, and `COAL` into the matching plain ore. `DEEPSLATE` hosts the same eight into the matching `DEEPSLATE_*` ore. `NETHER_BRICKS` hosts `GOLD_INGOT` into `NETHER_GOLD_ORE`, `QUARTZ` into `NETHER_QUARTZ_ORE`, and `NETHERITE_SCRAP` into `ANCIENT_DEBRIS`.
+Nineteen shapeless recipes turn eight drops plus one host into one ore: `STONE` hosts `IRON_INGOT`, `GOLD_INGOT`, `COPPER_INGOT`, `LAPIS_LAZULI`, `REDSTONE`, `EMERALD`, `DIAMOND`, and `COAL` into the matching ore, `DEEPSLATE` hosts those eight into the matching `DEEPSLATE_*` ore, and `NETHER_BRICKS` hosts `GOLD_INGOT` into `NETHER_GOLD_ORE`, `QUARTZ` into `NETHER_QUARTZ_ORE`, and `NETHERITE_SCRAP` into `ANCIENT_DEBRIS`. In-game lore still says scraps, quartz, and emeralds are excluded; emerald ore, deepslate emerald ore, nether quartz ore, and ancient debris have working recipes.
 
 ### Bulk Artisan (`crafting-bulk-artisan`)
 
 5 levels · 4 knowledge, then 3 per level
 
-Shift-clicking a result normally only crafts what is already in the grid. With this, the shift-click reaches into your inventory, pulls out matching ingredients, and crafts a much bigger batch in one action. The batch cap grows with level.
-
-**How to use it**
-
-1. Set up the recipe in a crafting grid.
-2. Shift-click the result.
+Shift-clicking a crafting result pulls matching ingredients from the inventory and crafts extra items up to the batch cap.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -152,7 +90,7 @@ Shift-clicking a result normally only crafts what is already in the grid. With t
 
 5 levels · 4 knowledge, then 3 per level
 
-Every craft has a chance to hand one ingredient back. It is small at level 1 and climbs toward a cap, and over a long crafting session it adds up to real material saved.
+Each craft can return one ingredient.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -164,9 +102,7 @@ Every craft has a chance to hand one ingredient back. It is small at level 1 and
 
 5 levels · 5 knowledge, then 4 per level
 
-Tools and armor you craft can come out better than they should. Every output rolls independently, including each item in a shift-click batch. A successful masterwork adds a randomized fraction of the item's base durability, half to all of the bonus available at your level, so +25-50 percent at full level. `+264 Masterwork` is the top of that roll on an item with 528 base durability, not a fixed bonus.
-
-Each successful masterwork also has a 10-percent chance at one compatible, positive level-one vanilla enchantment, and at full level a separate 15-percent chance at +1 attack damage on a tool or +1 armor on armor. Masterwork never refunds ingredients. That roll belongs to Thrifty Hands.
+Each crafted tool or armor output rolls independently, including every item in a shift-click batch, and a success adds a random fraction of base durability shown as `+N Masterwork`; on 528 base durability the top of that roll is `+264 Masterwork`, not a fixed bonus. Masterwork does not refund ingredients.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -185,24 +121,13 @@ Each successful masterwork also has a 10-percent chance at one compatible, posit
 
 1 level · 4 knowledge
 
-A one-gesture way to squash loose materials into blocks. Look at a crafting table, sneak, and tap swap hands: every supported material with at least 64 plain units across your inventory gets compacted. Neither hand needs to hold anything.
-
-**How to use it**
-
-1. Stand within 5 blocks of a crafting table and look at it, with no container open.
-2. Sneak and press the swap-hands key (F by default).
-
-Activation needs you sneaking, no container open beyond your own inventory, and a `CRAFTING_TABLE` as the exact target block within 5 blocks.
-
-Iron, gold, coal, redstone, copper, lapis lazuli, raw iron, raw gold, raw copper, diamond, emerald, and netherite compact into blocks at 9:1, and glowstone dust into glowstone at 4:1, leaving any remainder in your inventory. A material needs at least 64 plain units across the inventory, and they may be split across slots.
+Sneak and press swap-hands while looking at a `CRAFTING_TABLE` within 5 blocks, with no container open, to compact every supported material that totals at least 64 plain units anywhere in the inventory, including stacks split across slots. Iron, gold, coal, redstone, copper, lapis lazuli, raw iron, raw gold, raw copper, diamond, emerald, and netherite compact at 9:1, and glowstone dust at 4:1, leaving the remainder; neither hand has to hold an item.
 
 ### Tinkerer (`crafting-tinkerer`)
 
 5 levels · 5 knowledge, then 4 per level
 
-Grid-repairing two damaged tools of the same type normally throws away most of the enchantments. Tinkerer merges the highest level of every enchantment from either input into the actual current craft result. There is a chance to keep all of them. When the roll fails you only lose one enchantment at random rather than the lot, and maximum level is always lossless.
-
-Its enchantments compose with earlier craft-result changes such as Masterwork rather than replacing them.
+Combining two damaged tools of the same type writes the higher level of each enchantment from either input onto the current craft result, keeps a maximum-level enchantment even when the preserve roll fails, and composes with earlier result changes such as Masterwork instead of replacing them.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -213,7 +138,7 @@ Its enchantments compose with earlier craft-result changes such as Masterwork ra
 
 5 levels · 4 knowledge, then 3 per level
 
-Food multiplies. Crafting food or smelting it in a furnace has a chance to produce bonus portions on top of the normal output. Cooked food looks for a nearby player to credit, so you have to be somewhere near the furnace.
+Crafting food, or smelting food, can add extra portions to the normal output.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -228,17 +153,7 @@ Food multiplies. Crafting food or smelting it in a furnace has a chance to produ
 
 5 levels · 4 knowledge, then 3 per level
 
-Items you craft get stamped with your name in their lore and a hidden signature. Walk up to a villager while carrying your own signed goods and you get Hero of
-the Village for a moment. That effect is what makes the trades cheaper.
-
-**How to use it**
-
-1. Craft something. It is signed automatically.
-2. Carry signed goods and right-click a villager before trading.
-
-The effect is skipped if you already have Hero of the Village from any source.
-
-The signature is a persistent-data string holding the crafter's UUID, plus a lore line. The trade bonus is a `HERO_OF_THE_VILLAGE` effect applied on villager interaction.
+Crafted items gain a lore line and a persistent-data crafter UUID. Interacting with a villager while carrying that player's signed items applies `HERO_OF_THE_VILLAGE` unless that effect is already present.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -287,12 +202,6 @@ Written to `plugins/Adapt/skills/crafting.toml` on first load.
 | `challenge_craft_armor_25` | 25 | `challengeCraft1kReward` |
 | `challenge_craft_armor_250` | 250 | `challengeCraft1kReward` x2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
-- [37 - Recipes, Brewing & Value](/adapt/37-recipes-brewing-value)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

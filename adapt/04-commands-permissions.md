@@ -2,26 +2,19 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Use `/adapt` for menus, progression, configuration, and player-data administration. Other root command routes require `adapt.main`; personal language selection and diagnostic reports have their own permissions.
+`/adapt` covers menus, progression, configuration, and player data. Command routes need `adapt.main`, except personal language selection and diagnostic reports.
 
-## Language selection
+`/adapt language` opens the picker. Permissions and locales: [Localization](/adapt/07-localization) and [Languages](/languages).
 
-`/adapt language` opens the picker. See [07 - Localization](/adapt/07-localization) for the full
-command set and permissions.
+`/adapt debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. Permission `adapt.debugdump` (default op). An upload failure keeps the local file. Report contents: [Shared diagnostic reports](/volmlib/api/diagnostics).
 
-## Diagnostic reports
-
-`/adapt debug dump` saves a diagnostic report and uploads it to the public mclo.gs service by default. Use `/adapt debug dump upload=false` to save it locally without uploading. The command requires `adapt.debugdump` (default `op`), independently of the root administration permission.
-
-Reports are written atomically under the plugin data folder's `debug/` directory before upload. An upload failure retains the local file. Players receive controls to copy the relative report path and open or copy the upload link; console receives plain text. See [Shared diagnostic reports](/volmlib/api/diagnostics) for report contents.
-
-## Common commands
+## Commands
 
 | Command | Permission | Purpose |
 |---|---|---|
@@ -90,5 +83,3 @@ Most command permissions default to operators. `adapt.effects`, `adapt.mutations
 | `adapt.debugdump` | Save and optionally upload diagnostic reports; default `op` |
 
 Gameplay access uses `adapt.use.<skill>`, `adapt.use.<adaptation>`, and `adapt.use.mutation.<id>`. These are allowed unless explicitly denied. Operators bypass them.
-
-See [Player Usage](/adapt/03-player-usage), [Configuration](/adapt/01-installation-configuration), and [Mutations](/adapt/34-mutations-overview).

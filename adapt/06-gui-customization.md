@@ -2,70 +2,23 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Menu settings are in the `gui` table of `plugins/Adapt/adapt.toml`. The top-level `guiShowAllSkills` setting controls whether untouched skills appear.
+Menu settings are `[gui]` in `plugins/Adapt/adapt.toml`, plus root `guiShowAllSkills` and `customModels`. A valid save refreshes open menus.
 
-These settings hot-reload. A valid save refreshes open Adapt menus; invalid TOML leaves the current settings active. Resource-pack entries in `models.toml` take priority over material icon overrides.
+Material names are trimmed, stripped of any namespace before `:`, uppercased, and spaces become underscores. `AIR` and legacy materials are refused. An unknown material keeps the built-in icon.
 
-## Setting the skills menu height
+`models.toml` overrides a material icon when `customModels` is true and the entry names a real model. A generated placeholder does not.
 
-1. Open `plugins/Adapt/adapt.toml`.
-2. Set `gui.skillsGuiRows` under the `[gui]` table.
-3. Save. The watcher picks it up and any open menu reopens at the new size.
+`skillOrder` and `adaptationOrder` pin listed registry names first. Matching is case-insensitive. Blank entries are skipped. A repeated name keeps its first position. Several differently cased keys for one skill are concatenated. Unknown names are ignored. Disabled entries can be ordered and are not drawn. Order does not change who can use a skill.
 
-Leave it at `0` to let each page size itself to its contents. Set `2` through `6` to pin the window to that many rows on every page. One of those rows is always the navigation row. A value of `4` gives you three rows of cards, fifteen skills per page.
+`skillsGuiRows` of `0` sizes each page from the cards on that page. `2` through `6` fix the height, and one of those rows is navigation. Right-click Previous or Next jumps five pages. `/adapt configure` edits `skillsGuiRows`. Icon and order maps are read-only there.
 
-Auto-sizing behaves differently from a fixed height in one visible way. The viewport is recomputed per page from the cards actually on that page. A last page holding three cards renders as a 2-row window even though the earlier pages were taller.
-
-Values outside the supported range are corrected and logged.
-
-`skillsGuiRows` is one of the fields you can edit from `/adapt configure` in game. The icon and order tables below are maps and lists. That editor shows them read-only. Edit those in the file.
-
-## Changing an icon
-
-1. Find the registry name of the skill or adaptation. Adaptation names look like `stealth-shadowmeld`. Skill names are plain, like `stealth`.
-2. Add the name as a key under `[gui.skillIcons]` or `[gui.adaptationIcons]`.
-3. Set the value to a Bukkit material name.
-4. Save.
-
-The parser trims whitespace, removes the namespace before `:`, uppercases the value, and changes spaces to underscores. `netherite axe`, `NETHERITE_AXE`, and `minecraft:netherite_axe` all resolve to the same material. `AIR` and legacy materials are refused.
-
-Keys are matched exactly first, then case-insensitively. A value Adapt cannot turn into a usable material warns once per key and keeps the built-in icon. The warning names the section, the key, the value you wrote, and the icon it kept.
-
-### When models.toml wins
-
-`models.toml` wins whenever it names a real model. A generated placeholder entry does not count, so
-your `gui.skillIcons` material still applies. With `customModels = false`, `models.toml` is ignored
-entirely.
-
-## Reordering menus
-
-1. List the skills you want pinned to the front, in order, in `gui.skillOrder`.
-2. For adaptations, add a key per skill under `[gui.adaptationOrder]` holding that skill's ordered adaptation names.
-3. Save.
-
-Listed names come first, in the order you wrote them. Everything else follows in the normal order: display name with color codes and leading punctuation stripped, then registry name as a case-insensitive tiebreak.
-
-Matching is case-insensitive on the registry name. Blank entries are skipped. A name repeated in the list keeps its first position. The skill key of `adaptationOrder` is also matched case-insensitively. If you somehow end up with several differently-cased keys for the same skill their lists are concatenated.
-
-A name that matches no registered skill or adaptation warns once and is then ignored. Disabled skills and adaptations still count as known. Ordering them does not warn. They just are not drawn.
-
-Ordering never makes anything visible. A skill still has to pass the visibility rules below. An adaptation still has to be enabled and permitted.
-
-## Showing every skill
-
-`guiShowAllSkills` decides whether the skills menu is a progress list or a catalog.
-
-Left off, which is the default, the menu lists only skills the player has touched. That means xp above zero, knowledge above zero, or at least one learned adaptation level.
-
-Turned on, it lists every enabled skill the player has use permission for. Skills with no stored data are drawn from a throwaway in-memory skill line. Browsing does not write empty lines into player saves.
-
-Use permission is enforced either way. The toggle changes what is shown, not what is usable. `/adapt debug mode` implies the toggle. On top of that it makes every skill and adaptation report use permission as granted and skips the progress check.
+`guiShowAllSkills` false lists skills with XP, knowledge, or a learned adaptation. True lists every enabled skill the player may use, without writing an empty skill line. `/adapt debug mode` shows every skill and adaptation and treats use permission as granted.
 
 ## Reference
 
@@ -94,7 +47,7 @@ skillOrder = []
 | `gui.skillOrder` | empty | Skill registry names pinned to the front of the skills menu, in this order |
 | `gui.adaptationOrder` | empty | Skill registry name to that skill's ordered adaptation registry names |
 
-Two more keys affect these menus. See [01 - Installation & Configuration](/adapt/01-installation-configuration). `guiBackButton` (default `true`) reserves the navigation row in the 9-wide menus. `customModels` (default `true`) enables `models.toml` lookups.
+`guiBackButton` (default `true`) reserves the navigation row. `customModels` (default `true`) enables `models.toml`. Both are root keys in `adapt.toml`.
 
 ### skillsGuiRows values
 
@@ -108,15 +61,14 @@ Two more keys affect these menus. See [01 - Installation & Configuration](/adapt
 
 ### Skills menu layout
 
-Five cards per row, one navigation row always reserved, six rows maximum. Left-click steps a page
-and right-click jumps five.
+Five cards per row. One navigation row is always reserved. Six rows maximum. Left-click steps one page. Right-click jumps five.
 
 ### Icon precedence
 
 ```
 models.toml (when it actually overrides, and customModels = true)
   > gui.skillIcons / gui.adaptationIcons
-  > the hardcoded icon in the skill/adaptation class
+  > built-in icon
 ```
 
 ### models.toml format
@@ -169,12 +121,14 @@ stealth-shadowmeld = "minecraft:black_dye"
 stealth = ["stealth-shadowmeld", "stealth-cutpurse"]
 ```
 
+### Player preference controls
+
+The adaptation level screen reserves a bottom row for registered player controls, with navigation above it. Level cards paginate within the remaining space and the inventory never exceeds six rows. `guiBackButton = false` hides Back without removing preference controls. Adaptations without registered preferences retain their ordinary layout.
+
+Click a preference to update its item in the current window. Left-click advances and right-click reverses through permitted unlocked values. Names and lore show the effective value; red/lime panes indicate Off/On, and gray items indicate unavailable or server-controlled choices. Dependent controls appear only when applicable: Blink's Reactive direction is hidden below level 2 and in Manual mode. Changing activation adds or removes it in the same open window; its saved direction is retained while hidden. Reset clears personal overrides. Large sets of controls have their own row pagination, separate from the level page.
+
+Server policy lives in the adaptation configuration under `playerPreferences`; see [configuration](/adapt/01-installation-configuration#player-preferences). Blink's controls and unlocks are listed in [Rift](/adapt/27-skill-rift#rift-blink-rift-blink).
+
 ## Language editor
 
-The language editor uses 36 left-aligned entries across the first four rows of each page. The bottom row holds Back, Previous, Search or Clear Search, Next, and Close. Skill categories and skill or adaptation messages reuse their gameplay menu icons, including material overrides and resource-pack models. Other message groups retain the shared category icons.
-
-## See also
-
-- [01 - Installation & Configuration](/adapt/01-installation-configuration)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
-- [00 - Overview](/adapt/00-overview)
+The language editor uses 36 entries across the first four rows. The bottom row is Back, Previous, Search or Clear Search, Next, and Close. Skill and adaptation messages use the same icons as the gameplay menus. Other groups use the shared category icons.

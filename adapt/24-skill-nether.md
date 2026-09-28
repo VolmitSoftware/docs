@@ -2,31 +2,22 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Nether gains XP from wither damage, damaging or killing the Wither, killing wither skeletons, and breaking wither roses. Many adaptations also award XP for their own actions.
-
-Its 14 adaptations add fire, ghast, wither, and magma protection; lava and soul-sand movement; strider control; netherrack mining; piglin barter bonuses; Nether foods; wither loot; fire-based recovery; and thrown wither skulls.
+Nether gains XP from wither damage, damaging or killing the Wither, killing wither skeletons, and breaking wither roses. Its 14 adaptations add fire, ghast, wither, and magma protection, lava and soul-sand movement, strider control, netherrack mining, piglin barter bonuses, Nether foods, wither loot, fire-based recovery, and thrown wither skulls, and many of those actions pay XP of their own.
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use.*` permission (or the matching per-adaptation node), and protection and region policy that allow the action.
-
-Several of these only work while you are in a Nether-environment world. Those
-are Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson
-Feast. The rest work anywhere. Soul Strider speeds you across soul sand in the overworld too.
+Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson Feast run only in a Nether-environment world. Every other adaptation works in any dimension.
 
 ### Wither Resistance (`nether-wither-resist`)
 
 3 levels · 5 knowledge, then 3 per level
 
-Each piece of netherite armor you are wearing gives you a chance to shrug off wither damage entirely. The chances add up across the four slots and grow with level. A full netherite
-set at max level negates the wither effect every time.
-
-Chance per netherite piece is `basePieceChance + chanceAddition * level`, summed over helmet, chestplate, leggings, and boots, then clamped to 100 percent. Full netherite at level 3 reaches 100 percent and plays an extra mastery effect.
+Each worn netherite piece adds `basePieceChance + chanceAddition * level` percentage points, summed across helmet, chestplate, leggings, and boots, then clamped to 100%. With the defaults, a full netherite set at level 3 reaches that clamp.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -37,18 +28,11 @@ Chance per netherite piece is `basePieceChance + chanceAddition * level`, summed
 
 3 levels · 5 knowledge, then 10 per level
 
-Wither skeleton skulls become ammunition. Right-click while holding one and you launch a real wither skull. It flies where
-you are looking and explodes on impact, same as the boss fires. The skull is consumed (except in creative), and there is a cooldown that gets much shorter as you level. Landing a kill from 40 blocks or more unlocks a hidden challenge.
-
-**How to use it**
-
-1. Hold a wither skeleton skull in your main hand.
-2. Right-click. Look where you want it to go first. The skull follows your aim.
-
-Cooldown is `max(1, baseCooldown - levelCooldown * level)` seconds, so 10 seconds at level 1 and 1 second at level 3, shown as an item cooldown on the skull. The projectile is an uncharged, non-bouncing `WitherSkull`, and throwing it pays 100 Nether XP. The skull is never placed as a block.
+A right-click with a wither skeleton skull in the main hand fires an uncharged, non-bouncing wither skull along the aim, shows the cooldown on that item, consumes the skull except in Creative, never places the skull, and pays 100 Nether XP. A kill from 40 or more blocks completes a hidden challenge, and neutral mobs stay out of the explosion even when provoked if `ignore passiveMobs` is true.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
+| `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from skull explosion damage; direct projectile hits are unchanged. |
 | `baseCooldown` | `15` | Seconds between throws at level 0. |
 | `levelCooldown` | `5` | Seconds removed from the cooldown per adaptation level, floored at 1 second. |
 
@@ -56,11 +40,7 @@ Cooldown is `max(1, baseCooldown - levelCooldown * level)` seconds, so 10 second
 
 3 levels · 6 knowledge, then 4 per level
 
-Every tick of fire damage has a chance to be cancelled outright. The chance climbs steeply with level, so a maxed version means you rarely notice standing in flames at all. It covers burning only, not lava.
-
-Negation chance is `fireResistBase + fireResistFactor * level` using the raw
-level, not a level percentage. It is 35 percent at level 1 and 85 percent at
-level 3.
+Each burn tick is cancelled with chance `fireResistBase + fireResistFactor * level`, using the raw level rather than level progress. Lava damage is not covered.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -71,12 +51,7 @@ level 3.
 
 5 levels · 4 knowledge
 
-In the Nether, walking into lava pushes you forward across the surface instead of sinking. Each stride cancels your fall distance, puts out your fire, gives you a moment of fire resistance, and costs food. Higher levels stride farther, cost less food, and re-arm sooner. It does nothing if your food bar is empty, and it will not run while flying, gliding, or riding.
-
-**How to use it**
-
-1. Be in the Nether with food in your bar.
-2. Walk into the lava, facing the direction you want to go. Keep looking where you want to end up. Each stride follows your view direction.
+Walking into lava moves the player along the look direction, cancels fall distance, and extinguishes fire. An empty food bar, flight, gliding, or riding blocks the stride.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -93,9 +68,7 @@ In the Nether, walking into lava pushes you forward across the surface instead o
 
 6 levels · 4 knowledge
 
-In the Nether, ghast fireballs hit you for much less, and getting hit by one also caps how long you burn afterward. Arrows from wither skeletons are cut down too, and so is any explosion damage while you are in the dimension. You earn Nether XP for every point of damage the ward removed.
-
-Only applies in a Nether-environment world.
+Ghast fireballs, other explosions, and wither-skeleton arrows deal less damage, and a ghast fireball also clamps remaining burn time.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -116,9 +89,7 @@ Only applies in a Nether-environment world.
 
 5 levels · 3 knowledge
 
-Fire feeds you. Whenever you take fire, lava, or magma-block damage there is a chance to trigger
-a leech. Landing a hit on something that is currently burning also has that
-chance. The leech grants food, saturation, and a burst of Regeneration. Higher levels raise the trigger chance, lengthen the regen, restore more food, and shorten the internal cooldown.
+Fire, lava, or magma damage, or a hit on a burning target, can restore food and saturation and apply Regeneration.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -141,7 +112,7 @@ chance. The leech grants food, saturation, and a burst of Regeneration. Higher l
 
 5 levels · 4 knowledge
 
-Any piglin bartering near you pays better. When a barter resolves, the nearest player with this adaptation gets credited. There is a chance for a duplicated and enlarged roll of whatever came out. There is a smaller chance for a separate bonus item from a fixed premium pool. You do not have to be the one who threw the gold.
+When a piglin barter resolves, the nearest player with this adaptation inside range is credited, even if that player did not throw the gold.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -160,7 +131,7 @@ Any piglin bartering near you pays better. When a barter resolves, the nearest p
 
 5 levels · 3 knowledge
 
-Soul sand and soul soil stop slowing you down. You move across them at full speed and then some. At max level, stepping back onto soul ground after a short gap also fires a short soul-speed burst. Works anywhere, not only in the Nether.
+Soul sand and soul soil no longer slow movement in any dimension, and a speed bonus is applied. The soul-speed burst fires only at max level.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -177,7 +148,7 @@ Soul sand and soul soil stop slowing you down. You move across them at full spee
 
 4 levels · 4 knowledge, then 3 per level
 
-Only active while you are on fire. Anyone who melees you catches fire, and your own melee swings deal bonus damage and set the target burning. Combines well with anything that keeps you lit, since being on fire is the requirement rather than the problem.
+While the player is on fire, a melee attacker is ignited, and this player's melee hits deal bonus damage and ignite the target.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -194,9 +165,7 @@ Only active while you are on fire. Anyone who melees you catches fire, and your 
 
 4 levels · 3 knowledge
 
-In the Nether, starting to mine netherrack, basalt, or blackstone gives you a block-breaking speed boost that refreshes as you keep working. Every one of those blocks you break pays Nether XP. Some of them drop an extra item. Usually that is a second copy of what you mined. Sometimes it is gold nuggets, quartz, iron nuggets, or nether brick.
-
-Eligible blocks: `NETHERRACK`, `BASALT`, `POLISHED_BASALT`, `SMOOTH_BASALT`, `BLACKSTONE`, `POLISHED_BLACKSTONE`, `GILDED_BLACKSTONE`, `CHISELED_POLISHED_BLACKSTONE`, `POLISHED_BLACKSTONE_BRICKS`, `CRACKED_POLISHED_BLACKSTONE_BRICKS`. The boost is a block-break-speed attribute modifier of `0.20 * tier`, not the Haste potion effect.
+Mining `NETHERRACK`, `BASALT`, `POLISHED_BASALT`, `SMOOTH_BASALT`, `BLACKSTONE`, `POLISHED_BLACKSTONE`, `GILDED_BLACKSTONE`, `CHISELED_POLISHED_BLACKSTONE`, `POLISHED_BLACKSTONE_BRICKS`, or `CRACKED_POLISHED_BLACKSTONE_BRICKS` applies `BLOCK_BREAK_SPEED` at `0.20 * tier`, not Haste.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -215,16 +184,7 @@ Eligible blocks: `NETHERRACK`, `BASALT`, `POLISHED_BASALT`, `SMOOTH_BASALT`, `BL
 
 4 levels · 4 knowledge, then 3 per level
 
-Striders you ride stop shivering and move faster, including when they step out of lava. From level 2 up, dismounting over lava triggers a rescue. The adaptation looks
-for solid safe ground nearby and teleports you there instead of letting you fall
-in. The first successful rescue unlocks a hidden challenge.
-
-**How to use it**
-
-1. Saddle a strider and ride it with a warped fungus on a stick, as normal.
-2. The speed applies while you ride. If you get thrown off over lava at level 2 or higher, the rescue handles it.
-
-The strider speed modifier is `0.2 * (amplifier + 1)` applied to the strider, not to you.
+The ridden strider stops shivering and gains speed `0.2 * (amplifier + 1)` on the strider itself, including outside lava. From `safetyUnlockLevel` upward, a dismount over lava teleports the rider to safe ground, including while still airborne above the strider, only if the adaptation remains learned and enabled, the dismount was not cancelled, the rider stays unmounted, and solid ground does not already separate the rider from the lava; on Folia the search uses only ground owned by the rider's region, and the first rescue completes a hidden challenge.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -243,15 +203,7 @@ The strider speed modifier is `0.2 * (amplifier + 1)` applied to the strider, no
 
 4 levels · 3 knowledge, then 2 per level
 
-Nether flora becomes food. Right-click while holding a crimson or warped fungus, roots, nether sprouts, weeping vines, or twisting vines to eat it for food and saturation. On top of that, eating anything at all while in the Nether gives you fire resistance for a few seconds. Both halves pay XP.
-
-**How to use it**
-
-1. Hold any nether fungus, roots, sprouts, or vines.
-2. Right-click to eat. If your food bar is already full you have to sneak to force it down.
-3. Eat any normal food while in the Nether for the fire resistance buff.
-
-Eligible flora: `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOTS`, `NETHER_SPROUTS`, `WEEPING_VINES`, `TWISTING_VINES`.
+A right-click eats `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOTS`, `NETHER_SPROUTS`, `WEEPING_VINES`, or `TWISTING_VINES` in any dimension; a full hunger bar requires sneak. Any other food eaten in a Nether-environment world grants Fire Resistance.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -269,7 +221,7 @@ Eligible flora: `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOT
 
 3 levels · 4 knowledge, then 3 per level
 
-Magma blocks stop hurting you from the moment you learn it. From level 2 up, campfires stop hurting you too. Those hits are cancelled outright and your fire ticks cleared, and the extinguish cue is silent by default. At max level soul fire is only reduced rather than cancelled, so you still feel it. You earn XP for every point it takes off.
+Magma-block damage is cancelled at every level, and campfire damage is cancelled from `campfireUnlockLevel`; both also clear fire ticks. Soul fire is reduced only at max level, not cancelled.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -283,7 +235,7 @@ Magma blocks stop hurting you from the moment you learn it. From level 2 up, cam
 
 4 levels · 4 knowledge, then 3 per level
 
-Every wither skeleton you kill drops extra bones and coal, and gets a better chance at dropping its skull. The skull roll is skipped if the mob already dropped one on its own, so it never doubles up.
+A wither skeleton kill adds extra bones and coal, and adds a skull only when that mob did not already drop one.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -337,11 +289,6 @@ Written to `plugins/Adapt/skills/nether.toml` on first load.
 | `challenge_roses_10` | 10 | `challengeRosesReward` |
 | `challenge_roses_100` | 100 | `challengeRosesReward` x2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

@@ -2,17 +2,13 @@
 title: "Integrations"
 description: "Optional plugin support and metrics"
 published: true
-date: 2026-09-12T16:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes works without any of the plugins on this page. Install them only for the integration you need.
-
-Public third-party surfaces are summarized in
-[20 - API - Getting Started](/wormholes/20-api-getting-started). Operator
-PlaceholderAPI keys are in [12 - PlaceholderAPI](/wormholes/12-placeholderapi).
+Every integration is optional. Placeholder keys are in [PlaceholderAPI](/wormholes/12-placeholderapi). The Java surfaces are in [API](/wormholes/20-api-getting-started).
 
 ## Soft dependencies
 
@@ -70,8 +66,4 @@ React and other monitors can read Wormholes metrics through VolmLib without a di
 
 Wormholes uses bStats plugin ID **33193**. It reports `total_portals`, `portals_by_type`, `cross_server`, `wire_compression`, and `connected_peers`. Disable collection through the server-wide bStats configuration.
 
-## What has no soft-depend integration
 
-Projection internals, portal CRUD, wire protocol, RTP destination selection, and
-dimensional-door pocket APIs are not exposed. See "What has no API" in
-[20 - API - Getting Started](/wormholes/20-api-getting-started).

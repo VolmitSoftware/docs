@@ -2,59 +2,41 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-TragOul gains XP from taking damage and awards extra XP for surviving at low health.
-
-Its 14 adaptations add reflected damage, healing, corpse attacks, skeleton servants, armor fueled by bones, debuffs, and lethal-hit protection. Some abilities cost health, maximum health, or items. The optional `takeAwaySkillsOnDeath` setting removes TragOul XP and one level from each TragOul adaptation on death.
+TragOul gains XP from taking damage and awards extra XP for surviving at low health. Its 14 adaptations add reflected damage, healing, corpse attacks, skeleton servants, armor fueled by bones, debuffs, and lethal-hit protection; some abilities cost health, maximum health, or items, and `takeAwaySkillsOnDeath` removes TragOul XP and one level from each TragOul adaptation on death.
 
 ## How you earn TragOul XP
 
-XP comes from being damaged by something. When an entity hits you, the skill adds 1 to `trag.hitsrecieved` and adds the raw damage to `trag.damage`. Then it pays `damageReceivedXpMultiplier` times that damage. XP awards are on a `cooldownDelay` cooldown. The stat counters keep climbing during a long fight while the payouts drip.
+When an entity damages you, the skill adds 1 to `trag.hitsrecieved` and the raw damage to `trag.damage`, then pays `damageReceivedXpMultiplier` times that damage. XP awards wait on `cooldownDelay`; those two stat counters still increment during the cooldown.
 
-Surviving low pays extra. If the hit leaves you alive but at 4 hearts or less, you get
-`lowHealthSurvivalXP` on top. A short red-to-cyan ring effect appears around
-you.
+A survived hit that leaves you at 4 hearts or less also pays `lowHealthSurvivalXP`.
 
-Nothing is credited if you are already dead, invulnerable, or blocking with a shield when the hit lands.
+Nothing is credited if you are already dead, invulnerable, or blocking with a shield.
 
-Death behavior depends on config. If Adapt's global hardcore reset is on, dying wipes all your skill data. Otherwise, if `takeAwaySkillsOnDeath` is on, you lose up to `deathXpLoss` TragOul XP (never below zero) and every learned TragOul adaptation drops one level.
+If Adapt's global hardcore reset is on, death wipes all skill data. Otherwise, when `takeAwaySkillsOnDeath` is on, death removes up to `deathXpLoss` TragOul XP, never below zero, and drops every learned TragOul adaptation by one level.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher from the Adapt menu (`/adapt`), the skill and the adaptation enabled in config, the `adapt.use` permission, and protection and region policy that allow the action.
 
 ### Thorns (`tragoul-thorns`)
 
 5 levels · 4 knowledge
 
-Whoever hits you takes a flat chunk of damage back. Projectiles count, and the reflected damage goes to the shooter, not the arrow. Fires at most once every 1.5 seconds, so a swarm will not shred itself instantly. Killing something with the reflection earns you a one-off advancement.
-
-Menu lore: "Damage retaliated when struck".
-
-Stats and milestones: `tragoul.thorns.damage-reflected` at 500 (reward 400) and 5000 (reward 1500). One-off advancement `challenge_tragoul_thorns_kill` when a reflection kills the attacker.
-
-Reflected damage is `damageMultiplierPerLevel` times the learned level, not level percent.
+A hit, including a projectile, reflects `damageMultiplierPerLevel` times the learned level back to the attacker or the shooter, at most once per 1.5 seconds. With `ignore passiveMobs`, passive and neutral mobs stay excluded when provoked, including reflections from skeletal servants, while hostile mobs and players still follow normal combat protection.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `damageMultiplierPerLevel` | `1.75` | Health points reflected per learned level. |
+| `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from reflected damage. |
 
 ### Globe of Pain (`tragoul-globe`)
 
 5 levels · 4 knowledge
 
-Your melee hit stops being single target. The damage is split evenly across the mob you hit and the other valid mobs
-nearby. Each of them also takes a per-level bonus on top. Against a crowd, each mob takes less than your normal hit, but everything gets hit at once. Armor and resistance then apply per target, so what each one actually loses differs.
-
-Menu lore: "The more enemies around you, the less damage you deal to each of them", plus range and added damage lines.
-
-Stats and milestones: `tragoul.globe.mobs-shared-with` at 1000 (reward 400). One-off advancement `challenge_tragoul_globe_5` for sharing with 5 or more mobs at once.
-
-Damage per entity is `originalDamage / (sharedTargets + 1)` plus the level bonus, including the original target. Range caps at 24 blocks and 8 shared targets per hit.
+A melee hit is split as `originalDamage / (sharedTargets + 1)` plus the per-level bonus across the struck mob and nearby valid mobs, then armor and resistance apply per mob. Share radius caps at 24 blocks and shared targets cap at 8.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -62,18 +44,13 @@ Damage per entity is `originalDamage / (sharedTargets + 1)` plus the level bonus
 | `rangePerLevel` | `3.0` | Blocks of share radius added per learned level. |
 | `initalRange` | `5.0` | Base share radius in blocks. The misspelling is the real key name. |
 | `bonusDamagePerLevel` | `1` | Health points of extra damage per learned level, added to every share. |
+| `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from secondary shared damage, even when provoked. |
 
 ### Will of Pain (`tragoul-healing`)
 
 5 levels · 4 knowledge
 
-Anything that damages you loses a small fixed amount of life, and you are healed by whatever it actually lost. Steady, passive, and does not care what hit you as long as the source resolves to a living attacker.
-
-Menu lore: "health drained from each attacker", "Actual life drained is restored to you".
-
-Stats and milestones: `tragoul.healing.health-stolen` at 500 (reward 400) and 10000 (reward 1500).
-
-Your own skeletal servants cannot be drained. Healing is capped by your missing health.
+A living attacker that damages you loses a fixed amount of health, and you are healed for what it actually lost, capped by your missing health. Your skeletal servants cannot be drained.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -84,15 +61,7 @@ Your own skeletal servants cannot be drained. Healing is capped by your missing 
 
 5 levels · 4 knowledge
 
-Kill something and a lance launches from the corpse at the nearest valid target. It never picks you. If the lance kills its target, it can chain from that corpse to the next one at half damage. That is up to one hop per level and a hard maximum of 6. Damage is based on the killing blow that started it, tripled by default while you wear no armor at all.
-
-Each connecting lance costs you real health, mitigated by armor and effects like any other hit, and the cost drops as you level. There is a 5 second cooldown per player and only one chain running at a time.
-
-Menu lore: "Killing blows launch seeking corpse lances, including lance chain kills", "Flat life cost falls from 3 hearts to 1 heart and uses normal damage mitigation", "Max Lances: 1 + level".
-
-Stats and milestones: `tragoul.lance.lances-spawned` at 200 (reward 400), incremented per connecting lance. `tragoul.lance.lance-kills` at 100 (reward 1000).
-
-Search radius is `min(32, 5 + 4 x level)` and chain length is `min(6, level)`, each hop at half the previous damage. Lance damage is the killing blow's final damage times `seekerDamageMultiplier`, times `unarmoredDamageMultiplier` when no armor is equipped.
+A kill launches a lance from the corpse at the nearest valid target other than you, dealing the killing blow's final damage times `seekerDamageMultiplier`, and also times `unarmoredDamageMultiplier` when you wear no armor, on a 5 second player cooldown with only one chain at a time. Search radius is `min(32, 5 + 4 x level)`, chain length is `min(6, level)` with each hop at half the previous damage, each connecting lance costs you mitigated health, and when `ignore passiveMobs` is on a nearer protected mob does not block a farther eligible target; direct attacks and player targeting stay unchanged.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -101,18 +70,13 @@ Search radius is `min(32, 5 + 4 x level)` and chain length is `min(6, level)`, e
 | `selfDamageAtFirstLevel` | `6.0` | Health points you take per connecting lance at level 1. |
 | `selfDamageAtMaxLevel` | `2.0` | Health points you take at max level. Never higher than the level-1 value. |
 | `unarmoredDamageMultiplier` | `3.0` | Extra multiplier while no armor is equipped, clamped to 1 - 10. |
+| `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from seeking lances and chain hits. |
 
 ### Blood Pact (`tragoul-blood-pact`)
 
 5 levels · 4 knowledge
 
-Take a big enough hit and you might be rewarded for it. On a proc you get a handful of random buffs drawn from speed, regeneration, resistance, fire resistance, absorption, jump boost, and night vision. Larger hits and higher levels give you more of them at once. Speed and Jump Boost are hidden transient attributes rather than potion effects, so those two have no HUD icon and cannot be removed with milk.
-
-Menu lore: "Proc Chance", "Buff Duration", "Proc Cooldown".
-
-Stats and milestones: `tragoul.blood-pact.health-sacrificed` at 200 (reward 400). `tragoul.blood-pact.empowered-kills` at 500 (reward 1000). One-off advancement `challenge_tragoul_pact_all_in` for an empowered kill after a proc that left you at 3 hearts or less.
-
-Absorption runs 20 ticks shorter, floored at 40. Amplifier steps to 1 at level percent 0.85 for Absorption, Resistance, and Regeneration, and at 0.7 for the rest.
+A hit at or above the damage trigger can grant a random set of Speed, Regeneration, Resistance, Fire Resistance, Absorption, Jump Boost, and Night Vision; Speed and Jump Boost are hidden attributes with no icon, and milk does not remove them. Absorption lasts 20 ticks less, floored at 40, and amplifiers step to 1 at level percent 0.85 for Absorption, Resistance, and Regeneration and at 0.7 for the rest.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -134,13 +98,7 @@ Absorption runs 20 ticks shorter, floored at 40. Amplifier steps to 1 at level p
 
 5 levels · 4 knowledge
 
-Kills can drop a globe on the ground: a red blood globe or a white bone globe, coin flip. Walk over it to collect. Blood globes give regeneration. Bone globes give a random handful of buffs. Globes expire on their own and hoppers cannot take them.
-
-Menu lore: "Globe Spawn Chance", "Globe Lifetime".
-
-Stats and milestones: `tragoul.bone-harvest.orbs-collected` at 500 (reward 300) and 5000 (reward 1000).
-
-Globes are real dropped items, `MAGMA_CREAM` for blood and `SNOWBALL` for bone, tagged `adapt:tragoul-globe` and owner-locked to you.
+A kill can drop an owner-locked globe, chosen at random, tagged `adapt:tragoul-globe`: `MAGMA_CREAM` for blood or `SNOWBALL` for bone. Walk over it to collect; hoppers cannot take it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -161,18 +119,11 @@ Globes are real dropped items, `MAGMA_CREAM` for blood and `SNOWBALL` for bone, 
 
 5 levels · 4 knowledge
 
-Every mob you kill detonates in a blood nova that damages hostile mobs around the corpse. Nova damage is a flat amount plus a share of the dead mob's max health, so killing a tanky mob in a crowd hurts. A mob damaged by a nova cannot start a new one for a few seconds, which is what stops the chain reaction from running away.
-
-Servant kills detonate too, tinted bone white instead of crimson.
-
-Menu lore: "Kills always display a corpse nova and damage nearby hostile mobs", "Nova Radius", "of the victim's max health added as nova damage".
-
-Stats and milestones: `tragoul.corpse-explosion.mobs-detonated` at 500 (reward 400) and 5000 (reward 1500).
-
-Only hostile mobs (`Enemy`) are damaged. Each victim is stamped `adapt:tragoul_nova_stamp` so it cannot start a nova of its own inside the suppression window. Radius caps at 16 blocks and 16 targets.
+Every mob you or a servant kills damages nearby hostile mobs for a flat amount plus a share of the dead mob's max health. Radius caps at 16 blocks, each victim is stamped `adapt:tragoul_nova_stamp`, and neutrals stay excluded when provoked if `ignore passiveMobs` is true.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
+| `ignorePassiveMobs` | `false` | Exclude neutral enemy species from corpse novas, including servant-triggered novas. Passive animals are always excluded. |
 | `radiusBase` | `3.0` | Nova radius in blocks at level percent 0. |
 | `radiusFactor` | `3.5` | Extra radius in blocks at full level percent. |
 | `baseDamage` | `3.0` | Flat health points of nova damage to every hostile mob hit. |
@@ -187,13 +138,7 @@ Only hostile mobs (`Enemy`) are damaged. Each victim is stamped `adapt:tragoul_n
 
 5 levels · 4 knowledge
 
-Lifesteal on everything you are credited for. Melee, arrows, TNT you lit, lingering clouds you threw, evoker fangs, all of it heals you for part of the final damage. There is a healing cap per second so multi-target hits cannot fully restore you in one swing. You get a small puff of smoke when you hit that cap.
-
-Menu lore: "of all attributed damage returned as health", "max health restored per second".
-
-Stats and milestones: `tragoul.soul-siphon.health-siphoned` at 500 (reward 400) and 10000 (reward 1500).
-
-Healing is the smallest of the damage share, the remaining per-second cap, and your missing health. Damage beyond the victim's remaining health plus absorption does not count.
+Damage you are credited for heals you, including melee, arrows, TNT you lit, lingering clouds you threw, and evoker fangs. The heal is the smallest of the damage share, the remaining per-second cap, and your missing health, and damage past the victim's remaining health plus absorption does not count.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -207,22 +152,7 @@ Healing is the smallest of the damage share, the remaining per-second cap, and y
 
 5 levels · 5 knowledge
 
-Raise a pack of skeletons that fight for you. Servants spawn with random gear scaled to your level, do not burn in daylight, drop no loot, cannot damage you, and expire on a timer. They inherit your other TragOul perks, so a servant's hits can siphon, curse, and spread plague for you.
-
-How to use it:
-
-1. Hold bones in your main hand. The summon costs several bones, fewer as you level.
-2. Sneak and right-click.
-3. A servant rises at your feet and takes your current mark, which is whatever you last hit or whatever last hit you.
-
-You can keep one living servant per level. Summoning at the cap recycles the oldest one by default. While servants are alive your maximum health is reduced by `healthCostPerMinion`
-for each of them, down to a floor. A full pack is a real trade.
-
-Menu lore: "Sneak + Right-Click with bones in hand to summon a servant", "Servant Lifetime", "Bones consumed per summon", "Summon Cooldown", "Max living servants", "Servants gear up with your level, inherit your Tragoul perks, and hunt whatever you strike or whatever strikes you", "Max health lost per living servant".
-
-Stats and milestones: `tragoul.skeletal-servant.servants-summoned` at 50 (reward 400) and 500 (reward 1500).
-
-Servants are `Skeleton` entities tagged `adapt:tragoul_servant_owner`. Gear comes from the leather, chainmail, iron, and diamond tiers plus a sword or bow. Creative mode skips the bone cost. Hard cap of 16 living servants per owner.
+Sneak-right-click air or a block with bones in the main hand to raise a skeleton at your feet that takes your current mark; item-use protection blocks the summon, and block-use protection blocks it on that block. Servants are tagged `adapt:tragoul_servant_owner`, do not burn in daylight, drop nothing, cannot damage you, inherit your other TragOul effects, including siphon, curse, and plague, and wear leather, chainmail, iron, or diamond plus a sword or bow, and creative mode skips the bone cost.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -252,11 +182,7 @@ Servants are `Skeleton` entities tagged `adapt:tragoul_servant_owner`. Gear come
 
 5 levels · 4 knowledge
 
-A big enough hit shatters one bone from your inventory and a share of the damage goes with it. Chip damage is ignored so you do not burn the whole stack, and there is an internal cooldown that shortens as you level. With no bones on you it just makes a dull rattle and does nothing.
-
-Menu lore: "Consumes 1 bone to absorb part of a hit", "of the hit absorbed per bone", "Internal Cooldown".
-
-Stats and milestones: `tragoul.marrow-armor.damage-absorbed` at 500 (reward 400) and 5000 (reward 1500).
+A hit at or above the trigger consumes one bone from your inventory and removes a share of that hit. With no bones, nothing is absorbed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -272,13 +198,7 @@ Stats and milestones: `tragoul.marrow-armor.damage-absorbed` at 500 (reward 400)
 
 5 levels · 4 knowledge
 
-Anything that hits you gets Weakness, and Slowness on top once you are far enough up the level track. Each attacker has its own cooldown, so a crowd all get cursed but no single one is re-cursed over and over.
-
-Menu lore: "Attackers are cursed with Weakness", "Curse Duration", "Attackers are also cursed with Slowness" (the third line only appears once slowness is unlocked).
-
-Stats and milestones: `tragoul.curse-of-frailty.curses-applied` at 100 (reward 400) and 1000 (reward 1500).
-
-Weakness amplifier steps to 1 at level percent 0.8. Your own pets, marker armor stands, invulnerable entities, NPCs, and skeletal servants are never cursed.
+An attacker gains Weakness, and Slowness once it is unlocked; the Weakness amplifier steps to 1 at level percent 0.8. Your pets, marker armor stands, invulnerable entities, NPCs, and skeletal servants are never cursed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -293,13 +213,7 @@ Weakness amplifier steps to 1 at level percent 0.8. Your own pets, marker armor 
 
 5 levels · 3 knowledge
 
-Wounded creatures and players near you glow through walls, visible only to you. The outline color tracks how close to death they are, from yellow down to dark red. Higher levels raise both the radius and the health threshold, so eventually you can see anything that is even slightly hurt.
-
-Menu lore: "Wounded damageable entities near you glow only for you", "health or lower marks an entity as dying prey", "Sense Radius".
-
-Stats and milestones: `tragoul.death-sense.prey-sensed` at 1000 (reward 600).
-
-Glow color follows remaining health: dark red at 0.25 and below, red at 0.5, gold at 0.75, yellow above that. The threshold scales from `healthThresholdStart` at level 1 to `healthThresholdEnd` at max level.
+Wounded damageable entities and players inside the radius glow through walls for you only. Color follows remaining health: dark red at 0.25 and below, red at 0.5, gold at 0.75, and yellow above that.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -316,23 +230,11 @@ Glow color follows remaining health: dark red at 0.25 and below, red at 0.5, gol
 
 5 levels · 4 knowledge
 
-If you poison or wither a mob and it dies with that effect still on it, the
-affliction jumps to nearby mobs. The jumped effect uses a higher amplifier. The spread can chain for a few generations before it burns out.
-
-How to use it:
-
-1. Poison or wither a mob and hit it (a splash potion plus a hit works, since the mark is applied on your damage).
-2. Kill it while the effect is still running.
-3. Nearby mobs catch the same effect, one amplifier stronger.
-
-Menu lore: "Your poison and wither spread with increased potency on death", "Spread Radius", "Spread Effect Duration".
-
-Stats and milestones: `tragoul.plague-bearer.mobs-infected` at 100 (reward 400) and 1000 (reward 1500).
-
-Marks are stored on the mob as `adapt:tragoul_plague_owner`, `adapt:tragoul_plague_generation`, and `adapt:tragoul_plague_stamp`. Wither is preferred over Poison when both are present. Radius caps at 24 blocks, generations at 4, and spread targets at 8.
+Poison or Wither you applied, including a splash plus your own hit, jumps to nearby mobs when the mob dies with the effect still on it, and Wither is used if both are present. Marks are `adapt:tragoul_plague_owner`, `adapt:tragoul_plague_generation`, and `adapt:tragoul_plague_stamp`; radius caps at 24 blocks, and neutrals stay excluded when provoked if `ignore passiveMobs` is true.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
+| `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from poison and wither spread; directly applied effects are unchanged. |
 | `spreadRadiusStart` | `8` | Spread radius in blocks at level 1. |
 | `spreadRadiusEnd` | `20` | Spread radius in blocks at max level. |
 | `spreadDurationTicksBase` | `80` | Effect duration in ticks on infected mobs at level percent 0. |
@@ -347,14 +249,7 @@ Marks are stored on the mob as `adapt:tragoul_plague_owner`, `adapt:tragoul_plag
 
 5 levels · 6 knowledge
 
-A hit that would kill you is refused. You drop to 1 HP. You go invisible with heavy resistance for a few seconds.
-Every hostile mob within range that was targeting you forgets about you. The cooldown is long, measured in minutes, and drops as you level. This is your escape button, not a rotation.
-
-Menu lore: "Death is denied - you linger as a spirit at 1 HP", "Spirit Duration", "Cooldown".
-
-Stats and milestones: `tragoul.last-rites.deaths-defied` at 5 (reward 500) and 50 (reward 2000).
-
-The spirit state applies Invisibility and Resistance together for `spiritDurationTicks`.
+A hit that would kill you is refused: you are set to 1 HP and gain Invisibility plus Resistance, and hostile mobs in range that were targeting you lose that target.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -393,11 +288,6 @@ Written to `plugins/Adapt/skills/tragoul.toml` on first load.
 | `challenge_trag_hits_500` | 500 | `challengeTragReward` |
 | `challenge_trag_hits_5k` | 5000 | `challengeTragReward` x 2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts) for levels, knowledge, and how adaptations are learned.
-- [03 - Player Usage](/adapt/03-player-usage) for the Adapt menu and general play.
-- [10 - Skills Catalog](/adapt/10-skills-catalog) for the full skill list.
-- [04 - Commands & Permissions](/adapt/04-commands-permissions) for the `adapt.use` nodes.
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

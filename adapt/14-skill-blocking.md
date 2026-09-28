@@ -2,39 +2,26 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Blocking gains XP when the player takes damage while raising a shield.
-
-Its 14 adaptations add timed guards, counters, projectile reflection, stationary defense, armor repair, ally protection, shield recovery, Multi-Armor, and crafting recipes for chainmail, saddles, horse armor, and an upgraded shield.
+Blocking gains XP when damage is taken while a shield is raised. Its 14 adaptations cover timed guards, counters, projectile reflection, stationary defense, armor repair, ally protection, shield recovery, Multi-Armor, and recipes for chainmail, saddles, horse armor, and an upgraded shield.
 
 ## Earning XP
 
-Every hit you take while blocking pays a flat XP award. A shared cooldown means a burst of arrows does not pay ten times. It also records total blocked hits, total blocked damage, projectile versus melee, and whether it was a heavy hit, meaning more than 5 damage in one blow.
-
-There is a second, off-by-default source. If you set `passiveXpForUsingShield` above zero, you also earn a trickle every skill tick just for having a shield in either hand. It is scaled by how much time actually elapsed. It is awarded silently, so it never spams your screen.
+Each hit taken while blocking pays a flat XP award on a shared cooldown. The hit records blocked hits, blocked damage, projectile versus melee, and a heavy hit when one blow is more than 5 damage. If `passiveXpForUsingShield` is above zero, each skill tick also pays that amount for a shield in either hand, scaled by elapsed time, and the award is silent.
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled, the matching `adapt.use.` permission (or the `adapt.use.*` wildcard), and protection and region policy that allow the action. Anything that hurts another entity also runs the normal PvP and PvE checks first.
+Damage to another entity also runs the normal PvP and PvE checks.
 
 ### Multi-Armor (`blocking-multiarmor`)
 
 1 level · 3 knowledge
 
-Merge an elytra into a chestplate and get one item that switches between the two by itself. On the ground it is your chestplate. Jump off something. Once you have fallen more than four blocks it becomes an elytra. It is a travel adaptation more than a combat one.
-
-How to use it:
-
-1. Learn Multi-Armor.
-2. Open your inventory. Pick up the elytra on your cursor. Left-click it onto the chestplate (or the other way round). One of the two has to be an elytra.
-3. Wear the merged item. It swaps itself as you move.
-4. To take it apart, sneak and drop it. The parts come back out with their names, enchantments and damage intact.
-
-Swaps are throttled to once every 3000 ms so it does not flicker, and the elytra form takes over once your fall distance passes 4 blocks. The merged item keeps a MultiArmor lore tag, which is how Adapt recognizes it. Destroying the merged item destroys everything inside it.
+Left-click an elytra onto a chestplate, or the reverse, to merge them. One of the two items must be an elytra. Worn, the item is a chestplate on the ground and becomes an elytra once fall distance passes 4 blocks. Swaps are limited to once every 3000 ms. Sneak-drop returns both parts with names, enchantments, and damage. A MultiArmor lore tag marks the merge. Destroying the merged item destroys its contents.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -44,53 +31,25 @@ Swaps are throttled to once every 3000 ms so it does not flicker, and the elytra
 
 1 level · 1 knowledge
 
-Adds the four chainmail armor recipes, which vanilla does not give you. The shapes are the normal armor shapes, made from iron nuggets instead of ingots.
-
-How to use it:
-
-1. Learn Chains of Mephistopheles.
-2. Lay iron nuggets out in a crafting table in the usual helmet, chestplate, leggings or boots shape.
-
-This one has `permanent` set to `true` by default, so learning it is one-way.
-
-Recipes: `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `blocking-chainarmorer-leggings`, `blocking-chainarmorer-boots`, all from `IRON_NUGGET`. `permanent` defaults to `true`. No adaptation-specific config keys.
+Adds the four vanilla armor shapes as `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `blocking-chainarmorer-leggings`, and `blocking-chainarmorer-boots`, all from `IRON_NUGGET`. `permanent` defaults to `true`, so learning it cannot be undone. No adaptation-specific config keys.
 
 ### Craftable Saddle (`blocking-saddlecrafter`)
 
 1 level · 1 knowledge
 
-Adds a saddle recipe so you are not waiting on a dungeon chest or a fishing rod. Five leather in an upside-down U.
-
-How to use it:
-
-1. Learn Craftable Saddle.
-2. Place leather in a crafting table as two in the top corners and three across the middle row.
-
-Also `permanent` by default.
-
-Recipe `blocking-saddlecrafter`: five `LEATHER` shaped as `I I` over `III`. `permanent` defaults to `true`. No adaptation-specific config keys.
+Adds `blocking-saddlecrafter`: five `LEATHER` shaped `I I` over `III`. `permanent` defaults to `true`, so learning it cannot be undone. No adaptation-specific config keys.
 
 ### Craftable Horse Armor (`blocking-horsearmorer`)
 
 1 level · 1 knowledge
 
-Adds leather, iron, gold and diamond horse armor recipes. Surround a saddle with eight of whichever material you want.
-
-How to use it:
-
-1. Learn Craftable Horse Armor.
-2. Put a saddle in the center of a crafting table.
-3. Fill the other eight slots with leather, iron ingots, gold ingots or diamonds.
-
-Also `permanent` by default.
-
-Recipes `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-horsearmorergold` and `blocking-horsearmorerdiamond`: a `SADDLE` in the center ringed by eight of `LEATHER`, `IRON_INGOT`, `GOLD_INGOT` or `DIAMOND`. `permanent` defaults to `true`. No adaptation-specific config keys.
+Adds `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-horsearmorergold`, and `blocking-horsearmorerdiamond`: a center `SADDLE` ringed by eight `LEATHER`, `IRON_INGOT`, `GOLD_INGOT`, or `DIAMOND`. `permanent` defaults to `true`, so learning it cannot be undone. No adaptation-specific config keys.
 
 ### Counter Guard (`blocking-counter-guard`)
 
 5 levels · 4 knowledge, then 5 per level
 
-Every hit you block while holding a shield adds a counter stack, up to a cap. Each incoming hit then rolls a chance to spend a stack and slam damage back into whoever hit you. Reflect damage scales with how many stacks you are sitting on. A long defensive fight hits harder than a single block. Projectile attacks reflect onto the shooter, not the arrow. Stack gains and confirmed spends briefly show `Counter Guard current/max` on the action bar. Keep your shield up and stacks build themselves.
+Each hit blocked with a shield adds a counter stack. A later incoming hit can spend stacks and damage the attacker. Projectile hits reflect onto the shooter, not the projectile. Stack gains and spends show `Counter Guard current/max` on the action bar.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -109,17 +68,7 @@ Every hit you block while holding a shield adds a counter stack, up to a cap. Ea
 
 5 levels · 4 knowledge
 
-Sneak while actively blocking with a shield and you plant yourself. You gain knockback resistance and explosion knockback resistance while the stance holds. Incoming projectile damage is cut. Each projectile also rolls a chance to be blocked outright for zero damage.
-
-How to use it:
-
-1. Learn Bastion Stance.
-2. Hold a shield in either hand and raise it.
-3. Hold sneak.
-
-The stance drops the moment you stop sneaking, stop blocking, lose the shield, or leave survival or adventure mode.
-
-Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBACK_RESISTANCE` attribute modifiers while the stance is held.
+Sneak while standing still and blocking with a shield in either hand to hold knockback resistance and reduced projectile damage. The shield may be raised before or after sneak starts. The stance drops when sneak stops, blocking stops, the shield is gone, or the mode leaves Survival or Adventure. Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBACK_RESISTANCE` attribute modifiers.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -139,7 +88,7 @@ Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBA
 
 5 levels · 4 knowledge
 
-While you are blocking with a shield, an incoming projectile can be sent back at whoever fired it instead of hitting you. The reflected shot carries a fraction of the original damage. It flies at a fraction of the original speed. Each reflect starts a cooldown. A projectile that was already reflected cannot be reflected again. Just block projectiles.
+While blocking with a shield, an incoming projectile can be sent back at its shooter. A projectile that was already reflected cannot be reflected again.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -162,17 +111,7 @@ While you are blocking with a shield, an incoming projectile can be sent back at
 
 5 levels · 4 knowledge
 
-Sprint, jump, and hit something on the way down while a shield is in your off hand. The target takes bonus damage and gets thrown back. Everything else in range is knocked away and slowed. It is the shield player's opener and gap-closer at the same time.
-
-How to use it:
-
-1. Learn Bulwark Bash.
-2. Put a shield in your off hand, and make sure it is not on cooldown.
-3. Sprint.
-4. Jump.
-5. Hit an enemy while you are still falling.
-
-Only the entity you actually hit takes the extra damage. The rest of the shockwave is knockback and stun. Each bash puts your shield on cooldown.
+With a shield in the off hand and not on cooldown, sprint, jump, and strike while falling. Only the struck entity takes bonus damage. Other entities in range are knocked back and slowed. The bash starts the shield cooldown.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -202,15 +141,7 @@ Only the entity you actually hit takes the extra damage. The rest of the shockwa
 
 5 levels · 4 knowledge
 
-Stand in front of your team with your shield up and facing the incoming fire. Projectiles that hit players behind you land softer. Of every blocking player near the target, only those in range, inside the protection arc, and facing into the shot count, and the strongest reduction wins.
-
-How to use it:
-
-1. Learn Shield Wall.
-2. Raise a shield.
-3. Stand between your allies and whatever is shooting at them, facing the shooter.
-
-Only players are shielded this way. The XP goes to the blocker, not the ally.
+While blocking, projectile damage to players behind the shield is reduced for blockers in range, inside the arc, and facing the shot. The strongest reduction wins. Only players are covered, and the XP goes to the blocker.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -228,16 +159,7 @@ Only players are shielded this way. The XP goes to the blocker, not the ally.
 
 5 levels · 5 knowledge, then 4 per level
 
-Raise your shield in the last fraction of a second before a hit lands. The hit is cancelled outright. The attacker eats a stagger. It is a parry, not a block. The window is short. There is a cooldown between successful guards.
-
-How to use it:
-
-1. Learn Perfect Guard.
-2. Hold a shield.
-3. Right-click to raise it just as the attack is about to land.
-4. Face the attacker. Perfect Guard checks that the hit came from in front of you.
-
-It negates melee and projectiles alike. If the source is a living attacker you are allowed to hurt, they get slowed and shoved back.
+Raising a shield inside the parry window, facing the incoming melee or projectile hit, cancels that hit. A living attacker that can be damaged is slowed and knocked back.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -256,7 +178,7 @@ It negates melee and projectiles alike. If the source is a living attacker you a
 
 5 levels · 3 knowledge, then 4 per level
 
-Whenever a blocked hit actually costs your shield durability, Tempered Guard rolls a chance to repair gear: the shield first, then the first damaged armor piece it finds. It will not carry you through a long fight, but over a session it slows how fast your kit wears out.
+When a blocked hit spends shield durability, a roll may repair the shield first, then the first damaged armor piece.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -271,7 +193,7 @@ Whenever a blocked hit actually costs your shield durability, Tempered Guard rol
 
 5 levels · 4 knowledge
 
-Getting your shield axed is normally a death sentence. With this, the moment an axe disables your shield you get Resistance. The shield cooldown is cut down. You are back behind cover much sooner. It only fires when the attacker was actually swinging an axe and your shield really went on cooldown.
+An axe swing that puts the shield on cooldown grants Resistance and removes part of that cooldown. No recovery happens unless the attacker swung an axe and the shield actually entered cooldown.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -289,12 +211,7 @@ Getting your shield axed is normally a death sentence. With this, the moment an 
 
 2 levels · 2 knowledge, then 3 per level
 
-Two levels unlock two shaped crafting-table recipes. Level 1 adds an alternate way to make an ordinary shield. Level 2 upgrades an existing shield into a Netherite-Reinforced Shield. The reinforced shield blocks exactly like a normal shield. Its special benefit is 1,200 maximum durability instead of normal shield durability. It is fully repaired during the upgrade. It keeps the input shield's enchantments and banner face. Its display name becomes gold.
-
-How to use it:
-
-1. Learn Phalanx Crafter.
-2. Use a crafting table and follow one of the shaped recipes below.
+Level 1 adds a shaped crafting-table recipe for an ordinary shield. Level 2 upgrades an existing shield into a Netherite-Reinforced Shield that blocks like a normal shield, has 1,200 maximum durability, is fully repaired, keeps the input enchantments and banner face, and uses a gold display name. Crafting the netherite recipe below level 2 is cancelled with a deny sound. Any existing banner base color or pattern, including an explicitly white face, is preserved. A shield with no banner face receives a black face with an orange border and a light-gray rhombus.
 
 Level 1 field shield (`W` = white wool, `P` = oak planks, `I` = iron ingot):
 
@@ -304,8 +221,6 @@ PIP
 .P.
 ```
 
-This produces one ordinary shield.
-
 Level 2 reinforced shield (`N` = netherite ingot, `S` = any shield):
 
 ```text
@@ -314,27 +229,13 @@ NSN
 .N.
 ```
 
-This consumes four netherite ingots and the center shield. It produces one fully repaired Netherite-Reinforced Shield with 1,200 maximum durability.
-
-Crafting the netherite recipe below level 2 is cancelled with a deny sound. Any existing banner base color or pattern on the input shield, including an explicitly white face, is preserved. A shield with no banner face receives a black face with an orange border and light-gray rhombus so the reinforced result is visually distinct.
-
 Recipe keys are `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, giving a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only). No adaptation-specific config keys.
 
 ### Interpose (`blocking-interpose`)
 
 5 levels · 4 knowledge
 
-Sneak-block near a hurt ally and part of the damage they take gets pulled onto your shield instead. It only kicks in once the ally is below the low-health threshold. It saves
-people who are about to die rather than leaking your durability all fight.
-
-How to use it:
-
-1. Learn Interpose.
-2. Hold a shield and raise it.
-3. Hold sneak.
-4. Stay within range of the ally.
-
-The redirected damage does not hit your health. It costs your shield durability and adds exhaustion, so you get hungry doing it. If several blockers qualify, the closest one takes the hit.
+Sneak while blocking to pull part of a nearby ally's damage onto the shield instead of health. If several blockers qualify, the closest one takes it.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -400,11 +301,6 @@ Written to `plugins/Adapt/skills/blocking.toml` on first load.
 | `challenge_blocking_interpose_250` | 250 |
 | `challenge_blocking_interpose_2k` | 2000 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

@@ -2,57 +2,32 @@
 title: "Recipes, Brewing & Value"
 description: "Crafting recipes, custom brewing, and material value settings"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Adapt adds three things on the crafting side of the game. Certain adaptations include extra crafting recipes. A custom brewing track runs on an ordinary brewing stand. A material value estimate lets several skills size XP rewards. Recipes and brews belong to the adaptation that registered them. Only players who learned that adaptation get them. Material value is server-wide. It ignores who learned what.
+Recipes belong to the adaptation that registered them. The player must have learned that adaptation at the recipe's required level. Disabling the skill or adaptation unregisters its recipes. Two recipes with the same key log a warning and the later registration wins. The recipe book updates on join and when the player learns or unlearns an adaptation.
 
-Adapt recipes are real server recipes. Adapt registers them at startup. They stay hidden in the recipe book until a player learns the owning adaptation at the level the recipe asks for. Learn it and the recipe shows up. Unlearn it and it goes away again. The crafting is plain vanilla crafting. A crafting table, a recipe book, or an autocrafter all treat them like any other recipe. Custom brewing works the same way. A longer ingredient list is layered on an ordinary stand.
+On Folia, Adapt does not register recipes while players are online. It retries until the server is empty.
 
-Material value is a rough worth number. Adapt works it out by walking vanilla recipes backwards. Skills that pay XP for what you mined, placed, or crafted read that number. They do not carry their own price list.
-
-## Crafting recipes
-
-A recipe exists on the server only while its skill and its adaptation are both enabled. Turn an adaptation off in config and its recipes are unregistered outright. Each recipe key belongs to exactly one adaptation. If two claim the same key, Adapt logs a conflict warning. The later registration wins.
-
-Discovery is per player. Adapt recalculates the whole set on join. It also recalculates whenever a player learns or unlearns anything, and whenever the skill catalog changes. Then it pushes only the difference to that player's recipe book. The gate is the learned level of the owning adaptation, not the skill level.
-
-On Folia, Adapt refuses to register or re-register recipes while players are online. Reloading the recipe registry under a live server is unsafe. It logs a warning and retries until the server has no players. A Folia box that never empties will not pick up recipe changes made after boot.
-
-Three recipes carry extra conditions. Rift Gate registers its recipe only when `requireCraftedEye` is true. The backpack mode-cycle recipe is always registered. The crafting handler lets it through only when `allowModeToggle` is true and the grid holds exactly one empty Adapt backpack. The Cherry and Pale Oak log swaps register only when the server actually has those materials.
-
-`maxRecipeListPrecaution` does not cap how many recipes Adapt registers. It is a guard on the material value walk, described below.
+Rift Gate's recipe registers only when `requireCraftedEye` is true. The backpack mode-cycle recipe is always registered and runs only when `allowModeToggle` is true and the grid holds exactly one empty Adapt backpack. Cherry and Pale Oak log swaps register only when those materials exist. `maxRecipeListPrecaution` bounds the material-value walk. It does not cap how many recipes Adapt registers.
 
 ## Custom brewing
 
-Brewing a custom potion:
+The player needs the brewing adaptation that owns the recipe. The stand takes that recipe's base potion in one to three bottle slots, blaze powder in the fuel slot, and one left-click of the ingredient into an empty ingredient slot. One blaze powder is 20 fuel. Adapt counts stored fuel plus powder still in the slot. Fuel is taken when the brew starts. Changing the ingredient, removing the base potions, breaking the stand, or starting another custom recipe on that stand cancels the brew. The reserved fuel stays spent.
 
-1. Learn the brewing adaptation that owns the recipe. Adapt checks that on every click.
-2. Put the recipe's base potion in one, two, or three of the stand's bottle slots.
-3. Put blaze powder in the fuel slot. One blaze powder is worth 20 fuel units, and Adapt counts stored fuel plus the powder still sitting in the slot.
-4. Left-click the recipe's ingredient into the empty ingredient slot.
-5. Wait out the timer. When it finishes the ingredient drops by one and every bottle slot holding the matching base potion converts at once.
+If another plugin cancels the ingredient click, Adapt does nothing. Otherwise Adapt cancels the vanilla click and moves the ingredient one tick later, and only if that same stand is still open with an empty ingredient slot.
 
-Fuel is taken up front when the task starts, not at the end. Changing the ingredient, pulling the base potions, or breaking the stand mid-brew cancels the task. The reserved fuel is gone. If you start a different custom recipe on the same stand, Adapt cancels the one already running.
+A finished brew fires `AdaptBrewCompleteEvent` when at least one bottle converts. Gunpowder and dragon's breath still make splash and lingering potions. Level, duration, and amplifier are on [Skill - Brewing](/adapt/15-skill-brewing).
 
-The ingredient click is handled carefully. If another plugin cancels the click, Adapt does nothing at all. Otherwise Adapt cancels the vanilla click itself and completes the move one tick later. It does so only if the player still has that same physical stand open with the ingredient slot still empty. That is what stops an item landing in a stand the player already walked away from.
+## Material value
 
-A finished brew fires `AdaptBrewCompleteEvent` when at least one bottle converted. Vanilla gunpowder and dragon's breath conversion still works afterwards. Adapt potions become splash and lingering versions the normal way. Each brewing adaptation's own level, duration, amplifier, and enable setting are in [15 - Skill - Brewing](/adapt/15-skill-brewing).
+Adapt walks vanilla recipes backwards to estimate a material's worth. Skills that pay XP for a broken, placed, or crafted block read that number. `value.valueMultipliers` overrides a material. A block with zero hardness is worth zero. Values recalculate on restart or a relevant config reload.
 
-## Material values
+Each filled slot in a shaped recipe adds its ingredient value, including repeated uses of the same material. That sum is divided by the output stack size.
 
-Adapt estimates what each material is worth by walking its vanilla recipes backwards. Override any
-of them in `value.valueMultipliers`; a block with zero hardness is always worth zero. Values are
-recalculated after a restart or a relevant config reload.
-
-Material value feeds Architect XP and Placement, Axes XP and its value
-statistics, and Crafting XP and Deconstruction. It also feeds Discovery XP and
-Archaeologist, Excavation XP and Seismic Ping, Pickaxes XP, and the HiddenOre
-bridge.
-
-The walk is meant to skip Adapt's own recipes so plugin recipes cannot feed back into their own prices. It does not. The guard tests the Bukkit recipe against Adapt's `AdaptRecipe` type. Adapt registers plain Bukkit recipe objects. The test never matches. Adapt recipes do contribute to material values.
+Registered Adapt recipes are included in the walk. The value cache is `plugins/Adapt/data/value-cache.json`. Recipe keys use the `adapt` namespace, such as `adapt:crafting-backpacks`.
 
 ## Reference
 
@@ -164,9 +139,3 @@ Default `value.valueMultipliers` entries, written into `adapt.toml` when it is f
 
 Adapt's recipe keys live in the plugin's own namespace, so a full key reads `adapt:crafting-backpacks`. The value cache file is `plugins/Adapt/data/value-cache.json`. `AdaptBrewCompleteEvent` carries the stand block, the recipe, the brewer's UUID, and how many bottles converted.
 
-## See also
-
-- [05 - Configuration Math](/adapt/05-configuration-math)
-- [15 - Skill - Brewing](/adapt/15-skill-brewing)
-- [36 - Items, Orbs & Bound Objects](/adapt/36-items-orbs-bound-objects)
-- [50 - API - Recipes, FX, Telemetry & Utilities](/adapt/50-api-recipes-fx-telemetry-utilities)

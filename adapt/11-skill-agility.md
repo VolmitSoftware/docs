@@ -2,31 +2,24 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Agility gains XP from movement, sprinting, swimming, airtime, and climbing. Its 13 adaptations add sprint speed, wall jumps, charged jumps, slides, air dashes, safer landings, projectile dodging, and movement protections.
+Agility gains XP from movement, sprinting, swimming, airtime, and climbing. Its 13 adaptations cover sprint speed, wall jumps, charged jumps, slides, air dashes, safer landings, projectile dodging, and movement protections.
 
 ## How you earn Agility XP
 
-Two paths, both automatic.
-
-1. Every movement credits distance to the `move` stat and pays `moveXpPassive` for each block travelled. The same distance is also credited to exactly one of `move.sneak`, `move.fly`, `move.swim`, or `move.sprint`, checked in that order. Those four stats are what the challenge milestones count.
-2. Every 975 ms a pulse looks at what you are doing and pays for each thing that applies. Sprinting pays `sprintXpPassive`. Swimming pays `swimXpPassive`. Being off the ground pays `jumpXpPassive`. Climbing pays `climbXpPassive`. Sneaking or flying blocks all four. Sprinting and swimming exclude each other.
-
-The pulse scales its payout by how much real time actually elapsed, so a laggy tick does not shortchange you.
+Every movement credits `move` and pays `moveXp passive` per block. That same distance is credited to exactly one of `move.sneak`, `move.fly`, `move.swim`, or `move.sprint`, checked in that order. Those four stats are what the challenge milestones count. Every 975 ms a pulse pays `sprintXp passive` for sprinting, `swimXp passive` for swimming, `jumpXp passive` while off the ground, and `climbXp passive` while climbing, scaled by elapsed time. Sneaking or flying blocks all four. Sprinting and swimming exclude each other.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the matching `adapt.use` permission, and protection and region policy that allow the action. Most also require Survival or Adventure mode.
 
 ### Wind Up (`agility-wind-up`)
 
 5 levels · 8 knowledge, then 2 per level
 
-Hold a sprint and you keep accelerating. The speed builds over a fixed number of ticks. It settles well above vanilla sprint speed. It eases in rather than snapping on. Break the sprint, sneak, start flying, start gliding, mount or dismount anything, or leave Survival and Adventure mode, and the buildup resets to zero.
+Unbroken sprint builds toward a higher speed target. Sneak, flight, glide, a mount or dismount, or leaving Survival or Adventure resets the buildup.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -43,15 +36,7 @@ Hold a sprint and you keep accelerating. The speed builds over a fixed number of
 
 5 levels · 8 knowledge, then 2 per level
 
-Turns any flat wall into a ladder you can chain. Use it on shafts, cliffs, and holes you dug yourself into.
-
-1. Get airborne next to a wall.
-2. Hold shift. You latch onto the wall and stop falling.
-3. Release shift to launch off it.
-4. Repeat until you run out of air jumps. Touching the ground refills them.
-
-If you are steering away from the wall as you release, you get an extra push backward off it. Levels raise both the launch strength and how many latches you get per airtime.
-While latched your fall distance stays cleared, and letting go starts a fresh fall, so climbing down a wall never turns into delayed landing damage.
+Airborne beside a solid face, sneak latches and stops the fall. Release launches. Ground contact refills latches. A backward release adds a push. Latch clears fall distance; release starts a new fall. Level raises launch strength and latches per airtime.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -67,12 +52,7 @@ While latched your fall distance stays cleared, and letting go starts a fresh fa
 
 4 levels · 5 knowledge, then 2 per level
 
-A charged standing jump for crossing gaps and reaching ledges.
-
-1. Hold shift. The jump-strength bonus applies while you sneak. It is stripped the moment you release.
-2. Jump.
-
-The configured levels scale the apex from 1.5 blocks up to 2.5 blocks.
+Sneak applies a jump-strength bonus until release. A jump during that window uses the bonus.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -83,7 +63,7 @@ The configured levels scale the apex from 1.5 blocks up to 2.5 blocks.
 
 5 levels · 8 knowledge, then 2 per level
 
-Sprinting plates you in temporary armor. The plating builds while you run. It drains back off after you stop. It rewards committing to a charge instead of poking. Sneaking, swimming, flying, or gliding all stop it building.
+Sprinting builds temporary armor that drains after the sprint stops. Sneak, swim, flight, or glide stops the buildup.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -98,9 +78,7 @@ Sprinting plates you in temporary armor. The plating builds while you run. It dr
 
 1 level · 1 knowledge
 
-Turns ladders and vines into express lanes. Look up to climb fast. Look down to drop fast. Level your view back toward the horizon to hand control back to vanilla. Sneaking stops directional movement outright. The first and last two climbable blocks of a column always use normal control. You do not overshoot the top or slam into the floor. Scaffolding is deliberately excluded. Fall damage caused directly by a fast descent is cancelled while `safeLanding` is on.
-
-Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAFFOLDING`.
+On vanilla `CLIMBABLE` blocks except `SCAFFOLDING`, look up to climb faster and look down to descend faster. Sneak stops directional movement. The first and last two blocks of a column stay on vanilla control.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -116,12 +94,7 @@ Controlled climbables are everything in the vanilla `CLIMBABLE` tag except `SCAF
 
 5 levels · 3 knowledge
 
-A timed crouch that turns a bad landing into a hungry one.
-
-1. While falling, tap or hold shift shortly before you hit the ground. A soft click confirms the input is armed.
-2. Land. Part of the fall damage is absorbed and paid for in food points instead.
-
-The absorbed damage scales with level and is capped. You go briefly prone on the landing, and the cooldown is stamped on your `HAY_BLOCK` item cooldown slot so you cannot chain rolls. Rolling out of a fall of 30 blocks or more grants a hidden challenge.
+While falling, sneak shortly before landing to absorb part of the fall damage as a food cost. The cooldown uses the `HAY_BLOCK` item cooldown slot. A fall of 30 blocks or more grants a hidden challenge.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -143,14 +116,7 @@ The absorbed damage scales with level and is capped. You go briefly prone on the
 
 4 levels · 4 knowledge, then 3 per level
 
-A baseball slide that keeps its speed. Use it to shoot a one-block gap you would normally have to crouch-walk through.
-
-1. Sprint.
-2. Tap shift.
-
-You drop into a prone pose. Ground friction mostly disappears. You carry your momentum until the slide runs out. Each slide costs hunger. Each slide puts you on a cooldown that shrinks as you level. At max level, mobs you slide through get slowed.
-
-A sprint that ended within the last 350 ms still counts as sprinting for the purpose of starting a slide.
+Sprint, then tap sneak, to drop prone and carry momentum with reduced ground friction. A sprint that ended within the last 350 ms still counts.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -171,12 +137,7 @@ A sprint that ended within the last 350 ms still counts as sprinting for the pur
 
 4 levels · 5 knowledge, then 3 per level
 
-A mid-air correction for jumps you misjudged.
-
-1. Sprint, then jump. That arms the dash.
-2. While still in the air, left-click empty air.
-
-You snap forward along your look direction with a small lift so you do not lose the airtime. Landing rearms it. Each dash costs hunger, and at max level you get two charges per sprint-jump. It does nothing while flying, gliding, swimming, climbing, riding, on an empty food bar, or already on the ground.
+A sprint-jump arms a dash along look direction. Left-click empty air to spend a charge. Landing rearms it. Flight, glide, swim, climb, riding, an empty food bar, or already being on the ground blocks it.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -192,7 +153,7 @@ You snap forward along your look direction with a small lift so you do not lose 
 
 5 levels · 4 knowledge, then 3 per level
 
-While you are sprinting, incoming projectiles have a chance to miss entirely. The hit is cancelled. You get a small sidestep nudge. It only fires while sprinting. It only fires against projectiles.
+While sprinting, an incoming projectile can miss, cancelling the hit and applying a sideways nudge.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -205,9 +166,7 @@ While you are sprinting, incoming projectiles have a chance to miss entirely. Th
 
 4 levels · 1 knowledge
 
-Stops the ground from punishing you for running across it. Farmland unlocks first. Then pressure plates. Then sweet berry bushes. Then powder snow. One per level. By default it only applies while you are sprinting. Server owners can turn that off.
-
-`maxLevel` is independent of the surface unlock levels, so a surface whose minimum level is above the configured cap stays unreachable until you change one of them.
+Configured surfaces skip trampling, pressure-plate triggers, berry slow and damage, or powder-snow freeze. A surface whose minimum level is above `maxLevel` stays unreachable until one of those values changes.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -230,7 +189,7 @@ Stops the ground from punishing you for running across it. Farmland unlocks firs
 
 1 level · 4 knowledge
 
-Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for a fence in your path while you are grounded. It pre-arms the jump so the hop is high enough to land on top. The default cap is one level; the vault effect itself does not scale if the cap is raised.
+While grounded, a fence in the path pre-arms a jump high enough to land on top. The vault effect does not scale if `maxLevel` is raised.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -241,7 +200,7 @@ Run at a fence and jump. You clear it instead of bouncing off. Adapt watches for
 
 5 levels · 3 knowledge, then 2 per level
 
-Cuts the saturation drain from sprinting and sprint-jumping. It does not make you faster. You can keep running longer before hunger stops you.
+Sprint and sprint-jump exhaustion is reduced. Walking, attacks, and swimming keep their normal exhaustion. Movement speed is unchanged.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -254,12 +213,7 @@ Cuts the saturation drain from sprinting and sprint-jumping. It does not make yo
 
 4 levels · 4 knowledge, then 3 per level
 
-Turns getting knocked around into momentum you keep.
-
-1. Take a hit from another entity.
-2. Jump within the recovery window.
-
-You are re-launched in the direction you were steering. If you were not moving, you launch where you were looking. You also get a short speed burst. There is a flat cooldown between recoveries.
+After a hit from another entity, a jump inside the recovery window launches along current steering, or along look direction if there was no movement.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -307,11 +261,6 @@ Written to `plugins/Adapt/skills/agility.toml` on first load.
 | `challenge_agility_sneak_500` | 500 | `challengeSprint5kReward` |
 | `challenge_agility_sneak_5k` | 5000 | `challengeSprint5kReward` x 2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

@@ -2,32 +2,22 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Herbalism gains XP from harvesting and planting crops, shearing, composting, and eating.
-
-Its 15 adaptations cover crop growth, replanting, area sowing, direct inventory drops, composting, food bonuses, farming drops, hunger-based defense, farmland protection, and recipes for mycelium, grass blocks, mushroom blocks, and cobwebs.
+Herbalism gains XP from harvesting and planting crops, shearing, composting, and eating. Its 15 adaptations cover crop growth, replanting, area sowing, direct inventory drops, composting, food bonuses, farming drops, hunger-based defense, farmland protection, and recipes for mycelium, grass blocks, mushroom blocks, and cobwebs.
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, an `adapt.use.` permission that has not been revoked, and protection and region policy that allow the action.
-
-Five of them have `permanent = true` by default. They are purchased normally, and the first purchase asks for confirmation. Once learned, normal players cannot unlearn them; an administrative bypass can lower them without a refund. Those five are Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing.
+Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Rooted Footing default to `permanent = true`. The first purchase asks for confirmation, normal players cannot unlearn them, and an administrative bypass can lower them without a refund.
 
 ### Growth Aura (`herbalism-growth-aura`)
 
 7 levels · 12 knowledge, then 8 per level
 
-Crops near you grow on their own, paid for out of your hunger. Stand in a field and it ticks forward around you without any input.
-
-Each pulse samples random blocks around you, and a crop below full growth steps forward a second or two later. Each step costs a fraction of a food point, so a big field drains you fast. Higher levels widen the radius, push more age steps per hit, and cost less food per step.
-
-By default it only touches crops sitting on the surface, so it will not run a hidden underground farm for you.
-
-Radius is `levelPercent * radiusFactor`. Samples per pulse are `ceil(clamp(radius * radius, 3, 256))`. Strength is `level * strengthFactor` age steps per hit, capped by the crop's remaining age. Food per step interpolates from `maxFoodCost` at no progress down to `minFoodCost` at full level.
+Each pulse samples `ceil(clamp(radius * radius, 3, 256))` blocks inside radius `levelPercent * radiusFactor` and, a second or two later, advances a crop that is not fully grown by `level * strengthFactor` age steps, capped by the crop's remaining age. Food per step interpolates from `maxFoodCost` at no progress to `minFoodCost` at full level.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -41,18 +31,7 @@ Radius is `levelPercent * radiusFactor`. Samples per pulse are `ceil(clamp(radiu
 
 3 levels · 4 knowledge, then 6 per level
 
-Harvest a crop and put a seed back in the same motion, without breaking anything by hand. At higher levels it does the neighbors too.
-
-How to use it:
-
-1. Hold a hoe. Off hand is checked first, then main hand. The hoe cannot be on cooldown.
-2. Right-click a fully grown crop.
-3. The crop drops its loot, one seed is taken out of that loot, and the crop resets to age 0. If there is no seed in the drops, the crop is removed instead.
-4. At level 2 and above, a cube of crops around the clicked one is harvested the same way over the next few ticks.
-
-The hoe takes durability per use, more at higher levels, and goes on a short item cooldown. If you also have Hoe Drop-To-Inventory learned, the harvested loot goes straight into your inventory.
-
-Radius is `level - radiusSub`, so level 1 harvests only the clicked crop. Above that the sweep is a cuboid expanded by `floor(radius)` vertically and `round(radius)` horizontally. Tool damage is `1 + ((level - 1) * 7)`. Item cooldown is `cooldownLvl1` ticks at level 1, otherwise `(baseCooldown - cooldownFactor * levelPercent) + bonusCooldown` ticks. XP per crop is `harvestPerAgeXP * age`, plus `plantCropSeedsXP` when a seed was reclaimed.
+Right-click a fully grown crop with a hoe that is not on cooldown, off hand checked first, to drop its loot, take one seed from that loot, and reset the crop to age 0, or remove the crop when the loot has no seed. Radius is `level - radiusSub` (0 harvests only the clicked crop; above that, `floor(radius)` vertically and `round(radius)` horizontally over the following ticks); tool damage is `1 + ((level - 1) * 7)`; cooldown is `cooldownLvl1` ticks at level 1, otherwise `(baseCooldown - cooldownFactor * levelPercent) + bonusCooldown` ticks; XP is `harvestPerAgeXP * age` plus `plantCropSeedsXP` when a seed is reclaimed; Hoe Drop-To-Inventory sends the loot to the inventory.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -66,13 +45,7 @@ Radius is `level - radiusSub`, so level 1 harvests only the clicked crop. Above 
 
 5 levels · 10 knowledge, then 7 per level
 
-Damage is paid out of your food bar before it reaches your health.
-
-Which damage types it covers depends on level. Level 1 covers the mundane ones: contact, cramming, drowning, suffocation, wall impacts, magma blocks, and freezing. Level 2 adds melee, sweep, and thorns. Level 3 adds fire, lava, and campfires. Level 4 adds projectiles, explosions, falling blocks, and lightning. Level 5 adds magic, poison, wither, dragon breath, and sonic boom.
-
-It never eats your last six food points, so it will not starve you outright. When there is nothing left to spend, the shield makes a dull break sound and the damage lands normally. Damage-over-time sources only charge you once per second rather than per tick.
-
-Effectiveness is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. Absorbed damage is `min(damage * effectiveness, max(0, foodLevel + saturation - 6))`, so it never spends your last 6 food points, and skill XP equals the absorbed damage. Damage over time (fire, fire tick, lava, campfire, hot floor, poison, wither, drowning, freeze) charges at most once per `dotChargeIntervalMs`.
+Damage is reduced by moving `min(damage * effectiveness, max(0, foodLevel + saturation - 6))` into food and saturation, where effectiveness is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`, and skill XP equals the amount absorbed. The last 6 food points are never spent, unabsorbed damage lands normally, and damage over time (fire, fire tick, lava, campfire, hot floor, poison, wither, drowning, freeze) charges at most once per `dotChargeIntervalMs`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -89,32 +62,19 @@ Effectiveness is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. Ab
 
 7 levels · 3 knowledge, then 8 per level
 
-Eating anything on the food list gives you extra food and matching saturation on top of what the item normally restores.
-
-Golden apples, enchanted golden apples, and golden carrots get a bigger visual, but the bonus itself is the same for every food.
-
-Bonus is `2 + level`, applied to food (capped at 20) and to saturation (capped at the new food value). Flat 5 skill XP per meal. No adaptation-specific config knobs.
+Eating anything on the food list adds `2 + level` food, capped at 20, and the same amount of saturation, capped at the new food value, plus 5 skill XP. Golden apples, enchanted golden apples, and golden carrots use that same bonus, and there are no adaptation-specific config keys.
 
 ### Hoe Drop-To-Inventory (`herbalism-drop-to-inventory`)
 
 1 level · 2 knowledge
 
-Blocks you break with a hoe send their drops straight into your inventory. It works on its own once learned, and it is a single-level adaptation. Survival mode only.
-
-Anything a protection plugin would stop you picking up is still stopped, and items that do not fit drop at your feet with a failure sound.
-
-Requires survival mode and a hoe in the main hand. Awards a flat 2 skill XP per item caught. No adaptation-specific config knobs.
+In survival, blocks broken with a hoe in the main hand send their drops to the inventory and pay 2 skill XP per item caught. Protection-denied items stay dropped, overflow drops at the feet, and there are no adaptation-specific config keys.
 
 ### Herbalist's Luck (`herbalism-luck`)
 
 7 levels · 3 knowledge, then 8 per level
 
-Breaking grass can drop a random seed. Breaking a flower can drop random food. It works on its own once learned, and it pays well, 100 skill XP per lucky drop.
-
-The chance is the square of your adaptation level as a percentage. It climbs
-steeply. Level 3 is about 9 percent. Level 7 is about 49 percent.
-
-Chance is `min(highChance, level * level + lowChance)` out of 100, using the raw adaptation level rather than level percent. Each lucky drop awards 100 skill XP.
+Breaking grass can drop melon seeds, pumpkin seeds, or cocoa beans, and breaking a flower can drop a potato, carrot, beetroot, or apple, for 100 skill XP per lucky drop. Chance is `min(highChance, level * level + lowChance)` out of 100, using the raw adaptation level rather than level percent.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -125,49 +85,31 @@ Chance is `min(highChance, level * level + lowChance)` out of 100, using the raw
 
 1 level · 3 knowledge
 
-Unlocks a shapeless recipe: dirt plus one red mushroom plus one brown mushroom makes one mycelium. Active by default without learning it.
-
-Recipe `adapt:herbalism-dirt-myconid`, shapeless, `DIRT` + `RED_MUSHROOM` + `BROWN_MUSHROOM` to one `MYCELIUM`. No adaptation-specific config knobs.
+Shapeless recipe `adapt:herbalism-dirt-myconid` turns `DIRT` + `RED_MUSHROOM` + `BROWN_MUSHROOM` into one `MYCELIUM`. It is active without learning and has no adaptation-specific config keys.
 
 ### Herbalist's Terralid (`herbalism-terralid`)
 
 1 level · 3 knowledge
 
-Unlocks a shaped recipe: three wheat seeds in a row over three dirt in a row makes three grass blocks. Active by default without learning it.
-
-Recipe `adapt:herbalism-dirt-terralid`, shaped `SSS` over `DDD` where `S` is `WHEAT_SEEDS` and `D` is `DIRT`, producing three `GRASS_BLOCK`. No adaptation-specific config knobs.
+Shaped recipe `adapt:herbalism-dirt-terralid`, `SSS` over `DDD` with `S` = `WHEAT_SEEDS` and `D` = `DIRT`, produces three `GRASS_BLOCK`. It is active without learning and has no adaptation-specific config keys.
 
 ### Mushroom Maker (`herbalism-mushroom-blocks`)
 
 1 level · 2 knowledge
 
-Unlocks four recipes. Four red mushrooms in a 2x2 make a red mushroom block. Four brown mushrooms in a 2x2 make a brown mushroom block. Either mushroom block alone converts to a mushroom stem. Active by default without learning it.
-
-Recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock` are 2x2 mushrooms to one matching mushroom block. `adapt:herbalism-mushstemred` and `adapt:herbalism-mushstembrown` are shapeless conversions of either mushroom block to one `MUSHROOM_STEM`. The stat only counts the two block recipes. No adaptation-specific config knobs.
+Four recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock` are 2x2 mushrooms to one matching mushroom block, and `adapt:herbalism-mushstemred` and `adapt:herbalism-mushstembrown` convert either mushroom block into one `MUSHROOM_STEM`. The stat counts only the two block recipes; the recipes are active without learning and have no adaptation-specific config keys.
 
 ### Webby Creator (`herbalism-cobweb`)
 
 1 level · 2 knowledge
 
-Unlocks a shaped recipe: nine string fills the crafting grid and makes one cobweb. Active by default without learning it.
-
-Recipe `adapt:herbalism-cobwebblock`, shaped 3x3 of `STRING` to one `COBWEB`. No adaptation-specific config knobs.
+Shaped recipe `adapt:herbalism-cobwebblock` turns a 3x3 of `STRING` into one `COBWEB`. It is active without learning and has no adaptation-specific config keys.
 
 ### Seed Sower (`herbalism-seed-sower`)
 
 5 levels · 3 knowledge
 
-Plants a whole patch of farmland in one gesture instead of clicking every tile.
-
-How to use it:
-
-1. Hold a stack of seeds. Wheat seeds, carrots, potatoes, beetroot seeds, melon seeds, pumpkin seeds, torchflower seeds, and nether wart all work.
-2. Sneak and right-click. Clicking a block sets the plane you plant on. Clicking air uses the block you are looking at within 5 blocks.
-3. Every empty tile above farmland within the radius gets planted, up to your per-use crop cap and the number of seeds you are holding.
-
-Nether wart plants on soul sand instead of farmland. Seeds come out of the held stack, one per crop. If planting fails partway, the crops are rolled back and the seeds are refunded. The seed type goes on a short item cooldown afterward.
-
-Valid base is `FARMLAND`, or `SOUL_SAND` for nether wart. Radius is `max(1, round(baseRadius + levelPercent * radiusFactor))`. Crop cap is `max(1, round(baseCropCount + levelPercent * cropCountFactor))`. Cooldown is `max(2, round(cooldownTicksBase - levelPercent * cooldownTicksReduction))` ticks on the seed item. Creative mode plants without consuming seeds.
+Sneak-right-click with wheat seeds, carrots, potatoes, beetroot seeds, melon seeds, pumpkin seeds, torchflower seeds, or nether wart to plant empty tiles above `FARMLAND`, or `SOUL_SAND` for nether wart, on the clicked block's plane or on the looked-at block within 5 blocks when the click is air, up to the crop cap and the held seed count. Radius is `max(1, round(baseRadius + levelPercent * radiusFactor))`, the cap is `max(1, round(baseCropCount + levelPercent * cropCountFactor))`, and the seed-item cooldown is `max(2, round(cooldownTicksBase - levelPercent * cooldownTicksReduction))` ticks; a partial failure rolls the crops back and refunds the seeds, and creative mode does not consume them.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -183,20 +125,7 @@ Valid base is `FARMLAND`, or `SOUL_SAND` for nether wart. Radius is `max(1, roun
 
 6 levels · 4 knowledge
 
-One sneak-click that runs your whole farm cleanup. It sweeps three sources in order and turns the results into compost, bone meal, and crop growth.
-
-How to use it:
-
-1. Sneak and right-click a composter. Clicking air targets a composter within 5 blocks.
-2. Loose items on the ground nearby get pulled in and composted.
-3. Mature crops in range get harvested and replanted, and leaves get stripped too if `consumeLeaves` is turned on.
-4. Compostable items in your inventory get fed in.
-5. The compost you just built is spent maturing nearby crops that are not ready yet.
-6. Bone meal drops at the composter. If the composter hit full, it also rolls for something valuable.
-
-The item budget is split three ways: 40 percent to the field scan, 20 percent to your inventory, and the rest to loose drops. Rewards it drops are tagged so a second cascade does not eat its own output. Radius, item budget, fill chance, and cooldown all scale with level.
-
-Maturation attempts are `min(configuredAttempts, levelGains + overflowFills)`. Bone meal is `baseBoneMeal + (itemsConsumed / itemsPerBoneMeal) + overflowBoneMeal`, plus the ready bonus the first time the composter reaches level 8, capped at a stack. Valuable rolls only happen at a full composter: honeycomb at 45 percent, glow berries at 25, amethyst shards at 18, emerald at 9, diamond at 3. Total XP is `(itemsConsumed * xpPerItemConsumed) + (levelGains * xpPerLevelGain) + (cropsMatured * xpPerCropMatured)`.
+Sneak-right-click a composter, or one looked at within 5 blocks, to pull in nearby ground items, harvest and replant mature crops, strip leaves when `consumeLeaves` is true, feed compostable inventory items, spend the new compost on immature crops, drop bone meal at the composter, and roll a valuable drop only when the composter is full. The item budget is 40 percent field scan, 20 percent inventory, and the rest loose drops, and those drops are tagged so a later cascade ignores them; maturation attempts are `min(configuredAttempts, levelGains + overflowFills)`; bone meal is `baseBoneMeal + (itemsConsumed / itemsPerBoneMeal) + overflowBoneMeal`, plus the ready bonus the first time the composter reaches level 8, capped at a stack; full-composter weights are honeycomb 45 percent, glow berries 25, amethyst shards 18, emerald 9, and diamond 3; XP is `(itemsConsumed * xpPerItemConsumed) + (levelGains * xpPerLevelGain) + (cropsMatured * xpPerCropMatured)`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -236,11 +165,7 @@ Maturation attempts are `min(configuredAttempts, levelGains + overflowFills)`. B
 
 1 level · 3 knowledge
 
-Two safety nets. You stop trampling farmland when you walk or jump on it. Part of your fall damage is paid out of your food bar as long as you land on natural ground. Active by default without learning it.
-
-Natural ground means farmland, grass block, moss block, mycelium, dirt, or rooted dirt directly under you. The conversion is capped both by the absorb percentage and by how much food you actually have. If the absorbed amount covers the whole fall, the damage is cancelled outright.
-
-Trample protection cancels the interaction on `FARMLAND`. Absorb cap is `damage * min(maxAbsorbPercent, absorbBase + levelPercent * absorbFactor)`, and the amount actually absorbed is `min(absorbCap, usableFood / foodPerDamage)`.
+Walking or jumping on `FARMLAND` does not trample it, and part of fall damage on farmland, grass block, moss block, mycelium, dirt, or rooted dirt directly underneath is paid from food. The absorb cap is `damage * min(maxAbsorbPercent, absorbBase + levelPercent * absorbFactor)` and the amount taken is `min(absorbCap, usableFood / foodPerDamage)`; covering the whole fall cancels it, and the adaptation is active without learning.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -253,17 +178,7 @@ Trample protection cancels the interaction on `FARMLAND`. Absorb cap is `damage 
 
 5 levels · 3 knowledge
 
-Hold a flower and nearby crops start growing, while nearby bees drift toward you and stay near your field.
-
-How to use it:
-
-1. Hold any flower in your main hand or your off hand. Tulips, dandelion, poppy, blue orchid, allium, azure bluet, oxeye daisy, and cornflower all count. Lily of the valley, wither rose, sunflower, lilac, rose bush, peony, torchflower, and pink petals also count.
-2. Stand near crops. Pulses fire on their own while you keep holding the flower and have enough food.
-3. Each pulse spends food, makes a batch of growth attempts inside its radius, and tugs up to eight nearby bees toward you.
-
-Bees you have herded add extra growth attempts, up to a configured cap, so keeping a swarm around pays off. Bees pulled this way have their attack target cleared.
-
-Needs a flower in the main or off hand. Radius is `radiusBase + levelPercent * radiusFactor`. Growth attempts are `round(growthAttemptsBase + levelPercent * growthAttemptsFactor)`, multiplied by `1 + min(bees, maxBonusBees) * growthBonusPerBee`. Growth step is `round(growthStepBase + levelPercent * growthStepFactor)` age stages. Food cost is `max(1, round(foodCostBase - levelPercent * foodCostFactor))`, charged once per pulse at the first committed growth. Pulse spacing is `max(250, round(pulseMillisBase - levelPercent * pulseMillisFactor))` milliseconds, and at most 8 bees are pulled per pulse.
+Holding any flower in either hand, including tulip, dandelion, poppy, blue orchid, allium, azure bluet, oxeye daisy, cornflower, lily of the valley, wither rose, sunflower, lilac, rose bush, peony, torchflower, and pink petals, pulses growth while the player has enough food and pulls at most 8 nearby bees, clearing their attack targets. Radius is `radiusBase + levelPercent * radiusFactor`, attempts are `round(growthAttemptsBase + levelPercent * growthAttemptsFactor)` times `1 + min(bees, maxBonusBees) * growthBonusPerBee`, the age step is `round(growthStepBase + levelPercent * growthStepFactor)`, food is `max(1, round(foodCostBase - levelPercent * foodCostFactor))` charged once per pulse at the first committed growth, and pulse spacing is `max(250, round(pulseMillisBase - levelPercent * pulseMillisFactor))` ms.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -288,19 +203,7 @@ Needs a flower in the main or off hand. Radius is `radiusBase + levelPercent * r
 
 5 levels · 4 knowledge
 
-Turns a patch of ground into a mushroom field. The bloom spreads outward from where you clicked in rings. It converts
-dirt-family soil into the surface you started from. It swaps flowers into
-mushrooms as it goes.
-
-How to use it:
-
-1. Hold red or brown mushrooms.
-2. Sneak and place one on top of mycelium or podzol. The placement itself is cancelled. The bloom happens instead.
-3. Rings of ground convert outward over the next few seconds, a few blocks per pulse.
-
-Mycelium seeds a mycelium bloom, podzol seeds a podzol bloom. Warm-colored flowers usually become red mushrooms, cool-colored ones usually become brown, and anything else follows whichever mushroom you were holding. Mushrooms and hunger are only charged once the first block actually converts, so a fully blocked bloom costs you nothing. Turn off `swapFlowersToMushrooms` to convert soil only and leave flowers alone.
-
-Triggered by sneak-placing `RED_MUSHROOM` or `BROWN_MUSHROOM` on `MYCELIUM` or `PODZOL`. Convertible soil is dirt, grass block, coarse dirt, rooted dirt, mycelium, and podzol. Bloom attempts are `round(bloomAttemptsBase + levelPercent * bloomAttemptsFactor) + (level - 1) * bloomAttemptsPerLevel`. Radius is `bloomRadiusBase + levelPercent * bloomRadiusFactor`, floored at 6 once level 5 is reached, which also forces the first 6 rings to be filled. Mushroom cost is `sporeCostBase + (level - 1) * sporeCostPerLevel`. Cooldown is `max(250, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` milliseconds.
+Sneak-placing `RED_MUSHROOM` or `BROWN_MUSHROOM` on `MYCELIUM` or `PODZOL` cancels the placement and blooms that surface outward through dirt, grass block, coarse dirt, rooted dirt, mycelium, and podzol; warm-colored flowers become red mushrooms, cool-colored flowers become brown, and any other flower follows the held mushroom when `swapFlowersToMushrooms` is true. Attempts are `round(bloomAttemptsBase + levelPercent * bloomAttemptsFactor) + (level - 1) * bloomAttemptsPerLevel`, radius is `bloomRadiusBase + levelPercent * bloomRadiusFactor` and at level 5 is at least 6 with the first 6 rings filled, mushroom cost is `sporeCostBase + (level - 1) * sporeCostPerLevel`, cooldown is `max(250, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` ms, and mushrooms and hunger are charged only after the first block converts.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -395,11 +298,6 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 | `challenge_shear_50` | 50 | `challengeShear50Reward` |
 | `challenge_shear_250` | 250 | `challengeShear250Reward` |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts) for skills, adaptations, and knowledge
-- [03 - Player Usage](/adapt/03-player-usage) for the Adapt menu and learning flow
-- [10 - Skills Catalog](/adapt/10-skills-catalog) for the full skill list
-- [04 - Commands & Permissions](/adapt/04-commands-permissions) for the `adapt.use` permission tree
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

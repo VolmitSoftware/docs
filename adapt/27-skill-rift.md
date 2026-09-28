@@ -2,41 +2,26 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Rift gains XP from teleporting, throwing ender pearls or eyes, and fighting End creatures. Its id is `rift`, and it has 13 adaptations.
-
-Adaptations add short teleports, recall points, bouncing pearls, lethal-hit escape, remote storage, linked containers, item collection, targeted pearls, enderman protection, anti-levitation, and resistance after using ender items.
+Rift (`rift`) gains XP from teleporting, throwing ender pearls or eyes of ender, and fighting End creatures. Its 13 adaptations add short teleports, recall points, bouncing pearls, lethal-hit escape, remote storage, linked containers, item collection, targeted pearls, enderman protection, anti-levitation, and resistance after ender items are used.
 
 ## Earning XP
 
-Every teleport counts toward the `rift.teleports` stat. It grants XP on a long cooldown so repeat pearling does not farm the skill. Throwing an ender pearl or an eye of ender pays out immediately with no cooldown. Pearls are the biggest single source in the skill.
-
-Damaging endermen, endermites, and the ender dragon pays XP scaled by the damage dealt. The payout is capped at the target's base health so one huge hit cannot overpay. Destroying an end crystal pays a large flat amount. Killing endermen and damaging the dragon feed their own challenge chains.
+Every teleport increments `rift.teleports`. Teleport XP is cooldown-gated. Throwing an ender pearl or an eye of ender pays immediately, with no cooldown. Damage to endermen, endermites, and the ender dragon pays per point of damage, capped at the target's base health. Destroying an end crystal pays flat XP. Enderman kills and ender-dragon damage feed their own challenge chains.
 
 ## Adaptations
 
-All of this needs the adaptation learned to level 1 or higher from the Adapt menu (`/adapt`), the skill and the adaptation enabled, a world and game mode that are not blocked, and the `adapt.use.<adaptation>` permission. See [08 - Protection & Region Policy](/adapt/08-protection-region-policy) and [04 - Commands & Permissions](/adapt/04-commands-permissions).
-
-Anti-Levitation, Rift Visage, and Inflated Pocket Dimension are marked permanent. The menu asks for a confirmation click before you learn them. After that they cannot be unlearned or refunded.
+Anti-Levitation, Rift Visage, and Inflated Pocket Dimension are permanent. The menu asks for a confirmation before they are learned, and afterward they cannot be unlearned or refunded.
 
 ### Rift Resistance (`rift-resist`)
 
 1 level · 5 knowledge
 
-Using an ender item gives you a short burst of Resistance. That burst covers the
-moment right after a pearl lands, when you are usually most exposed.
-
-1. Learn it and hold an ender pearl or an eye of ender in your main hand.
-2. Right-click air. You get Resistance II for four seconds and a little XP.
-3. Wait out the short activation throttle before it can trigger again.
-
-Easy Enderchest also grants a brief, stronger Resistance pulse when you open your chest from hand, if you have learned this adaptation too.
-
-Triggers only on right-click air with `ENDER_EYE` or `ENDER_PEARL` in the main hand, granting Resistance at amplifier `amplitude` for `duration` ticks plus 3 XP. The Easy Enderchest pulse is 10 ticks at amplifier 2, despite what the menu lore says.
+Right-clicking air with an eye of ender or an ender pearl in the main hand grants Resistance and 3 Rift XP. If Easy Enderchest is also learned, opening the ender chest from the hand grants Resistance for 10 ticks at amplifier 2.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -48,43 +33,19 @@ Triggers only on right-click air with `ENDER_EYE` or `ENDER_PEARL` in the main h
 
 1 level · 15 knowledge
 
-Remote Access gives you a crafted portkey bound to one container. After that you can open that container from anywhere, so a base chest is always one right-click away.
-
-1. Learn it, then craft an ender pearl with a compass to get a Reliquary Portkey.
-2. Sneak-left-click the container you want to bind. Left-clicking air binds the container you are looking at within 5 blocks.
-3. Right-click the portkey anywhere to open that container remotely.
-
-Gloss container previews work while holding a Portkey. Looking at the preview does not bind or activate it; use the gestures above.
-
-Binding and every remote open run the full container permission checks, including both halves of a double chest, so it never opens something you could not open by hand. Breaking, burning, pushing, or blowing up the container closes an open session. No adaptation-specific config knobs.
+Crafting an ender pearl with a compass creates a Reliquary Portkey. Sneak-left-click binds a container, left-click air binds the container looked at within 5 blocks, and right-click opens it; the bind and every open run container permission checks, including both halves of a double chest, breaking, burning, pushing, or exploding the container closes an open session, and a Gloss preview neither binds nor opens it.
 
 ### Easy Enderchest (`rift-enderchest`)
 
 1 level · 10 knowledge
 
-Hold an ender chest and click to open it without placing the block. That is the whole feature, and it saves a placement and a pickup every single time.
-
-1. Learn it and hold an ender chest in your main hand.
-2. Right-click air, left-click air, or left-click a block.
-3. Your ender chest opens. The item goes on a five second cooldown afterward.
-
-Triggers on right-click air, left-click air, or left-click block with `ENDER_CHEST` in the main hand. A successful use sets a 100 tick cooldown on the ender chest item. Clicking during the cooldown cancels the interaction. If `rift-resist` is learned, a 10 tick amplifier 2 Resistance pulse is applied. No adaptation-specific config knobs.
+A right-click on air, a left-click on air, or a left-click on a block, with an ender chest in the main hand, opens it and starts a 100-tick cooldown on that item; a click during the cooldown is cancelled. Learned Rift Resistance also applies Resistance for 10 ticks at amplifier 2.
 
 ### Rift Gate (`rift-gate`)
 
 1 level · 30 knowledge
 
-Rift Gate is a recall stone. Bind a location to a crafted eye, then use it later to channel back there. The channel is slow and blinds you on purpose. You float in place, visible and
-vulnerable. If something kills you during it you die normally.
-
-1. Learn it and craft an emerald, an amethyst shard, and an ender pearl into a recall gate eye.
-2. Sneak-left-click a block to bind your current location to the eye.
-3. Right-click the eye to start the channel. After a bit over four seconds you teleport.
-4. Sneak-left-click air with a bound eye to unbind it.
-
-By default the eye is consumed on use, so each gate is a one-shot ticket. Turn that off and the eye survives, with a cooldown between uses instead.
-
-Channel length is 85 ticks, with Blindness for 100 ticks and Levitation for 85. The eye and the cooldown are both spent the moment the channel starts, so stowing or dropping the eye mid-channel does not refund it. A plain eye of ender can still be thrown to locate a stronghold. Cooldown when `consumeOnUse` is false is 150 ticks.
+A sneak-left-click on a block with the crafted eye, made from an emerald, an amethyst shard, and an ender pearl, binds the current location; a sneak-left-click on air unbinds it, and a right-click starts an 85-tick channel with Blindness for 100 ticks and Levitation for 85 ticks. The eye and its cooldown are spent when the channel starts, so stowing or dropping the eye does not refund them, and a plain eye of ender can still be thrown to find a stronghold.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -95,39 +56,45 @@ Channel length is 85 ticks, with Blindness for 100 ticks and Levitation for 85. 
 
 5 levels · 1 knowledge, then 7 per level
 
-Blink is a free short-range teleport on a double jump. Aim at the ground to land there, at a ledge to pull yourself onto it, or at open air to dash. It costs no pearl, but you take the normal pearl landing damage, which drops as you level. It only works in survival mode.
+In Manual mode, a second mid-air jump in Survival blinks along your look direction without consuming a pearl. Use the controls at the bottom of Blink's level screen to choose how it works. Your choices affect only your player and remain saved when you change learned levels.
 
-1. Learn it, then jump.
-2. Press jump again in mid-air while looking where you want to go.
-3. Hold sneak as you do it to phase straight through walls and land in the farthest open space in range.
+| Control | Choices | Default / unlock |
+|---|---|---|
+| Enabled | On / Off | On, level 1 |
+| Phasing | Hold sneak / Aim only / Never | Hold sneak, level 1 |
+| Landing preference | Distance / Verticality | Distance, level 1 |
+| Activation | Manual / Reactive | Manual; Reactive unlocks at level 2 |
+| Reactive direction | Look direction / Away from attacker | Look direction; shown only at level 2+ in Reactive mode |
 
-Distance is `baseDistance + (levelPercent * distanceFactor)`. Self damage is `pearlDamageBase - ((level - 1) * pearlDamageReductionPerLevel)`, floored at `minimumPearlDamage`.
+Hold sneak uses the normal obstacle-stopping blink unless you are sneaking. Aim only permits phasing along your look direction without holding sneak. Never always stops at obstacles. The server's `allowPhasing` setting overrides all three choices.
+
+Distance chooses the farthest usable landing along the chosen direction, with normal mantling onto a hit ledge when phasing is off. Verticality prefers higher usable landings near that line, within `verticalSearchHeight` and the same total range; ties prefer distance. With phasing off, raised landings must have a clear line of sight. Open-air landings can still leave you falling. Only loaded destinations available to the current region are considered.
+
+Reactive replaces double-jump activation. A direct melee, sweep, or projectile hit triggers a blink when ready. The default direction is where you are looking; Away from attacker moves horizontally away from the attack source and falls back to look direction when that source is unavailable. Environmental damage, thorns, and Blink's own pearl damage do not trigger a reaction.
+
+A successful reactive blink avoids the triggering attack and pays normal Blink self-damage. If no usable destination exists or the teleport is refused, the attack still hurts you. Manual and Reactive share a cooldown; changing a preference does not reset it. Further hits while a teleport is pending are not automatically dodged.
+
+Range is `baseDistance + (levelPercent * distanceFactor)`. Self-damage is `pearlDamageBase - ((level - 1) * pearlDamageReductionPerLevel)`, floored at `minimumPearlDamage`. The server controls these values and can lock any player preference or restrict its choices through [player preference policy](/adapt/01-installation-configuration#player-preferences).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `cooldownMillis` | `2000` | Milliseconds between successful blinks. |
-| `pearlDamageBase` | `5.0` | Self damage at level 1, in health points (2 = 1 heart). |
-| `pearlDamageReductionPerLevel` | `1.0` | Self damage removed per level past the first. |
-| `minimumPearlDamage` | `1.0` | Floor on blink self damage. |
-| `baseDistance` | `12` | Blink distance in blocks before the level bonus. |
-| `distanceFactor` | `20` | Blink distance in blocks added at max level. |
-| `groundSnapDepth` | `5` | Blocks searched downward from the aimed point to prefer solid ground. |
-| `momentumCarry` | `0.35` | Velocity carried along your look direction after landing, in blocks per tick. |
-| `minBlinkDistance` | `1.5` | Shortest distance that still counts as a blink, in blocks. |
-| `phaseWhileSneaking` | `true` | Lets a blink started while sneaking pass through walls and land in the farthest open space in range. |
+| `cooldownMillis` | `2000` | Milliseconds between successful blinks, shared by both activation modes. |
+| `pearlDamageBase` | `5.0` | Self-damage at level 1, in health points (2 = 1 heart). |
+| `pearlDamageReductionPerLevel` | `1.0` | Self-damage removed per level past the first. |
+| `minimumPearlDamage` | `1.0` | Minimum Blink self-damage. |
+| `baseDistance` | `12` | Range before the level bonus. |
+| `distanceFactor` | `20` | Additional range at maximum level. Total range is bounded to 128 blocks. |
+| `groundSnapDepth` | `5` | Downward search for solid ground, bounded to 0-32 blocks. |
+| `momentumCarry` | `0.35` | Velocity along the chosen blink direction after landing. |
+| `minBlinkDistance` | `1.5` | Minimum accepted travel distance in blocks, at least 0.5. |
+| `allowPhasing` | `true` | Allows obstacle traversal when the effective phasing preference requests it. |
+| `verticalSearchHeight` | `6` | Extra upward search for Verticality, bounded to 0-16 blocks. |
 
 ### Anti-Levitation (`rift-descent`)
 
 1 level · 3 knowledge
 
-Shulker hits are annoying because the levitation lifts you and the fall afterward hurts. Tap sneak while levitating and Anti-Levitation strips the effect. It shields you
-from fall damage for the next few seconds. You come straight back down safely.
-
-1. Learn it (it is permanent once learned).
-2. While levitating, tap sneak.
-3. Levitation ends and your fall damage is nullified for the duration of the cooldown.
-
-Removes Levitation and applies a `FALL_DAMAGE_MULTIPLIER` modifier of -1.0 for `cooldown * 20` ticks, nullifying fall damage for that window. It is not Slow Falling and does not change your fall speed, despite what the adaptation description says.
+Sneaking while levitating removes Levitation and sets the fall-damage multiplier to -1 for `cooldown * 20` ticks. Fall speed does not change.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -137,23 +104,13 @@ Removes Levitation and applies a `FALL_DAMAGE_MULTIPLIER` modifier of -1.0 for `
 
 1 level · 2 knowledge
 
-While you have at least one ender pearl anywhere in your inventory, endermen never take you as a target. Look at them all you like. It works on its own once learned, and it is permanent.
-
-An enderman cannot target a player carrying at least one `ENDER_PEARL`. No adaptation-specific config knobs.
+An enderman does not target a player who has at least one ender pearl anywhere in the inventory.
 
 ### Ender Taglock (`rift-ender-taglock`)
 
 3 levels · 7 knowledge
 
-Taglock inverts the ender pearl. Instead of teleporting yourself, you bind a pearl to something else and throw it to move that thing. The tagging hit deals no damage.
-
-1. Learn it and hold a plain ender pearl in your main hand.
-2. Sneak and hit the entity you want to tag. The pearl becomes a Taglocked Ender Pearl showing its target.
-3. Right-click to throw the pearl. Wherever it lands, the tagged target is teleported there. You are never teleported.
-
-Level 1 tags passive and hostile mobs. Level 2 adds villagers and large targets. Level 3 tags anything, including players. By default the thrower eats the pearl teleport damage rather than the victim.
-
-Tagging needs a plain `ENDER_PEARL` in the main hand. Target eligibility by level: 1 covers passive and hostile mobs, 2 adds villagers and targets above the large size thresholds, 3 covers everything including players. Throw cooldown is `throwCooldownTicksBase - (levelPercent * throwCooldownTicksFactor)` with a floor of 4 ticks. Your own vanilla pearl teleport is suppressed briefly after a taglocked pearl lands.
+Sneak-hitting with a plain ender pearl in the main hand tags an entity and deals no damage; throwing that pearl teleports the target, not the thrower. Level 1 tags passive and hostile mobs, level 2 adds villagers and large targets, level 3 tags any entity including players, and the throw cooldown floors at 4 ticks.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -171,14 +128,7 @@ Tagging needs a plain `ENDER_PEARL` in the main hand. Target eligibility by leve
 
 1 level · 7 knowledge
 
-Your ender chest becomes a live building supply. It is the difference between one trip to build a bridge and six.
-
-1. Learn it (it is permanent once learned).
-2. With an empty main hand, right-click a block to pull a stack of that same block out of your ender chest.
-3. Keep building. When a stack in your hand runs low, placing blocks refills it from the ender chest automatically.
-4. Sneak and drop an item to send it into the ender chest instead of the ground.
-
-The pull needs an empty main hand and works on right-click block, right-click air, or left-click air; air variants use the block you are looking at within 5 blocks. Build refill tops the held stack back up to `buildRefillAmount` or the material's max stack size, whichever is smaller.
+With an empty main hand, right-clicking a block, or right-clicking or left-clicking air at the block looked at within 5 blocks, pulls that block from the ender chest; while placing, a low stack refills up to `buildRefillAmount` or the item's max stack, whichever is smaller. A sneak-drop stores the item in the ender chest instead of dropping it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -190,13 +140,7 @@ The pull needs an empty main hand and works on right-click block, right-click ai
 
 5 levels · 4 knowledge
 
-Hold sneak and nearby item drops start flowing to you on a pulse, straight into your ender chest. It is built for mining, farming, and mob grinders where the drops are spread over a wide area. Leveling widens the radius, raises the items per pulse, and shortens the pulse delay.
-
-1. Learn it.
-2. Sneak and stay sneaking. The magnet pulses on a timer while you hold it.
-3. Items land in your ender chest. By default anything that does not fit stays on the ground. A config switch lets the leftovers spill into your normal inventory.
-
-Radius caps at 16 blocks and 32 items per pulse, and the pulse delay floors at 2 ticks. Anything you could not pick up by hand stays on the ground.
+Sneaking pulls nearby item drops into the ender chest on a repeating pulse. Radius is capped at 16 blocks, items per pulse at 32, and the pulse delay floors at 2 ticks; an item the player could not pick up by hand stays on the ground.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -213,10 +157,7 @@ Radius caps at 16 blocks and 32 items per pulse, and the pulse delay floors at 2
 
 4 levels · 6 knowledge, then 8 per level
 
-Void Skin is a death save. Any hit that would kill you is cancelled. You are blinked to a nearby safe spot
-instead. Brief Resistance helps you survive whatever comes next. It costs one plain ender pearl from your inventory and has a long cooldown that shortens as you level. If no safe spot is found nearby it falls back to the current world's spawn. With no plain pearl on you, or with the cooldown still running, the hit lands normally.
-
-Triggers when the damage would exceed your current health plus absorption, and consumes a plain ender pearl from your inventory. The safe-spot search radius is clamped to 3-16 blocks. With no safe spot it falls back to the world spawn, and with no usable world spawn the escape is skipped and the damage lands.
+A hit that would reduce health plus absorption to zero or below is cancelled, spends one plain ender pearl, and blinks the player to a safe spot or, if none exists, to the current world spawn; the search radius is clamped to 3-16 blocks. With no plain pearl, a cooldown still running, or no usable world spawn, the hit lands.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -234,9 +175,7 @@ Triggers when the damage would exceed your current health plus absorption, and c
 
 4 levels · 3 knowledge, then 5 per level
 
-A thrown pearl no longer commits at the first thing it hits. The first block it strikes bounces it off the surface, steered toward wherever you are looking, and the pearl teleports you at its next impact. That lets you bank pearls around corners and through gaps you cannot see through. Pearl landing damage is also reduced, and both the reduction and the steering improve with level.
-
-Only plain ender pearls rebound, and only once each: pearls already claimed by another Rift adaptation, or already rebounded, teleport normally. The bounce reflects the pearl off the struck block face, biases it toward the thrower's look direction, and relaunches it at `reboundSpeed`. Damage reduction and aim bias are both capped at 0.9 in code.
+Only a plain ender pearl rebounds, and only once; a pearl already claimed by another Rift adaptation teleports as usual. Damage reduction and aim bias both cap at 0.9.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -251,16 +190,7 @@ Only plain ender pearls rebound, and only once each: pearls already claimed by a
 
 4 levels · 8 knowledge
 
-Conduit links two containers so items move between them on their own. Dump loot into the chest by your farm and it appears in the sorting chest at your base.
-
-1. Learn it and hold a plain ender pearl.
-2. Sneak-right-click the source container. The pearl becomes a Rift Conduit Taglock.
-3. Right-click a second container with the taglock to link the pair.
-4. Put items in one container and close it. They flow to the partner.
-
-Binding range grows a long way with level, and at max level the two containers can sit in different dimensions. Both ends re-check container permissions on every flow, and anything the partner cannot accept comes straight back to the source.
-
-A taglock in hand binds when it clicks a container and prints a hint when it does not. A plain pearl only captures when you sneak-click a container. A taglock held by someone without the adaptation cannot be thrown. Throughput is clamped to 1-1152 items and binding range to at most 512 blocks.
+A plain ender pearl sneak-right-clicked on a container becomes a conduit taglock, and right-clicking a second container links the pair. Items move when either container closes, both ends re-check container permissions, and rejected items return to the source; throughput is clamped to 1-1152 items, range to 512 blocks, a miss only prints a hint, a plain pearl captures a source only on a sneak-click, and the taglock cannot be thrown without this adaptation.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -308,11 +238,6 @@ Written to `plugins/Adapt/skills/rift.toml` on first load.
 | `challenge_rift_crystal_10` | 10 | `challengeRiftReward` |
 | `challenge_rift_crystal_100` | 100 | `challengeRiftReward` x 2 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

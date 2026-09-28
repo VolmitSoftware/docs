@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-26T06:29:51.520Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ Wormholes links servers through pasteable codes. It stores routes under `routes/
 | Setting | Default | Role |
 |---------|---------|------|
 | `[network] enabled` | `false` | Master switch for cross-server networking |
-| Import / export | Not applicable | Sets `enabled = true`, persists config, and starts `NetworkManager` if not running |
+| Import or export | — | Sets `enabled = true` and starts networking if it is off |
 
 Manual enable: set `enabled = true` in
 `plugins/Wormholes/wormholes.toml` and reload or restart. Importing or exporting a code also enables networking.
@@ -66,7 +66,7 @@ plugins/Wormholes/
 
 | Action | Storage impact |
 |--------|----------------|
-| Import code | `trustPeer` + `savePeer` (route) |
+| Import code | Saves the route and the trusted key |
 | `/wormholes server remove <name>` | Deletes route and trusted key. Drops remote portal registry entries for that peer |
 | TOFU re-trust | Online peer that still has this server may re-register if `trust-on-first-use` remains true. Remove on **both** servers to fully forget |
 
@@ -80,7 +80,7 @@ Peers are **not** configured as `[[peers]]` inside `wormholes.toml`.
 | `false` | Unknown peer with no route/trust entry is rejected until an import (or prior trust) stores a key |
 
 If a stored key exists and the peer presents a different key, the connection is
-rejected (key change). Import overwrites trust via `trustOrReplace`.
+rejected. Import replaces the stored key.
 
 The local identity is an Ed25519 key pair stored as `identity/server.identity`,
 with repaired compatibility mirrors at `identity/server.key` and
@@ -143,18 +143,9 @@ In Velocity's existing `[advanced]` table, enable the [BungeeCord plugin message
 bungee-plugin-message-channel = true
 ```
 
-Save `wormholes.toml` on both backends and wait for `Configuration hot-reloaded.` in each console. There is no `/wh reload` command. If you changed `velocity.toml`, restart Velocity to apply its configuration.
+Save `wormholes.toml`. A `velocity.toml` change applies when Velocity restarts. Link the servers with `/wormholes server export` and `import` in both directions, then link each gateway from its Destination menu. Links are one-way.
 
-1. Run `/wh network status` on both backends. Their local names must match your Velocity server keys.
-2. If you renamed generated peers, remove each obsolete peer with `/wh server remove <old-name>` on both sides where it is listed.
-3. Run `/wh server export` on `lobby`, then `/wh server import <code>` on `survival`. Repeat in reverse with a fresh export from `survival`.
-4. Open each gateway's Destination menu. Export its fresh portal code and use Import on the opposite gateway to link it. Link both directions for return travel.
-5. Connect from `lobby` with `/wh server connect survival`. Use `/wh server connect lobby` to return.
-6. If gateway travel is denied, check Permission mode and Travel direction on both portals. Admin command access does not grant ordinary players portal access.
-
-For installations that use WormholesProxy, install `WormholesProxy-<version>-packed.jar` on Velocity or BungeeCord. Install only one WormholesProxy jar. Each build automatically selects the smaller ordinary or XZ package. With XZ, startup verifies and extracts the bundled runtime into the writable `plugins/WormholesProxy/cache/runtime/` directory. Later starts reuse the verified cache.
-
-The standard proxy transfer path uses Velocity's BungeeCord `Connect` support. It does not require the optional WormholesProxy module. Leave `[network.proxy] enabled = false` unless that module and its shared secret are configured.
+WormholesProxy is optional. The proxy path uses Velocity's BungeeCord `Connect` channel. Leave `[network.proxy] enabled = false` unless that module and its shared secret are configured. An XZ WormholesProxy jar extracts `plugins/WormholesProxy/cache/runtime/`, which must be writable.
 
 `auto` does not detect Velocity forwarding. A manually imported peer uses direct transfer unless `proxy-servers` includes its name or its route selects the proxy. Direct login cannot preserve a forwarded online player UUID on an offline backend, so admission rejects that transfer.
 
@@ -256,7 +247,7 @@ has capacity. Anything else is refused at the source and the traveler stays put.
 
 | Source | Value |
 |--------|--------|
-| Interval | `max(1000 ms, teleport-cooldown-millis)` (`TraversalAdmissionPolicy.handoffRateLimitMillis`) |
+| Interval | `max(1000 ms, teleport-cooldown-millis)` |
 | Scope | Per-player outbound and destination admission rate limiters |
 | Failure | Penalty re-applies the interval. Denials can carry `retryAfterMillis` |
 
@@ -284,13 +275,11 @@ Costs commit when the source dispatches the transfer. Rejected dispatches refund
 | Mechanism | Setting | Notes |
 |-----------|---------|--------|
 | Native Paper | `accepts-transfers=true` in **destination** `server.properties` + restart | Required for first-class transfer handshakes |
-| Compatibility | `[network] auto-accept-transfers = true` (default) | `TransferGate` rewrites TRANSFER to LOGIN only when native transfer acceptance is disabled |
+| Compatibility | `[network] auto-accept-transfers = true` (default) | Rewrites a TRANSFER handshake to LOGIN when native transfer acceptance is off |
 
 Native acceptance preserves Paper’s transferred-player flag. Compatibility rewriting still uses the normal login and authentication checks. Proxy forwarding requirements remain active.
 
-Destination support is treated as true when `autoAcceptTransfers` **or** the
-platform reports accepting transfers. Direct transfers fail admission with
-“destination does not accept direct transfers” when neither path is active.
+Direct transfer is admitted when `auto-accept-transfers` is true or the destination accepts transfers. Otherwise admission fails with `destination does not accept direct transfers`.
 
 ## Wire protocol
 
@@ -324,72 +313,12 @@ Permission: `wormholes.admin.network`. Player-only for connect.
 
 | Command | Effect |
 |---------|--------|
-| `/wormholes server connect <name>` | Transfer yourself to a linked server (`ServerConnectService`) |
+| `/wormholes server connect <name>` | Transfer yourself to a linked server |
 | `/wh server <name>` | Same connect path when the second argument has no `=` |
 | `/wormholes server list` | Linked servers with ready/offline plus game address |
 
 Unknown names are rejected. A peer that is not reachable reports not-ready and
 points at `/wh network status`.
-
-## Operator workflow
-
-1. On server A: `/wormholes server export` → copy `WHS2.…`
-2. On server B: `/wormholes server import <code>` (`network import` is an alias)
-3. Reverse export/import so both sides have routes and trust (one-way import
-   creates a route on the importer only)
-4. Make sure `accepts-transfers=true` (or rely on auto-accept) on destinations
-   that receive direct transfers
-5. Expose the game endpoint to the intended clients. For raw replication, open the actual peer port reported by
-   `/wormholes network status`. `listen-port` must be 1 through 65535. An invalid value
-   is canonicalized to 8901. The listener tries the configured port through the
-   next 50 valid ports, capped at 65535, when ports are busy. Reserve the
-   configured port or permit the reported bound port/range.
-6. Link gateways: portal Export (`WHP6.…`) on one side, import + Link menu on
-   the other
-7. Verify: `/wormholes network status`, `/wormholes server list`,
-   `/wormholes network doctor`
-
-## Troubleshooting
-
-| Command | Use |
-|---------|-----|
-| `/wormholes network status` | Listen address or outbound-only, fingerprint, peer state + RTT + last error. Auto-runs doctor when any listed peer is not `CONNECTED`. |
-| `/wormholes network doctor` | Free-form diagnostic lines when peers fail to connect |
-| `/wormholes debug toggle` | Toggle one-second projection/network/queue/peer/handoff telemetry to **console** on both servers while reproducing a failed handoff. Toggle again to stop |
-| `/wormholes stats` | Path to live snapshot file (network/view state) |
-
-Verbose logging adds endpoint, handoff, admission, and arrival details while reproducing a problem. Ordinary joins remain quiet.
-
-### Portal access denied
-
-If `/wh server connect` works but walking through a gateway reports `Portal access denied`, inspect the portal's access checks. The source checks outbound access and the remote portal's availability and direction before requesting a handoff. Destination permissions are evaluated on the destination after login.
-
-In each portal's Settings menu, confirm Travel direction allows the intended trip. Permission mode defaults to `BLACKLIST`: holding `wormholes.portal.<key>` blocks ordinary players. In `WHITELIST`, that permission grants access. A scoped wildcard can match the portal node. OP and the literal `*` permission bypass these restrictions. Each backend evaluates its own stable access key and enabled name alias. Source-side OP or `*` privilege also authorizes destination access for that crossing.
-
-For public portals, use `BLACKLIST` with no matching permission grant for ordinary travelers. For restricted portals, use `WHITELIST` and grant the displayed node to the intended players on both backends. Portal roles, land claims, and integration rules can impose additional restrictions. See [Portal access](/wormholes/04-portal-types-menus-settings#per-portal-permission-node).
-
-With LuckPerms, check each node reported by the denial log on the backend that rejected the player:
-
-```text
-lp user <player> permission check <node>
-```
-
-For an ordinary traveler at a `BLACKLIST` portal, an explicit `false` overrides an inherited scoped wildcard grant:
-
-```text
-lp user <player> permission set <node> false
-```
-
-Use `true` for an intended traveler at a `WHITELIST` portal. Replace `<node>` with the complete `wormholes.portal.…` node, and check both stable and name-derived nodes when they differ. See the [LuckPerms permission commands](https://luckperms.net/wiki/Permission-Commands) for permission checks and server contexts.
-
-Run `/wh debug toggle` on both backends, reproduce one denied crossing, and inspect the console access and handoff lines. Toggle again to stop. The debug command requires `wormholes.admin`. Ordinary gateway travel does not require `wormholes.admin.network`.
-
-`HANDOFF_ENDPOINT_REJECTED` means the game endpoint failed verification before dispatch. `HANDOFF_ARRIVAL_FAILED` means the destination reported a placement failure. `HANDOFF_ARRIVAL_UNCONFIRMED` means no receipt arrived within 60 seconds. Check both server logs for client login rejection or a lost control connection.
-
-Native and compatibility transfers still use the destination connection throttle. Rapid return trips or players sharing one public IP can encounter that throttle. Diagnose the destination login message before changing server policy. A backend that requires Velocity or Bungee forwarding needs the configured proxy transfer path.
-
-The TRANSFERS and failure sections in the stats snapshot include both player
-handoffs and entity transfers.
 
 ## Related docs
 

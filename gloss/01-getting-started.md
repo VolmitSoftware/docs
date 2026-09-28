@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-26T07:50:33.878Z
+date: 2026-09-28T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -10,36 +10,22 @@ dateCreated: 2026-08-18T00:00:00.000Z
 
 For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
 
-Put the Gloss jar in `plugins/` and start the server once. Settings live in `plugins/Gloss/gloss.toml`; display content lives in JSON files under `plugins/Gloss/`. Most edits reload automatically.
-
-Reloading the Gloss plugin jar through BileTools disconnects existing players while the bundled packet library initializes. Wait for the reload to finish, then reconnect. Configuration and document hotloads keep players connected.
+Settings are `plugins/Gloss/gloss.toml`. Display content is JSON under `plugins/Gloss/`. A valid save reloads. Invalid files keep the current settings. A BileTools jar reload disconnects players while the packet library initializes. Config and document reloads do not.
 
 ## Requirements
 
 | Item | Value |
 |---|---|
-| Server | Paper, Purpur, Leaf, Folia, Canvas or Spigot |
-| Minecraft | `26.1.2 - 26.3` |
+| Server | Paper, Purpur, Leaf, Folia, Canvas, or Spigot. Minecraft 26.1.2 through 26.3 |
 | Java | 25 |
-| Plugin version | `3.0.4-26.2`, api-version `26.1` |
+| Jar | `Gloss-<version>-packed.jar` |
+| Optional | PlaceholderAPI, Vault, and supported item plugins |
 
-Use a build of your chosen server software that supports your Minecraft version.
+An XZ packed jar extracts `plugins/Gloss/cache/runtime/` on first start. That directory must be writable. Other library downloads still need a network if that cache is empty.
 
-Gloss works without optional dependencies. PlaceholderAPI adds `%...%` tokens, Vault adds group conditions, and supported item plugins provide custom item icons.
+## Files
 
-## Install
-
-Install the `-packed.jar` as the only Gloss jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/Gloss/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
-
-1. Put the Gloss jar in `plugins/`.
-2. Start the server. Gloss creates `plugins/Gloss/` and its default files.
-3. Edit `gloss.toml`. A save reloads Gloss in place.
-
-The first start needs internet access to download Gloss's own libraries.
-
-## What the first boot creates
-
-The first boot creates the config, language file, and defaults for enabled features:
+Enabled features write these files when they are missing:
 
 ```
 plugins/Gloss/
@@ -98,21 +84,8 @@ Enabling a document-backed feature extracts its defaults on reload; `previews` n
 
 ## Feature toggles
 
-The `[features]` table in `gloss.toml` switches each subsystem on or off. `motd` and `connections`
-are the only features off by default, and enabling `panels` or `previews` after startup requires a
-restart. The full table is on [Configuration](/gloss/02-configuration). Read
-[Server List MOTD](/gloss/06b-server-list-motd) before enabling `motd` alongside another MOTD
-plugin.
+`motd` and `connections` are off by default. Enabling `panels` or `previews` after startup needs a restart. The full table is on [Configuration](/gloss/02-configuration).
 
-## Coming from HoloUi
+## Import
 
-On first boot, Gloss can import menus, images, panels, preview definitions, preview scales and settings from `plugins/holoui` or `plugins/HoloUi`. It does not change the source folder or copy session secrets.
-
-Use `/gloss`, `gloss.*` and `%gloss_*%` instead of the old HoloUi names. HoloUi boards are called panels; Gloss uses "board" for scoreboards. See [Data Files & Hot Reload](/gloss/03-data-files).
-
-## Next steps
-
-- [Configuration](/gloss/02-configuration)
-- [Data Files & Hot Reload](/gloss/03-data-files)
-- [Commands & Permissions](/gloss/17-commands-permissions)
-{.links-list}
+On first start, Gloss can import menus, images, panels, preview definitions, preview scales, and settings from `plugins/holoui` or `plugins/HoloUi`. It does not change that folder or copy session secrets. `/gloss import holoui` runs the same import later. HoloUi world boards are Gloss panels. `/gloss board` is the scoreboard command. See [Data files](/gloss/03-data-files).

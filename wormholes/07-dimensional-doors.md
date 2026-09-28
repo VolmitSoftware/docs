@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-09-17T01:40:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -61,9 +61,7 @@ Each placed endpoint stores an OpenState. New placements default to `OPEN`.
 
 ## Access UI and rules
 
-Access is **per door** (one `DoorAccessRecord` per door `itemId`), with
-**per-player** entries inside that record. It is not a global per-player grant
-across doors.
+Access is stored on the door's `itemId`, with one entry per player. It does not apply to other doors.
 
 To open the menu, sneak and right-click a placed Pair, Personal, or Public door with an empty main hand. The owner, operators, and players with `wormholes.admin` may manage it. Return doors have no access menu.
 
@@ -216,8 +214,7 @@ Rules the parser enforces: at most 3 rows of 3, all rows the same width (a short
 row is padded, so a lost trailing space is harmless), every slot symbol has an
 ingredient, and every ingredient is actually used by the shape. A recipe that
 breaks one of those, or that names a block this server does not have, is logged
-and falls back to its default recipe. A typo never leaves a product silently
-uncraftable.
+and falls back to its default recipe.
 
 The reskin recipes have no configurable grid because their result is derived
 from the exact two items placed in rather than from a fixed shape; they only

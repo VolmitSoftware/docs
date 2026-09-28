@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,12 +36,9 @@ Choose `GATEWAY` or `RTP` later in the type menu.
 | `ProjectionMode` | `ON`, `OFF` | Whether this portal produces a through-view for interested observers. Default `ON`. |
 | `ProjectionRenderMode` | `PANOPTIC`, `VENTICULAR` | How the projector samples and culls cells. Default `VENTICULAR`. |
 
-- **PanOptic:** full aperture sample. No buried-cell culling or observer
-  occlusion path that Venticular uses.
-- **Venticular:** uses buried-cell culling and observer occlusion
-  (`usesBuriedCellCulling` / `usesObserverOcclusion`).
+PanOptic samples the aperture without buried-cell culling or observer occlusion. Venticular uses both.
 
-Projection detail, budgets, and global ranges:
+Projection budgets and ranges:
 [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
 
 ## Tunnels and destinations
@@ -64,8 +61,7 @@ Linking rules for operators:
   B→A.
 - If mirror mode is enabled, it rejects destination linking and clears any
   existing tunnel.
-- Managed dimensional portals (`DimensionalPortalKind` ≠ `NONE`) refuse manual
-  re-linking.
+- A managed Nether or End portal refuses manual re-linking.
 
 ## Mirror mode
 
@@ -153,7 +149,7 @@ Per-portal permission node: `wormholes.portal.<sanitizedName>`. See
 | `BLACKLIST` (default) | Players **with** the node are blocked |
 | `WHITELIST` | Players need the node to use the portal |
 
-Operators (`isOp`) always pass the portal permission and travel-direction
+Operators always pass the portal permission and travel-direction
 checks. Mirror state, portal topology, cooldowns, safety validation, configured
 travel costs, and external integration decisions still apply. Menu management
 (open settings, destroy, skin) needs a portal owner UUID match, op, or

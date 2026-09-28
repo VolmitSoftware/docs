@@ -2,28 +2,20 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Discovery awards XP once for each new block state, item, food, recipe, enchantment, entity, player, effect, biome, dimension, and world. It also scans the targeted block and mirrors collected vanilla experience into Discovery XP.
-
-Its 14 adaptations add block and entity details, structure guidance, chest detection, archaeology rewards, armor, damage resistance, villager discounts, and faster mending.
+Discovery awards XP once for each new block state, item, food, recipe, enchantment, entity, player, effect, biome, dimension, and world, scans the targeted block, and mirrors collected vanilla experience into Discovery XP. Its 14 adaptations add block and entity details, structure guidance, chest detection, archaeology loot, armor, damage resistance, villager discounts, and faster mending.
 
 ## Adaptations
-
-All of this needs the adaptation learned to level 1 or higher, the skill and the adaptation enabled in config, the `adapt.use` permission, and protection and region policy that allow the action.
 
 ### Experimental Unity (`discovery-unity`)
 
 7 levels · 3 knowledge, then 2 per level
 
-Every experience orb you pick up gets spread around. You gain a little Discovery XP and one of your existing skill lines, picked at random, gets a fresh XP grant on top. It is the passive that keeps the skills you are not actively using from falling behind. Goes to seven levels.
-
-It grants a flat 5 Discovery XP per orb pickup. It then picks one random skill
-line and gives it `amount * xpGainedMultiplier * levelPercent` fresh XP.
-`amount` is a random 1 to 3.
+Picking up an experience orb grants 5 Discovery XP, then grants one existing skill line `amount * xpGainedMultiplier * levelPercent` XP, where `amount` is a random integer from 1 to 3.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -33,8 +25,7 @@ line and gives it `amount * xpGainedMultiplier * levelPercent` fresh XP.
 
 3 levels · 3 knowledge, then 2 per level
 
-Standing on and near hard blocks makes you tougher. The bonus armor is derived from the hardness of the blocks around you. It pays
-out in stone and deepslate. It gives you nothing in a field.
+Bonus armor scales with the hardness of the surrounding blocks, including stone and deepslate, and is zero in a field.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -44,9 +35,7 @@ out in stone and deepslate. It gives you nothing in a field.
 
 5 levels · 3 knowledge, then 5 per level
 
-An emergency brake tied to your experience bar. It fires only when a hit would drop you below five hearts or kill you outright, judged on the damage that would actually land after armor. It then spends vanilla levels, shows a `-N XP Levels` notice, and cuts the damage. Without the levels it fails with a red puff and the hit lands in full. Higher adaptation levels cut more damage and cost fewer levels.
-
-Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, round(levelCostAdd * amplifier - level * levelDrain))`, charged as `VANILLA_EXPERIENCE` under `experience-levels`. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
+A hit that would fall below `triggerHealthThreshold` after armor, or kill, spends `max(1, round(levelCostAdd * amplifier - level * levelDrain))` vanilla levels, charged as `VANILLA_EXPERIENCE` under `experience-levels`, and cuts damage by `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`; missing the levels leaves the hit unchanged. A successful save grants 5 Discovery XP and starts a fixed 15-second cooldown.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -61,14 +50,7 @@ Damage reduction is `min(maxEffectiveness, levelPercent^2 + effectivenessBase)`.
 
 5 levels · 5 knowledge, then 1 per level
 
-Right-clicking a villager has a chance to rewrite the trades in your favour, paid for with vanilla levels. When you cannot afford it the villager shakes its head at you. The chance improves as the adaptation levels.
-
-**How to use it**
-
-1. Keep some vanilla levels banked.
-2. Right-click a villager with your main hand. If it procs, the offers you open are improved by a temporary Hero of the Village effect, and your previous effect comes back when the screen closes.
-
-Proc chance is `min(clamp(maxEffectiveness, 0, 1), levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, ceil(levelCostAdd * amplifier - level * levelDrain))`.
+Right-clicking a villager with the main hand can apply a temporary Hero of the Village effect until the trade screen closes, then restore the previous effect, at `min(clamp(maxEffectiveness, 0, 1), levelPercent^2 + effectivenessBase)`. The vanilla level cost is `max(1, ceil(levelCostAdd * amplifier - level * levelDrain))`; if it cannot be paid, the trades stay unchanged.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -82,16 +64,7 @@ Proc chance is `min(clamp(maxEffectiveness, 0, 1), levelPercent^2 + effectivenes
 
 6 levels · 4 knowledge
 
-Mending normally waits for you to pick up orbs. This spends your banked experience directly into the damaged Mending item in your hand, on demand. There is a cap on how much you can dump per click and a short item cooldown afterwards.
-
-**How to use it**
-
-1. Hold a damaged item with Mending in your main hand.
-2. Sneak and left-click, air or block.
-
-Nothing happens if the item is undamaged, if you have no experience, or if the item is still on cooldown.
-
-The cost is XP points, not XP levels. On the defaults, repair is `2 + levelPercent * 4` durability per point, the maximum spend is `14 + levelPercent * 130` points, and the cooldown is `max(6, round(38 - levelPercent * 26))` ticks.
+Sneak-left-click air or a block with a damaged Mending item in the main hand to spend experience points, not levels, at `repairPerXpBase + levelPercent * repairPerXpFactor` durability per point, up to `maxXpSpendBase + levelPercent * maxXpSpendFactor` points, which is `2 + levelPercent * 4` and `14 + levelPercent * 130` on the defaults. Nothing happens if the item is undamaged, the player has no experience, or the item cooldown `max(6, round(cooldownTicksBase - levelPercent * cooldownTicksReduction))` ticks has not elapsed.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -107,13 +80,7 @@ The cost is XP points, not XP levels. On the defaults, repair is `2 + levelPerce
 
 6 levels · 4 knowledge
 
-Brushing suspicious sand and suspicious gravel to completion can pay out twice. Ordinary sand and gravel do not qualify. On top of the vanilla find there is a chance at something common and a smaller chance at something rare. Both climb with level, and the cooldown between rewards shrinks as you level.
-
-**How to use it**
-
-1. Brush a suspicious block the normal way.
-
-Only `SUSPICIOUS_SAND` and `SUSPICIOUS_GRAVEL` qualify, and a reward is considered only after brushing completes. Common rewards are brick, clay balls, bones, flint, string, and coal. Rare rewards are diamonds, emeralds, gold ingots, and amethyst shards.
+Brushing `SUSPICIOUS_SAND` or `SUSPICIOUS_GRAVEL` to completion can add a common reward (brick, clay ball, bone, flint, string, or coal) or a rare reward (diamond, emerald, gold ingot, or amethyst shard) on top of the vanilla find. Ordinary sand and gravel do not qualify, and the roll happens only after brushing completes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -132,14 +99,7 @@ Only `SUSPICIOUS_SAND` and `SUSPICIOUS_GRAVEL` qualify, and a reward is consider
 
 4 levels · 4 knowledge
 
-Points your compass at the nearest structure and draws a private glowing line toward it, so you can follow the direction instead of guessing. Each pulse costs food and puts you on a long cooldown, and the search range is enormous, hundreds of blocks even at level 1.
-
-**How to use it**
-
-1. Hold a compass in your main hand.
-2. Sneak and right-click.
-
-Not enough food, still on cooldown, or nothing found in range and you get a smoke puff instead.
+Sneak-right-click with a compass in the main hand to point it at the nearest structure in range and draw a private direction line. No structure in range does nothing.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -154,11 +114,7 @@ Not enough food, still on cooldown, or nothing found in range and you get a smok
 
 5 levels · 2 knowledge
 
-Insight adds details to the creature you look at through [Gloss entity overlays](/gloss/20-entity-overlays). Its extra lines show species, movement speed, jump strength, armor toughness, knockback resistance, and detection range when those attributes exist. Animals affected by Stable Hand also show that state. Gloss supplies the name, segmented health bar, hit response, attack, armor, and React stack count.
-
-Install Gloss and enable its entity overlays, then learn Insight and look at a creature. Nearby Gloss overlays remain available to everyone by default. Set `restrictGlossToInsight = true` in the Insight adaptation config to show entity overlays only for each learner's inspected target. This restriction does not enable a disabled Gloss feature. Without Gloss, Insight produces no display or inspection XP.
-
-Insight needs a Gloss build with the entity-overlay API. On an older Gloss, Adapt reports the installed version once and Insight stays unavailable until you update and restart. Gloss owns the layout, health segments, and display limits through its own entity-overlay config.
+Insight adds species, movement speed, jump strength, armor toughness, knockback resistance, and detection range, when those attributes exist, to [Gloss entity overlays](/gloss/20-entity-overlays) on the inspected creature, plus Stable Hand state on affected animals; Gloss still supplies the name, health bar, hit response, attack, armor, and React stack count. Without a Gloss build that has the entity-overlay API there is no display and no inspection XP, an older Gloss is reported once and Insight stays unavailable until that server is updated and restarted, and `restrictGlossToInsight` does not turn a disabled Gloss feature on.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -173,8 +129,7 @@ Insight needs a Gloss build with the entity-overlay API. On an older Gloss, Adap
 
 5 levels · 3 knowledge, then 2 per level
 
-The first time you set foot in each biome or structure type you get a burst of
-skill XP and a short speed boost. Exploring actually moves you along. Structure discoveries pay considerably more than biome discoveries. The XP is paid at discovery time, so the ordinary XP action-bar ticker appears then, if the global `actionbarNotifyXp` setting is enabled.
+The first visit to each biome or structure type grants skill XP at that moment and a Speed effect. The XP action-bar ticker shows then when global `actionbarNotifyXp` is enabled.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -189,9 +144,7 @@ skill XP and a short speed boost. Exploring actually moves you along. Structure 
 
 5 levels · 4 knowledge, then 3 per level
 
-The first kill of each mob species pays a large XP bounty. Every kill after that
-banks a small permanent damage bonus against that species up to a per-species
-cap. Over time you become measurably better at killing the things you kill often.
+The first kill of a mob species pays a skill XP bounty, and later kills of that species bank a permanent damage bonus up to the per-species cap.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -205,7 +158,7 @@ cap. Over time you become measurably better at killing the things you kill often
 
 5 levels · 4 knowledge, then 3 per level
 
-Rewards breadth. Every skill line you have pushed past a threshold level contributes a small bonus to all your XP gain, up to a combined ceiling. Someone with ten skills at level 5 gets far more out of this than someone with one skill at level 50.
+Each skill line at or above the threshold adds a bonus to all XP gain, up to the combined ceiling.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -218,16 +171,7 @@ Rewards breadth. Every skill line you have pushed past a threshold level contrib
 
 5 levels · 3 knowledge, then 2 per level
 
-Turns rare junk into XP. Heads, music discs, armor trim templates, and pottery sherds can be appraised for Discovery XP scaled by how rare the category is. Each successful appraisal also grants a bounded random XP payout to one enabled, permitted non-Discovery skill. An appraised item is stamped so it cannot be appraised twice. Placing and breaking an appraised head or skull preserves the exact stamped item data and lore.
-
-**How to use it**
-
-1. Hold the head, disc, trim template, or sherd in your main hand.
-2. Sneak and right-click, air or block.
-
-Already-appraised items just puff smoke.
-
-An appraised item carries a lore tag and is refused on a second attempt. The random payout goes to one enabled, permitted skill other than Discovery. With no eligible skill, or both bounds at zero, only the Discovery XP is granted.
+Sneak-right-click a head, skull, music disc, armor trim template, or pottery sherd in the main hand to grant rarity-scaled Discovery XP and a bounded random XP payout to one enabled, permitted skill other than Discovery. The item is stamped with a lore tag and refused on a later attempt, placing and breaking an appraised head or skull keeps that data and lore, and with no eligible skill only the Discovery XP is granted.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -244,9 +188,7 @@ An appraised item carries a lore tag and is refused on a second attempt. The ran
 
 5 levels · 3 knowledge, then 2 per level
 
-A compact navigator above the hotbar. It tracks the nearest supported generated structure within its level-scaled range, up to 500 blocks, showing a structure symbol, its name or type, an eight-way compass direction, and rounded distance. A short private direction line appears when a nearer target is acquired, and the cue clears while you are inside a supported structure. While it is active the experience bar visually fills as you close on the target. That is a client-side display only and your stored XP is never touched.
-
-Each pulse searches one of 16 structure families, so each player works through them independently. `JIGSAW` covers villages, pillager outposts, and other jigsaw structures. Searches include generated structures whether visited or not and never generate or load chunks. The cue reads `{symbol} {structure} {direction} {distance}m`, with directions N, NE, E, SE, S, SW, W, or NW. It holds the center of the shared action bar, with XP gains to its left and notices to its right, and is never pushed to a boss bar.
+The action-bar center shows `{symbol} {structure} {direction} {distance}m` (N, NE, E, SE, S, SW, W, or NW) for the nearest supported generated structure, with XP text on the left, notices on the right, and no boss bar; a nearer target adds a short private direction line, the cue clears inside a supported structure, and the experience bar fills visually without changing stored XP. Each pulse searches one of 16 structure families for that player, visited or not, never generates or loads chunks, and `JIGSAW` includes villages, pillager outposts, and other jigsaw structures.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -259,7 +201,7 @@ Each pulse searches one of 16 structure families, so each player works through t
 
 5 levels · 3 knowledge, then 2 per level
 
-Chests and spawners inside your line of sight briefly light up as private glowing outlines. Only you see them. It has a forward-view cone rather than full radius. You have to be roughly facing what you want to spot. Only a handful of containers light up per scan.
+Chests and spawners in the forward view cone show a private glowing outline.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -337,11 +279,6 @@ Written to `plugins/Adapt/skills/discovery.toml` on first load.
 | `challenge_discover_foods_10` | 10 | 500 |
 | `challenge_discover_foods_30` | 30 | 2500 |
 
-Each adaptation has its own file at `plugins/Adapt/adaptations/<id>.toml`. Alongside the keys listed above it carries `enabled`, `permanent`, `showParticles`, `showSounds`, and its learn costs (`maxLevel`, `initialCost`, `baseCost`, `costFactor`). Every file is generated with a comment on each key and values are clamped on load.
-
 ## See also
 
-- [02 - Concepts](/adapt/02-concepts)
-- [03 - Player Usage](/adapt/03-player-usage)
-- [10 - Skills Catalog](/adapt/10-skills-catalog)
-- [04 - Commands & Permissions](/adapt/04-commands-permissions)
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).

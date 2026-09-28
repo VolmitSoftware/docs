@@ -2,7 +2,7 @@
 title: "API - Skills & Adaptations"
 description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-28T21:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,6 +36,22 @@ Supported accessors return a `String`, `int`, `boolean`, `Material`, or another 
 On `Adaptation`, `getLevel(Player)` is the stored learned level and nothing else. `getActiveLevel(Player)` runs the whole gate: learned level, world blacklist, game mode, protection, `adapt.use` permission, usage conflicts, `AdaptAdaptationUseEvent`, and every registered `AbilityUsePolicy`. It returns `0` the moment any of them says no. If you want to know whether an ability would actually fire right now, that is the one to call.
 
 Everything else on these interfaces is first-party authoring code. That includes storage, XP, scheduling, damage and projectile helpers, GUI, recipes, advancements, models, ticking, registration, and config mutation. Some of it names relocated types. All of it mutates Adapt-owned runtime state.
+
+## Player preference controls
+
+Override `isPlayerPreferenceVisible(AdaptPlayer, PlayerPreference<?>)` to hide a dependent control until its level and mode conditions hold. The menu reevaluates visibility when a preference changes and updates the settings row in place. Hiding a control does not clear its stored override or replace runtime eligibility checks.
+
+`Adaptation.getPlayerPreferences()` lists explicitly registered `PlayerPreference<E>` definitions. Each enum-backed definition has a stable ID, translated label, default value, and choices with an icon and minimum learned level. Register definitions only for behavior the adaptation actually consumes. Blink supplies five definitions; other adaptations currently return an empty list.
+
+For a runtime choice, call `PlayerPreferences.resolve(adaptation, playerData, learnedLevel, preference)`. This applies the server policy and player override without changing shared configuration. Runtime handlers must still enforce eligibility, the selected choice's unlock requirement, and any hard feature limits. A forced server choice may be visible below its unlock level without being usable. `getActiveLevel()` alone does not select or activate a personal mode.
+
+On the player's owning scheduler, use `PlayerPreferences.set(adaptation, adaptPlayer, preference, value)` to validate and save a choice, or `PlayerPreferences.reset(adaptation, adaptPlayer)` to restore defaults. A rejected write returns `false`. Accepted writes use the existing debounced player-data save path. Do not write server config or mutate learned levels for a preference change.
+
+`PlayerData.getPreferences()` holds saved overrides independently of learned adaptation records. Use the validated `PlayerPreferences` operations for live changes. A temporary level reduction or server restriction leaves a saved choice dormant; its effective value is always resolved against current policy and level.
+
+## Classifying collateral targets
+
+`AdaptationDamageTargets.allows(Entity, boolean)` in `art.arcane.adapt.api.adaptation` classifies entities for passive-mob protection. Pass the configured `ignorePassiveMobs` value: `false` leaves species eligibility unchanged, while `true` excludes passive and neutral species, including provoked neutral mobs. Players remain eligible at this classification step. This method does not grant permission to damage a target; callers must separately enforce friendly-summon, pet, region, and PvP protection on the owning entity thread.
 
 ## Learning and unlearning
 
@@ -97,6 +113,7 @@ The base TOML shape for a first-party adaptation. External code may read these b
 
 | Key | Type | Default | What it does |
 |---|---|---|---|
+| `playerPreferences` | map | registered defaults | Server default, allowed values, and editability for each registered player control |
 | `enabled` | boolean | `true` | Turns the adaptation off without removing files |
 | `permanent` | boolean | `false` | Purchases normally; once learned, normal unlearning is refused. Administrative bypass can lower it without a refund |
 | `showParticles` | boolean | `true` | Plays this adaptation's particle effects |

@@ -2,23 +2,13 @@
 title: "Skills Catalog"
 description: "All Adapt skills, their XP sources, and their adaptation guides"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-28T18:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt has 23 skills. Each skill page lists its XP sources, adaptations, controls, defaults, and configuration files.
-
-## Using a skill
-
-1. Perform the activity tracked by the skill.
-2. Spend the knowledge earned from its levels on adaptations.
-3. Check the skill page for passive effects and controls.
-
-The skill and adaptation must be enabled. The player must also pass its `adapt.use` permission and local protection rules.
-
-## Skills
+Adapt has 23 skills. Each page lists XP sources, adaptations, and the keys in `skills/<id>.toml` and `adaptations/<id>.toml`.
 
 | Skill | Earn XP by | Adaptations include |
 |---|---|---|
@@ -47,6 +37,6 @@ The skill and adaptation must be enabled. The player must also pass its `adapt.u
 | [Unarmed](/adapt/33-skill-unarmed) | Fighting without a melee weapon | Punch damage, charges, combos, disarms, grapples, and meditation |
 {.dense}
 
-Adapt declares 312 adaptation types. The Iris Feller adaptation registers only when the Iris tree-feller service is available, leaving 311 on a server without it.
+312 adaptation types are declared. `axe-iris-feller` registers only when the Iris tree-feller service is available.
 
-For progression rules, see [Concepts](/adapt/02-concepts). For menu controls, see [Player Usage](/adapt/03-player-usage).
+Progression rules: [Concepts](/adapt/02-concepts).

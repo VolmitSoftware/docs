@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-09-28T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,17 +15,7 @@ lighting without moving the player. Traversal is a separate system.
 Per-portal mode and render mode combine with global `[projection]` and
 `[render]` keys in `plugins/Wormholes/wormholes.toml` (schema 3).
 
-## What projection does for a viewer
-
-When you are inside a portal's viewing range, Wormholes sends your client a view of the destination
-or mirror. Only your client changes; nothing moves, and no other player sees your view. Entity
-spoofing can add destination-side entities to it.
-
-Player reflections use the skin the server supplies, including skins applied after login. Local
-mirror views refresh when that skin changes.
-
-Changing or removing a portal's destination retires its existing projections, so nearby observers
-get a fresh view of the new destination even if they do not move.
+Projection is one player's client view through the aperture. It does not move blocks or players. A destination change retires the current view. Player reflections use the skin the server has, and a local mirror refreshes when that skin changes.
 
 ## ProjectionMode (ON / OFF)
 
@@ -48,9 +38,7 @@ Default for new portals: **VENTICULAR**.
 Stored as `renderMode` on the portal JSON. Toggled from the portal settings
 menu.
 
-Use Venticular for normal play. It removes buried and hidden blocks to reduce the amount of projected geometry.
-
-Use PanOptic when the full sampled volume matters more than projection cost. `occlusion-reveal-margin-degrees` controls how early Venticular reveals geometry around edges.
+`occlusion-reveal-margin-degrees` sets how early Venticular reveals geometry around edges.
 
 ## Interest and view AABB
 
@@ -67,7 +55,7 @@ When `foveated-unrendering` is false, everyone inside the view AABB is intereste
 
 ## Budgets
 
-Projection budgets (from `[projection]`, refreshed into `Settings`):
+Budgets from `[projection]`:
 
 | Key | Default | Clamp | Role |
 |-----|---------|-------|------|
@@ -75,27 +63,22 @@ Projection budgets (from `[projection]`, refreshed into `Settings`):
 | `max-portals-per-observer-tick` | `4` | 1–64 | Cap on portals one observer may block-update in one frame. |
 | `max-frame-micros` | `30000` | 0–1000000 | Soft rendering time budget per execution thread and manager tick, including observer-frame claim flushing. `0` disables the time limit. |
 | `max-new-observer-scans-per-tick` | `64` | 1–4096 | Shared cap on player-owner reconciliation frames per tick across normal projection and surface skins. |
-| `max-projected-cells` | `250000` | 0–50000000 | Hard ceiling on candidate block positions scanned for one portal pass. `0` disables the ceiling (not recommended). |
+| `max-projected-cells` | `250000` | 0–50000000 | Candidate block positions scanned for one portal pass. `0` disables the ceiling. |
 
 If a view exceeds `max-projected-cells`, Wormholes reduces side padding first and then depth. A view that still cannot fit remains empty. A nearer portal can temporarily hide a fully covered portal behind it.
 
-A geometry scan that runs out of time resumes on a later tick
-rather than restarting, so an expensive view still converges; under load its block updates simply
-arrive less often.
+A geometry scan that runs out of time resumes on a later tick. Under load, that view's block updates arrive less often.
 
 ## Blackout background
 
 | Setting | Default | Notes |
 |---------|---------|-------|
-| `blackoutBackground` | `false` | Per-portal. Fills the far, top, bottom, and side boundaries of the sampled view with the blackout block wherever the destination is transparent. |
+| `blackoutBackground` | `false` | Per-portal. Seals transparent cells at the far boundary; side, top, and bottom blocks stay outside the visible portal opening. |
 | `blackoutColor` | `BLACK` | One of 16 concrete colors: `WHITE`, `ORANGE`, `MAGENTA`, `LIGHT_BLUE`, `YELLOW`, `LIME`, `PINK`, `GRAY`, `LIGHT_GRAY`, `CYAN`, `PURPLE`, `BLUE`, `BROWN`, `GREEN`, `RED`, `BLACK`. |
 
 Each color maps to the matching concrete block. Shell cells are ordinary projected blocks: they arrive with the block updates of the same pass, work for Bedrock viewers, and are resampled as soon as a cell stops being part of the boundary. Opaque destination blocks on the boundary are never replaced. In `full` atmosphere mode with `[atmosphere] fog-plate = true`, the shell uses the destination dimension's fog block instead of the concrete color.
 
-Adjacent background panels overlap by 1/256 block to close seams. Their client
-culling bounds cover the full panel, including its overlap. Moving a panel
-updates its position. Shape, color, and range metadata are sent only when those
-values change. A background uses at most 128 panels.
+Side, top, and bottom shell blocks use the padded outer edge of the projection. A block is omitted if any part of its projected footprint overlaps the opening from the current viewing position. Clearance follows portal size and viewing angle without a fixed two-block cutoff. Irregular portals conservatively protect the full opening bounds. Tight render limits, zero aperture padding, or steep viewing angles can leave local scenery visible around the sides; the far background remains sealed.
 
 ## Entity spoofing (`[render]`)
 
@@ -123,7 +106,7 @@ the raw config values.
 | `BALANCED` | `lighting-refresh-interval-ticks` ≥ 6. `entity-update-interval-ticks` ≥ 2. `max-spoofed-entities` ≤ 16. `max-projectors-per-tick` ≤ 20. `max-new-observer-scans-per-tick` ≤ 64. |
 | `CINEMATIC` | `range` ≥ 64. `depth-blocks` ≥ 96. `max-projectors-per-tick` ≥ 32. `max-new-observer-scans-per-tick` ≥ 128. `lighting-refresh-interval-ticks` ≤ 2. `lighting-max-sections-per-pass` ≥ 4. `entity-spoof-range` ≥ 64. `max-spoofed-entities` ≥ 48. |
 
-## Global `[projection]` keys (ProjectionConfig defaults)
+## Global `[projection]` keys
 
 | Key | Default | Notes |
 |-----|---------|-------|
@@ -148,7 +131,7 @@ the raw config values.
 | `initial-resend-passes` | `1` | Full startup projection sends after a view is created. |
 | `max-projected-cells` | `250000` | See budgets. |
 
-## Global `[render]` keys (RenderConfig defaults)
+## Global `[render]` keys
 
 | Key | Default | Notes |
 |-----|---------|-------|
@@ -242,23 +225,4 @@ unlimited.
 | `/wh admin freeze [seconds]` | `wormholes.admin.projection` | Freeze all projections for 5–300 s (default 30). `0` resumes. |
 | `/wh admin flush` | `wormholes.admin.projection` | Revert every observer’s projected blocks to ground truth and rebuild. |
 
-See [09 - Commands & Permissions](/wormholes/09-commands-permissions).
-
-## Behavior notes
-
-- Config and static default projection `range` are **48**.
-- Per-portal `activationRange` default **0** means “use global,” not zero
-  blocks.
-- Default render mode is **VENTICULAR** (buried culling + observer occlusion),
-  not PANOPTIC.
-- Default blackout is **off** with color **BLACK** if enabled later.
-- `foveated-unrendering` defaults **false**. Interest is then purely
-  view-AABB based.
-- `chunk-pre-send-enabled` defaults **false**. Arrival prewarm on interest
-  defaults **true**. Pre-send also skips when the packet bridge is unsupported,
-  the player is offline, the destination region is not owned, or the destination
-  centre chunk is not loaded.
-- Quality profile `performance` forces `[render] entity-spoofing` and
-  `lighting-fidelity` off in addition to its numeric clamps.
-- `max-projected-cells = 0` disables the cell ceiling and can make a single
-  pass extremely expensive.
+Pre-send also skips when the packet bridge is unsupported, the player is offline, the destination region is not owned, or the destination centre chunk is not loaded.
