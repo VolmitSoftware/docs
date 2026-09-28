@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-21T11:56:06.964Z
+date: 2026-09-27T20:06:54.786Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -48,7 +48,7 @@ Decoders and MCA palette reader functions accept `Tag<?>`. The `LOWERCASE` forma
 
 Mantle region access reports a failed load and propagates its original cause. A failed request does not retry recursively. A later explicit request can retry after the cause is resolved. Asynchronous access releases acquired maintenance permits once, including when lookup or load setup throws. Canceling its returned future does not release permits until the underlying load finishes or prevent their later release. Existing corrupt-file recovery remains part of the region loader.
 
-`HyperLockSupport.lock` preserves the thread interrupt flag and throws `IllegalStateException` with the original `InterruptedException` when acquisition is interrupted. Protected work does not run without an acquired lock. The long-wait warning still reports successful lock acquisition after contention.
+`HyperLockSupport.lock` preserves the thread interrupt flag and throws `IllegalStateException` with the original `InterruptedException` when acquisition is interrupted. Protected work does not run without an acquired lock. The long-wait warning still reports successful lock acquisition after contention. `hasQueuedThreads(x, z)` reports whether threads are currently queued for an existing coordinate lock without creating one. Its result is advisory and does not acquire the lock.
 
 ## Dependency
 
@@ -146,7 +146,7 @@ Runtime mantle lookups return `null` for an absent section, and removals leave a
 
 `Mantle.hasLoadedFlag(x, z, flag)` checks a chunk flag without loading or creating data. `withLoadedChunk(x, z, action)` runs a short action on an existing chunk, returning `false` when it is unavailable or its region is busy, otherwise the action's result. The action runs with the chunk and region protected from concurrent cleanup and eviction; do not load, save, or close mantle data from it, or use the chunk after the action returns.
 
-`Mantle.saveOldestIdleTectonicPlate()` saves and unloads at most one resident plate, choosing the oldest eligible last-use timestamp. Plates whose last recorded use is less than 250 ms old, pinned by active work, or locked by another operation are skipped. The method returns whether a plate was saved and unloaded; write failures propagate and retain the live plate for retry.
+`Mantle.saveOldestIdleTectonicPlate()` saves and unloads at most one resident plate, choosing the oldest eligible last-use timestamp. Plates whose last recorded use is less than 250 ms old, pinned by active work, or locked by another operation are skipped. A plate requested by waiting threads during its save remains resident for those requests, and the method can try another eligible plate. The method returns `true` only when a plate was unloaded; write failures propagate and retain the live plate for retry.
 
 `Mantle.saveAll()` and `close()` propagate region write failures after reporting the original exception. Failed writes retain their live region and chunk data for retry. A failed close keeps the mantle open and preserves its region locks; only a successful flush and region-IO close complete shutdown. An IO-close failure can be retried without rewriting regions already saved. Consumers must drain generation before closing storage and retain the mantle when close fails.
 
