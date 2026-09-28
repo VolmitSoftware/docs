@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,21 @@ Every hit with a non-melee main hand adds 1 to `unarmed.hits` and the raw damage
 A hit while falling (fall distance above zero and not on the ground) adds to `unarmed.critical`. A hit above 6 damage adds to `unarmed.heavy`. A kill while not holding a melee tool adds to `unarmed.kills`.
 
 Nothing is credited when the victim is already dead or invulnerable, or when you are invulnerable.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Battering Charge | Use fists, a shield, or either; optionally require a sneak-right-click in air to arm the next charge for five seconds. |
+| Disarm | Exclude players when the server otherwise permits them; independently disable mob armor disarming. |
+| Grapple | Restrict targets to all permitted entities, hostile mobs, or non-player entities; release with either sneak release or another punch, or require another punch. |
+| Iron Fists | Toggle combat damage and soft-block breaking independently. |
+| Meditation | Use automatic sneaking or require the separate armed toggle. Stillness and empty hands remain required. |
+| Shockwave Clap | Require being airborne; keep 0, 5, or 10 hunger after the full clap cost; restrict targets. |
+
+Combo Chain, Glass Cannon, Pressure Point, Second Wind, Sucker Punch, and Power have the enable switch. Changing Grapple preferences releases an unthrown grab, while already committed throws retain their exhaustion and cooldown costs.
 
 ## Adaptations
 

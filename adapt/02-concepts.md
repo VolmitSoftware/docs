@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,10 +64,6 @@ A purchase that would pass `maxPower` fails. If max power drops below used power
 ## Wisdom
 
 On the one-second tick, XP past `experienceMaxLevel` grants 1 wisdom and sets that skill's XP back to one level under the cap. Clear commands clear wisdom.
-
-## Mutations
-
-Mutations are a separate track: two slots, no knowledge cost, off until enabled. See [Mutations](/adapt/34-mutations-overview).
 
 ## Storage
 

@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Add Adapt as a dependency and choose a supported API"
 published: true
-date: 2026-09-14T00:36:31.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -54,7 +54,6 @@ Use only types and methods documented in these API pages. Do not expose or impor
 | Listen for Adapt behavior | [Events](/adapt/45-api-events) |
 | Respect claims or regions | [Protection](/adapt/46-api-protection) |
 | Display values | [PlaceholderAPI](/adapt/47-api-placeholderapi) |
-| Read mutations | [Mutations](/adapt/48-api-mutations) |
 | Award progression | [Player Data, XP & World](/adapt/49-api-player-data-xp-world) |
 | Recipes, effects, and telemetry | [Utilities](/adapt/50-api-recipes-fx-telemetry-utilities) |
 

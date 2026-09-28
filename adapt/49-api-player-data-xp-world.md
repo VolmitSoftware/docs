@@ -2,7 +2,7 @@
 title: "API - Player Data, XP & World"
 description: "Read player data, award XP, and work with world data"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,7 +33,7 @@ On `AdaptPlayer`, read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAda
 
 ## Player preferences
 
-`PlayerData.getPreferences()` keeps adaptation choices independently of learned levels. Preferences survive level changes and unlearning and use the same local/SQL player-data persistence as progression. Apply live changes through the validated operations in [Player preference controls](/adapt/42-api-skills-adaptations#player-preference-controls).
+`PlayerData.getPreferences()` keeps skill and adaptation choices independently of learned levels. Skill values occupy a separate scope, so resetting a skill switch preserves child adaptation choices. Preferences survive level changes and unlearning and use the same local/SQL player-data persistence as progression. Apply live changes through the validated operations in [Player preference controls](/adapt/42-api-skills-adaptations#player-preference-controls).
 
 ## World data
 
@@ -49,7 +49,7 @@ On `AdaptPlayer`, read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAda
 | `AdaptPlayer getPlayer(Player)` | Lookup-only wrapper for that exact current, ready Bukkit session, or `null`. It never loads data or creates a runtime. Owning thread only |
 | `Optional<PlayerData> getPlayerData(UUID)` | In-memory data only. Empty for an online unavailable player; otherwise may include the wrapper retained for about 60 seconds after a normal quit. Performs no storage work |
 | `PlayerData peekData(UUID)` | Unfenced inspection through the purge guard, in-memory state, safe prefetch, pending local operation, direct SQL, and local JSON as applicable. It does not claim ownership or request Redis transfer data, never caches load-failed data, and returns an empty value immediately for an online unavailable player. Returns a new empty `PlayerData` when no offline profile is found, never `null`. Not a tick-path query |
-| `int getOnlineAdaptationLevel(UUID, String skillName, String adaptationName)` | Stored online learned level for that adaptation, `0` when the player is offline or their runtime is not ready. The `skillName` argument is accepted and never read |
+| `int getOnlineAdaptationLevel(UUID, String skillName, String adaptationName)` | Online learned level after global and personal skill/adaptation enable checks, or `0` when unavailable. The named adaptation must belong to the named enabled skill. This lookup does not run action-specific protection or permission checks |
 | `boolean hasOnlineLearner(String adaptationName)` | Whether any online player has learned it |
 | `boolean hasOnlineLearner(UUID, String adaptationName)` | Whether that specific online player has learned it |
 | `List<AdaptPlayer> getLearnedAdaptPlayerSnapshot(String adaptationName)` | Cached immutable snapshot of the online learners of that adaptation |
@@ -76,7 +76,7 @@ Every path applies the player's XP multiplier (permission multipliers plus globa
 |------|----------|
 | `Curves` | The configured curve enum. `getCurve()` returns its `NewtonCurve` |
 | `NewtonCurve` | Low-level curve conversion. Adapt's public `XP.getXpForLevel` and `XP.getLevelForXp` helpers clamp every curve family to `experienceMaxLevel` and fall back to the balanced curve if a configured curve produces a non-finite result |
-| `XPMultiplier` | Mutable timed multiplier record stored inside player data |
+| `XPMultiplier` | Mutable timed multiplier record stored inside player data. `XPMultiplier.owned(source, bonus, durationMillis)` retains its source through persistence. Add it with `PlayerData.globalXPMultiplier(multiplier)` and remove only that source with `removeGlobalXPMultipliers(source)` on the player owner thread. Unowned multipliers and other sources remain intact. |
 | `SpatialXP` | Adapt-owned pending spatial reward. Create it through `XP.spatialXP`, never by constructing one and offering it to `AdaptServer` |
 | `XpNovelty` | `noveltyMultiplier(player, location, rewardKey)`, `adjacencyBonusMultiplier(player, placedBlock)`, `fieldCycleMultiplier(player, cropBlock)`, `clear(uuid)`. Owning region thread only |
 | `XpProvenance` | Records placed, broken, piston-moved, replaced and bonemealed blocks and returns `placeXpMultiplier`, `breakXpMultiplier`, `harvestXpMultiplier` from that history. Owning region thread only |
@@ -90,4 +90,3 @@ Every path applies the player's XP multiplier (permission multipliers plus globa
 - [02 - Concepts](/adapt/02-concepts)
 - [05 - Configuration Math](/adapt/05-configuration-math)
 - [42 - API - Skills & Adaptations](/adapt/42-api-skills-adaptations)
-- [48 - API - Mutations](/adapt/48-api-mutations)

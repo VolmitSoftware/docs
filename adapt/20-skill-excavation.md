@@ -2,12 +2,32 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Excavation gains XP from breaking blocks or dealing damage with a shovel, and block XP scales with material value, hardness, and blast resistance. Its 12 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, and OMNI - T.O.O.L.
+
+## Player controls
+
+Every adaptation has an Enabled control in its level screen. These controls change only your player data; the server controls permitted values, defaults and locks. Personal settings never bypass learned levels, permissions, costs, cooldowns or server limits.
+
+| Adaptation | Additional controls |
+|---|---|
+| Burrow (`excavation-burrow`) | `depth`: Burrow depth; `food-reserve`: Keep eight food points; `durability-reserve`: Keep a quarter of tool durability |
+| Earth Mover (`excavation-earth-mover`) | `ignore-passive`: Exclude neutral mobs; `food-reserve`: Keep eight food points; `offhand-empty`: Require empty offhand |
+| Hasty Excavator (`excavation-haste`) | `tier`: Haste tier |
+| Mudlark (`excavation-mudlark`) | `wet-haste`: Wet-weather Haste; `bonus-drops`: Bonus drops |
+| OMNI - T.O.O.L. (`excavation-omnitool`) | `combat-selection`: Automatic combat selection; `mining-selection`: Automatic mining selection; `swap-sounds`: Swap sounds |
+| Seismic Ping (`excavation-seismic-ping`) | `color`: Marker color; `ores`: Allowed ore markers; `cue-frequency`: Cue frequency |
+| Shovel Drop-To-Inventory (`excavation-drop-to-inventory`) | `materials`: Allowed materials; `blocks-only`: Only collect block materials |
+| Super-Seeing Spelunker! (`excavation-spelunker`) | `color`: Marker color; `ores`: Allowed ore markers; `range`: Reveal range |
+| Tunneler (`excavation-tunneler`) | `trigger`: Activation gesture; `materials`: Allowed materials; `block-limit`: Extra block limit |
+
+Depth, range and extra-block presets use 100%, 50% or 25% of the earned cap. Food reserves retain eight food points; Burrow’s durability reserve retains a quarter of the tool’s base durability in addition to paying every dug block. Ore filters select one supported ore family or all; Seismic Ping performs its normal single proc roll before the filtered scan. Lower cue frequency extends its cooldown. Tunneler supports sneak-to-activate, sneak-to-suppress or always. Omni-Tool opt-outs preserve stored tools. Disabling marker adaptations removes that player’s markers, and changing Haste preferences clears their owned attribute bonus until the next eligible trigger.
+
+Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

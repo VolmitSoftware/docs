@@ -2,12 +2,34 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Enchanting gains XP when a player enchants an item, scaled by the total enchantment power applied. Its 14 adaptations refund lapis or experience, lower anvil costs, preview and reroll offers, add bookshelf power, apply books directly, transfer enchantments, and protect a linked item on death.
+
+## Player controls
+
+Every adaptation has an Enabled control in its level screen. These controls change only your player data; the server controls permitted values, defaults and locks. Personal settings never bypass learned levels, permissions, costs, cooldowns or server limits.
+
+| Adaptation | Additional controls |
+|---|---|
+| Arcane Siphon (`enchanting-arcane-siphon`) | `books`: Siphoned books; `bonus-xp`: Bonus skill XP; `player-victims`: Player victims |
+| Bookshelf Attunement (`enchanting-bookshelf-attunement`) | `power`: Virtual bookshelf contribution |
+| Curse Cleansing (`enchanting-curse-cleansing`) | `confirmation`: Confirm curse removal |
+| Echo of Knowledge (`enchanting-echo-of-knowledge`) | `sneak`: Require sneak to charge |
+| Grindstone Recovery (`enchanting-grindstone-recovery`) | `books`: Recovered books; `bonus-xp`: Bonus vanilla XP |
+| Infusion Transfer (`enchanting-infusion-transfer`) | `confirmation`: Confirm sacrifice risk |
+| Offer Reroll (`enchanting-offer-reroll`) | `confirmation`: Confirm paid reroll; `xp-reserve`: XP level reserve; `lapis-reserve`: Lapis reserve |
+| Quick-Click Enchant (`enchanting-quick-enchant`) | `confirmation`: Confirm book application; `modified-click`: Require right click |
+| Rune Sight (`enchanting-rune-sight`) | `full-details`: Full offer details |
+| Soul Link (`enchanting-soul-link`) | `confirmation`: Confirm item linking; `xp-reserve`: XP level reserve |
+| Tome Rebinding (`enchanting-tome-rebinding`) | `confirmation`: Confirm lossy split; `sneak`: Require sneak-drop |
+
+Reserve choices are 0, 5 or 10 XP levels or lapis items, as labeled. A reserve declines an action that would spend below it and never discounts the cost. Soul Link also checks its reserve when rescuing an item. Confirmations require repeating the same action on the same items within five seconds; no paid result is previewed. Quick Enchant can require right-click instead of left-click. Siphon and Grindstone Recovery keep their original roll and cooldown when one reward is suppressed. Compact Rune Sight shows the first earned offer only.
+
+Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

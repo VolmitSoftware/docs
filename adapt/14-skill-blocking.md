@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,25 @@ Blocking gains XP when damage is taken while a shield is raised. Its 14 adaptati
 ## Earning XP
 
 Each hit taken while blocking pays a flat XP award on a shared cooldown. The hit records blocked hits, blocked damage, projectile versus melee, and a heavy hit when one blow is more than 5 damage. If `passiveXpForUsingShield` is above zero, each skill tick also pays that amount for a shield in either hand, scaled by elapsed time, and the award is silent.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Bastion Stance | Require sneak-blocking or activate whenever blocking. |
+| Bulwark Bash | Require sneaking during the jumping bash; ignore passive mobs or exclude players. Sprint first, then jump and sneak for the stricter gesture. |
+| Counter Guard | Exclude players from retaliation. |
+| Interpose | Protect all permitted nearby players or only the same scoreboard team; keep 0%, 25%, or 50% shield durability after the full redirect cost. |
+| Mirror Block | Exclude projectiles shot by players from reflection. Excluded projectiles follow ordinary blocking and damage rules. |
+| Multi Armor | Enable ground and falling swaps independently; trigger falling swaps after 4, 8, or 12 blocks. |
+| Perfect Guard | Disable retaliatory stagger while retaining the timed block. |
+| Shield Wall | Protect all permitted nearby players or only the same scoreboard team. |
+| Shieldbearer's Resolve | Toggle resistance and faster shield recovery independently. |
+| Tempered Guard | Toggle shield and armor repair independently. |
+
+The armor, saddle, and phalanx crafting adaptations have the enable switch. Disabling Multi Armor preserves merged item contents. Personal reserve checks decline the whole action; accepted effects retain their existing costs and cooldowns.
 
 ## Adaptations
 

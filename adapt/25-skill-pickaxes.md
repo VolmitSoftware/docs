@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Pickaxes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,23 @@ Pickaxes (`pickaxe`) gains XP from mining stone or ore and from damage dealt wit
 ## Earning XP
 
 Breaking a block with a pickaxe pays from that block's material value, plus hardness and blast resistance, both capped, plus an ore bonus that is multiplied again for deepslate ore, then scaled by a fixed factor. Those config values are relative weights, not raw XP. Silk Touch skips that formula and pays a flat 5 XP. Blocks the anti-farm system has already devalued, including placed blocks and repeatedly farmed areas, pay nothing. Hitting a valid mob with a pickaxe pays XP from the damage dealt, counts toward the `pickaxe.damage` challenges, and shares one cooldown with block-break XP.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Autosmelt | Sneak to bypass; restrict materials to all, ores/minerals, iron, gold, copper, diamond/emerald, or stone/deepslate. The adaptation's normal smelting list remains the outer limit. |
+| Drop to Inventory | Sneak to bypass; use the same material presets for collected drops. |
+| Chisel | Require sneaking; retain at least 0%, 10%, 25%, or 50% tool durability after the full chisel cost. |
+| Silk Spawner | Add a sneak requirement to the existing server requirements. |
+| Quarry Sense | Scan while sneaking, while not sneaking, or always; restrict ore types; choose ore colors, white, cyan, or gold outlines. Ordinary interactive blocks and active Chisel take precedence over a non-sneaking scan. |
+| Tunnel Bore | Choose the sneak gesture and material preset; cap the learned tunnel at its full size, 3 by 2, or 1 by 2. |
+| Veinminer | Choose the sneak gesture and material preset, including HiddenOre mineral displays. |
+| Unbreakable Pact | Show a rate-limited notice at 10% remaining durability. |
+
+Deep Core, Obsidian Rush, Repair Rhythm, Stone Skin, and Gem Polish have the enable switch. Ore/mineral presets include ores, raw metals, ingots, coal, diamond, emerald, redstone, lapis, quartz, and ancient debris; the narrower gem preset excludes tools and armor. A preference never expands the adaptation's normal block or item list.
 
 ## Adaptations
 

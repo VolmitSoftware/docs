@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,22 @@ Axes gains XP by breaking logs, wood, mushroom blocks, or mangrove roots with an
 ## Earning XP
 
 Breaking a log, wood, mushroom block, mangrove roots, or muddy mangrove roots block with an axe pays XP from that block's material value plus hardness and blast resistance, up to the configured caps. Damaging a living entity with an axe pays XP scaled to the damage dealt. Both share one cooldown. Blocks with zero hardness pay nothing, and blocks already paid by XP provenance do not pay again. Breaking leaves with an axe only increments `axes.leaves` and does not pay XP. `leavesMultiplier` does not change earnings.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Chop | Require sneaking for right-click chopping; full, half, or quarter of learned work per activation. |
+| Drop to Inventory | Collect all permitted drops, logs/stems, saplings/propagules, or apples. |
+| Ground Smash | Ignore passive mobs; require at least 5, 10, or 15 hunger before activation. |
+| Cleave | Ignore passive mobs; exclude other players from secondary hits. |
+| Iris Feller | Hold sneak or latch the run. A latched run starts with a sneak-break; sneak again, change the held slot, swap hands, or disconnect to stop. Keep 0, 5, 10, or 15 hunger after each full log cost. Full work adds no personal cap; half and quarter stop at 128 and 64 committed logs. Iris limits still apply. |
+| Leaf Veinminer, Wood Veinminer | Activate while sneaking, while not sneaking, or always; use full, half, or quarter of the server block cap. |
+| Throwing Axe | Require sneaking to throw; ignore passive mobs after ricochets. Direct intentional hits keep their normal targeting rules. |
+
+Bark Hide, Craft Log Swap, Shield Splitter, and Sunder have the enable switch. Disabling a thrown axe effect does not discard its recovery record or return another copy of the axe. Felling stops before the next unpaid log; committed hunger and cooldown remain spent.
 
 ## Adaptations
 

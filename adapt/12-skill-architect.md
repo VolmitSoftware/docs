@@ -2,7 +2,7 @@
 title: "Skill - Architect"
 description: "Architect XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,8 @@ Placing a block credits `blocks.placed` by one and `blocks.placed.value` by the 
 
 ## Adaptations
 
+Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
+
 Placements and breaks re-check `adapt.use` on every block.
 
 ### Silk-Touch Glass (`architect-glass`)
@@ -23,11 +25,15 @@ Placements and breaks re-check `adapt.use` on every block.
 
 Breaking a block whose material name contains `GLASS`, except `TINTED_GLASS`, with an empty main hand or a non-tool drops the block. No adaptation-specific config keys.
 
+Personal controls: Glass selection (All eligible glass/Clear glass and panes/Stained glass and panes).
+
 ### Magic Foundation (`architect-foundation`)
 
 5 levels · 1 knowledge, then 5 per level
 
 Sneak places `TINTED_GLASS` underfoot and keeps spending the block budget on new positions while sneak is held. Release starts the cooldown. Creative and Spectator cannot activate it. Pistons, explosions, and manual breaks do not remove the blocks. A denied place check spends no budget.
+
+Personal controls: Foundation control (Hold sneak/Tap sneak to start or stop); Require empty main hand (on/off); Foundation block lifetime (full/half/quarter). Duration limits each temporary block’s lifetime. Latched mode starts on a sneak press and stops on the next press; the block budget and cooldown still apply.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -42,6 +48,8 @@ Sneak places `TINTED_GLASS` underfoot and keeps spending the block budget on new
 
 Sneak while aiming at the same block within 5 blocks, with a matching stack held, previews a flat-face fill. The preview updates as aim or position changes. Placing consumes one matching item per filled position, including the block that starts the fill. Containers are never targeted. Denied positions are skipped and consume nothing.
 
+Personal controls: Building control (Sneak to build/All eligible placements); Placement preview (on/off); Placement size (full/half/quarter); Block selection (All eligible blocks/Wood and planks/Stone and bricks/Glass). Wood includes planks, logs, wood, stems and hyphae; stone includes stone, brick and deepslate families; glass includes glass materials. Armed building stays active until its mode or Enabled control is changed.
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `maxBlocks` | `20` | Most blocks one wand placement will fill. |
@@ -54,6 +62,8 @@ Sneak while aiming at the same block within 5 blocks, with a matching stack held
 
 Shapeless `REDSTONE_TORCH`, `TARGET`, and `ENDER_PEARL` craft a `BoundRedstoneTorch`. The adaptation is permanent and cannot be unlearned. Sneak-left-click binds a block. Right-click pulses it, then restores the previous state. A failed chunk load, target check, or schedule does not pulse and does not start cooldown. Every powered block, neighbour, and door half must pass an interaction check before the pulse.
 
+Personal controls: Require sneak to activate (on/off).
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `cooldown` | `125` | Milliseconds between pulses, tracked in the bound torch's own item cooldown group. |
@@ -63,6 +73,8 @@ Shapeless `REDSTONE_TORCH`, `TARGET`, and `ENDER_PEARL` craft a `BoundRedstoneTo
 1 level · 1 knowledge
 
 Shaped recipe `XXX` / `XYX` / `XXX`, where X is any block in the vanilla `WOOL` tag and Y is `ENDER_PEARL`. A pair stacked in range links on its own. Jump on the lower block goes up. Sneak on the upper block goes down. The elevator block is found up to 2 blocks below the feet. The trip is refused without enough headroom or when the target is outside build height. Advancement `challenge_architect_elevator_penthouse` is granted on a single trip of 50 blocks or more. With the defaults the maximum trip is 32 blocks, so it cannot be earned unless `baseDistance` or `multiplier` is raised.
+
+Personal controls: Upward travel (on/off); Downward travel (on/off); Require sneak for ascent (on/off).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -75,6 +87,8 @@ Shaped recipe `XXX` / `XYX` / `XXX`, where X is any block in the vanilla `WOOL` 
 
 With an empty main hand, sneak-left-click steps facing or axis to the next orientation. Directional blocks walk a fixed 16-step compass order. Axis blocks walk X, then Y, then Z.
 
+Personal controls: Block families (All eligible orientations/Facing blocks/Signs and rotating blocks/Axis blocks); Reverse rotation (on/off).
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `minXpPerRotate` | `0.4` | Floor on the skill XP paid for one rotation. |
@@ -85,6 +99,8 @@ With an empty main hand, sneak-left-click steps facing or axis to the next orien
 5 levels · 2 knowledge, then 4 per level
 
 Sneak-placed blocks become scaffolds, expire, and return the item. Breaking one clears the mark instead. A scaffold whose material changed before expiry is left in place.
+
+Personal controls: Scaffold control (Sneak-place/All eligible placements); Block selection (All eligible blocks/Wood and planks/Stone and bricks/Glass). Wood means planks, logs, wood, stems and hyphae; stone means materials whose names contain stone, brick or deepslate; glass means glass materials. The server material allowlist still applies. Selecting armed placement enables eligible placement without holding sneak.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -101,6 +117,8 @@ Sneak-placed blocks become scaffolds, expire, and return the item. Breaking one 
 
 When the placed stack was on its last item, the main hand or offhand refills from loose stacks, then bundles, then Adapt backpacks, then shulker boxes. Over the per-minute budget, the refill is refused and a dispenser-fail sound plays.
 
+Personal controls: Loose inventory (on/off); Bundles (on/off); Shulker boxes (on/off); Backpacks (on/off); Use named containers (on/off). Reserved containers are named containers; turn their use off to keep those containers untouched.
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `minRefillsPerMinute` | `4` | Hand refills allowed per minute at the lowest level. |
@@ -112,6 +130,8 @@ When the placed stack was on its last item, the main hand or offhand refills fro
 5 levels · 2 knowledge, then 4 per level
 
 A sneak-placement with air below grants full knockback resistance, full explosion knockback resistance, extra safe fall distance, and a short mining-speed boost for the grace window. Sneaking again during that window reapplies the knockback resistance. Releasing sneak removes it.
+
+Personal controls: Knockback protection (on/off); Fall protection (on/off).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -126,6 +146,8 @@ A sneak-placement with air below grants full knockback resistance, full explosio
 4 levels · 1 knowledge, then 3 per level
 
 Each level unlocks one shaped wand and reveals its recipe in the vanilla recipe book. `S` is `STRING` and `T` is `STICK`. Left-click a block face to set the start. Right-click sets the end, a polyline vertex, or the arc endpoint. Guides are private block markers with no timer, drawn only while that wand is held, and each wand keeps its own plan. Sneak-click air clears that wand's plan.
+
+Personal controls: Guide color (Shape color/Aqua/Gold/Purple); Guide density (full/half/quarter).
 
 | Wand | Required level | Shape |
 |------|----------------|-------|
@@ -150,6 +172,8 @@ Each level unlocks one shaped wand and reveals its recipe in the vanilla recipe 
 
 The player's own recent placements break instantly for that player only, return the placed item plus the block's contents, and drop nothing and no XP. Overflow that does not fit falls at the player's feet.
 
+Personal controls: Require sneaking (on/off); Block selection (All eligible blocks/Wood and planks/Stone and bricks/Glass). Wood includes planks, logs, wood, stems and hyphae; stone includes stone, brick and deepslate families; glass includes glass materials.
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `minWindowSeconds` | `10` | Seconds a placement stays erasable at the lowest level. |
@@ -162,6 +186,8 @@ The player's own recent placements break instantly for that player only, return 
 1 level · 2 knowledge
 
 With an empty main hand, sneak-left-click air or a block to open a stonecutter at the player's position when interaction is permitted.
+
+Personal controls: Require stonecutter in offhand (on/off).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

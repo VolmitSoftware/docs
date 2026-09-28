@@ -2,7 +2,7 @@
 title: "Skill - Brewing"
 description: "Brewing XP sources, custom potions, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,18 @@ Brewing gains XP from drinking potions and from splash hits; longer and stronger
 ## Earning XP
 
 Drinking a potion pays a base award plus a bonus from its custom effects and from upgraded (level II) status. Water, mundane, thick, and awkward potions are ignored. Throwing a splash pays the same base award plus a bonus for the splash's total effect power, and records how many entities the cloud caught. Both awards share one cooldown, so a stack does not pay per bottle. Placing a brewing stand records a placement-challenge stat and pays no XP.
+
+## Player controls
+
+Every adaptation has an Enabled control in its level screen. These controls change only your player data; the server controls permitted values, defaults and locks. Personal settings never bypass learned levels, permissions, costs, cooldowns or server limits.
+
+| Adaptation | Additional controls |
+|---|---|
+| Lingering Brew (`brewing-lingering`) | `extended-lore`: Extended potion lore |
+
+Lingering lore applies only to newly enhanced potions and remains subject to `useCustomLore`. Disabling a brewing adaptation prevents that player’s owned brewing stand from applying it; existing potions remain unchanged.
+
+Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

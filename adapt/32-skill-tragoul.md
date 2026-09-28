@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,21 @@ A survived hit that leaves you at 4 hearts or less also pays `lowHealthSurvivalX
 Nothing is credited if you are already dead, invulnerable, or blocking with a shield.
 
 If Adapt's global hardcore reset is on, death wipes all skill data. Otherwise, when `takeAwaySkillsOnDeath` is on, death removes up to `deathXpLoss` TragOul XP, never below zero, and drops every learned TragOul adaptation by one level.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Bone Harvest | Collect blood and bone globes independently. Declined globes remain in the world until they expire. |
+| Corpse Explosion, Lance, Plague Bearer | Ignore passive mobs; restrict targets to all supported entities, undead, arthropods, or non-player entities. Existing targeting limits still apply. |
+| Death Sense | Select the same target presets; use red-to-yellow or blue-to-white health outlines. |
+| Life Share, Thorns | Ignore passive mobs. |
+| Marrow Armor | Keep 0, 4, or 8 bones after the full absorption cost. |
+| Skeletal Servant | Permit replacement at the server's cap; keep a bone reserve; choose assist-and-hunt, defend-owner, or passive behavior. |
+
+Blood Pact, Curse of Frailty, Last Rites, Soul Siphon, and Healing have the enable switch. Turning off Skeletal Servant dismisses owned servants without refunding bones or resetting the summon cooldown. Changing stance clears their current targets. Undead includes zombies and variants, skeletons and variants, phantoms, zombified piglins, zoglins, withers, and undead horses; arthropods includes spiders, cave spiders, silverfish, endermites, and bees.
 
 ## Adaptations
 

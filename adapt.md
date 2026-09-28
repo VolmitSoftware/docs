@@ -2,7 +2,7 @@
 title: "Adapt"
 description: "Skills, progression, and abilities for Paper, Purpur, and Folia servers"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,7 +26,6 @@ Adapt adds 23 skills. Actions award skill XP. Levels award knowledge, which buys
 - [GUI](/adapt/06-gui-customization)
 - [Protection and regions](/adapt/08-protection-region-policy)
 - [Integrations](/adapt/09-integrations)
-- [Mutations](/adapt/34-mutations-overview)
 - [Items](/adapt/36-items-orbs-bound-objects)
 - [Recipes, brewing, and value](/adapt/37-recipes-brewing-value)
 - [Cross-server storage](/adapt/39-velocity-cross-server)

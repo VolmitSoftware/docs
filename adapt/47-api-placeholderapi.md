@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "Read Adapt player and catalog values through PlaceholderAPI"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,8 +23,6 @@ Adapt provides read-only `%adapt_...%` placeholders when PlaceholderAPI is insta
 | `%adapt_skill.<id>.xp%` | Skill XP |
 | `%adapt_skill.<id>.xp-next%` | XP needed for the next level |
 | `%adapt_adaptation.<id>.level%` | Learned adaptation level |
-| `%adapt_mutation.slot-1%` | First equipped mutation |
-| `%adapt_mutation.slot-2%` | Second equipped mutation |
 
 Paths use lowercase letters, digits, hyphens, and dots. Use dots inside the path, not underscores.
 

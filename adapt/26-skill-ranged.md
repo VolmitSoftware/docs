@@ -2,7 +2,7 @@
 title: "Skill - Ranged"
 description: "Ranged XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,24 @@ Ranged gains XP from firing arrows, spectral arrows, or tridents and from projec
 ## Earning XP
 
 Firing an arrow, spectral arrow, or trident pays flat XP and counts a shot. A projectile hit on a valid target pays XP from damage dealt plus distance traveled. Snowballs and fishing hooks do not count as hits. Shots and hits share one cooldown. Hits over 30 blocks count as longshots and use their own challenge chain. A kill counts when a bow or crossbow is in hand as the target dies. In addition, Ricochet Bolt pays per bounce, Fetch Shot pays per item, Floaters and Pinning Shot pay per proc, and Heartseeker pays per seeking shot and per hit.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Force Shot, Arrow Piercing, Heavy Draw | Restrict enhanced shots to all supported projectiles, bow arrows, crossbow arrows, arrows, tridents, or other thrown projectiles. Unsupported categories have no effect. |
+| Fetch Shot | Require sneaking at launch; collect all permitted drops, blocks, food, or valuable minerals. |
+| Floaters | Require sneaking at launch; target all permitted entities, hostile mobs, or non-player entities. |
+| Heartseeker | Require sneaking to lock; restrict targets, ignore passive mobs, and toggle the private target glow. |
+| Lunge Shot | Require sneaking at launch. |
+| Pinning Shot | Require sneaking at launch; toggle the optional velocity dampening. The pin duration remains unchanged. |
+| Ricochet Bolt | Select projectile categories; restrict the server's optional non-arrow ricochets. |
+| Trajectory Sight | Preview while drawing, while sneaking, or either; toggle target glow, trajectory trail, and impact markers independently. |
+| Web Snare | Require sneaking before throwing a crafted snare. |
+
+Arrow Recovery has the enable switch. Heavy Draw's launch-speed penalty and damage bonus stay coupled for a shot already in flight. Trajectory Sight follows the player's active Force Shot, Ricochet Bolt, and Heartseeker preferences. Valuable-mineral collection includes ores, raw metals, ingots, diamond, emerald, coal, redstone, and lapis.
 
 ## Adaptations
 

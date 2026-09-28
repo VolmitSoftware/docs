@@ -2,7 +2,7 @@
 title: "Skill - Kinetics"
 description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,6 +11,8 @@ Kinetics gains XP from mace smashes, spear charges, knockback, slime or bed boun
 
 ## Adaptations
 
+Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
+
 A spear is any of the seven spear items, wooden through netherite, and a mace is the vanilla mace. Adaptations that use gravity, bounciness, air drag, or scale do nothing on a server version that lacks that attribute.
 
 ### Moon Jump (`kinetics-moon-jump`)
@@ -18,6 +20,8 @@ A spear is any of the seven spear items, wooden through netherite, and a mace is
 5 levels · 2 knowledge, then 4 per level
 
 Jump height increases by half a block per level and stays applied while the adaptation is learned. A sneak-jump adds a separate low-gravity hop.
+
+Personal controls: Base jump assistance (on/off); Floaty hop (While sneaking/Every jump/Disabled).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -33,6 +37,8 @@ Jump height increases by half a block per level and stays applied while the adap
 5 levels · 2 knowledge, then 4 per level
 
 Passive bounciness is always applied. Effective bounciness caps at 1.0, so a slime bounce does not go higher; sneaking and honey blocks suppress bouncing, but a honey landing still arms the soft-block bonus for the next other surface, including a landing with no horizontal movement.
+
+Personal controls: Base landing bounce (on/off); Extra springy-block bounce (on/off). The base bounce switch controls ordinary landing bounciness; Springy landing bonus controls the additional springy-surface bounce.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -62,6 +68,8 @@ Fall damage is reduced on slime, honey, any bed, a hay bale, powder snow, sponge
 
 Sprinting cancels a fraction of the supporting surface's friction loss. Without the friction attribute, that same fraction of actual ground momentum is kept, vertical motion and stronger knockback stay, and the player is never accelerated from rest; a grounded sneak press brakes once rather than locking movement while sneak remains held, and on load `slideFrictionBase`, `slideFrictionFactor`, `gripFrictionBase`, and `gripFrictionFactor` are removed instead of kept as aliases.
 
+Personal controls: Skating control (While sprinting/Always, sneak to brake). Armed mode enables eligible sliding without sprinting; sneak remains the brake.
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `slidePercentBase` | `0.15` | Base percentage of each surface's friction loss cancelled while sprinting. Clamped to `0`-`1`. |
@@ -73,6 +81,8 @@ Sprinting cancels a fraction of the supporting surface's friction loss. Without 
 3 levels · 2 knowledge, then 4 per level
 
 While falling, each sneak press swaps dive and hang: dive cuts air drag and raises gravity, and hang does the opposite. Landing clears the mode.
+
+Personal controls: Midair mode cycle (Dive then hang/Hang then dive/Dive only/Hang only); Switch gesture (Tap sneak/Double-tap sneak).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -87,6 +97,8 @@ While falling, each sneak press swaps dive and hang: dive cuts air drag and rais
 5 levels · 2 knowledge, then 4 per level
 
 Sneaking with a mace or spear in the main hand applies transient knockback resistance, explosion knockback resistance, and a movement-speed penalty until sneak is released or the held item changes. It is not a potion effect and shows no status icon.
+
+Personal controls: Stance control (Hold sneak/Tap to toggle stance).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -103,6 +115,8 @@ Sneaking with a mace or spear in the main hand applies transient knockback resis
 
 Sneak plus swap-hands cancels the offhand swap and picks a form from pitch: above 25 degrees selects Titan, below 25 selects Pocket, and a level look selects Normal. Titan adds 20% attack damage and max health (`MULTIPLY_SCALAR_1`), step height +1.0, camera distance +2.0, and Slowness I; Pocket subtracts 20% damage and health and grants Speed I; health clamps to the new maximum, the form lasts until it is changed, death or logout resets it, and those modifiers are not config keys.
 
+Personal controls: Form selection (Look direction/Cycle Titan, Pocket, normal).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `titanScaleBase` | `0.25` | Scale attribute added in Titan form, at level 0. |
@@ -115,6 +129,8 @@ Sneak plus swap-hands cancels the offhand swap and picks a form from pitch: abov
 5 levels · 2 knowledge, then 4 per level
 
 Holding sneak while falling with a mace in the main hand dives until sneak is released or the player touches ground. The dive adds no damage of its own; smash damage still comes from fall distance.
+
+Personal controls: Dive control (While sneaking/Every eligible fall).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -147,6 +163,8 @@ A landed mace smash removes armor and armor toughness from that target.
 5 levels · 2 knowledge, then 4 per level
 
 A mace smash past the fall-distance requirement throws at most 16 nearby living entities and grants +1.0 explosion knockback resistance for 20 ticks. The player's pets and mobs protected as friendly are skipped.
+
+Personal controls: Hostile targets only (on/off); Require sneak for shockwave (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -181,6 +199,8 @@ Each landed mace smash grants a short brace of knockback resistance, armor tough
 3 levels · 4 knowledge, then 5 per level
 
 After a mace smash, bounciness rises and fall damage is cut for a short window.
+
+Personal controls: Rebound bounce (on/off); Landing cushion (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -240,6 +260,8 @@ A spear hit inside the distance band applies Slowness. Distance is measured from
 
 A spear lunge gains power and a forward dash. The dash is horizontal only, so existing vertical motion stays, and a lunge during the cooldown is unchanged.
 
+Personal controls: Extra lunge travel (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `powerBonusBase` | `1` | Lunge power added at level 0, rounded to a whole number. |
@@ -267,6 +289,8 @@ Spear hits while riding scale with the mount's speed, not the rider's, and stack
 3 levels · 4 knowledge, then 5 per level
 
 An attacker inside the radius, while a spear is held, is shoved outward and slightly upward. That shove arms bonus damage on the next spear hit.
+
+Personal controls: Hostile targets only (on/off); Require sneaking (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

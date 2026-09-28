@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,6 +14,8 @@ Rift (`rift`) gains XP from teleporting, throwing ender pearls or eyes of ender,
 Every teleport increments `rift.teleports`. Teleport XP is cooldown-gated. Throwing an ender pearl or an eye of ender pays immediately, with no cooldown. Damage to endermen, endermites, and the ender dragon pays per point of damage, capped at the target's base health. Destroying an end crystal pays flat XP. Enderman kills and ender-dragon damage feed their own challenge chains.
 
 ## Adaptations
+
+Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
 
 Anti-Levitation, Rift Visage, and Inflated Pocket Dimension are permanent. The menu asks for a confirmation before they are learned, and afterward they cannot be unlearned or refunded.
 
@@ -35,17 +37,23 @@ Right-clicking air with an eye of ender or an ender pearl in the main hand grant
 
 Crafting an ender pearl with a compass creates a Reliquary Portkey. Sneak-left-click binds a container, left-click air binds the container looked at within 5 blocks, and right-click opens it; the bind and every open run container permission checks, including both halves of a double chest, breaking, burning, pushing, or exploding the container closes an open session, and a Gloss preview neither binds nor opens it.
 
+Personal controls: Confirm unbinding (on/off); Confirm binding (on/off); Require sneak to open (on/off). Sneak-left-click air while looking away from a container clears the portkey binding and preserves the item’s other metadata. Bind and unbind confirmation each require repeating the same action within five seconds when enabled.
+
 ### Easy Enderchest (`rift-enderchest`)
 
 1 level · 10 knowledge
 
 A right-click on air, a left-click on air, or a left-click on a block, with an ender chest in the main hand, opens it and starts a 100-tick cooldown on that item; a click during the cooldown is cancelled. Learned Rift Resistance also applies Resistance for 10 ticks at amplifier 2.
 
+Personal controls: Open gesture (Left click or right-click air/Left click only/Right-click air only); Require sneaking (on/off).
+
 ### Rift Gate (`rift-gate`)
 
 1 level · 30 knowledge
 
 A sneak-left-click on a block with the crafted eye, made from an emerald, an amethyst shard, and an ender pearl, binds the current location; a sneak-left-click on air unbinds it, and a right-click starts an 85-tick channel with Blindness for 100 ticks and Levitation for 85 ticks. The eye and its cooldown are spent when the channel starts, so stowing or dropping the eye does not refund them, and a plain eye of ender can still be thrown to find a stronghold.
+
+Personal controls: Confirm binding (on/off); Confirm unbinding (on/off); Channel countdown (on/off). Confirmation requires the same bind or unbind action again within five seconds. Countdown is private. Changing preferences never resets a committed recall cost or cooldown.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -61,18 +69,24 @@ In Manual mode, a second mid-air jump in Survival blinks along your look directi
 | Control | Choices | Default / unlock |
 |---|---|---|
 | Enabled | On / Off | On, level 1 |
-| Phasing | Hold sneak / Aim only / Never | Hold sneak, level 1 |
+| Phasing | Hold sneak / Aim only / Never / Automatic | Hold sneak, level 1 |
 | Landing preference | Distance / Verticality | Distance, level 1 |
+| Landing snap | Server depth / At most 2 blocks / Keep aimed height | Server depth |
+| Exit momentum | Full / Half / Stop | Full server momentum |
 | Activation | Manual / Reactive | Manual; Reactive unlocks at level 2 |
 | Reactive direction | Look direction / Away from attacker | Look direction; shown only at level 2+ in Reactive mode |
 
-Hold sneak uses the normal obstacle-stopping blink unless you are sneaking. Aim only permits phasing along your look direction without holding sneak. Never always stops at obstacles. The server's `allowPhasing` setting overrides all three choices.
+Hold sneak uses the normal obstacle-stopping blink unless you are sneaking. Aim only permits phasing along your look direction without holding sneak. Never always stops at obstacles. The server's `allowPhasing` setting overrides all phase choices.
+
+Automatic phasing chooses mantle behavior when aiming upward with a vertical direction component greater than 0.2, and phase behavior when aiming level or downward. Server phasing restrictions still apply. Landing snap can reduce the downward search or retain the aimed height; exit momentum can reduce or remove the server impulse.
+
+Manual Blink takes priority over Instant Recall’s double-jump gesture while both are eligible; choosing Reactive Blink releases that gesture to Instant Recall.
 
 Distance chooses the farthest usable landing along the chosen direction, with normal mantling onto a hit ledge when phasing is off. Verticality prefers higher usable landings near that line, within `verticalSearchHeight` and the same total range; ties prefer distance. With phasing off, raised landings must have a clear line of sight. Open-air landings can still leave you falling. Only loaded destinations available to the current region are considered.
 
 Reactive replaces double-jump activation. A direct melee, sweep, or projectile hit triggers a blink when ready. The default direction is where you are looking; Away from attacker moves horizontally away from the attack source and falls back to look direction when that source is unavailable. Environmental damage, thorns, and Blink's own pearl damage do not trigger a reaction.
 
-A successful reactive blink avoids the triggering attack and pays normal Blink self-damage. If no usable destination exists or the teleport is refused, the attack still hurts you. Manual and Reactive share a cooldown; changing a preference does not reset it. Further hits while a teleport is pending are not automatically dodged.
+A successful reactive blink avoids the triggering attack and pays normal Blink self-damage. If no usable destination exists or the teleport is refused, the attack still hurts you. Manual and Reactive share a cooldown; changing a preference does not reset it. Further hits while a teleport is pending are not automatically dodged. Resetting or transferring player progression while a reactive teleport is pending does not erase its damage or cost.
 
 Range is `baseDistance + (levelPercent * distanceFactor)`. Self-damage is `pearlDamageBase - ((level - 1) * pearlDamageReductionPerLevel)`, floored at `minimumPearlDamage`. The server controls these values and can lock any player preference or restrict its choices through [player preference policy](/adapt/01-installation-configuration#player-preferences).
 
@@ -96,6 +110,8 @@ Range is `baseDistance + (levelPercent * distanceFactor)`. Self-damage is `pearl
 
 Sneaking while levitating removes Levitation and sets the fall-damage multiplier to -1 for `cooldown * 20` ticks. Fall speed does not change.
 
+Personal controls: Levitation cancellation (Press sneak/Automatic).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `cooldown` | `5.0` | Seconds between uses, and also the length of the fall damage protection. |
@@ -111,6 +127,8 @@ An enderman does not target a player who has at least one ender pearl anywhere i
 3 levels · 7 knowledge
 
 Sneak-hitting with a plain ender pearl in the main hand tags an entity and deals no damage; throwing that pearl teleports the target, not the thrower. Level 1 tags passive and hostile mobs, level 2 adds villagers and large targets, level 3 tags any entity including players, and the throw cooldown floors at 4 ticks.
+
+Personal controls: Taglock targets (All eligible targets/Hostile mobs only/Animals only/Players only); Confirm binding with a second hit (on/off). When confirmation is enabled, repeat the same tagging hit within five seconds; the first hit does not bind or deal damage.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -130,6 +148,8 @@ Sneak-hitting with a plain ender pearl in the main hand tags an entity and deals
 
 With an empty main hand, right-clicking a block, or right-clicking or left-clicking air at the block looked at within 5 blocks, pulls that block from the ender chest; while placing, a low stack refills up to `buildRefillAmount` or the item's max stack, whichever is smaller. A sneak-drop stores the item in the ender chest instead of dropping it.
 
+Personal controls: Pull on click (on/off); Refill building stack (on/off); Store sneak-dropped items (on/off); Item selection (All eligible items/Blocks only/Food only).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `buildRefillAmount` | `64` | Items pulled from the ender chest to top up the held stack while building. |
@@ -141,6 +161,8 @@ With an empty main hand, right-clicking a block, or right-clicking or left-click
 5 levels · 4 knowledge
 
 Sneaking pulls nearby item drops into the ender chest on a repeating pulse. Radius is capped at 16 blocks, items per pulse at 32, and the pulse delay floors at 2 ticks; an item the player could not pick up by hand stays on the ground.
+
+Personal controls: Collection control (While sneaking/Automatic collection); Pickup destination (Ender chest then inventory/Inventory then ender chest/Ender chest only/Inventory only); Item selection (All eligible items/Blocks only/Food only). Automatic collection stays armed until its mode or Enabled control is changed. Server destination restrictions still apply.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -158,6 +180,8 @@ Sneaking pulls nearby item drops into the ender chest on a repeating pulse. Radi
 4 levels · 6 knowledge, then 8 per level
 
 A hit that would reduce health plus absorption to zero or below is cancelled, spends one plain ender pearl, and blinks the player to a safe spot or, if none exists, to the current world spawn; the search radius is clamped to 3-16 blocks. With no plain pearl, a cooldown still running, or no usable world spawn, the hit lands.
+
+Personal controls: Plain pearl reserve (No reserve/Keep 1 pearl/Keep 4 pearls); Rescue damage causes (All lethal damage/Combat damage only/Environmental damage only); World spawn fallback (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -177,6 +201,8 @@ A hit that would reduce health plus absorption to zero or below is cancelled, sp
 
 Only a plain ender pearl rebounds, and only once; a pearl already claimed by another Rift adaptation teleports as usual. Damage reduction and aim bias both cap at 0.9.
 
+Personal controls: Pearl rebound (on/off); Pearl damage reduction (on/off); Require sneak when throwing (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `damageReductionBase` | `0.3` | Fraction of pearl teleport damage removed at level 1, 0-1. |
@@ -191,6 +217,8 @@ Only a plain ender pearl rebounds, and only once; a pearl already claimed by ano
 4 levels · 8 knowledge
 
 A plain ender pearl sneak-right-clicked on a container becomes a conduit taglock, and right-clicking a second container links the pair. Items move when either container closes, both ends re-check container permissions, and rejected items return to the source; throughput is clamped to 1-1152 items, range to 512 blocks, a miss only prints a hint, a plain pearl captures a source only on a sneak-click, and the taglock cannot be thrown without this adaptation.
+
+Personal controls: Link containers (on/off); Transfer on close (on/off); Item selection (All eligible items/Blocks only/Food only). An item filter applies when you close a link that you created. Other players closing it use ordinary transfer rules, subject to their own Enabled and Transfer on close controls. Links without an owner retain ordinary transfer rules.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

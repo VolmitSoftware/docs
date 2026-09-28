@@ -2,12 +2,25 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Hunter gains XP from killing mobs, scaled by maximum health, with separate adjustments for creepers and spawner mobs, and an ender dragon, wither, elder guardian, or warden kill advances a boss challenge. Its 14 adaptations add hunger-funded combat buffs, low-health bonuses, focused-target damage, boss loot, extra drops, blood trails, snares, and direct inventory collection.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Blood Trail | Show or hide the private trail; choose blood red, white, cyan, or gold. |
+| Jump Boost, Luck, Regeneration, Resistance, Speed, Strength, Invisibility | Require 0, 5, 10, or 15 hunger before a new activation. This does not reduce consumable costs or existing hunger, poison, and unluck penalties. |
+| Drop to Inventory | Toggle mob and block drop collection independently; collect all items, food, blocks, or crafting drops. The crafting preset contains leather, feathers, bones, string, gunpowder, spider eyes, slime balls, ender pearls, and blaze rods. |
+| Snare Line | Require sneaking before placing a crafted snare. |
+
+Adrenaline, Big Game Hunter, Predator Focus, and Trophy Skinner have the enable switch. Turning off Blood Trail clears that player's visible trail. Turning off Snare Line removes the owner's placed snares; it does not refund the crafted items.
 
 ## Adaptations
 

@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-09-27T00:06:18.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ The last two sections list types that are Java-public because Adapt's own conten
 
 ## FX
 
-`Fx.now(source, target, priority)` starts an immediate effect. The source is an `Adaptation`, a `Skill`, or a `MutationType`. That is what lets Adapt honor that source's own particle and sound toggles. The target is a `Location` or an `Entity`. The returned `FxEmitter` chains shapes and sounds:
+`Fx.now(source, target, priority)` starts an immediate effect. The source is an `Adaptation` or a `Skill`. That is what lets Adapt honor that source's own particle and sound toggles. The target is a `Location` or an `Entity`. The returned `FxEmitter` chains shapes and sounds. Call `.only(player)` before emitting to restrict the existing eligible audience to one player, or `.except(player)` to exclude that player; effects opt-out, culling, scheduling, and delivery budgets still apply:
 
 ```java
 Fx.now(this, player.getLocation(), FxPriority.COMBAT)
@@ -102,14 +102,14 @@ When an adaptation launches or repurposes a projectile it stamps an ownership ke
 
 | Type | Contract |
 |------|----------|
-| `Fx` | `now(Adaptation / Skill / MutationType, Location / Entity, FxPriority)` returns an `FxEmitter`. `targeted(Player, Particle, Location, count, spreadX, spreadY, spreadZ, speed)` sends one effect to one viewer |
-| `FxEmitter` | `particle`, `ring`, `arc`, `helix`, `line`, `burst`, `column`, `dome`, `trail`, `dustRing`, `dustBurst`, `dustHelix` (each with an optional `Color`), `sound`, and two- and three-note `chord` |
+| `Fx` | `now(Adaptation / Skill, Location / Entity, FxPriority)` returns an `FxEmitter`. `targeted(Player, Particle, Location, count, spreadX, spreadY, spreadZ, speed)` sends one effect to one viewer |
+| `FxEmitter` | `only(Player)`, `except(Player)`, `particle`, `ring`, `arc`, `helix`, `line`, `burst`, `column`, `dome`, `trail`, `dustRing`, `dustBurst`, `dustHelix` (each with an optional `Color`), `sound`, and two- and three-note `chord` |
 | `FxTimeline` | `at(Adaptation / Skill, Location)`, `follow(Adaptation / Skill, Entity)`, then `duration(ticks)`, `priority(FxPriority)`, `cullRadius(double)`, `frame(Frame)`, `onComplete(Runnable)`, `start()`, `cancel()` |
 | `FxPresets` | `chargeRing`, `shockwave`, `impact`, `successShimmer`, `failFizzle`, `streakTrail`, `readyPing`, `levelUpBurst`, `learnCelebration` |
 | `FxPriority` | `GAMEPLAY`, `COMBAT`, `TRANSITION`, `TRAIL`, `AMBIENT`, listed highest priority first |
 | `FxViewers` | `dispatch(Collection<Player>, Consumer<Player>)`, `dispatch(World, x, y, z, radius, Consumer<Player>)`. `DEFAULT_CULL_RADIUS` `24.0`, `MAX_CULL_RADIUS` `48.0` |
 | `ViewerDisplayDirector` | `showBlock`, `showPersistentBlock`, `showLine`, `isShowing`, `clearViewerKey`, `clearViewer`, `clearChannel`, `retireViewer`, `purgeOrphans`, `clearAll` |
-| `ViewerGlowCoordinator` | `isAvailable`, `set(Layer, Entity, Player, ChatColor)`, `unset`, `clearLayer`, `discardViewer`. `Layer`: `STEALTH_SIGHT`, `TRAGOUL_DEATH_SENSE`, `RANGED_TRAJECTORY_SIGHT`, `STEALTH_THREAT`, `MUTATION_UMBRAL_ECHO`, `TAMING_ALPHAS_COMMAND`, `RANGED_HEARTSEEKER` |
+| `ViewerGlowCoordinator` | `isAvailable`, `set(Layer, Entity, Player, ChatColor)`, `unset`, `clearLayer`, `discardViewer`. `Layer`: `STEALTH_SIGHT`, `TRAGOUL_DEATH_SENSE`, `RANGED_TRAJECTORY_SIGHT`, `STEALTH_THREAT`, `TAMING_ALPHAS_COMMAND`, `RANGED_HEARTSEEKER` |
 | `FxDirector` | Adapt's timeline ticker and lifecycle owner. Not an integration contract |
 
 ### FX budget
@@ -150,6 +150,10 @@ Every read takes `now` in epoch milliseconds.
 `Notification` declares `getTotalDuration()`, `play(AdaptPlayer)`, and `getGroup()`, which defaults to `"default"`. `ActionBarNotification`, `TitleNotification`, `SoundNotification`, and `AdvancementNotification` implement it. `SoundNotification.withXP(double)` attaches an XP payload. `Notifier` owns a player's queue, XP aggregation, and tick lifecycle and is constructed by Adapt.
 
 `AdaptHud` exposes `actionBar(Player, String)`, `xpTicker(Player, String)`, `ambientStatus(Player, purpose, String)` / `clearAmbientStatus(Player, purpose)`, `title(Player, title, subtitle)`, `guiTitle(Player, title, subtitle)`, and `clear(Player)`, all on the owning thread. Every one of them publishes an action-bar segment. `title`/`guiTitle` are notice deliveries, not screen titles. `start(Adapt)` and `stop()` are plugin lifecycle.
+## Velocity bursts
+
+`VelocityBurstRuntime.Client.stop(Player)` ends only that client's current burst on the player's owning scheduler and runs its normal end callback. It preserves other clients and newer replacement sessions; unregistering a client remains a separate lifecycle operation.
+
 ## See also
 
 - [37 - Recipes, Brewing & Value](/adapt/37-recipes-brewing-value)

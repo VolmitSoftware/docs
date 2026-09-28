@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,11 +15,15 @@ Every movement credits `move` and pays `moveXp passive` per block. That same dis
 
 ## Adaptations
 
+Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
+
 ### Wind Up (`agility-wind-up`)
 
 5 levels · 8 knowledge, then 2 per level
 
 Unbroken sprint builds toward a higher speed target. Sneak, flight, glide, a mount or dismount, or leaving Survival or Adventure resets the buildup.
+
+Personal controls: Maximum speed (full/half/quarter).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -38,6 +42,8 @@ Unbroken sprint builds toward a higher speed target. Sneak, flight, glide, a mou
 
 Airborne beside a solid face, sneak latches and stops the fall. Release launches. Ground contact refills latches. A backward release adds a push. Latch clears fall distance; release starts a new fall. Level raises launch strength and latches per airtime.
 
+Personal controls: Wall jump control (Hold then release sneak/Tap to latch and jump).
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `maxJumpsLevelBonusDivisor` | `2` | Latches per airtime are level plus level divided by this number. Lower values give more latches. |
@@ -53,6 +59,8 @@ Airborne beside a solid face, sneak latches and stops the fall. Release launches
 4 levels · 5 knowledge, then 2 per level
 
 Sneak applies a jump-strength bonus until release. A jump during that window uses the bonus.
+
+Personal controls: Jump control (Sneak and jump/Every jump); Jump height (full/half/quarter).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -80,6 +88,8 @@ Sprinting builds temporary armor that drains after the sprint stops. Sneak, swim
 
 On vanilla `CLIMBABLE` blocks except `SCAFFOLDING`, look up to climb faster and look down to descend faster. Sneak stops directional movement. The first and last two blocks of a column stay on vanilla control.
 
+Personal controls: Upward assistance (on/off); Downward assistance (on/off); Assistance speed (full/half/quarter); Look sensitivity (Normal/More deliberate/More responsive).
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `descentSpeedBase` | `0.30` | Downward speed in blocks per tick before per-level scaling. |
@@ -95,6 +105,8 @@ On vanilla `CLIMBABLE` blocks except `SCAFFOLDING`, look up to climb faster and 
 5 levels · 3 knowledge
 
 While falling, sneak shortly before landing to absorb part of the fall damage as a food cost. The cooldown uses the `HAY_BLOCK` item cooldown slot. A fall of 30 blocks or more grants a hidden challenge.
+
+Personal controls: Food reserve (No reserve/Keep 4 food/Keep 8 food).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -118,6 +130,8 @@ While falling, sneak shortly before landing to absorb part of the fall damage as
 
 Sprint, then tap sneak, to drop prone and carry momentum with reduced ground friction. A sprint that ended within the last 350 ms still counts.
 
+Personal controls: Slide control (Tap sneak/Hold sneak); Maximum slide duration (full/half/quarter).
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `slideForceBase` | `0.5` | Horizontal slide velocity in blocks per tick before level scaling. |
@@ -138,6 +152,8 @@ Sprint, then tap sneak, to drop prone and carry momentum with reduced ground fri
 4 levels · 5 knowledge, then 3 per level
 
 A sprint-jump arms a dash along look direction. Left-click empty air to spend a charge. Landing rearms it. Flight, glide, swim, climb, riding, an empty food bar, or already being on the ground blocks it.
+
+Personal controls: Dash trigger (Left click/While sneaking/Empty hand); Dash speed (full/half/quarter).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -168,6 +184,8 @@ While sprinting, an incoming projectile can miss, cancelling the hit and applyin
 
 Configured surfaces skip trampling, pressure-plate triggers, berry slow and damage, or powder-snow freeze. A surface whose minimum level is above `maxLevel` stays unreachable until one of those values changes.
 
+Personal controls: Farmland protection (on/off); Pressure plate protection (on/off); Berry protection (on/off); Powder snow protection (on/off).
+
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `requireSprint` | `true` | When true, none of the protections apply unless you are sprinting. |
@@ -190,6 +208,8 @@ Configured surfaces skip trampling, pressure-plate triggers, berry slow and dama
 1 level · 4 knowledge
 
 While grounded, a fence in the path pre-arms a jump high enough to land on top. The vault effect does not scale if `maxLevel` is raised.
+
+Personal controls: Vault trigger (Any jump/While sprinting/While sneaking).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -214,6 +234,8 @@ Sprint and sprint-jump exhaustion is reduced. Walking, attacks, and swimming kee
 4 levels · 4 knowledge, then 3 per level
 
 After a hit from another entity, a jump inside the recovery window launches along current steering, or along look direction if there was no movement.
+
+Personal controls: Recovery speed burst (on/off).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

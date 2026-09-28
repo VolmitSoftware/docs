@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,24 +46,17 @@ Boosts stack. The final XP multiplier is limited to `0.01`–`1000`.
 
 These commands require `adapt.clear`. `clear` targets online players; `reset confirm` also accepts offline players.
 
-## Configuration and mutations
+## Configuration
 
 | Command | Permission | Purpose |
 |---|---|---|
 | `/adapt default skill <skill>` | `adapt.configurator` | Restore one skill config |
 | `/adapt default adaptation <skill:adaptation>` | `adapt.configurator` | Restore one adaptation config |
 | `/adapt default all` | `adapt.configurator` | Archive and restore all Adapt configs |
-| `/adapt mutations menu` | `adapt.mutations` | Open your mutation menu |
-| `/adapt mutations cooperative [on|off|toggle]` | `adapt.mutations` | Change your group-effect preference |
-| `/adapt mutations view [player]` | self: `adapt.mutations`; others: `adapt.mutations.admin` | View a mutation loadout |
-| `/adapt mutations equip <mutation> <1|2> [player]` | `adapt.mutations.admin` | Force a mutation into a slot |
-| `/adapt mutations clear <1|2> [player]` | `adapt.mutations.admin` | Clear a mutation slot |
-| `/adapt mutations reset [player]` | `adapt.mutations.admin` | Reset mutation data |
-| `/adapt mutations reload` | `adapt.mutations.admin` | Reload mutation settings |
 
 ## Permissions
 
-Most command permissions default to operators. `adapt.effects`, `adapt.mutations`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
+Most command permissions default to operators. `adapt.effects`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
 
 | Permission | Purpose |
 |---|---|
@@ -77,9 +70,7 @@ Most command permissions default to operators. `adapt.effects`, `adapt.mutations
 | `adapt.determine` | Set skills and adaptations |
 | `adapt.clear` | Clear or reset profiles |
 | `adapt.effects` | Toggle personal effects |
-| `adapt.mutations` | Manage your mutations |
-| `adapt.mutations.admin` | Manage other players' mutations |
 | `adapt.debug` | Use debug mode |
 | `adapt.debugdump` | Save and optionally upload diagnostic reports; default `op` |
 
-Gameplay access uses `adapt.use.<skill>`, `adapt.use.<adaptation>`, and `adapt.use.mutation.<id>`. These are allowed unless explicitly denied. Operators bypass them.
+Gameplay access uses `adapt.use.<skill>` and `adapt.use.<adaptation>`. These are allowed unless explicitly denied. Operators bypass them.

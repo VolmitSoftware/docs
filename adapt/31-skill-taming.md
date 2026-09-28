@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,6 +19,24 @@ Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, 
 - A mob killed by your pet pays `petKillXP` and counts toward `taming.pet.kills`. The credit only fires when no player is the mob's killer, and TragOul skeletal servants and Excavation grave mobs are excluded.
 
 Breeding XP and pet damage XP share one `cooldownDelay` millisecond cooldown. Tame and pet-kill XP have no cooldown.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Alpha's Command | Restrict pet and target types; keep 0, 4, or 8 bones in the command hand after use. |
+| Battle Bond | Toggle speed separately from the remaining buffs; toggle bond particles and glow. |
+| Beast Recall | Restrict pet types; exclude sitting pets; keep 0, 4, or 8 hunger after the full recall cost. |
+| Fetch | Fetch all permitted items, food, blocks, or ores/minerals; opt in wolves through red, blue, or yellow collars, or allow every collar color. |
+| Guardian Instinct, Shared Pain | Restrict pet types; retain the server health minimum or require at least 50% or 75% of the pet's maximum health after protection. |
+| Last Breath | Restrict eligible pet types. Rescue health, protection, teleport, and cooldown remain one action. |
+| Mounted Tactics | Toggle mount handling and mounted combat bonuses independently. |
+| Pack Leader Aura | Toggle speed and regeneration independently. |
+| Wild Empathy | Toggle improved taming and neutral-mob pacification independently. |
+
+Pet presets are all supported pets, wolves, cats, or equines (horses, donkeys, mules, skeleton horses, and zombie horses). They only narrow each adaptation's normal eligibility. Damage, Health Regeneration, Health Boost, and Stable Hand have the enable switch. Health Boost removes only the owner's adaptation bonus when disabled; permanent Stable Hand traits remain. Changing Fetch preferences cancels current fetches and safely returns carried items.
 
 ## Adaptations
 

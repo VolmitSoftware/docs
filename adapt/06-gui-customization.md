@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -123,11 +123,13 @@ stealth = ["stealth-shadowmeld", "stealth-cutpurse"]
 
 ### Player preference controls
 
-The adaptation level screen reserves a bottom row for registered player controls, with navigation above it. Level cards paginate within the remaining space and the inventory never exceeds six rows. `guiBackButton = false` hides Back without removing preference controls. Adaptations without registered preferences retain their ordinary layout.
+The adaptation level screen reserves a bottom row for registered player controls, with navigation above it. Level cards paginate within the remaining space and the inventory never exceeds six rows. `guiBackButton = false` hides Back without removing preference controls. Every adaptation includes Enabled; the skill screen has a separate bottom row with a skill-wide Enabled control and Reset. Turning a skill off preserves each adaptation's individual settings.
 
-Click a preference to update its item in the current window. Left-click advances and right-click reverses through permitted unlocked values. Names and lore show the effective value; red/lime panes indicate Off/On, and gray items indicate unavailable or server-controlled choices. Dependent controls appear only when applicable: Blink's Reactive direction is hidden below level 2 and in Manual mode. Changing activation adds or removes it in the same open window; its saved direction is retained while hidden. Reset clears personal overrides. Large sets of controls have their own row pagination, separate from the level page.
+Click a preference to update its item in the current window. Left-click advances and right-click reverses through permitted unlocked values. Names and lore show the effective value; red/lime panes indicate Off/On, and gray items indicate unavailable or server-controlled choices. Dependent controls appear only when applicable: Blink's Reactive direction is hidden below level 2 and in Manual mode. Changing activation adds or removes it in its reserved slot; other controls and Reset keep their positions, and its saved direction is retained while hidden. Reset clears the choices for that screen: resetting a skill does not reset its child adaptations. Large sets of controls have their own row pagination, separate from the level page.
 
-Server policy lives in the adaptation configuration under `playerPreferences`; see [configuration](/adapt/01-installation-configuration#player-preferences). Blink's controls and unlocks are listed in [Rift](/adapt/27-skill-rift#rift-blink-rift-blink).
+Accepted changes and resets play a quiet click for the viewing player. Locked or unavailable choices play a low note, and preference-page navigation plays a page-turn sound. These sounds honor the player's effects toggle, the skill or adaptation's `showSounds`, and global `effects.soundsEnabled`. Controls continue to work when sounds are disabled. After a skill registry reload, reopen its menu before changing preferences. Controls retained from the previous registry ignore clicks.
+
+Server policy lives in the corresponding skill or adaptation configuration under `playerPreferences`; see [configuration](/adapt/01-installation-configuration#player-preferences). Blink's controls and unlocks are listed in [Rift](/adapt/27-skill-rift#rift-blink-rift-blink).
 
 ## Language editor
 

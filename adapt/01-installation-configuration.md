@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, and settings"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ Edit the TOML files under `plugins/Adapt/`. A valid save refreshes open menus. I
 
 An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That directory must be writable. A non-English `language` is downloaded to `languages/<locale>.toml` only when that file is missing.
 
-`blacklistedWorlds` takes namespaced world keys, such as `minecraft:the_nether`. The two generated entries match nothing. Mutations use their own `worldBlacklist`.
+`blacklistedWorlds` takes namespaced world keys, such as `minecraft:the_nether`. The two generated entries match nothing.
 
 `ignorePassiveMobs` in an adaptation file excludes passive and neutral mobs from that adaptation's area, reflected, or chain damage. Add the key at the top level of that file when it is absent. Default `false`. Provoked neutral mobs stay excluded. Direct attacks are unchanged. It applies to `axe-cleave`, `axe-ground-smash`, `axe-throwing-axe`, `sword-crimson-cyclone`, `excavation-earth-mover`, `ranged-heartseeker`, `nether-skull-toss`, `tragoul-thorns`, `tragoul-globe`, `tragoul-lance`, `tragoul-corpse-explosion`, and `tragoul-plague-bearer`. Skeletal servants, Shadow Decoys, and the attacker's tamed pets are excluded from those attacks either way. Grave Digger's unearthed enemies stay valid targets.
 
@@ -31,8 +31,6 @@ ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;
 ```
 
 Vault charges `knowledge cost * learningEconomy.moneyPerKnowledge` when `learningEconomy.enabled` is true and an economy provider is present. Otherwise learning stays knowledge-only. A failed withdrawal rejects the purchase. A failed refund is stored on the skill line and settled on the next learn or unlearn. `hardcoreNoRefunds` returns neither knowledge nor currency.
-
-Mutations stay off until `mutations.toml` sets `enabled = true`. That file hot-reloads. `/adapt mutations reload` does the same. Per-type behavior is in the [Mutations catalog](/adapt/35-mutations-catalog).
 
 `/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` regenerate that file. `/adapt default all` is described in [Updates](/adapt/40-operator-runbooks). All three need `adapt.configurator`.
 
@@ -59,7 +57,6 @@ Details: [Protection and region policy](/adapt/08-protection-region-policy) and 
 plugins/Adapt/
   adapt.toml
   models.toml
-  mutations.toml
   skills/<skill-id>.toml
   adaptations/<adaptation-id>.toml
   config-archive/<timestamp>/
@@ -123,7 +120,7 @@ Default `blacklistedWorlds` entries are `minecraft:some_world_adapt_should_not_r
 | `actionbarNotifyXp` | `true` | Shows aggregated skill XP gains on the action bar without changing the XP awards themselves |
 | `actionbarXpDurationMillis` | `1500` | Skill XP ticker lifetime in milliseconds, clamped to `100`-`60000` |
 | `actionbarNotifyLevel` | `true` | Shows skill-level notifications without controlling their sounds |
-| `actionbarNotifyMasterLevel` | `true` | Shows account-wide master-level and maximum-power notifications without changing progression or Mutation unlock checks |
+| `actionbarNotifyMasterLevel` | `true` | Shows account-wide master-level and maximum-power notifications without changing progression |
 | `actionbarLevelDurationMillis` | `2500` | Shared skill-level and master-level notification lifetime in milliseconds, clamped to `100`-`60000` |
 | `progressionSoundsEnabled` | `true` | Plays skill-level and master-level progression sounds independently of the visual switches |
 | `unlearnAllButton` | `false` | Shows the bulk-unlearn control |
@@ -209,7 +206,7 @@ Conflict pairs are symmetric. Listing `agility-air-dash` under `rift-blink` bloc
 
 ### Player preferences
 
-Adaptations with player controls store their server policy in `adaptations/<adaptation-id>.toml` under `[playerPreferences.<control-id>]`. Rift Blink currently supplies these controls. Player edits save to player data; they do not edit the server file or hotload a skill.
+Every adaptation has a personal `enabled` control. Its server policy lives in `adaptations/<adaptation-id>.toml` under `[playerPreferences.<control-id>]`. Skill-wide enable policies use the same shape in `skills/<skill-id>.toml`. Setting a skill off suppresses its adaptations without overwriting their individual choices or stopping ordinary skill XP. Player edits save to player data; they do not edit the server file or hotload a skill.
 
 | Field | Meaning |
 |---|---|
@@ -222,10 +219,12 @@ Blink's control IDs and values are:
 | ID | Values | Default |
 |---|---|---|
 | `enabled` | `ON`, `OFF` | `ON` |
-| `phasing` | `SNEAK`, `AIM`, `NEVER` | `SNEAK` |
+| `phasing` | `SNEAK`, `AIM`, `NEVER`, `AUTO` | `SNEAK` |
 | `targeting` | `DISTANCE`, `VERTICALITY` | `DISTANCE` |
 | `activation` | `MANUAL`, `REACTIVE` | `MANUAL` |
 | `reactive-direction` | `LOOK`, `AWAY_FROM_ATTACKER` | `LOOK` |
+| `landing` | `SERVER`, `NEAR`, `NONE` | `SERVER` |
+| `momentum` | `FULL`, `HALF`, `STOP` | `FULL` |
 
 For example, allow both targeting preferences but force manual activation:
 
@@ -241,9 +240,11 @@ defaultValue = "MANUAL"
 allowedValues = ["MANUAL", "REACTIVE"]
 ```
 
-Reactive activation and its direction choice require Blink level 2. A forced Reactive mode cannot grant that level; a lower-level player cannot trigger it. Setting `allowPhasing = false` prohibits phasing even if the player's saved choice is AIM. Skill/adaptation enable flags, use permissions, world restrictions, protection, costs, and cooldowns remain authoritative.
+Reactive activation and its direction choice require Blink level 2. A forced Reactive mode cannot grant that level; a lower-level player cannot trigger it. Setting `allowPhasing = false` prohibits phasing regardless of the saved mode. AUTO favors mantling when aiming upward and phasing when aiming level or downward. Landing follows the server snap depth, caps it at two blocks, or disables snapping; momentum keeps the server exit impulse, halves it, or stops it. Skill/adaptation enable flags, use permissions, world restrictions, protection, costs, and cooldowns remain authoritative.
 
-A saved choice that becomes unavailable is retained but does not apply. When the player regains its required level or the server allows it again, it can apply again. Reset to server defaults removes that adaptation's saved choices. Turning Blink off preserves learned levels and spent knowledge/power. Existing progression resets preserve preferences; deleting or replacing the entire player record clears them.
+A saved choice that becomes unavailable is retained but does not apply. When the player regains its required level or the server allows it again, it can apply again. Reset to server defaults removes that adaptation's saved choices. Turning an adaptation or skill off preserves learned levels, spent knowledge/power, permanent status, and learning conflicts. New adaptation effects, usage XP, and recipe use stop; committed costs, damage debt, and cooldowns still settle. Existing backpacks, stored tools, and other item-owned contents are retained. Existing progression resets preserve preferences; deleting or replacing the entire player record clears them.
+
+Other controls are listed on each skill page. Percentage presets cap a personal effect at Full, Half, or Quarter of its earned server limit. Reserve settings refuse an action if paying its complete cost would cross the selected reserve. Confirmation settings require the same action with unchanged items to be repeated within five seconds before payment. Material, projectile, and target filters restrict the listed categories; they cannot broaden server eligibility.
 
 Invalid policy edits keep the last valid live configuration. Save valid policy changes using the normal adaptation configuration reload workflow.
 
@@ -259,54 +260,6 @@ Invalid policy edits keep the last valid live configuration. Save valid policy c
 | `permissionXpMultipliers` | [05 - Configuration Math](/adapt/05-configuration-math) |
 | `protectorSupport` | [08 - Protection & Region Policy](/adapt/08-protection-region-policy) |
 
-### `mutations.toml`, global keys
-
-| Key | Default | What it does |
-|---|---:|---|
-| `enabled` | `false` | Master switch for the whole Mutation feature |
-| `slotOneUnlockLevel` | `25` | Master level needed for slot 1 |
-| `slotTwoUnlockLevel` | `50` | Master level needed for slot 2. Normalized up to at least slot 1 |
-| `perfectAdaptationLevel` | `200` | Master level at which drawbacks soften |
-| `perfectAdaptationEnabled` | `true` | Enables that level-based softening |
-| `minimumAdaptationLevel` | `1` | Learned adaptation level required in each of the mutation's two domains |
-| `switchCooldownMillis` | `600000` | Wait after any normal slot change |
-| `combatLockMillis` | `10000` | How long taking damage blocks a normal slot change |
-| `switchingEnabled` | `true` | Allows player-driven switching |
-| `permanentSelection` | `false` | Makes the first choice admin-clearable only |
-| `pvpEnabled` | `true` | Global switch for Mutation effects in PvP |
-| `cooperativeEffectsEnabled` | `true` | Global switch for cooperative effects |
-| `cooperativeConsentMode` | `EXPLICIT` | Which recipients count as consenting |
-| `bookshelfTokenMillis` | `60000` | How long one bookshelf interaction authorizes changes |
-| `bookshelfMaximumDistance` | `8.0` | How far the player may stray from that bookshelf |
-| `particlesEnabled` | `true` | Global Mutation particle switch |
-| `soundsEnabled` | `true` | Global Mutation sound switch |
-| `worldBlacklist` | empty | Namespaced world keys where all Mutations are off |
-| `domainMembership` | built-in map | Which skills count toward each Mutation domain |
-
-Every consent mode also requires the recipient's saved opt-in. `EXPLICIT` accepts any opted-in eligible recipient. `PARTY` also requires both players to share a Bukkit scoreboard and be on the same team. `FRIEND` and `DISABLED` both accept nobody (no friend provider is implemented). Every type profile also carries `enabled = true`, `pvpEnabled = true`, `particlesEnabled = true`, `soundsEnabled = true`, an empty `worldBlacklist`, and an empty `conflicts`. World keys and conflict lists are normalized on load.
-
-### `mutations.toml`, per-type tables
-
-| Table | Keys and defaults |
-|---|---|
-| `galeLung` | `maximumMomentum = 100`, `sprintMomentumPerBlock = 8`, `airborneMomentumPerBlock = 4`, `stationaryVentMillis = 1250`, `burdenKnockbackMultiplier = 1.35`, `meleeFlankDistance = 1.5`, `projectileDisplacement = 0.45` |
-| `bastionSpine` | `anchorChargeMillis = 1500`, `maximumStability = 8`, `stabilityPerDamage = 0.5`, `waveRange = 5`, `waveAngleDegrees = 90`, `maximumVelocity = 0.85`, `maximumTargets = 12` |
-| `verdantMolt` | `chargeTicks = 50`, `cooldownMillis = 90000`, `saturationCost = 6`, `recoveryTicks = 40`, `maximumEffects = 32` |
-| `temperbound` | `rejectionMillis = 30000` |
-| `paradoxScar` | `minimumDistance = 8`, `echoLifetimeMillis = 12000`, `maximumReturnDistance = 64`, `hostileCollapseTicks = 60` |
-| `arsenalCortex` | `chainTimeoutMillis = 5000`, `maximumChain = 4`, `dullnessMillis = 3000` |
-| `packmind` | `quarryMillis = 20000`, `participationRange = 16`, `maximumTempo = 6`, `maximumMembers = 8`, `waitingDamageFactor = 0.8` |
-| `trophyCrucible` | `imprintLifetimeMillis = 1800000`, `recognitionRange = 16` |
-| `umbralEcho` | `angleBucketDegrees = 45`, `techniqueMemoryMillis = 5000`, `echoDelayTicks = 8`, `exposureTicks = 60`, `maximumTargetMemories = 8` |
-| `livingLattice` | `maximumRootCharge = 12`, `pathLength = 5`, `blockLifetimeMillis = 15000`, `collapseLockMillis = 4000`, `maximumBlocks = 16`, `maximumStructures = 3` |
-| `masterworkBond` | `abandonCooldownMillis = 86400000` |
-| `deepblood` | `maximumDepthY = 16`, `ichorPerBlock = 1`, `maximumIchor = 100`, `regenerationCost = 4`, `toolPreservationCost = 25`, `aboveGroundHalfLifeMillis = 300000` |
-| `mycelialNerve` | `range = 16`, `copiedDurationFactor = 0.5`, `rootDurationFactor = 0.75`, `maximumRecipients = 8`, `reconnectLockMillis = 5000` |
-| `gravebloom` | `lifetimeMillis = 20000`, `radius = 6`, `maximumBlooms = 3`, `regenerationFactor = 0.5`, `pulseTicks = 20`, `maximumCrops = 16`, `maximumAnimals = 8` |
-| `resonantFormula` | `sigilLifetimeMillis = 600000`, `collapseLockMillis = 30000`, `echoFactor = 0.5`, `echoDelayTicks = 10` |
-
-Keys ending in `Millis` are milliseconds and keys ending in `Ticks` are server ticks. Factors are multipliers, ranges and distances are blocks, angles are degrees, and every count or charge value is clamped into a safe band during load.
-
 ### Reload matrix
 
-Skill, adaptation, GUI, effects, progression, mutation, language, model, and protection settings apply on save. SQL, Redis, metrics, and installing or removing an optional plugin need a restart. See [Updates](/adapt/40-operator-runbooks).
+Skill, adaptation, GUI, effects, progression, language, model, and protection settings apply on save. SQL, Redis, metrics, and installing or removing an optional plugin need a restart. See [Updates](/adapt/40-operator-runbooks).

@@ -2,7 +2,7 @@
 title: "Player Usage"
 description: "Open the Adapt menu and learn or remove adaptations"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,12 +20,12 @@ Passive adaptations run after purchase. Active adaptations use the trigger on th
 
 The main menu shows skill level, knowledge, master level, and used power. Owned levels show an enchantment glint. Right-click Previous or Next jumps five pages. `guiBackButton` shows Back.
 
-Adaptations with personal controls show them along the bottom of their level screen. Rift Blink offers enable/disable, phasing, Distance/Verticality targeting, and an optional level-2 Reactive mode with a direction choice. Left-click a control to cycle forward and right-click to cycle backward. Glass panes show On in lime and Off in red; mode items show the current choice in their lore. Only the changed controls update, keeping the same menu open.
+Every adaptation has an enable switch and any additional personal controls along the bottom of its level screen. Each skill screen also has a master switch that suppresses your adaptations in that skill while preserving their individual choices. The skill pages list input modes, filters, personal limits, and other supported controls.
 
-Gray controls are server-controlled or not yet unlocked. Lore shows level requirements and unavailable choices. Reset to server defaults clears that adaptation's personal overrides. Your settings do not change another player's skill, and turning Blink off does not refund knowledge or power. See [Rift Blink](/adapt/27-skill-rift#rift-blink-rift-blink).
+Left-click a control to cycle forward and right-click to cycle backward. Glass panes show On in lime and Off in red; mode items show the current choice in their lore. Controls update in the same open inventory. Changes, resets, locked choices, and control-page navigation have distinct quiet sound feedback for you, subject to your effects setting and server sound settings.
+
+Gray controls are server-controlled or not yet unlocked. Lore shows level requirements and unavailable choices. Reset to server defaults clears the current adaptation's personal overrides; resetting a skill's master switch preserves its child settings. Turning an adaptation off preserves learned levels and spent knowledge or power. Your choices never change another player's settings. See [player preference policy](/adapt/01-installation-configuration#player-preferences).
 
 `/adapt effects` with `adapt.effects` toggles that player's particles and sounds.
-
-When Mutations are enabled, the main menu has a Mutations button. Slot changes need a fresh activator click. See [Mutations](/adapt/34-mutations-overview).
 
 Menu layout and icons: [GUI](/adapt/06-gui-customization).

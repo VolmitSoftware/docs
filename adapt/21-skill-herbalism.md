@@ -2,12 +2,32 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Herbalism gains XP from harvesting and planting crops, shearing, composting, and eating. Its 15 adaptations cover crop growth, replanting, area sowing, direct inventory drops, composting, food bonuses, farming drops, hunger-based defense, farmland protection, and recipes for mycelium, grass blocks, mushroom blocks, and cobwebs.
+
+## Player controls
+
+Every adaptation has an Enabled control in its level screen. These controls change only your player data; the server controls permitted values, defaults and locks. Personal settings never bypass learned levels, permissions, costs, cooldowns or server limits.
+
+| Adaptation | Additional controls |
+|---|---|
+| Bee Shepherd (`herbalism-bee-shepherd`) | `growth-particles`: Growth particles; `bee-attraction`: Bee attraction; `growth`: Crop growth; `food-reserve`: Keep eight food points |
+| Compost Cascade (`herbalism-compost-cascade`) | `materials`: Allowed plant materials; `leaves`: Consume leaves; `dropped-items`: Consume dropped items; `inventory-items`: Consume inventory items; `item-reserve`: Keep eight items per stack |
+| Growth Aura (`herbalism-growth-aura`) | `materials`: Allowed plant materials; `surface-only`: Only surface crops; `food-reserve`: Keep sixteen food points; `radius`: Growth radius |
+| Harvest & Replant (`herbalism-replant`) | `materials`: Allowed plant materials; `sneak`: Require sneak to replant |
+| Hoe Drop-To-Inventory (`herbalism-drop-to-inventory`) | `materials`: Allowed plant materials; `seeds-only`: Only collect planting items |
+| Hungry Shield (`herbalism-hungry-shield`) | `food-reserve`: Keep eight food points; `basics`: Environmental damage; `melee`: Melee damage; `fire`: Fire damage; `burst`: Projectile and explosion damage; `magic`: Magic damage |
+| Rooted Footing (`herbalism-rooted-footing`) | `farmland`: Farmland protection; `fall-conversion`: Fall-to-hunger conversion; `food-reserve`: Keep eight food points |
+| Seed Sower (`herbalism-seed-sower`) | `materials`: Allowed plant materials; `radius`: Planting radius; `seed-reserve`: Keep eight held seeds |
+| Spore Bloom (`herbalism-spore-bloom`) | `flower-conversion`: Convert flowers to mushrooms; `soil-conversion`: Convert spread soil; `spread-limit`: Spread block limit |
+
+Food reserves retain eight food points for Bee Shepherd, Hungry Shield and Rooted Footing; Growth Aura can retain sixteen instead of its normal ten-point floor. Compost Cascade’s reserve keeps eight items in each consumed stack, and its drop and inventory sources can be disabled independently. Seed Sower can retain eight held seeds. Plant filters select all supported plants or one crop/material family. Replant’s pickup integration also respects Drop to Inventory’s material filter. Hungry Shield exclusions remain within learned damage coverage. Spore Bloom can independently suppress soil conversion or flower conversion, and smaller spread presets never reduce an accepted action’s catalyst or food cost.
+
+Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

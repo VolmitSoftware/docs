@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Seaborne gains XP from swimming, fishing, reeling in a non-fish entity, underwater block breaks, drowned damage, and trident damage, and pays none for killing a drowned, guardian, or elder guardian. Its 14 adaptations add air, swim speed, underwater vision and mining, damage protection, escape tools, wreck salvage, coral growth, aquatic allies, trident upgrades, and burst movement.
 
 ## Adaptations
+
+Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
 
 ### Organic Oxygen Tank (`seaborne-oxygen`)
 
@@ -61,6 +63,8 @@ Night Vision stays on while the player is in water and is removed on surfacing o
 
 In water, submerged mining speed is raised and stacks with Aqua Affinity; it is an attribute, not Haste, and it does not require Water Breathing. Off the ground, a separate break-speed modifier covers the airborne penalty, and both modifiers clear on surfacing.
 
+Personal controls: Compensate floating penalty (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `underwaterMiningSpeedMultiplier` | `1.4` | Effective submerged-mining multiplier, clamped from 1 to 10. |
@@ -74,6 +78,8 @@ In water, submerged mining speed is raised and stacks with Aqua Affinity; it is 
 5 levels · 4 knowledge
 
 Dash cooldown is displayed on the heart of the sea. Water means the player is in water, swimming, or has feet or eyes in liquid; rain means a storm with open sky above the player.
+
+Personal controls: Sneak trigger (on/off); Attack trigger (on/off); Sneak required for attacks (on/off); Water required for attacks (on/off); Water dashes (on/off); Rain dashes (on/off); Horizontal direction (on/off). Hydro Jet’s Shared sneak priority decides which adaptation receives overlapping sneak input. Attack input is independent. Server requirements for sneak, water and horizontal direction still apply.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -136,6 +142,8 @@ Depth is sea level minus eye height. Crossing the depth threshold grants Resista
 
 Placed coral is kept from fading out of water, up to 8192 tracked blocks with expired entries dropped first; only blocks tagged `CORAL_BLOCKS`, `CORALS`, or `WALL_CORALS` get that protection and count toward the stat, while prismarine, prismarine bricks, dark prismarine, sea lanterns, sponge, and wet sponge pay placement XP only. Bone meal on live coral can place tube, brain, bubble, fire, or horn coral in an adjacent water cell; Creative mode spends no bone meal, and a denied placement spends none.
 
+Personal controls: Preserve placed coral (on/off); Bonemeal coral growth (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `survivalSecondsBase` | `60` | Seconds placed coral is protected from fading, before level scaling. |
@@ -150,6 +158,8 @@ Placed coral is kept from fading out of water, up to 8192 tracked blocks with ex
 4 levels · 4 knowledge
 
 While the player is in water, at most 6 chests, trapped chests, or barrels inside the scan radius and within 3 blocks above or below the player are marked for that player only. Opening one while the player is in water and the container touches water on at least one face inserts loot into its current contents once, stamped `seaborne_salvaged`: nautilus shell at weight 2, prismarine shard at weight 3, prismarine crystals at weight 2, plus gold ingot, iron ingot, lapis lazuli, emerald, ink sac, glow ink sac, and tropical fish, in stacks of 1 to 3, or one heart of the sea.
+
+Personal controls: Container outlines (on/off); Outlined containers (All treasure containers/Chests only/Barrels only); Outline color (Aqua/Gold/Purple). Container filters and colors affect private detection outlines; earned treasure rewards remain available for all eligible containers.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -166,6 +176,8 @@ While the player is in water, at most 6 chests, trapped chests, or barrels insid
 5 levels · 4 knowledge
 
 Damage taken in water releases an ink cloud and blinds nearby monsters. That damage is not cancelled or reduced, and the player is not made invisible.
+
+Personal controls: Own ink density (full/half/quarter). Own ink density changes only your cloud particles. Other viewers receive the ordinary cloud; blindness and concealment are unchanged.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -187,6 +199,8 @@ Damage taken in water releases an ink cloud and blinds nearby monsters. That dam
 
 A thrown trident stores the thrower's adaptation level under `seaborne_trident_mastery_level` and keeps that damage bonus after a gear change; a melee hit uses the current level and requires a trident in the main hand. Recall gives up after 120 ticks and stops within 1.6 blocks, and a trident stuck in a block is freed first.
 
+Personal controls: Trident recall (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `damageBonusBase` | `0.15` | Bonus trident damage as a fraction of base damage, before level scaling. |
@@ -204,6 +218,8 @@ A thrown trident stores the thrower's adaptation level under `seaborne_trident_m
 
 Luck equal to the adaptation level is applied at all times. In water or while swimming, at most 12 fish that are more than a block away are nudged per pulse, and a hit sends at most 8 nearby dolphins and axolotls at the victim.
 
+Personal controls: Attract fish (on/off); Animal combat assistance (on/off); Fishing luck (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `schoolRangeBase` | `6` | Radius in blocks that fish are pulled from, before level scaling. |
@@ -219,6 +235,8 @@ Luck equal to the adaptation level is applied at all times. In water or while sw
 5 levels · 3 knowledge, then 4 per level
 
 A sneak press while sprint-swimming, rather than while only floating in water, launches the player along the look direction, blending 40% of current velocity into the burst and capping the result at 2.6. An empty food bar cancels the jet without spending a charge, and charges refill in fractions of a charge.
+
+Personal controls: Jet gesture (Single sneak/Double sneak); Food reserve (No reserve/Keep 4 food/Keep 8 food); Shared sneak priority (Hydro Jet first/Tidecaller first). Double sneak means two presses within 350 ms. Hydro Jet wins shared sneak input by default while swimming; choose Tidecaller first to reserve that gesture for an enabled, learned Tidecaller in its permitted environment. The selected winner keeps the gesture even while recharging.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

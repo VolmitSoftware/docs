@@ -2,12 +2,34 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Chronos gains XP from movement, sleep, ender pearls, Speed effects, and survival time; a carried clock raises payouts, most from the off hand, low movement cuts XP, and varied recent actions add a bonus. Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks.
+
+## Player controls
+
+Every adaptation has an Enabled control in its level screen. These controls change only your player data; the server controls permitted values, defaults and locks. Personal settings never bypass learned levels, permissions, costs, cooldowns or server limits.
+
+| Adaptation | Additional controls |
+|---|---|
+| Aberrant Touch (`chronos-aberrant-touch`) | `clock-sounds`: Clock sounds; `passive-targets`: Passive targets; `player-targets`: Player targets; `food-reserve`: Keep at least eight food points |
+| Accelerate (`chronos-accelerate`) | `crops`: Crop acceleration; `furnaces`: Furnace acceleration; `brewing`: Brewing acceleration; `radius`: Acceleration radius |
+| Hourglass Guard (`chronos-hourglass-guard`) | `clock-sounds`: Clock sounds |
+| Instant Recall (`chronos-instant-recall`) | `clock-click`: Clock-click trigger; `sprint-click`: Sprint-click trigger; `sneak-trigger`: Sneak trigger; `double-jump`: Double-jump trigger; `left-click`: Left clicks; `right-click`: Right clicks; `air-clicks`: Air clicks; `block-clicks`: Block clicks; `clock-sounds`: Clock sounds; `sneak-sprint`: Sneak also requires sprint; `sneak-clock`: Sneak also requires held clock; `jump-sprint`: Double-jump also requires sprint; `jump-clock`: Double-jump also requires held clock |
+| Overtime (`chronos-overtime`) | `shorten-harmful`: Shorten harmful effects; `speed`: Speed; `jump-boost`: Jump Boost; `regeneration`: Regeneration; `resistance`: Resistance; `fire-resistance`: Fire Resistance; `water-breathing`: Water Breathing; `invisibility`: Invisibility; `night-vision`: Night Vision; `health-boost`: Health Boost; `absorption`: Absorption; `saturation`: Saturation; `luck`: Luck; `slow-falling`: Slow Falling; `dolphins-grace`: Dolphins Grace; `hero-of-the-village`: Hero Of The Village; `haste`: Haste; `strength`: Strength |
+| Pocket Watch (`chronos-pocket-watch`) | `require-sneak`: Hold sneak while falling |
+| Rewind (`chronos-rewind`) | `clock-sounds`: Clock sounds; `require-clock`: Clock |
+| Stasis Field (`chronos-stasis-field`) | `clock-sounds`: Clock sounds; `offhand-shard`: Require shard in offhand |
+| Temporal Echo (`chronos-temporal-echo`) | `arrow`: Arrow; `snowball`: Snowball; `egg`: Egg; `ender-pearl`: Ender Pearl |
+| Time Bomb (`chronos-time-bomb`) | `clock-sounds`: Clock sounds; `private-visuals`: Owner-only field visuals |
+| Time In A Bottle (`chronos-time-bottle`) | `clock-sounds`: Clock sounds; `trees`: Sapling tree generation; `furnaces`: Furnace targets; `brewing`: Brewing targets; `campfires`: Campfire targets; `growth`: Growth targets; `animals`: Animal aging targets |
+
+Trigger options can restrict the server’s enabled inputs and add sprint or held-clock requirements. An eligible Manual Blink owns the double-jump gesture ahead of Instant Recall, including during its cooldown; Recall’s other enabled inputs remain available. Clock sounds remain subject to the server sound gate. Borrowed Time always repays existing damage debt. Pocket Watch’s automatic falling mode still requires any server-required clock and shares its existing airtime budget. Changing Pocket Watch preferences ends its own current slow-fall pulse while preserving unrelated potion effects and the spent airtime budget. Time Bomb presentation choices are captured for each deployed field and never alter its mechanics. Overtime’s individual effect toggles only filter its supported beneficial effects, and harmful shortening still requires maximum level.
+
+Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

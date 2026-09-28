@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,11 +12,15 @@ The core Stealth adaptation checks whether nearby mobs or players can see you, t
 
 ## Adaptations
 
+Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
+
 ### Stealth (`stealth-silent-step`)
 
 2 levels · 1 knowledge, then 2 per level
 
 Sneaking conceals you from observers that are not looking at you; invisibility, an active Shadow Decoy, or a Smoke Pellet cloud conceals you regardless of facing. While concealed, current hunters drop you, new targeting is suppressed, and fall damage is removed (`SAFE_FALL_DISTANCE` 1024); an undetected melee hit is a backstab, with a larger multiplier against mobs than against players.
+
+Personal controls: Private threat outlines (on/off); Private detection status (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -48,6 +52,8 @@ Sneaking conceals you from observers that are not looking at you; invisibility, 
 3 levels · 5 knowledge, then 4 per level
 
 Sneaking or crawling on the ground in survival or adventure raises sneak speed, including while you stand still, and can apply auto-step. Riding, flying, and gliding turn it off.
+
+Personal controls: Automatic step up (on/off); Automatic step down (on/off); Soul particles (on/off); Maximum stealth speed (full/half/quarter).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -85,6 +91,8 @@ Sneaking or crawling on the ground in survival or adventure raises sneak speed, 
 
 While you sneak, nearby drops you could pick up by hand move into your inventory on a repeating pulse; a full inventory is skipped and stacks are not converted. Each pulse inspects at most 128 entities, takes at most 32 items, and holds a pulled item for 5000 ms so it is not pulled twice.
 
+Personal controls: Collection control (While sneaking/Automatic collection); Collected items (All eligible items/Blocks only/Food only). Automatic collection stays armed until its mode or Enabled control is changed.
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `snatchRate` | `250` | Milliseconds between repeat snatch pulses while the player stays sneaking. |
@@ -109,6 +117,8 @@ While you are alive and not being hit, a bonus armor buffer refills; the next hi
 
 While you sneak you gain Night Vision, incoming Blindness is refused, and invisible players get a private outline; standing up removes all three, including only the Night Vision this adaptation applied. Outlines use a 1500 ms lease refreshed about every 500 ms, range is the server view distance clamped to 16-160 blocks, each pass inspects at most 128 players, and there are no adaptation-specific config keys.
 
+Personal controls: Night vision (on/off); Prevent blindness (on/off); Invisible player outlines (on/off).
+
 ### Enderveil (`stealth-enderveil`)
 
 2 levels · 4 knowledge, then 6 per level
@@ -119,7 +129,9 @@ Endermen cannot target you while you sneak at level 1, and cannot target you at 
 
 5 levels · 4 knowledge
 
-Stopping a sneak leaves a copy of you that nearby hunters retarget, while you stay invisible with equipment hidden for the decoy's life. Damage to the decoy is cancelled, Adapt area and chain attacks skip decoys even when passive-mob protection is off, no decoy spawns while you carry `adapt-mutation-exposed`, and aggro redirection skips your tamed pets and other friendlies.
+Stopping a sneak leaves a copy of you that nearby hunters retarget, while you stay invisible with equipment hidden for the decoy's life. Damage to the decoy is cancelled, Adapt area and chain attacks skip decoys even when passive-mob protection is off, and aggro redirection skips your tamed pets and other friendlies.
+
+Personal controls: Decoy gesture (Release sneak/Double sneak/Empty-hand right-click then release sneak). Armed release requires an empty-main-hand right-click in air while sneaking, followed by releasing sneak. Double sneak uses a 350 ms window. When an existing decoy can be swapped by double sneak, that gesture takes priority and does not replace the decoy.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -158,6 +170,8 @@ Stopping a sneak leaves a copy of you that nearby hunters retarget, while you st
 
 After you keep sneaking while Stealth reports you undetected, you turn invisible and mobs cannot target you. Attacking, taking damage, interacting, being spotted, or standing up breaks it, and Invisibility remains only while a Smoke Pellet cloud still covers you.
 
+Personal controls: Meld activation (Eligible sneaking/Double sneak to arm). Double sneak means two presses within 350 ms; ordinary concealment and stillness requirements still apply.
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `meldDelayStartMillis` | `3000` | Milliseconds of unbroken eligible sneaking before melding, at level 1. |
@@ -169,6 +183,8 @@ After you keep sneaking while Stealth reports you undetected, you turn invisible
 3 levels · 4 knowledge
 
 Sneak while holding gunpowder in either hand to spend one and throw a cloud along your aim; it stops at the first block or living entity. Living entities inside go blind, players inside turn invisible with a concealment lease that lasts a couple of seconds past each pulse, mobs drop their target, and while the lease holds mobs within 64 blocks cannot reacquire a concealed player, including an angry warden.
+
+Personal controls: Gunpowder hand (Either hand/Main hand/Off hand); Smoke gesture (Single sneak/Double sneak); Gunpowder reserve in selected hand (No reserve/Keep 1 gunpowder/Keep 4 gunpowder). Double sneak means two presses within 350 ms. The reserve is the minimum gunpowder left in the selected hand after spending.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -187,6 +203,8 @@ Sneak while holding gunpowder in either hand to spend one and throw a cloud alon
 
 An undetected direct melee hit on a pillager, vindicator, piglin, or piglin brute can roll that mob's own loot table into your inventory, or onto the ground if you are full. The mob survives, spawn method does not matter, only a non-empty result counts, and the mob is stamped `cutpurse_picked` so it cannot be picked again.
 
+Personal controls: Eligible targets (All eligible mobs/Illagers/Piglins).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `stealChanceBase` | `0.25` | Chance per qualifying hit that a steal is attempted, 0-1, before level scaling. |
@@ -204,6 +222,8 @@ An undetected direct melee hit on a pillager, vindicator, piglin, or piglin brut
 
 While you sneak, nearby `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`, `CALIBRATED_SCULK_SENSOR`, `SCULK_SHRIEKER`, and any `*_PRESSURE_PLATE` are outlined for you only, at most 96 markers per scan: sculk RGB `40, 220, 210`, tripwire and hooks RGB `255, 220, 45`, everything else RGB `255, 70, 70`. Below max level, sneaking can suppress movement vibrations (`STEP`, `SWIM`, `FLAP`, `HIT_GROUND`, `ELYTRA_GLIDE`, `SPLASH`, `BOUNCE` where present, `TELEPORT`, `ENTITY_MOUNT`, `ENTITY_DISMOUNT`); at max level every movement vibration is suppressed even while not sneaking, and the block that would have heard you is outlined.
 
+Personal controls: Private trap outlines (on/off); Trapped chests (on/off); Tripwires (on/off); Pressure plates (on/off); Sculk traps (on/off). Filters and the outline switch affect sensing only. Earned sculk movement protection remains active while the adaptation is enabled.
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `rangeBase` | `4.0` | Trap reveal radius in blocks, before level scaling. |
@@ -216,6 +236,8 @@ While you sneak, nearby `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SEN
 4 levels · 6 knowledge
 
 An undetected melee hit on a mob whose max health is within the cap deals exactly that mob's current health, so it dies with no overkill. Players, wardens, and mobs that implement the boss interface are excluded.
+
+Personal controls: Require sneaking (on/off); Eligible targets (All eligible mobs/Hostile monsters/Animals).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -230,6 +252,8 @@ An undetected melee hit on a mob whose max health is within the cap deals exactl
 3 levels · 4 knowledge
 
 Requires Shadow Decoy: while your decoy is alive and in range, a sneak double-tap swaps your position with it. The swap is refused in another world or out of range, and a failure puts the decoy back with no cooldown or XP cost.
+
+Personal controls: Swap gesture (Double sneak/Sneak and swap hands). The alternate gesture is sneak plus swap hands. Double sneak reserves an existing decoy from Shadow Decoy’s release or double-sneak creation; creating a new decoy never swaps it in the same input event.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

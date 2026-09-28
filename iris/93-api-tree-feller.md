@@ -2,7 +2,7 @@
 title: "API - Tree Feller"
 description: "Iris documentation: API - Tree Feller"
 published: true
-date: 2026-08-24T00:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,7 @@ The number `20` is the percent chance that a removed log costs no durability.
 
 ## Custom cost
 
-Implement `TreeFellerRunHooks` when each log should consume stamina, mana, or another resource:
+Implement `TreeFellerRunHooks` when each log should consume stamina, mana, or another resource. `requiresSneaking()` defaults to true; return false for an integration-owned latched run. Initial activation still requires sneaking, and held-slot changes, hand swaps, disconnects, world changes, tool validity, protection, and costs remain mandatory. Returning false changes only continued sneak input; the integration must provide a deliberate cancellation gesture:
 
 ```java
 void onActivationAccepted();

@@ -2,12 +2,33 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Discovery awards XP once for each new block state, item, food, recipe, enchantment, entity, player, effect, biome, dimension, and world, scans the targeted block, and mirrors collected vanilla experience into Discovery XP. Its 14 adaptations add block and entity details, structure guidance, chest detection, archaeology loot, armor, damage resistance, villager discounts, and faster mending.
+
+## Player controls
+
+Every adaptation has an Enabled control in its level screen. These controls change only your player data; the server controls permitted values, defaults and locks. Personal settings never bypass learned levels, permissions, costs, cooldowns or server limits.
+
+| Adaptation | Additional controls |
+|---|---|
+| Better Mending (`discovery-better-mending`) | `xp-reserve`: XP point reserve; `repair-limit`: Maximum repaired durability |
+| Cartographer Pulse (`discovery-cartographer-pulse`) | `structures`: Structure categories; `color`: Marker color; `direction-line`: Private direction line |
+| Experimental Resistance (`discovery-xp-resist`) | `xp-reserve`: XP level reserve |
+| Field Notes (`discovery-field-notes`) | `species-damage`: Species damage bonus |
+| Insight (`discovery-insight`) | `full-details`: Full overlay details; `players`: Player targets; `hostile`: Hostile targets; `passive`: Passive targets |
+| Keen Eye (`discovery-keen-eye`) | `color`: Marker color; `chests`: Chest markers; `spawners`: Spawner markers; `range`: Marker range |
+| Relic Appraiser (`discovery-relic-appraiser`) | `confirmation`: Confirm rare item appraisal; `discs`: Music discs; `heads`: Heads; `trims`: Armor trims; `sherds`: Pottery sherds |
+| Sixth Sense (`discovery-sixth-sense`) | `structures`: Structure categories; `hud`: Structure HUD; `full-details`: Full structure details; `cue-frequency`: Cue frequency |
+| Trailblazer (`discovery-trailblazer`) | `speed-burst`: Discovery speed burst |
+| Villager Attraction (`discovery-villager-att`) | `xp-reserve`: XP level reserve |
+
+XP reserve choices retain 0, 5 or 10 points for Better Mending and levels for Resistance or villager benefits. Better Mending can stop at 100%, 50% or 25% durability. Marker colors offer default, aqua, gold and purple. Structure selection uses the server-permitted default, jigsaw-structure, mineshaft, monument, stronghold, fortress or End-city category; range and search limits remain unchanged. Compact Insight shows the species line, while compact Sixth Sense shows direction and distance. Lower cue frequency extends the existing interval. Disabling continuous displays removes that player’s markers or HUD; Polymath removes only its own XP multiplier grants.
+
+Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

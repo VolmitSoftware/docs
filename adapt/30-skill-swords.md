@@ -2,13 +2,29 @@
 title: "Skill - Swords"
 description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 Adaptations add dual-wield bonuses, low-health damage, counters, attack-speed chains, lunges, area attacks, poison, bleeding, slowing, absorption, duel bonuses, foliage clearing, temporary sharpening, and a named sword that gains damage from kills.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Bloody Blade, Poisoned Blade | Affect all permitted targets, hostile mobs, or non-player targets. |
+| Crimson Cyclone | Require sneaking during the critical hit; ignore passive secondary targets; toggle bleed particles. |
+| Duelist's Focus | Toggle the focused attacker's glow separately from combat bonuses. |
+| Heirloom Edge | Grow all renamed swords or only diamond, netherite, or both. Existing banked item bonuses and records remain on the item. |
+| Lunge Strike | Require an airborne sprint attack. |
+| Machete | Require sneaking; cut all supported foliage, leaves, grass/ferns, or vines. |
+| Whetstone Ritual | Keep 0%, 25%, or 50% durability and 0, 5, 10, or 30 experience levels after the full ritual cost. |
+
+Blade Flow, Crescent Guard, Dual Wield, Executioner's Edge, Hamstring, and Riposte Window have the enable switch. Reserve checks reject the entire ritual before either resource is spent.
 
 ## Adaptations
 

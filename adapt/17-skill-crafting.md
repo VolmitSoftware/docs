@@ -2,12 +2,30 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Crafting gains XP from crafted output and nearby furnaces, scaled by material value, and both paths use cooldowns. Its 14 adaptations add recipes, salvage, bulk crafting, portable workstations, a bound compactor, backpacks, material refunds, equipment improvements, and food bonuses, five of which are permanent by default.
+
+## Player controls
+
+Every adaptation has an Enabled control in its level screen. These controls change only your player data; the server controls permitted values, defaults and locks. Personal settings never bypass learned levels, permissions, costs, cooldowns or server limits.
+
+| Adaptation | Additional controls |
+|---|---|
+| A Boutilier's Backpacks! (`crafting-backpacks`) | `storage`: New backpack storage; `mode-switch`: Allow storage mode switching |
+| Artisan's Signature (`crafting-signature`) | `signature-lore`: Visible signature lore |
+| Bulk Artisan (`crafting-bulk-artisan`) | `materials`: Allowed material categories; `batch-limit`: Extra batch limit; `ingredient-reserve`: Ingredient reserve |
+| Compactor (`crafting-compactor`) | `materials`: Allowed material categories; `batch-limit`: Compaction batch limit; `loose-reserve`: Loose ingredient reserve |
+| Deconstruction (`crafting-deconstruction`) | `materials`: Allowed material categories; `confirmation`: Confirm named or enchanted salvage |
+| Masterwork (`crafting-masterwork`) | `durability`: Durability bonus; `enchantments`: Enchantment bonus; `attributes`: Attribute bonus |
+| Portable Tables! (`crafting-stations`) | `sneak`: Require sneak to open; `workbench`: Crafting table; `grindstone`: Grindstone; `anvil`: Anvil; `stonecutter`: Stonecutter; `cartography`: Cartography table; `loom`: Loom |
+
+Material filters select supported result or ingredient categories; they never enable a new recipe. Batch limits apply only to bonus production. Ingredient reserves keep 0, 8 or 32 matching items; Compactor leaves that loose reserve before compressing. Masterwork opt-outs suppress the selected bonus without another roll. Backpack preferences apply to newly crafted bags; existing bags retain their storage and contents, and mode conversion still requires an empty bag. Disabling Backpacks closes and saves its open container. Confirmations require repeating the same action on the same items within five seconds.
+
+Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

@@ -2,7 +2,7 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-09-28T10:36:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Nether gains XP from wither damage, damaging or killing the Wither, killing wither skeletons, and breaking wither roses. Its 14 adaptations add fire, ghast, wither, and magma protection, lava and soul-sand movement, strider control, netherrack mining, piglin barter bonuses, Nether foods, wither loot, fire-based recovery, and thrown wither skulls, and many of those actions pay XP of their own.
 
 ## Adaptations
+
+Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
 
 Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson Feast run only in a Nether-environment world. Every other adaptation works in any dimension.
 
@@ -29,6 +31,8 @@ Each worn netherite piece adds `basePieceChance + chanceAddition * level` percen
 3 levels · 5 knowledge, then 10 per level
 
 A right-click with a wither skeleton skull in the main hand fires an uncharged, non-bouncing wither skull along the aim, shows the cooldown on that item, consumes the skull except in Creative, never places the skull, and pays 100 Nether XP. A kill from 40 or more blocks completes a hidden challenge, and neutral mobs stay out of the explosion even when provoked if `ignore passiveMobs` is true.
+
+Personal controls: Require sneak to throw (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -52,6 +56,8 @@ Each burn tick is cancelled with chance `fireResistBase + fireResistFactor * lev
 5 levels · 4 knowledge
 
 Walking into lava moves the player along the look direction, cancels fall distance, and extinguishes fire. An empty food bar, flight, gliding, or riding blocks the stride.
+
+Personal controls: Sneak to drop through (on/off); Food reserve (No reserve/Keep 4 food/Keep 8 food).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -133,6 +139,8 @@ When a piglin barter resolves, the nearest player with this adaptation inside ra
 
 Soul sand and soul soil no longer slow movement in any dimension, and a speed bonus is applied. The soul-speed burst fires only at max level.
 
+Personal controls: Soul-surface slow immunity (on/off); Mastery speed burst (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `strideSpeedBase` | `0.20` | Reference stride speed. The movement speed bonus is `(levelPercent * factor) / base`. |
@@ -150,6 +158,8 @@ Soul sand and soul soil no longer slow movement in any dimension, and a speed bo
 
 While the player is on fire, a melee attacker is ignited, and this player's melee hits deal bonus damage and ignite the target.
 
+Personal controls: Burning retaliation (on/off); Ignite struck targets (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `reflectFireTicksBase` | `40` | Ticks an attacker is set alight at level 0. |
@@ -166,6 +176,8 @@ While the player is on fire, a melee attacker is ignited, and this player's mele
 4 levels · 3 knowledge
 
 Mining `NETHERRACK`, `BASALT`, `POLISHED_BASALT`, `SMOOTH_BASALT`, `BLACKSTONE`, `POLISHED_BLACKSTONE`, `GILDED_BLACKSTONE`, `CHISELED_POLISHED_BLACKSTONE`, `POLISHED_BLACKSTONE_BRICKS`, or `CRACKED_POLISHED_BLACKSTONE_BRICKS` applies `BLOCK_BREAK_SPEED` at `0.20 * tier`, not Haste.
+
+Personal controls: Mining assistance (on/off); Bonus drops (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -186,6 +198,8 @@ Mining `NETHERRACK`, `BASALT`, `POLISHED_BASALT`, `SMOOTH_BASALT`, `BLACKSTONE`,
 
 The ridden strider stops shivering and gains speed `0.2 * (amplifier + 1)` on the strider itself, including outside lava. From `safetyUnlockLevel` upward, a dismount over lava teleports the rider to safe ground, including while still airborne above the strider, only if the adaptation remains learned and enabled, the dismount was not cancelled, the rider stays unmounted, and solid ground does not already separate the rider from the lava; on Folia the search uses only ground owned by the rider's region, and the first rescue completes a hidden challenge.
 
+Personal controls: Mounted speed (on/off); Dismount protection (on/off).
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `striderSpeedAmplifierBase` | `0` | Speed amplifier at level 0. |
@@ -204,6 +218,8 @@ The ridden strider stops shivering and gains speed `0.2 * (amplifier + 1)` on th
 4 levels · 3 knowledge, then 2 per level
 
 A right-click eats `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOTS`, `NETHER_SPROUTS`, `WEEPING_VINES`, or `TWISTING_VINES` in any dimension; a full hunger bar requires sneak. Any other food eaten in a Nether-environment world grants Fire Resistance.
+
+Personal controls: Require sneak to eat flora (on/off); Nether meal protection (on/off).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
