@@ -120,6 +120,21 @@ Back up the complete dimension directory, including `iris/generation`. Do not ed
 
 `level-name` in `server.properties` selects the save root. Include the registration files when backing up your server, and stop the server before restoring world files.
 
+## When an Iris world cannot load
+
+Iris never hands an Iris world to another generator. If a world's saved history, pack snapshot, or storage cannot be used, Iris refuses to generate it and prints a framed error that names the world, the cause, and the fix. No chunks are written to that world.
+
+| Situation | Result |
+|---|---|
+| A startup world on Paper-family servers (`world`, `world_nether`, `world_the_end`, or an Iris world listed in `bukkit.yml`) | Server startup stops before the world loads |
+| A world created or loaded while the server runs (`/iris create`, `/mv load`, another plugin) | The world does not load, the error is logged, and the server keeps running |
+| Iris fails to enable while Iris worlds exist | Iris stays enabled but locked. Iris worlds are refused and logins are denied until the cause is fixed |
+| An Iris dimension on Fabric, Forge, or NeoForge | The dimension is not loaded. If it is the primary world, logins are refused. Operators see the refusal when they join |
+
+A `bukkit.yml` entry with `generator: Iris` for a world that has no Iris storage also stops startup. To turn an existing vanilla world into an Iris world, remove that entry, start the server, and use `/iris replace`. If the refused start left an empty `level.dat` behind, the error says to delete it first.
+
+Saved biome definitions are re-rendered for the running Minecraft version on every start, so Iris and Minecraft updates do not invalidate existing worlds.
+
 ## Exact world-slot replacement
 
 On Paper, Purpur, Leaf, or Folia, use `/iris replace` to replace an existing Iris world or a vanilla dimension:
