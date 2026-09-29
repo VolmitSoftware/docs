@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-26T07:00:00.000Z
+date: 2026-09-29T05:57:07.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,10 +19,10 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 |---|---|
 | Java | 25 |
 | Minecraft (plugin) | 26.1.2, 26.2 and 26.3; one plugin jar supports all three |
-| Minecraft (mod) | 26.2 only |
-| Fabric Loader | 0.19.3+ |
-| Forge | 65.x |
-| NeoForge | 26.2.x |
+| Minecraft (mod) | 26.3 only |
+| Fabric Loader | 0.19.5+ |
+| Forge | 66.x |
+| NeoForge | 26.3.x |
 | Network | Outbound HTTP or HTTPS for pack downloads, external datapack downloads and fresh Bukkit library downloads. Retain `plugins/Iris/cache/libraries/` for offline restarts; upgrades may require new downloads. Mod jars include their required libraries |
 
 Before you replace an existing installation:
@@ -109,12 +109,12 @@ Create your first world with [02 - Getting Started](/iris/02-getting-started).
 
 1. Drop the matching mod jar into `mods/`.
 2. Start the dedicated server, or a client if you want singleplayer.
-3. Required libraries are included in the mod jar. Do not add the Bukkit plugin jar.
+3. Required libraries for creating and reopening Iris worlds are included in the mod jar; no separate library mods are needed. Do not add the Bukkit plugin jar.
 4. Install a pack with `/iris download`. Put any external datapacks required by a custom pack in the save's `datapacks/` directory, then restart before opening the world. `/iris datapack ingest` is Bukkit-only. The built-in Overworld and Underworld need no external datapacks.
 
-### Youer 26.2
+### Youer
 
-Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. The accepted 26.2 runtime is the official Youer build at commit `4eb14c90`, which bundles NeoForge 26.2.0.67.
+Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. The NeoForge jar targets Minecraft 26.3, so Youer needs a NeoForge 26.3 build. The 26.2 Youer build at commit `4eb14c90` (NeoForge 26.2.0.67) cannot load it.
 
 Validate the installed packs:
 

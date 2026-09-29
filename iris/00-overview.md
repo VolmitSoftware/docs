@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-29T05:57:07.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,12 +32,12 @@ One plugin jar covers the Bukkit family. Each mod loader has its own jar.
 
 | Platform | Artifact | Minecraft | What is different |
 |---|---|---|---|
-| Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.2 | Nothing. This is the reference plugin target |
-| Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.2 | Managed `iris:*` creation and generation. Exact vanilla-slot `/iris replace` is unavailable |
-| Folia | plugin jar | 26.1.2 – 26.2 | `/iris create` creates managed worlds without a restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
-| Fabric | mod jar | 26.2 | Server worldgen plus an optional client HUD. Requires Fabric Loader 0.19.3+ and Java 25 |
-| Forge | mod jar | 26.2 | Same. Forge 65.x |
-| NeoForge | mod jar | 26.2 | Same. NeoForge 26.2.x |
+| Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.3 | Nothing. This is the reference plugin target |
+| Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.3 | Managed `iris:*` creation and generation. Exact vanilla-slot `/iris replace` is unavailable |
+| Folia | plugin jar | 26.1.2 – 26.3 | `/iris create` creates managed worlds without a restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Fabric | mod jar | 26.3 | Server worldgen plus an optional client HUD. Requires Fabric Loader 0.19.5+ and Java 25 |
+| Forge | mod jar | 26.3 | Same. Forge 66.x |
+| NeoForge | mod jar | 26.3 | Same. NeoForge 26.3.x |
 
 Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree felling uses `iris.treefeller`.
 
