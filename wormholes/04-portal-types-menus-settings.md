@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T17:52:41.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -226,6 +226,8 @@ not these buttons.
 
 Active portal surfaces do not emit repeating portal or lava ambience. Projection synchronization is silent. Deliberate open, close, and traversal effects retain their sounds.
 
+Rune construction draws the consumed blocks inward before the opening burst. A selection-built aperture plays an inward particle spiral followed by the burst. A portal gaining a valid destination plays its opening effect; unlinking plays a cracking glass pane and shards. These effects also run on Fabric, Forge, and NeoForge. `[main] enable-particles = false` suppresses effect displays and particles; sound is controlled separately by `portal-sound-volume-multiplier` and the RTP portal's sound setting.
+
 | Ambient style | Icon material (menu) |
 |---------------|----------------------|
 | `SPARKS` | Firework star |
@@ -238,3 +240,13 @@ color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
 Blackout places a concrete-colored background at the far boundary of the projected view, along the padded outer edge, only where the whole block stays clear of the opening. Opaque destination blocks stay as they are. An opaque surface skin blocks projection.
+
+## Nexus networks and dialing
+
+Select More settings, then **Network**, to create or join a named network. Members have unique addresses, optional public visibility, a topology, and a hub. Managers can change addresses, link reciprocal portals, choose routing policies, and configure redstone controls. Players with travel access can open the paged dial menu by sneaking and using an empty main hand on the portal. Sneaking while changing hotbar slots cycles the destination.
+
+Manual dialing changes the projected destination and observes the network's dial cooldown. A sticky dial remains selected; an expiring dial returns to the hub when its timer ends. Per-player, weighted, scheduled, and return routing choose from the configured destination entries; per-traveler routes do not replace the portal's projected link. Return routing remembers the portal a traveler actually used.
+
+A destination entry identifies a local portal UUID, a network address, or a remote server and portal. Entries can carry a weight, a time window, and a label. Configure policies and explicit entries with the Nexus portal commands in [Commands & Permissions](/wormholes/09-commands-permissions).
+
+Redstone controls use a block offset from the aperture center. A rising edge can open, close, or lock travel, or dial the next or previous member. Comparator output can report portal state or traversal count; select the action and output from the Nexus menu or use the `wire` command.

@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -222,3 +222,50 @@ Styles are schema 5. Changes apply live; an invalid file is logged and the last 
 stays active. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 See also [Damage Indicators](/gloss/08b-damage-indicators) and [Drop Labels](/gloss/08c-drop-labels).
+
+## Chat channels and mentions
+
+Enable `channels = true` under `[features]` in `gloss.toml` to use Gloss chat formatting and mentions. The switch applies on config reload, including when enabling channels after startup. Channel documents use schema 1 under `channels/<id>.json`. Open the global channel with `/gloss web edit channel global` and choose **Mentions** to edit its enabled switch, highlighted message format, tagged-name style, and sound.
+
+Type `@Alex` to mention the online player whose account name is Alex. Matching is case-insensitive and uses the whole name. The tagged recipient sees the highlighted message and hears one notification sound; other recipients see the ordinary channel format. Repeating the same mention in one message does not play multiple sounds. Only recipients allowed to hear the channel receive the notification.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "show": "true",
+  "channel": { "name": "global", "default": true, "scope": "global", "permission": "" },
+  "format": "{{ sender.name }}&7: {{ message }}",
+  "mentions": {
+    "enabled": true,
+    "pattern": "@{name}",
+    "render": "<gold><bold>@{{ mention.name }}</bold></gold>",
+    "messageFormat": "<yellow>{{ sender.name }}: {{ message }}</yellow>",
+    "sound": "minecraft:block.note_block.bell",
+    "permission": "gloss.chat.mention"
+  }
+}
+```
+
+| Mention field | Meaning |
+|---|---|
+| `enabled` | Boolean; `false` disables mention highlighting and sound for this channel. Defaults to `true` |
+| `pattern` | Literal pattern containing exactly one `{name}` token; defaults to `@{name}` |
+| `render` | Style of the matched token. `mention.name` includes the recipient's selected nametag; `mention.username` is the typed account name |
+| `messageFormat` | Complete message format used only for the tagged recipient. Supports `sender`, `viewer`, `channel`, `message`, and `card` like the ordinary format |
+| `sound` | Minecraft sound key; defaults to `minecraft:block.note_block.bell`. An empty string makes mentions silent |
+| `permission` | Permission the sender needs to notify someone; defaults to `gloss.chat.mention`, granted to players by default |
+
+The enabled switch affects both the highlighted token and the full highlighted message. Typing a nametag prefix is not required: mentions still use the account name. Player-authored message text stays literal and cannot inject template expressions or MiniMessage tags.
+
+### Channel fields
+
+`channel.name` and up to eight `aliases` identify the channel. Names use lowercase letters, digits, underscores, and hyphens, starting with a letter or digit, up to 32 characters. `channel.default` makes a channel eligible for ordinary chat. `channel.priority` chooses among eligible default channels and clamps to `-1000` through `1000`.
+
+`channel.scope` accepts `global`, `world`, `radius`, `permission`, or `direct`. Radius channels require a positive `channel.radius`, up to 512 blocks. A permission channel requires `channel.permission`; a blank permission on other scopes imposes no additional permission gate. `channel.cooldownTicks` adds a sender cooldown from 0 through 72000 ticks.
+
+`format` is the ordinary message template. `card` contains up to 16 hover-text lines, inserted with `{{ card }}`. Up to 32 `variants`, each with `id`, `priority`, `when`, and `format`, choose the ordinary format by condition. `mentions.messageFormat` controls the tagged recipient's message independently.
+
+`items` has `enabled`, `token` (default `[item]`), and `permission` (default `gloss.chat.item`). `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. `filters` contains up to 64 regular-expression `match` and `replace` entries. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
+
+Use `/ch list` and `/ch <channel>` to choose a channel, `/msg <player> <message>` for direct messages, and `/r <message>` to reply.

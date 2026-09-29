@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-28T12:01:47.863Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,7 +64,7 @@ Personal controls: Confirm binding (on/off); Confirm unbinding (on/off); Channel
 
 5 levels · 1 knowledge, then 7 per level
 
-In Manual mode, a second mid-air jump in Survival blinks along your look direction without consuming a pearl. Use the controls at the bottom of Blink's level screen to choose how it works. Your choices affect only your player and remain saved when you change learned levels.
+In Manual mode, a second mid-air jump in Survival blinks along your chosen direction without consuming a pearl. Use the controls at the bottom of Blink's level screen to choose how it works. Your choices affect only your player and remain saved when you change learned levels.
 
 | Control | Choices | Default / unlock |
 |---|---|---|
@@ -74,17 +74,20 @@ In Manual mode, a second mid-air jump in Survival blinks along your look directi
 | Landing snap | Server depth / At most 2 blocks / Keep aimed height | Server depth |
 | Exit momentum | Full / Half / Stop | Full server momentum |
 | Activation | Manual / Reactive | Manual; Reactive unlocks at level 2 |
-| Reactive direction | Look direction / Away from attacker | Look direction; shown only at level 2+ in Reactive mode |
+| Blink Direction | Look direction / Movement direction | Look direction, level 1; shown only in Manual mode |
+| Reactive direction | Look direction / Movement direction / Away from attacker | Look direction; shown only at level 2+ in Reactive mode |
 
-Hold sneak uses the normal obstacle-stopping blink unless you are sneaking. Aim only permits phasing along your look direction without holding sneak. Never always stops at obstacles. The server's `allowPhasing` setting overrides all phase choices.
+Movement direction follows your current motion, including vertical movement, and falls back to where you look when stationary. Movement speed does not increase Blink range. This direction choice is separate from Exit momentum, which controls the impulse after landing.
 
-Automatic phasing chooses mantle behavior when aiming upward with a vertical direction component greater than 0.2, and phase behavior when aiming level or downward. Server phasing restrictions still apply. Landing snap can reduce the downward search or retain the aimed height; exit momentum can reduce or remove the server impulse.
+Hold sneak uses the normal obstacle-stopping blink unless you are sneaking. Aim only permits phasing along your chosen direction without holding sneak. Never always stops at obstacles. The server's `allowPhasing` setting overrides all phase choices.
+
+Automatic phasing chooses mantle behavior when the chosen direction points upward with a vertical component greater than 0.2, and phase behavior when it points level or downward. Server phasing restrictions still apply. Landing snap can reduce the downward search or retain the aimed height; exit momentum can reduce or remove the server impulse.
 
 Manual Blink takes priority over Instant Recall’s double-jump gesture while both are eligible; choosing Reactive Blink releases that gesture to Instant Recall.
 
 Distance chooses the farthest usable landing along the chosen direction, with normal mantling onto a hit ledge when phasing is off. Verticality prefers higher usable landings near that line, within `verticalSearchHeight` and the same total range; ties prefer distance. With phasing off, raised landings must have a clear line of sight. Open-air landings can still leave you falling. Only loaded destinations available to the current region are considered.
 
-Reactive replaces double-jump activation. A direct melee, sweep, or projectile hit triggers a blink when ready. The default direction is where you are looking; Away from attacker moves horizontally away from the attack source and falls back to look direction when that source is unavailable. Environmental damage, thorns, and Blink's own pearl damage do not trigger a reaction.
+Reactive replaces double-jump activation. A direct melee, sweep, or projectile hit triggers a blink when ready. The default direction is where you are looking. Movement direction follows your current motion, with the same stationary fallback as Manual mode. Away from attacker moves horizontally away from the attack source and falls back to look direction when that source is unavailable. Environmental damage, thorns, and Blink's own pearl damage do not trigger a reaction.
 
 A successful reactive blink avoids the triggering attack and pays normal Blink self-damage. If no usable destination exists or the teleport is refused, the attack still hurts you. Manual and Reactive share a cooldown; changing a preference does not reset it. Further hits while a teleport is pending are not automatically dodged. Resetting or transferring player progression while a reactive teleport is pending does not erase its damage or cost.
 

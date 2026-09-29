@@ -2,15 +2,16 @@
 title: "Localization"
 description: "Editable locales and English fallbacks"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T17:52:41.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes' server default is the `language` key in `plugins/Wormholes/wormholes.toml`, with
-`language-fallbacks` as a comma-separated list tried before built-in English. Its own permission
-node is `wormholes.language.self`.
+Wormholes' server default is the `language` key in `wormholes.toml`, with
+`language-fallbacks` as a comma-separated list tried before built-in English. The data folder is
+`plugins/Wormholes` on Bukkit and `config/wormholes` on Fabric, Forge, and NeoForge. Personal selection
+uses `wormholes.language.self`.
 
 See [Languages](/languages) for the picker, permissions, the full locale list, fallback rules, and how to edit or translate messages.
 

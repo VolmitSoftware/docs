@@ -2,7 +2,7 @@
 title: "Local servers"
 description: "Consumers, instances, runtime settings, backups, and workspace checks"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-09-28T00:00:00.000Z
 tags: "servermultiplexor"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -93,7 +93,7 @@ Startup keeps an available configured port unless another running instance reser
 
 | Command | Behavior |
 |---------|--------------|
-| `runtime watch [--once]` | Open the [live monitor](/servermultiplexor/02-dashboard) with fleet charts, clickable actions, and wizard flows through cards or `n` / `b` / `c`. `--once` prints one colorless, escape-free frame to stdout without requiring a TTY. |
+| `runtime watch [--once]` | Open the [live monitor](/servermultiplexor/02-dashboard) with fleet charts, clickable actions, and wizard flows through cards or `n` / `b`; all four consumer groups appear together. `--once` prints one colorless, escape-free frame to stdout without requiring a TTY. |
 | `runtime start [instance] [--no-console]` | Safely sync dropins and start the instance, then open its console unless `--no-console`: tmux on macOS/Linux, a native terminal view on Windows. Locally modified instance jars are preserved with a warning. |
 | `runtime stop [instance] [--graceful\|--force]` | Send `stop` to game servers or `end` to Velocity, allowing up to five seconds before forcing termination. Commands use tmux on macOS/Linux, or RCON/native host control on Windows. `--graceful` is the default; `--force` skips the wait. Restart, delete, and reset use the same five-second stop policy. |
 | `runtime restart [instance] [--no-console]` | Stop and start again, then open its console unless `--no-console`. |

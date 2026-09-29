@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T13:59:31.418Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ aperture. It can show destination blocks, supported entities, and optional
 lighting without moving the player. Traversal is a separate system.
 
 Per-portal mode and render mode combine with global `[projection]` and
-`[render]` keys in `plugins/Wormholes/wormholes.toml` (schema 3).
+`[render]` keys in `wormholes.toml` (schema 3), under `plugins/Wormholes/` on Bukkit or `config/wormholes/` on native loaders.
 
 Projection is one player's client view through the aperture. It does not move blocks or players. A destination change retires the current view. Player reflections use the skin the server has, and a local mirror refreshes when that skin changes.
 
@@ -97,7 +97,7 @@ Venticular hides a projected entity only when it is fully blocked. PanOptic keep
 
 Top-level `quality` in `wormholes.toml`: `auto`, `performance`, `balanced`, or
 `cinematic` (`VisualQualityProfile`). Defaults to `auto`. Profiles apply after
-the raw config values.
+the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another setting preserves the configured values; switching back to `auto` restores them.
 
 | Profile | Effect |
 |---------|--------|
@@ -172,7 +172,7 @@ sampled. Recursive sampling follows portals that are open and projecting. It
 masks cycles and non-traversable hits, and it does not turn a closed or
 unlinked portal into a view.
 
-Local tunnels sample the destination world directly on Paper. Folia captures
+Local tunnels sample the destination world directly on Paper and native loaders. Folia captures
 immutable chunk snapshots on the owning region. Active snapshots update entity
 motion at a 250 ms cadence and refresh metadata, equipment, and map contents
 every 500 ms. Block snapshots are reused until a tracked chunk change or a

@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin support and metrics"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T14:29:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,7 +12,7 @@ Every integration is optional. Placeholder keys are in [PlaceholderAPI](/wormhol
 
 ## Soft dependencies
 
-PlaceholderAPI, Iris, Vault, and Citizens are optional.
+These plugin integrations apply to the Bukkit distribution. PlaceholderAPI, Iris, Vault, and Citizens are optional. Native loader integrations register permission and currency providers through the [native API](/wormholes/20-api-getting-started).
 
 | Plugin | Role when present | When absent |
 |--------|-------------------|-------------|
@@ -67,3 +67,7 @@ React and other monitors can read Wormholes metrics through VolmLib without a di
 Wormholes uses bStats plugin ID **33193**. It reports `total_portals`, `portals_by_type`, `cross_server`, `wire_compression`, and `connected_peers`. Disable collection through the server-wide bStats configuration.
 
 
+
+## HTTP metrics and web maps
+
+The authenticated [metrics and snapshot endpoint](/wormholes/23-api-metrics-integration-contract) supports Bukkit, Fabric, Forge, and NeoForge. Dynmap, BlueMap, Pl3xMap, and squaremap marker integrations require their Bukkit plugins and apply to the Bukkit distribution.

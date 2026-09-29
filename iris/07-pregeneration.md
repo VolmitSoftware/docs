@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-27T18:56:56.015Z
+date: 2026-09-28T12:50:51.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,6 +42,8 @@ The command root also accepts `/iris pregenerate`.
 Status reports the world, completed and total chunks, progress, generation rate, elapsed time, estimated time remaining, and pause state. Failed chunks are reported separately when present. Check the final console summary for the completed and failed counts.
 
 Slow generation tasks produce a warning and continue waiting for their required terrain data. River planning errors are logged and retried while the job remains active. Chunks wait for complete river plans; exceeding a warning interval does not discard a chunk or omit its rivers, caves, or objects.
+
+A chunk generation error on a Paper-family server halts the server's chunk system, so the job aborts at once, reports the failing chunk, and counts its outstanding requests as failed instead of waiting for them. When the job is stopped or the server shuts down, requests that have not completed within 60 seconds are counted as failed and regenerate on the next run. Fix the reported error, then rerun the job.
 
 ## Pause, resume, or stop
 

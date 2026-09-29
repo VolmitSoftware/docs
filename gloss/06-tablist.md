@@ -2,7 +2,7 @@
 title: "Tablist"
 description: "Configure the in-game player list"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -81,11 +81,11 @@ restores the plain list name. The presentation returns when the condition become
 
 Gloss chooses the matching list-name variant with the highest priority; ties use the lexicographically smallest ID. If none match, it uses the base presentation. Conditions are documented in [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
-Once a template is picked, `$player` and `$group` are substituted literally. The result is then run through the full text pipeline (functions, PlaceholderAPI, emoji, colors) with the player as the resolution context.
+Once a template is picked, `$player` expands to the selected nametag identity and `$group` to the primary group. Use `{{ player.username }}` when the account name must appear without the nametag. The result is then run through the full text pipeline (functions, PlaceholderAPI, emoji, colors) with the player as the resolution context.
 
 | Token | Substituted with |
 |---|---|
-| `$player` | The player's name |
+| `$player` | The player's selected nametag identity, or the account name when no nametag applies |
 | `$group` | The player's current Vault primary group, or an empty string when unavailable. Vault is queried only when the selected format uses this token |
 
 A blank result restores the vanilla list name.

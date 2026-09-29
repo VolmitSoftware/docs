@@ -2,25 +2,34 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-29T05:42:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Edit `plugins/Wormholes/wormholes.toml`. Install `Wormholes-<version>-packed.jar` as the only Wormholes jar. A missing optional plugin disables only that integration.
+Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration.
 
 ## Requirements
 
 | | |
 |---|---|
-| Server | Paper, Purpur, or Folia. Minecraft 26.1.2, 26.2, and 26.3 |
+| Bukkit server | Paper, Purpur, or Folia. Minecraft 26.1.2, 26.2, and 26.3 |
+| Native server | Minecraft 26.3: Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta |
 | Java | 25 |
-| Jar | `Wormholes-<version>-packed.jar`. The `-api.jar` is a compile dependency, not a plugin |
+| Distribution | `Wormholes v<version> [CraftBukkit] 26.1.2-26.3.jar`, or the jar bearing your native loader name and version. The `-api.jar` is a Bukkit compile dependency |
 | JVM | `--enable-native-access=ALL-UNNAMED` lets zstd-jni load without a restricted-access warning |
 | Optional | PlaceholderAPI, Iris, Vault, Citizens, WorldGuard |
 
-An XZ packed jar extracts `plugins/Wormholes/cache/runtime/` on first start. That directory must be writable. The file must contain `schema = 3`. A valid save applies on its own. Invalid TOML is rejected and the current settings stay. WorldGuard, when present, checks RTP destinations. Edits to `languages/*.toml` apply on save. Dimensional Door pack changes need a restart. See [Dimensional Doors](/wormholes/07-dimensional-doors).
+An XZ packed jar extracts `plugins/Wormholes/cache/runtime/` on first start. That directory must be writable. PacketEvents is bundled in the Bukkit jar; no separate PacketEvents installation or download is required. Other runtime libraries still need a network on first start if their cache is empty. `wormholes.toml` must contain `schema = 3`. A valid save applies on its own. Invalid TOML is rejected and the current settings stay. WorldGuard, when present, checks RTP destinations. Edits to `languages/*.toml` apply on save. Dimensional Door pack changes need a restart. See [Dimensional Doors](/wormholes/07-dimensional-doors).
+
+Native loaders store the same settings, portal records, network identity, routes, trust, and language overrides under `config/wormholes/`. Reload native settings with `/wormholes reload`. Bukkit plugin integrations such as Vault and PlaceholderAPI require the Bukkit distribution. Native currency and permission integrations use the native registration APIs.
+
+## Build distributions
+
+Build with Java 25 from the repository root. `./gradlew buildAllToOut` creates the four distributions in the sibling `PluginOuts/` directory. Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Each export replaces older Wormholes jars for that platform.
+
+`./gradlew apiJar` creates the Bukkit compile dependency. Native integrations compile against their loader distribution; see [API](/wormholes/20-api-getting-started).
 
 ## Data folder layout
 
@@ -46,7 +55,7 @@ and trust under `routes/` and `trust/`. See
 
 | Property | Value |
 |----------|--------|
-| Path | `plugins/Wormholes/wormholes.toml` |
+| Path | Bukkit: `plugins/Wormholes/wormholes.toml`; native loaders: `config/wormholes/wormholes.toml` |
 | Schema | `schema = 3` |
 | Quality key | Top-level `quality` |
 | Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]` |
@@ -208,9 +217,9 @@ Cross-server networking. Default `enabled = false`. Import and export set
 | `entity-transfer-deny-types` | `""` | Comma-separated entity type names denied for entity transfer |
 | `advertise-host-override` | `""` | Raw peer host and default public game host |
 | `game-host-override` | `""` | Public game host. Blank uses the advertised host |
-| `game-port-override` | `0` | Public game port. Zero uses Bukkit game port. Set the external port for NAT mappings |
+| `game-port-override` | `0` | Public game port. Zero uses the server game port. Set the external port for NAT mappings |
 | `private-game-host-override` | `""` | Private game host. Blank uses a concrete game bind address, otherwise the detected LAN address |
-| `private-game-port-override` | `0` | Private game port. Zero uses Bukkit game port |
+| `private-game-port-override` | `0` | Private game port. Zero uses the server game port |
 | `server-name` | `""` | Local network name override (empty uses identity default) |
 | `transfer-mode` | `auto` | `auto` \| `proxy` \| `direct` (see networking doc) |
 | `proxy-servers` | `[]` | Destination names that use the proxy when transfer mode is `auto` |

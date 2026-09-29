@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T17:52:41.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 | `/wormholes language self <locale\|reset>` | `wormholes.language.self` and `volmit.language.self` | Select or reset your personal Wormholes language |
 | `/wormholes language server <locale>` | `wormholes.admin` or `volmit.language.admin` | Change the Wormholes server default |
 | `/wormholes language server edit [locale]` | `wormholes.admin` or `volmit.language.admin` | Open the per-language inventory message editor |
-| `/volmit plugins languages [lang]` | `volmit.language.admin` or every enabled plugin's server-language administration permission | Open the shared picker or change every enabled provider's server default |
+| `/volmit plugins languages [lang]` | `volmit.language.admin` or every enabled plugin's server-language administration permission | Bukkit only. Open the shared picker or change every enabled provider's server default |
 | `/wormholes info` | none | Show portal-building instructions |
 | `/wormholes wand [rune=true]` | `wormholes.admin.items` | Give a Portal Wand and, by default, a rune |
 | `/wormholes door [type=pair]` | `wormholes.admin.items` | Give a Dimensional Door |
@@ -87,3 +87,113 @@ See [Languages](/languages).
 Portal traversal uses `wormholes.portal.<key>`, whose stable key starts from the sanitized portal name. Renaming the portal preserves that key. With `[access] legacy-name-node-enabled = true`, the current name-derived node also acts as an alias. Without OP or the literal `*` permission, either matching grant blocks travel in `BLACKLIST` mode and permits it in `WHITELIST` mode. OP and `*` bypass portal access and direction restrictions. Source-side privilege also applies to that admitted gateway crossing. See [Portal access](/wormholes/04-portal-types-menus-settings#per-portal-permission-node).
 
 
+
+## Native Nexus commands
+
+Fabric, Forge, and NeoForge expose `/wormholes nexus` (also `/wh nexus`). These commands require a player. Portal managers can change their portals; network owners and configured network roles control membership and network settings.
+
+| Command | Purpose |
+|---|---|
+| `/wh nexus list` | List networks |
+| `/wh nexus create <name>` | Create a network |
+| `/wh nexus info <network>` | Show members and settings |
+| `/wh nexus delete <network>` | Delete a network |
+| `/wh nexus add <network> <portal> [address]` | Add a portal |
+| `/wh nexus remove <network> <portal>` | Remove a portal |
+| `/wh nexus address <portal> <address>` | Change a member address |
+| `/wh nexus visibility <network> <PUBLIC\|MEMBERS\|PRIVATE>` | Set network visibility |
+| `/wh nexus topology <network> <topology>` | Select topology |
+| `/wh nexus hub <network> <portal>` | Set the hub |
+| `/wh nexus role <network> <player-uuid> <role>` | Set a network role |
+| `/wh nexus cooldown <network> <group>` | Set the cooldown group |
+| `/wh nexus cost <network> <template>` | Set the default cost template |
+| `/wh nexus doctor` | Check network references |
+| `/wh nexus portal <portal> menu` | Open network management or dialing |
+| `/wh nexus portal <portal> dial <address>` | Dial a member |
+| `/wh nexus portal <portal> next` or `previous` | Cycle members |
+| `/wh nexus portal <portal> sticky <true\|false>` | Set sticky dialing |
+| `/wh nexus portal <portal> mode <mode>` | Set routing mode |
+| `/wh nexus portal <portal> selection <rule>` | Set entry selection rule |
+| `/wh nexus portal <portal> entry <kind> <target> [weight from to label]` | Add a routing entry |
+| `/wh nexus portal <portal> remove-entry <index>` | Remove an entry |
+| `/wh nexus portal <portal> clear` | Clear routing entries |
+| `/wh nexus portal <portal> pair <destination>` or `unpair <destination>` | Change reciprocal links |
+| `/wh nexus portal <portal> wire <x> <y> <z> <action> <output>` | Configure redstone offset and behavior |
+
+## Native mesh administration
+
+Fabric, Forge, and NeoForge support these commands with `wormholes.admin.network`:
+
+| Command | Purpose |
+|---|---|
+| `/wh network members` | List peers, connection state, and trusted fingerprints |
+| `/wh network pending` | List quarantined introductions |
+| `/wh network accept <server>` | Trust a pending introduction |
+| `/wh network reject <server>` | Remove a pending introduction |
+| `/wh network versions` | Compare peer protocol and version information |
+| `/wh network drain [on\|off]` | Read or change incoming handoff admission |
+| `/wh network policy <portal> [candidates] [strategy] [headroom] [tps] [queue]` | Set or clear gateway destination selection |
+
+Quote the comma-separated candidate argument: `/wh network policy gateway "alpha:lobby:2,beta:lobby:1" LEAST_LOADED 1 18 true`. Each candidate is `server:portal-uuid-or-tag[:weight]`. Strategies are `FIRST_AVAILABLE`, `LEAST_LOADED`, `ROUND_ROBIN`, `STICKY`, and `NEAREST`. Omit candidates to clear the policy. When every eligible destination is full and queueing is enabled, travelers wait at the gateway until capacity becomes available or the configured timeout expires. Draining, disconnected, closed, and stale destinations are filtered according to the policy thresholds.
+
+## Native operations
+
+Fabric, Forge, and NeoForge accept the following positional command arguments. Names and file paths
+containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address the same commands.
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/wh help` or `/wh info` | none | Show command usage or portal-building instructions |
+| `/wh version` | none | Show the installed version |
+| `/wh stats [now]` | `wormholes.admin` | Show the stats path; `true` writes a fresh snapshot |
+| `/wh admin freeze [seconds]` | `wormholes.admin.projection` | Pause projection updates for 5–300 seconds; `0` resumes |
+| `/wh admin flush` | `wormholes.admin.projection` | Clear active projections and rebuild them |
+| `/wh admin portals list [page] [filters]` | `wormholes.admin.portals` | List portals using `world=key`, `type=type`, `owner=uuid`, and `state=open\|closed\|linked\|unlinked` |
+| `/wh admin portals find <name>` | `wormholes.admin.portals` | Find names containing the supplied text |
+| `/wh admin portals info <portal>` | `wormholes.admin.portals` | Inspect a name, UUID, or unambiguous UUID prefix |
+| `/wh admin portals tp <portal>` | `wormholes.admin.portals` | Travel to a safe position near the portal |
+| `/wh admin portals retarget <portal> <destination>` | `wormholes.admin.portals` | Link an ordinary local portal to another local portal |
+| `/wh admin portals unlink <portal>` | `wormholes.admin.portals` | Remove its destination |
+| `/wh admin portals prune [dry] [confirm]` | `wormholes.admin.portals` | Report broken links by default; `false true` removes them |
+| `/wh admin portals rename-server <old> <new> [confirm]` | `wormholes.admin.portals` | Rewrite matching remote destinations when confirmation is `true` |
+| `/wh admin deleteallportals` | `wormholes.admin.reset` | Immediately remove local portals |
+| `/wh admin deleteeverything` | `wormholes.admin.reset` | Immediately reset Wormholes configuration and saved data |
+
+`deleteeverything` preserves world files and refuses to run while a pocket is occupied, being entered,
+or undergoing a size or material change.
+
+## Native backups and imports
+
+These commands require `wormholes.admin.backup`. Backups are stored under
+`config/wormholes/backups`; scheduled backups use the `[ops.backup]` settings.
+
+| Command | Purpose |
+|---|---|
+| `/wh admin backup now` | Create a backup and apply configured retention |
+| `/wh admin backup list` | List saved backups |
+| `/wh admin backup export [file]` | Export a bundle to a file, or create a normal backup when omitted |
+| `/wh admin backup restore <bundle> [options]` | Restore a named backup |
+| `/wh admin backup import <file> [options]` | Import a bundle file |
+| `/wh admin backup import-from <source> [options]` | Import another portal plugin's saved portals |
+
+Restore and bundle import default to `dry=true`. Supply `dry=false confirm=true` to replace portal
+files and reload the running portal state. Optional `world-map=old=new,old=new` and
+`owner-map=old-uuid=new-uuid,old-uuid=new-uuid` remap worlds and owners. Unknown or unsigned bundle
+signatures require `allow-unsigned=true`; a signature that does not match the bundle is always refused.
+
+Third-party sources are `stargate`, `advancedportals`, `multiverse`, `betterportals`, and `essentials`.
+Their saved files are read from the corresponding directories under the server's `plugins/` folder.
+Use `dry=false` to create portals; Essentials warps also require `frame=width,height` because their
+saved positions contain no portal frame. World identifiers such as `minecraft:overworld` and loaded
+world names are accepted. Import reports show skipped entries and unresolved destinations.
+
+## Native diagnostics
+
+`/wh debug toggle` requires `wormholes.admin` and enables one-second projection and network summaries
+until the next configuration reload or restart. `[main] verbose-logging=true` enables these summaries
+persistently. `/wh debug version` reports the installed version.
+
+`/wh debug dump [upload]` requires `wormholes.debugdump`. It saves a report under
+`config/wormholes/debug` with portal, projection, player, network, tick-time, JVM, memory, thread, and
+garbage-collection information. Upload defaults to `true`; use `/wh debug dump false` to keep the
+report local. An upload failure leaves the saved report available.

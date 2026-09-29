@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-26T13:00:00.000Z
+date: 2026-09-28T14:18:51.171Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -21,6 +21,12 @@ Run from the VolmitSoftware workspace:
 The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `build buildAll buildAllToOut`. Wormholes also produces its compile-time API jar with `apiJar`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
 
 VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. ShapedPortals starts after Wormholes finishes so it can compile against the current Wormholes API jar. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
+
+## Loader-neutral dependencies
+
+Use `com.github.VolmitSoftware.VolmLib:volmlib-localization:<version>` for language catalogs, validated message editing, locale downloads, and personal language preferences without a Bukkit dependency. Use `com.github.VolmitSoftware.VolmLib:volmlib-web:<version>` for `MclogsClient`. Keep these modules on the same VolmLib version as `shared` and the native modules.
+
+Local composite builds substitute `volmlib-localization` with `:localization` and `volmlib-web` with `:web`. Builds using remote coordinates need those modules published at the selected revision. A dependency declared with `transitive = false` must list every module it bundles explicitly.
 
 ## Build selected plugin jars
 
@@ -48,6 +54,10 @@ pluginPackaging {
 ```
 
 Set `packed = true` on the final distribution only. For a combined Bukkit and Velocity jar, select `universalJar`. Descriptors supply the entrypoints automatically. Use `packedEntrypoints` to add class names when a platform loads additional startup classes.
+
+Gloss and BileTools shrink their combined server and Velocity distribution before choosing its compression format. Their shrink configuration includes both platforms' compile libraries and preserves each platform's relocated dependencies.
+
+Set `intermediate = true` only on an archive consumed by a separately audited final distribution, such as the Bukkit input to `universalJar`. Its size overage becomes a warning, while shrinking and all content checks remain active. The final distribution enforces its configured byte budget; intermediate reports identify that budget as applying to the `final distribution`.
 
 `packedJarAccessors` lists methods as `owner/internal/Class#method`. Each method must return `java.io.File` without parameters. The XZ candidate redirects these methods to the extracted runtime archive. Use them for class scanners that need the complete archive. Keep installed-jar identity and update paths separate.
 
@@ -117,11 +127,11 @@ The shrink can be switched off four ways. `-PvolmitPackaging=dev`, or the enviro
 
 Pruning follows Shadow's existing minimization. It removes unreachable classes only from explicitly selected VolmLib packages. All plugin-owned classes remain roots. The analysis follows bytecode, constant pools, descriptors, signatures, annotations, exact reflective class-name strings, nested classes, and service providers. Computed reflection names need explicit keep rules. Iris retains its Matter slices and leaves generated Caffeine classes outside pruning.
 
-Compilation omits local-variable debug tables while retaining source locations and parameter names. Projects that already disable debug metadata keep that setting. Iris Bukkit also strips local-variable tables from bundled dependency classes after shading. This preserves executable instructions, annotations, source locations, and parameter names. Archive compaction uses level-9 DEFLATE compression, retains resources, verifies content, and replaces the archive only when smaller. Package directories remain present except in Iris Bukkit, which retains its existing directory-free archive layout.
+Compilation omits local-variable debug tables while retaining source locations and parameter names. Projects that already disable debug metadata keep that setting. Adapt, BileTools, Gloss, HiddenOre, Iris Bukkit, React, and ShapedPortals also strip local-variable tables from bundled dependency classes after shading and omit archive directory entries. This preserves executable instructions, annotations, source locations, parameter names, and resources. Archive compaction verifies content and replaces the archive only when smaller.
 
 ### Size gate
 
-Every non-modded plugin jar must fit the Spigot upload cap of 7,600,000 bytes. A non-modded profile cannot declare `max_bytes` above that cap; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive, so plugins with tighter budgets keep them. Modded profiles keep their own larger budgets. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent staging tasks.
+Every final non-modded plugin distribution must fit the Spigot upload cap of 7,600,000 bytes. A non-modded profile cannot declare `max_bytes` above that cap; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive, so plugins with tighter budgets keep them. Intermediate archives receive size warnings and retain all content checks. Modded profiles keep their own larger budgets. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent staging tasks.
 
 Canonical budgets, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Review a size increase before changing its budget.
 
@@ -135,13 +145,9 @@ To build and check a plugin without staging, run from its project directory:
 
 For Iris, that command covers Bukkit. Use `verifyBukkitArtifact verifyModdedArtifacts` to assemble and check all four platform jars without staging.
 
-Iris Bukkit release builds enable stronger compression by default:
+Adapt, BileTools, Gloss, HiddenOre, Iris Bukkit, React, and ShapedPortals release builds enable stronger compression by default.
 
-```bash
-./gradlew verifyBukkitArtifact
-```
-
-Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. Verified results are reused from `caches/volmit-packaging/compression/` under the Gradle user home, including across temporary source copies. An empty cache requires the full compression pass. Decompressed contents are verified before reuse and before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. Iris development mode skips stronger compression by default. Set `-PcompactRelease=true` or `false` to override the choice. Compression is an archive-task input, so changing it rebuilds the jar. Reports record both metadata stripping and release compression.
+Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. Verified results are reused from `caches/volmit-packaging/compression/` under the Gradle user home, including across temporary source copies. An empty cache requires the full compression pass. Decompressed contents are verified before reuse and before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. Development packaging skips stronger compression by default in these projects. Set `-PcompactRelease=true` or `false` to override the choice. Compression is an archive-task input, so changing it rebuilds the jar. Reports record both metadata stripping and release compression.
 
 To inspect an existing jar without building or modifying it, run from the workspace:
 

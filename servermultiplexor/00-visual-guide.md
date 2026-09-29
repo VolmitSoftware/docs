@@ -2,7 +2,7 @@
 title: "Multiplexor: Visual guide"
 description: "Download Multiplexor, create a server, connect a panel, and keep the app updated"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-09-28T00:00:00.000Z
 tags: servermultiplexor, getting-started
 editor: markdown
 dateCreated: 2026-09-22T00:00:00.000Z
@@ -20,13 +20,11 @@ Extract the archive into a writable workspace folder. In a terminal opened there
 
 ## 2. Read the dashboard
 
-![Local dashboard with two stopped example instances, server actions, workspace actions, and an update button](/servermultiplexor-assets/dashboard.png)
-
-The top strip summarizes the fleet. Select a server row to show its details and actions below the table. These example instances are stopped; running servers add live readings. Use **Tab** to switch Local/Remote, arrows or a click to select, and **Enter** to open the selected server's actions.
+The Local dashboard stacks **Plugins**, **Fabric**, **Forge**, and **NeoForge** vertically. Empty groups have a compact creation strip; populated groups show each server’s port and Primary checkbox on the right. The top strip summarizes the fleet. Use arrows to focus a server and **Enter** or a row click to open its actions; **Tab** switches Local/Remote. See the [dashboard layout and controls](/servermultiplexor/02-dashboard).
 
 ## 3. Create a server
 
-Choose **+ NEW** or press **n**. Select the server platform, then follow the prompts for Minecraft version, name, sharing/isolation, and addons. Use the **plugin** consumer for Paper-family servers; switch consumer for Forge, Fabric, or NeoForge.
+Choose **+ New** in **Plugins**, **Fabric**, **Forge**, or **NeoForge**, or click an empty group’s **Create first server** strip. Pressing **n** uses the focused group. Follow the prompts for platform, Minecraft version, name, sharing/isolation, and addons; Fabric and NeoForge already select their platform. All groups remain visible without switching profiles.
 
 ![New server platform menu with Paper, Purpur, Folia, Canvas, Leaf, and Spigot](/servermultiplexor-assets/create-server.png)
 
@@ -36,7 +34,7 @@ The picker shows cached-build availability. **Isolated** keeps shared drop-ins, 
 
 ![Server action card with start, console, addons, backups, runtime settings, and update controls](/servermultiplexor-assets/server-actions.png)
 
-Open a server card with **Enter**, a second click on its row, or **MORE**. Use **RUNTIME** for Java/heap settings, **BACKUPS** for snapshots, and **ADDONS** for plugins or mods. Stop the server before changing addons or creating a backup. Dimmed actions are unavailable in its current state.
+Open a Local server card with **Enter**, a row click, or **MORE**. Remote rows open on the second click. Use **RUNTIME** for Java/heap settings, **BACKUPS** for snapshots, and **ADDONS** for plugins or mods. Stop the server before changing addons or creating a backup. Dimmed actions are unavailable in its current state.
 
 The card's **UPDATE** updates that Minecraft server. The dashboard's bottom-right update button updates Multiplexor itself. See [local server commands](/servermultiplexor/03-local-servers) for the complete reference.
 

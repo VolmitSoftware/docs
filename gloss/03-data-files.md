@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -24,6 +24,9 @@ Gloss stores editable JSON under `plugins/Gloss/`.
 | Bubble styles | `bubbles/<id>.json` | `/gloss bubbles reset [name=*]` |
 | Damage indicators | `damage-indicators/default.json` | `/gloss indicators reset` |
 | Entity overlays | `entity-overlays/default.json` | None |
+| Nametags | `nametags/<id>.json` | `/gloss nametag reset [name=*]` |
+| Nameplates | `nameplates/<id>.json` | `/gloss nameplate reset [name=*]` |
+| Chat channels | `channels/<id>.json` | `/gloss channel reset [name=*]` |
 | Real Drops | `real-drops/default.json` | `/gloss drops reset [name=*]` |
 | Menus | `menus/**.json` | None |
 | Inventory menus | `inventories/<id>.json` | `/gloss inventory reset [name=*]` |
@@ -65,6 +68,8 @@ Persistent holograms and bubble styles store their shared appearance in root `st
 Display documents accept an optional boolean or expression `show` field, defaulting to `true`. Entity overlays also apply their `enabled`, range, entity-type, and world settings.
 See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) for supported fields, contexts, and examples. Drop-label visibility uses
 `[drops] show` in `gloss.toml`.
+
+Nametags, nameplates, and chat channels use schema `1`. Their permission, selection, and style edits reload automatically.
 
 ## Reloading
 

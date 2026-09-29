@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T15:01:52.312712+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -56,8 +56,7 @@ Changing world, dropping the wand, or leaving it off the hotbar clears the selec
 
 Container previews do not select wand corners, open portal menus, apply skins, or unpack door kits. These actions require a player click.
 
-If a wand interaction aims at an existing portal, Wormholes opens that portal’s
-menu instead of editing the selection. See Menu access.
+On Bukkit, Fabric, Forge, and NeoForge, left- or right-clicking while aiming the wand at an existing portal opens its menu instead of editing the selection. The aperture can be empty air; a solid block behind it is not required. See Menu access.
 
 Looking at a portal while holding a portal tool shows a short route subtitle
 with the portal name and linked destination, or active progress text. Each

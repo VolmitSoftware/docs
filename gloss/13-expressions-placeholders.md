@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -574,3 +574,13 @@ Related pages: [Holograms](/gloss/04-holograms),
 [Container Previews](/gloss/15-container-previews),
 [API: Placeholders](/gloss/23-api-placeholders),
 [API: Previews](/gloss/24-api-previews).
+
+## Player names
+
+With `[features] nametags = true`, rendered `player.name`, `viewer.name`, `subject.name`, `source.name`, and chat `sender.name` include the selected nametag prefix, account-name color, and suffix. The matching `.username` variable gives the unformatted account name for command arguments and identifiers. `.displayName` explicitly requests the same styled identity as `.name`.
+
+`%player_name%`, `%player_displayname%`, `|player.name|`, and `|player.displayName|` use the viewer's selected identity. `%player_username%` and `|player.username|` return the raw account name. `papi('player_name')` and role-aware `papi('subject', 'player_name', '')` use the selected identity in rendered text as well.
+
+Other PlaceholderAPI expansions retain the values supplied by their provider. Player identifiers in commands, completions, and protocol profiles remain account names. Gloss chat names use the channel engine; when it is disabled, the server or another chat formatter controls the name field.
+
+Condition scopes keep `.name` as the raw account name, so comparisons and selection rules are independent of formatting. References to a live leaderboard player use that player's current nametag; offline leaderboard entries retain their recorded account name. Nametag prefix and suffix templates use raw player names while composing the identity. Configure assignments in [Nametags and nameplates](/gloss/20-entity-overlays#permission-selected-nametags).

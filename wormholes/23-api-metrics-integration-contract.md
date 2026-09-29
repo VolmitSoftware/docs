@@ -2,15 +2,36 @@
 title: "API - Metrics & Integration Contract"
 description: "Discover Wormholes metrics through the VolmLib integration service"
 published: true
-date: 2026-09-06T00:00:00.000Z
+date: 2026-09-28T14:29:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes publishes metrics through VolmLib's `IntegrationServiceContract`. Use that contract when building a monitor. Use PlaceholderAPI for text displays.
+Wormholes serves authenticated HTTP metrics on Bukkit, Fabric, Forge, and NeoForge. Bukkit integrations can also query VolmLib's `IntegrationServiceContract` or use PlaceholderAPI for text displays.
 
-## Common metrics
+## HTTP endpoint
+
+Enable `[ops.console]` in `wormholes.toml` and set a nonempty bearer token:
+
+```toml
+[ops.console]
+enabled = true
+bind = "127.0.0.1"
+port = 8905
+token = "replace-with-a-secret-token"
+history-minutes = 30
+```
+
+The endpoint is disabled by default. Apply changes with `/wh reload`. `GET /metrics` returns OpenMetrics text; `GET /snapshot` returns JSON with `generatedAtMillis`, `metrics`, `peers`, `failures`, and `history`. Send `Authorization: Bearer <token>` on every request. Missing or incorrect credentials return HTTP 401. History contains one sample per second, retained for the configured 1–1440 minutes.
+
+```sh
+curl -H "Authorization: Bearer $WORMHOLES_METRICS_TOKEN" http://127.0.0.1:8905/snapshot
+```
+
+Native loaders publish portal count, active projections, connected player count (`wormholes.players`), mean tick duration (`wormholes.tick-milliseconds`), and connected peer count when networking is active. Peer entries include transport, compression, connection state, and RTT. Failure entries report travel-cost failures. Metrics unavailable on the active platform are omitted.
+
+## Bukkit integration metrics
 
 | Key | Value |
 |---|---|

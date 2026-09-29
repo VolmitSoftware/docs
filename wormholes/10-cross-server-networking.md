@@ -2,13 +2,13 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T14:07:12.047Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes links servers through pasteable codes. It stores routes under `routes/` and trusted public keys under `trust/`. Linked servers must run compatible Minecraft and Wormholes versions.
+Wormholes links servers through pasteable codes. It stores routes under `routes/` and trusted public keys under `trust/` within its data directory: `plugins/Wormholes/` on Bukkit or `config/wormholes/` on Fabric, Forge, and NeoForge. Linked servers must run compatible Minecraft and Wormholes versions.
 
 ## Enable and auto-enable
 
@@ -18,7 +18,7 @@ Wormholes links servers through pasteable codes. It stores routes under `routes/
 | Import or export | — | Sets `enabled = true` and starts networking if it is off |
 
 Manual enable: set `enabled = true` in
-`plugins/Wormholes/wormholes.toml` and reload or restart. Importing or exporting a code also enables networking.
+the platform's `wormholes.toml` and reload or restart. Importing or exporting a code also enables networking.
 
 Other network keys:
 [01 - Installation & Configuration](/wormholes/01-installation-configuration)
@@ -102,7 +102,7 @@ TCP and Unix-domain listeners allow up to 128 inbound connections that have not 
 |------|-----------|
 | `auto` (default) | **PROXY** for a name in `proxy-servers` or a peer route with `useProxy`, otherwise **DIRECT** |
 | `proxy` | Always BungeeCord plugin message `Connect` on channel `BungeeCord` with peer name |
-| `direct` | Paper `player.transfer(host, port)` to resolved game host/port |
+| `direct` | Minecraft transfer to the resolved game host/port |
 
 Use `proxy-servers` to mix proxy backends and direct destinations:
 
@@ -118,7 +118,7 @@ Explicit `direct` or `proxy` mode overrides this list. Names must match the impo
 
 For two backends behind Velocity, set `transfer-mode = "proxy"` on both. Each backend's `server-name` must match its key under Velocity's `[servers]` table, including case. This applies when the backends share a machine or run in separate containers on that machine. Players join through Velocity.
 
-The examples below use `lobby` and `survival` as placeholder backend names. Replace them with your Velocity server keys. Edit the existing `[network]` table in each backend's `plugins/Wormholes/wormholes.toml`.
+The examples below use `lobby` and `survival` as placeholder backend names. Replace them with your Velocity server keys. Edit the existing `[network]` table in each backend's `wormholes.toml`.
 
 On `lobby`:
 
@@ -163,7 +163,7 @@ Each server advertises three independent endpoints:
 | Public game | Players and game-port sideband | `game-host-override`, `game-port-override` |
 | Private game | Verified same-machine or LAN routes | `private-game-host-override`, `private-game-port-override` |
 
-Blank game host uses the advertised host. Blank private host uses a concrete `server-ip` bind address, otherwise the detected LAN address. A zero game-port override uses the actual Bukkit game port. Set the public game-port override to the external port when NAT maps it to another internal port.
+Blank game host uses the advertised host. Blank private host uses a concrete `server-ip` bind address, otherwise the detected LAN address. A zero game-port override uses the actual server game port. Set the public game-port override to the external port when NAT maps it to another internal port.
 
 A peer handshake never replaces the public game port with the internal game port. Signed status replies also advertise the current raw listener port. This repairs raw routes when another process occupies the preferred port.
 
@@ -270,16 +270,33 @@ If a traveler reconnects while destination placement is pending, the new session
 
 Costs commit when the source dispatches the transfer. Rejected dispatches refund the reservation. A later client connection failure is reported separately and does not automatically refund a committed cost.
 
-## Paper transfers and auto-accept
+## Direct transfers and auto-accept
 
 | Mechanism | Setting | Notes |
 |-----------|---------|--------|
-| Native Paper | `accepts-transfers=true` in **destination** `server.properties` + restart | Required for first-class transfer handshakes |
+| Paper or native loader | `accepts-transfers=true` in **destination** `server.properties` + restart | Required for first-class transfer handshakes |
 | Compatibility | `[network] auto-accept-transfers = true` (default) | Rewrites a TRANSFER handshake to LOGIN when native transfer acceptance is off |
 
 Native acceptance preserves Paper’s transferred-player flag. Compatibility rewriting still uses the normal login and authentication checks. Proxy forwarding requirements remain active.
 
 Direct transfer is admitted when `auto-accept-transfers` is true or the destination accepts transfers. Otherwise admission fails with `destination does not accept direct transfers`.
+
+## Gateway destination policies
+
+Fabric, Forge, and NeoForge gateways can choose among multiple destinations with `/wh network policy`. Each candidate identifies a peer and a portal UUID or tag; an optional weight influences weighted selection. See [Commands](/wormholes/09-commands-permissions#native-mesh-administration) for the command syntax.
+
+The selection strategies are `FIRST_AVAILABLE`, `LEAST_LOADED`, `ROUND_ROBIN`, `STICKY`, and `NEAREST`. Availability checks include the peer connection, portal state, server draining state, beacon age, minimum TPS, and free player slots. A policy does not bypass the destination's normal admission checks.
+
+When queueing is enabled and every otherwise eligible candidate is full, the player waits at the source portal. The queue shows their position and retries selection. Disconnecting, changing worlds, leaving the hold area, removing or closing the source portal, changing its policy, or reaching the timeout ends the wait.
+
+`[network.policy]` controls the shared policy timing:
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `beacon-interval-sec` | `5` | Load advertisement interval, at least one second |
+| `beacon-stale-sec` | `20` | Maximum beacon age, at least twice the advertisement interval |
+| `queue-enabled` | `true` | Allow policies to hold players while candidates are full |
+| `queue-max-wait-sec` | `25` | Maximum queue wait, clamped to 1–29 seconds and further limited by the handoff deadline |
 
 ## Wire protocol
 
@@ -302,10 +319,16 @@ After the grace period, Wormholes releases the remote view. Raw peers can use Zs
 A non-player entity crossing a gateway is sent as a snapshot capped at 256 KiB and recreated at
 the exit with the portal's position, look, and velocity transform applied.
 
-The destination must have an open receiving portal, allow inbound travel, and accept the entity type. Add blocked Bukkit entity types to `[network] entity-transfer-deny-types`. Wormholes removes the source only after the destination accepts it. Failure restores the source entity.
+The destination must have an open receiving portal, allow inbound travel, and accept the entity type. Add blocked entity types to `[network] entity-transfer-deny-types`; native loaders also accept registry identifiers such as `minecraft:creeper`. Wormholes removes the source only after the destination accepts it. Failure restores the source entity.
 
 Players never use this snapshot path. Their profile, capacity, transfer-method,
 and client-handoff rules remain the player path described above.
+
+### Mounted groups and leashed entities
+
+Enable `[transit] convoy-enabled` and `convoy-cross-server-enabled` to transfer a player's vehicle, passengers, and eligible nearby leashed entities together. `convoy-max-entities` limits the group size, and `convoy-cross-server-timeout-sec` limits how long the source waits for the destination before restoring the group.
+
+The destination holds the transferred entities until the player arrives, then restores passenger and leash relationships. A denied transfer restores the original group at the source. Once the player has been dispatched, the source copies are removed even if an arrival receipt is lost, preventing duplicate groups.
 
 ## Server connect and list
 

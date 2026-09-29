@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -125,3 +125,75 @@ Import, export, undo and live sync use the singleton id `default`, exported to
 `entity-overlays/default.json`. Sample controls change the preview only, never Adapt or React
 configuration. Check text size and placement in a Minecraft client — the browser preview does not
 reproduce the client renderer. See [Web Editor & Sync](/gloss/18-web-editor).
+
+## Permission-selected nametags
+
+Enable `nametags = true` under `[features]` in `gloss.toml`. Edit schema-1 `nametags/<id>.json` documents with `/gloss web edit nametags <id>`. A nametag controls the player's prefix, account-name color, suffix, vanilla label visibility, and collision rule.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "show": "true",
+  "select": { "priority": 10, "when": "true", "permission": "ranks.member" },
+  "presentation": {
+    "prefix": "&6[Member] ",
+    "suffix": "",
+    "color": "gold",
+    "nameTagVisibility": "always",
+    "collision": "always"
+  },
+  "variants": [
+    {
+      "id": "staff",
+      "priority": 20,
+      "when": "true",
+      "permission": "ranks.staff",
+      "presentation": {
+        "prefix": "&c[Staff] ",
+        "suffix": "",
+        "color": "red",
+        "nameTagVisibility": "always",
+        "collision": "never"
+      }
+    }
+  ]
+}
+```
+
+Grant `ranks.member` to eligible players through your permissions plugin. Grant `ranks.staff` as well for the staff variant. `select.permission` and each variant's `permission` check the player wearing the tag, not the viewer. Blank or omitted permission fields impose no permission requirement. Permission, `when`, and document `show` must all allow the selection. Omitted `when` is `true`; an omitted `select` is unrestricted at priority zero.
+
+The highest-priority matching document wins; equal priorities use the alphabetically first document ID. Variants follow the same priority and ID ordering and replace the whole presentation. The shipped default requires `gloss.nametag.default`, and its staff variant additionally requires `gloss.nametag.staff`. These are assignment nodes, separate from administration permissions.
+
+`color` accepts Minecraft named colors such as `white`, `gold`, and `dark_red`. `nameTagVisibility` accepts `always`, `never`, `hide_for_other_teams`, or `hide_for_own_team`. `collision` accepts `always`, `never`, `push_other_teams`, or `push_own_team`. Prefix and suffix accept MiniMessage, legacy colors, and the Gloss text pipeline, and can refer to `subject` and `viewer`. Their styling is preserved in both rich chat and legacy text surfaces. Their player names resolve as raw account names while the tag itself is composed, preventing a tag from including itself.
+
+The selected prefix, name color, and suffix also appear in rendered player-name references across Gloss, including chat, tablist, nameplates, boards, menus, holograms, and connection messages. See [Player names](/gloss/13-expressions-placeholders#player-names) for formatted and raw tokens. Disabling nametags or selecting no document returns the account name on these text surfaces. Visibility and collision apply to the vanilla overhead label, not to names shown in chat or other text.
+
+## Permission-selected nameplates
+
+Enable `nameplates = true` under `[features]`; the hologram and entity-overlay engine must also be enabled. Nameplates are schema-1 documents under `nameplates/<id>.json`, opened with `/gloss web edit nameplates <id>`. They replace the vanilla overhead label with ordered text rows and shared Gloss display styling.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "show": "true",
+  "select": { "priority": 10, "when": "true", "permission": "ranks.member" },
+  "presentation": {
+    "lines": [
+      { "text": "{{ subject.name }}", "show": "true" },
+      { "text": "&c{{ fixed(subject.health, 0) }} HP", "show": "subject.health < subject.maxHealth" }
+    ],
+    "offset": 0.3,
+    "hideSneaking": true,
+    "relations": []
+  },
+  "variants": []
+}
+```
+
+Nameplate document and variant permissions use the same assignment, condition, and priority rules as nametags. Each variant contains `id`, `priority`, `permission`, `when`, and a complete `presentation`. Use `subject.name` to include the selected nametag or `subject.username` for only the account name. The `subject` is the player wearing the plate; `viewer` is its reader.
+
+A presentation accepts up to 16 `lines`, each with `text` and `show`; `style` and `box` use the [shared display settings](/gloss/11-icons#display-style-and-boxes). `offset` defaults to `0.3` and clamps to `-2` through `8`. `hideSneaking` defaults to `true`. Ordered `relations` contain `when` and `color`, with the first matching relation supplying the row color. A player cannot see their own plate, and spectators, invisible players, or players hidden from that viewer have no visible plate.
+
+Use `/gloss nametag refresh` or `/gloss nameplate refresh` to request a refresh. Valid document edits reload automatically; changing assignment permissions takes effect on the next feature refresh.

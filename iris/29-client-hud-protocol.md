@@ -2,7 +2,7 @@
 title: "Client HUD & Maps"
 description: "Iris documentation: Client HUD & Maps"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-09-28T09:42:15.163Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -57,4 +57,4 @@ Studio notifications report pack reloads. After a successful reload, Vision and 
 
 ## Language
 
-The server's `general.language` controls the HUD, What overlay, and boss bar language. Keybinding labels use the client's language. See [Localization](/iris/08-localization).
+The server's `general.language` controls the HUD, What overlay, and boss bar language. Keybinding labels use the client's language on Fabric, Forge, and NeoForge; the translations are bundled in the Iris mod jar. See [Localization](/iris/08-localization).

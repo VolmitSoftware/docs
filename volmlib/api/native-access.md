@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-09-23T05:32:41.849Z
+date: 2026-09-28T14:18:51.171Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -64,6 +64,7 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `block.BlockEntityAccess` | Capture block-entity NBT and evaluate native container locks |
 | `chunk.ChunkPacketAccess` | Send a loaded chunk to a player |
 | `chunk.ChunkSendRateAccessor` | Read and change server chunk send and load rates |
+| `item.ItemStackAccess` | Encode and decode complete vanilla item data |
 | `map.MapPixelsAccess` | Capture vanilla map pixels and metadata |
 | `entity.EntityVisibilityAccess` | Evaluate per-viewer entity visibility |
 | `entity.EntityGlowAccess` | Create viewer-specific glow controls |
@@ -81,6 +82,8 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 `ProxyForwardingAccess.velocityKey()` returns the active forwarding key, or null when forwarding is unavailable or disabled. Keep the returned key private.
 
 `MapPixelsAccess.capture(...)` returns an optional `NativeMapSnapshot`. Snapshots copy their pixel arrays on construction and access. Custom map renderers can make a vanilla pixel snapshot unavailable.
+
+`ItemStackAccess.encode(ItemStack)` returns compressed vanilla item NBT with its Minecraft data version. `decode(byte[])` restores Bukkit items through the current registry and data fixer, with a 16 MiB decompressed-data limit. Names, lore, enchantments, and custom components are retained. Empty items are rejected. Use the owning server context when converting live inventory items. The same bytes can be exchanged with native Minecraft item codecs on compatible Minecraft versions.
 
 See [Native spawn protection](/volmlib/api/spawn-protection) for the protection decision contract.
 
@@ -110,7 +113,7 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 
 The shared mod-loader sources provide `NativeModdedServer` for server scheduling, loaded-world lookup, player lookup, dimension storage paths, and datapack selection. `NativeWorld` identifies a loaded world and provides block, biome, height, and weather access. Use live-world lookup only on the server thread; `worlds()` uses the published world snapshot.
 
-`NativeRegistryAccess` accepts a `Configuration` containing registry and reloadable-registry suppliers plus a warning consumer. Supply `HolderLookup.Provider` instances with the required datapacks already loaded. Live integrations can use `NativeModdedServer.registryAccess()` and `reloadableRegistries()`; offline integrations can supply their own loaded registries. `NativeTileReader` likewise accepts a registry-provider supplier. Keep these providers available until the owning integration closes.
+`NativeRegistryAccess` accepts a `Configuration` containing a `Supplier<NativeModdedServer>` and a warning consumer. Return the current server after its datapacks have loaded, or null while no server is available. Registry lookups resolve against the supplied server on each call, including loot tables after datapack reloads. `NativeTileReader.forServer(serverSupplier)` uses the current server for live block-entity reads. The `NativeTileReader` constructor also accepts a registry-provider supplier for offline use. Keep the supplied context available until the owning integration closes.
 
 `NativeCommandRegistration` registers Brigadier trees with `NativeCommandSource`. Read the command's world, player, position, and permission context through that source. Build formatted responses with `NativeCommandText`; `NativeCommandArguments` resolves native player, dimension, and identifier arguments.
 

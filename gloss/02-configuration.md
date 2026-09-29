@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -43,8 +43,11 @@ startup requires a server restart.
 | `motd` | `false` | The custom server list MOTD |
 | `connections` | `false` | Join and leave messages from `connections.json` |
 | `particles` | `true` | Viewer-targeted particle layers on supported in-world renders |
+| `nametags` | `false` | Permission-selected prefixes, name colors, and suffixes from `nametags/` |
+| `nameplates` | `false` | Holographic player nameplates from `nameplates/` |
+| `channels` | `false` | Chat channel formats, mentions, and notification sounds from `channels/` |
 
-`motd` and `connections` are the only features disabled by default.
+`motd`, `connections`, `nametags`, `nameplates`, and `channels` default to disabled.
 
 Gloss extracts bundled documents only for enabled features. Enabling most features later extracts their
 defaults on reload; previews require the restart noted above. See [Getting Started](/gloss/01-getting-started).
@@ -333,3 +336,11 @@ Tablist text is `tablist.json`. MOTD lines are `motd.json`. Bubble layout is `bu
 ## Glyph pack format
 
 Set `[forge].packFormat` to `0` to select the resource-pack format for the running server: `84` on Minecraft 26.1.2, `88` on 26.2, and `97` on 26.3. A positive value overrides this selection. Generated packs use `min_format` and `max_format` for format 65 or newer; an integer upper bound accepts all minor versions within that major format, including 26.3's format 97.1.
+
+## `[nametags]`
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `refreshIntervalTicks` | `20` | `1` to `200` | Ticks between overhead nametag selection and permission refreshes |
+
+Assignments, priorities, and styles are in [nametag documents](/gloss/20-entity-overlays#permission-selected-nametags). Each other text surface uses its own refresh cadence.

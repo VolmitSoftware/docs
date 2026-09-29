@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -66,6 +66,24 @@ selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/langu
 | `/gloss panel cancel` | `gloss.panels` | Discard your staged edit |
 | `/gloss preview list` | `gloss.previews` | List container previews |
 | `/gloss preview reset [name=*]` | `gloss.previews.reset` | Restore default previews |
+
+## Player names and chat
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/gloss nametag list` / `/gloss nametag info <id>` | Any Gloss command access | Inspect nametag documents |
+| `/gloss nametag refresh` | `gloss.nametags.refresh` | Refresh assigned overhead tags |
+| `/gloss nametag reset [name=*]` | `gloss.nametags.reset` | Restore shipped tags |
+| `/gloss nameplate list` | `gloss.nameplates.list` | List nameplates |
+| `/gloss nameplate info <id>` | `gloss.nameplates.info` | Inspect a nameplate |
+| `/gloss nameplate refresh` | `gloss.nameplates.refresh` | Refresh player plates |
+| `/gloss nameplate reset [name=*]` | `gloss.nameplates.reset` | Restore shipped plates |
+| `/gloss channel list` / `/gloss channel info <id>` | `gloss.channels` | Inspect channels |
+| `/gloss channel reset [name=*]` | `gloss.channels.reset` | Restore shipped channels |
+| `/ch <channel>` / `/ch list` | `gloss.chat.channel` | Select or list available channels |
+| `/msg <player> <message>` / `/r <message>` | `gloss.chat.msg` | Send or reply to a private message |
+
+`gloss.chat.mention` lets a sender trigger mention highlighting and sound. `gloss.chat.item` lets a sender use the channel's held-item token. Both default to true. Nametag and nameplate assignment permissions are the arbitrary nodes configured in `select.permission` and `variants[].permission`; they do not grant administration commands.
 
 ## Other commands
 

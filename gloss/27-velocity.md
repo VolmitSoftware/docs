@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-09-28T10:21:32.084Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -20,7 +20,7 @@ Gloss on Velocity provides network tablists, scoreboard sidebars, server-list MO
 | Files | `plugins/gloss/` |
 | Clients | Scoreboards need 1.20.3 or newer. Pause-menu server links need 1.21 or newer |
 
-Reload with `/gloss reload` (`gloss.admin`). An XZ jar extracts `plugins/Gloss/cache/runtime/`, separate from the lowercase `plugins/gloss/` settings folder. That cache directory must be writable.
+Reload with `/gloss reload` (`gloss.admin`). An XZ jar extracts `plugins/Gloss/cache/runtime/`, separate from the lowercase `plugins/gloss/` settings folder. That cache directory must be writable. PacketEvents is bundled in Gloss and does not require a separate plugin or startup download.
 
 The proxy edition covers the server-list MOTD and its pause-menu links, network tablists, conditional scoreboard sidebars, action bar, boss bar, and title surfaces, and join, switch, and leave messages. The shared emoji and named-animation catalogs render inside all of them. Fixed virtual tablist grids are not part of the proxy edition. Holograms, menus, chat effects, Vault groups, backend placeholders, and the web editor require the server edition.
 

@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -34,7 +34,7 @@ Once it is open: follow the first-run tour or skip it, pick **New document** or 
 
 ## Editing
 
-The editor provides forms, JSON editing, undo and redo, image import, and 2D or 3D previews where supported. Visual inspectors edit the same fields Gloss reads, and Code and Split views expose the JSON with validation and field completion. Use the image manager for PNG, GIF and supported Minecraft skins; imported assets are saved under `plugins/Gloss/images/`.
+The editor provides forms, JSON editing, undo and redo, image import, and rendered previews for every runtime document kind. Visual inspectors edit the same fields Gloss reads, and Code and Split views expose the JSON with validation and field completion. Use the image manager for PNG, GIF and supported Minecraft skins; imported assets are saved under `plugins/Gloss/images/`.
 
 Preview exact Minecraft rendering, occlusion, sounds, particles and interaction in game before publishing.
 
@@ -51,8 +51,9 @@ Preview exact Minecraft rendering, occlusion, sounds, particles and interaction 
 | Damage indicators | `damage-indicators/default.json` | [Damage Indicators](/gloss/08b-damage-indicators) |
 | Real Drops | `real-drops/default.json` | [Drop Labels](/gloss/08c-drop-labels) |
 | Inventories | `inventories/` | Chest GUI resolution, mask, keys and slots |
-| Nameplates | `nameplates/` | Holographic text lines, style, box, offset and visibility |
-| Nametags | `nametags/` | Name prefixes and suffixes, selection, visibility and collision |
+| Nameplates | `nameplates/` | [Permission-selected holographic player nameplates](/gloss/20-entity-overlays#permission-selected-nameplates) |
+| Nametags | `nametags/` | [Permission-selected player identities](/gloss/20-entity-overlays#permission-selected-nametags) |
+| Chat channels | `channels/` | [Chat formatting and mentions](/gloss/08-chat-bubbles#chat-channels-and-mentions) |
 | Markers | `markers/` | World, player or entity targets, labels, beams, trails and edge indicators |
 | Animations | `animations/` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
 | Emoji | `emoji/` | [Emoji, Text & Animations](/gloss/07-emoji-text-animations) |
@@ -74,7 +75,13 @@ Global feature switches, service limits and defaults stay in `gloss.toml`. The d
 
 ### 3D previews
 
-The 3D previews draw the client's own block and item models and textures in WebGL2 over a rendered block world, with one shared camera: drag to orbit, wheel to zoom, right-drag to pan, and WASD (with space and shift for height) to fly while the stage is focused. Entities are textured rigs for the player, zombies, skeletons, creepers, pigs, cows and sheep, and a catalog sprite for every other mob. Text is drawn in a layer sharing that camera, so it is never hidden behind geometry. A browser without WebGL2 shows a rendered still instead of models.
+The 3D previews draw the client's own block and item models and textures in WebGL2 over a rendered block world. The in-game frame uses a fixed player viewpoint; interactive authoring canvases retain their orbit, zoom, pan, and movement controls. Entities are textured rigs for the player, zombies, skeletons, creepers, pigs, cows and sheep, and a catalog sprite for every other mob. A browser without WebGL2 shows a rendered still instead of models.
+
+### Nametags, nameplates, and mentions
+
+Nametag and nameplate stages render the selected player presentation above a Minecraft player model. Edit the document's assignment permission and each variant's permission alongside their priority and conditions. Preview sample values describe the wearer as `subject` and the reader as `viewer`. Nameplate previews inherit the selected nametag from the same workspace, so `subject.name` shows the composed identity. Enter permission nodes in the preview controls to test document and variant eligibility; these sample grants affect the preview only.
+
+Use **Randomize document** on nametags or nameplates to generate an editable presentation, then adjust its permission assignments before exporting. Chat channels provide ordinary and mentioned-message previews, an enabled switch for mentions, and separate controls for the tagged token, complete highlighted message, and sound key. In-game sound and client rendering follow the saved channel document.
 
 ## World panels and flow maps
 

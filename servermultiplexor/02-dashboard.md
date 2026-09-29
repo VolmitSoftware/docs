@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-09-28T00:00:00.000Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -12,44 +12,56 @@ Run `./start.sh` or `./start.sh runtime watch` to open the dashboard. `Tab` swit
 
 Downloaded builds use `./multiplexor` or `.\multiplexor.exe` with the same arguments. See the [visual guide](/servermultiplexor/00-visual-guide) for the first-server walkthrough.
 
-![Local dashboard with example stopped servers and the controls below the fleet table](/servermultiplexor-assets/dashboard.png)
+```text
++-- Plugins ---------------------------------- [+ New] --+
+| Server                    State       Port    Primary  |
+| paper-dev                 running     25565     [x]    |
+| folia-test                stopped     25566     [ ]    |
++-------------------------------------------------------+
++-- Fabric ----------------------------------- [+ New] --+
+| fabric-dev                stopped     25567     [x]    |
++-------------------------------------------------------+
++-- Forge ---------------------- [+ Create first server] +
++-- NeoForge ------------------- [+ Create first server] +
+```
 
 ## Read the dashboard
 
-The header shows fleet availability, players, fleet TPS, and host CPU/memory. The server table shows state, players, TPS, trend, memory, CPU, and uptime; narrow terminals omit whole columns. The selected running server adds CPU/memory charts, facts, and RX/TX charts. A stopped server uses a compact single line. Server and workspace action bars sit below it.
+The header shows fleet availability, players, fleet TPS, and host CPU/memory. Local servers appear in four vertically stacked groups: **Plugins**, **Fabric**, **Forge**, and **NeoForge**. Empty groups shrink to a clickable **Create first server** strip. Populated groups stretch to share the remaining list space, keeping spare rows inside their borders. Each row has its configured port and a **Primary** checkbox on the right; each group keeps its own primary server. Additional columns show players, TPS, trend, memory, CPU, and uptime when space permits. All four groups remain visible at 80×24. Use ↑/↓ or the mouse wheel over the list to move through every server; overflowing groups scroll to keep the focused row visible and show the visible range in their header. The wheel moves the current selection, including when the pointer is over blank space inside an expanded group. Remote keeps its fleet table. The selected running server adds CPU/memory charts, facts, and RX/TX charts. A stopped server uses a compact single line. Server and workspace action bars sit below it.
 
 Local metrics refresh every two seconds. macOS uses `nettop` for actual per-Java-process packets and bytes; other platforms leave network metrics unavailable when reliable per-process counters are absent. Remote uses Pterodactyl resource counters at intervals of at least twenty seconds, slowing for larger fleets. Local packet rates use `PPS`; Remote throughput uses `B/s` rather than estimated packets.
 
 The first rate sample is `n/a`. Later samples use measured counter and time differences, rejecting counter resets and restarts. Local and Remote history survives monitor restarts: full-resolution samples last 24 hours, five-minute averages last seven days.
 
-Failed Local refreshes retain the previous fleet and readings as **METRICS STALE**. With no successful sample, the label is **METRICS UNAVAILABLE**. A successful empty result clears the fleet. `runtime watch --once` exits nonzero on capture failure.
+A failed Local group refresh retains that group’s previous servers and readings while other groups continue refreshing; the header identifies the affected group as **METRICS STALE**. With no successful sample, the label is **METRICS UNAVAILABLE**. A successful empty result clears the fleet. `runtime watch --once` exits nonzero on capture failure.
 
 ## Navigation
 
 ![Selected server's action card with lifecycle, backup, runtime, and addon controls](/servermultiplexor-assets/server-actions.png)
 
-Click a row to select it; click again, press Enter, or choose **MORE** to open its card. Cards are modal: arrows and the wheel move button focus, Enter activates, and printed button letters act as shortcuts. Clicking outside a card or pressing Esc closes it; clicking empty space inside does nothing. Disabled actions cannot receive focus or run, and the underlying dashboard stays inactive.
+Click a Local server row to open its card, or use arrows to focus it and press Enter. Remote rows select on the first click and open on the second. **MORE** also opens the focused server card. Clicking the right-hand **Primary** checkbox makes that server the primary for its group without opening the card. Cards are modal: arrows and the wheel move button focus, Enter activates, and printed button letters act as shortcuts. Clicking outside a card or pressing Esc closes it; clicking empty space inside does nothing. Disabled actions cannot receive focus or run, and the underlying dashboard stays inactive.
 
 Buttons activate on mouse release only if the pointer remains on the pressed button. Unavailable actions are dimmed. **START** runs in the background, leaving the dashboard open; use **CONSOLE** after startup. The selected panel's range badge cycles chart history.
 
 | Key | Action |
 |---|---|
 | `Tab` | Switch Local/Remote |
-| `↑`, `↓`, wheel | Select a server or move focus inside a card |
+| `↑`, `↓`, wheel | Focus a group’s creation control or a server; move button focus inside a card |
 | `←`, `→` | Move horizontally between card buttons |
-| `Enter`, second row click, **MORE** | Open the selected server card; activate a focused card button |
-| `Space`, checkbox click | Toggle a server in the batch selection |
+| `Enter`, **MORE** | Open the focused server card; Enter on a group header creates a server in that group |
+| `Space`, right checkbox | Set the focused Local server as its group’s primary; Space toggles batch selection on Remote |
+| `v`, left checkbox | Toggle a server in the batch selection |
 | `a`, **ALL** | Select the whole fleet, including offscreen rows; repeat to clear |
 | `x`, **CLEAR** | Clear the batch selection |
 | Printed button letter | Activate an enabled action in the open card |
 | `d` | Open the selected server's detail view |
 | `S`, `X`, `O` | Stop, force-kill, or open console for the selected server |
 | `Shift+R` | Repaint without changing selection, chart range, or open card |
-| `g`, `G` | Open all running Local consoles: native terminal grid on Windows, tmux grid on macOS/Linux |
-| `n` | Create an instance |
+| `g`, `G` | Open running consoles in the focused Local group: native terminal grid on Windows, tmux grid on macOS/Linux |
+| `n`, group **+ New** | Create an instance in the focused Local group; Remote opens remote creation |
 | `b` | Open checked-server actions; without checks, Remote bulk actions or Local Build & tuning |
 | `w`, **WORKSPACES**, workspace **MORE** | Open the workspace card from the landing view |
-| `c` | Switch consumer and reload the fleet |
+| `c` | Manage the Remote connection |
 | `r` | Cycle `15m`, `1h`, `6h`, `24h`, `7d` |
 | `u` | Check for an executable update from the landing view |
 | `q`, `Ctrl-C` | Quit |
@@ -66,11 +78,11 @@ For a colorless frame with no terminal escape bytes or TTY requirement:
 
 ## Batch actions
 
-Check rows to show **N SELECTED**, **START**, **STOP**, **RESTART**, **DELETE**, and **CLEAR**. Server-card actions still apply only to that server. Selections follow server identities across refreshes and scrolling; removed servers are dropped, new servers stay unchecked, and changing provider or consumer clears selection.
+Check rows to show **N SELECTED**, **START**, **STOP**, **RESTART**, **DELETE**, and **CLEAR**. Server-card actions still apply only to that server. Selections follow server identities across refreshes and scrolling; removed servers are dropped, new servers stay unchecked, and changing Local/Remote view clears selection. Local checks can span multiple groups, including servers with the same name.
 
 Start applies to stopped servers, stop to active servers, and restart to running servers. Local deletion skips locked instances. Commands recheck exact targets, report skips/failures, and never expand an empty selection to the whole fleet. Delete lists targets and requires confirmation; Remote also checks permissions and its typed token.
 
-Batch starts stay headless. Local uses `instance bulk`; Remote uses the same fleet engine as its CLI with the checked IDs. Both default to four concurrent servers; CLI commands accept `--concurrency 1-8`. Each restart stops its server before starting it. Workspace Start all and Stop all use these engines; Start all opens consoles after the batch finishes.
+Batch starts stay headless. Local uses `instance bulk`; Remote uses the same fleet engine as its CLI with the checked IDs. Both default to four concurrent servers; CLI commands accept `--concurrency 1-8`. Each restart stops its server before starting it. Workspace Start all and Stop all apply to the focused Local group; Start all opens that group’s consoles after the batch finishes.
 
 ## Guided actions
 
@@ -79,7 +91,7 @@ Wizard forms suspend the monitor and return when complete or cancelled. Esc work
 | Location | Actions |
 |---|---|
 | Local server card | Lifecycle, console, **BACKUPS**, **RUNTIME**, **UPDATE**, **Addons**, port, isolation, and locks |
-| **New** | Single-server platform and Minecraft version selection |
+| Group **+ New** / **Create first server** | Platform and Minecraft version selection within that group; Fabric and NeoForge already have their platform selected |
 | Workspace card | Build & tuning, Pull latest builds, Create many, Start all stopped, Stop all running, Wipe everything, Diagnostics |
 | Plugin workspace **NETWORKS** (`v` in the card) | [Velocity networks](/servermultiplexor/09-proxy-networks) |
 | Isolated server **Copy drop-ins** | One-time per-artifact copy without subscribing to future syncs |
@@ -88,7 +100,7 @@ Wizard forms suspend the monitor and return when complete or cancelled. Esc work
 | Remote server **Open folder** | Start or repair Multiplexor Drive, then open the exact folder in Finder |
 | Remote **Pull to Local** / Local **Push to Remote** | [Linked copies, file previews, and transfers](/servermultiplexor/05-remote-servers) |
 
-The workspace card keeps the selected Local/Remote view. **BACKUPS** creates, verifies, and restores snapshots; **RUNTIME** selects per-instance Java, heap, presets, and compatibility checks. Build & tuning also sets console line wrap and log format. Port selection accepts 1 through 65535, offers an available port, and identifies ports configured across consumers.
+The workspace card keeps the selected Local/Remote view. Local build, tuning, and start/stop actions use the focused group. **Create many** and **Wipe everything** explicitly cover multiple groups; **NETWORKS** manages plugin servers. **BACKUPS** creates, verifies, and restores snapshots; **RUNTIME** selects per-instance Java, heap, presets, and compatibility checks. Build & tuning also sets console line wrap and log format. Port selection accepts 1 through 65535, offers an available port, and identifies ports configured across consumers.
 
 **UPDATE** prepares a jar or Forge/NeoForge installer candidate, backs up the server, starts an isolated loopback staging copy, and promotes the exact artifact after a Minecraft status response. Custom jars need an explicit Minecraft version. Promotion checks the original server, restores its prior running/stopped state, and rolls back on startup failure. A status response does not verify plugin loading or gameplay.
 
@@ -116,7 +128,7 @@ Remote console has a persistent resource header, severity colors, Minecraft `§`
 
 ## Network display
 
-Velocity networks appear as a `Velocity / <network>` parent and `├─`/`└─` backends with their own ports, state, and metrics. ASCII terminals use `|-` and `` `- ``. Select any row for instance actions; the selected panel shows network and route, and an asterisk marks the active instance. Standalone rows remain separate. Focus and checks follow identities as the tree changes.
+Velocity networks appear as a `Velocity / <network>` parent and `├─`/`└─` backends with their own ports, state, and metrics. ASCII terminals use `|-` and `` `- ``. Select any row for instance actions; the selected panel shows network and route, and the right-hand Primary checkbox identifies the group’s primary server. Standalone rows remain separate. Focus and checks follow identities as the tree changes.
 
 The **NETWORKS** creator selects compatible stopped backends, an entry server, proxy port, and local or LAN access, then downloads Velocity or uses a local jar. Each network menu shows its join address, state, and proxy player count, distinguishing unavailable counts from zero. It offers lifecycle controls, proxy console, status, and configuration checks. See [Proxy networks](/servermultiplexor/09-proxy-networks) for membership and configuration rules.
 

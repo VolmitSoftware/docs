@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T13:59:31.418Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,7 @@ access, and transit eligibility.
 
 The dimension is installed from the plugin’s bundled datapack
 (`wormholes-pockets.zip` under the level `datapacks` on Spigot-class installs.
-Paper bootstrap stages the pack before registries load). Installing or updating
+Paper bootstrap stages the pack before registries load). Fabric, Forge, and NeoForge bundle the dimension data in the mod jar. Installing or updating
 the pack requires a **full server restart**. If `wormholes:pockets` is missing
 after start, PERSONAL/PUBLIC entry cannot provision or enter pockets.
 

@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-28T16:21:40.517895+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -159,9 +159,13 @@ are configurable. See **Configuring recipes** below. Default products:
 
 Hinged-door recipes accept any vanilla door, including iron and copper. Trapdoor recipes accept hand-openable wooden trapdoors only. The result uses the default material shown above, not the ingredient material. Return doors have no recipe, and automated crafters cannot create dimensional door identities or skins.
 
-Enabled door recipes appear in the recipe book for players with `wormholes.doors.craft`. The Portal Wand recipe is available to everyone. Runes are not craftable.
+Enabled door recipes appear in the recipe book for players with `wormholes.doors.craft`. The book is updated when a player joins and after every settings reload; players without the permission have the door recipes removed from their book. The Portal Wand recipe is available to everyone. Runes are not craftable.
+
+Clicking a door recipe in the recipe book fills the crafting grid from the player's inventory, and the crafted item is the same as a hand-filled craft. On Fabric, Forge, and NeoForge the fill takes exact Wormhole Runes for `R` and never ordinary dark prismarine. Other slots take only unnamed, unenchanted, undamaged items, so bound dimensional doors are never used as plain doors. A reskin fill places one dimensional door or trapdoor next to an ordinary one of the same form and a different material. When an ingredient is missing, the grid is cleared and the recipe is shown as an outline. The vanilla client does not count named items when it marks recipes as craftable, so recipes that need a Wormhole Rune are shown as missing ingredients even when the player carries runes; clicking them still fills the grid.
 
 A Pair kit is a bundle. Right-click to unpack its linked A and B items; unpacking consumes the kit in every game mode.
+
+Breaking a placed Pair, Personal, or Public door or trapdoor returns its bound item in survival and creative mode. The item retains its identity so it can be placed again without becoming an ordinary vanilla door.
 
 Placing any crafted or granted Pair, Personal, or Public door/trapdoor requires
 `wormholes.doors.place`, which defaults to `op`. `wormholes.admin` and ops also
@@ -170,7 +174,8 @@ pass. Craft permission alone does not allow placement.
 ## Configuring recipes
 
 The `[recipes]` block of `wormholes.toml` holds one table per product
-plus the two reskin toggles. Saving the config automatically reloads the recipes
+plus the two reskin toggles. A settings reload (saving the file on Bukkit,
+`/wormholes reload` on Fabric, Forge, and NeoForge) re-registers the recipes
 and refreshes every online player's recipe book.
 
 | Table | Controls |
@@ -265,7 +270,7 @@ Default `type` is `pair`. Overflow drops at the player’s feet.
 
 | Setting | Location | Effect |
 |---------|----------|--------|
-| `dimensional-doors-enabled` | `[main]` in `plugins/Wormholes/wormholes.toml` (field default `true`) | Live enable/disable of the full dimensional-doors feature |
+| `dimensional-doors-enabled` | `[main]` in the platform's `wormholes.toml` (field default `true`) | Live enable/disable of the full dimensional-doors feature |
 
 If you set this `false` while running: new entries stop. Active travelers and
 pocket occupants may finish through return routes. Recipes, protection, and

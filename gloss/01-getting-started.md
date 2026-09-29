@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-09-28T10:21:32.084Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -21,7 +21,7 @@ Settings are `plugins/Gloss/gloss.toml`. Display content is JSON under `plugins/
 | Jar | `Gloss-<version>-packed.jar` |
 | Optional | PlaceholderAPI, Vault, and supported item plugins |
 
-An XZ packed jar extracts `plugins/Gloss/cache/runtime/` on first start. That directory must be writable. Other library downloads still need a network if that cache is empty.
+An XZ packed jar extracts `plugins/Gloss/cache/runtime/` on first start. That directory must be writable. PacketEvents is bundled in the jar; no separate PacketEvents installation or download is required. Other runtime libraries still need a network on first start if their cache is empty.
 
 ## Files
 

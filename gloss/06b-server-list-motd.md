@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Randomize the message and icon shown in the server list"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-28T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -77,6 +77,10 @@ Besides its text, an entry can set the hover sample, the two player counts, and 
 | `entries[].max` | The count after the slash | Must render to a number |
 | `entries[].version` | The version name a client shows when its protocol does not match | Free text. The protocol number is untouched |
 
+The client measures latency and draws the ping bars. Gloss cannot set their strength or replace
+them with text. Setting `version` only changes the label shown to an incompatible client;
+compatible clients keep the player count and ping bars.
+
 These fields go through the same static render as the MOTD text, described below. `online` and `max`
 are rendered and then read as a number; a value that does not render to one is skipped and logged
 once as `MOTD count "<raw>" did not render to a number.`
@@ -139,6 +143,9 @@ Edits to `motd.json` and to `[features] motd` in `gloss.toml` both apply automat
 
 The web editor can live-sync this singleton with `/gloss web edit motd motd`, or include it in
 `/gloss web workspace`.
+
+The editor previews a compatible client, so configured version text leaves the player count and
+ping bars visible. Hover the player count to read the complete sample list.
 
 MOTD documents stay schema 1. See [Data Files & Hot Reload](/gloss/03-data-files) and
 [Tablist](/gloss/06-tablist).
