@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-28T06:14:07.595Z
+date: 2026-09-29T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,7 +46,7 @@ This example shows where the fields belong; keep the other settings in your file
 
 ## Storage durability
 
-Iris forces generation-history and saved-biome writes to storage by default. The JVM option `-Diris.durability=relaxed` disables these forced writes and relies on operating-system buffering. It preserves the record formats, but a crash or power loss can lose recent writes. Remove the option to restore the default policy.
+Iris writes generation-history and saved-biome records immediately and forces them to storage in the background within about two seconds. It also forces every pending record when the world saves, when the server shuts down, when a pregeneration job finishes, and before a pack update is activated. A crash of the server process loses no records. An operating-system crash or power loss can lose the records written in the last two seconds. The JVM option `-Diris.durability=relaxed` disables forced writes entirely and relies on operating-system buffering. It preserves the record formats, but a crash or power loss can lose recent writes. Remove the option to restore the default policy.
 
 ## Settings groups
 
