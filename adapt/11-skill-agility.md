@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T14:39:19.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,6 +18,11 @@ Every movement credits `move` and pays `moveXp passive` per block. That same dis
 Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
 
 ### Wind Up (`agility-wind-up`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-wind-up-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-wind-up-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 8 knowledge, then 2 per level
 
@@ -38,6 +43,11 @@ Personal controls: Maximum speed (full/half/quarter).
 
 ### Wall Jump (`agility-wall-jump`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-wall-jump-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-wall-jump-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 8 knowledge, then 2 per level
 
 Airborne beside a solid face, sneak latches and stops the fall. Release launches. Ground contact refills latches. A backward release adds a push. Latch clears fall distance; release starts a new fall. Level raises launch strength and latches per airtime.
@@ -56,6 +66,11 @@ Personal controls: Wall jump control (Hold then release sneak/Tap to latch and j
 
 ### Super Jump (`agility-super-jump`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-super-jump-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-super-jump-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 5 knowledge, then 2 per level
 
 Sneak applies a jump-strength bonus until release. A jump during that window uses the bonus.
@@ -65,9 +80,14 @@ Personal controls: Jump control (Sneak and jump/Every jump); Jump height (full/h
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `minimumJumpHeight` | `1.5` | Jump apex in blocks at level 1. Values below the vanilla jump height are clamped up. |
-| `maximumJumpHeight` | `2.5` | Jump apex in blocks at the configured maximum level. |
+| `maximumJumpHeight` | `3.75` | Jump apex in blocks at the configured maximum level, three times the vanilla jump. |
 
 ### Armor-Up (`agility-armor-up`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-armor-up-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-armor-up-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 8 knowledge, then 2 per level
 
@@ -83,6 +103,11 @@ Sprinting builds temporary armor that drains after the sprint stops. Sneak, swim
 | `decaySecondsMaxLevelBonus` | `5.0` | Extra drain seconds added at max level, so the plating lingers longer. |
 
 ### Ladder Slide (`agility-ladder-slide`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-ladder-slide-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-ladder-slide-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 1 knowledge
 
@@ -101,6 +126,11 @@ Personal controls: Upward assistance (on/off); Downward assistance (on/off); Ass
 | `safeLanding` | `true` | Cancels fall damage that came directly out of a fast ladder descent. |
 
 ### Roll Landing (`agility-roll-landing`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-roll-landing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-roll-landing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 
@@ -126,6 +156,11 @@ Personal controls: Food reserve (No reserve/Keep 4 food/Keep 8 food).
 
 ### Slipstream Slide (`agility-slipstream-slide`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-slipstream-slide-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-slipstream-slide-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 4 knowledge, then 3 per level
 
 Sprint, then tap sneak, to drop prone and carry momentum with reduced ground friction. A sprint that ended within the last 350 ms still counts.
@@ -149,6 +184,11 @@ Personal controls: Slide control (Tap sneak/Hold sneak); Maximum slide duration 
 
 ### Air Dash (`agility-air-dash`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-air-dash-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-air-dash-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 5 knowledge, then 3 per level
 
 A sprint-jump arms a dash along look direction. Left-click empty air to spend a charge. Landing rearms it. Flight, glide, swim, climb, riding, an empty food bar, or already being on the ground blocks it.
@@ -167,6 +207,11 @@ Personal controls: Dash trigger (Left click/While sneaking/Empty hand); Dash spe
 
 ### Cat Reflexes (`agility-cat-reflexes`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-cat-reflexes-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-cat-reflexes-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 3 per level
 
 While sprinting, an incoming projectile can miss, cancelling the hit and applying a sideways nudge.
@@ -179,6 +224,11 @@ While sprinting, an incoming projectile can miss, cancelling the hit and applyin
 | `xpPerDodge` | `4` | Skill XP paid per dodged projectile. |
 
 ### Featherfoot (`agility-featherfoot`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-featherfoot-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-featherfoot-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 1 knowledge
 
@@ -205,6 +255,11 @@ Personal controls: Farmland protection (on/off); Pressure plate protection (on/o
 
 ### Vault (`agility-vault`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-vault-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-vault-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 4 knowledge
 
 While grounded, a fence in the path pre-arms a jump high enough to land on top. The vault effect does not scale if `maxLevel` is raised.
@@ -230,6 +285,11 @@ Sprint and sprint-jump exhaustion is reduced. Walking, attacks, and swimming kee
 | `xpPerSaturationSaved` | `0.6` | Skill XP paid per unit of exhaustion saved. |
 
 ### Kip-Up (`agility-kip-up`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-kip-up-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/agility/agility-kip-up-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 4 knowledge, then 3 per level
 
