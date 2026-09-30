@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-28T17:52:41.000Z
+date: 2026-09-30T09:01:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -234,6 +234,8 @@ Rune construction draws the consumed blocks inward before the opening burst. A s
 | `OUTLINE` | Blaze rod |
 | `CORNERS` | End rod |
 | `OFF` | Glass |
+
+`SPARKS` sends each burst as one particle packet around a random aperture cell. `[render] ambient-particle-interval-ticks` (default 1) spaces bursts that many ticks apart, and each burst carries the sparks of the skipped ticks, so the average density stays the same.
 
 Ambient RGB controls change a channel by 8 per click or 32 while shifting. The
 color picker also provides 16 dye presets. Left-click the surface-skin control

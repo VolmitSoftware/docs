@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-30T09:01:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -176,6 +176,8 @@ does not blank the portal. `leaseIdleMillis`, default 30 seconds, is how long th
 - With the default **ON_TRAVERSAL** rotation, a successful trip rerolls the shared destination.
 - Rim feedback is yellow while preparing, red for closing or a failure, and green when ready. A
   timed route runs green to yellow to red as its timer expires.
+- A rim whose color is unchanged refreshes every `[render] rtp-rim-interval-ticks` ticks
+  (default 5). Color and phase changes show at once.
 - Rim feedback and portal sounds toggle independently; muting sounds does not disable particles.
 - Travelers keep the look and movement orientation they entered with.
 

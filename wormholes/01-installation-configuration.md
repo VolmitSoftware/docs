@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-29T05:42:00.000Z
+date: 2026-09-30T09:01:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -111,6 +111,19 @@ the runtime does not use.
 | `interest-grace-ticks` | 0–100 |
 | `initial-resend-passes` | 0–20 |
 | `max-projected-cells` | 0–50000000 (0 disables the ceiling) |
+| `max-held-cells-per-portal` | 0–50000000 |
+| `gaze-fov-degrees` | 30.0–170.0 (non-finite → 110.0) |
+| `gaze-lookahead-ticks` | 0–20 |
+| `gaze-max-starve-ticks` | 1–200 |
+| `section-cache-max-mb` | 1–4096 |
+| `section-cache-chunks-per-tick` | 1–1024 |
+| `section-cache-ttl-ticks` | 20–72000 |
+| `plate-max-bytes` | 1048576–1073741824 |
+| `plate-workers` | 1–16 |
+| `plate-lateral-clamp-blocks` | 0–64 |
+| `plate-capture-chunks-per-tick` | 1–256 |
+| `tick-headroom-target-millis` | 0–50 |
+| `tick-headroom-min-frame-micros` | 1000–`max-frame-micros` |
 | `lighting-refresh-interval-ticks` | 1–40 |
 | `lighting-max-sections-per-pass` | 1–64 |
 | `entity-update-interval-ticks` | 1–20 |
@@ -118,6 +131,9 @@ the runtime does not use.
 | `entity-candidate-cache-ticks` | 1–40 |
 | `max-spoofed-entities` | 0–256 |
 | `capture-zone-radius` | 1.0–64.0 |
+| `rtp-rim-interval-ticks` | 1–100 |
+| `entity-velocity-epsilon` | 0.0–1.0 |
+| `ambient-particle-interval-ticks` | 1–40 |
 | `network.listen-port` | 1–65535; invalid values become 8901 before canonical write |
 | `network.handoff-timeout-ms` | 50–60000 before canonical write |
 | `network.replication.hash-probe-interval-sec` | minimum 1 before canonical write |
@@ -316,6 +332,24 @@ still schedule at most once per server tick.
 | `interest-grace-ticks` | `5` | Ticks a projector stays open after live interest is lost (unrender-on-loss delay) |
 | `initial-resend-passes` | `1` | Full sends after the view is created |
 | `max-projected-cells` | `250000` | Scan ceiling. Over budget, side padding drops first, then depth. `0` disables the ceiling |
+| `shared-plate` | `true` | Build destination sampling and buried-cell culling once per portal and share it between observers. Off samples per observer |
+| `plate-max-bytes` | `33554432` | Memory shared view plates may hold. The oldest plate is evicted first |
+| `plate-workers` | `2` | Worker threads that build shared view plates |
+| `hold-invisible-claims` | `true` | Keep sent cells in place, without packets, while the observer cannot see them. See [Held cells](/wormholes/05-projection-modes-settings#held-cells) |
+| `max-held-cells-per-portal` | `65536` | Held cells per portal and observer. The oldest revert first |
+| `gaze-fov-degrees` | `110.0` | Horizontal field of view whose portals refresh first. The vertical extent follows a 16:9 screen |
+| `gaze-lookahead-ticks` | `3` | Head-turn prediction. A portal about to enter the view at the current turn speed counts as in view |
+| `gaze-max-starve-ticks` | `20` | Longest a portal goes without a refresh, wherever the observer looks |
+| `finish-in-slot` | `true` | Finish occlusion filtering and send blocks in the tick a scan completes when frame budget remains |
+| `section-cache` | `true` | Paper, Purpur, and native loaders: read destination blocks from a shared 16×16×16 section cache and load unloaded chunks asynchronously. Off samples the live world |
+| `section-cache-max-mb` | `64` | Section cache memory. The least recently read sections are evicted first |
+| `section-cache-chunks-per-tick` | `16` | Chunks the section cache may capture per tick. The rest are read live until a later tick captures them |
+| `section-cache-ttl-ticks` | `200` | Ticks before a cached section is captured again on its next read. Bounds staleness for changes that raise no block event |
+| `rtp-plates` | `true` | Build shared view plates for RTP portals, keyed by destination route. Requires `shared-plate` |
+| `plate-lateral-clamp-blocks` | `40` | Widest a shared plate extends past the aperture sideways, capped by the portal's own lateral pad |
+| `plate-capture-chunks-per-tick` | `8` | Destination chunks copied per tick for plate builds |
+| `tick-headroom-target-millis` | `0` | Opt-in tick headroom governor. `0` turns it off and `max-frame-micros` alone limits projection work. Paper and Purpur only |
+| `tick-headroom-min-frame-micros` | `5000` | Smallest per-tick projection budget the governor may shrink to |
 
 Projection behavior detail:
 [05 - Projection Modes & Settings](/wormholes/05-projection-modes-settings).
@@ -334,6 +368,9 @@ Projection behavior detail:
 | `entity-candidate-cache-ticks` | `3` | Candidate cache TTL |
 | `max-spoofed-entities` | `24` | Cap per view |
 | `capture-zone-radius` | `8.0` | Capture zone radius. Applies on reload (every local portal rebuilds its capture AABB) |
+| `rtp-rim-interval-ticks` | `5` | Ticks between RTP rim particle refreshes while the rim color is unchanged. Color and phase changes refresh at once |
+| `entity-velocity-epsilon` | `0.005` | Smallest per-axis velocity change that sends a projected entity a new velocity packet. Stopping always sends |
+| `ambient-particle-interval-ticks` | `1` | Ticks between `SPARKS` ambient bursts. Each burst carries the sparks of every skipped tick, so average density is unchanged |
 
 ## Hot reload
 

@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-28T13:59:31.418Z
+date: 2026-09-30T09:01:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,6 +40,12 @@ menu.
 
 `occlusion-reveal-margin-degrees` sets how early Venticular reveals geometry around edges.
 
+## Held cells
+
+With `hold-invisible-claims = true` (default), a projected cell the observer can no longer see stays on the client instead of reverting. This covers cells that leave the projection cone behind a local wall and cells that become hidden behind nearer destination blocks. Held cells cost no packets. They revert to the real blocks when the portal closes, the local wall changes, the destination or RTP route changes, another portal's projection displaces the cells in front of them, or the observer crosses the portal plane.
+
+`max-held-cells-per-portal` (default `65536`) caps held cells per portal and observer; the oldest revert first. `0` disables holding. Held cells apply on Bukkit and native loaders.
+
 ## Interest and view AABB
 
 The view AABB is the portal area expanded by its activation range. A player must be inside it to receive a projection.
@@ -67,7 +73,24 @@ Budgets from `[projection]`:
 
 If a view exceeds `max-projected-cells`, Wormholes reduces side padding first and then depth. A view that still cannot fit remains empty. A nearer portal can temporarily hide a fully covered portal behind it.
 
-A geometry scan that runs out of time resumes on a later tick. Under load, that view's block updates arrive less often.
+A geometry scan that runs out of time resumes on a later tick. Under load, that view's block updates arrive less often. With `finish-in-slot = true` (default), a scan that completes while frame budget remains also filters occlusion and sends its blocks in the same tick.
+
+### Gaze priority
+
+Each observer's portals are ranked by where the player looks before they take block-update slots.
+
+| Portal position | Refresh |
+|-----------------|---------|
+| Inside `gaze-fov-degrees` (default `110`), or entering it within `gaze-lookahead-ticks` (default `3`) at the current turn speed | Every block tick while the observer changes position, budget permitting. Larger on-screen portals go first |
+| In view, observer standing where the portal was last scanned | Less often |
+| Up to 35 degrees outside the view | Less often |
+| Behind the camera | Keeps its current image |
+
+A portal that has gone `gaze-max-starve-ticks` (default `20`) without a refresh refreshes next, wherever the observer looks. Closing views take priority, and unfinished scans stay eligible wherever the observer looks.
+
+### Tick headroom governor
+
+`tick-headroom-target-millis` (default `0`, off) sets how much server tick time, in milliseconds, projection work tries to leave free. While it is off, `max-frame-micros` alone limits projection work each tick. When it is set above `0` on Paper or Purpur, the per-tick projection budget shrinks while the previous tick left less free time than the target and grows back toward `max-frame-micros` while it left more. `tick-headroom-min-frame-micros` (default `5000`) is the smallest budget it may shrink to. The governor stays off on Folia, Fabric, Forge, and NeoForge, and when `max-frame-micros` is `0`. A chunk load triggered by a projection pass cannot be interrupted, so a single tick can still exceed the budget.
 
 ## Blackout background
 
@@ -118,7 +141,7 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 | `occlusion-reveal-margin-degrees` | `1.0` | Hot-reloadable Venticular guard angle. Higher values reveal blocks and entities earlier around occluder edges to absorb observer movement and packet latency, at the cost of retaining more geometry. Clamped 0–15; `0` uses exact silhouettes. |
 | `depth-blocks` | `64` | Search distance used to find recursive portal candidates beyond the current view, not the primary portal's block depth. |
 | `recursive-portal-depth` | `3` | Recursive portal depth (minimum clamp 3). |
-| `stable-cell-resample-interval-ticks` | `4` | Stable-cell resample interval. |
+| `stable-cell-resample-interval-ticks` | `4` | Ticks between resamples of already-projected cells after a destination block change near the area the view reads. |
 | `client-view-distance-cap` | `true` | Cap scans to client view distance. |
 | `foveated-unrendering` | `false` | Look/side interest filter (`observer-interest-dot` and `side-grace-dot`). |
 | `observer-interest-dot` | `-0.2` | Look-at-portal threshold when foveated. |
@@ -130,6 +153,24 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 | `interest-grace-ticks` | `5` | Interest grace after losing live interest. |
 | `initial-resend-passes` | `1` | Full startup projection sends after a view is created. |
 | `max-projected-cells` | `250000` | See budgets. |
+| `hold-invisible-claims` | `true` | See held cells. |
+| `max-held-cells-per-portal` | `65536` | See held cells. Clamped 0–50000000. |
+| `gaze-fov-degrees` | `110.0` | Horizontal field of view whose portals refresh first; the vertical extent follows a 16:9 screen. Clamped 30–170. See gaze priority. |
+| `gaze-lookahead-ticks` | `3` | Head-turn prediction window. Clamped 0–20. |
+| `gaze-max-starve-ticks` | `20` | Longest a portal goes without a refresh. Clamped 1–200. |
+| `finish-in-slot` | `true` | Finish occlusion filtering and send blocks in the tick a scan completes when frame budget remains. |
+| `shared-plate` | `true` | Build destination sampling, block-state transforms, and buried-cell culling once per portal and share them between observers. Off samples per observer. |
+| `plate-max-bytes` | `33554432` | Memory shared view plates may hold; the oldest plate is evicted first. Clamped 1048576–1073741824. |
+| `plate-workers` | `2` | Worker threads that build shared view plates. Clamped 1–16. |
+| `rtp-plates` | `true` | Build shared view plates for RTP portals, keyed by destination route. Requires `shared-plate`. Off samples RTP destinations per observer. |
+| `plate-lateral-clamp-blocks` | `40` | Widest a shared plate extends past the aperture sideways, capped by the portal's own lateral pad. Cells outside the plate are sampled per observer. Clamped 0–64. |
+| `plate-capture-chunks-per-tick` | `8` | Destination chunks copied per tick for plates built off the main thread. Clamped 1–256. |
+| `section-cache` | `true` | Section cache on Paper, Purpur, and native loaders. See primary, recursive, and remote views. |
+| `section-cache-max-mb` | `64` | Section cache memory; the least recently read sections are evicted first. Clamped 1–4096. |
+| `section-cache-chunks-per-tick` | `16` | Chunks the section cache may capture per tick. Sections over budget are read from the live world until a later tick captures them. Clamped 1–1024. |
+| `section-cache-ttl-ticks` | `200` | Ticks before a cached section is captured again on its next read. Clamped 20–72000. |
+| `tick-headroom-target-millis` | `0` | See tick headroom governor. `0` is off. Clamped 0–50. |
+| `tick-headroom-min-frame-micros` | `5000` | Governor floor. Clamped 1000–`max-frame-micros`. |
 
 ## Global `[render]` keys
 
@@ -145,6 +186,9 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 | `entity-candidate-cache-ticks` | `3` | Candidate cache ticks. |
 | `max-spoofed-entities` | `24` | Entity cap. |
 | `capture-zone-radius` | `8.0` | Capture zone radius. Applies on reload. |
+| `rtp-rim-interval-ticks` | `5` | Ticks between RTP rim particle refreshes while the rim color is unchanged. Color and phase changes refresh at once. Clamped 1–100. |
+| `entity-velocity-epsilon` | `0.005` | Smallest per-axis velocity change that sends a projected entity a new velocity packet. Stopping always sends. Clamped 0–1. |
+| `ambient-particle-interval-ticks` | `1` | Ticks between `SPARKS` ambient bursts. Each burst is one particle packet carrying the sparks of every skipped tick, so average density is unchanged. Clamped 1–40. |
 
 ## Optional destination colors and lighting
 
@@ -172,8 +216,18 @@ sampled. Recursive sampling follows portals that are open and projecting. It
 masks cycles and non-traversable hits, and it does not turn a closed or
 unlinked portal into a view.
 
-Local tunnels sample the destination world directly on Paper and native loaders. Folia captures
-immutable chunk snapshots on the owning region. Active snapshots update entity
+On Paper, Purpur, Fabric, Forge, and NeoForge, local tunnels read destination blocks
+from a shared cache of 16×16×16 sections (`section-cache`). On Paper and Purpur, block
+changes from players, pistons, explosions, fluids, and growth, and players toggling
+doors, trapdoors, fence gates, levers, and buttons, refresh the affected section at
+once. Changes that raise no block event, such as redstone power or edits by other
+plugins, can appear later. On Fabric, Forge, and NeoForge, every block change the
+server sends to players refreshes the affected section at once. Other changes appear
+when a cached section is captured again on its first read after `section-cache-ttl-ticks`.
+Unloaded destination chunks load asynchronously, and their cells show nothing until
+the chunk arrives. With `section-cache = false`, local tunnels sample the destination
+world directly. RTP portals share one view plate per destination route (`rtp-plates`).
+Folia captures immutable chunk snapshots on the owning region. Active snapshots update entity
 motion at a 250 ms cadence and refresh metadata, equipment, and map contents
 every 500 ms. Block snapshots are reused until a tracked chunk change or a
 60-second safety refresh. Motion captures do not postpone either content
