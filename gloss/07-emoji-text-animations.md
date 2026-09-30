@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -233,7 +233,7 @@ A single-frame animation always renders that frame, whatever the mode.
 
 ### Using an animation
 
-`|animation.<id>|` works anywhere the text pipeline runs: hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text, `[drops] nameFormat` and MOTD lines. Container-preview labels call the expression helpers directly instead.
+`|animation.<id>|` works anywhere the text pipeline runs: hologram lines, board titles and lines, tablist header, footer and name formats, menu and panel text, Real Drops `labels.format` and MOTD lines. Container-preview labels call the expression helpers directly instead.
 
 Frames are selected from server time, so the same animation stays synchronized across surfaces, and each surface's refresh rate limits the visible frame rate. Holograms can play clips above 20 fps; see [Holograms](/gloss/04-holograms).
 

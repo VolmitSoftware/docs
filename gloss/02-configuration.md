@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -210,15 +210,7 @@ Damage conditions can use applied-delta event values plus immutable affected-ent
 | Key | Default | Range | Meaning |
 |---|---|---|---|
 | `show` | `"true"` | Boolean or expression string | Per-viewer label visibility; accepts `show = false` or `show = "world.time > 12000"`. Gloss normalizes it to a quoted expression string. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) |
-| `nameFormat` | `"&7{count}x {type}"` | Not applicable | Name format for dropped stacks. `{count}` and `{type}` are replaced. A null value restores the default |
-| `bundleFormat` | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | Not applicable | Name format for a dropped bundle carrying stacks. `{total}` and `{contents}` are replaced. A null value restores the default. An empty bundle falls back to `nameFormat` |
-| `bundleEntryLimit` | `3` | 1 – 10 | Bundle content entries listed before the rest collapse into a `+N more` suffix |
-| `bundleVerticalLabels` | `true` | Not applicable | Use one multiline TextDisplay for bundle labels while real drops are active |
-| `bundleHeaderFormat` | `"&eBundle &8(&e{total} items&8)"` | Not applicable | First vertical bundle line; `{total}` is replaced |
-| `bundleEntryFormat` | `"&7- &f{count}x {type}"` | Not applicable | One vertical line per material; `{count}` and `{type}` are replaced |
-| `bundleMoreFormat` | `"&8+{remaining} more"` | Not applicable | Final line for hidden material types; `{remaining}` is replaced |
 | `preserveCustomNames` | `true` | Not applicable | Leave custom names other plugins already set on dropped item entities untouched. Gloss tracks its own labels with a persistent data key |
-| `useItemDisplayNames` | `false` | Not applicable | Opt in to using an item's display name from its item meta as `{type}` instead of the pretty material name |
 
 ## `real-drops/default.json`
 
@@ -226,7 +218,7 @@ Real Drops settings live in `plugins/Gloss/real-drops/default.json`, a schema-4 
 `presentation`, conditional `variants` and an `audience.when`. It reloads automatically and opens
 in the web editor with `/gloss web edit real-drops default`.
 
-Every key, default and range is on [Drop Labels](/gloss/08c-drop-labels#real-drops).
+It also holds the drop label text: `presentation.labels.format`, per-material `names`, `useItemDisplayNames` and the `bundle` formats. Every key, default and range is on [Drop Labels](/gloss/08c-drop-labels#real-drops).
 
 ## `[commands]`
 

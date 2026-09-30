@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-09-20T03:09:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,14 +12,27 @@ Gloss can label dropped items and render them as display-backed models.
 
 Open the editor with `/gloss web edit real-drops default`. Documents are schema 4.
 
-With `[features] drops = true` (the default) every item entity that spawns gets a visible custom name built from `[drops] nameFormat`:
+With `[features] drops = true` (the default) every item entity that spawns gets a visible custom name. Its text comes from `labels` in the Real Drops document, `plugins/Gloss/real-drops/default.json`, so the fallback presentation and each variant can word labels differently. The name is used whether or not `[features] realDrops` is on.
+
+| Key | Default | Meaning |
+|---|---|---|
+| `labels.format` | `"&7{count}x {type}"` | Label text for a dropped stack. A blank value uses the default |
+| `labels.names` | `{}` | Per-material names used as `{type}`, such as `{"COBBLESTONE": "&7Cobble", "IRON_BLOCK": "Block of Iron"}`. Keys are material names in any case. Entries with a blank name are ignored |
+| `labels.useItemDisplayNames` | `false` | Uses the item's own display name, such as an anvil rename, as `{type}` when it has one |
 
 | Token | Replaced with |
 |---|---|
 | `{count}` | The stack size |
-| `{type}` | The material name lowercased with underscores turned into spaces, so `DIAMOND_SWORD` becomes `diamond sword`. When `[drops] useItemDisplayNames` is explicitly enabled and item meta has a display name, that renamed value is used instead |
+| `{type}` | The item's own display name when `labels.useItemDisplayNames` is on and the item has one; otherwise the `labels.names` entry for the material; otherwise the material name in Title Case, so `COBBLESTONE` becomes `Cobblestone` and `HEART_OF_THE_SEA` becomes `Heart of the Sea` |
 
-The default is `"&7{count}x {type}"`, giving `64x cobblestone` and `1x diamond sword` even when that sword was renamed in an anvil. Set `[drops] useItemDisplayNames = true` to show `1x Excalibur` instead. A null `nameFormat` restores the default on load; an explicit empty string stays empty.
+The default gives `64x Cobblestone` and `1x Diamond Sword`, even when that sword was renamed in an anvil. Turn on `labels.useItemDisplayNames` to show `1x Excalibur` instead. The format runs through the Gloss text pipeline, so color codes, emoji, `|function|` calls, `%placeholders%` and `{{ expressions }}` all work. For example, this prints the name first and renames two materials:
+
+```json
+"labels": {
+  "format": "&f{type} &8x{count}",
+  "names": { "COBBLESTONE": "&7Cobble", "IRON_BLOCK": "Block of Iron" }
+}
+```
 
 Under `[drops]` in `gloss.toml`, `show` accepts a boolean or an expression string. Use `show = false`
 to hide labels, or `show = "world.time > 12000"` to show them only after that world-time threshold.
@@ -29,26 +42,37 @@ present. See [Show conditions](/gloss/13-expressions-placeholders#show-condition
 
 ## Bundles
 
-A dropped `BUNDLE` whose `BundleMeta` carries stacks keeps a horizontal fallback name from `[drops] bundleFormat`. A merged React super-stack therefore describes its contents rather than retaining the target item that existed before the merge:
+Bundle label text lives in `labels.bundle`:
+
+| Key | Default | Meaning |
+|---|---|---|
+| `format` | `"&7Bundle &8(&7{total} items&8): &7{contents}"` | Single-line bundle label and the name kept on the item |
+| `entryLimit` | `3` | Content entries shown before the rest collapse into a `+N more` entry; 1 – 10 |
+| `vertical` | `true` | Draws the visible label one line per material |
+| `headerFormat` | `"&eBundle &8(&e{total} items&8)"` | First vertical line; `{total}` is replaced |
+| `entryFormat` | `"&7- &f{count}x {type}"` | One vertical line per material; `{count}` and `{type}` are replaced, with `{type}` named like a stack label |
+| `moreFormat` | `"&8+{remaining} more"` | Last vertical line when materials are hidden; `{remaining}` is replaced |
+
+A dropped `BUNDLE` whose `BundleMeta` carries stacks gets its single-line name from `labels.bundle.format`. A merged React super-stack therefore describes its contents rather than retaining the target item that existed before the merge:
 
 | Token | Replaced with |
 |---|---|
 | `{total}` | The summed amount of every stack inside the bundle |
 | `{contents}` | The rendered content list |
 
-Contents are aggregated by material. Every stack of the same type is summed into one entry. They are ordered largest amount first; ties use the material name. `[drops] bundleEntryLimit` defaults to `3` and clamps to 1 – 10. The remainder counts hidden material types, not hidden items.
+Contents are aggregated by material. Every stack of the same type is summed into one entry. They are ordered largest amount first; ties use the material name. `labels.bundle.entryLimit` caps the listed entries, and the remainder counts hidden material types, not hidden items.
 
-With `[features] realDrops = true` and `[drops] bundleVerticalLabels = true`, the visible display is vertical. `[drops] bundleHeaderFormat`, `bundleEntryFormat`, and `bundleMoreFormat` produce:
+With `[features] realDrops = true` and `labels.bundle.vertical = true`, the visible display is vertical. `headerFormat`, `entryFormat`, and `moreFormat` produce:
 
 ```
 Bundle (12 items)
-- 5x stone
-- 4x dirt
-- 2x oak log
+- 5x Stone
+- 4x Dirt
+- 2x Oak Log
 +1 more
 ```
 
-A bundle with no contents, or whose stacks are all empty, falls back to `nameFormat` and is named `1x bundle`.
+A bundle with no contents, or whose stacks are all empty, uses `labels.format` and is named `1x Bundle`.
 
 React super-stack bundles can supply their own label formats and entry limit.
 
@@ -127,6 +151,10 @@ The table below uses paths relative to `presentation`; the same fields exist ins
 | `landing.settleDelayTicks` | `4` | Stable ticks before sparse polling; 0 – 100 |
 | `labels.enabled` | `true` | Shows the effective drop name through the Gloss text engine |
 | `labels.yOffset` | `0.55` | Label translation above the item; -4 – 16 blocks |
+| `labels.format` | `"&7{count}x {type}"` | Stack label text; see the start of this page |
+| `labels.useItemDisplayNames` | `false` | Uses the item's own display name as `{type}` |
+| `labels.names` | `{}` | Per-material `{type}` names |
+| `labels.bundle` | See [Bundles](/gloss/08c-drop-labels#bundles) | Bundle label text and entry limit |
 | `labels.style` | See below | Shared Gloss display style, including independent XYZ scale, billboard, alignment, opacity, lights, view range, culling, and glow |
 | `labels.box` | Disabled | Shared padded background and uniform border; colors use `#AARRGGBB` |
 | `filters.disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla rendering |
@@ -140,7 +168,7 @@ An omitted `labels.style` uses center billboard, glyph shadow, see-through, cent
 
 Labels retain their authored functions, viewer expressions, and named particle spans. Viewer-dependent formats keep a literal count/type name on the underlying item; their authored text is evaluated only for the player viewing the label. Label particles use the label's vertical offset and the configured global particle range; a larger display view range does not increase the particle range.
 
-The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including display style, box, particles, physics, script, and animation. On the drop stage, a cube draws the block's real model and a flat item draws the item's extruded texture, both over the rendered world.
+The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including label text, per-material names, bundle text, display style, box, particles, physics, script, and animation. On the drop stage, a cube draws the block's real model and a flat item draws the item's extruded texture, both over the rendered world, and each sample drop shows the label its presentation produces.
 
 `NATURAL` keeps the airborne rotation and settles the nearest face toward the ground. Partial blocks are positioned against their actual bounds instead of intersecting the surface.
 
