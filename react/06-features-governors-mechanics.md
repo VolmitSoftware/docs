@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,7 +37,7 @@ This feature scales down per-world Spigot entity activation ranges under sustain
 
 ### `dynamic-activation-range`
 
-This feature lowers the activation radius when tick time rises, pausing distant living entities. It honors `SLEEP` protection, wakes entities for damage and targeting, and does not re-enable AI disabled by another plugin.
+This feature lowers the activation radius when tick time rises, pausing distant living entities. It honors `SLEEP` protection, wakes the entities it paused when they take damage, target something, or are targeted, and does not re-enable AI disabled by another plugin.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -138,7 +138,7 @@ This feature lowers `randomTickSpeed` under sustained pressure. It restores the 
 
 ### `per-world-tick-budget`
 
-This feature measures per-world tick share. It publishes NORMAL, PRESSURE, or PANIC. Adaptive entity sleep, dynamic activation range, item backpressure, and pathfinder budget consume that per-world state when they apply pressure behavior.
+This feature measures per-world tick share. Each world's share is its part of the current `tick-time` value, the trailing five-second average, split by the world's entity and chunk counts, so one world never reads above `tick-time`. It publishes NORMAL, PRESSURE, or PANIC. Adaptive entity sleep, dynamic activation range, item backpressure, and pathfinder budget consume that per-world state when they apply pressure behavior.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -153,7 +153,9 @@ This feature measures per-world tick share. It publishes NORMAL, PRESSURE, or PA
 
 ### `chunk-quarantine`
 
-This feature scores hot chunks from spawns, redstone, physics, and hoppers. It quarantines those chunks. Under pressure it cancels or freezes activity.
+This feature scores hot chunks from spawns, redstone, physics, and hoppers, and quarantines a chunk whose score reaches `scoreTrigger` within one `windowMS` window. For `quarantineMS`, a quarantined chunk has its tracked spawns, sampled physics updates (1 in `samplePhysicsEveryN`), and hopper moves cancelled and its redstone held, for each kind whose `track*` option is enabled. With `bypassNearPlayers` enabled, nothing is cancelled or held while a player is within `bypassPlayerRadius`. Tracked spawns are natural spawns when `trackNaturalSpawns` is enabled and spawner spawns when `trackSpawnerSpawns` is enabled. With `onlyDuringPressure` enabled, chunks are scored only while tick time or incident score is above the pressure thresholds, or while a quarantine is still running; at other times the feature does no per-event work.
+
+The feature tracks at most `maxTrackedChunks` chunks. When the table is full, the chunk with the oldest activity is dropped to make room for a new one. A chunk entry is stale once it has had no activity for the longer of 8 × `windowMS` and 2 × `quarantineMS` and is not quarantined; each maintenance cycle removes stale entries oldest first, up to `maxExpiryRemovalsPerCycle`.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -162,7 +164,7 @@ This feature scores hot chunks from spawns, redstone, physics, and hoppers. It q
 | `windowMS` | int | `1600` | Scoring window (ms). |
 | `quarantineMS` | int | `12000` | Quarantine duration (ms). |
 | `scoreTrigger` | double | `145` | Score to quarantine. |
-| `maxTrackedChunks` | int | `4096` | Max tracked chunks. |
+| `maxTrackedChunks` | int | `4096` | Max tracked chunks; when full, the chunk with the oldest activity is dropped for a new one. |
 | `onlyDuringPressure` | boolean | `true` | Only under pressure. |
 | `pressureIncidentScore` | double | `48` | Pressure incident threshold. |
 | `pressureTickMS` | double | `58` | Pressure tick threshold (ms). |
@@ -174,8 +176,8 @@ This feature scores hot chunks from spawns, redstone, physics, and hoppers. It q
 | `trackPhysics` | boolean | `true` | Track physics. |
 | `samplePhysicsEveryN` | int | `3` | Physics sample cadence. |
 | `trackHoppers` | boolean | `true` | Track hoppers. |
-| `maxExpiryRemovalsPerCycle` | int | `192` | Max stale removals per cycle. |
-| `maxExpiryScansPerCycle` | int | `1024` | Max expiry scans per cycle. |
+| `maxExpiryRemovalsPerCycle` | int | `192` | Max stale entries removed per maintenance cycle (at least 16). |
+| `maxExpiryScansPerCycle` | int | `1024` | Max entries checked per maintenance cycle (at least `maxExpiryRemovalsPerCycle`). |
 | `maintenanceIntervalMS` | int | `1000` | Maintenance cadence (ms). |
 
 ### `circuit-manager`
@@ -200,10 +202,12 @@ with the world, coordinate, event count and measured time.
 
 Detects linear hopper chains and reports what skipping their intermediate ticks would save. Measurement-only by default; set `featureActMode` and supply an NMS hopper hook to actually skip them.
 
+Placing or breaking a hopper, comparator, repeater, or any inventory block (chests, copper chests, barrels, shulker boxes, furnaces, brewing stands, droppers, dispensers, crafters, lecterns, jukeboxes, decorated pots, chiseled bookshelves, and shelves) queues a chain repair for the surrounding chunks. While accounting is engaged, the `hopper-chain-coalescing` sampler reports HC/s: each second it adds the length minus one of every fast-path-eligible chain outside `bypassRadius`. The reported rate does not depend on `tickIntervalMS`.
+
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
-| `tickIntervalMS` | int | `1000` | Evaluation interval (ms). |
+| `tickIntervalMS` | int | `1000` | Evaluation interval (ms); runtime values are at least `250`. |
 | `bypassRadius` | int | `16` | Player bypass radius (blocks). |
 | `minChainLength` | int | `4` | Minimum chain length. |
 | `rebuildIntervalTicks` | int | `200` | Minimum age before an Observer coordinate becomes eligible for another maintenance repair. It does not trigger a full rebuild. |
@@ -216,7 +220,7 @@ Detects linear hopper chains and reports what skipping their intermediate ticks 
 
 ### `hopper-item-index`
 
-This feature maintains spatial indices of dropped items and hoppers for `TweakHopperIndex`. Item and hopper relocation is serialized by UUID, and chunk/world removal clears both the primitive index and its reverse references.
+This feature maintains spatial indices of dropped items and hoppers for `TweakHopperIndex`. Item and hopper relocation is serialized by UUID, and chunk/world removal clears both the primitive index and its reverse references. An item leaves the index as soon as it is removed from the world for any reason, including merging, burning, despawning, pickup, and chunk unload. Hopper discovery works on Paper, Folia, and Spigot. Each distinct reconcile failure is reported to the console with its stack trace the first time it occurs; repeats of the same failure are reported at most once per minute, with a count of the repeats suppressed since the previous report.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -253,14 +257,14 @@ This feature throttles high-frequency redstone clocks via `BlockRedstoneEvent` (
 
 ### `crop-fast-forward`
 
-When a chunk wakes after long dormancy, this feature advances crop and sapling growth. It **silences under high load**. That polarity is the opposite of most governors. Each pass consumes at most 128 immutable coordinates from the Observer rotation, evaluates each loaded chunk only on its owning server or region thread, and retires queued work from an older activation. It does not enumerate every loaded chunk.
+This feature advances crop and sapling growth in chunks that players return to after a long absence. It **silences under high load**. That polarity is the opposite of most governors. A chunk counts as active while it is within the world's simulation distance of any player, because the server grows crops there itself; only the time a chunk spends outside that distance is fast-forwarded. Absences shorter than `minElapsedTicks` are ignored and the total is capped at `maxFastForwardTicks`. The pending growth is applied once a player comes within `activeRange` blocks of the chunk, at most 128 chunks per pass, each on its owning server or region thread. A chunk that unloads or reloads discards its pending growth. Chunk activity keeps being tracked while the feature is silenced.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this feature. |
 | `tickIntervalMS` | int | `2500` | Evaluation interval (ms). |
-| `activeRange` | int | `64` | Player range classifying chunk active (blocks). |
-| `minElapsedTicks` | int | `200` | Min dormant ticks before fast-forward. |
+| `activeRange` | int | `64` | Player distance from a chunk's center column at which its pending fast-forward is applied (blocks). |
+| `minElapsedTicks` | int | `200` | Minimum time outside simulation distance before a chunk fast-forwards (ticks). |
 | `maxFastForwardTicks` | int | `24000` | Cap on dormant ticks fed into growth math. |
 | `engageOnIncident` | double | `30` | Incident score **above** which feature stops. |
 | `engageOnTickMs` | double | `50` | Tick ms **above** which feature stops. |
@@ -298,7 +302,7 @@ silently losing growth.
 
 ### `furnace-brew-batching`
 
-Skips intermediate furnace and brewing-stand ticks away from players while the server is under pressure. Without an NMS bridge it stays measurement-only.
+Skips intermediate furnace and brewing-stand ticks away from players while the server is under pressure, then advances each block by its skipped ticks the next time it runs normally. Skipped-tick debt belongs to one world and block position and is dropped when that block is broken or its chunk or world unloads. Furnaces and brewing stands in newly loaded chunks join the index through the `reseedChunksPerTick` budget, so during heavy chunk loading they can take a few evaluation intervals to be picked up. Without an NMS bridge it stays measurement-only.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -311,7 +315,7 @@ Skips intermediate furnace and brewing-stand ticks away from players while the s
 | `sustainEngageMs` | long | `6000` | Sustain engage (ms). |
 | `sustainReleaseMs` | long | `30000` | Sustain release (ms). |
 | `maxTrackedEntries` | int | `8192` | Max tracked block entities. |
-| `reseedChunksPerTick` | int | `32` | Max chunks reseeded per maintenance tick. |
+| `reseedChunksPerTick` | int | `32` | Chunks scanned per evaluation. Newly loaded chunks are scanned first, with a quarter of the budget (at least one chunk when the budget is above `1`) held back for the loaded-chunk rotation; runtime values are clamped to `1..256`. |
 
 ### `fast-leaf-decay`
 

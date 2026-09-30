@@ -2,7 +2,7 @@
 title: "PlaceholderAPI"
 description: "%wormholes_…% keys for operators"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -67,12 +67,12 @@ Ignore the player. Same answer for everyone and for a no-player parse.
 | `%wormholes_available%` | boolean | `true` after first server snapshot publish. `false` before. Never `---` |
 | `%wormholes_portals%` | integer | Local registered portals. Remote portals not counted |
 | `%wormholes_projections.active%` | integer | Portals currently rendering a projection |
-| `%wormholes_projections.observers%` | integer | Distinct players with a projection frame in flight (one player on two portals counts once) |
+| `%wormholes_projections.observers%` | integer | Distinct players currently watching at least one projection (one player on two portals counts once) |
 | `%wormholes_peers.connected%` | integer | Peers in the ready state. Same count as `wormholes.peers-connected` |
 | `%wormholes_peers.link%` | enum | Cross-server link health (see vocabularies) |
 | `%wormholes_transfers.in-flight%` | integer | Pending player admissions, dispatched players awaiting arrival receipts, and non-player entity transfers in progress |
 | `%wormholes_failures%` | integer | Cumulative internal failures since startup |
-| `%wormholes_failures.per-minute%` | decimal | Failures per minute extrapolated from the latest elapsed sample interval (at least one second) |
+| `%wormholes_failures.per-minute%` | decimal | Internal failures recorded in the last 60 seconds |
 
 `failures` is a health count, not an error log.
 

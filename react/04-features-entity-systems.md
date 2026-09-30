@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "Entity stacking, sleeping, trimming, item, spawn, vehicle, portal, and explosion features"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Container preview access checks do not split entity stacks or cancel an entity's
 
 ### `mob-stacking`
 
-This feature merges compatible living entities into stacks. `ReactEntity` persists the stack count on each entity. The feature processes dirty chunks on a batch interval and supports vacuum collect packets.
+This feature merges compatible living entities into stacks. `ReactEntity` persists the stack count on each entity. The feature processes dirty chunks on a batch interval and supports vacuum collect packets. A chunk is checked again when a stackable mob spawns in it, moves into it, or changes stack size. A chunk whose last check merged nothing is rechecked by routine entity sampling at most once every 15 seconds.
 
 When Gloss entity overlays are enabled, React supplies the count for the shared health, name, and combat display. Gloss controls its layout and visibility, including Adapt Insight restrictions. React removes its own native stack label to prevent duplicate names and preserves names assigned by players or other plugins. Count changes publish immediately, and sampled stacks refresh at most once every five seconds to reconnect after a Gloss reload.
 
@@ -42,7 +42,7 @@ Restored mobs use the surviving mob's state. React stores the count, not separat
 
 ### `adaptive-entity-sleep`
 
-This feature puts distant living entities into sleep or pause under load. Optional mid-range duty-cycling uses `Mob#setAware` when available. It wakes on damage or target when configured.
+This feature puts distant living entities into sleep or pause under load. Optional mid-range duty-cycling uses `Mob#setAware` when available. When `wakeOnDamage` or `wakeOnTarget` is enabled, an entity this feature paused or duty-cycled wakes as soon as it takes damage, targets something, or is targeted.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -65,7 +65,7 @@ This feature puts distant living entities into sleep or pause under load. Option
 
 ### `entity-trimmer`
 
-When entity counts exceed soft caps, this feature removes lowest-priority eligible entities in batches. Soft caps apply per chunk, per player, and per world.
+When entity counts exceed soft caps, this feature removes lowest-priority eligible entities in batches. Soft caps apply per chunk, per player, and per world. Each cycle scans the entities within `playerMobBlockDistance` of up to 24 online players in rotation. Players standing in the same 16-block chunk section share one scan and take turns as the scanned player, and the per-player cap is measured around the scanned player.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -85,7 +85,7 @@ When entity counts exceed soft caps, this feature removes lowest-priority eligib
 
 ### `item-super-stacker`
 
-Merges nearby dropped items into one bundle. Picking it up gives you everything inside, and matching ordinary stacks consolidate immediately instead of waiting for Minecraft's merge timer.
+Merges nearby dropped items into one bundle. Picking it up gives you everything inside, and matching ordinary stacks consolidate immediately instead of waiting for Minecraft's merge timer. A bundle that already holds `maxItemsPerBundle` items is left as it is, and nearby drops keep merging with each other.
 
 With Gloss installed, the bundle's label lists its contents and updates as they change. Without Gloss, bundling and pickup still work with no label.
 

@@ -2,7 +2,7 @@
 title: "Actions Catalog"
 description: "Operator actions, parameters, and safety rules"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,7 @@ TOML fields:
 | `enabled` | boolean | `true` | Enables or disables this action. |
 | `blacklist` | list of entity types | built-in protected list | Entity types excluded when `defaultBlacklist` is enabled. Includes `ENDER_DRAGON`; dragon protection also applies independently of this list. |
 | `defaultBlacklist` | boolean | `true` | Applies the built-in entity type blacklist. |
-| `secondsToPurge` | int | `5` | Baseline for the randomized 4–6 second kill countdown chosen by the action instance. It is not an entity-age check. |
+| `secondsToPurge` | int | `5` | Baseline for the kill countdown. Each purged entity receives a random countdown from `secondsToPurge - 1` to `secondsToPurge + 1` seconds, read from the current configuration when the entity is scheduled. It is not an entity-age check. |
 | `protectNamedEntities` | boolean | `true` | Protect entities with nonblank custom names in default action parameters. Disable to make them eligible. |
 
 Execution parameters:
@@ -81,7 +81,7 @@ This action isolates the hottest sampled chunks. Unload and cull options are ava
 | `minimumChunkScore` | double | `90` | Minimum chunk score to qualify. |
 | `unsafePlayerRadius` | double | `56` | Skip chunks with players within this radius (blocks). |
 | `unloadChunk` | boolean | `true` | Unload qualifying chunks. |
-| `cullEntities` | boolean | `true` | Cull entities in qualifying chunks. |
+| `cullEntities` | boolean | `true` | Cull entities in qualifying chunks. With `unloadChunk` enabled, culled entities are removed immediately so the chunk unload cannot save them. With `unloadChunk` disabled, each culled entity receives a 4–11 second kill countdown. |
 | `includeNeighborRing` | boolean | `true` | Include neighbor chunk ring. |
 | `minEntityAgeTicks` | int | `200` | Minimum entity age before cull. |
 | `protectNamed` | boolean | `true` | Protect named entities. |
@@ -124,7 +124,7 @@ This action normalizes hopper hotspots. It merges nearby transfer items. It can 
 |---|---|---|---|
 | `world` | String | null/empty | Optional world name filter. |
 | `maxChunks` | int | `20` | Maximum chunks processed. |
-| `minimumHopperUpdatesPerChunk` | double | `25` | Minimum hopper activity to qualify. |
+| `minimumHopperUpdatesPerChunk` | double | `25` | Minimum per-chunk `hopper` score a chunk needs to qualify. Each hopper item move charged to the chunk adds 1 and the score halves about once per second, so a chunk moving N items per second holds a score between N and 2 × N. See `hopper` in [10 - Samplers & Metrics](/react/10-samplers-metrics). |
 | `unsafePlayerRadius` | double | `24` | Skip near players (blocks). |
 | `itemMergeRadius` | double | `2` | Item merge radius (blocks). |
 | `maxMergedItemEntitiesPerChunk` | int | `48` | Cap on merged item entities per chunk. |

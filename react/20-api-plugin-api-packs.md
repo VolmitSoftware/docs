@@ -2,7 +2,7 @@
 title: "API - Plugin API Packs"
 description: "Folder-backed community metric definitions for React"
 published: true
-date: 2026-08-28T07:55:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -49,6 +49,8 @@ Supported sources are:
 - public Bukkit event counters
 
 Packs cannot call arbitrary fields or methods.
+
+`targetVersions` patterns are matched against the `version` in the target plugin's `plugin.yml` or `paper-plugin.yml`. A pack that fails during collection is reported once in the console until it collects successfully again, and the remaining packs keep sampling.
 
 Each metric becomes `plugin-api-<pack-id>-<metric-id>` and is available in monitors, history, React Web, and `%react_sampler.<id>%`.
 

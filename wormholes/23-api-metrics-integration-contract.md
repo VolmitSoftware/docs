@@ -2,7 +2,7 @@
 title: "API - Metrics & Integration Contract"
 description: "Discover Wormholes metrics through the VolmLib integration service"
 published: true
-date: 2026-09-28T14:29:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,9 +37,15 @@ Native loaders publish portal count, active projections, connected player count 
 |---|---|
 | `wormholes.portals` | Managed portals |
 | `wormholes.projections-active` | Active projections |
+| `wormholes.projection-observers` | Distinct players currently watching at least one projection |
 | `wormholes.block-changes-per-second` | Projection block changes per second |
-| `wormholes.traversals-per-minute` | Recent traversal rate |
+| `wormholes.traversals-per-minute` | Portal traversals completed in the last 60 seconds |
 | `wormholes.peers-connected` | Connected network peers |
+| `wormholes.peer-rtt-max-ms` | Highest round-trip time among handshaken peers; unavailable when no peer has completed a handshake |
+| `wormholes.compression-ratio-out` | Outbound wire-to-raw byte ratio over the most recent second; unavailable while nothing is sent |
+| `wormholes.plate-builds-per-second` | Projection view plates built per second |
+| `wormholes.plate-bytes` | Estimated memory held by cached projection view plates |
+| `wormholes.block-entities-per-second` | Projected block-entity updates sent to viewers per second |
 | `wormholes.transfers-in-flight` | Pending admissions, dispatched players awaiting destination receipts, and non-player entity transfers in progress |
 | `wormholes.transfers-failed-total` | Cumulative traversal failures, including denied admissions and unconfirmed arrivals |
 

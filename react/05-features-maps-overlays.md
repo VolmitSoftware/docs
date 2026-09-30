@@ -2,7 +2,7 @@
 title: "Features - Maps & Overlays"
 description: "React documentation: Features - Maps & Overlays"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,8 +38,9 @@ Pie maps use a donut chart and a 3–32-row legend. Extra slices are grouped as 
 
 ### `chunk-load-gen-cost-map`
 
-Where chunk loading and generation is costing the most time. Built from the `chunk-load-ms`,
-`chunk-gen-ms`, `chunks-loaded`, and `chunks-generated` samplers.
+Where other plugins' `ChunkLoadEvent` listeners spend the most main-thread time on chunk loads and
+generation. Built from the `chunk-load-listener-ms`, `chunk-gen-listener-ms`, `chunks-loaded`, and
+`chunks-generated` samplers.
 
 ### `chunk-sampler-map`
 
@@ -47,7 +48,8 @@ Observer aggregate cost: `SampledChunk.totalScore()` per chunk.
 
 ### `entity-pressure-heatmap`
 
-Score: per-chunk `entities` sampler.
+Score: the live count of tracked entities in each chunk (the per-chunk `entities` value). The count
+does not decay.
 
 ### `redstone-activity-heatmap`
 
