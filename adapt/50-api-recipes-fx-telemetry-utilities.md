@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,13 +51,16 @@ one particle effect. It still respects global and per-player effect settings.
 
 Two classes expose read-only counters. Both take `System.currentTimeMillis()`
 as their `now` argument. `AbilityCheckTelemetry` covers ability-check rates,
-cache hit and miss rates, and average uncached guard-check time. Its
-`estimatedTimingMillisPerSecond` is the guard-check time accumulated over the
-rolling 60-second window divided by 60. `timingBudgetPercent` expresses that
-value against a 50 ms/s budget, so `100` means guard checks averaged 50
-milliseconds of work per second. Operation rates remain throughput telemetry;
-they do not by themselves establish performance impact. The class also exposes
-an immutable `AbilitySnapshot` per ability. `AdaptRuntimeTelemetry` covers XP
+cache hit and miss rates, and average uncached guard-check time at 0.1 µs
+resolution. Its `estimatedTimingMillisPerSecond` is the guard-check time
+accumulated over the rolling 60-second window divided by 60.
+`timingBudgetPercent` expresses that value against a 50 ms/s budget, so `100`
+means guard checks averaged 50 milliseconds of work per second. `checksPerTick`
+divides the checks of the rolling window by the server ticks Adapt observed in
+that window, so it stays accurate while the server runs below 20 TPS.
+Operation rates remain throughput telemetry; they do not by themselves
+establish performance impact. The class also exposes an immutable
+`AbilitySnapshot` per ability. `AdaptRuntimeTelemetry` covers XP
 per minute, XP payout count, provenance operation count, and event-handler
 operation count over the current minute.
 
@@ -120,7 +123,8 @@ When an adaptation launches or repurposes a projectile it stamps an ownership ke
 | `FxBudget.PER_EMITTER_PARTICLE_CAP` | `256` particles per emitter call |
 | `FxBudget.PER_VIEWER_EMISSION_CAP` | `64` emissions per viewer |
 | `FxBudget.usedPackets()` | Packets consumed so far this tick. Read-only diagnostics |
-| `FxBudget.shedBand()` | Which shed band the TPS sampler has settled on, `0` for none. Read-only diagnostics |
+| `FxBudget.averagePacketsPerTick(long now)` | Average packets consumed per tick during the last completed second; `0` once the FX director has not ticked for two seconds. Read-only diagnostics |
+| `FxBudget.shedBand()` | Which shed band the TPS sampler has settled on, `0` for none. Reading it refreshes the TPS sample at most once per second. Read-only diagnostics |
 | `FxBudget.densityScalar(FxPriority)` | The particle-count scalar for that priority in the current shed band |
 | `FxBudget.tryConsume(FxPriority, int)` | Consumes the shared budget. Adapt-owned. Calling it from unrelated code starves real effects |
 

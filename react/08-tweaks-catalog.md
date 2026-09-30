@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "Event and NMS tweaks with configuration defaults"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,14 +36,14 @@ This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protect
 
 ### `entity-hardstop`
 
-This tweak caps the entity population per chunk. It cancels spawns, breeding, and drops at the limit. Spawn denial uses the `SPAWN_CAP` protection operation. See [17 - API - Entity Protection](/react/17-api-entity-protection).
+This tweak caps the entity population per chunk. It cancels spawns, breeding, and drops at the limit, and skips spawns that another plugin or React feature has already cancelled. React counts a chunk's entities once, reuses that count for 1 second, and adds each entity it lets spawn, so a burst of spawns in one chunk does not recount it. When that running count reaches `maxEntitiesPerChunk`, React recounts the chunk and rejects spawns for `cacheIntervalTicks` only if the recount is still at the cap. Spawns into chunks whose blocks or entities are not loaded yet, such as mobs placed during world generation, are allowed without loading the chunk. Spawn denial uses the `SPAWN_CAP` protection operation. See [17 - API - Entity Protection](/react/17-api-entity-protection).
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
 | `maxEntitiesPerChunk` | int | `100` | Max entities per chunk. |
 | `allowItemDrops` | boolean | `true` | Allow item drops past the cap. |
-| `cacheIntervalTicks` | int | `200` | Rejected-chunk cache duration (ticks). |
+| `cacheIntervalTicks` | int | `200` | Time a chunk stays rejected after a count finds it at the cap, before React counts it again (ticks). |
 
 ### `experience-orb-merge`
 
@@ -68,7 +68,7 @@ This tweak collapses bamboo, sugar cane, cactus, and kelp columns on break or ph
 
 This tweak sends eligible item drops and XP directly to the player. Each setting controls only its named source.
 
-For block drops, Fast Drops claims individual entries from `BlockDropItemEvent` before transfer. It does not cancel the whole event. It ignores an event another plugin already canceled. This lets another drop-routing plugin own the event first. Adapt Drop-To-Inventory adaptations are one such plugin. Duplicate transfers and deleted items do not occur.
+For block drops, Fast Drops claims individual entries from `BlockDropItemEvent` before transfer. It does not cancel the whole event. It ignores an event another plugin already canceled. This lets another drop-routing plugin own the event first. Adapt Drop-To-Inventory adaptations are one such plugin. Duplicate transfers and deleted items do not occur. Block XP is transferred only for block breaks that no other plugin canceled, so breaks denied by protection plugins never grant XP. With `allowContainerDrops = false`, drops from container blocks such as chests, barrels, and shulker boxes stay on the ground; the check uses the block as it was before it broke.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -90,12 +90,12 @@ This tweak instantly removes burning monsters on FIRE_TICK when no player is wit
 
 ### `fast-falling-blocks`
 
-This tweak cancels normal falling-block settle. It queues accelerated column fall and land work budgeted by ms/tick.
+This tweak cancels the normal falling-block conversion at `HIGHEST` priority and moves the falling column itself, so `MONITOR` listeners see the event as cancelled. Queued falls run in arrival order. On Paper the block moves run inside the `maxFallMS` budget each tick; on Folia each queued fall is handed to the region that owns it.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
-| `maxFallMS` | double | `1.5` | Max fall processing ms per tick. |
+| `maxFallMS` | double | `1.5` | Maximum time per tick spent moving queued falls (ms). |
 
 ### `fast-fire`
 
@@ -107,7 +107,7 @@ This tweak short-circuits fire spread, fade, and burn into `FastWorld` set and b
 
 ### `fast-fluids`
 
-This tweak queues bounded extra vanilla fluid ticks via NMS bridges. Drain acceleration is optional. **Fail-passive** without fluid bridges or after consecutive bridge failures.
+This tweak queues bounded extra vanilla fluid ticks via NMS bridges. Drain acceleration is optional. **Fail-passive** without fluid bridges or after consecutive bridge failures. Up to 16384 block positions can wait for extra ticks at once; new positions are skipped while the queue is full, and positions already queued keep accumulating up to 16 ticks each. Each server tick runs the queued ticks grouped by chunk.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

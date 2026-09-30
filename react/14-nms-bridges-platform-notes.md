@@ -2,7 +2,7 @@
 title: "NMS Bridges & Platform Notes"
 description: "React documentation: NMS Bridges & Platform Notes"
 published: true
-date: 2026-09-20T04:21:21.395Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,3 +16,22 @@ Minecraft 26.1.2, 26.2, and 26.3 have bundled bridges. The server version select
 Run `/react bridge status` to inspect native capability availability. Startup logs also report whether React found a compatible bridge. An available version does not guarantee that every optional capability is present.
 
 On Folia, `chunk-tickets` uses the native bridge to count a locked ticket snapshot without chunk access. It needs no bytecode instrumentation. An unavailable bridge leaves this metric unavailable. See [10 - Samplers & Metrics](/react/10-samplers-metrics).
+
+## Entity chunk tracking
+
+On Paper and Paper-based servers, the per-chunk `entities` sampler follows mobs across chunk borders as they move. Spigot has no entity move event, so a mob that walks into another chunk is moved to its new chunk by the entity census pass, which rechecks a bounded batch of entities in each world every 2 seconds. Spawns, removals, chunk loads, players, vehicles, and teleports update immediately on every platform. The server-wide `entities` total and the `entities-hostile`, `entities-animals`, and `entity-ai-active-count` counts work the same on both.
+
+## Spigot servers
+
+Spigot has no asynchronous teleport. On Spigot, `/react chunk worst`, React Web player teleports, and delayed portal traversals from `portal-traffic-smoother` teleport synchronously on the server thread. Paper and Folia use asynchronous teleports for the same operations. Plugin API packs read the target plugin version from its `plugin.yml` or `paper-plugin.yml` on every platform.
+
+## Thread names
+
+React runs its own work on two named thread groups, so profilers such as JFR, async-profiler, and Spark attribute that cost to React directly.
+
+| Thread name | Purpose |
+|---|---|
+| `react-tick-N` | Sampler, feature, tweak, monitor, and player runtime ticks. Fixed pool sized to the CPU core count, daemon, minimum priority. |
+| `react-async-N` | Background work started through React's async scheduler: chat and color prompts, file and network IO, hotload processing, runtime setting changes. Grows to four threads per core (at least eight) while work blocks and releases idle threads after 60 seconds. |
+
+The tick loop runs every 50 ms. A task is due once its interval has elapsed to within half a loop, so a task with a 50 ms interval runs on every loop, and a task that is still running when it comes due again is skipped until it finishes instead of delaying the other tasks. The `react-async-tick-time` sampler reports the summed execution time of the React ticks completed during each loop, added across all tick threads, so it can exceed 50 ms per loop on a busy server.

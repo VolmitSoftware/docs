@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-09-26T06:29:51.520Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -75,6 +75,19 @@ If React reports that a task or ticker did not stop during a reload, restart the
 | `maxQueryPoints` | `4096` | Points allowed per metric |
 
 Set a retention value to `0` or lower to keep that tier indefinitely. One-hour history is always retained.
+
+## Event instrumentation
+
+`core/event.toml` controls how React measures event-handler time. While instrumentation is installed, React wraps every registered Bukkit listener and feeds `event-time`, `events-listeners`, `event-handles-per-tick`, the `plugin-<name>` cost samplers, and the plugin event impact maps.
+
+| Key | Default | Purpose |
+|---|---:|---|
+| `instrumentation` | `ALWAYS` | `ALWAYS` keeps the wrappers installed; `ON_DEMAND` installs them only while something reads event data; `DUTY_CYCLE` behaves like `ON_DEMAND` and additionally opens a measurement window every period |
+| `samplerActivityWindowMS` | `15000` | Time after the last event-data read before `ON_DEMAND` and `DUTY_CYCLE` remove the wrappers |
+| `dutyCycleOnMS` | `5000` | Length of each periodic measurement window in `DUTY_CYCLE`; limited to the period |
+| `dutyCyclePeriodMS` | `60000` | Time between the starts of periodic measurement windows in `DUTY_CYCLE`; at least 1000 ms |
+
+Event data is read by monitors that display an event sampler, map graphs and plugin impact maps that are being viewed, PlaceholderAPI and Gloss placeholder lookups, connected React Web sessions, and the live snapshot endpoint. Stored metric history does not count as a reader. In `ON_DEMAND` the wrappers are installed at the next read and removed once `samplerActivityWindowMS` passes without one. Wrappers are always removed when React disables or reloads. `ALWAYS` keeps a small per-handler timing cost on every event; `ON_DEMAND` has no event cost while nothing reads event data, so history records gaps for the event and plugin-cost samplers during that time.
 
 ## React Web
 

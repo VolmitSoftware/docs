@@ -2,7 +2,7 @@
 title: "Monitors Maps & In-Game GUI"
 description: "React documentation: Monitors Maps & In-Game GUI"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,11 +25,15 @@ React exposes live metrics through a per-player HUD, filled-map renderers, and i
 - Selecting with a normal left click, or using the direct command, puts a newly created React map in the main hand. An existing main-hand item is moved into inventory. React drops it at the player's location only if inventory overflows.
 - Shift-clicking a renderer in the selector adds its map to inventory instead. It drops only overflow.
 - React map items carry persistent renderer metadata. Inventory maps are repaired on join and in maintenance batches. Item-frame repair takes one loaded-chunk snapshot per world at startup or reload, seeds its coordinate queue in configured-size waves, keeps that queue current from chunk load and unload events, and scans only the configured chunk batch on each maintenance pass. It does not repeatedly copy every world's loaded-chunk array or dispatch every loaded chunk at once.
+- React map items keep their map id when a player carries them into another world. A React map placed in an item frame in a different world from its map id receives a fresh map id for that world. React map views are locked like maps finished in a cartography table, so the server never draws terrain onto them.
 - Every renderer pipe belongs to one map-controller activation. Shutdown closes and detaches those pipes; delayed maintenance and render callbacks reject the retired owner, so reload cannot retain an old renderer or its canvas buffers.
 - A framed map uses the item frame as the renderer's spatial anchor. A held map falls back to the viewer location. Then it uses the map world's spawn if no viewer is available.
 - Chunk heatmaps are literal north-up grids rather than player-yaw blobs. Chunk cells stay aligned to absolute X/Z coordinates, show the complete surrounding grid even where no sample is loaded, distinguish quiet and active chunks, emphasize MCA region boundaries, and identify the center coordinate with a complete perimeter.
 
 Every built-in sampler offers a map, whether or not its feature is `enabled`, and monitoring-only mode keeps them collecting while it pauses everything else. A map belonging to another plugin only appears once that plugin is present. The `iris-biome-chunk-share-pie-map` renderer is selectable while the Iris capability is present; its sampling feature uses the same capability gate, so it schedules no owner work on non-Iris servers.
+
+A sampler map records one reading every 500 ms. The header value and the footer low and high
+labels show raw readings; only the plotted line is smoothed over the last three readings.
 
 ## Item-frame delivery and megamaps
 
@@ -72,3 +76,4 @@ Every built-in sampler offers a map, whether or not its feature is `enabled`, an
 - Feature, tweak, action, sampler, and controller fields annotated with `@ConfigDoc` are grouped for browsing. React writes them to their canonical TOML files.
 - Text-entry sessions use `core/config-input.toml`. `sessionTimeoutSeconds` defaults to `45` and is clamped to at least five seconds.
 - Color and monitor pickers edit the player's stored monitor configuration rather than the global defaults.
+- Chat prompts opened from the monitor configuration menus, such as group renames, new group names, and the color picker's hex-code entry, wait at most 120 seconds for a chat message. A prompt that receives no reply, or whose player leaves the server, closes without changing the stored value, and an abandoned color prompt returns no color, so nothing is saved and the menu does not reopen.

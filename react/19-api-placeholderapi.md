@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-09-10T04:12:59.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,9 +15,9 @@ React provides read-only `%react_...%` placeholders. Install PlaceholderAPI befo
 | Placeholder | Value |
 |---|---|
 | `%react_available%` | Whether React has a current metric snapshot |
-| `%react_tps%` | Server TPS |
-| `%react_mspt%` | Mean tick time |
-| `%react_mspt-p95%` | 95th-percentile tick time |
+| `%react_tps%` | Ticks completed per second over the trailing five seconds, capped at 20 |
+| `%react_mspt%` | Mean tick work time in milliseconds over the trailing five seconds |
+| `%react_mspt-p95%` | 95th-percentile tick work time in milliseconds over the trailing five seconds; the gap between ticks on Spigot and Folia |
 | `%react_health%` | Server health from 0 to 100 |
 | `%react_entities%` | Loaded entities |
 | `%react_chunks%` | Loaded chunks |
