@@ -85,7 +85,7 @@ listed: it backs unresolved monitor configuration, always reports unavailable, a
 
 `chunk-tickets` counts plugin ticket memberships across all worlds. Two plugins that hold the same chunk count as two tickets. On Folia, the native bridge counts a locked ticket snapshot without creating Bukkit chunk objects or loading chunks. The sampler caches results for five seconds. If the bridge is unavailable or a query fails, the metric reports unavailable until its sampler restarts.
 
-`chunk-load-listener-ms` and `chunk-gen-listener-ms` measure the main-thread milliseconds that other plugins' `ChunkLoadEvent` listeners spend on each chunk load event, averaged over the most recent events. The `gen` variant counts only newly generated chunks. They do not measure how long the server took to load or generate the chunk itself.
+`chunk-load-listener-ms` and `chunk-gen-listener-ms` measure the main-thread milliseconds that other plugins' `ChunkLoadEvent` listeners spend on each chunk load event, averaged over the most recent `maxHistory` events. The `gen` variant counts only newly generated chunks. They do not measure how long the server took to load or generate the chunk itself. When no matching chunk load completes for 10 seconds, the value drops to `0` and the next chunk load starts a fresh average.
 
 | Sampler id |
 |---|
@@ -99,6 +99,8 @@ listed: it backs unresolved monitor configuration, always reports unavailable, a
 | `chunks-loaded` |
 
 ### entities
+
+`entities` counts loaded entities, including players. The category samplers `entities-animals`, `entities-hostile`, `entity-ai-active-count`, `villagers`, `ground-items`, `projectiles`, and `physics-entities` count only entities that are still alive; `entity-ai-active-count` counts non-player mobs with AI enabled. A mob leaves every category count when it dies. A mob killed in a loaded chunk outside the simulation distance leaves a body that stays in its chunk, across unloads and reloads, until that chunk ticks entities; category counts never include it. On Spigot, `entities` also excludes these bodies; on Paper-based servers it reports the server's own loaded-entity count, which includes them.
 
 | Sampler id |
 |---|
@@ -144,8 +146,10 @@ listed: it backs unresolved monitor configuration, always reports unavailable, a
 
 `event-time` reports exclusive handler time in milliseconds per second of measured wall time: when a handler fires another event, the nested handlers' time is charged to them and subtracted from the outer handler. Handlers invoked for asynchronous events run unmeasured and are excluded from `event-time` and `event-handles-per-tick`. `event-handles-per-tick` divides measured synchronous handler calls by the server ticks observed in the same window.
 
-`gc-time-percent` is the share of elapsed time spent in stop-the-world collector pauses since the
-previous reading. `gc-pause-p95` is the 95th percentile pause duration over the last five minutes.
+`gc-time-percent` is the share of the last 60 seconds spent in stop-the-world collector pauses.
+During the first minute after React starts, the window reaches back to JVM start, so the reading is
+the lifetime share until 60 seconds of samples exist. `gc-pause-p95` is the 95th percentile pause
+duration over the last five minutes.
 Both skip concurrent-cycle collector beans whose names end in ` Cycles` (ZGC and Shenandoah), which
 time work that runs alongside the server rather than pauses. `explosion-packet-reduction` is
 `1 - clusters / explosions` summed over the last five one-second windows that saw explosion
@@ -176,7 +180,7 @@ batched explosions.
 | `gloss-tick-ms` |
 | `gloss-visible-entities` |
 
-`gloss-boards` counts players currently shown a Gloss sidebar. `gloss-holograms` counts persistent holograms currently spawned for nearby players. `gloss-animations` counts animated text targets the hologram animator is currently driving. `gloss-tick-ms` is reported in `ms/s`: milliseconds per second Gloss spends on menu and preview session work, measured where that work runs, including on Folia region threads.
+`gloss-boards` counts players currently shown a Gloss sidebar. `gloss-holograms` counts persistent holograms currently spawned for nearby players. `gloss-animations` counts hologram text targets currently animating, one per shared display or per viewer of a personalized display, including clips at or below 20 fps that refresh on the hologram tick. `gloss-tick-ms` is reported in `ms/s`: milliseconds per second Gloss spends on menu and preview session work, measured where that work runs, including on Folia region threads.
 
 ### hiddenore
 
@@ -238,6 +242,8 @@ React reads disk counters and mount space every 30 seconds and network counters 
 | `jvm-process-uptime` |
 | `jvm-threads` |
 
+`jvm-gc-collections-rate` is the number of garbage collections per minute over the last 60 seconds. During the first minute after React starts, the window reaches back to JVM start, so the reading is the lifetime average until 60 seconds of samples exist.
+
 ### memory
 
 | Sampler id |
@@ -260,6 +266,8 @@ collection reads as zero.
 | `processor-outside` |
 | `processor-process-load` |
 | `processor-system-load` |
+
+All three processor samplers are fractions of total host CPU, formatted as percentages, measured over the same interval of at least one second. `processor-system-load` is host-wide CPU use from the operating system's CPU counters. `processor-process-load` is the server process's CPU time as a share of all logical processors. `processor-outside` is system load minus process load: CPU used by everything outside the server process. They report unavailable until the first full interval after React starts.
 
 ### player-activity
 
@@ -308,14 +316,14 @@ completed during each 50 ms tick loop, added across all `react-tick-N` threads, 
 
 ### tick
 
-All tick samplers read one shared tick recorder that listens to React's server tick event and, on Paper-based servers, the server's per-tick work times for the trailing five seconds.
+All tick samplers read one shared tick recorder that listens to React's server tick event and reads the server's per-tick work time: how long each tick ran, excluding the wait before the next tick. Paper-based servers supply the trailing five seconds of work times; Spigot supplies the last 100 completed ticks.
 
-- `tick-time` is the mean tick work time over the trailing five seconds, shown with two decimals (for example `0.28 ms`).
-- `tick-ms-p50`, `tick-ms-p95` and `tick-ms-p99` are percentiles of tick work time over the trailing five seconds.
+- `tick-time` is the mean tick work time over that window, shown with two decimals (for example `0.28 ms`).
+- `tick-ms-p50`, `tick-ms-p95` and `tick-ms-p99` are percentiles of tick work time over that window.
 - `tick-spike-rate` counts each completed tick whose work time exceeds `spikeThresholdMS` once, reported per minute over `windowMS`.
 - `ticks-per-second` is the number of ticks completed in the trailing five seconds divided by the time those ticks took, capped at 20. During a stall it decays toward zero and the formatted value switches to the time since the last tick once `countUpTickTimeThresholdMS` passes.
 
-On servers that do not publish per-tick work times, the recorder measures the gap between consecutive ticks instead. Spigot has no work-time source, so the recorder uses gap mode from its first tick. Folia publishes an empty one, so the recorder switches to gap mode after its first 40 ticks (two seconds at 20 TPS) and measures the global region. Tick time and the percentiles then report the tick gap, which floors at about 50 ms, and their unit suffix ends in `GAP`. A spike in gap mode is a gap longer than `spikeThresholdMS` plus one nominal 50 ms tick.
+On servers without per-tick work times, such as Folia, `tick-time` and the three percentiles report unavailable. `ticks-per-second` and `tick-spike-rate` keep working from the interval between ticks; a spike is then an interval longer than `spikeThresholdMS` plus one nominal 50 ms tick. React logs a warning shortly after startup when no work-time source is available. See [14 - NMS Bridges & Platform Notes](/react/14-nms-bridges-platform-notes#tick-work-time-on-spigot-and-folia).
 
 | Sampler id |
 |---|
@@ -374,7 +382,7 @@ On servers that do not publish per-tick work times, the recorder measures the ga
 | `wormholes-wire-in` |
 | `wormholes-wire-out` |
 
-`wormholes-projection-observers` counts distinct players currently watching at least one projection. `wormholes-traversals` counts portal traversals completed in the last 60 seconds. `wormholes-compression` is the outbound wire-to-raw byte ratio of the most recent second of traffic and reads unavailable while nothing is sent. `wormholes-peer-rtt` reads unavailable until at least one peer has completed its handshake. `wormholes-plate-builds` counts projection view plates built per second, `wormholes-plate-bytes` is the memory held by cached view plates, and `wormholes-block-entities` counts projected block-entity updates sent to viewers per second.
+`wormholes-projection-observers` counts distinct players currently watching at least one projection. `wormholes-traversals` counts portal traversals completed in the last 60 seconds. `wormholes-compression` is the outbound wire-to-raw byte ratio of the most recent second of traffic and reads unavailable while nothing is sent. `wormholes-peer-rtt` reads unavailable until at least one peer has completed its handshake. `wormholes-plate-builds` counts projection view plates built per second, `wormholes-plate-bytes` is the estimated memory held by cached view plates, and `wormholes-block-entities` counts projected block-entity updates sent to viewers per second.
 
 ## Sampler configuration
 
@@ -388,8 +396,7 @@ Package-scanned sampler configuration lives at `plugins/React/sampler/<id>.toml`
 | `chunk-load-listener-ms`, `chunk-gen-listener-ms` | `staleStartMS` | `10000` | Age after which an unmatched event start is discarded. Negative values act as zero. |
 | `backlog-growth-rate` | `averagingSamples` | `12` | Queue-growth samples in the rolling mean. |
 | `ping-jitter` | `averagingSamples` | `20` | Player-jitter samples in the rolling mean. |
-| `tick-ms-p50`, `tick-ms-p95`, `tick-ms-p99` | `historyTicks` | `1200` | Tick gaps used for percentiles in gap mode, at most 1200. With server work times the percentiles always cover the trailing five seconds. |
-| `tick-spike-rate` | `spikeThresholdMS` | `50` | Tick work time above which a completed tick counts as a spike; clamped to at least 1 ms. In gap mode the threshold applies to the tick gap minus one nominal 50 ms tick. |
+| `tick-spike-rate` | `spikeThresholdMS` | `50` | Tick work time above which a completed tick counts as a spike; clamped to at least 1 ms. Without per-tick work times the threshold applies to the interval between ticks minus one nominal 50 ms tick. |
 | `tick-spike-rate` | `windowMS` | `60000` | Rolling spike-rate window; clamped to at least 1000 ms and limited by the 1200-tick history (60 s at 20 TPS). |
 | `redstone-burst-rate` | `burstThresholdPerTick` | `64` | Redstone updates in one tick required to record a burst; clamped to at least one. |
 | `redstone-burst-rate` | `windowMS` | `60000` | Rolling redstone-burst window. |
@@ -413,7 +420,7 @@ Short keys such as `%react_tps%` and `%react_mspt%` map to specific samplers. Fu
 | `hiddenore-` | HiddenOre |
 | `biletools-` | BileTools |
 
-Mirrored metric renderers show `---` while the owning plugin has never supplied data. Raw `%react_sampler.<id>%` reads return `0` before the first value. They retain the last value afterward. Mirrored values lag the source's publish interval. The owning plugin's PlaceholderAPI key is canonical when both plugins expose the same metric.
+Mirrored metric renderers and raw `%react_sampler.<id>%` reads show `---` while the owning plugin has never supplied data or reports the metric unavailable. Otherwise they keep the last value the plugin supplied. Mirrored values lag the source's publish interval. The owning plugin's PlaceholderAPI key is canonical when both plugins expose the same metric.
 
 ## Dynamic plugin-cost samplers
 

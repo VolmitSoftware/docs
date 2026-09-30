@@ -138,7 +138,7 @@ This feature lowers `randomTickSpeed` under sustained pressure. It restores the 
 
 ### `per-world-tick-budget`
 
-This feature measures per-world tick share. It publishes NORMAL, PRESSURE, or PANIC. Adaptive entity sleep, dynamic activation range, item backpressure, and pathfinder budget consume that per-world state when they apply pressure behavior.
+This feature measures per-world tick share. Each world's share is its part of the current `tick-time` value, the trailing five-second average, split by the world's entity and chunk counts, so one world never reads above `tick-time`. It publishes NORMAL, PRESSURE, or PANIC. Adaptive entity sleep, dynamic activation range, item backpressure, and pathfinder budget consume that per-world state when they apply pressure behavior.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

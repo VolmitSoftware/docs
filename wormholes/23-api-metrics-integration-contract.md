@@ -44,7 +44,7 @@ Native loaders publish portal count, active projections, connected player count 
 | `wormholes.peer-rtt-max-ms` | Highest round-trip time among handshaken peers; unavailable when no peer has completed a handshake |
 | `wormholes.compression-ratio-out` | Outbound wire-to-raw byte ratio over the most recent second; unavailable while nothing is sent |
 | `wormholes.plate-builds-per-second` | Projection view plates built per second |
-| `wormholes.plate-bytes` | Memory held by cached projection view plates |
+| `wormholes.plate-bytes` | Estimated memory held by cached projection view plates |
 | `wormholes.block-entities-per-second` | Projected block-entity updates sent to viewers per second |
 | `wormholes.transfers-in-flight` | Pending admissions, dispatched players awaiting destination receipts, and non-player entity transfers in progress |
 | `wormholes.transfers-failed-total` | Cumulative traversal failures, including denied admissions and unconfirmed arrivals |
