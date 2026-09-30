@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
 published: true
-date: 2026-09-30T09:01:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -160,7 +160,7 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 | `gaze-max-starve-ticks` | `20` | Longest a portal goes without a refresh. Clamped 1–200. |
 | `finish-in-slot` | `true` | Finish occlusion filtering and send blocks in the tick a scan completes when frame budget remains. |
 | `shared-plate` | `true` | Build destination sampling, block-state transforms, and buried-cell culling once per portal and share them between observers. Off samples per observer. |
-| `plate-max-bytes` | `33554432` | Memory shared view plates may hold; the oldest plate is evicted first. Clamped 1048576–1073741824. |
+| `plate-max-bytes` | `33554432` | Memory shared view plates may hold; the oldest plate is evicted first. A plate predicted or measured larger than this limit is not cached and is retried after the portal's projection settings change, the portal is invalidated, the RTP route changes, or settings reload. Clamped 1048576–1073741824. |
 | `plate-workers` | `2` | Worker threads that build shared view plates. Clamped 1–16. |
 | `rtp-plates` | `true` | Build shared view plates for RTP portals, keyed by destination route. Requires `shared-plate`. Off samples RTP destinations per observer. |
 | `plate-lateral-clamp-blocks` | `40` | Widest a shared plate extends past the aperture sideways, capped by the portal's own lateral pad. Cells outside the plate are sampled per observer. Clamped 0–64. |

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-30T09:01:00.000Z
+date: 2026-09-30T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -333,7 +333,7 @@ still schedule at most once per server tick.
 | `initial-resend-passes` | `1` | Full sends after the view is created |
 | `max-projected-cells` | `250000` | Scan ceiling. Over budget, side padding drops first, then depth. `0` disables the ceiling |
 | `shared-plate` | `true` | Build destination sampling and buried-cell culling once per portal and share it between observers. Off samples per observer |
-| `plate-max-bytes` | `33554432` | Memory shared view plates may hold. The oldest plate is evicted first |
+| `plate-max-bytes` | `33554432` | Memory shared view plates may hold. The oldest plate is evicted first. A plate predicted or measured larger than this limit is not cached and is retried after the portal's projection settings change, the portal is invalidated, the RTP route changes, or settings reload |
 | `plate-workers` | `2` | Worker threads that build shared view plates |
 | `hold-invisible-claims` | `true` | Keep sent cells in place, without packets, while the observer cannot see them. See [Held cells](/wormholes/05-projection-modes-settings#held-cells) |
 | `max-held-cells-per-portal` | `65536` | Held cells per portal and observer. The oldest revert first |
