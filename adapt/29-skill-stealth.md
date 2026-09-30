@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T18:40:17.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,11 @@ The core Stealth adaptation checks whether nearby mobs or players can see you, t
 Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
 
 ### Stealth (`stealth-silent-step`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-silent-step-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-silent-step-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 2 levels · 1 knowledge, then 2 per level
 
@@ -48,6 +53,11 @@ Personal controls: Private threat outlines (on/off); Private detection status (o
 | `threatScanCompletionDelayTicks` | `2` | Ticks a scan waits for per-entity checks before applying a partial result. Clamped to 1-4. |
 
 ### Sneak Speed (`stealth-speed`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 5 knowledge, then 4 per level
 
@@ -87,6 +97,11 @@ Personal controls: Automatic step up (on/off); Automatic step down (on/off); Sou
 
 ### Item Snatch (`stealth-snatch`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-snatch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-snatch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 12 knowledge, then 4 per level
 
 While you sneak, nearby drops you could pick up by hand move into your inventory on a repeating pulse; a full inventory is skipped and stacks are not converted. Each pulse inspects at most 128 entities, takes at most 32 items, and holds a pulled item for 5000 ms so it is not pulled twice.
@@ -99,6 +114,11 @@ Personal controls: Collection control (While sneaking/Automatic collection); Col
 | `radiusFactor` | `5.55` | Blocks of snatch radius gained at max level. Radius is `levelPercent * radiusFactor + 1`, clamped to 1-8 blocks. |
 
 ### Ghost's Armor (`stealth-ghost-armor`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-ghost-armor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-ghost-armor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 7 levels · 1 knowledge, then 3 per level
 
@@ -113,6 +133,11 @@ While you are alive and not being hit, a bonus armor buffer refills; the next hi
 
 ### Stealth Vision (`stealth-vision`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-vision-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-vision-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 5 knowledge
 
 While you sneak you gain Night Vision, incoming Blindness is refused, and invisible players get a private outline; standing up removes all three, including only the Night Vision this adaptation applied. Outlines use a 1500 ms lease refreshed about every 500 ms, range is the server view distance clamped to 16-160 blocks, each pass inspects at most 128 players, and there are no adaptation-specific config keys.
@@ -121,11 +146,21 @@ Personal controls: Night vision (on/off); Prevent blindness (on/off); Invisible 
 
 ### Enderveil (`stealth-enderveil`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-enderveil-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-enderveil-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 2 levels · 4 knowledge, then 6 per level
 
 Endermen cannot target you while you sneak at level 1, and cannot target you at all at level 2. There are no adaptation-specific config keys.
 
 ### Shadow Decoy (`stealth-shadow-decoy`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-shadow-decoy-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-shadow-decoy-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -166,6 +201,11 @@ Personal controls: Decoy gesture (Release sneak/Double sneak/Empty-hand right-cl
 
 ### Shadowmeld (`stealth-shadowmeld`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-shadowmeld-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-shadowmeld-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 4 knowledge, then 5 per level
 
 After you keep sneaking while Stealth reports you undetected, you turn invisible and mobs cannot target you. Attacking, taking damage, interacting, being spotted, or standing up breaks it, and Invisibility remains only while a Smoke Pellet cloud still covers you.
@@ -179,6 +219,11 @@ Personal controls: Meld activation (Eligible sneaking/Double sneak to arm). Doub
 | `xpOnMeld` | `6` | Skill XP granted the moment you meld. |
 
 ### Smoke Pellet (`stealth-smoke-pellet`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-smoke-pellet-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-smoke-pellet-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 4 knowledge
 
@@ -199,6 +244,11 @@ Personal controls: Gunpowder hand (Either hand/Main hand/Off hand); Smoke gestur
 
 ### Cutpurse (`stealth-cutpurse`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-cutpurse-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-cutpurse-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 4 knowledge
 
 An undetected direct melee hit on a pillager, vindicator, piglin, or piglin brute can roll that mob's own loot table into your inventory, or onto the ground if you are full. The mob survives, spawn method does not matter, only a non-empty result counts, and the mob is stamped `cutpurse_picked` so it cannot be picked again.
@@ -218,6 +268,11 @@ Personal controls: Eligible targets (All eligible mobs/Illagers/Piglins).
 
 ### Trap Sense (`stealth-trap-sense`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-trap-sense-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-trap-sense-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 3 knowledge
 
 While you sneak, nearby `TRAPPED_CHEST`, `TRIPWIRE`, `TRIPWIRE_HOOK`, `SCULK_SENSOR`, `CALIBRATED_SCULK_SENSOR`, `SCULK_SHRIEKER`, and any `*_PRESSURE_PLATE` are outlined for you only, at most 96 markers per scan: sculk RGB `40, 220, 210`, tripwire and hooks RGB `255, 220, 45`, everything else RGB `255, 70, 70`. Below max level, sneaking can suppress movement vibrations (`STEP`, `SWIM`, `FLAP`, `HIT_GROUND`, `ELYTRA_GLIDE`, `SPLASH`, `BOUNCE` where present, `TELEPORT`, `ENTITY_MOUNT`, `ENTITY_DISMOUNT`); at max level every movement vibration is suppressed even while not sneaking, and the block that would have heard you is outlined.
@@ -232,6 +287,11 @@ Personal controls: Private trap outlines (on/off); Trapped chests (on/off); Trip
 | `scanIntervalMillis` | `500` | Milliseconds between trap scans while sneaking. Floors at 200 ms. |
 
 ### Assassinate (`stealth-assassinate`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-assassinate-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-assassinate-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 6 knowledge
 
@@ -249,6 +309,11 @@ Personal controls: Require sneaking (on/off); Eligible targets (All eligible mob
 
 ### Decoy Swap (`stealth-decoy-swap`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-decoy-swap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-decoy-swap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 4 knowledge
 
 Requires Shadow Decoy: while your decoy is alive and in range, a sneak double-tap swaps your position with it. The swap is refused in another world or out of range, and a failure puts the decoy back with no cooldown or XP cost.
@@ -265,6 +330,11 @@ Personal controls: Swap gesture (Double sneak/Sneak and swap hands). The alterna
 | `xpOnSwap` | `12` | Skill XP granted per successful swap. |
 
 ### Umbral Recovery (`stealth-umbral-recovery`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/stealth/stealth-umbral-recovery-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-umbral-recovery-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 3 knowledge, then 4 per level
 

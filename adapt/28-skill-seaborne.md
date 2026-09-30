@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T18:46:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,11 @@ Every adaptation has an Enabled control at the bottom of its level screen. Perso
 
 ### Organic Oxygen Tank (`seaborne-oxygen`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-oxygen-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-oxygen-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge, then 3 per level
 
 Passive oxygen bonus is `level * airPerLevelTics / 75`, clamped to 1, and 1 is a bonus of 1024.
@@ -25,11 +30,21 @@ Passive oxygen bonus is `level * airPerLevelTics / 75`, clamped to 1, and 1 is a
 
 ### Dolphin's Grace (`seaborne-speed`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 7 levels · 2 knowledge, then 3 per level
 
 Water movement efficiency is `level / maxLevel`, capped at 1, and sprint-swimming also applies Dolphin's Grace for `20 + round(levelPercent * 60)` ticks. Depth Strider boots force the adaptation inactive.
 
 ### Fisher's Fantasy (`seaborne-fishers-fantasy`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-fishers-fantasy-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-fishers-fantasy-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 7 levels · 2 knowledge, then 5 per level
 
@@ -47,6 +62,11 @@ Each committed fish catch makes one roll, with chance interpolated from `bonusCh
 
 ### Turtle's Vision (`seaborne-turtles-vision`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-vision-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-vision-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 Night Vision stays on while the player is in water and is removed on surfacing only when it is this adaptation's own effect: non-ambient, particle-free, and amplifier 0. A Night Vision potion from another source is left in place.
@@ -58,6 +78,11 @@ Night Vision stays on while the player is in water and is removed on surfacing o
 | `refreshIntervalMillis` | `3000` | Underwater-state check interval, clamped from 250 to 10000 ms and applied immediately on hot reload. |
 
 ### Turtle Miner (`seaborne-turtles-mining-speed`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-mining-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-mining-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 3 knowledge
 
@@ -74,6 +99,11 @@ Personal controls: Compensate floating penalty (on/off).
 | `refreshIntervalMillis` | `3000` | Passive state-refresh interval, clamped from 250 to 10000 ms and applied immediately on hot reload. |
 
 ### Tidecaller (`seaborne-tidecaller`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-tidecaller-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-tidecaller-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -138,6 +168,11 @@ Depth is sea level minus eye height. Crossing the depth threshold grants Resista
 
 ### Coral Gardener (`seaborne-coral-gardener`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-coral-gardener-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-coral-gardener-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 4 per level
 
 Placed coral is kept from fading out of water, up to 8192 tracked blocks with expired entries dropped first; only blocks tagged `CORAL_BLOCKS`, `CORALS`, or `WALL_CORALS` get that protection and count toward the stat, while prismarine, prismarine bricks, dark prismarine, sea lanterns, sponge, and wet sponge pay placement XP only. Bone meal on live coral can place tube, brain, bubble, fire, or horn coral in an adjacent water cell; Creative mode spends no bone meal, and a denied placement spends none.
@@ -154,6 +189,11 @@ Personal controls: Preserve placed coral (on/off); Bonemeal coral growth (on/off
 | `growthXp` | `14` | Skill XP granted per coral block grown with bone meal. |
 
 ### Deep Salvager (`seaborne-deep-salvager`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-deep-salvager-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-deep-salvager-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 4 knowledge
 
@@ -172,6 +212,11 @@ Personal controls: Container outlines (on/off); Outlined containers (All treasur
 | `enableShimmer` | `true` | Set to false to disable shimmer scanning while keeping the bonus loot. |
 
 ### Ink Veil (`seaborne-ink-veil`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-ink-veil-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-ink-veil-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -195,6 +240,11 @@ Personal controls: Own ink density (full/half/quarter). Own ink density changes 
 
 ### Trident Mastery (`seaborne-trident-mastery`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-trident-mastery-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-trident-mastery-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 5 per level
 
 A thrown trident stores the thrower's adaptation level under `seaborne_trident_mastery_level` and keeps that damage bonus after a gear change; a melee hit uses the current level and requires a trident in the main hand. Recall gives up after 120 ticks and stops within 1.6 blocks, and a trident stuck in a block is freed first.
@@ -214,6 +264,11 @@ Personal controls: Trident recall (on/off).
 
 ### Fish Whisperer (`seaborne-fish-whisperer`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-fish-whisperer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-fish-whisperer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 4 per level
 
 Luck equal to the adaptation level is applied at all times. In water or while swimming, at most 12 fish that are more than a block away are nudged per pulse, and a hit sends at most 8 nearby dolphins and axolotls at the victim.
@@ -232,6 +287,11 @@ Personal controls: Attract fish (on/off); Animal combat assistance (on/off); Fis
 
 ### Hydro Jet (`seaborne-hydro-jet`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-hydro-jet-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-hydro-jet-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 4 per level
 
 A sneak press while sprint-swimming, rather than while only floating in water, launches the player along the look direction, blending 40% of current velocity into the burst and capping the result at 2.6. An empty food bar cancels the jet without spending a charge, and charges refill in fractions of a charge.
@@ -249,6 +309,11 @@ Personal controls: Jet gesture (Single sneak/Double sneak); Food reserve (No res
 | `jetXp` | `6` | Skill XP granted per jet. |
 
 ### Brine Skin (`seaborne-brine-skin`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-brine-skin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-brine-skin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 

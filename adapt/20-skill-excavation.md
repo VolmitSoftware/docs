@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T17:46:37.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,6 +33,11 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 
 ### Hasty Excavator (`excavation-haste`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-haste-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-haste-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 3 knowledge, then 2 per level
 
 Starting to break any block, not only shovel blocks, adds a block-break speed modifier of `0.20 * level` (`BLOCK_BREAK_SPEED` as `ADD_SCALAR`, not the Haste effect) for `hasteDurationTicks`.
@@ -42,6 +47,11 @@ Starting to break any block, not only shovel blocks, adds a block-break speed mo
 | `hasteDurationTicks` | `100` | Ticks the speed bonus lasts after a block break starts. Clamped to 40-600. |
 
 ### Super-Seeing Spelunker! (`excavation-spelunker`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-spelunker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-spelunker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 10 knowledge, then 5 per level
 
@@ -69,11 +79,21 @@ The main-hand item recognized by `Leatherman` in its lore swaps to an axe on woo
 
 ### Shovel Drop-To-Inventory (`excavation-drop-to-inventory`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 Blocks broken with a shovel send their drops to the inventory and pay 2 skill XP per item caught. Protection-denied items stay on the ground, overflow drops at the feet, and there are no adaptation-specific config keys.
 
 ### Seismic Ping (`excavation-seismic-ping`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-seismic-ping-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-seismic-ping-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -95,6 +115,11 @@ Breaking a block while holding an item whose name ends in `_SHOVEL` or `_PICKAXE
 
 ### Tunneler (`excavation-tunneler`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-tunneler-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-tunneler-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge
 
 Sneaking with a shovel, breaking a shovel-friendly block also breaks up to `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` of the eight surrounding cells one tick later, on a horizontal plane when pitch is 50 degrees or steeper and otherwise on a vertical plane perpendicular to yaw. The sweep stops if the shovel would break, a denied block is skipped at no cost, and shovel-friendly blocks are clay, dirt, coarse dirt, rooted dirt, farmland, grass block, dirt path, gravel, mycelium, podzol, sand, red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
@@ -106,6 +131,11 @@ Sneaking with a shovel, breaking a shovel-friendly block also breaks up to `max(
 | `xpPerBonusBlock` | `1.5` | Excavation skill XP per bonus block broken. |
 
 ### Treasure Hunter (`excavation-treasure-hunter`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-treasure-hunter-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-treasure-hunter-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -121,6 +151,11 @@ Breaking `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, or `CLAY` with a shovel can roll t
 
 ### Soft Fall (`excavation-soft-fall`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-soft-fall-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-soft-fall-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge
 
 Only `FALL` damage is reduced, by `min(maxReduction, reductionBase + levelPercent * reductionFactor)`, when the block landed in or the block under it is dirt or a dirt variant, grass, podzol, mycelium, path, farmland, sand, red sand, gravel, clay, mud, muddy mangrove roots, soul sand, soul soil, or snow.
@@ -133,6 +168,11 @@ Only `FALL` damage is reduced, by `min(maxReduction, reductionBase + levelPercen
 | `xpPerDamagePrevented` | `3.0` | Excavation skill XP per half-heart of damage prevented. |
 
 ### Earth Mover (`excavation-earth-mover`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-earth-mover-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-earth-mover-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 7 knowledge, then 6 per level
 
@@ -163,6 +203,11 @@ Sneak-right-click with a shovel, in air or on a block, to damage hostile mobs, l
 
 ### Burrow (`excavation-burrow`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-burrow-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-burrow-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 6 knowledge, then 5 per level
 
 Sneak-right-click a Tunneler shovel-friendly block with a shovel to dig `max(2, round(depthBase + levelPercent * depthFactor))` blocks straight down, breaking the first immediately and spending no hunger or cooldown if that break fails. The shaft also stops at `worldMinHeight + safeFloorMargin`, at lava directly below, at a two-block air gap, at a non-shovel-friendly block, or at a denied block, and each later block is authorized again; cooldown is `max(2000, round(cooldownMillisBase - levelPercent * cooldownMillisFactor))` ms.
@@ -180,6 +225,11 @@ Sneak-right-click a Tunneler shovel-friendly block with a shovel to dig `max(2, 
 | `xpPerBlock` | `2` | Excavation skill XP per block dug. |
 
 ### Grave Digger (`excavation-grave-digger`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-grave-digger-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-grave-digger-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -199,6 +249,11 @@ Digging `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL`, `MYCELIUM
 | `xpPerGrave` | `35` | Excavation skill XP per disturbed grave. |
 
 ### Mudlark (`excavation-mudlark`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-mudlark-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-mudlark-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 

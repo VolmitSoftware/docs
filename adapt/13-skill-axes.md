@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T17:47:30.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,6 +35,11 @@ Extra broken blocks use the player's own break action. A denied claim does not b
 
 ### Axe Ground Smash (`axe-ground-smash`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-ground-smash-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-ground-smash-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 8 knowledge, then 6 per level
 
 With a main-hand axe, jump, hold sneak in the air, and land while still sneaking to damage and launch nearby living entities. Releasing sneak, or landing after the arm expires, cancels it. When `ignore passiveMobs` is true, neutral mobs stay excluded even if provoked.
@@ -52,6 +57,11 @@ With a main-hand axe, jump, hold sneak in the air, and land while still sneaking
 
 ### Axe Chop (`axe-chop`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-chop-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-chop-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 2 knowledge, then 3 per level
 
 Right-click a log with a main-hand axe to remove the top log of the column above the clicked block, once per adaptation level.
@@ -66,11 +76,21 @@ Right-click a log with a main-hand axe to remove the top log of the column above
 
 ### Axe Drop-To-Inventory (`axe-drop-to-inventory`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 Logs and leaves broken with an axe go into the inventory. Drops blocked by protection stay on the ground. Overflow drops at the feet with a fail sound. No adaptation-specific config keys.
 
 ### Leaf-miner (`axe-leaf-veinminer`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-leaf-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-leaf-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 1 knowledge, then 6 per level
 
@@ -94,6 +114,11 @@ Registers only when Iris is installed. Sneak-break an Iris tree log with a main-
 
 ### Wood-miner (`axe-wood-veinminer`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-wood-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-wood-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 3 per level
 
 Sneak-break a log or wood block with a main-hand axe to break matching blocks in range. Planks do not match. Blocks the player cannot break are skipped. Drops still follow Drop-To-Inventory when that adaptation is learned.
@@ -110,6 +135,11 @@ Sneak-break a log or wood block with a main-hand axe to break matching blocks in
 Shapeless crafting turns eight logs of one type plus one sapling into eight logs of that sapling's tree. Up to 70 recipes are registered in the `adapt` namespace as `axe-swap<from><to>`. Cherry and pale oak entries are skipped when those materials do not exist. `permanent` defaults to `true`, unlike the other Axes adaptations, so it cannot be unlearned. No adaptation-specific config keys.
 
 ### Throwing Axe (`axe-throwing-axe`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-throwing-axe-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-throwing-axe-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 5 knowledge
 
@@ -131,6 +161,11 @@ Left-click air with a main-hand axe to throw it. The axe leaves the inventory, a
 
 ### Sunder (`axe-sunder`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-sunder-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-sunder-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 Each axe hit strips armor and a share of armor toughness, stacking up to the cap.
@@ -146,6 +181,11 @@ Each axe hit strips armor and a share of armor toughness, stacking up to the cap
 | `xpPerStack` | `3` | Skill XP per stack applied. |
 
 ### Cleave (`axe-cleave`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-cleave-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-cleave-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 6 knowledge, then 5 per level
 
@@ -166,6 +206,11 @@ An axe hit also damages other living entities in a forward cone. Armor stands ar
 | `xpPerTarget` | `4` | Skill XP per cleaved target. |
 
 ### Bark Hide (`axe-bark-hide`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-bark-hide-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-bark-hide-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 

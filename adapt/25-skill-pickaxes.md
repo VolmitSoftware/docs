@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Pickaxes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T17:50:33.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,6 +34,11 @@ Deep Core, Obsidian Rush, Repair Rhythm, Stone Skin, and Gem Polish have the ena
 
 ### Ore Chisel (`pickaxe-chisel`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-chisel-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-chisel-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 7 levels · 5 knowledge, then 6 per level
 
 A right-click on a vanilla ore with a main-hand pickaxe that has neither Silk Touch nor Mending, or a right-click on air aimed at an ore within 5 blocks, chisels that ore; if the break is not allowed, nothing is spent. Drops are coal, raw copper, raw gold from gold or Nether gold ore, raw iron, diamond, lapis lazuli, emerald, quartz, or redstone, and deepslate variants drop the same item.
@@ -49,6 +54,11 @@ A right-click on a vanilla ore with a main-hand pickaxe that has neither Silk To
 
 ### Veinminer (`pickaxe-veinminer`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 6 per level
 
 Sneak-breaking ore, obsidian, or ancient debris with a pickaxe also breaks connected blocks of the same family: any material ending in `_ORE`, with `DEEPSLATE_*_ORE` grouped with its base ore, plus `OBSIDIAN` and `ANCIENT_DEBRIS`. Each extra block breaks normally, so enchantments and Autosmelt apply per block, drops are not merged, and HiddenOre veins chain the same way.
@@ -60,11 +70,21 @@ Sneak-breaking ore, obsidian, or ancient debris with a pickaxe also breaks conne
 
 ### Autosmelt (`pickaxe-autosmelt`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-autosmelt-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-autosmelt-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 4 knowledge, then 6 per level
 
 Iron, gold, and copper ore, including deepslate variants, drop ingots when the pickaxe is the correct tool and lacks Silk Touch. The extra-ingot chance is `level * 1.25%` and is not a config key.
 
 ### Pickaxe Drop-To-Inventory (`pickaxe-drop-to-inventory`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 3 knowledge
 
@@ -72,11 +92,21 @@ Pickaxe breaks put drops into the inventory. Overflow falls at the player's feet
 
 ### Pickaxe Silk-Spawner (`pickaxe-silk-spawner`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-silk-spawner-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-silk-spawner-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 2 levels · 4 knowledge, then 6 per level
 
 A spawner broken with the correct pickaxe drops a spawner item that keeps only the mob type, so timers and other block state are not copied and matching mob types stack. Level 1 requires Silk Touch, level 2 requires sneak and no Silk Touch, and a later cancelled drop event removes the spawner item.
 
 ### Quarry Sense (`pickaxe-quarry-sense`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-quarry-sense-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-quarry-sense-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -102,6 +132,11 @@ A sneak-right-click with an iron, diamond, or netherite pickaxe consumes the cli
 
 ### Tunnel Bore (`pickaxe-tunnel-bore`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-tunnel-bore-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-tunnel-bore-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 4 knowledge, then 5 per level
 
 Sneaking and breaking `STONE`, `COBBLESTONE`, `MOSSY_COBBLESTONE`, `DEEPSLATE`, `COBBLED_DEEPSLATE`, `TUFF`, `CALCITE`, `ANDESITE`, `DIORITE`, or `GRANITE` with a pickaxe also breaks a facing-aligned face one tick later: 1 by 2 at level 1, 3 by 2 at level 2, and 3 by 3 at level 3. Pitch past 60 degrees lays that face flat, and only those block types inside the face break.
@@ -111,6 +146,11 @@ Sneaking and breaking `STONE`, `COBBLESTONE`, `MOSSY_COBBLESTONE`, `DEEPSLATE`, 
 | `durabilityPerBonusBlock` | `1` | Durability charged per bonus block broken, on top of the normal break. |
 
 ### Deep Core (`pickaxe-deep-core`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-deep-core-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-deep-core-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 3 knowledge, then 4 per level
 
@@ -124,6 +164,11 @@ Hitting `DEEPSLATE`, `COBBLED_DEEPSLATE`, `POLISHED_DEEPSLATE`, `DEEPSLATE_BRICK
 
 ### Obsidian Rush (`pickaxe-obsidian-rush`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-obsidian-rush-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-obsidian-rush-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 4 knowledge, then 5 per level
 
 Hitting `OBSIDIAN` or `CRYING_OBSIDIAN` with a diamond or netherite pickaxe refreshes a `BLOCK_BREAK_SPEED` modifier. Any other pickaxe does nothing.
@@ -136,6 +181,11 @@ Hitting `OBSIDIAN` or `CRYING_OBSIDIAN` with a diamond or netherite pickaxe refr
 
 ### Unbreakable Pact (`pickaxe-unbreakable-pact`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-unbreakable-pact-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-unbreakable-pact-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge, then 6 per level
 
 A durability hit that would break the pickaxe stops at 1 remaining durability. Ignore chance is `min(maxIgnoreChance, level * ignoreChancePerLevel)`.
@@ -146,6 +196,11 @@ A durability hit that would break the pickaxe stops at 1 remaining durability. I
 | `maxIgnoreChance` | `0.25` | Cap on the ignore chance, 0-1. |
 
 ### Repair Rhythm (`pickaxe-repair-rhythm`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-repair-rhythm-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-repair-rhythm-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge, then 5 per level
 
@@ -161,6 +216,11 @@ Any block broken with a pickaxe, not only stone, can cancel that break's durabil
 
 ### Trophy Polish (`pickaxe-gem-polish`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-gem-polish-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-gem-polish-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 6 per level
 
 Breaking a naturally generated skeleton, wither skeleton, zombie, player, creeper, dragon, or piglin head or skull, including wall forms, or a dragon egg, with a pickaxe spawns one vanilla XP orb of `min(maximumXpPerTrophy, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)` and does not duplicate the trophy. Ores and amethyst never qualify, and a piston, gravity, or teleport move pays nothing.
@@ -175,6 +235,11 @@ Breaking a naturally generated skeleton, wither skeleton, zombie, player, creepe
 | `maximumXpPerTrophy` | `24` | Hard cap on one trophy reward. |
 
 ### Stone Skin (`pickaxe-stone-skin`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/pickaxe/pickaxe-stone-skin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/pickaxe/pickaxe-stone-skin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 4 knowledge, then 5 per level
 

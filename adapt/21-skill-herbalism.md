@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T19:13:54.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,6 +35,11 @@ Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Ro
 
 ### Growth Aura (`herbalism-growth-aura`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-growth-aura-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-growth-aura-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 7 levels · 12 knowledge, then 8 per level
 
 Each pulse samples `ceil(clamp(radius * radius, 3, 256))` blocks inside radius `levelPercent * radiusFactor` and, a second or two later, advances a crop that is not fully grown by `level * strengthFactor` age steps, capped by the crop's remaining age. Food per step interpolates from `maxFoodCost` at no progress to `minFoodCost` at full level.
@@ -49,6 +54,11 @@ Each pulse samples `ceil(clamp(radius * radius, 3, 256))` blocks inside radius `
 
 ### Harvest & Replant (`herbalism-replant`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-replant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-replant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 4 knowledge, then 6 per level
 
 Right-click a fully grown crop with a hoe that is not on cooldown, off hand checked first, to drop its loot, take one seed from that loot, and reset the crop to age 0, or remove the crop when the loot has no seed. Radius is `level - radiusSub` (0 harvests only the clicked crop; above that, `floor(radius)` vertically and `round(radius)` horizontally over the following ticks); tool damage is `1 + ((level - 1) * 7)`; cooldown is `cooldownLvl1` ticks at level 1, otherwise `(baseCooldown - cooldownFactor * levelPercent) + bonusCooldown` ticks; XP is `harvestPerAgeXP * age` plus `plantCropSeedsXP` when a seed is reclaimed; Hoe Drop-To-Inventory sends the loot to the inventory.
@@ -62,6 +72,11 @@ Right-click a fully grown crop with a hoe that is not on cooldown, off hand chec
 | `radiusSub` | `1` | Levels subtracted before the level becomes a block radius. |
 
 ### Hungry Shield (`herbalism-hungry-shield`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-hungry-shield-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-hungry-shield-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 10 knowledge, then 7 per level
 
@@ -80,17 +95,32 @@ Damage is reduced by moving `min(damage * effectiveness, max(0, foodLevel + satu
 
 ### Herbalist's Hippo (`herbalism-hippo`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-hippo-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-hippo-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 7 levels · 3 knowledge, then 8 per level
 
 Eating anything on the food list adds `2 + level` food, capped at 20, and the same amount of saturation, capped at the new food value, plus 5 skill XP. Golden apples, enchanted golden apples, and golden carrots use that same bonus, and there are no adaptation-specific config keys.
 
 ### Hoe Drop-To-Inventory (`herbalism-drop-to-inventory`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 2 knowledge
 
 In survival, blocks broken with a hoe in the main hand send their drops to the inventory and pay 2 skill XP per item caught. Protection-denied items stay dropped, overflow drops at the feet, and there are no adaptation-specific config keys.
 
 ### Herbalist's Luck (`herbalism-luck`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-luck-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-luck-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 7 levels · 3 knowledge, then 8 per level
 
@@ -127,6 +157,11 @@ Shaped recipe `adapt:herbalism-cobwebblock` turns a 3x3 of `STRING` into one `CO
 
 ### Seed Sower (`herbalism-seed-sower`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-seed-sower-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-seed-sower-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge
 
 Sneak-right-click with wheat seeds, carrots, potatoes, beetroot seeds, melon seeds, pumpkin seeds, torchflower seeds, or nether wart to plant empty tiles above `FARMLAND`, or `SOUL_SAND` for nether wart, on the clicked block's plane or on the looked-at block within 5 blocks when the click is air, up to the crop cap and the held seed count. Radius is `max(1, round(baseRadius + levelPercent * radiusFactor))`, the cap is `max(1, round(baseCropCount + levelPercent * cropCountFactor))`, and the seed-item cooldown is `max(2, round(cooldownTicksBase - levelPercent * cooldownTicksReduction))` ticks; a partial failure rolls the crops back and refunds the seeds, and creative mode does not consume them.
@@ -142,6 +177,11 @@ Sneak-right-click with wheat seeds, carrots, potatoes, beetroot seeds, melon see
 | `xpPerCrop` | `1.45` | Herbalism skill XP per crop planted. |
 
 ### Compost Cascade (`herbalism-compost-cascade`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-compost-cascade-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-compost-cascade-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 6 levels · 4 knowledge
 
@@ -183,6 +223,11 @@ Sneak-right-click a composter, or one looked at within 5 blocks, to pull in near
 
 ### Rooted Footing (`herbalism-rooted-footing`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-rooted-footing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-rooted-footing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 Walking or jumping on `FARMLAND` does not trample it, and part of fall damage on farmland, grass block, moss block, mycelium, dirt, or rooted dirt directly underneath is paid from food. The absorb cap is `damage * min(maxAbsorbPercent, absorbBase + levelPercent * absorbFactor)` and the amount taken is `min(absorbCap, usableFood / foodPerDamage)`; covering the whole fall cancels it, and the adaptation is active without learning.
@@ -195,6 +240,11 @@ Walking or jumping on `FARMLAND` does not trample it, and part of fall damage on
 | `foodPerDamage` | `1.8` | Food points spent per point of damage absorbed. |
 
 ### Bee Shepherd (`herbalism-bee-shepherd`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-bee-shepherd-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-bee-shepherd-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 
@@ -220,6 +270,11 @@ Holding any flower in either hand, including tulip, dandelion, poppy, blue orchi
 | `xpPerGrowth` | `0.9` | Herbalism skill XP per crop grown. |
 
 ### Spore Bloom (`herbalism-spore-bloom`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-spore-bloom-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-spore-bloom-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 

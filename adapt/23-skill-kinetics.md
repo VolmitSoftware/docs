@@ -2,7 +2,7 @@
 title: "Skill - Kinetics"
 description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T19:35:13.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,11 @@ Every adaptation has an Enabled control at the bottom of its level screen. Perso
 A spear is any of the seven spear items, wooden through netherite, and a mace is the vanilla mace. Adaptations that use gravity, bounciness, air drag, or scale do nothing on a server version that lacks that attribute.
 
 ### Moon Jump (`kinetics-moon-jump`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-moon-jump-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-moon-jump-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level
 
@@ -34,6 +39,11 @@ Personal controls: Base jump assistance (on/off); Floaty hop (While sneaking/Eve
 
 ### Rubber Soul (`kinetics-rubber-soul`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-rubber-soul-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-rubber-soul-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
 Passive bounciness is always applied. Effective bounciness caps at 1.0, so a slime bounce does not go higher; sneaking and honey blocks suppress bouncing, but a honey landing still arms the soft-block bonus for the next other surface, including a landing with no horizontal movement.
@@ -49,6 +59,11 @@ Personal controls: Base landing bounce (on/off); Extra springy-block bounce (on/
 | `bonusWindowTicks` | `40` | How long the bouncy-block bonus lasts, in ticks. |
 
 ### Soft Catch (`kinetics-soft-catch`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-soft-catch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-soft-catch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level
 
@@ -94,6 +109,11 @@ Personal controls: Midair mode cycle (Dive then hang/Hang then dive/Dive only/Ha
 
 ### Heavy Frame (`kinetics-heavy-frame`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-heavy-frame-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-heavy-frame-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
 Sneaking with a mace or spear in the main hand applies transient knockback resistance, explosion knockback resistance, and a movement-speed penalty until sneak is released or the held item changes. It is not a potion effect and shows no status icon.
@@ -125,6 +145,11 @@ Personal controls: Form selection (Look direction/Cycle Titan, Pocket, normal).
 | `pocketScaleFactor` | `0.25` | Extra Pocket shrink across levels. |
 
 ### Meteor Cadence (`kinetics-meteor-cadence`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-meteor-cadence-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-meteor-cadence-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level
 
@@ -159,6 +184,11 @@ A landed mace smash removes armor and armor toughness from that target.
 | `targetCooldownMs` | `3000` | Milliseconds before the same target can be shredded again. |
 
 ### Windburst (`kinetics-windburst`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-windburst-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-windburst-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level
 
@@ -195,6 +225,11 @@ Each landed mace smash grants a short brace of knockback resistance, armor tough
 | `braceTicksFactor` | `40` | Extra brace duration in ticks across levels. |
 
 ### Rebound Anvil (`kinetics-rebound-anvil`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-rebound-anvil-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-rebound-anvil-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 4 knowledge, then 5 per level
 
@@ -239,6 +274,11 @@ Spear damage scales with recent horizontal speed and does not apply while riding
 
 ### Impale Pin (`kinetics-impale-pin`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-impale-pin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-impale-pin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
 A spear hit inside the distance band applies Slowness. Distance is measured from the eye to the nearest point on the target hitbox, so elevation and a large mob do not change the check.
@@ -256,6 +296,11 @@ A spear hit inside the distance band applies Slowness. Distance is measured from
 
 ### Lunge Conductor (`kinetics-lunge-conductor`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-lunge-conductor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-lunge-conductor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 3 knowledge, then 4 per level
 
 A spear lunge gains power and a forward dash. The dash is horizontal only, so existing vertical motion stays, and a lunge during the cooldown is unchanged.
@@ -272,6 +317,11 @@ Personal controls: Extra lunge travel (on/off).
 
 ### Mounted Shock (`kinetics-mounted-shock`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-mounted-shock-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-mounted-shock-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 4 per level
 
 Spear hits while riding scale with the mount's speed, not the rider's, and stack with Taming mounted damage.
@@ -285,6 +335,11 @@ Spear hits while riding scale with the mount's speed, not the rider's, and stack
 | `cooldownMs` | `2000` | Milliseconds between boosted mounted charges. |
 
 ### Dead Zone (`kinetics-dead-zone`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-dead-zone-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-dead-zone-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 4 knowledge, then 5 per level
 
