@@ -40,7 +40,7 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .v-main__wrap > hr { display: none; }
 #root .v-application:has(.contents) :where(.volmit-project-overview, .volmit-reference-page) > .v-main__wrap > header { display: none !important; }
 #root .v-application:has(.contents) .v-main__wrap > .container { min-width: 0; background: var(--volmit-paper) !important; }
-#root .v-application:has(.contents) .v-footer { background: var(--volmit-paper) !important; color: var(--volmit-muted) !important; border-top: 1px solid var(--volmit-line); }
+#root .v-application:has(.contents) .v-footer:has(> .caption > span > a[href="https://wiki.js.org"]) { display: none !important; }
 
 #root .v-application:has(.contents) .nav-header,
 #root .v-application:has(.contents) .nav-header .v-toolbar__content,
@@ -266,6 +266,19 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .picker-footer a { color: var(--volmit-ink); text-decoration: underline; text-underline-offset: 4px; }
 #root .v-application:has(.contents) .picker-empty { padding: 24px; margin: 0; color: var(--volmit-muted); font-size: 14px; }
 
+#root .v-application:has(.contents) .contents :is(.adapt-demo, .wormholes-demo).demo-ready { margin: 20px 0 28px; overflow: hidden; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-paper); }
+#root .v-application:has(.contents) .demo-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px; border-bottom: 1px solid var(--volmit-line); background: var(--volmit-surface); }
+#root .v-application:has(.contents) .demo-tabs { display: flex; gap: 4px; }
+#root .v-application:has(.contents) .demo-tab { min-height: 44px; padding: 8px 12px; border: 1px solid transparent; border-radius: var(--volmit-radius-control); background: transparent; color: var(--volmit-muted); font-size: 13px; font-weight: 500; cursor: pointer; }
+#root .v-application:has(.contents) .demo-tab:hover { background: var(--volmit-surface-raised); color: var(--volmit-ink); }
+#root .v-application:has(.contents) .demo-tab[aria-selected="true"] { border-color: var(--volmit-line-strong); background: var(--volmit-selected); color: var(--volmit-ink); }
+#root .v-application:has(.contents) .demo-scope { padding-right: 8px; color: var(--volmit-muted); font-size: 11px; white-space: nowrap; }
+#root .v-application:has(.contents) .demo-panel { aspect-ratio: 16 / 9; background: #000; }
+#root .v-application:has(.contents) .demo-panel video { display: block; width: 100%; height: 100%; margin: 0; border: 0; border-radius: 0; object-fit: contain; }
+#root .v-application:has(.contents) .wormholes-demo .demo-tabs { flex-wrap: wrap; min-width: 0; }
+#root .v-application:has(.contents) .wormholes-demo .demo-tab { white-space: normal; text-align: left; }
+#root .v-application:has(.contents) .wormholes-demo [hidden] { display: none !important; }
+
 @media (max-width: 1400px) {
   #root .v-application:has(.contents) .home-directory { margin: 0 48px; }
   #root .v-application:has(.contents) .directory-card { padding: 20px 16px; gap: 12px; }
@@ -307,6 +320,7 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 }
 
 @media (max-width: 700px) {
+  #root .v-application:has(.contents) .demo-scope { display: none; }
   #root .v-application:has(.contents) { --volmit-header-height: 64px; }
   #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: 64px; gap: 0 8px; align-content: center; }
   #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row > .flex:last-child { grid-column: 2; grid-row: 1; }

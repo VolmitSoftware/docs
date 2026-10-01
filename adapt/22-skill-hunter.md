@@ -2,7 +2,7 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T06:36:54.441Z
+date: 2026-10-01T09:26:23.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

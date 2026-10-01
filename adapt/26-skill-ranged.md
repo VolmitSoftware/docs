@@ -2,7 +2,7 @@
 title: "Skill - Ranged"
 description: "Ranged XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-30T18:31:08.000Z
+date: 2026-10-01T09:06:18.722Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,8 +38,8 @@ Projectile changes do not apply to Heartseeker seeking arrows. Those shots use t
 ### Force Shot (`ranged-force`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-force-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-force-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-force-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-force-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 5 knowledge, then 2 per level
@@ -54,8 +54,8 @@ Launch speed is multiplied by `1 + (levelPercent * speedFactor)`. Each hit pays 
 ### Arrow Piercing (`ranged-piercing`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-piercing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-piercing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-piercing-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-piercing-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 8 knowledge, then 3 per level
@@ -65,8 +65,8 @@ Arrows gain pierce levels equal to the adaptation level, applied once at launch,
 ### Arrow Recovery (`ranged-recovery`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-recovery-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-recovery-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-recovery-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-recovery-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 8 levels · 5 knowledge
@@ -80,8 +80,8 @@ An arrow fired from a bow without Infinity, on hitting a living target, can retu
 ### Lunge Shot (`ranged-lunge-shot`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-lunge-shot-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-lunge-shot-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-lunge-shot-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-lunge-shot-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 8 knowledge, then 3 per level
@@ -95,8 +95,8 @@ Firing an arrow or trident while airborne subtracts the look direction times `le
 ### Web Snare (`ranged-webshot`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-webshot-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-webshot-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-webshot-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-webshot-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 1 knowledge, then 5 per level
@@ -106,8 +106,8 @@ Learning it registers a recipe of eight cobwebs around a snowball. The throw pla
 ### Trajectory Sight (`ranged-trajectory-sight`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-trajectory-sight-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-trajectory-sight-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-trajectory-sight-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-trajectory-sight-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -155,8 +155,8 @@ Drawing a bow, or sneaking with a bow, crossbow, trident, snowball, egg, ender p
 ### Floaters (`ranged-floaters`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-floaters-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-floaters-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-floaters-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-floaters-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -176,8 +176,8 @@ A projectile hit can apply Levitation, using the level and owner stamped on that
 ### Pinning Shot (`ranged-pinning-shot`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-pinning-shot-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-pinning-shot-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-pinning-shot-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-pinning-shot-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -204,8 +204,8 @@ A hit can apply a hardcoded movement-speed modifier of `-min(1.0, 0.15 * (amplif
 ### Ricochet Bolt (`ranged-ricochet-bolt`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-ricochet-bolt-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-ricochet-bolt-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-ricochet-bolt-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-ricochet-bolt-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -242,8 +242,8 @@ A block hit bounces the projectile and adds speed and flat damage on the next hi
 ### Fetch Shot (`ranged-fetch-shot`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-fetch-shot-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-fetch-shot-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-fetch-shot-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-fetch-shot-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 4 knowledge, then 3 per level
@@ -262,8 +262,8 @@ A projectile impact moves nearby dropped items into the inventory. Fish hooks an
 ### Heavy Draw (`ranged-heavy-draw`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-heavy-draw-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-heavy-draw-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-heavy-draw-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-heavy-draw-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge, then 4 per level
@@ -281,8 +281,8 @@ Arrow, trident, snowball, and egg launches interpolate a speed penalty and a dam
 ### Heartseeker (`ranged-heartseeker`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/ranged/ranged-heartseeker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/ranged/ranged-heartseeker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/ranged/ranged-heartseeker-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/ranged/ranged-heartseeker-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 8 knowledge, then 6 per level

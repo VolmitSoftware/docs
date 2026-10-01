@@ -15,6 +15,26 @@
   let scheduled = false;
   let dialog = null;
   let opener = null;
+  const demoPlayers = new Map();
+  const wormholePlayers = new Map();
+  const pausedDemos = new WeakSet();
+  let demoSequence = 0;
+  let demoPerspective = savedDemoPerspective();
+  const demoObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const player = demoPlayers.get(entry.target);
+      if (player) {
+        player.visible = entry.isIntersecting && entry.intersectionRatio >= 0.1;
+        updateDemoPlayback(player);
+      }
+      const wormhole = wormholePlayers.get(entry.target);
+      if (wormhole) {
+        wormhole.visible = entry.isIntersecting && entry.intersectionRatio >= 0.1;
+        updateWormholePlayback(wormhole);
+      }
+    }
+  }, { threshold: [0, 0.1] });
+
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -398,6 +418,309 @@
     closeSectionMenu(app, false);
   }
 
+  function savedDemoPerspective() {
+    try {
+      return window.localStorage.getItem('adapt-demo-perspective') === 'third-person' ? 'third-person' : 'first-person';
+    } catch {
+      return 'first-person';
+    }
+  }
+
+  function pauseDemo(video) {
+    if (!video.paused) {
+      pausedDemos.add(video);
+      video.pause();
+    }
+  }
+
+  function updateDemoPlayback(player) {
+    for (const [perspective, view] of player.views) {
+      const active = perspective === demoPerspective;
+      view.panel.hidden = !active;
+      view.tab.setAttribute('aria-selected', String(active));
+      view.tab.tabIndex = active ? 0 : -1;
+      if (!active || !player.visible || document.hidden || !player.playing) {
+        pauseDemo(view.video);
+      } else if (view.video.paused) {
+        view.video.play().catch((error) => {
+          if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
+            console.error('Unable to play the skill demonstration.', error);
+          }
+        });
+      }
+    }
+  }
+
+  function selectDemoPerspective(perspective) {
+    if (perspective === demoPerspective) {
+      return;
+    }
+    demoPerspective = perspective;
+    for (const player of demoPlayers.values()) {
+      for (const view of player.views.values()) {
+        pauseDemo(view.video);
+      }
+    }
+    for (const player of demoPlayers.values()) {
+      updateDemoPlayback(player);
+    }
+    try {
+      window.localStorage.setItem('adapt-demo-perspective', perspective);
+    } catch {
+      return;
+    }
+  }
+
+  function mountDemo(container) {
+    const first = container.querySelector('video[src$="-pov.webm"]');
+    const third = container.querySelector('video[src$="-observer.webm"]');
+    if (!first || !third) {
+      return;
+    }
+    const player = { views: new Map(), visible: false, playing: true };
+    demoPlayers.set(container, player);
+    const header = element('div', 'demo-header');
+    const tabs = element('div', 'demo-tabs');
+    tabs.setAttribute('role', 'tablist');
+    tabs.setAttribute('aria-label', 'Perspective for all demonstrations');
+    header.append(tabs, element('span', 'demo-scope', 'All demos'));
+    container.prepend(header);
+    const id = 'adapt-demo-' + ++demoSequence;
+    for (const [perspective, label, video] of [['first-person', 'First person', first], ['third-person', 'Third person', third]]) {
+      video.autoplay = false;
+      video.muted = true;
+      video.preload = 'none';
+      pauseDemo(video);
+      video.setAttribute('aria-label', label + ' demonstration');
+      const tab = element('button', 'demo-tab', label);
+      tab.type = 'button';
+      tab.id = id + '-' + perspective + '-tab';
+      tab.setAttribute('role', 'tab');
+      const panel = element('div', 'demo-panel');
+      panel.id = id + '-' + perspective;
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tab.id);
+      tab.setAttribute('aria-controls', panel.id);
+      panel.append(video);
+      tabs.append(tab);
+      container.append(panel);
+      player.views.set(perspective, { tab, panel, video });
+      tab.addEventListener('click', () => selectDemoPerspective(perspective));
+      video.addEventListener('play', () => {
+        if (video.paused) {
+          return;
+        }
+        if (perspective !== demoPerspective || !player.visible || document.hidden) {
+          pauseDemo(video);
+          return;
+        }
+        player.playing = true;
+      });
+      video.addEventListener('pause', () => {
+        if (pausedDemos.delete(video)) {
+          return;
+        }
+        player.playing = false;
+        updateDemoPlayback(player);
+      });
+    }
+    tabs.addEventListener('keydown', (event) => {
+      let perspective;
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        perspective = demoPerspective === 'first-person' ? 'third-person' : 'first-person';
+      } else if (event.key === 'Home') {
+        perspective = 'first-person';
+      } else if (event.key === 'End') {
+        perspective = 'third-person';
+      } else {
+        return;
+      }
+      event.preventDefault();
+      selectDemoPerspective(perspective);
+      player.views.get(perspective).tab.focus();
+    });
+    container.classList.add('demo-ready');
+    updateDemoPlayback(player);
+    demoObserver.observe(container);
+  }
+
+  function mountDemos(content) {
+    for (const [container, player] of demoPlayers) {
+      if (!container.isConnected) {
+        demoObserver.unobserve(container);
+        for (const view of player.views.values()) {
+          pauseDemo(view.video);
+        }
+        demoPlayers.delete(container);
+      }
+    }
+    for (const container of content.querySelectorAll('.adapt-demo')) {
+      if (!demoPlayers.has(container)) {
+        mountDemo(container);
+      }
+    }
+    for (const [container, player] of wormholePlayers) {
+      if (!container.isConnected) {
+        demoObserver.unobserve(container);
+        for (const variant of player.variants.values()) {
+          for (const view of variant.views.values()) {
+            pauseDemo(view.video);
+          }
+        }
+        wormholePlayers.delete(container);
+      }
+    }
+    for (const container of content.querySelectorAll('.wormholes-demo')) {
+      if (!wormholePlayers.has(container)) {
+        mountWormholeDemo(container);
+      }
+    }
+  }
+
+  function demoTab(tabs, panel, id, label) {
+    const tab = element('button', 'demo-tab', label);
+    tab.type = 'button';
+    tab.id = id + '-tab';
+    tab.setAttribute('role', 'tab');
+    panel.id = id;
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', tab.id);
+    tab.setAttribute('aria-controls', panel.id);
+    tabs.append(tab);
+    return tab;
+  }
+
+  function demoKeyboard(tabs, choices, current, select) {
+    tabs.addEventListener('keydown', (event) => {
+      if (event.target.closest('[role="tablist"]') !== tabs) {
+        return;
+      }
+      const keys = Array.from(choices.keys());
+      const index = keys.indexOf(current());
+      let next;
+      if (event.key === 'ArrowLeft') {
+        next = keys[(index + keys.length - 1) % keys.length];
+      } else if (event.key === 'ArrowRight') {
+        next = keys[(index + 1) % keys.length];
+      } else if (event.key === 'Home') {
+        next = keys[0];
+      } else if (event.key === 'End') {
+        next = keys[keys.length - 1];
+      } else {
+        return;
+      }
+      event.preventDefault();
+      select(next);
+      choices.get(next).tab.focus();
+    });
+  }
+
+  function updateWormholePlayback(player) {
+    for (const [client, variant] of player.variants) {
+      const selected = client === player.client;
+      variant.panel.hidden = !selected;
+      variant.tab.setAttribute('aria-selected', String(selected));
+      variant.tab.tabIndex = selected ? 0 : -1;
+      for (const [perspective, view] of variant.views) {
+        const active = perspective === variant.perspective;
+        view.panel.hidden = !active;
+        view.tab.setAttribute('aria-selected', String(active));
+        view.tab.tabIndex = active ? 0 : -1;
+        if (!selected || !active || !player.visible || document.hidden || !player.playing) {
+          pauseDemo(view.video);
+        } else if (view.video.paused) {
+          view.video.play().catch((error) => {
+            if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
+              console.error('Unable to play the portal demonstration.', error);
+            }
+          });
+        }
+      }
+    }
+  }
+
+  function mountWormholeDemo(container) {
+    const variants = new Map();
+    for (const client of ['standard', 'clientview']) {
+      const panel = container.querySelector('.wormholes-demo-variant[data-client="' + client + '"]');
+      const first = panel?.querySelector('video[src$="-pov.webm"]');
+      const third = panel?.querySelector('video[src$="-observer.webm"]');
+      if (!panel || !first || !third) {
+        return;
+      }
+      variants.set(client, { panel, videos: [first, third], views: new Map(), perspective: 'first-person' });
+    }
+    const player = { variants, client: 'standard', visible: false, playing: true };
+    const id = 'wormholes-demo-' + ++demoSequence;
+    const header = element('div', 'demo-header');
+    const tabs = element('div', 'demo-tabs');
+    tabs.setAttribute('role', 'tablist');
+    tabs.setAttribute('aria-label', 'Wormholes client for this demonstration');
+    header.append(tabs);
+    container.prepend(header);
+    for (const [client, variant] of variants) {
+      const label = client === 'clientview' ? 'WITH Wormholes mod' : 'WITHOUT Wormholes mod';
+      variant.panel.querySelector(':scope > p')?.remove();
+      variant.tab = demoTab(tabs, variant.panel, id + '-' + client, label);
+      variant.tab.addEventListener('click', () => {
+        player.client = client;
+        updateWormholePlayback(player);
+      });
+      const perspectiveHeader = element('div', 'demo-header');
+      const perspectiveTabs = element('div', 'demo-tabs');
+      perspectiveTabs.setAttribute('role', 'tablist');
+      perspectiveTabs.setAttribute('aria-label', label + ' perspective');
+      perspectiveHeader.append(perspectiveTabs);
+      variant.panel.prepend(perspectiveHeader);
+      for (const [index, [perspective, name]] of [['first-person', 'First person'], ['third-person', 'Third person']].entries()) {
+        const video = variant.videos[index];
+        video.autoplay = false;
+        video.muted = true;
+        video.preload = 'none';
+        video.setAttribute('aria-label', label + ', ' + name.toLowerCase() + ' demonstration');
+        pauseDemo(video);
+        const panel = element('div', 'demo-panel');
+        const tab = demoTab(perspectiveTabs, panel, id + '-' + client + '-' + perspective, name);
+        panel.append(video);
+        variant.panel.append(panel);
+        variant.views.set(perspective, { panel, tab, video });
+        tab.addEventListener('click', () => {
+          variant.perspective = perspective;
+          updateWormholePlayback(player);
+        });
+        video.addEventListener('play', () => {
+          if (video.paused) {
+            return;
+          }
+          if (player.client !== client || variant.perspective !== perspective || !player.visible || document.hidden) {
+            pauseDemo(video);
+            return;
+          }
+          player.playing = true;
+        });
+        video.addEventListener('pause', () => {
+          if (pausedDemos.delete(video)) {
+            return;
+          }
+          player.playing = false;
+          updateWormholePlayback(player);
+        });
+      }
+      demoKeyboard(perspectiveTabs, variant.views, () => variant.perspective, (perspective) => {
+        variant.perspective = perspective;
+        updateWormholePlayback(player);
+      });
+    }
+    demoKeyboard(tabs, variants, () => player.client, (client) => {
+      player.client = client;
+      updateWormholePlayback(player);
+    });
+    wormholePlayers.set(container, player);
+    container.classList.add('demo-ready');
+    updateWormholePlayback(player);
+    demoObserver.observe(container);
+  }
+
   function finishLoading() {
     document.documentElement.classList.remove('volmit-loading');
     window.clearTimeout(loadingTimeout);
@@ -420,6 +743,7 @@
       theme.dark = true;
     }
     mountHeader(app);
+    mountDemos(content);
     if (!catalogSettled) {
       return;
     }
@@ -488,6 +812,15 @@
     new MutationObserver(scheduleMount).observe(root, { childList: true, subtree: true });
     document.addEventListener('DOMContentLoaded', scheduleMount, { once: true });
     window.addEventListener('popstate', scheduleMount);
+    document.addEventListener('visibilitychange', () => {
+      for (const player of demoPlayers.values()) {
+        updateDemoPlayback(player);
+      }
+      for (const player of wormholePlayers.values()) {
+        updateWormholePlayback(player);
+      }
+    });
+
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Tab' && !dialog?.open && window.innerWidth < 960) {
         const menu = document.querySelector('.show-section-menu #volmit-page-navigation');

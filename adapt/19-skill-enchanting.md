@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T04:38:14.000Z
+date: 2026-10-01T09:26:23.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,6 +51,11 @@ Left-click one enchanted book from the cursor onto one non-book item in a contai
 
 ### Lapis Return (`enchanting-lapis-return`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-lapis-return-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-lapis-return-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 2 knowledge, then 5 per level
 
 After a committed table enchant, chance `min(maxRefundChance, refundChanceBase + levelPercent * refundChanceFactor)` is rolled before the hardcoded 20000 ms cooldown, so a success inside that window is wasted. A success adds a lapis stack equal to the adaptation level to the inventory and drops only overflow.
@@ -62,6 +67,11 @@ After a committed table enchant, chance `min(maxRefundChance, refundChanceBase +
 | `maxRefundChance` | `0.4` | Hard ceiling on refund chance, 0-1. |
 
 ### XP Return (`enchanting-xp-return`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-xp-return-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-xp-return-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 7 levels · 2 knowledge, then 1 per level
 

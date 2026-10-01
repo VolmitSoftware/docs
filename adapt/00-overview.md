@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Adapt skills, knowledge, adaptations, and ability power"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-01T09:06:18.722Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,3 +19,5 @@ Adapt tracks 23 skills. Skill XP produces a level and knowledge for that skill. 
 | Ability power | `floor(masterLevel * powerPerLevel)`, plus any region bonus. Each learned level costs 1. Region grants cost 0 |
 
 Rules and formulas are in [Concepts](/adapt/02-concepts) and [Configuration math](/adapt/05-configuration-math). Files and keys are in [Installation and configuration](/adapt/01-installation-configuration). Every skill is listed in the [Skills catalog](/adapt/10-skills-catalog).
+
+Skill demonstrations start in **First person**. Select **Third person** above any demonstration to switch all demonstrations; your choice is remembered across skill pages. Hidden and offscreen clips pause, and video controls remain available.
