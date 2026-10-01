@@ -464,6 +464,14 @@
     for (const player of demoPlayers.values()) {
       updateDemoPlayback(player);
     }
+    for (const player of wormholePlayers.values()) {
+      for (const variant of player.variants.values()) {
+        for (const view of variant.views.values()) {
+          pauseDemo(view.video);
+        }
+      }
+      updateWormholePlayback(player);
+    }
     try {
       window.localStorage.setItem('adapt-demo-perspective', perspective);
     } catch {
@@ -622,7 +630,7 @@
       variant.tab.setAttribute('aria-selected', String(selected));
       variant.tab.tabIndex = selected ? 0 : -1;
       for (const [perspective, view] of variant.views) {
-        const active = perspective === variant.perspective;
+        const active = perspective === demoPerspective;
         view.panel.hidden = !active;
         view.tab.setAttribute('aria-selected', String(active));
         view.tab.tabIndex = active ? 0 : -1;
@@ -648,7 +656,7 @@
       if (!panel || !first || !third) {
         return;
       }
-      variants.set(client, { panel, videos: [first, third], views: new Map(), perspective: 'first-person' });
+      variants.set(client, { panel, videos: [first, third], views: new Map() });
     }
     const player = { variants, client: 'standard', visible: false, playing: true };
     const id = 'wormholes-demo-' + ++demoSequence;
@@ -670,7 +678,7 @@
       const perspectiveTabs = element('div', 'demo-tabs');
       perspectiveTabs.setAttribute('role', 'tablist');
       perspectiveTabs.setAttribute('aria-label', label + ' perspective');
-      perspectiveHeader.append(perspectiveTabs);
+      perspectiveHeader.append(perspectiveTabs, element('span', 'demo-scope', 'All demos'));
       variant.panel.prepend(perspectiveHeader);
       for (const [index, [perspective, name]] of [['first-person', 'First person'], ['third-person', 'Third person']].entries()) {
         const video = variant.videos[index];
@@ -684,15 +692,12 @@
         panel.append(video);
         variant.panel.append(panel);
         variant.views.set(perspective, { panel, tab, video });
-        tab.addEventListener('click', () => {
-          variant.perspective = perspective;
-          updateWormholePlayback(player);
-        });
+        tab.addEventListener('click', () => selectDemoPerspective(perspective));
         video.addEventListener('play', () => {
           if (video.paused) {
             return;
           }
-          if (player.client !== client || variant.perspective !== perspective || !player.visible || document.hidden) {
+          if (player.client !== client || demoPerspective !== perspective || !player.visible || document.hidden) {
             pauseDemo(video);
             return;
           }
@@ -706,10 +711,7 @@
           updateWormholePlayback(player);
         });
       }
-      demoKeyboard(perspectiveTabs, variant.views, () => variant.perspective, (perspective) => {
-        variant.perspective = perspective;
-        updateWormholePlayback(player);
-      });
+      demoKeyboard(perspectiveTabs, variant.views, () => demoPerspective, selectDemoPerspective);
     }
     demoKeyboard(tabs, variants, () => player.client, (client) => {
       player.client = client;

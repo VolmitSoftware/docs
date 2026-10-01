@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-01T10:06:50.000Z
+date: 2026-10-01T10:37:06.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -111,13 +111,13 @@ notices.
 <div class="wormholes-demo" data-demo="portal-linking">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>WITHOUT Wormholes mod</p>
-<video src="/wormholes-assets/demos/portal-linking-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
-<video src="/wormholes-assets/demos/portal-linking-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/portal-linking-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/portal-linking-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>WITH Wormholes mod</p>
-<video src="/wormholes-assets/demos/portal-linking-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
-<video src="/wormholes-assets/demos/portal-linking-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/portal-linking-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/portal-linking-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

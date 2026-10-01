@@ -12,13 +12,14 @@ function demonstration(id) {
       `<video src="/wormholes-assets/demos/${id}-${client}-${view}.webm" controls></video>`).join('') + '</div>').join('')}</div>`;
 }
 
-async function page(t) {
+async function page(t, perspective) {
   const dom = new JSDOM('<div id="root"><div class="v-application"><main class="v-main"><div class="contents">'
     + ['wand-creation', 'rune-creation', 'portal-linking'].map(demonstration).join('')
     + '<div class="adapt-demo"><video src="/adapt-assets/demo-pov.webm"></video><video src="/adapt-assets/demo-observer.webm"></video></div>'
     + '</div></main></div></div>', { url: 'https://example.test/wormholes/03-building-portals', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
+  if (perspective) window.localStorage.setItem('adapt-demo-perspective', perspective);
   const observers = [];
   window.IntersectionObserver = class {
     constructor(callback) { this.callback = callback; observers.push(this); }
@@ -98,7 +99,7 @@ test('inactive client, inactive perspective, offscreen, and background clips pau
   assert.equal(third.paused, false);
   demo.querySelectorAll(':scope > .demo-header button')[1].click();
   assert.equal(third.paused, true);
-  const modded = demo.querySelector('video[src$="clientview-pov.webm"]');
+  const modded = demo.querySelector('video[src$="clientview-observer.webm"]');
   assert.equal(modded.paused, false);
   visible(demo, false);
   assert.equal(modded.paused, true);
@@ -107,4 +108,28 @@ test('inactive client, inactive perspective, offscreen, and background clips pau
   Object.defineProperty(window.document, 'hidden', { value: true, configurable: true });
   window.document.dispatchEvent(new window.Event('visibilitychange'));
   assert.equal(modded.paused, true);
+});
+
+test('Wormholes shares Adapt perspective selection and remembers it across pages', async t => {
+  const { window, demos, visible } = await page(t);
+  for (const demo of demos) visible(demo, true);
+  const adapt = window.document.querySelector('.adapt-demo');
+  visible(adapt, true);
+  demos[0].querySelector('[data-client="standard"] .demo-tabs').querySelectorAll('button')[1].click();
+  assert.equal(window.localStorage.getItem('adapt-demo-perspective'), 'third-person');
+  for (const demo of demos) {
+    assert.equal(demo.querySelector('video[src$="standard-pov.webm"]').paused, true);
+    assert.equal(demo.querySelector('video[src$="standard-observer.webm"]').paused, false);
+    for (const variant of demo.querySelectorAll('[data-client]')) {
+      assert.equal(variant.querySelectorAll('.demo-tabs button')[1].getAttribute('aria-selected'), 'true');
+    }
+    assert.equal(demo.querySelector('[data-client="standard"] .demo-scope').textContent, 'All demos');
+  }
+  assert.equal(adapt.querySelectorAll('.demo-tab')[1].getAttribute('aria-selected'), 'true');
+  demos[0].querySelectorAll(':scope > .demo-header button')[1].click();
+  assert.equal(demos[0].querySelector('video[src$="clientview-observer.webm"]').paused, false);
+  adapt.querySelectorAll('.demo-tab')[0].click();
+  assert.equal(demos[0].querySelector('video[src$="clientview-pov.webm"]').paused, false);
+  const restored = await page(t, 'third-person');
+  assert.equal(restored.demos[0].querySelector('[data-client="standard"] .demo-tabs button[aria-selected="true"]').textContent, 'Third person');
 });

@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-10-01T10:06:50.000Z
+date: 2026-10-01T10:37:06.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -57,13 +57,13 @@ To supply nine runes for a 3×3 opening in survival, an administrator can run `/
 <div class="wormholes-demo" data-demo="wand-creation">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>WITHOUT Wormholes mod</p>
-<video src="/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
-<video src="/wormholes-assets/demos/wand-creation-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/wand-creation-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>WITH Wormholes mod</p>
-<video src="/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
-<video src="/wormholes-assets/demos/wand-creation-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/wand-creation-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -96,13 +96,13 @@ default and do not expose the linked destination.
 <div class="wormholes-demo" data-demo="rune-creation">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>WITHOUT Wormholes mod</p>
-<video src="/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
-<video src="/wormholes-assets/demos/rune-creation-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/rune-creation-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>WITH Wormholes mod</p>
-<video src="/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
-<video src="/wormholes-assets/demos/rune-creation-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/rune-creation-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

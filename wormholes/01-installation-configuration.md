@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-01T12:00:00.000Z
+date: 2026-10-01T10:35:28.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -413,7 +413,7 @@ Projection behavior detail:
 | `hello-grace-millis` | `100` | Extra milliseconds a joining client with a modded brand has to answer the offer. Clients with the vanilla brand never wait |
 | `max-frame-kb` | `512` | Largest ClientView message in KiB. Larger updates are split |
 | `ack-window-frames` | `8` | Unacknowledged frame groups before sending to that client pauses until it catches up. `0` never pauses |
-| `brick-cache` | `true` | Send content hashes for 16×16×16 destination sections so a client reuses sections it already holds instead of downloading them again |
+| `brick-cache` | `true` | Reuse 16×16×16 destination sections the client already holds. A view whose cache manifest exceeds the negotiated message size downloads in full across multiple messages, retaining its depth and ClientView projection |
 | `destination-light` | `true` | Send destination light with the blocks of portals that use destination lighting: `[render] lighting-fidelity = true`, or `[atmosphere] sky-light = true` with `tint_light` or `full` atmosphere |
 | `entity-frames` | `true` | Send destination entities as one 20 Hz stream per portal, shared by every ClientView player watching it. Off shows no destination entities to ClientView players |
 | `zero-copy` | `true` | In singleplayer, hand portal views to the client in memory instead of encoding them |
