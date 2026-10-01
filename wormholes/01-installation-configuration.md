@@ -48,6 +48,7 @@ The client creates this file in its `config/` folder on first launch and reads i
 | `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it, so mirror views are not downloaded |
 | `client-recursion` | `true` | Show portals seen inside a mirror through their own destination when the server sends them, instead of an empty opening |
 | `self-reflection` | `true` | Show your own reflection in mirrors this client draws |
+| `connection-message` | `true` | Show "Wormholes Connection Established" in this client's chat when a server confirms ClientView. Only this client sees it |
 
 ## Build distributions
 
