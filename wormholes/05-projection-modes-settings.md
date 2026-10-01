@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-01T12:00:00.000Z
+date: 2026-10-01T21:05:01.862Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,6 +41,8 @@ Stored as `renderMode` on the portal JSON. Toggled from the portal settings
 menu.
 
 `occlusion-reveal-margin-degrees` sets how early Venticular reveals geometry around edges.
+
+To inspect the difference, view a destination with hills or overlapping structures, then run `/wh admin freeze seconds=120`. Standard projection retains the blocks already shown to that viewer while the camera moves around to inspect their rear. PanOptic retains the fuller projected volume; Venticular omits geometry hidden from the original viewing position. Run `/wh admin freeze seconds=0` to resume updates. Freezing pauses server projection updates for all viewers; ClientView continues rendering from the moving local camera and clipping the view to the aperture, so it does not become a frozen volume of local blocks.
 
 ## Held cells
 
@@ -179,7 +181,7 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 
 | Key | Default | Notes |
 |-----|---------|-------|
-| `lighting-fidelity` | `false` | Send destination lighting with projected blocks. |
+| `lighting-fidelity` | `false` | Send destination lighting with standard projected blocks. Native ClientView always receives destination block and sky light. |
 | `entity-spoofing` | `true` | See entity spoofing. |
 | `lighting-refresh-interval-ticks` | `4` | Lighting refresh cadence. |
 | `lighting-max-sections-per-pass` | `2` | Lighting sections per pass. |
@@ -195,9 +197,20 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 
 ## Optional destination colors and lighting
 
-Projection leaves the viewer's biome colors and lighting unchanged by default. `[atmosphere]` defaults to `mode-default = "off"`, `biome-tint = false`, and `sky-light = false`; `[render] lighting-fidelity` also defaults to `false`.
+Standard projection and plate-based ClientView leave the viewer's biome colors and lighting unchanged by default. `[atmosphere]` defaults to `mode-default = "off"`, `biome-tint = false`, and `sky-light = false`; `[render] lighting-fidelity` also defaults to `false`.
 
 To enable destination biome colors, set `[atmosphere] biome-tint = true` and select `tint`, `tint_light`, or `full` atmosphere mode. To enable destination sky lighting through atmosphere mode, set `sky-light = true` and select `tint_light` or `full`. `[render] lighting-fidelity = true` enables projected lighting independently. Existing explicit settings remain in effect.
+
+Choose the mode for one portal in **Settings → More settings → Fidelity → Atmosphere**. Shift-left-click restores the server's `mode-default`.
+
+| Mode | Atmosphere channels |
+|------|---------------------|
+| `off` | No atmosphere colors, sky lighting, fog, or weather. Independently enabled projected lighting still applies. |
+| `tint` | Destination biome colors when `biome-tint` is enabled. |
+| `tint_light` | Biome colors plus destination sky lighting when `sky-light` is enabled. |
+| `full` | Adds fog when `fog-plate` is enabled and destination weather when `weather` is enabled. |
+
+Standard projection presents relayed weather within the projected view. For ClientView, full atmosphere can also change the nearby viewer's sky and, for overworld destinations, its time; see [ClientView](/wormholes/05-projection-modes-settings#clientview). The Fidelity menu also controls relayed sounds and block-entity contents, described in [Fidelity menu](/wormholes/04-portal-types-menus-settings#fidelity-menu).
 
 ## Per-portal activation range
 
@@ -211,8 +224,11 @@ Dropping below 8 clears back to global (`0`).
 
 ## Primary, recursive, and remote views
 
-The primary block and entity depth comes from the portal's `networkViewDepth`
-setting (default 64), including settings replicated from the linked gateway.
+For standard projection and plate-based ClientView, primary block and entity
+depth comes from the portal's `networkViewDepth` setting (default 64), including
+settings replicated from the linked gateway. Dedicated [ClientView](/wormholes/05-projection-modes-settings#clientview)
+uses the player's Minecraft render distance, clamped to 2–32 chunks; entity
+range and count remain limited by `[render]`.
 The global `depth-blocks` value extends the search bound for recursive portal
 candidates. `recursive-portal-depth` limits how many nested portal steps may be
 sampled. Recursive sampling follows portals that are open and projecting. It
@@ -257,32 +273,35 @@ where the platform supports them. Range, refresh cadence, and the entity cap com
 
 Player reflections and projected living entities show main-hand and off-hand swings and hurt animations on Minecraft 26.1.2, 26.2, and 26.3.
 
-Entities also appear through nested local portal views. Their position and motion follow each linked frame, and visibility is restricted by the apertures along the view. Nested views share the primary view's entity cap and follow `recursive-portal-depth`.
+Standard projection also shows entities through nested local portal views. Their position and motion follow each linked frame, and visibility is restricted by the apertures along the view. Nested views share the primary view's entity cap and follow `recursive-portal-depth`.
 
 ## ClientView
 
-ClientView moves the projection to the player's client. It applies to players who run the Wormholes client mod on a server that offers it (`[client-view] enabled`, on by default). The server sends each watched portal's destination view once and then only its changes, and the client works out every tick which cells its own camera can see. Players without the mod keep the standard projection described above. Installation and client settings: [Client mod](/wormholes/01-installation-configuration#client-mod). Server keys: [`[client-view]`](/wormholes/01-installation-configuration#client-view).
+ClientView gives players with the Wormholes client mod a dedicated portal renderer. Destination blocks use the client's block models and textures in a view clipped to the portal's exact opening, including irregular apertures. Players without the mod keep the standard projection described above. Installation and client settings: [Client mod](/wormholes/01-installation-configuration#client-mod). Server keys: [`[client-view]`](/wormholes/01-installation-configuration#client-view).
+
+With an Iris shader pack enabled, the portal image retains native Minecraft rendering. The shader pack's full world lighting and effects are not rendered separately for each destination.
 
 For a ClientView player:
 
-- The projection follows the camera every tick without waiting on the server. The visible volume is the portal's shared view plate, which reaches the portal's view depth and up to `plate-lateral-clamp-blocks` past each side of the aperture.
-- Per-portal projection mode, render mode, blackout background, and view depth apply as for other players. Projection budgets, gaze priority, held cells, and `max-projected-cells` apply only to the standard projection.
-- In Venticular mode, buried destination blocks and the individual blocks directly behind visible faces are never sent to the client.
-- Destination entities arrive as one 20 Hz stream per portal (`entity-frames`), with range and cap from `[render]`. Destination light arrives with the blocks when the portal uses destination lighting (`destination-light`), and every cell of the projection shows it, including destination air over local air. Without destination lighting, projected blocks keep the light of the local blocks they replace, as they do on the standard projection. Blocks outside the projection keep the light the server computed for them, also after chunk reloads, real light updates, and when a portal leaves the view.
-- Portal animations, particles, RTP rims, and relayed destination sounds play on the client.
-- Near a portal in `full` atmosphere mode with `[atmosphere] weather = true`, the destination's weather, and its time for overworld destinations, replace the local sky within the client's `atmosphere-dominance-blocks`.
+- The view follows the camera every frame. Its target depth follows the player's Minecraft render distance, clamped to 2–32 chunks, independently of the portal's standard projection depth and lateral plate limit.
+- Visible destination sections arrive progressively across the full requested distance. Sections toward the center of the opening arrive before the view fills outward. The client retains them within `max-plate-memory-mb`, shared across attended portals. Sections that have not arrived remain unavailable; unchanged section contents are not downloaded again while retained.
+- The renderer clips models at the aperture without replacing blocks in the local world. Standard projection budgets, held cells, `max-projected-cells`, and Venticular buried-block omission do not limit the dedicated destination mesh.
+- Destination entities arrive through `entity-frames`, with range and cap from `[render]`. Native portal sections include destination block light, sky light, and biome colors, including biome-tinted foliage. These use the destination even when standard projection lighting options are disabled; local world lighting remains unchanged.
+- The portal view uses the destination dimension's sky, time, weather, fog, clouds, and lighting, sampled from the saved destination biome at the mapped camera position. Rotated portals and mirrors transform the clouds with the destination view. This does not require replacing the viewer's local sky. Portal animations, particles, RTP rims, and relayed destination sounds play on the client. In `full` atmosphere mode with `[atmosphere] weather = true`, nearby local-sky takeover remains controlled separately by `atmosphere-dominance-blocks`; set it to `0` to keep the local sky.
 
-A portal uses the standard projection for one player, while that player's other portals stay on ClientView, when the server cannot share its view (`shared-plate = false`, an RTP portal with `rtp-plates = false`, or a view larger than `plate-max-bytes`) or when the client cannot hold it within `max-plate-memory-mb`.
+A portal returns to standard projection for one player if its destination cannot be captured, its view cannot be retained within the client's memory budget, or native rendering fails for that portal. Other portals keep ClientView. Increasing render distance increases the requested view. The memory budget bounds retained data and does not silently shorten the native view distance.
 
-The first view of a portal is captured from the destination at `plate-urgent-capture-chunks-per-tick`. `/wormholes clientview` lists sessions and switches ClientView at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
+Clients that negotiate plate-based ClientView receive the portal's configured depth and lateral plate extent instead. Its block application, cache, zero-copy handoff, and local-chunk mirror settings apply to that path. `/wormholes clientview` lists sessions and switches ClientView at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
 
 ### Singleplayer
 
-Singleplayer worlds use ClientView by default and read `[client-view]` from `config/wormholes/wormholes.toml` in the game folder. The integrated server hands portal views to the client in memory (`zero-copy`). Players who join the world over LAN with the mod receive them over the network.
+Singleplayer worlds use ClientView by default and read `[client-view]` from `config/wormholes/wormholes.toml` in the game folder. The dedicated renderer receives progressive sections from the integrated server, as modded LAN guests do from the host. The `zero-copy` setting applies to plate-based ClientView.
 
 ### Mirrors
 
-With `client-mirror` on in both `[client-view]` and `wormholes-client.toml`, the client draws mirror portals from its own loaded chunks, and no mirror view is built or sent for that player. The player sees their own reflection unless the client sets `self-reflection = false`. With `client-recursion` on at both ends, portals visible inside a mirror show their own destinations instead of an empty opening. With `client-mirror` off at either end, the server sends the mirror view like any other portal view.
+The dedicated renderer receives reflected destination sections for mirrors, with the same render-distance and memory limits as other portals. The player sees their own reflection unless `self-reflection = false`. With `client-recursion` enabled at both ends, portals visible inside a mirror show their own destinations within that reflected view.
+
+For plate-based ClientView, `client-mirror` enabled at both ends uses the client's loaded chunks instead of downloading a mirror plate. Disabling it sends a mirror plate from the server.
 
 ## Arrival warmer vs chunk pre-send
 
@@ -304,7 +323,7 @@ unlimited.
 
 | Command | Permission | Effect |
 |---------|------------|--------|
-| `/wh admin freeze [seconds]` | `wormholes.admin.projection` | Freeze all projections for 5–300 s (default 30). `0` resumes. |
+| `/wh admin freeze [seconds=30]` | `wormholes.admin.projection` | Pause server projection updates for all viewers for 5–300 s (default 30), retaining standard projection blocks. `seconds=0` resumes. ClientView camera rendering continues. |
 | `/wh admin flush` | `wormholes.admin.projection` | Revert every observer’s projected blocks to ground truth and rebuild. |
 
 Pre-send also skips when the packet bridge is unsupported, the player is offline, the destination region is not owned, or the destination centre chunk is not loaded.

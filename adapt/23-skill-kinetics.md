@@ -2,7 +2,7 @@
 title: "Skill - Kinetics"
 description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-01T18:58:23.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -79,9 +79,16 @@ Fall damage is reduced on slime, honey, any bed, a hay bale, powder snow, sponge
 
 ### Surface Skate (`kinetics-surface-skate`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-surface-skate-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-surface-skate-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
-Sprinting cancels a fraction of the supporting surface's friction loss. Without the friction attribute, that same fraction of actual ground momentum is kept, vertical motion and stronger knockback stay, and the player is never accelerated from rest; a grounded sneak press brakes once rather than locking movement while sneak remains held, and on load `slideFrictionBase`, `slideFrictionFactor`, `gripFrictionBase`, and `gripFrictionFactor` are removed instead of kept as aliases.
+Sprinting cancels a fraction of the supporting surface's friction loss. Without the friction attribute, that same fraction of actual ground momentum is kept, vertical motion and stronger knockback stay, and the player is never accelerated from rest. A grounded sneak press brakes once rather than locking movement while sneak remains held.
+
+In the demonstration, gold, red, and lime mark the player's starting position and resting positions after two equal-duration sprint inputs on stone. The learned run uses Always, sneak to brake to retain momentum after movement input ends; the player then crouches, restoring normal friction before settling to a stop.
 
 Personal controls: Skating control (While sprinting/Always, sneak to brake). Armed mode enables eligible sliding without sprinting; sneak remains the brake.
 
@@ -179,9 +186,14 @@ Personal controls: Dive control (While sneaking/Every eligible fall).
 
 ### Breachwright (`kinetics-breachwright`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-breachwright-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-breachwright-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
-A landed mace smash removes armor and armor toughness from that target.
+A landed mace smash removes armor and armor toughness from that target. At level five with the default settings, the reduction is 6 armor and 4 toughness for seven seconds. The demonstration uses [Discovery Insight](/adapt/18-skill-discovery) with Gloss to show the target's values before the smash, during the reduction, and after it expires.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -219,9 +231,14 @@ Personal controls: Hostile targets only (on/off); Require sneak for shockwave (o
 
 ### Quake Guard (`kinetics-quake-guard`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-quake-guard-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-quake-guard-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
-Each landed mace smash grants a short brace of knockback resistance, armor toughness, and extra safe fall distance.
+Each landed mace smash grants a short brace of knockback resistance, armor toughness, and extra safe fall distance. At level five with the default settings, the brace adds 0.8 knockback resistance, 6 toughness, and 6 blocks of safe fall distance for four seconds. In the demonstration, another player uses [Discovery Insight](/adapt/18-skill-discovery) with Gloss to inspect the temporary resistance and toughness after the smash.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -258,9 +275,14 @@ Personal controls: Rebound bounce (on/off); Landing cushion (on/off).
 
 ### Phalanx Reach (`kinetics-phalanx-reach`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-phalanx-reach-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-phalanx-reach-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
-Entity interaction range is higher while a spear is in the main hand, and it drops when that spear leaves the hand.
+Entity interaction range is higher while a spear is in the main hand, and it drops when that spear leaves the hand. For example, hold a spear in your main hand to open a villager's trade menu from farther away. The demonstration attempts the interaction from the same position before and after learning Phalanx Reach, then switches away from the spear and tries a second equally distant villager.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -269,9 +291,14 @@ Entity interaction range is higher while a spear is in the main hand, and it dro
 
 ### Charge Lance (`kinetics-charge-lance`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-charge-lance-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-charge-lance-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
-Spear damage scales with recent horizontal speed and does not apply while riding. Standing still or teleporting does not build that speed.
+Spear damage scales with recent horizontal speed and does not apply while riding. Standing still or teleporting does not build that speed. Sprint toward a target and strike while moving to receive the bonus. The demonstration compares an unlearned running spear hit with a level-five running hit, using Gloss to show the target's actual health loss.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

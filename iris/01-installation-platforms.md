@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-09-29T05:57:07.000Z
+date: 2026-10-01T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -223,6 +223,8 @@ For mod-loader syntax, see [04 - Commands & Permissions](/iris/04-commands-permi
 Run `/iris pack compat` to review content unavailable on your Minecraft version. Iris skips unsupported content where possible; a pack with blocking validation errors cannot create a world. Use supported replacements or update the server as described in [25 - Pack Management](/iris/25-pack-management).
 
 ## Native worldgen over Iris terrain
+
+Fabric servers can run Iris alongside C2ME with native structure generation enabled.
 
 Configure vanilla and mod features in the pack dimension:
 

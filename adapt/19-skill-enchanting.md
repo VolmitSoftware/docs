@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-01T17:21:00.345Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,7 +58,7 @@ Left-click one enchanted book from the cursor onto one non-book item in a contai
 
 3 levels · 2 knowledge, then 5 per level
 
-After a committed table enchant, chance `min(maxRefundChance, refundChanceBase + levelPercent * refundChanceFactor)` is rolled before the hardcoded 20000 ms cooldown, so a success inside that window is wasted. A success adds a lapis stack equal to the adaptation level to the inventory and drops only overflow.
+Successful paid table enchants have a chance to return up to your adaptation level in lapis, capped at the one, two or three lapis consumed by the selected offer. Keep the table open until the refund appears in your inventory; only inventory overflow drops on the ground. Creative and cancelled enchants return no lapis. The chance is `min(maxRefundChance, refundChanceBase + levelPercent * refundChanceFactor)`, with a 20000 ms cooldown between refunds.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

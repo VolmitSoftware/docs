@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-09-30T23:00:00.000Z
+date: 2026-10-01T19:10:41.982Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,7 +34,7 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 | `/wormholes pocket info` | `wormholes.admin.pocket` | Show the current pocket's size and materials |
 | `/wormholes pocket resize [size=0] [material=keep] [door=keep] [confirm=false]` | `wormholes.admin.pocket` | Resize the current pocket |
 | `/wormholes pocket resizeall ...` | `wormholes.admin.pocket` | Resize every pocket |
-| `/wormholes admin freeze [seconds=30]` | `wormholes.admin.projection` | Freeze projections; use `0` to resume |
+| `/wormholes admin freeze [seconds=30]` | `wormholes.admin.projection` | Freeze projections; use `seconds=0` to resume |
 | `/wormholes admin flush` | `wormholes.admin.projection` | Clear and rebuild projections |
 | `/wormholes admin deleteallportals` | `wormholes.admin.reset` | Delete every local portal and link immediately |
 | `/wormholes admin deleteeverything` | `wormholes.admin.reset` | Reset Wormholes data immediately |
@@ -159,7 +159,7 @@ containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address t
 | `/wh help` or `/wh info` | none | Show command usage or portal-building instructions |
 | `/wh version` | none | Show the installed version |
 | `/wh stats [now]` | `wormholes.admin` | Show the stats path; `true` writes a fresh snapshot |
-| `/wh admin freeze [seconds]` | `wormholes.admin.projection` | Pause projection updates for 5–300 seconds; `0` resumes |
+| `/wh admin freeze [seconds=30]` | `wormholes.admin.projection` | Pause projection updates for 5–300 seconds; `seconds=0` resumes |
 | `/wh admin flush` | `wormholes.admin.projection` | Clear active projections and rebuild them |
 | `/wh admin portals list [page] [filters]` | `wormholes.admin.portals` | List portals using `world=key`, `type=type`, `owner=uuid`, and `state=open\|closed\|linked\|unlinked` |
 | `/wh admin portals find <name>` | `wormholes.admin.portals` | Find names containing the supplied text |

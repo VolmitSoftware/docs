@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-01T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,6 +41,22 @@ Choose the dimension key, height, environment, dimension options, and lighting b
 | `fullbright` | Forces the generated type's effective ambient light to `1.0` |
 
 Everything else reloads live in Studio and applies to newly generated chunks: regions, zooms, noise styles, image-map resources and bindings, palettes, ores, deposits, caves, structures, decoration, loot, and `worldBoundary`. Iterate on those freely. Already generated chunks keep the content they were built with. A boundary reload updates the native border without regenerating terrain.
+
+## External terrain transforms
+
+Install the transform provider alongside Iris and add its descriptor to the dimension before generating terrain. For ShadowRealm's Poly provider:
+
+```json
+"terrainTransform": {
+  "id": "shadowrealm:poly",
+  "version": "1",
+  "settings": {}
+}
+```
+
+Omit `terrainTransform` to use ordinary Iris generation. `id` selects the provider, `version` requires its exact algorithm version, and `settings` supplies the provider's string-valued options. These values are retained with the world's pack history. Keep every provider version required by that history installed.
+
+Transforms edit natural terrain before Iris places objects and decorations. Existing generated chunks stay unchanged. Provider development is covered in [API - Modded](/iris/94-api-modded).
 
 ## File location and load key
 

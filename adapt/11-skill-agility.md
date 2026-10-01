@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:06:18.722Z
+date: 2026-10-01T18:39:24.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -272,6 +272,11 @@ Personal controls: Vault trigger (Any jump/While sprinting/While sneaking).
 | `xpPerVault` | `3` | Skill XP paid per successful vault. |
 
 ### Marathoner (`agility-marathoner`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/agility/agility-marathoner-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/agility/agility-marathoner-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 3 knowledge, then 2 per level
 

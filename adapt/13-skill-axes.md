@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-01T19:41:29.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -103,9 +103,14 @@ Sneak-break a leaf with a main-hand axe to break connected leaves of the same ty
 
 ### Iris Feller (`axe-iris-feller`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-iris-feller-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/axes/axe-iris-feller-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 3 levels · 4 knowledge, then 3 per level
 
-Registers only when Iris is installed. Sneak-break an Iris tree log with a main-hand axe to erode the tree while sneak and that same axe stay held. A refused break spends nothing, and the cooldown starts once Iris accepts the run. Durability preservation is 0 percent at level 1, 25 percent at level 2, and 75 percent at level 3 or higher. `maxLevel` stays configurable.
+Registers only when Iris is installed. Sneak-break a naturally generated Iris tree log with a main-hand axe to erode the tree while sneak and that same axe stay held. Iris must recognize the tree’s generation provenance; manually assembled log-and-leaf trees do not qualify. A refused break spends nothing, and the cooldown starts once Iris accepts the run. Durability preservation is 0 percent at level 1, 25 percent at level 2, and 75 percent at level 3 or higher. `maxLevel` stays configurable.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

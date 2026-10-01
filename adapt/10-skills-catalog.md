@@ -2,7 +2,7 @@
 title: "Skills Catalog"
 description: "All Adapt skills, their XP sources, and their adaptation guides"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-10-01T17:16:15.008Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,6 +37,6 @@ Adapt has 23 skills. Each page lists XP sources, adaptations, and the keys in `s
 | [Unarmed](/adapt/33-skill-unarmed) | Fighting without a melee weapon | Punch damage, charges, combos, disarms, grapples, and meditation |
 {.dense}
 
-312 adaptation types are declared. `axe-iris-feller` registers only when the Iris tree-feller service is available.
+311 adaptation types are declared. `axe-iris-feller` registers only when the Iris tree-feller service is available.
 
 Progression rules: [Concepts](/adapt/02-concepts).

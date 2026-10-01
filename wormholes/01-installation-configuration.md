@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-01T11:01:53.000Z
+date: 2026-10-01T20:09:49.709Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,22 +30,24 @@ Native loaders store the same settings, portal records, network identity, routes
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView starts only when the client and server run the same Minecraft version. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases using protocol v2 and the same Minecraft version. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+
+With an Iris shader pack enabled, portal views use native Minecraft models, textures, and lighting. The destination does not receive a separate rendering of the shader pack's full world effects.
 
 ### `config/wormholes-client.toml`
 
-The client creates this file in its `config/` folder on first launch and reads it once when the game starts. Restart the game after editing it.
+The client creates this file in its `config/` folder on first launch and reads it once when the game starts. Restart the game after editing it. Set `renderer = "block-packets"` to use standard server projection while keeping the mod installed; ClientView-only rendering, reflection, and destination-sky settings apply to `renderer = "native"`.
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `enabled` | `true` | Accept ClientView from servers. `false` keeps this client on the standard projection everywhere |
-| `max-plate-memory-mb` | `256` | Memory in MiB for received portal views and cached destination sections, 16–4096. A portal whose view would exceed it stays on the standard projection for this player while other portals keep ClientView |
-| `bulk-write` | `false` | Batch ordinary projected block writes by chunk section. Block entities retain their normal state updates, including when the original blocks are restored |
-| `hysteresis-blocks` | `0.25` | Edge hysteresis in blocks: a cell enters the projection at this padding and leaves at twice it. 0–4; negative values use `0.25` |
-| `sections-per-tick` | `0` | Most chunk sections changed per tick when the visible area changes, 0–65535. `0` applies every change at once |
+| `renderer` | `"native"` | `"native"` enables ClientView. `"block-packets"` keeps this client on the server's standard block and entity packets, including when a shader pack is active. Restart the game after changing it |
+| `max-plate-memory-mb` | `256` | Shared memory budget in MiB for received portal sections and plate caches, 16–4096. Visible sections arrive progressively within this budget. A portal the client cannot retain returns to standard projection for this player |
+| `bulk-write` | `false` | Batch block writes for plate-based ClientView. The dedicated portal renderer does not write projected blocks into local chunks |
+| `hysteresis-blocks` | `0.25` | Edge hysteresis for plate-based ClientView, 0–4; negative values use `0.25`. The dedicated renderer clips to the aperture instead |
+| `sections-per-tick` | `0` | Limit chunk section changes per tick for plate-based ClientView, 0–65535. `0` applies every change at once; dedicated portal rendering uses progressive section streaming |
 | `show-debug-overlay` | `false` | Show a ClientView status line on the F3 debug screen |
-| `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky |
-| `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it, so mirror views are not downloaded |
+| `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky; the destination sky inside native portal views is independent of this setting |
+| `client-mirror` | `true` | Allow local-chunk mirrors for plate-based ClientView when the server permits them. The dedicated renderer receives mirror sections from the server |
 | `client-recursion` | `true` | Show portals seen inside a mirror through their own destination when the server sends them, instead of an empty opening |
 | `self-reflection` | `true` | Show your own reflection in mirrors this client draws |
 | `connection-message` | `true` | Show "Wormholes Connection Established" in this client's chat when a server confirms ClientView. Only this client sees it |
@@ -412,14 +414,14 @@ Projection behavior detail:
 | `configuration-handshake` | `true` | Negotiate while the player joins, on Paper, Purpur, Folia, Fabric, Forge, and NeoForge, so the first projection after joining is already ClientView. Off, or on other servers, the offer follows the join |
 | `hello-grace-millis` | `100` | Extra milliseconds a joining client with a modded brand has to answer the offer. Clients with the vanilla brand never wait |
 | `max-frame-kb` | `512` | Largest ClientView message in KiB. Larger updates are split |
-| `ack-window-frames` | `8` | Unacknowledged frame groups before sending to that client pauses until it catches up. `0` never pauses |
-| `brick-cache` | `true` | Reuse 16×16×16 destination sections the client already holds. A view whose cache manifest exceeds the negotiated message size downloads in full across multiple messages, retaining its depth and ClientView projection |
-| `destination-light` | `true` | Send destination light with the blocks of portals that use destination lighting: `[render] lighting-fidelity = true`, or `[atmosphere] sky-light = true` with `tint_light` or `full` atmosphere |
+| `ack-window-frames` | `8` | Unacknowledged plate frame groups before sending pauses. `0` disables that plate limit. Progressive mesh sections always have a bounded acknowledgement window |
+| `brick-cache` | `true` | Reuse cached destination sections for plate-based ClientView. Progressive mesh views retain their visible sections and send changed contents independently |
+| `destination-light` | `true` | Send destination light for plate-based ClientView when `[render] lighting-fidelity = true`, or `[atmosphere] sky-light = true` with `tint_light` or `full`. Native portal rendering always uses destination light |
 | `entity-frames` | `true` | Send destination entities as one 20 Hz stream per portal, shared by every ClientView player watching it. Off shows no destination entities to ClientView players |
-| `zero-copy` | `true` | In singleplayer, hand portal views to the client in memory instead of encoding them |
+| `zero-copy` | `true` | Hand plate-based ClientView data to the singleplayer client in memory. The dedicated renderer uses the section stream in singleplayer and multiplayer |
 | `standby-prestream` | `false` | Reserved; has no effect. ClientView sends only an RTP portal's current destination |
 | `view-stats` | `true` | Accept plate memory and apply timings from clients for `/wormholes clientview status` |
-| `client-mirror` | `true` | Let clients draw mirror portals from their own loaded chunks, so mirror views are not built or sent for them |
+| `client-mirror` | `true` | Allow local-chunk mirrors for plate-based ClientView. The dedicated renderer receives projected mirror sections |
 | `client-recursion` | `true` | Send the portals visible inside a mirror with their own destination views, so clients show them instead of an empty opening |
 
 ## Hot reload

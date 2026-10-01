@@ -2,7 +2,7 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-01T16:51:20.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,6 +25,8 @@ Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson Feast ru
 3 levels · 5 knowledge, then 3 per level
 
 Each worn netherite piece adds `basePieceChance + chanceAddition * level` percentage points, summed across helmet, chestplate, leggings, and boots, then clamped to 100%. With the defaults, a full netherite set at level 3 reaches that clamp.
+
+Every wither damage attempt rolls for protection. Successful protection shows its particles and sound at most once per second for each player, including during continuous exposure to a wither rose.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

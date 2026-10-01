@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-01T10:52:30.000Z
+date: 2026-10-01T18:29:27.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Each frame portal has menus for type, orientation, destination, settings, cost, 
 | `projectionMode` | `ON` | Toggle on home menu |
 | `renderMode` | `VENTICULAR` | PanOptic / Venticular cycle |
 | `mirrorMode` | `false` | Set from type menu |
-| `mirrorRotation` | `0°` | 90° steps. Vertical frames only for 90/270 |
+| `mirrorRotation` | `0°` | Wall mirrors: 0° / 180°. Floor and ceiling mirrors: 0° / 90° / 180° / 270° |
 | `permissionMode` | `BLACKLIST` | See Access |
 | `outgoingTraversalsEnabled` | `true` | Travel mode `BOTH` |
 | `incomingTraversalsEnabled` | `true` | Travel mode `BOTH` |
@@ -179,6 +179,8 @@ Options: `PORTAL`, `WORMHOLE`, `GATEWAY`, `RTP`, and **Mirror**.
 | Portal / Wormhole / Gateway / RTP | Sets type and disables mirror mode if it was on. Switching to or from `RTP` force-closes the portal until RTP is READY or a new tunnel is set. |
 | Mirror | Enables mirror mode (travel locked. Tunnel cleared). Right-click rotates the mirror image clockwise. Shift-right-click rotates counterclockwise. |
 
+Wall mirrors flip between 0° and 180°. Horizontal mirrors on floors or ceilings rotate in 90° steps. These controls rotate the reflected image; they do not change the portal's facing or allow travel through a mirror.
+
 RTP editor entry lives on the home destination control when type is RTP
 ([06 - Random Teleport Portals](/wormholes/06-random-teleport-portals)).
 
@@ -204,7 +206,7 @@ is still ON/OFF for all types
 | Public look label | Toggle whether nearby players without a portal tool see this portal's name while looking at it. Off by default |
 | Travel cost | Opens cost menu |
 | Fallback block | Chat block-state string (custom quality layout / advanced) |
-| More settings | Opens portal extension controls, including Access |
+| More settings | Opens Access, Fidelity, Transit, Network, and other available portal controls |
 
 Select More settings, then Access, to edit player roles, allowed groups, the stable permission key, and public-directory visibility.
 
@@ -214,6 +216,44 @@ interval, and view grace editors.
 Portal-tool holders always retain the route subtitle, including the linked
 destination or active progress text. A player without a portal tool sees only
 the portal name, and only when Public Look Label is On.
+
+## Fidelity menu
+
+Open **Settings → More settings → Fidelity** to change this portal's projection. Left-click a control to cycle its value; shift-left-click restores the server default.
+
+| Control | Choices and effect |
+|---------|--------------------|
+| Atmosphere | `off`, `tint`, `tint_light`, `full`. Adds destination biome colors, lighting, and weather according to the enabled server channels. See [Destination colors and lighting](/wormholes/05-projection-modes-settings#optional-destination-colors-and-lighting). |
+| Acoustics | `off` disables relayed sounds; `ambient` admits ambient sounds; `ambient_events` adds world-event sounds; `full` also admits entity sounds. |
+| Detail | `near`, `balanced`, `far`. Selects the distance profile for projection detail. |
+| Block entities | Toggles supported block-entity contents in the projected view. |
+
+## Transit menu
+
+Open **Settings → More settings → Transit** to control movement through this portal and arrival effects. These settings apply when traveling; the separate [Orientation menu](/wormholes/04-portal-types-menus-settings#orientation-menu) changes the portal frame itself.
+
+**Momentum** cycles through `preserve`, `scale`, `clamp`, `zero`, and `impulse`. Right-click opens a chat prompt for the scale factor, from 0 to 10.
+
+| Mode | Exit movement |
+|------|---------------|
+| `preserve` | Keeps entry velocity after rotating it through the linked frames. |
+| `scale` | Multiplies that velocity by the factor, subject to the configured speed ceiling. |
+| `clamp` | Limits that velocity to the configured speed ceiling. |
+| `zero` | Clears exit velocity. |
+| `impulse` | Adds the configured impulse vector. The menu does not edit that vector. |
+
+**Orientation** cycles the direction a traveler faces on arrival:
+
+| Mode | Arrival view |
+|------|--------------|
+| `frame` | Rotates the entry look through the linked frames. |
+| `look` | Preserves the traveler's absolute look direction. |
+| `snap` | Faces straight out of the exit. |
+| `mirror` | Reflects the frame-transformed look across the exit plane, facing back toward the portal. |
+
+**Membrane** permits entry from the front and pushes travelers away from the back. **Bounce** pushes travelers back instead of transporting them, from either side. Left-click either control to toggle it.
+
+**Transition cues** accepts a threshold particle key on left-click and an arrival sound key on right-click, entered in chat. An empty value, `-`, `none`, or `default` restores the default cue. Shift-left-click sets arrival-mask duration from 0 to 200 ticks; an empty value or `-1` restores the default duration.
 
 ## Travel cost menu
 
@@ -235,7 +275,7 @@ Vanilla-item and Vault charges commit only after successful travel. Failed trave
 | Control | Effect |
 |---------|--------|
 | Direction | Cycle facing |
-| Flip face | Invert portal face |
+| Flip face | Reverse the front face while retaining the frame's screen-up direction |
 | Rotate CCW | Separate button. Rotates the frame counter-clockwise |
 | Rotate CW | Separate button. Rotates the frame clockwise |
 

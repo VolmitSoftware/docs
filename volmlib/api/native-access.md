@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-09-28T14:18:51.171Z
+date: 2026-10-01T21:05:01.862Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -73,6 +73,7 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `advancement.AdvancementAccess` | Create advancement wrappers |
 | `scoreboard.ScoreboardPackets` | Create and send scoreboard updates through opaque handles |
 | `monitor.NativeMonitor` | Install native tick hooks and read native metrics |
+| `environment.WorldEnvironmentAccess` | Sample world sky, fog, lighting, clouds, weather, and dimension properties |
 | `monitor.NativeWorldAccess` | Access hopper, navigation, and fluid-tick operations |
 | `protection.SpawnProtectionAccess` | Create native spawn-protection checks |
 | `proxy.ProxyForwardingAccess` | Read the active Velocity forwarding key |
@@ -84,6 +85,8 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 `MapPixelsAccess.capture(...)` returns an optional `NativeMapSnapshot`. Snapshots copy their pixel arrays on construction and access. Custom map renderers can make a vanilla pixel snapshot unavailable.
 
 `ItemStackAccess.encode(ItemStack)` returns compressed vanilla item NBT with its Minecraft data version. `decode(byte[])` restores Bukkit items through the current registry and data fixer, with a 16 MiB decompressed-data limit. Names, lore, enchantments, and custom components are retained. Empty items are rejected. Use the owning server context when converting live inventory items. The same bytes can be exchanged with native Minecraft item codecs on compatible Minecraft versions.
+
+`WorldEnvironmentAccess.sample(world, position)` returns an immutable `WorldEnvironment` snapshot at the supplied position. The 26.3 provider includes biome-dependent environment attributes and dimension settings; sky angles are in degrees. Call it in the owning world context with the sample chunk loaded. Consumers own chunk retention, scheduling, and handling unavailable capabilities.
 
 See [Native spawn protection](/volmlib/api/spawn-protection) for the protection decision contract.
 
@@ -118,6 +121,10 @@ The shared mod-loader sources provide `NativeModdedServer` for server scheduling
 `NativeCommandRegistration` registers Brigadier trees with `NativeCommandSource`. Read the command's world, player, position, and permission context through that source. Build formatted responses with `NativeCommandText`; `NativeCommandArguments` resolves native player, dimension, and identifier arguments.
 
 `NativeChunkGeneratorDefinition` associates a generator key with a factory. Implement `NativeGeneratorOwner` and supply `NativeModdedGeneratorPolicy` to `NativeModdedChunkGenerator`; terrain buffers, generation leases, biome selection, structure ownership, and completion callbacks use typed contracts. Resolve your bound owner with `NativeWorldGenerators.find(world, ownerType)`.
+
+`NativeModdedGeneratorPolicy.terrainTransformed()` defaults to false. Return true when your generator applies a configured terrain transform before content placement. Other mods can read `NativeModdedChunkGenerator.hasTerrainTransformer()` within that chunk's terrain generation scope and retain the result with the chunk to suppress a duplicate terrain pass in later phases. Do not read the generator's current configuration as a substitute for the retained result after a runtime reload.
+
+Call `NativeModdedChunkGenerator.initializeStructureState(world)` after publishing the bound generation runtime and before admitting chunk generation. Native generators defer structure-position initialization during world construction so biome queries use the bound runtime. Apply the same ordering when initially binding a replacement runtime.
 
 `NativeDimensionRuntime` constructs and publishes runtime dimensions. Supply a registered dimension type, seed, generator key, and generator factory. The consumer owns pack selection, persistence, engine binding, loader-event publication, and rollback. Close a removed world and release its engine resources before deleting its storage.
 

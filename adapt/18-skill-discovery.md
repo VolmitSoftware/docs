@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-01T18:39:24.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -148,9 +148,14 @@ Brushing `SUSPICIOUS_SAND` or `SUSPICIOUS_GRAVEL` to completion can add a common
 
 ### Cartographer Pulse (`discovery-cartographer-pulse`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/discovery/discovery-cartographer-pulse-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-cartographer-pulse-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 4 levels · 4 knowledge
 
-Sneak-right-click with a compass in the main hand to point it at the nearest structure in range and draw a private direction line. No structure in range does nothing.
+Sneak-right-click with a compass in the main hand to point it at the nearest selected structure in range. A successful pulse draws a private direction line and spark ring, reports the target coordinates, and spends the configured food cost. If the search finds no structure, it reports that result and starts the pulse cooldown without spending food.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -163,9 +168,14 @@ Sneak-right-click with a compass in the main hand to point it at the nearest str
 
 ### Insight (`discovery-insight`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/discovery/discovery-insight-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-insight-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge
 
-Insight adds species, movement speed, jump strength, armor toughness, knockback resistance, and detection range, when those attributes exist, to [Gloss entity overlays](/gloss/20-entity-overlays) on the inspected creature, plus Stable Hand state on affected animals; Gloss still supplies the name, health bar, hit response, attack, armor, and React stack count. Without a Gloss build that has the entity-overlay API there is no display and no inspection XP, an older Gloss is reported once and Insight stays unavailable until that server is updated and restarted, and `restrictGlossToInsight` does not turn a disabled Gloss feature on.
+With [Gloss entity overlays](/gloss/20-entity-overlays) enabled, look directly at a creature to inspect it. Insight adds hovering species, movement speed, jump strength, armor toughness, knockback resistance, and detection range, when those attributes exist, plus Stable Hand state on affected animals. Looking at another creature moves the Insight details to that target; looking away clears those details. Gloss supplies the name, health bar, hit response, attack, armor, and React stack count. Without a Gloss build that has the entity-overlay API there is no display and no inspection XP, an older Gloss is reported once and Insight stays unavailable until that server is updated and restarted, and `restrictGlossToInsight` does not turn a disabled Gloss feature on.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -217,6 +227,11 @@ The first kill of a mob species pays a skill XP bounty, and later kills of that 
 
 ### Polymath (`discovery-polymath`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/discovery/discovery-polymath-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-polymath-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 4 knowledge, then 3 per level
 
 Each skill line at or above the threshold adds a bonus to all XP gain, up to the combined ceiling.
@@ -252,9 +267,14 @@ Sneak-right-click a head, skull, music disc, armor trim template, or pottery she
 
 ### Sixth Sense (`discovery-sixth-sense`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/discovery/discovery-sixth-sense-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-sixth-sense-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 3 knowledge, then 2 per level
 
-The action-bar center shows `{symbol} {structure} {direction} {distance}m` (N, NE, E, SE, S, SW, W, or NW) for the nearest supported generated structure, with XP text on the left, notices on the right, and no boss bar; a nearer target adds a short private direction line, the cue clears inside a supported structure, and the experience bar fills visually without changing stored XP. Each pulse searches one of 16 structure families for that player, visited or not, never generates or loads chunks, and `JIGSAW` includes villages, pillager outposts, and other jigsaw structures.
+The action-bar center shows `{symbol} {structure} {direction} {distance}m` (N, NE, E, SE, S, SW, W, or NW) for the nearest supported generated structure, with XP text on the left, notices on the right, and no boss bar; a nearer target adds a short private direction line, the cue clears inside a supported structure, and the experience bar fills visually without changing stored XP. With the default structure selection, each pulse cycles through one of 16 structure families for that player, visited or not; selecting a specific category searches that category each pulse. The search never generates or loads chunks, and `JIGSAW` includes villages, pillager outposts, and other jigsaw structures. Walk toward the target to see its direction, distance, and proximity bar update.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

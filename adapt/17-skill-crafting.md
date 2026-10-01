@@ -2,12 +2,12 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-01T17:16:15.008Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Crafting gains XP from crafted output and nearby furnaces, scaled by material value, and both paths use cooldowns. Its 14 adaptations add recipes, salvage, bulk crafting, portable workstations, a bound compactor, backpacks, material refunds, equipment improvements, and food bonuses, five of which are permanent by default.
+Crafting gains XP from crafted output and nearby furnaces, scaled by material value, and both paths use cooldowns. Its 13 adaptations add recipes, salvage, bulk crafting, portable workstations, a bound compactor, backpacks, material refunds, equipment improvements, and food bonuses, five of which are permanent by default.
 
 ## Player controls
 
@@ -16,7 +16,6 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 | Adaptation | Additional controls |
 |---|---|
 | A Boutilier's Backpacks! (`crafting-backpacks`) | `storage`: New backpack storage; `mode-switch`: Allow storage mode switching |
-| Artisan's Signature (`crafting-signature`) | `signature-lore`: Visible signature lore |
 | Bulk Artisan (`crafting-bulk-artisan`) | `materials`: Allowed material categories; `batch-limit`: Extra batch limit; `ingredient-reserve`: Ingredient reserve |
 | Compactor (`crafting-compactor`) | `materials`: Allowed material categories; `batch-limit`: Compaction batch limit; `loose-reserve`: Loose ingredient reserve |
 | Deconstruction (`crafting-deconstruction`) | `materials`: Allowed material categories; `confirmation`: Confirm named or enchanted salvage |
@@ -153,7 +152,7 @@ Shift-clicking a crafting result pulls matching ingredients from the inventory a
 
 5 levels · 4 knowledge, then 3 per level
 
-Each craft can return one ingredient.
+Taking a crafted result from a recipe using at least three different material types can return exactly one unit of one randomly chosen input material. Repeated slots of the same material count as one type, and a shift-click batch can return at most one unit per click.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -231,24 +230,6 @@ Crafting food, or smelting food, can add extra portions to the normal output.
 | `bonusPortionsBase` | `1` | Bonus portions granted per activation at level 1. |
 | `bonusPortionsFactor` | `2` | Additional bonus portions unlocked across the level range. |
 | `cookingRadius` | `8.0` | Blocks searched around a furnace for a player to credit. |
-
-### Artisan's Signature (`crafting-signature`)
-
-<div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-signature-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-signature-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-</div>
-
-5 levels · 4 knowledge, then 3 per level
-
-Crafted items gain a lore line and a persistent-data crafter UUID. Interacting with a villager while carrying that player's signed items applies `HERO_OF_THE_VILLAGE` unless that effect is already present.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `amplifierBase` | `0` | Hero of the Village amplifier at level 1. |
-| `amplifierFactor` | `1` | Additional amplifier gained across the level range. |
-| `amplifierMax` | `1` | Ceiling on the amplifier. |
-| `tradeDurationTicks` | `200` | Duration in ticks of the effect applied on villager interaction. |
 
 ## Reference
 

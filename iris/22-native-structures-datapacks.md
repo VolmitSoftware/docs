@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-01T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -262,6 +262,8 @@ Native placement settings beyond start pool, maximum depth, and maximum distance
 ### 1.1 Default: everything generates
 
 Every registered structure generates through its own native placement unless its key is disabled or a dimension-level Iris placement replaces its source. Changes affect newly generated chunks only.
+
+On Fabric, Forge, and NeoForge, strongholds use the selected Iris pack's biome mapping in both the main world and additional Iris dimensions. Keep structure generation enabled when creating these worlds.
 
 > Minecraft 26.2 stronghold rings are the one placement-contract exception across Iris versions. Ring coordinates are still deterministic for a given seed, pack, and Iris build, but they intentionally **differ from earlier builds**. Existing stronghold blocks remain in saved chunks; `/locate` and Eyes of Ender use the current rings, and Iris does not migrate the old ring layout.
 {.is-warning}

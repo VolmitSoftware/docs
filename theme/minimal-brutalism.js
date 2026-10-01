@@ -647,6 +647,7 @@
   }
 
   function mountWormholeDemo(container) {
+    const perspectives = [['first-person', 'First person'], ['third-person', container.dataset.observerLabel || 'Third person']];
     const variants = new Map();
     for (const client of ['standard', 'clientview']) {
       const panel = container.querySelector('.wormholes-demo-variant[data-client="' + client + '"]');
@@ -666,7 +667,7 @@
     const cameraLabel = element('label', 'demo-camera');
     cameraLabel.append(element('span', null, 'Camera'), player.camera);
     player.camera.setAttribute('aria-label', 'Camera view for all demonstrations');
-    for (const [perspective, name] of [['first-person', 'First person'], ['third-person', 'Third person']]) {
+    for (const [perspective, name] of perspectives) {
       const option = element('option', null, name);
       option.value = perspective;
       player.camera.append(option);
@@ -682,7 +683,7 @@
         player.client = client;
         updateWormholePlayback(player);
       });
-      for (const [index, [perspective, name]] of [['first-person', 'First person'], ['third-person', 'Third person']].entries()) {
+      for (const [index, [perspective, name]] of perspectives.entries()) {
         const video = variant.videos[index];
         video.autoplay = false;
         video.muted = true;
