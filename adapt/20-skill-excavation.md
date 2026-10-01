@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-30T17:46:37.000Z
+date: 2026-10-01T00:52:30.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,6 +68,11 @@ Sneak with glow berries in the main hand and one ore block in the off hand to ou
 | `displayViewRange` | `1.0` | Client render distance multiplier for markers. Clamped to 0.5-2.0. |
 
 ### OMNI - T.O.O.L. (`excavation-omnitool`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/excavation/excavation-omnitool-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-omnitool-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge, then 10 per level
 

@@ -118,13 +118,11 @@ async function proxy(request, response) {
       : '<link rel="stylesheet" href="/__volmit_theme.css" data-volmit-theme-preview>';
     const themeScript = localUrl.searchParams.get("plain") === "1"
       ? ""
-      : '<script src="/__volmit_theme.js" data-volmit-theme-preview defer></script>';
+      : '<script src="/__volmit_theme.js" data-volmit-theme-preview></script>';
 
-    const themedSource = themeLink
-      ? source.replace(/<link\b[^>]*href="\/theme\/minimal-brutalism\.css[^"\s]*"[^>]*>/g, "")
+    const themedSource = source.replace(/<link\b[^>]*href="\/theme\/minimal-brutalism\.css[^"\s]*"[^>]*>/g, "")
         .replace(/<script\b[^>]*data-volmit-theme[^>]*>[\s\S]*?<\/script>/g, "")
-        .replace(/<script\b[^>]*src="\/theme\/minimal-brutalism\.js[^"\s]*"[^>]*>[\s\S]*?<\/script>/g, "")
-      : source;
+        .replace(/<script\b[^>]*src="\/theme\/minimal-brutalism\.js[^"\s]*"[^>]*>[\s\S]*?<\/script>/g, "");
     const html = themedSource
       .replace("</head>", `${themeLink}${themeScript}</head>`);
     response.statusCode = upstreamResponse.status;

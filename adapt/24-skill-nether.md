@@ -2,7 +2,7 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T06:36:54.442Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,6 +17,11 @@ Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson Feast ru
 
 ### Wither Resistance (`nether-wither-resist`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-wither-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-wither-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 5 knowledge, then 3 per level
 
 Each worn netherite piece adds `basePieceChance + chanceAddition * level` percentage points, summed across helmet, chestplate, leggings, and boots, then clamped to 100%. With the defaults, a full netherite set at level 3 reaches that clamp.
@@ -27,6 +32,11 @@ Each worn netherite piece adds `basePieceChance + chanceAddition * level` percen
 | `chanceAddition` | `5` | Percentage points added per piece per adaptation level. |
 
 ### Wither Skull Throw (`nether-skull-toss`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-skull-toss-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-skull-toss-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 5 knowledge, then 10 per level
 
@@ -42,6 +52,11 @@ Personal controls: Require sneak to throw (on/off).
 
 ### Fire Resistance (`nether-fire-resist`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-fire-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-fire-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 6 knowledge, then 4 per level
 
 Each burn tick is cancelled with chance `fireResistBase + fireResistFactor * level`, using the raw level rather than level progress. Lava damage is not covered.
@@ -52,6 +67,11 @@ Each burn tick is cancelled with chance `fireResistBase + fireResistFactor * lev
 | `fireResistFactor` | `0.25` | Chance added per adaptation level, 0 to 1. |
 
 ### Lava Walker (`nether-lava-walker`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-lava-walker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-lava-walker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -71,6 +91,11 @@ Personal controls: Sneak to drop through (on/off); Food reserve (No reserve/Keep
 | `xpPerStride` | `3.5` | Nether XP per stride. |
 
 ### Ghast Ward (`nether-ghast-ward`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-ghast-ward-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-ghast-ward-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 6 levels · 4 knowledge
 
@@ -93,9 +118,14 @@ Ghast fireballs, other explosions, and wither-skeleton arrows deal less damage, 
 
 ### Blaze Leech (`nether-blaze-leech`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-blaze-leech-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-blaze-leech-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge
 
-Fire, lava, or magma damage, or a hit on a burning target, can restore food and saturation and apply Regeneration.
+Taking damage from fire, lava, or standing on magma blocks, or hitting a burning target, can restore food and saturation and apply Regeneration.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -116,6 +146,11 @@ Fire, lava, or magma damage, or a hit on a burning target, can restore food and 
 
 ### Piglin Broker (`nether-piglin-broker`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-piglin-broker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-piglin-broker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 When a piglin barter resolves, the nearest player with this adaptation inside range is credited, even if that player did not throw the gold.
@@ -134,6 +169,11 @@ When a piglin barter resolves, the nearest player with this adaptation inside ra
 | `xpOnBoostedBarter` | `12` | Nether XP when a barter was improved. |
 
 ### Soul Strider (`nether-soul-strider`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-soul-strider-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-soul-strider-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 
@@ -154,6 +194,11 @@ Personal controls: Soul-surface slow immunity (on/off); Mastery speed burst (on/
 
 ### Magma Skin (`nether-magma-skin`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-magma-skin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-magma-skin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 4 knowledge, then 3 per level
 
 While the player is on fire, a melee attacker is ignited, and this player's melee hits deal bonus damage and ignite the target.
@@ -172,6 +217,11 @@ Personal controls: Burning retaliation (on/off); Ignite struck targets (on/off).
 | `xpPerBonusDamage` | `3` | Nether XP per point of bonus damage dealt. |
 
 ### Netherrack Mason (`nether-netherrack-mason`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-netherrack-mason-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-netherrack-mason-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 3 knowledge
 
@@ -194,6 +244,11 @@ Personal controls: Mining assistance (on/off); Bonus drops (on/off).
 
 ### Strider Bond (`nether-strider-bond`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-strider-bond-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-strider-bond-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 4 knowledge, then 3 per level
 
 The ridden strider stops shivering and gains speed `0.2 * (amplifier + 1)` on the strider itself, including outside lava. From `safetyUnlockLevel` upward, a dismount over lava teleports the rider to safe ground, including while still airborne above the strider, only if the adaptation remains learned and enabled, the dismount was not cancelled, the rider stays unmounted, and solid ground does not already separate the rider from the lava; on Folia the search uses only ground owned by the rider's region, and the first rescue completes a hidden challenge.
@@ -215,6 +270,11 @@ Personal controls: Mounted speed (on/off); Dismount protection (on/off).
 
 ### Crimson Feast (`nether-crimson-feast`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-crimson-feast-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-crimson-feast-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 3 knowledge, then 2 per level
 
 A right-click eats `CRIMSON_FUNGUS`, `WARPED_FUNGUS`, `CRIMSON_ROOTS`, `WARPED_ROOTS`, `NETHER_SPROUTS`, `WEEPING_VINES`, or `TWISTING_VINES` in any dimension; a full hunger bar requires sneak. Any other food eaten in a Nether-environment world grants Fire Resistance.
@@ -235,9 +295,14 @@ Personal controls: Require sneak to eat flora (on/off); Nether meal protection (
 
 ### Ashwalker (`nether-ashwalker`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-ashwalker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-ashwalker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 4 knowledge, then 3 per level
 
-Magma-block damage is cancelled at every level, and campfire damage is cancelled from `campfireUnlockLevel`; both also clear fire ticks. Soul fire is reduced only at max level, not cancelled.
+Standing on magma blocks causes no damage at any learned level, and campfire damage is cancelled from `campfireUnlockLevel`; both also clear fire ticks. Soul fire is reduced only at max level, not cancelled.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -248,6 +313,11 @@ Magma-block damage is cancelled at every level, and campfire damage is cancelled
 | `xpPerNegatedDamage` | `3` | Nether XP per point of damage cancelled or reduced. |
 
 ### Wither Harvest (`nether-wither-harvest`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/nether/nether-wither-harvest-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/nether/nether-wither-harvest-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 4 knowledge, then 3 per level
 

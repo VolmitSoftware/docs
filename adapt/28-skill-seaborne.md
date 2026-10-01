@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-30T18:46:37.000Z
+date: 2026-09-30T21:59:53.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -141,6 +141,11 @@ Personal controls: Sneak trigger (on/off); Attack trigger (on/off); Sneak requir
 | `preserveSwimmingAfterDash` | `true` | Re-applies the swimming pose after a dash when the player was swimming and is still in water. |
 
 ### Pressure Diver (`seaborne-pressure-diver`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/seaborne/seaborne-pressure-diver-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-pressure-diver-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 4 knowledge
 

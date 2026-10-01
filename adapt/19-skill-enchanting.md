@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T04:38:14.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,6 +34,11 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 ## Adaptations
 
 ### Quick-Click Enchant (`enchanting-quick-enchant`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-quick-enchant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-quick-enchant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 7 levels · 8 knowledge, then 6 per level
 
@@ -71,6 +76,11 @@ Each committed enchant can return one vanilla XP orb of `min(maximumXpPerEnchant
 
 ### Anvil Savant (`enchanting-anvil-savant`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-anvil-savant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-anvil-savant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 5 knowledge
 
 Anvil combine, repair, and rename costs become `max(minimumCost, ceil(oldCost * (1 - reduction)))`, where reduction is `min(maximumReduction, reductionBase + levelPercent * reductionFactor)`. The saved-levels stat records only when the result is taken from the output slot.
@@ -83,6 +93,11 @@ Anvil combine, repair, and rename costs become `max(minimumCost, ceil(oldCost * 
 | `minimumCost` | `1` | Lowest anvil level cost the reduction may produce. |
 
 ### Offer Reroll (`enchanting-offer-reroll`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-offer-reroll-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-offer-reroll-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 4 knowledge
 
@@ -99,6 +114,11 @@ Sneak-right-click an enchanting table with the main hand, or sneak-right-click a
 
 ### Bookshelf Attunement (`enchanting-bookshelf-attunement`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-bookshelf-attunement-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-bookshelf-attunement-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 3 knowledge, then 4 per level
 
 Offers gain `max(1, round(powerBase + levelPercent * powerFactor))` virtual bookshelf power: cost becomes `min(30, cost + power)` and enchantment level becomes `min(enchantMax, level + power / 3)`, never below 1.
@@ -109,6 +129,11 @@ Offers gain `max(1, round(powerBase + levelPercent * powerFactor))` virtual book
 | `powerFactor` | `5` | Virtual bookshelf power added at full level. |
 
 ### Grindstone Recovery (`enchanting-grindstone-recovery`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-grindstone-recovery-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-grindstone-recovery-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -129,6 +154,11 @@ Disenchanting can return one random enchantment from an enchanted input as a boo
 
 ### Curse Cleansing (`enchanting-curse-cleansing`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-curse-cleansing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-curse-cleansing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 5 knowledge
 
 Sneak-click a grindstone result, with the other input empty or not, to consume one cursed input and return a cleaned stack of 1 that keeps its name, damage, and custom data, removing only `BINDING_CURSE` and `VANISHING_CURSE` from item enchantments or stored book enchantments. Skill XP is `skillXpPerCurse * cursesRemoved`.
@@ -138,6 +168,11 @@ Sneak-click a grindstone result, with the other input empty or not, to consume o
 | `skillXpPerCurse` | `30` | Enchanting skill XP granted for each curse removed. |
 
 ### Tome Rebinding (`enchanting-tome-rebinding`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-tome-rebinding-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-tome-rebinding-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge, then 5 per level
 
@@ -153,6 +188,11 @@ Dropping exactly one book that stores two or more enchantments, while looking at
 | `skillXpOnSplit` | `14` | Enchanting skill XP granted per book produced. |
 
 ### Soul Link (`enchanting-soul-link`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-soul-link-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-soul-link-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge
 
@@ -170,6 +210,11 @@ Sneak-right-click an anvil block while holding an enchanted item or book in the 
 
 ### Arcane Siphon (`enchanting-arcane-siphon`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-arcane-siphon-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-arcane-siphon-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A credited kill of a living entity wearing or holding enchanted gear, not a `/kill` and not spawn-method dependent, pays `bonusXpPerEnchant * distinctEnchantCount` whether or not a book drops, scanning helmet, chestplate, leggings, boots, and both hands and keeping the highest level of duplicates. Drop chance is `min(maxDropChance, dropChanceBase + levelPercent * dropChanceFactor)` and book level is the source level plus `floor(levelPercent * qualityFactor)`, clamped to the enchantment maximum; player victims qualify only at this adaptation's maximum level, and normal PVP policy still applies.
@@ -184,6 +229,11 @@ A credited kill of a living entity wearing or holding enchanted gear, not a `/ki
 
 ### Rune Sight (`enchanting-rune-sight`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-rune-sight-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-rune-sight-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 3 knowledge
 
 Hidden enchanting-table offers are shown on the action bar as name, level, and cost, to a depth of `max(1, min(maxRevealDepth, 1 + floor(levelPercent * (maxRevealDepth - 1))))`. With the default depth, level 1 shows the top offer and level 3 shows all three.
@@ -194,6 +244,11 @@ Hidden enchanting-table offers are shown on the action bar as name, level, and c
 | `revealThrottleMs` | `400` | Minimum milliseconds between actionbar reveals. |
 
 ### Infusion Transfer (`enchanting-infusion-transfer`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-infusion-transfer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-infusion-transfer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge
 
@@ -210,6 +265,11 @@ With an empty cursor and without sneaking, right-click the left anvil slot, whic
 | `skillXpOnTransfer` | `20` | Enchanting skill XP granted per transfer. |
 
 ### Echo of Knowledge (`enchanting-echo-of-knowledge`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/enchanting/enchanting-echo-of-knowledge-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-echo-of-knowledge-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge
 

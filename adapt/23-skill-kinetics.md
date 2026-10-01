@@ -2,7 +2,7 @@
 title: "Skill - Kinetics"
 description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-30T19:35:13.000Z
+date: 2026-10-01T06:40:20.185Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -93,6 +93,11 @@ Personal controls: Skating control (While sprinting/Always, sneak to brake). Arm
 
 ### Terminal Toggle (`kinetics-terminal-toggle`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-terminal-toggle-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-terminal-toggle-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 2 knowledge, then 4 per level
 
 While falling, each sneak press swaps dive and hang: dive cuts air drag and raises gravity, and hang does the opposite. Landing clears the mode.
@@ -130,6 +135,11 @@ Personal controls: Stance control (Hold sneak/Tap to toggle stance).
 | `speedPenaltyFactor` | `0.15` | Extra speed penalty across levels. |
 
 ### Mass Shift (`kinetics-mass-shift`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/kinetics/kinetics-mass-shift-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/kinetics/kinetics-mass-shift-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 3 levels · 5 knowledge, then 6 per level
 
@@ -233,7 +243,7 @@ Each landed mace smash grants a short brace of knockback resistance, armor tough
 
 3 levels · 4 knowledge, then 5 per level
 
-After a mace smash, bounciness rises and fall damage is cut for a short window.
+After a successful mace smash, bounciness rises and fall damage is cut for a short window. A smash against an elevated target lets the following drop reach the ground during that rebound window.
 
 Personal controls: Rebound bounce (on/off); Landing cushion (on/off).
 

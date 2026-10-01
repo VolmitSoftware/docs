@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-30T19:13:54.000Z
+date: 2026-10-01T00:52:31.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -133,11 +133,21 @@ Breaking grass can drop melon seeds, pumpkin seeds, or cocoa beans, and breaking
 
 ### Herbalist's Myconid (`herbalism-myconid`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-myconid-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-myconid-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 Shapeless recipe `adapt:herbalism-dirt-myconid` turns `DIRT` + `RED_MUSHROOM` + `BROWN_MUSHROOM` into one `MYCELIUM`. It is active without learning and has no adaptation-specific config keys.
 
 ### Herbalist's Terralid (`herbalism-terralid`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-terralid-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-terralid-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 3 knowledge
 
@@ -145,11 +155,21 @@ Shaped recipe `adapt:herbalism-dirt-terralid`, `SSS` over `DDD` with `S` = `WHEA
 
 ### Mushroom Maker (`herbalism-mushroom-blocks`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-mushroom-blocks-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-mushroom-blocks-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 2 knowledge
 
 Four recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock` are 2x2 mushrooms to one matching mushroom block, and `adapt:herbalism-mushstemred` and `adapt:herbalism-mushstembrown` convert either mushroom block into one `MUSHROOM_STEM`. The stat counts only the two block recipes; the recipes are active without learning and have no adaptation-specific config keys.
 
 ### Webby Creator (`herbalism-cobweb`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/herbalism/herbalism-cobweb-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/herbalism/herbalism-cobweb-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 2 knowledge
 

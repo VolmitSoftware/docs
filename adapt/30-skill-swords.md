@@ -2,7 +2,7 @@
 title: "Skill - Swords"
 description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T23:20:32.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,11 @@ Nearly every adaptation needs a sword in the main hand: wooden, stone, copper, i
 
 ### Machete (`sword-machete`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-machete-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-machete-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 7 knowledge, then 4 per level
 
 Left-click with a sword to cut foliage in a sphere centered 2.25 blocks along your look and half a block below eye level; each block is cut with probability `levelPercent * 2.8 / distanceSquared`, pays 11.25 skill XP, and still fires a normal block-break, so a denied break denies the cut. It cuts grass and tall grass, fern and large fern, dead bush, vine, cactus, sugar cane, bamboo and bamboo sapling, seagrass and tall seagrass, lily pad, cocoa, carrot, potato, nether wart, brown and red mushroom, the six small flowers plus dandelion, cornflower, chorus flower, sunflower, lilac, peony, rose bush and wither rose, and the six vanilla leaf types plus mangrove leaves.
@@ -47,6 +52,11 @@ Left-click with a sword to cut foliage in a sphere centered 2.25 blocks along yo
 
 ### Poisoned Blade (`sword-poison-blade`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-poison-blade-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-poison-blade-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 7 levels · 7 knowledge
 
 Sword hits apply Poison at amplifier 2 for `50 * level` ticks; the menu duration instead shows `effectDuration * level` milliseconds, and those two durations do not match at the defaults. Poison-immune mobs (zombies, skeletons, phantoms, wither, zoglin, giant, spiders, and skeleton and zombie horses) take 1 health instead, and a kill within 4000 ms of the poison expiring still counts as a poison kill.
@@ -57,6 +67,11 @@ Sword hits apply Poison at amplifier 2 for `50 * level` ticks; the menu duration
 | `effectDuration` | `1000` | Milliseconds of effect duration granted per adaptation level. Drives the cooldown floor and the bleed visual length, and is what the menu duration line shows. |
 
 ### Bloody Blade (`sword-bloody-blade`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-bloody-blade-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-bloody-blade-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 7 levels · 7 knowledge
 
@@ -69,6 +84,11 @@ Sword hits start an armor-ignoring bleed that procs every 5 ticks, `ceil(duratio
 | `effectDuration` | `1000` | Milliseconds of bleed duration granted per adaptation level. |
 
 ### Dual Wield Stance (`sword-dual-wield`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-dual-wield-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-dual-wield-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge
 
@@ -83,6 +103,11 @@ A sword in each hand multiplies melee damage: the exact same material uses the m
 | `xpPerDamage` | `2.0` | Skill XP per point of final damage on a dual-wield hit. |
 
 ### Executioner's Edge (`sword-executioners-edge`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-executioners-edge-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-executioners-edge-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 6 levels · 4 knowledge, then 3 per level
 
@@ -99,6 +124,11 @@ A sword hit deals bonus damage when the target's current health over its maximum
 
 ### Riposte Window (`sword-riposte-window`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-riposte-window-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-riposte-window-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 Blocking a hit with a raised shield in either hand arms a riposte; the window starts when the block lands, not on a timed parry, and the first sword hit inside it consumes the window.
@@ -112,6 +142,11 @@ Blocking a hit with a raised shield in either hand arms a riposte; the window st
 | `xpPerBuffedDamage` | `1.8` | Skill XP per point of riposte damage dealt. |
 
 ### Crimson Cyclone (`sword-crimson-cyclone`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-crimson-cyclone-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-crimson-cyclone-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge
 
@@ -142,6 +177,11 @@ A falling sword swing adds cyclone damage to that hit, damages other living enti
 
 ### Lunge Strike (`sword-lunge-strike`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-lunge-strike-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-lunge-strike-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A sprinting sword attack lunges you forward and grants bonus entity reach for the swing that started it. Horizontal surge is `lungeForce + (bonusReach * reachVelocityFactor)`, capped at `maxSurge`, added to your current velocity with `verticalBoost` on Y; reach is an `ENTITY_INTERACTION_RANGE` modifier on the `reach` slot.
@@ -161,6 +201,11 @@ A sprinting sword attack lunges you forward and grants bonus entity reach for th
 
 ### Blade Flow (`sword-blade-flow`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-blade-flow-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-blade-flow-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge
 
 Each sword hit adds a flow stack worth 0.10 attack speed, applied as `ADD_SCALAR` on `ATTACK_SPEED` in the `flow` slot, and any damage you take clears the stack.
@@ -173,6 +218,11 @@ Each sword hit adds a flow stack worth 0.10 attack speed, applied as `ADD_SCALAR
 | `xpPerStack` | `3` | Skill XP per stack gained. |
 
 ### Duelist's Focus (`sword-duelists-focus`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-duelists-focus-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-duelists-focus-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge
 
@@ -191,6 +241,11 @@ While exactly one hostile mob or player is inside the engage radius, sword damag
 
 ### Whetstone Ritual (`sword-whetstone-ritual`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-whetstone-ritual-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-whetstone-ritual-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge
 
 Sneak-right-click a grindstone with a sword in the main hand to apply an `ATTACK_DAMAGE` modifier on the `sharp` slot worth `3.0 * (amplifier + 1)` health; it is not the Sharpness enchantment and not the Strength potion, and the grindstone GUI does not open. Missing XP levels plays a fail effect and aborts, and a durability cost that would break the sword aborts with no effect.
@@ -208,6 +263,11 @@ Sneak-right-click a grindstone with a sword in the main hand to apply an `ATTACK
 
 ### Crescent Guard (`sword-crescent-guard`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-crescent-guard-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-crescent-guard-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge
 
 A kill with a sword in the main hand grants Absorption, and a later kill never replaces a higher amplifier, a longer duration, or an infinite effect. Points granted are `4 * (amplifier + 1)`, clamped to the max-absorption attribute, and current absorption only rises.
@@ -221,6 +281,11 @@ A kill with a sword in the main hand grants Absorption, and a later kill never r
 | `xpPerGuard` | `8` | Skill XP per guarded kill. |
 
 ### Hamstring (`sword-hamstring`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-hamstring-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-hamstring-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -236,6 +301,11 @@ A sword hit slows a sprinting player or any other target at or above the flee sp
 | `xpPerHamstring` | `5` | Skill XP per hamstring. |
 
 ### Heirloom Edge (`sword-heirloom-edge`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/swords/sword-heirloom-edge-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/swords/sword-heirloom-edge-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge
 

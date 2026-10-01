@@ -2,7 +2,7 @@
 title: "Skill - Brewing"
 description: "Brewing XP sources, custom potions, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T04:55:58.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,6 +29,11 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 
 ### Lingering Brew (`brewing-lingering`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-lingering-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-lingering-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge, then 3 per level
 
 Non-instant effects from the stand owner's brewing stand gain a flat tick bonus plus the original duration times the multiplier. Instant effects are unchanged. The stand records its owner on placement, or on the first open if it has none. The owner's level is used, not the level of the player who takes the bottles.
@@ -42,6 +47,11 @@ Non-instant effects from the stand owner's brewing stand gain a flat tick bonus 
 | `useCustomLore` | `true` | Rewrites the potion's lore with each effect and its new duration, and hides the vanilla effect tooltip. |
 
 ### Super Heated Brew (`brewing-super-heated`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-super-heated-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-super-heated-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge, then 3 per level
 
@@ -59,6 +69,11 @@ The eleven adaptations below add brewing-stand recipes. Each is permanent, canno
 
 ### Bottled Absorption (`brewing-absorption`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-absorption-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-absorption-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Menu icon: `QUARTZ`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
@@ -67,6 +82,11 @@ Menu icon: `QUARTZ`.
 | `brewing-absorption-2` | Instant Health | `QUARTZ_BLOCK` | `ABSORPTION` | 600 ticks (30 s) | 1 | 32 |
 
 ### Bottled Blindness (`brewing-blindness`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-blindness-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-blindness-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Menu icon: `INK_SAC`.
 
@@ -77,6 +97,11 @@ Menu icon: `INK_SAC`.
 
 ### Bottled Darkness (`brewing-darkness`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-darkness-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-darkness-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Menu icon: `BLACK_CONCRETE`. Menu lore claims Darkness stops the drinker sprinting. That is a claim about the vanilla effect, and Adapt does not enforce it.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
@@ -84,6 +109,11 @@ Menu icon: `BLACK_CONCRETE`. Menu lore claims Darkness stops the drinker sprinti
 | `brewing-darkness` | `NIGHT_VISION` | `BLACK_CONCRETE` | `DARKNESS` | 600 ticks (30 s) | 0 | 16 |
 
 ### Bottled Decay (`brewing-decay`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-decay-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-decay-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Menu icon: `WITHER_ROSE`.
 
@@ -94,6 +124,11 @@ Menu icon: `WITHER_ROSE`.
 
 ### Bottled Fatigue (`brewing-fatigue`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-fatigue-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-fatigue-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Menu icon: `SLIME_BALL`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
@@ -102,6 +137,11 @@ Menu icon: `SLIME_BALL`.
 | `brewing-fatigue-2` | `WEAKNESS` | `SLIME_BLOCK` | `SLOW_DIGGING` | 600 ticks (30 s) | 1 | 32 |
 
 ### Bottled Haste (`brewing-haste`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-haste-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-haste-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Menu icon: `AMETHYST_SHARD`.
 
@@ -112,6 +152,11 @@ Menu icon: `AMETHYST_SHARD`.
 
 ### Bottled Life (`brewing-healthboost`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-healthboost-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-healthboost-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Menu icon: `ENCHANTED_GOLDEN_APPLE`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
@@ -120,6 +165,11 @@ Menu icon: `ENCHANTED_GOLDEN_APPLE`.
 | `brewing-healthboost-2` | Instant Health | `ENCHANTED_GOLDEN_APPLE` | `HEALTH_BOOST` | 1200 ticks (60 s) | 1 | 32 |
 
 ### Bottled Hunger (`brewing-hunger`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-hunger-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-hunger-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Menu icon: `ROTTEN_FLESH`.
 
@@ -130,6 +180,11 @@ Menu icon: `ROTTEN_FLESH`.
 
 ### Bottled Nausea (`brewing-nausea`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-nausea-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-nausea-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Menu icon: `CRIMSON_FUNGUS`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
@@ -139,6 +194,11 @@ Menu icon: `CRIMSON_FUNGUS`.
 
 ### Bottled Resistance (`brewing-resistance`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-resistance-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-resistance-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Menu icon: `IRON_BLOCK`.
 
 | Recipe id | Base potion | Ingredient | Effect | Duration | Amplifier | Fuel |
@@ -147,6 +207,11 @@ Menu icon: `IRON_BLOCK`.
 | `brewing-resistance-2` | `AWKWARD` | `IRON_BLOCK` | `RESISTANCE` | 600 ticks (30 s) | 1 | 32 |
 
 ### Bottled Saturation (`brewing-saturation`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/brewing/brewing-saturation-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/brewing/brewing-saturation-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Menu icon: `BAKED_POTATO`.
 

@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T00:28:36.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,6 +42,11 @@ Pet presets are all supported pets, wolves, cats, or equines (horses, donkeys, m
 
 ### Tame Health (`tame-health`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-health-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-health-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 6 per level
 
 While you are online, every animal you own gets the max-health scalar.
@@ -53,6 +58,11 @@ While you are online, every animal you own gets the max-health scalar.
 | `maxTameablesPerPass` | `128` | Loaded tameables examined per scheduler pass. |
 
 ### Tame Damage (`tame-damage`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-damage-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-damage-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge, then 6 per level
 
@@ -66,6 +76,11 @@ While you are online, every animal you own gets the attack-damage scalar.
 
 ### Tame Regeneration (`tame-health-regeneration`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-health-regeneration-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-health-regeneration-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 8 knowledge, then 7 per level
 
 When one of your pets takes damage, it heals `regenBase` plus level percent squared times `regenFactor`, capped by missing health. Each pet has a fixed 8000 ms cooldown between heals.
@@ -76,6 +91,11 @@ When one of your pets takes damage, it heals `regenBase` plus level percent squa
 | `regenBase` | `1` | Health points healed at level percent 0. |
 
 ### Pack Leader Aura (`tame-pack-leader-aura`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-pack-leader-aura-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-pack-leader-aura-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 
@@ -91,6 +111,11 @@ Pets inside the radius gain Speed and Regeneration for as long as they stay ther
 | `maxTameablesPerPass` | `48` | Indexed tameables examined per scheduler tick, hard-capped at 48. |
 
 ### Beast Recall (`tame-beast-recall`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-beast-recall-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-beast-recall-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -110,6 +135,11 @@ Sneak-right-click with a lead in the main hand to teleport the nearest owned pet
 
 ### Shared Pain (`tame-shared-pain`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-shared-pain-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-shared-pain-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A share of damage aimed at you is split across nearby pets and removed from your hit, and no pet is taken below its health floor.
@@ -127,6 +157,11 @@ A share of damage aimed at you is split across nearby pets and removed from your
 | `xpPerRedirectedDamage` | `2.0` | Taming XP per point of damage the pack actually absorbed. |
 
 ### Mounted Tactics (`tame-mounted-tactics`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-mounted-tactics-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-mounted-tactics-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -159,6 +194,11 @@ While you ride a horse-type mount (horses, donkeys, mules, and llamas), a stride
 
 ### Fetch (`tame-fetch`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-fetch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-fetch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge
 
 Idle tamed wolves path to a drop, pick it up within 1.5 blocks, return to within 2 blocks of you, and drop the stack at the wolf; items are never teleported. Sitting, leashed, and riding wolves are skipped, anything a protection plugin would stop you picking up stays where it is, a server with no pathfinder API leaves drops in place, and a wolf more than 11 blocks from you abandons the fetch and drops what it carried.
@@ -181,6 +221,11 @@ Idle tamed wolves path to a drop, pick it up within 1.5 blocks, return to within
 
 ### Alpha's Command (`tame-alphas-command`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-alphas-command-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-alphas-command-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 With a bone in the main hand, sneak-left-click or sneak-melee to mark a target; nearby wolves, cats, and llamas stand up and chase it until focus ends, the target dies, or the hit is no longer legal. One bone is consumed outside creative mode; pets gain attack damage `3.0 * (amplifier + 1)` and movement speed `0.2 * (amplifier + 1)`, rechecked against PvP and PvE, and your pets, NPCs, invulnerable entities, and TragOul servants are never valid targets.
@@ -197,6 +242,11 @@ With a bone in the main hand, sneak-left-click or sneak-melee to mark a target; 
 | `maxPets` | `12` | Pets commanded per activation, hard-capped at 24. |
 
 ### Guardian Instinct (`tame-guardian-instinct`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-guardian-instinct-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-guardian-instinct-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -218,6 +268,11 @@ A nearby pet can intercept an incoming projectile, lunge toward you, take the sh
 
 ### Stable Hand (`tame-stable-hand`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-stable-hand-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-stable-hand-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 5 per level
 
 Taming or breeding an animal permanently applies the bias as a scalar on movement speed, jump strength, and max health, plus `bias * 10` blocks of safe fall distance.
@@ -230,6 +285,11 @@ Taming or breeding an animal permanently applies the bias as a scalar on movemen
 | `xpPerAnimal` | `20` | Taming XP per animal that receives the bias. |
 
 ### Wild Empathy (`tame-wild-empathy`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-wild-empathy-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-wild-empathy-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge, then 4 per level
 
@@ -247,6 +307,11 @@ Right-click an untamed animal with its taming food to roll an instant tame that 
 
 ### Battle Bond (`tame-battle-bond`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-battle-bond-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-battle-bond-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge
 
 When one of your pets lands a kill, you and nearby owned pets gain Speed, Regeneration, and Strength where the server exposes Strength. The menu tier is the amplifier plus 1, so displayed tier 1 is amplifier 0.
@@ -262,6 +327,11 @@ When one of your pets lands a kill, you and nearby owned pets gain Speed, Regene
 | `glowTicks` | `30` | Ticks bonded pets glow, clamped to 10 - 60. |
 
 ### Last Breath (`tame-last-breath`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/taming/tame-last-breath-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/taming/tame-last-breath-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 

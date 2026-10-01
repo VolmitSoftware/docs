@@ -2,7 +2,7 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T06:36:54.442Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,6 +34,11 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 ## Adaptations
 
 ### Time In A Bottle (`chronos-time-bottle`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-time-bottle-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-time-bottle-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge
 
@@ -112,6 +117,11 @@ The stored-second price of one growth step is `naturalSeconds / steps`, times th
 
 ### Aberrant Touch (`chronos-aberrant-touch`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-aberrant-touch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-aberrant-touch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 6 knowledge, then 7 per level
 
 Melee hits apply stacking slowness, and the stack threshold roots the target.
@@ -137,6 +147,11 @@ Melee hits apply stacking slowness, and the stack threshold roots the target.
 | `xpPerLevel` | `1.25` | Extra XP per proc per level. |
 
 ### Instant Recall (`chronos-instant-recall`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-instant-recall-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-instant-recall-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 
@@ -193,6 +208,11 @@ A clock click rewinds position, health, and hunger. Inventory is not restored. S
 
 ### Time Bomb (`chronos-time-bomb`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-time-bomb-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-time-bomb-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 7 knowledge, then 8 per level
 
 Shapeless recipe `chronos-time-bomb` is `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND` and produces a lingering potion. Right-click throws it. The field slows entities, applies mining fatigue, pins airborne players, and stops projectiles that enter it. A throw during cooldown plays a reject sound and is cancelled.
@@ -243,6 +263,11 @@ Shapeless recipe `chronos-time-bomb` is `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND
 
 ### Temporal Echo (`chronos-temporal-echo`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-temporal-echo-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-temporal-echo-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge
 
 A fired projectile is replayed after a delay at a reduced velocity.
@@ -259,6 +284,11 @@ A fired projectile is replayed after a delay at a reduced velocity.
 | `xpPerEcho` | `12` | XP per echo produced. |
 
 ### Stasis Field (`chronos-stasis-field`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-stasis-field-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-stasis-field-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge, then 7 per level
 
@@ -286,6 +316,11 @@ Hold an amethyst shard and sneak-right-click air or a permitted block. The bubbl
 
 ### Rewind (`chronos-rewind`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-rewind-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-rewind-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge, then 6 per level
 
 Sneak and press swap-hands (F by default) to mark position, health, and hunger. Sneak and press it again inside the window to return to that mark.
@@ -303,9 +338,16 @@ Sneak and press swap-hands (F by default) to mark position, health, and hunger. 
 
 ### Borrowed Time (`chronos-borrowed-time`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-borrowed-time-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-borrowed-time-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge, then 6 per level
 
 A fraction of each hit is deferred and repaid one pulse per second. Damage that is already deferred is not deferred again. A repayment waits while post-hit damage immunity is active, and the unpaid damage stays queued.
+
+Repaying deferred damage does not knock you back.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -316,6 +358,11 @@ A fraction of each hit is deferred and repaid one pulse per second. Damage that 
 | `paybackPulses` | `10` | One-second pulses the deferred damage is repaid over. |
 
 ### Overtime (`chronos-overtime`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-overtime-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-overtime-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge, then 5 per level
 
@@ -335,6 +382,11 @@ Beneficial potion effects applied to the player gain extra duration. At max leve
 | `maxLevelHarmfulDurationMultiplier` | `0.5` | Fraction of the original duration a harmful effect keeps at max level. |
 
 ### Accelerate (`chronos-accelerate`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-accelerate-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-accelerate-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge, then 5 per level
 
@@ -358,6 +410,11 @@ An unaimed aura samples nearby blocks and advances crop growth or remaining cook
 
 ### Hourglass Guard (`chronos-hourglass-guard`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-hourglass-guard-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-hourglass-guard-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 8 knowledge, then 9 per level
 
 A hit that would kill the player instead leaves them at the configured health, applies a short invulnerability window, and slows nearby enemies.
@@ -378,9 +435,14 @@ A hit that would kill the player instead leaves them at the configured health, a
 
 ### Pocket Watch (`chronos-pocket-watch`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-pocket-watch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-pocket-watch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 4 per level
 
-Sneak while falling spends a per-airtime slow-falling budget. Landing refills it.
+Sneak while falling spends a per-airtime slow-falling budget. Each successful pulse immediately slows an existing fast descent. Landing refills the budget.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -393,6 +455,11 @@ Sneak while falling spends a per-airtime slow-falling budget. Landing refills it
 | `maxPlayersPerPass` | `512` | Learned players processed per pulse pass. |
 
 ### Deja Vu (`chronos-deja-vu`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/chronos/chronos-deja-vu-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/chronos/chronos-deja-vu-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge, then 4 per level
 

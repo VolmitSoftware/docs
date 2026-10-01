@@ -2,7 +2,7 @@
 title: "Skill - Architect"
 description: "Architect XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T05:59:33.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,6 +21,11 @@ Placements and breaks re-check `adapt.use` on every block.
 
 ### Silk-Touch Glass (`architect-glass`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-glass-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-glass-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 0 knowledge
 
 Breaking a block whose material name contains `GLASS`, except `TINTED_GLASS`, with an empty main hand or a non-tool drops the block. No adaptation-specific config keys.
@@ -28,6 +33,11 @@ Breaking a block whose material name contains `GLASS`, except `TINTED_GLASS`, wi
 Personal controls: Glass selection (All eligible glass/Clear glass and panes/Stained glass and panes).
 
 ### Magic Foundation (`architect-foundation`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-foundation-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-foundation-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 1 knowledge, then 5 per level
 
@@ -44,6 +54,11 @@ Personal controls: Foundation control (Hold sneak/Tap sneak to start or stop); R
 
 ### Builders Wand (`architect-placement`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-placement-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-placement-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 4 knowledge
 
 Sneak while aiming at the same block within 5 blocks, with a matching stack held, previews a flat-face fill. The preview updates as aim or position changes. Placing consumes one matching item per filled position, including the block that starts the fill. Containers are never targeted. Denied positions are skipped and consume nothing.
@@ -58,6 +73,11 @@ Personal controls: Building control (Sneak to build/All eligible placements); Pl
 
 ### Redstone Remote (`architect-wireless-redstone`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-wireless-redstone-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-wireless-redstone-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 0 knowledge
 
 Shapeless `REDSTONE_TORCH`, `TARGET`, and `ENDER_PEARL` craft a `BoundRedstoneTorch`. The adaptation is permanent and cannot be unlearned. Sneak-left-click binds a block. Right-click pulses it, then restores the previous state. A failed chunk load, target check, or schedule does not pulse and does not start cooldown. Every powered block, neighbour, and door half must pass an interaction check before the pulse.
@@ -69,6 +89,11 @@ Personal controls: Require sneak to activate (on/off).
 | `cooldown` | `125` | Milliseconds between pulses, tracked in the bound torch's own item cooldown group. |
 
 ### Elevator (`architect-elevator`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-elevator-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-elevator-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 1 knowledge
 
@@ -83,6 +108,11 @@ Personal controls: Upward travel (on/off); Downward travel (on/off); Require sne
 
 ### Smart Shape (`architect-smart-shape`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-smart-shape-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-smart-shape-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 With an empty main hand, sneak-left-click steps facing or axis to the next orientation. Directional blocks walk a fixed 16-step compass order. Axis blocks walk X, then Y, then Z.
@@ -95,6 +125,11 @@ Personal controls: Block families (All eligible orientations/Facing blocks/Signs
 | `xpPerOrientationOption` | `0.16` | Skill XP paid per orientation the block could take, so richer block states pay more. |
 
 ### Scaffolder (`architect-scaffolder`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-scaffolder-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-scaffolder-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level
 
@@ -113,6 +148,11 @@ Personal controls: Scaffold control (Sneak-place/All eligible placements); Block
 
 ### Supply Line (`architect-supply-line`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-supply-line-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-supply-line-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 2 knowledge, then 5 per level
 
 When the placed stack was on its last item, the main hand or offhand refills from loose stacks, then bundles, then Adapt backpacks, then shulker boxes. Over the per-minute budget, the refill is refused and a dispenser-fail sound plays.
@@ -126,6 +166,11 @@ Personal controls: Loose inventory (on/off); Bundles (on/off); Shulker boxes (on
 | `xpPerRefill` | `2` | Skill XP paid per successful refill. |
 
 ### Steady Hands (`architect-steady-hands`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-steady-hands-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-steady-hands-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level
 
@@ -142,6 +187,11 @@ Personal controls: Knockback protection (on/off); Fall protection (on/off).
 | `hasteAmplifier` | `0` | Amplifier of that mining-speed boost. |
 
 ### Chalk Line (`architect-chalk-line`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-chalk-line-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-chalk-line-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 1 knowledge, then 3 per level
 
@@ -168,6 +218,11 @@ Personal controls: Guide color (Shape color/Aqua/Gold/Purple); Guide density (fu
 
 ### Mason's Eraser (`architect-demolition`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-demolition-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-demolition-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level
 
 The player's own recent placements break instantly for that player only, return the placed item plus the block's contents, and drop nothing and no XP. Overflow that does not fit falls at the player's feet.
@@ -182,6 +237,11 @@ Personal controls: Require sneaking (on/off); Block selection (All eligible bloc
 | `xpPerDemolish` | `1` | Skill XP paid per erased block. |
 
 ### Stonecutter Savant (`architect-stonecutter-savant`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/architect/architect-stonecutter-savant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/architect/architect-stonecutter-savant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 2 knowledge
 

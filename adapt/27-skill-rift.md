@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T12:01:47.863Z
+date: 2026-10-01T06:35:38.001Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,6 +21,11 @@ Anti-Levitation, Rift Visage, and Inflated Pocket Dimension are permanent. The m
 
 ### Rift Resistance (`rift-resist`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 5 knowledge
 
 Right-clicking air with an eye of ender or an ender pearl in the main hand grants Resistance and 3 Rift XP. If Easy Enderchest is also learned, opening the ender chest from the hand grants Resistance for 10 ticks at amplifier 2.
@@ -33,6 +38,11 @@ Right-clicking air with an eye of ender or an ender pearl in the main hand grant
 
 ### Remote Access (`rift-access`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-access-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-access-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 15 knowledge
 
 Crafting an ender pearl with a compass creates a Reliquary Portkey. Sneak-left-click binds a container, left-click air binds the container looked at within 5 blocks, and right-click opens it; the bind and every open run container permission checks, including both halves of a double chest, breaking, burning, pushing, or exploding the container closes an open session, and a Gloss preview neither binds nor opens it.
@@ -41,6 +51,11 @@ Personal controls: Confirm unbinding (on/off); Confirm binding (on/off); Require
 
 ### Easy Enderchest (`rift-enderchest`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-enderchest-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-enderchest-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 10 knowledge
 
 A right-click on air, a left-click on air, or a left-click on a block, with an ender chest in the main hand, opens it and starts a 100-tick cooldown on that item; a click during the cooldown is cancelled. Learned Rift Resistance also applies Resistance for 10 ticks at amplifier 2.
@@ -48,6 +63,11 @@ A right-click on air, a left-click on air, or a left-click on a block, with an e
 Personal controls: Open gesture (Left click or right-click air/Left click only/Right-click air only); Require sneaking (on/off).
 
 ### Rift Gate (`rift-gate`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-gate-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-gate-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 30 knowledge
 
@@ -61,6 +81,11 @@ Personal controls: Confirm binding (on/off); Confirm unbinding (on/off); Channel
 | `requireCraftedEye` | `true` | When true only the crafted bound eye works and the recipe is registered. When false any eye of ender can be bound. |
 
 ### Rift Blink (`rift-blink`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-blink-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-blink-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 1 knowledge, then 7 per level
 
@@ -109,6 +134,11 @@ Range is `baseDistance + (levelPercent * distanceFactor)`. Self-damage is `pearl
 
 ### Anti-Levitation (`rift-descent`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-descent-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-descent-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 Sneaking while levitating removes Levitation and sets the fall-damage multiplier to -1 for `cooldown * 20` ticks. Fall speed does not change.
@@ -121,17 +151,29 @@ Personal controls: Levitation cancellation (Press sneak/Automatic).
 
 ### Rift Visage (`rift-visage`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-visage-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-visage-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 2 knowledge
 
 An enderman does not target a player who has at least one ender pearl anywhere in the inventory.
 
 ### Ender Taglock (`rift-ender-taglock`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-ender-taglock-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-ender-taglock-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 3 levels · 7 knowledge
 
 Sneak-hitting with a plain ender pearl in the main hand tags an entity and deals no damage; throwing that pearl teleports the target, not the thrower. Level 1 tags passive and hostile mobs, level 2 adds villagers and large targets, level 3 tags any entity including players, and the throw cooldown floors at 4 ticks.
 
 Personal controls: Taglock targets (All eligible targets/Hostile mobs only/Animals only/Players only); Confirm binding with a second hit (on/off). When confirmation is enabled, repeat the same tagging hit within five seconds; the first hit does not bind or deal damage.
+
+The health cost does not knock the affected player back.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -147,6 +189,11 @@ Personal controls: Taglock targets (All eligible targets/Hostile mobs only/Anima
 
 ### Inflated Pocket Dimension (`rift-inflated-pocket-dimension`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-inflated-pocket-dimension-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-inflated-pocket-dimension-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 7 knowledge
 
 With an empty main hand, right-clicking a block, or right-clicking or left-clicking air at the block looked at within 5 blocks, pulls that block from the ender chest; while placing, a low stack refills up to `buildRefillAmount` or the item's max stack, whichever is smaller. A sneak-drop stores the item in the ender chest instead of dropping it.
@@ -160,6 +207,11 @@ Personal controls: Pull on click (on/off); Refill building stack (on/off); Store
 | `xpPerTransferredItem` | `0.08` | Rift XP granted per item stored into the ender chest by a sneak-drop. Pulls and build refills award no XP. |
 
 ### Void Magnet (`rift-void-magnet`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-void-magnet-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-void-magnet-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -179,6 +231,11 @@ Personal controls: Collection control (While sneaking/Automatic collection); Pic
 | `xpPerMovedItem` | `0.7` | Rift XP granted per item moved. |
 
 ### Void Skin (`rift-void-skin`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-void-skin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-void-skin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 6 knowledge, then 8 per level
 
@@ -200,9 +257,14 @@ Personal controls: Plain pearl reserve (No reserve/Keep 1 pearl/Keep 4 pearls); 
 
 ### Pearl Rebound (`rift-pearl-rebound`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-pearl-rebound-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-pearl-rebound-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 4 levels · 3 knowledge, then 5 per level
 
-Only a plain ender pearl rebounds, and only once; a pearl already claimed by another Rift adaptation teleports as usual. Damage reduction and aim bias both cap at 0.9.
+Only a plain ender pearl rebounds, and only once; a pearl another adaptation marked at launch (Ender Taglock, Floaters, Pinning Shot, or Fetch Shot) teleports as usual. Damage reduction and aim bias both cap at 0.9.
 
 Personal controls: Pearl rebound (on/off); Pearl damage reduction (on/off); Require sneak when throwing (on/off).
 
@@ -216,6 +278,11 @@ Personal controls: Pearl rebound (on/off); Pearl damage reduction (on/off); Requ
 | `xpOnRebound` | `6` | Rift XP granted each time a pearl rebounds. |
 
 ### Rift Conduit (`rift-conduit`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/rift/rift-conduit-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/rift/rift-conduit-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 8 knowledge
 

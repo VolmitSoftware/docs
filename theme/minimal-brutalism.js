@@ -6,9 +6,10 @@
   const scriptUrl = new URL(document.currentScript?.src || '/theme/minimal-brutalism.js', window.location.href);
   const catalogUrl = new URL('/theme/projects.json', scriptUrl.origin);
   catalogUrl.search = scriptUrl.search;
-  const storageKey = 'volmit-color-mode';
   const reservedPaths = new Set(['a', 'login', 'logout', 'register', 'forgot', 'verify']);
   let catalog = [];
+  let catalogSettled = false;
+  let loadingTimeout = null;
   let contentNode = null;
   let mountedPath = null;
   let scheduled = false;
@@ -57,28 +58,6 @@
     return icon;
   }
 
-  function savedMode() {
-    try {
-      return window.localStorage.getItem(storageKey) === 'light' ? 'light' : 'dark';
-    } catch {
-      return 'dark';
-    }
-  }
-
-  function applyMode(app, button, mode) {
-    app.dataset.volmitMode = mode;
-    document.documentElement.style.colorScheme = mode;
-    button.setAttribute('aria-pressed', String(mode === 'light'));
-    button.setAttribute('aria-label', mode === 'light' ? 'Use dark theme' : 'Use light theme');
-    button.title = button.getAttribute('aria-label');
-    button.querySelector('i').className = 'v-icon notranslate mdi ' + (mode === 'light' ? 'mdi-weather-night' : 'mdi-white-balance-sunny');
-    try {
-      window.localStorage.setItem(storageKey, mode);
-    } catch {
-      return;
-    }
-  }
-
   function mountHeader(app) {
     const searchButton = app.querySelector('.nav-header .mdi-magnify')?.closest('button');
     searchButton?.setAttribute('aria-label', 'Search documentation');
@@ -95,17 +74,6 @@
           window.location.assign('/');
         }
       });
-    }
-    const toolbar = document.querySelector('.nav-header > .v-toolbar__content > .layout.row > .flex:last-child .v-toolbar__content');
-    if (toolbar && !toolbar.querySelector('.volmit-theme-toggle')) {
-      const button = element('button', 'volmit-theme-toggle');
-      button.type = 'button';
-      const icon = element('i');
-      icon.setAttribute('aria-hidden', 'true');
-      button.append(icon);
-      toolbar.insertBefore(button, toolbar.querySelector('a:last-of-type'));
-      applyMode(app, button, savedMode());
-      button.addEventListener('click', () => applyMode(app, button, app.dataset.volmitMode === 'light' ? 'dark' : 'light'));
     }
   }
 
@@ -168,6 +136,12 @@
     }
     input.addEventListener('input', render);
     dialog.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        dialog.close();
+        return;
+      }
       const entries = Array.from(results.querySelectorAll('a'));
       if (!entries.length) {
         return;
@@ -424,7 +398,16 @@
     closeSectionMenu(app, false);
   }
 
+  function finishLoading() {
+    document.documentElement.classList.remove('volmit-loading');
+    window.clearTimeout(loadingTimeout);
+    loadingTimeout = null;
+  }
+
   function mount() {
+    if (document.readyState === 'loading') {
+      return;
+    }
     const path = normalizedPath();
     const app = document.querySelector('.v-application');
     const main = app?.querySelector('.v-main');
@@ -432,22 +415,35 @@
     if (!app || !main || !content || reservedPaths.has(path.split('/')[0])) {
       return;
     }
-    app.classList.add('volmit-graphite');
+    const theme = app.__vue__?.$vuetify?.theme;
+    if (theme && !theme.dark) {
+      theme.dark = true;
+    }
     mountHeader(app);
-    if (contentNode === content && mountedPath === path) {
+    if (!catalogSettled) {
       return;
     }
-    contentNode = content;
-    mountedPath = path;
-    clearPageShell(main, app);
-    buildProjectDialog(app);
-    if (!path || path === 'home') {
-      mountDirectory(main);
-    } else {
-      const project = currentProject();
-      if (project) {
-        mountProjectNavigation(app, main, content, project, path);
+    try {
+      if (contentNode === content && mountedPath === path) {
+        return;
       }
+      contentNode = content;
+      mountedPath = path;
+      clearPageShell(main, app);
+      if (!catalog.length) {
+        return;
+      }
+      buildProjectDialog(app);
+      if (!path || path === 'home') {
+        mountDirectory(main);
+      } else {
+        const project = currentProject();
+        if (project) {
+          mountProjectNavigation(app, main, content, project, path);
+        }
+      }
+    } finally {
+      finishLoading();
     }
   }
 
@@ -456,53 +452,83 @@
       return;
     }
     scheduled = true;
-    window.requestAnimationFrame(() => {
+    window.queueMicrotask(() => {
       scheduled = false;
       mount();
     });
   }
 
+  function validLink(link) {
+    return link && typeof link.title === 'string' && typeof link.href === 'string'
+      && link.href.startsWith('/') && !link.href.startsWith('//');
+  }
+
+  function validProject(project) {
+    return project && typeof project.name === 'string' && typeof project.path === 'string'
+      && validLink({ title: project.name, href: project.href })
+      && typeof project.description === 'string' && Array.isArray(project.sections)
+      && project.sections.every((section) => section && typeof section.title === 'string'
+        && Array.isArray(section.links) && section.links.every(validLink));
+  }
+
   async function start() {
+    if (reservedPaths.has(normalizedPath().split('/')[0])) {
+      return;
+    }
+    const root = document.documentElement;
+    root.classList.add('volmit-loading');
+    if (window.siteConfig) {
+      window.siteConfig.darkMode = true;
+    }
+    const controller = new AbortController();
+    loadingTimeout = window.setTimeout(() => {
+      finishLoading();
+      controller.abort();
+    }, 2500);
+    new MutationObserver(scheduleMount).observe(root, { childList: true, subtree: true });
+    document.addEventListener('DOMContentLoaded', scheduleMount, { once: true });
+    window.addEventListener('popstate', scheduleMount);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab' && !dialog?.open && window.innerWidth < 960) {
+        const menu = document.querySelector('.show-section-menu #volmit-page-navigation');
+        const entries = menu ? Array.from(menu.querySelectorAll('a[href],button')).filter((node) => node.getClientRects().length > 0) : [];
+        if (entries.length && event.shiftKey && (document.activeElement === entries[0] || !menu.contains(document.activeElement))) {
+          event.preventDefault();
+          entries[entries.length - 1].focus();
+        } else if (entries.length && !event.shiftKey && (document.activeElement === entries[entries.length - 1] || !menu.contains(document.activeElement))) {
+          event.preventDefault();
+          entries[0].focus();
+        }
+      }
+      if (event.key === 'Escape' && !dialog?.open) {
+        const app = document.querySelector('.v-application.show-section-menu');
+        if (app) {
+          closeSectionMenu(app, true);
+        }
+      }
+    });
+    scheduleMount();
     try {
-      const response = await fetch(catalogUrl, { cache: 'no-cache', credentials: 'same-origin' });
+      const response = await fetch(catalogUrl, {
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        signal: controller.signal
+      });
       if (!response.ok) {
         throw new Error('Project catalog request failed with HTTP ' + response.status);
       }
       const data = await response.json();
-      if (!Array.isArray(data) || !data.length || !data.every((project) => typeof project.name === 'string' && typeof project.path === 'string' && typeof project.href === 'string' && project.href.startsWith('/') && !project.href.startsWith('//') && typeof project.description === 'string' && Array.isArray(project.sections))) {
+      if (!Array.isArray(data) || !data.length || !data.every(validProject)) {
         throw new Error('The project catalog is invalid.');
       }
       catalog = data.sort((left, right) => left.name.localeCompare(right.name));
-      new MutationObserver(scheduleMount).observe(document.documentElement, { childList: true, subtree: true });
-      window.addEventListener('popstate', scheduleMount);
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Tab' && !dialog?.open && window.innerWidth < 960) {
-          const menu = document.querySelector('.show-section-menu #volmit-page-navigation');
-          const entries = menu ? Array.from(menu.querySelectorAll('a[href],button')).filter((node) => node.getClientRects().length > 0) : [];
-          if (entries.length && event.shiftKey && (document.activeElement === entries[0] || !menu.contains(document.activeElement))) {
-            event.preventDefault();
-            entries[entries.length - 1].focus();
-          } else if (entries.length && !event.shiftKey && (document.activeElement === entries[entries.length - 1] || !menu.contains(document.activeElement))) {
-            event.preventDefault();
-            entries[0].focus();
-          }
-        }
-        if (event.key === 'Escape' && !dialog?.open) {
-          const app = document.querySelector('.volmit-graphite.show-section-menu');
-          if (app) {
-            closeSectionMenu(app, true);
-          }
-        }
-      });
-      scheduleMount();
     } catch (error) {
       console.error('Unable to load the documentation navigation.', error);
+    } finally {
+      catalogSettled = true;
+      mount();
     }
   }
 
-  if (document.readyState === 'complete') {
-    start();
-  } else {
-    window.addEventListener('load', start, { once: true });
-  }
+  start();
 })();

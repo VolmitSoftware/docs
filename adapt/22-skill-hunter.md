@@ -2,7 +2,7 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T06:36:54.441Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,6 +28,11 @@ The seven struck buffs fire on most damage, but not on fall, void, lava, hot flo
 
 ### Adrenaline (`hunter-adrenaline`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-adrenaline-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-adrenaline-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 8 knowledge, then 4 per level
 
 Melee damage, not bow damage, rises as health falls, from nothing at full health to the configured maximum at zero health, so half health applies half of that maximum. Kills below 35 percent health count toward its challenges.
@@ -38,6 +43,11 @@ Melee damage, not bow damage, rises as health falls, from nothing at full health
 | `damageFactor` | `0.21` | Extra bonus fraction added across levels, so the level 5 maximum is 0.33. |
 
 ### Hunter's Regen (`hunter-regen`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-regen-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-regen-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 8 knowledge, then 4 per level
 
@@ -58,6 +68,11 @@ Taking a hit applies Regeneration.
 
 ### Vanishing Step (`hunter-invis`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-invis-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-invis-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 8 knowledge, then 4 per level
 
 Taking a hit applies Invisibility.
@@ -76,6 +91,11 @@ Taking a hit applies Invisibility.
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
 ### Hunter's Heights (`hunter-jumpboost`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-jumpboost-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-jumpboost-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 8 knowledge, then 4 per level
 
@@ -96,6 +116,11 @@ Taking a hit adds jump strength `+0.1 * (level + 1)` and safe fall distance `+(l
 
 ### Hunter's Luck (`hunter-luck`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-luck-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-luck-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 8 knowledge, then 4 per level
 
 Taking a hit adds Luck `+(level + 1)`, which affects fishing and chest loot rolls. An empty food bar instead adds Luck `-(basePoisonFromLevel - level + 1)` for `baseHungerDuration` ticks, and death clears both timers.
@@ -115,9 +140,14 @@ Taking a hit adds Luck `+(level + 1)`, which affects fishing and chest loot roll
 
 ### Hunter's Speed (`hunter-speed`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 8 knowledge, then 4 per level
 
-Taking a hit forces horizontal velocity toward `min(maxHorizontalSpeed, baseHorizontalSpeed * (1 + (level + 1) * 0.2))` blocks per tick while a movement key is held, and brakes when it is released. This is not the Speed effect.
+Taking a hit accelerates horizontal velocity toward `min(maxHorizontalSpeed, baseHorizontalSpeed * (1 + (level + 1) * 0.2))` blocks per tick while a movement key is held, and brakes when it is released. The burst stops when the adaptation is disabled or unlearned. Knockback without movement input does not steer it. This is not the Speed effect.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -141,6 +171,11 @@ Taking a hit forces horizontal velocity toward `min(maxHorizontalSpeed, baseHori
 
 ### Hunter's Strength (`hunter-strength`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-strength-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-strength-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 8 knowledge, then 4 per level
 
 Taking a hit adds attack damage `+3.0 * (level + 1)` unless a Strength effect is already present.
@@ -159,6 +194,11 @@ Taking a hit adds attack damage `+3.0 * (level + 1)` unless a Strength effect is
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
 ### Hunter's Resistance (`hunter-resistance`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-resistance-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-resistance-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 8 knowledge, then 4 per level
 
@@ -179,11 +219,21 @@ Taking a hit applies Resistance.
 
 ### Items Drop-To-Inventory (`hunter-drop-to-inventory`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 2 knowledge
 
 Drops from any mob kill go to the inventory regardless of the held item; block drops route only while a sword is in the main hand. Protection-denied pickups stay on the ground, overflow drops at the feet, the level cap is 1, and there are no adaptation-specific config keys.
 
 ### Trophy Skinner (`hunter-trophy-skinner`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-trophy-skinner-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-trophy-skinner-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge
 
@@ -205,6 +255,11 @@ A kill is clean when the shot covered the minimum range or the killing blow was 
 
 ### Predator Focus (`hunter-predator-focus`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-predator-focus-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-predator-focus-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 6 knowledge, then 5 per level
 
 Melee hits on the same target add `perStackBonus * (stacks - 1)` damage after the first hit, which sets one stack and adds nothing, up to `rampCapBase + round(levelPercent * rampCapFactor)` stacks. A different target, or a gap longer than `decayMillis`, resets the ramp to one stack.
@@ -218,6 +273,11 @@ Melee hits on the same target add `perStackBonus * (stacks - 1)` damage after th
 | `xpPerRampedHit` | `2` | Silent Hunter XP per hit that actually gained a bonus. |
 
 ### Big Game Hunter (`hunter-big-game`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-big-game-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-big-game-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 7 knowledge, then 6 per level
 
@@ -234,6 +294,11 @@ Melee damage increases against `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `END
 | `xpPerBigGameKill` | `45` | Hunter XP paid per big-game kill. |
 
 ### Blood Trail (`hunter-blood-trail`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-blood-trail-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-blood-trail-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge, then 4 per level
 
@@ -252,6 +317,11 @@ A melee hit that leaves a mob at or below `woundHealthFraction` of max health st
 | `xpPerWound` | `3` | Silent Hunter XP the first time you wound a given target. |
 
 ### Snare Line (`hunter-snare-line`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/hunter/hunter-snare-line-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/hunter/hunter-snare-line-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge, then 5 per level
 

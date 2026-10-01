@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T06:35:38.001Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,6 +38,11 @@ Blood Pact, Curse of Frailty, Last Rites, Soul Siphon, and Healing have the enab
 
 ### Thorns (`tragoul-thorns`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-thorns-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-thorns-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A hit, including a projectile, reflects `damageMultiplierPerLevel` times the learned level back to the attacker or the shooter, at most once per 1.5 seconds. With `ignore passiveMobs`, passive and neutral mobs stay excluded when provoked, including reflections from skeletal servants, while hostile mobs and players still follow normal combat protection.
@@ -48,6 +53,11 @@ A hit, including a projectile, reflects `damageMultiplierPerLevel` times the lea
 | `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from reflected damage. |
 
 ### Globe of Pain (`tragoul-globe`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-globe-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-globe-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -63,6 +73,11 @@ A melee hit is split as `originalDamage / (sharedTargets + 1)` plus the per-leve
 
 ### Will of Pain (`tragoul-healing`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-healing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-healing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A living attacker that damages you loses a fixed amount of health, and you are healed for what it actually lost, capped by your missing health. Your skeletal servants cannot be drained.
@@ -74,9 +89,16 @@ A living attacker that damages you loses a fixed amount of health, and you are h
 
 ### Corpse Lances (`tragoul-lance`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-lance-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-lance-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A kill launches a lance from the corpse at the nearest valid target other than you, dealing the killing blow's final damage times `seekerDamageMultiplier`, and also times `unarmoredDamageMultiplier` when you wear no armor, on a 5 second player cooldown with only one chain at a time. Search radius is `min(32, 5 + 4 x level)`, chain length is `min(6, level)` with each hop at half the previous damage, each connecting lance costs you mitigated health, and when `ignore passiveMobs` is on a nearer protected mob does not block a farther eligible target; direct attacks and player targeting stay unchanged.
+
+The health cost does not knock the affected player back.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -88,6 +110,11 @@ A kill launches a lance from the corpse at the nearest valid target other than y
 | `ignorePassiveMobs` | `false` | Exclude passive and neutral mobs from seeking lances and chain hits. |
 
 ### Blood Pact (`tragoul-blood-pact`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-blood-pact-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-blood-pact-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -111,6 +138,11 @@ A hit at or above the damage trigger can grant a random set of Speed, Regenerati
 
 ### Bone Harvest (`tragoul-bone-harvest`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-bone-harvest-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-bone-harvest-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A kill can drop an owner-locked globe, chosen at random, tagged `adapt:tragoul-globe`: `MAGMA_CREAM` for blood or `SNOWBALL` for bone. Walk over it to collect; hoppers cannot take it.
@@ -132,6 +164,11 @@ A kill can drop an owner-locked globe, chosen at random, tagged `adapt:tragoul-g
 
 ### Corpse Explosion (`tragoul-corpse-explosion`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-corpse-explosion-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-corpse-explosion-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 Every mob you or a servant kills damages nearby hostile mobs for a flat amount plus a share of the dead mob's max health. Radius caps at 16 blocks, each victim is stamped `adapt:tragoul_nova_stamp`, and neutrals stay excluded when provoked if `ignore passiveMobs` is true.
@@ -151,6 +188,11 @@ Every mob you or a servant kills damages nearby hostile mobs for a flat amount p
 
 ### Soul Siphon (`tragoul-soul-siphon`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-soul-siphon-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-soul-siphon-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 Damage you are credited for heals you, including melee, arrows, TNT you lit, lingering clouds you threw, and evoker fangs. The heal is the smallest of the damage share, the remaining per-second cap, and your missing health, and damage past the victim's remaining health plus absorption does not count.
@@ -164,6 +206,11 @@ Damage you are credited for heals you, including melee, arrows, TNT you lit, lin
 | `xpPerHeal` | `3` | TragOul XP per siphon heal. |
 
 ### Skeletal Servant (`tragoul-skeletal-servant`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-skeletal-servant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-skeletal-servant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge
 
@@ -195,6 +242,11 @@ Sneak-right-click air or a block with bones in the main hand to raise a skeleton
 
 ### Marrow Armor (`tragoul-marrow-armor`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-marrow-armor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-marrow-armor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 A hit at or above the trigger consumes one bone from your inventory and removes a share of that hit. With no bones, nothing is absorbed.
@@ -211,6 +263,11 @@ A hit at or above the trigger consumes one bone from your inventory and removes 
 
 ### Curse of Frailty (`tragoul-curse-of-frailty`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-curse-of-frailty-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-curse-of-frailty-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 An attacker gains Weakness, and Slowness once it is unlocked; the Weakness amplifier steps to 1 at level percent 0.8. Your pets, marker armor stands, invulnerable entities, NPCs, and skeletal servants are never cursed.
@@ -225,6 +282,11 @@ An attacker gains Weakness, and Slowness once it is unlocked; the Weakness ampli
 | `xpPerCurse` | `5` | TragOul XP per curse applied. |
 
 ### Death Sense (`tragoul-death-sense`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-death-sense-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-death-sense-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 3 knowledge
 
@@ -242,6 +304,11 @@ Wounded damageable entities and players inside the radius glow through walls for
 | `maxMarksPerTick` | `12` | Per-owner glows refreshed per scheduler tick, hard-capped at 12. |
 
 ### Plague Bearer (`tragoul-plague-bearer`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-plague-bearer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-plague-bearer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -261,6 +328,11 @@ Poison or Wither you applied, including a splash plus your own hit, jumps to nea
 | `xpPerInfection` | `6` | TragOul XP per infected mob. |
 
 ### Last Rites (`tragoul-last-rites`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/tragoul/tragoul-last-rites-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/tragoul/tragoul-last-rites-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge
 

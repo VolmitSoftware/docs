@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-01T06:38:12.571Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -155,6 +155,8 @@ Every read takes `now` in epoch milliseconds.
 
 `AdaptHud` exposes `actionBar(Player, String)`, `xpTicker(Player, String)`, `ambientStatus(Player, purpose, String)` / `clearAmbientStatus(Player, purpose)`, `title(Player, title, subtitle)`, `guiTitle(Player, title, subtitle)`, and `clear(Player)`, all on the owning thread. Every one of them publishes an action-bar segment. `title`/`guiTitle` are notice deliveries, not screen titles. `start(Adapt)` and `stop()` are plugin lifecycle.
 ## Velocity bursts
+
+Register a burst source with `VelocityBurstRuntime.register(adaptation, feedback)`, passing the owning `Adaptation<?>` and its `Feedback`. Each pulse checks the owner’s active level for the player; disabling or unlearning it ends the session and applies the profile’s invalid-state braking.
 
 `VelocityBurstRuntime.Client.stop(Player)` ends only that client's current burst on the player's owning scheduler and runs its normal end callback. It preserves other clients and newer replacement sessions; unregistering a client remains a separate lifecycle operation.
 

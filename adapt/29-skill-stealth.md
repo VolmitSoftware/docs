@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-30T18:40:17.000Z
+date: 2026-10-01T06:35:38.002Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -164,7 +164,7 @@ Endermen cannot target you while you sneak at level 1, and cannot target you at 
 
 5 levels · 4 knowledge
 
-Stopping a sneak leaves a copy of you that nearby hunters retarget, while you stay invisible with equipment hidden for the decoy's life. Damage to the decoy is cancelled, Adapt area and chain attacks skip decoys even when passive-mob protection is off, and aggro redirection skips your tamed pets and other friendlies.
+Stopping a sneak leaves a copy of you that nearby hunters approach and attack, while you stay invisible with equipment hidden for the decoy's life. Damage to the decoy is cancelled, Adapt area and chain attacks skip decoys even when passive-mob protection is off, and aggro redirection skips your tamed pets and other friendlies.
 
 Personal controls: Decoy gesture (Release sneak/Double sneak/Empty-hand right-click then release sneak). Armed release requires an empty-main-hand right-click in air while sneaking, followed by releasing sneak. Double sneak uses a 350 ms window. When an existing decoy can be swapped by double sneak, that gesture takes priority and does not replace the decoy.
 

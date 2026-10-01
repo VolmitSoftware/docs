@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-30T17:47:30.000Z
+date: 2026-10-01T00:52:30.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -130,6 +130,11 @@ Sneak-break a log or wood block with a main-hand axe to break matching blocks in
 
 ### Lucy's Log-Swapper (`axe-logswap`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-logswap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-logswap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 2 knowledge
 
 Shapeless crafting turns eight logs of one type plus one sapling into eight logs of that sapling's tree. Up to 70 recipes are registered in the `adapt` namespace as `axe-swap<from><to>`. Cherry and pale oak entries are skipped when those materials do not exist. `permanent` defaults to `true`, unlike the other Axes adaptations, so it cannot be unlearned. No adaptation-specific config keys.
@@ -225,6 +230,11 @@ Each log broken with an axe adds one absorption stack. One stack is 4 absorption
 | `xpPerStack` | `2` | Skill XP each time a fresh stack is added. |
 
 ### Shield Splitter (`axe-shield-splitter`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/axes/axe-shield-splitter-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/axes/axe-shield-splitter-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 4 levels · 4 knowledge
 

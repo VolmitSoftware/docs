@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-01T01:02:13.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,6 +38,11 @@ Damage to another entity also runs the normal PvP and PvE checks.
 
 ### Multi-Armor (`blocking-multiarmor`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-multiarmor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-multiarmor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 3 knowledge
 
 Left-click an elytra onto a chestplate, or the reverse, to merge them. One of the two items must be an elytra. Worn, the item is a chestplate on the ground and becomes an elytra once fall distance passes 4 blocks. Swaps are limited to once every 3000 ms. Sneak-drop returns both parts with names, enchantments, and damage. A MultiArmor lore tag marks the merge. Destroying the merged item destroys its contents.
@@ -48,11 +53,21 @@ Left-click an elytra onto a chestplate, or the reverse, to merge them. One of th
 
 ### Chains of Mephistopheles (`blocking-chainarmorer`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-chainarmorer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-chainarmorer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 1 knowledge
 
 Adds the four vanilla armor shapes as `blocking-chainarmorer-helmet`, `blocking-chainarmorer-chestplate`, `blocking-chainarmorer-leggings`, and `blocking-chainarmorer-boots`, all from `IRON_NUGGET`. `permanent` defaults to `true`, so learning it cannot be undone. No adaptation-specific config keys.
 
 ### Craftable Saddle (`blocking-saddlecrafter`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-saddlecrafter-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-saddlecrafter-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 1 level · 1 knowledge
 
@@ -60,11 +75,21 @@ Adds `blocking-saddlecrafter`: five `LEATHER` shaped `I I` over `III`. `permanen
 
 ### Craftable Horse Armor (`blocking-horsearmorer`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-horsearmorer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-horsearmorer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 1 level · 1 knowledge
 
 Adds `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-horsearmorergold`, and `blocking-horsearmorerdiamond`: a center `SADDLE` ringed by eight `LEATHER`, `IRON_INGOT`, `GOLD_INGOT`, or `DIAMOND`. `permanent` defaults to `true`, so learning it cannot be undone. No adaptation-specific config keys.
 
 ### Counter Guard (`blocking-counter-guard`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-counter-guard-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-counter-guard-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge, then 5 per level
 
@@ -85,6 +110,11 @@ Each hit blocked with a shield adds a counter stack. A later incoming hit can sp
 
 ### Bastion Stance (`blocking-bastion-stance`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-bastion-stance-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-bastion-stance-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 Sneak while standing still and blocking with a shield in either hand to hold knockback resistance and reduced projectile damage. The shield may be raised before or after sneak starts. The stance drops when sneak stops, blocking stops, the shield is gone, or the mode leaves Survival or Adventure. Knockback resistance is applied as `KNOCKBACK_RESISTANCE` and `EXPLOSION_KNOCKBACK_RESISTANCE` attribute modifiers.
@@ -104,6 +134,11 @@ Sneak while standing still and blocking with a shield in either hand to hold kno
 | `xpOnNegate` | `8.0` | Skill XP for a full projectile negate. |
 
 ### Mirror Block (`blocking-mirror-block`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-mirror-block-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-mirror-block-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -127,6 +162,11 @@ While blocking with a shield, an incoming projectile can be sent back at its sho
 | `xpOnReflect` | `8` | Skill XP per projectile reflected. |
 
 ### Bulwark Bash (`blocking-bulwark-bash`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-bulwark-bash-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-bulwark-bash-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -158,6 +198,11 @@ With a shield in the off hand and not on cooldown, sprint, jump, and strike whil
 
 ### Shield Wall (`blocking-shield-wall`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-shield-wall-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-shield-wall-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge
 
 While blocking, projectile damage to players behind the shield is reduced for blockers in range, inside the arc, and facing the shot. The strongest reduction wins. Only players are covered, and the XP goes to the blocker.
@@ -175,6 +220,11 @@ While blocking, projectile damage to players behind the shield is reduced for bl
 | `xpPerDamageShielded` | `3.0` | Skill XP per health point of damage taken off the ally. |
 
 ### Perfect Guard (`blocking-perfect-guard`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-perfect-guard-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-perfect-guard-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge, then 4 per level
 
@@ -195,6 +245,11 @@ Raising a shield inside the parry window, facing the incoming melee or projectil
 
 ### Tempered Guard (`blocking-tempered-guard`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-tempered-guard-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-tempered-guard-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 3 knowledge, then 4 per level
 
 When a blocked hit spends shield durability, a roll may repair the shield first, then the first damaged armor piece.
@@ -209,6 +264,11 @@ When a blocked hit spends shield durability, a roll may repair the shield first,
 | `xpPerDurabilityRepaired` | `2.0` | Skill XP per durability point restored. |
 
 ### Shieldbearer's Resolve (`blocking-shieldbearers-resolve`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-shieldbearers-resolve-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-shieldbearers-resolve-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -227,6 +287,11 @@ An axe swing that puts the shield on cooldown grants Resistance and removes part
 | `xpOnResolve` | `12` | Skill XP per recovery. |
 
 ### Phalanx Crafter (`blocking-phalanx-crafter`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-phalanx-crafter-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-phalanx-crafter-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 2 levels · 2 knowledge, then 3 per level
 
@@ -251,6 +316,11 @@ NSN
 Recipe keys are `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PLANKS` / `IRON_INGOT` / `OAK_PLANKS` in the middle, one `OAK_PLANKS` below center, giving a plain `SHIELD`) and `blocking-phalanx-netherite-shield` (four `NETHERITE_INGOT` around a `SHIELD`, level 2 only). No adaptation-specific config keys.
 
 ### Interpose (`blocking-interpose`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/blocking/blocking-interpose-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/blocking/blocking-interpose-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 

@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-09-30T23:17:56.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,6 +38,11 @@ Combo Chain, Glass Cannon, Pressure Point, Second Wind, Sucker Punch, and Power 
 
 ### Sucker Punch (`unarmed-sucker-punch`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-sucker-punch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-sucker-punch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 2 per level
 
 A sprinting punch with the main hand exactly `AIR` multiplies damage. XP is 6.221 times the resulting damage, plus 0.42 times that damage when the punch exceeds 5, and a kill whose final damage was at least the victim's max health counts as a one-punch kill.
@@ -49,6 +54,11 @@ A sprinting punch with the main hand exactly `AIR` multiplies damage. XP is 6.22
 
 ### Unarmed Power (`unarmed-power`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-power-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-power-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 7 levels · 6 knowledge, then 3 per level
 
 While neither hand holds a melee tool, attack damage gains a `MULTIPLY_SCALAR_1` modifier of level percent times `damageFactor`, reapplied when your hands change. XP per hit is 0.321 times level percent times damage.
@@ -58,6 +68,11 @@ While neither hand holds a melee tool, attack damage gains a `MULTIPLY_SCALAR_1`
 | `damageFactor` | `2.57` | Attack-damage multiplier reached at full level percent. |
 
 ### Glass Cannon (`unarmed-glass-cannon`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-glass-cannon-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-glass-cannon-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 7 levels · 6 knowledge, then 3 per level
 
@@ -70,6 +85,11 @@ With no armor, damage is `damage * (maxDamageFactor + level * maxDamagePerLevelM
 | `maxDamagePerLevelMultiplier` | `0.15` | Extra zero-armor multiplier per learned level. |
 
 ### Battering Charge (`unarmed-battering-charge`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-battering-charge-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-battering-charge-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 4 knowledge
 
@@ -89,6 +109,11 @@ A sprinting hit with empty hands, or with a shield in either hand, adds flat dam
 
 ### Combo Chain (`unarmed-combo-chain`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-combo-chain-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-combo-chain-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 6 levels · 4 knowledge, then 3 per level
 
 Only the main hand is checked: consecutive punches add stacks of bonus damage, and a missed swing after the grace window clears the chain.
@@ -106,6 +131,11 @@ Only the main hand is checked: consecutive punches add stacks of bonus damage, a
 
 ### Disarm (`unarmed-disarm`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-disarm-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-disarm-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 5 knowledge, then 4 per level
 
 A bare-hand hit can knock the target's main-hand item to the ground, or an off-hand shield if the main hand is empty. Players never lose armor, and skeletal servants are never disarmed.
@@ -122,6 +152,11 @@ A bare-hand hit can knock the target's main-hand item to the ground, or an off-h
 
 ### Pressure Point (`unarmed-pressure-point`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-pressure-point-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-pressure-point-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 3 per level
 
 Bare-hand hits apply Slowness, and Weakness once it is unlocked, raising the current amplifier by one up to the cap and refreshing the duration.
@@ -137,6 +172,11 @@ Bare-hand hits apply Slowness, and Weakness once it is unlocked, raising the cur
 | `xpPerStrike` | `3.1` | Unarmed XP per strike. |
 
 ### Shockwave Clap (`unarmed-shockwave-clap`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-shockwave-clap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-shockwave-clap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge, then 5 per level
 
@@ -161,6 +201,11 @@ With both hands free of tools, sneak and left-click air or a block to shove enti
 
 ### Iron Fists (`unarmed-iron-fists`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-iron-fists-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-iron-fists-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 3 per level
 
 Bare-hand hits deal flat bonus damage. Punching dirt, sand, leaves, or any block at or under the softness threshold applies a block-break-speed modifier of `0.2 * (amplifier + 1)`, not a Haste potion.
@@ -175,6 +220,11 @@ Bare-hand hits deal flat bonus damage. Punching dirt, sand, leaves, or any block
 | `xpPerHit` | `2.4` | Unarmed XP per bare-hand hit. |
 
 ### Grapple (`unarmed-grapple`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-grapple-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-grapple-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 6 knowledge, then 5 per level
 
@@ -195,6 +245,11 @@ With both hands free of tools, sneak-punch to grab a target, then punch again or
 
 ### Second Wind (`unarmed-second-wind`)
 
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-second-wind-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-second-wind-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 5 levels · 4 knowledge, then 3 per level
 
 A direct bare-hand kill on a non-player mob restores hunger and saturation and starts Regeneration. Friendly targets, including your pets, are skipped, food is clamped to 20, and saturation is clamped to your current food level.
@@ -211,6 +266,11 @@ A direct bare-hand kill on a non-player mob restores hunger and saturation and s
 | `xpPerSecondWind` | `18` | Unarmed XP per trigger. |
 
 ### Meditation (`unarmed-meditation`)
+
+<div class="adapt-demo">
+<video src="/adapt-assets/demos/unarmed/unarmed-meditation-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/unarmed/unarmed-meditation-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 5 levels · 5 knowledge, then 4 per level
 
