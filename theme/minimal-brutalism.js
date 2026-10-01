@@ -624,6 +624,7 @@
   }
 
   function updateWormholePlayback(player) {
+    player.camera.value = demoPerspective;
     for (const [client, variant] of player.variants) {
       const selected = client === player.client;
       variant.panel.hidden = !selected;
@@ -632,8 +633,6 @@
       for (const [perspective, view] of variant.views) {
         const active = perspective === demoPerspective;
         view.panel.hidden = !active;
-        view.tab.setAttribute('aria-selected', String(active));
-        view.tab.tabIndex = active ? 0 : -1;
         if (!selected || !active || !player.visible || document.hidden || !player.playing) {
           pauseDemo(view.video);
         } else if (view.video.paused) {
@@ -658,28 +657,31 @@
       }
       variants.set(client, { panel, videos: [first, third], views: new Map() });
     }
-    const player = { variants, client: 'standard', visible: false, playing: true };
+    const player = { variants, client: 'standard', visible: false, playing: true, camera: element('select') };
     const id = 'wormholes-demo-' + ++demoSequence;
     const header = element('div', 'demo-header');
     const tabs = element('div', 'demo-tabs');
     tabs.setAttribute('role', 'tablist');
     tabs.setAttribute('aria-label', 'Wormholes client for this demonstration');
-    header.append(tabs);
+    const cameraLabel = element('label', 'demo-camera');
+    cameraLabel.append(element('span', null, 'Camera'), player.camera);
+    player.camera.setAttribute('aria-label', 'Camera view for all demonstrations');
+    for (const [perspective, name] of [['first-person', 'First person'], ['third-person', 'Third person']]) {
+      const option = element('option', null, name);
+      option.value = perspective;
+      player.camera.append(option);
+    }
+    player.camera.addEventListener('change', () => selectDemoPerspective(player.camera.value));
+    header.append(tabs, cameraLabel);
     container.prepend(header);
     for (const [client, variant] of variants) {
-      const label = client === 'clientview' ? 'WITH Wormholes mod' : 'WITHOUT Wormholes mod';
+      const label = client === 'clientview' ? 'Client mod' : 'No client mod';
       variant.panel.querySelector(':scope > p')?.remove();
       variant.tab = demoTab(tabs, variant.panel, id + '-' + client, label);
       variant.tab.addEventListener('click', () => {
         player.client = client;
         updateWormholePlayback(player);
       });
-      const perspectiveHeader = element('div', 'demo-header');
-      const perspectiveTabs = element('div', 'demo-tabs');
-      perspectiveTabs.setAttribute('role', 'tablist');
-      perspectiveTabs.setAttribute('aria-label', label + ' perspective');
-      perspectiveHeader.append(perspectiveTabs, element('span', 'demo-scope', 'All demos'));
-      variant.panel.prepend(perspectiveHeader);
       for (const [index, [perspective, name]] of [['first-person', 'First person'], ['third-person', 'Third person']].entries()) {
         const video = variant.videos[index];
         video.autoplay = false;
@@ -688,11 +690,9 @@
         video.setAttribute('aria-label', label + ', ' + name.toLowerCase() + ' demonstration');
         pauseDemo(video);
         const panel = element('div', 'demo-panel');
-        const tab = demoTab(perspectiveTabs, panel, id + '-' + client + '-' + perspective, name);
         panel.append(video);
         variant.panel.append(panel);
-        variant.views.set(perspective, { panel, tab, video });
-        tab.addEventListener('click', () => selectDemoPerspective(perspective));
+        variant.views.set(perspective, { panel, video });
         video.addEventListener('play', () => {
           if (video.paused) {
             return;
@@ -711,7 +711,6 @@
           updateWormholePlayback(player);
         });
       }
-      demoKeyboard(perspectiveTabs, variant.views, () => demoPerspective, selectDemoPerspective);
     }
     demoKeyboard(tabs, variants, () => player.client, (client) => {
       player.client = client;

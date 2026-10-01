@@ -51,7 +51,9 @@ test('each demonstration mounts independent client tabs and paired perspectives'
   const { window, demos } = await page(t);
   for (const demo of demos) {
     const clients = [...demo.querySelectorAll(':scope > .demo-header [role="tab"]')];
-    assert.deepEqual(clients.map(tab => tab.textContent), ['WITHOUT Wormholes mod', 'WITH Wormholes mod']);
+    assert.deepEqual(clients.map(tab => tab.textContent), ['No client mod', 'Client mod']);
+    assert.equal(demo.querySelectorAll('[role="tablist"]').length, 1);
+    assert.equal(demo.querySelectorAll('[role="tab"]').length, 2);
     assert.equal(clients[0].getAttribute('aria-selected'), 'true');
     assert.equal(clients[1].getAttribute('aria-selected'), 'false');
     for (const tab of demo.querySelectorAll('[role="tab"]')) {
@@ -69,17 +71,18 @@ test('each demonstration mounts independent client tabs and paired perspectives'
   assert.equal(window.document.querySelectorAll('.adapt-demo .demo-tab').length, 2);
 });
 
-test('keyboard navigation selects client and perspective tabs with roving focus', async t => {
+test('keyboard navigation selects client tabs and the camera uses a separate selector', async t => {
   const { window, demos } = await page(t);
   const clientTabs = demos[0].querySelector(':scope > .demo-header [role="tablist"]');
   assert.ok(clientTabs, 'Client controls must expose a tablist');
   clientTabs.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'End', bubbles: true, cancelable: true }));
-  assert.equal(window.document.activeElement.textContent, 'WITH Wormholes mod');
+  assert.equal(window.document.activeElement.textContent, 'Client mod');
   assert.equal(window.document.activeElement.tabIndex, 0);
   const variant = demos[0].querySelector('[data-client="clientview"]');
-  const perspectives = variant.querySelector('[role="tablist"]');
-  perspectives.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
-  assert.equal(window.document.activeElement.textContent, 'Third person');
+  const camera = demos[0].querySelector('select');
+  assert.ok(camera, 'Camera control must exist independently of the client tabs');
+  camera.value = 'third-person';
+  camera.dispatchEvent(new window.Event('change', { bubbles: true }));
   assert.equal(variant.querySelector('video[src$="-pov.webm"]').parentElement.hidden, true);
   assert.equal(variant.querySelector('video[src$="-observer.webm"]').parentElement.hidden, false);
 });
@@ -92,9 +95,9 @@ test('inactive client, inactive perspective, offscreen, and background clips pau
   visible(demo, true);
   assert.equal(first.paused, false);
   assert.equal(third.paused, true);
-  const perspectiveTabs = demo.querySelector('[data-client="standard"] .demo-tabs');
-  assert.ok(perspectiveTabs, 'Perspective controls must exist');
-  perspectiveTabs.querySelectorAll('button')[1].click();
+  const camera = demo.querySelector('select');
+  camera.value = 'third-person';
+  camera.dispatchEvent(new window.Event('change', { bubbles: true }));
   assert.equal(first.paused, true);
   assert.equal(third.paused, false);
   demo.querySelectorAll(':scope > .demo-header button')[1].click();
@@ -115,21 +118,21 @@ test('Wormholes shares Adapt perspective selection and remembers it across pages
   for (const demo of demos) visible(demo, true);
   const adapt = window.document.querySelector('.adapt-demo');
   visible(adapt, true);
-  demos[0].querySelector('[data-client="standard"] .demo-tabs').querySelectorAll('button')[1].click();
+  const camera = demos[0].querySelector('select');
+  camera.value = 'third-person';
+  camera.dispatchEvent(new window.Event('change', { bubbles: true }));
   assert.equal(window.localStorage.getItem('adapt-demo-perspective'), 'third-person');
   for (const demo of demos) {
     assert.equal(demo.querySelector('video[src$="standard-pov.webm"]').paused, true);
     assert.equal(demo.querySelector('video[src$="standard-observer.webm"]').paused, false);
-    for (const variant of demo.querySelectorAll('[data-client]')) {
-      assert.equal(variant.querySelectorAll('.demo-tabs button')[1].getAttribute('aria-selected'), 'true');
-    }
-    assert.equal(demo.querySelector('[data-client="standard"] .demo-scope').textContent, 'All demos');
+    assert.equal(demo.querySelector('select').value, 'third-person');
   }
   assert.equal(adapt.querySelectorAll('.demo-tab')[1].getAttribute('aria-selected'), 'true');
   demos[0].querySelectorAll(':scope > .demo-header button')[1].click();
   assert.equal(demos[0].querySelector('video[src$="clientview-observer.webm"]').paused, false);
   adapt.querySelectorAll('.demo-tab')[0].click();
+  assert.equal(demos[0].querySelector('select').value, 'first-person');
   assert.equal(demos[0].querySelector('video[src$="clientview-pov.webm"]').paused, false);
   const restored = await page(t, 'third-person');
-  assert.equal(restored.demos[0].querySelector('[data-client="standard"] .demo-tabs button[aria-selected="true"]').textContent, 'Third person');
+  assert.equal(restored.demos[0].querySelector('select').value, 'third-person');
 });

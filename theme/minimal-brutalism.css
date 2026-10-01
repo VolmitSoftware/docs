@@ -276,6 +276,9 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .demo-panel { aspect-ratio: 16 / 9; background: #000; }
 #root .v-application:has(.contents) .demo-panel video { display: block; width: 100%; height: 100%; margin: 0; border: 0; border-radius: 0; object-fit: contain; }
 #root .v-application:has(.contents) .wormholes-demo .demo-tabs { flex-wrap: wrap; min-width: 0; }
+#root .v-application:has(.contents) .wormholes-demo > .demo-header { flex-wrap: wrap; }
+#root .v-application:has(.contents) .demo-camera { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--volmit-muted); font-size: 13px; }
+#root .v-application:has(.contents) .demo-camera select { min-height: 44px; padding: 8px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-control); background: var(--volmit-surface-raised); color: var(--volmit-ink); font: inherit; }
 #root .v-application:has(.contents) .wormholes-demo .demo-tab { white-space: normal; text-align: left; }
 #root .v-application:has(.contents) .wormholes-demo [hidden] { display: none !important; }
 

@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-01T10:37:06.000Z
+date: 2026-10-01T10:52:30.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -110,14 +110,14 @@ notices.
 
 <div class="wormholes-demo" data-demo="portal-linking">
 <div class="wormholes-demo-variant" data-client="standard">
-<p>WITHOUT Wormholes mod</p>
-<video src="/wormholes-assets/demos/portal-linking-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/portal-linking-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/portal-linking-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/portal-linking-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
-<p>WITH Wormholes mod</p>
-<video src="/wormholes-assets/demos/portal-linking-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/portal-linking-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/portal-linking-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/portal-linking-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -128,7 +128,7 @@ To connect two framed portals, build both openings first. You must be able to ma
 3. Reopen Garden Arch's **Destination** menu and choose **Link and return**. Sun Court now points back to Garden Arch, creating a reciprocal pair.
 4. Close the menu and look through Garden Arch. With **Projection** set to `ON` and the surface clear, the opening shows the scene at Sun Court. Walk through the opening, turn around at the destination, and walk back through its portal to return.
 
-The recordings show a deepslate frame in a garden connected to a sandstone frame in a courtyard elsewhere in the same world. The **WITHOUT Wormholes mod** view uses standard projection; the **WITH Wormholes mod** view uses [ClientView](/wormholes/05-projection-modes-settings#clientview).
+The recordings show a deepslate frame in a garden connected to a sandstone frame in a courtyard elsewhere in the same world. The **No client mod** view uses standard projection; the **Client mod** view uses [ClientView](/wormholes/05-projection-modes-settings#clientview).
 
 Blocked for RTP, mirror mode, and managed dimensional portals.
 

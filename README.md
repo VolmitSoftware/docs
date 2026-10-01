@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-10-01T10:38:15.000Z
+date: 2026-10-01T10:53:37.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,11 +58,11 @@ node tools/build-theme-data.mjs --check
 In Wiki.js **Administration > Theme > Head HTML Injection**, include one stylesheet and one script reference. Update the version value when publishing theme changes:
 
 ```html
-<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261001-demos-wormholes-autoplay">
-<script src="/theme/minimal-brutalism.js?v=graphite-20261001-demos-wormholes-autoplay"></script>
+<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261001-demos-wormholes-client-tabs">
+<script src="/theme/minimal-brutalism.js?v=graphite-20261001-demos-wormholes-client-tabs"></script>
 ```
 
-Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and the wiki’s icon set. Adapt and Wormholes demonstrations share synchronized First person and Third person tabs, with the selected perspective remembered across documentation pages. Each Wormholes demonstration also has independent WITHOUT Wormholes mod and WITH Wormholes mod tabs above the perspective controls. Visible clips autoplay muted and loop. Hidden, offscreen, and background clips pause. The project picker is searchable; the homepage filters plugins and developer tools. Project landing pages use section tabs, and reference pages use the project’s documentation sidebar. The wiki uses one dark palette with compact corners, flat surfaces, and red link accents. Its stylesheet applies independently of the navigation catalog; if the catalog is unavailable, the original page content remains readable.
+Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and the wiki’s icon set. Each Wormholes demonstration has No client mod and Client mod tabs, plus a separate Camera dropdown for First person or Third person. Camera selection stays synchronized with Adapt's perspective tabs and is remembered across documentation pages. Each Wormholes demonstration selects its client mode independently. Visible clips autoplay muted and loop. Hidden, offscreen, and background clips pause. The project picker is searchable; the homepage filters plugins and developer tools. Project landing pages use section tabs, and reference pages use the project’s documentation sidebar. The wiki uses one dark palette with compact corners, flat surfaces, and red link accents. Its stylesheet applies independently of the navigation catalog; if the catalog is unavailable, the original page content remains readable.
 
 From this repository, run the local theme preview:
 

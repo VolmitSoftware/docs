@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-01T10:35:28.000Z
+date: 2026-10-01T11:01:53.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,7 @@ The client creates this file in its `config/` folder on first launch and reads i
 |-----|---------|--------|
 | `enabled` | `true` | Accept ClientView from servers. `false` keeps this client on the standard projection everywhere |
 | `max-plate-memory-mb` | `256` | Memory in MiB for received portal views and cached destination sections, 16–4096. A portal whose view would exceed it stays on the standard projection for this player while other portals keep ClientView |
-| `bulk-write` | `false` | Write projected blocks straight into chunk sections instead of through the vanilla block update path |
+| `bulk-write` | `false` | Batch ordinary projected block writes by chunk section. Block entities retain their normal state updates, including when the original blocks are restored |
 | `hysteresis-blocks` | `0.25` | Edge hysteresis in blocks: a cell enters the projection at this padding and leaves at twice it. 0–4; negative values use `0.25` |
 | `sections-per-tick` | `0` | Most chunk sections changed per tick when the visible area changes, 0–65535. `0` applies every change at once |
 | `show-debug-overlay` | `false` | Show a ClientView status line on the F3 debug screen |

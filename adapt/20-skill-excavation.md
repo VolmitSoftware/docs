@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-01T11:01:57.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,8 +34,8 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 ### Hasty Excavator (`excavation-haste`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-haste-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-haste-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-haste-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-haste-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 3 knowledge, then 2 per level
@@ -49,8 +49,8 @@ Starting to break any block, not only shovel blocks, adds a block-break speed mo
 ### Super-Seeing Spelunker! (`excavation-spelunker`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-spelunker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-spelunker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-spelunker-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-spelunker-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 10 knowledge, then 5 per level
@@ -70,13 +70,17 @@ Sneak with glow berries in the main hand and one ore block in the off hand to ou
 ### OMNI - T.O.O.L. (`excavation-omnitool`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-omnitool-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-omnitool-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-omnitool-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-omnitool-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 10 per level
 
-The main-hand item recognized by `Leatherman` in its lore swaps to an axe on wood, a shovel on dirt, a sword on webs and similar, a hoe on crops and farmland, flint and steel on burnable blocks, and a pickaxe otherwise, and refuses a head at 2 or less durability. Capacity is `startingSlots + level`; sneak-dropping returns the component tools with their names, enchantments, and damage, breaks and attacks are cancelled while the adaptation is inactive, and shift-left-click never merges because the cursor is empty, though that click is still cancelled when the tool already holds more components than the slot budget.
+Pick up a tool onto your inventory cursor, then shift-left-click another tool to combine them. Repeat with the combined item to add a pickaxe, axe, shovel, sword, and hoe; capacity is `startingSlots + level`.
+
+Hold the combined tool while mining: it selects the pickaxe for stone and ores, the axe for logs and planks, the shovel for dirt and sand, and the sword for cobwebs. Right-click grass or dirt to select the hoe, then right-click again to till it with air above the block. The demonstration shows all five tools being combined and used on these block types.
+
+Sneak-drop the combined tool to separate its components, preserving their names, enchantments, and damage. Breaking blocks and attacking are blocked while the adaptation is inactive; a component with two or fewer durability points remaining cannot be used.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -85,8 +89,8 @@ The main-hand item recognized by `Leatherman` in its lore swaps to an axe on woo
 ### Shovel Drop-To-Inventory (`excavation-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-drop-to-inventory-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-drop-to-inventory-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -96,8 +100,8 @@ Blocks broken with a shovel send their drops to the inventory and pay 2 skill XP
 ### Seismic Ping (`excavation-seismic-ping`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-seismic-ping-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-seismic-ping-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-seismic-ping-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-seismic-ping-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -121,8 +125,8 @@ Breaking a block while holding an item whose name ends in `_SHOVEL` or `_PICKAXE
 ### Tunneler (`excavation-tunneler`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-tunneler-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-tunneler-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-tunneler-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-tunneler-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -138,8 +142,8 @@ Sneaking with a shovel, breaking a shovel-friendly block also breaks up to `max(
 ### Treasure Hunter (`excavation-treasure-hunter`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-treasure-hunter-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-treasure-hunter-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-treasure-hunter-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-treasure-hunter-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -157,8 +161,8 @@ Breaking `SAND`, `RED_SAND`, `GRAVEL`, `MUD`, or `CLAY` with a shovel can roll t
 ### Soft Fall (`excavation-soft-fall`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-soft-fall-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-soft-fall-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-soft-fall-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-soft-fall-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -175,8 +179,8 @@ Only `FALL` damage is reduced, by `min(maxReduction, reductionBase + levelPercen
 ### Earth Mover (`excavation-earth-mover`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-earth-mover-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-earth-mover-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-earth-mover-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-earth-mover-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 7 knowledge, then 6 per level
@@ -209,8 +213,8 @@ Sneak-right-click with a shovel, in air or on a block, to damage hostile mobs, l
 ### Burrow (`excavation-burrow`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-burrow-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-burrow-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-burrow-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-burrow-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge, then 5 per level
@@ -232,8 +236,8 @@ Sneak-right-click a Tunneler shovel-friendly block with a shovel to dig `max(2, 
 ### Grave Digger (`excavation-grave-digger`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-grave-digger-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-grave-digger-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-grave-digger-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-grave-digger-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -256,8 +260,8 @@ Digging `DIRT`, `GRASS_BLOCK`, `COARSE_DIRT`, `ROOTED_DIRT`, `PODZOL`, `MYCELIUM
 ### Mudlark (`excavation-mudlark`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/excavation/excavation-mudlark-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/excavation/excavation-mudlark-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/excavation/excavation-mudlark-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/excavation/excavation-mudlark-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
