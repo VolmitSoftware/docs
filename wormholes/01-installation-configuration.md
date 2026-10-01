@@ -1,14 +1,14 @@
 ---
 title: "Installation & Configuration"
-description: "Install, data folder, wormholes.toml, and quality profiles"
+description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-01T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration.
+Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration. Players can also install the Fabric, Forge, or NeoForge jar on their client to receive [ClientView](/wormholes/05-projection-modes-settings#clientview).
 
 ## Requirements
 
@@ -16,6 +16,7 @@ Install the artifact for your server platform: the CraftBukkit jar goes in `plug
 |---|---|
 | Bukkit server | Paper, Purpur, or Folia. Minecraft 26.1.2, 26.2, and 26.3 |
 | Native server | Minecraft 26.3: Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta |
+| Client mod | Optional. Minecraft 26.3 with Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta. See [Client mod](#client-mod) |
 | Java | 25 |
 | Distribution | `Wormholes v<version> [CraftBukkit] 26.1.2-26.3.jar`, or the jar bearing your native loader name and version. The `-api.jar` is a Bukkit compile dependency |
 | JVM | `--enable-native-access=ALL-UNNAMED` lets zstd-jni load without a restricted-access warning |
@@ -24,6 +25,29 @@ Install the artifact for your server platform: the CraftBukkit jar goes in `plug
 An XZ packed jar extracts `plugins/Wormholes/cache/runtime/` on first start. That directory must be writable. PacketEvents is bundled in the Bukkit jar; no separate PacketEvents installation or download is required. Other runtime libraries still need a network on first start if their cache is empty. `wormholes.toml` must contain `schema = 3`. A valid save applies on its own. Invalid TOML is rejected and the current settings stay. WorldGuard, when present, checks RTP destinations. Edits to `languages/*.toml` apply on save. Dimensional Door pack changes need a restart. See [Dimensional Doors](/wormholes/07-dimensional-doors).
 
 Native loaders store the same settings, portal records, network identity, routes, trust, and language overrides under `config/wormholes/`. Reload native settings with `/wormholes reload`. Bukkit plugin integrations such as Vault and PlaceholderAPI require the Bukkit distribution. Native currency and permission integrations use the native registration APIs.
+
+## Client mod
+
+The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
+
+ClientView starts only when the client and server run the same Minecraft version. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+
+### `config/wormholes-client.toml`
+
+The client creates this file in its `config/` folder on first launch and reads it once when the game starts. Restart the game after editing it.
+
+| Key | Default | Notes |
+|-----|---------|--------|
+| `enabled` | `true` | Accept ClientView from servers. `false` keeps this client on the standard projection everywhere |
+| `max-plate-memory-mb` | `256` | Memory in MiB for received portal views and cached destination sections, 16–4096. A portal whose view would exceed it stays on the standard projection for this player while other portals keep ClientView |
+| `bulk-write` | `false` | Write projected blocks straight into chunk sections instead of through the vanilla block update path |
+| `hysteresis-blocks` | `0.25` | Edge hysteresis in blocks: a cell enters the projection at this padding and leaves at twice it. 0–4; negative values use `0.25` |
+| `sections-per-tick` | `0` | Most chunk sections changed per tick when the visible area changes, 0–65535. `0` applies every change at once |
+| `show-debug-overlay` | `false` | Show a ClientView status line on the F3 debug screen |
+| `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky |
+| `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it, so mirror views are not downloaded |
+| `client-recursion` | `true` | Show portals seen inside a mirror through their own destination when the server sends them, instead of an empty opening |
+| `self-reflection` | `true` | Show your own reflection in mirrors this client draws |
 
 ## Build distributions
 
@@ -58,7 +82,7 @@ and trust under `routes/` and `trust/`. See
 | Path | Bukkit: `plugins/Wormholes/wormholes.toml`; native loaders: `config/wormholes/wormholes.toml` |
 | Schema | `schema = 3` |
 | Quality key | Top-level `quality` |
-| Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]` |
+| Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`, `[client-view]` |
 | Key form | kebab-case (`teleport-cooldown-millis`) |
 
 A startup load rewrites the file with every known key. Custom comments and unknown keys are removed. A hot reload does not rewrite the file.
@@ -122,6 +146,7 @@ the runtime does not use.
 | `plate-workers` | 1–16 |
 | `plate-lateral-clamp-blocks` | 0–64 |
 | `plate-capture-chunks-per-tick` | 1–256 |
+| `plate-urgent-capture-chunks-per-tick` | 1–256 |
 | `tick-headroom-target-millis` | 0–50 |
 | `tick-headroom-min-frame-micros` | 1000–`max-frame-micros` |
 | `lighting-refresh-interval-ticks` | 1–40 |
@@ -134,6 +159,9 @@ the runtime does not use.
 | `rtp-rim-interval-ticks` | 1–100 |
 | `entity-velocity-epsilon` | 0.0–1.0 |
 | `ambient-particle-interval-ticks` | 1–40 |
+| `client-view.hello-grace-millis` | 0–5000 |
+| `client-view.max-frame-kb` | 64–1024 |
+| `client-view.ack-window-frames` | 0–255 |
 | `network.listen-port` | 1–65535; invalid values become 8901 before canonical write |
 | `network.handoff-timeout-ms` | 50–60000 before canonical write |
 | `network.replication.hash-probe-interval-sec` | minimum 1 before canonical write |
@@ -189,7 +217,7 @@ the runtime does not use.
 | `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
-Normal console output covers lifecycle changes and failures that need attention. Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled. `/wh debug toggle` enables the same diagnostics temporarily. A settings hot-reload restores the file's value. See [Live console debug mode](/wormholes/09-commands-permissions#live-console-debug-mode).
+Normal console output covers lifecycle changes and failures that need attention. Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled. `/wh debug toggle` enables the same diagnostics temporarily. A settings hot-reload restores the file's value. See [Diagnostic reports](/wormholes/09-commands-permissions#diagnostic-reports).
 
 Traversal API behavior and provider contracts are in
 [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
@@ -348,6 +376,7 @@ still schedule at most once per server tick.
 | `rtp-plates` | `true` | Build shared view plates for RTP portals, keyed by destination route. Requires `shared-plate` |
 | `plate-lateral-clamp-blocks` | `40` | Widest a shared plate extends past the aperture sideways, capped by the portal's own lateral pad |
 | `plate-capture-chunks-per-tick` | `8` | Destination chunks copied per tick for plate builds |
+| `plate-urgent-capture-chunks-per-tick` | `32` | Destination chunks copied per tick for plates a ClientView player is waiting on to show a portal for the first time. Uses its own budget, separate from `plate-capture-chunks-per-tick` |
 | `tick-headroom-target-millis` | `0` | Opt-in tick headroom governor. `0` turns it off and `max-frame-micros` alone limits projection work. Paper and Purpur only |
 | `tick-headroom-min-frame-micros` | `5000` | Smallest per-tick projection budget the governor may shrink to |
 
@@ -371,6 +400,26 @@ Projection behavior detail:
 | `rtp-rim-interval-ticks` | `5` | Ticks between RTP rim particle refreshes while the rim color is unchanged. Color and phase changes refresh at once |
 | `entity-velocity-epsilon` | `0.005` | Smallest per-axis velocity change that sends a projected entity a new velocity packet. Stopping always sends |
 | `ambient-particle-interval-ticks` | `1` | Ticks between `SPARKS` ambient bursts. Each burst carries the sparks of every skipped tick, so average density is unchanged |
+
+## `[client-view]`
+
+[ClientView](/wormholes/05-projection-modes-settings#clientview) for players running the [client mod](#client-mod). Changes apply on reload. Turning `enabled` on offers ClientView to online players with the mod without reconnecting; turning it off returns every ClientView player to the standard projection. `/wormholes clientview off` and `on` switch it at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
+
+| Key | Default | Notes |
+|-----|---------|--------|
+| `enabled` | `true` | Offer ClientView to clients running the mod. Off keeps every player on the standard projection |
+| `configuration-handshake` | `true` | Negotiate while the player joins, on Paper, Purpur, Folia, Fabric, Forge, and NeoForge, so the first projection after joining is already ClientView. Off, or on other servers, the offer follows the join |
+| `hello-grace-millis` | `100` | Extra milliseconds a joining client with a modded brand has to answer the offer. Clients with the vanilla brand never wait |
+| `max-frame-kb` | `512` | Largest ClientView message in KiB. Larger updates are split |
+| `ack-window-frames` | `8` | Unacknowledged frame groups before sending to that client pauses until it catches up. `0` never pauses |
+| `brick-cache` | `true` | Send content hashes for 16×16×16 destination sections so a client reuses sections it already holds instead of downloading them again |
+| `destination-light` | `true` | Send destination light with the blocks of portals that use destination lighting: `[render] lighting-fidelity = true`, or `[atmosphere] sky-light = true` with `tint_light` or `full` atmosphere |
+| `entity-frames` | `true` | Send destination entities as one 20 Hz stream per portal, shared by every ClientView player watching it. Off shows no destination entities to ClientView players |
+| `zero-copy` | `true` | In singleplayer, hand portal views to the client in memory instead of encoding them |
+| `standby-prestream` | `false` | Reserved; has no effect. ClientView sends only an RTP portal's current destination |
+| `view-stats` | `true` | Accept plate memory and apply timings from clients for `/wormholes clientview status` |
+| `client-mirror` | `true` | Let clients draw mirror portals from their own loaded chunks, so mirror views are not built or sent for them |
+| `client-recursion` | `true` | Send the portals visible inside a mirror with their own destination views, so clients show them instead of an empty opening |
 
 ## Hot reload
 

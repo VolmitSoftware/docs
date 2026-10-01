@@ -2,7 +2,7 @@
 title: "Wormholes"
 description: "Live portals, random teleport, Dimensional Doors, and cross-server travel"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-09-30T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,6 +19,7 @@ Wormholes adds frame portals with a live destination view, random teleport porta
 | Command | `/wormholes`, `/wh`, `/wormhole` |
 | Config | `plugins/Wormholes/wormholes.toml`, schema `3` |
 | Optional | PlaceholderAPI, Iris, Vault, Citizens, WorldGuard |
+| Client mod | Optional Fabric, Forge, or NeoForge jar for [ClientView](/wormholes/05-projection-modes-settings#clientview) |
 
 ## Configure
 
@@ -26,7 +27,7 @@ Wormholes adds frame portals with a live destination view, random teleport porta
 - [Concepts *Types, tunnels, travel, and access*](/wormholes/02-concepts)
 - [Building portals *Wand, runes, and skins*](/wormholes/03-building-portals)
 - [Menus and settings *Per-portal controls*](/wormholes/04-portal-types-menus-settings)
-- [Projection *View modes and budgets*](/wormholes/05-projection-modes-settings)
+- [Projection *View modes, budgets, and ClientView*](/wormholes/05-projection-modes-settings)
 - [Random teleport](/wormholes/06-random-teleport-portals)
 - [Dimensional Doors](/wormholes/07-dimensional-doors)
 - [Pocket dimensions](/wormholes/08-pocket-dimensions)

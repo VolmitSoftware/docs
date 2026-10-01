@@ -1,8 +1,8 @@
 ---
 title: "Projection Modes and Settings"
-description: "Projection ON/OFF, PanOptic vs Venticular, budgets, and render"
+description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-01T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,8 @@ Per-portal mode and render mode combine with global `[projection]` and
 `[render]` keys in `wormholes.toml` (schema 3), under `plugins/Wormholes/` on Bukkit or `config/wormholes/` on native loaders.
 
 Projection is one player's client view through the aperture. It does not move blocks or players. A destination change retires the current view. Player reflections use the skin the server has, and a local mirror refreshes when that skin changes.
+
+Players running the Wormholes client mod can receive [ClientView](#clientview) instead, where their client computes the projection from its own camera.
 
 ## ProjectionMode (ON / OFF)
 
@@ -165,6 +167,7 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 | `rtp-plates` | `true` | Build shared view plates for RTP portals, keyed by destination route. Requires `shared-plate`. Off samples RTP destinations per observer. |
 | `plate-lateral-clamp-blocks` | `40` | Widest a shared plate extends past the aperture sideways, capped by the portal's own lateral pad. Cells outside the plate are sampled per observer. Clamped 0–64. |
 | `plate-capture-chunks-per-tick` | `8` | Destination chunks copied per tick for plates built off the main thread. Clamped 1–256. |
+| `plate-urgent-capture-chunks-per-tick` | `32` | Destination chunks copied per tick for plates a ClientView player is waiting on to show a portal for the first time. Uses its own budget, so it never slows the captures `plate-capture-chunks-per-tick` paces. Clamped 1–256. |
 | `section-cache` | `true` | Section cache on Paper, Purpur, and native loaders. See primary, recursive, and remote views. |
 | `section-cache-max-mb` | `64` | Section cache memory; the least recently read sections are evicted first. Clamped 1–4096. |
 | `section-cache-chunks-per-tick` | `16` | Chunks the section cache may capture per tick. Sections over budget are read from the live world until a later tick captures them. Clamped 1–1024. |
@@ -255,6 +258,31 @@ where the platform supports them. Range, refresh cadence, and the entity cap com
 Player reflections and projected living entities show main-hand and off-hand swings and hurt animations on Minecraft 26.1.2, 26.2, and 26.3.
 
 Entities also appear through nested local portal views. Their position and motion follow each linked frame, and visibility is restricted by the apertures along the view. Nested views share the primary view's entity cap and follow `recursive-portal-depth`.
+
+## ClientView
+
+ClientView moves the projection to the player's client. It applies to players who run the Wormholes client mod on a server that offers it (`[client-view] enabled`, on by default). The server sends each watched portal's destination view once and then only its changes, and the client works out every tick which cells its own camera can see. Players without the mod keep the standard projection described above. Installation and client settings: [Client mod](/wormholes/01-installation-configuration#client-mod). Server keys: [`[client-view]`](/wormholes/01-installation-configuration#client-view).
+
+For a ClientView player:
+
+- The projection follows the camera every tick without waiting on the server. The visible volume is the portal's shared view plate, which reaches the portal's view depth and up to `plate-lateral-clamp-blocks` past each side of the aperture.
+- Per-portal projection mode, render mode, blackout background, and view depth apply as for other players. Projection budgets, gaze priority, held cells, and `max-projected-cells` apply only to the standard projection.
+- In Venticular mode, buried destination blocks and the individual blocks directly behind visible faces are never sent to the client.
+- Destination entities arrive as one 20 Hz stream per portal (`entity-frames`), with range and cap from `[render]`. Destination light arrives with the blocks when the portal uses destination lighting (`destination-light`), and every cell of the projection shows it, including destination air over local air. Without destination lighting, projected blocks keep the light of the local blocks they replace, as they do on the standard projection. Blocks outside the projection keep the light the server computed for them, also after chunk reloads, real light updates, and when a portal leaves the view.
+- Portal animations, particles, RTP rims, and relayed destination sounds play on the client.
+- Near a portal in `full` atmosphere mode with `[atmosphere] weather = true`, the destination's weather, and its time for overworld destinations, replace the local sky within the client's `atmosphere-dominance-blocks`.
+
+A portal uses the standard projection for one player, while that player's other portals stay on ClientView, when the server cannot share its view (`shared-plate = false`, an RTP portal with `rtp-plates = false`, or a view larger than `plate-max-bytes`) or when the client cannot hold it within `max-plate-memory-mb`.
+
+The first view of a portal is captured from the destination at `plate-urgent-capture-chunks-per-tick`. `/wormholes clientview` lists sessions and switches ClientView at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
+
+### Singleplayer
+
+Singleplayer worlds use ClientView by default and read `[client-view]` from `config/wormholes/wormholes.toml` in the game folder. The integrated server hands portal views to the client in memory (`zero-copy`). Players who join the world over LAN with the mod receive them over the network.
+
+### Mirrors
+
+With `client-mirror` on in both `[client-view]` and `wormholes-client.toml`, the client draws mirror portals from its own loaded chunks, and no mirror view is built or sent for that player. The player sees their own reflection unless the client sets `self-reflection = false`. With `client-recursion` on at both ends, portals visible inside a mirror show their own destinations instead of an empty opening. With `client-mirror` off at either end, the server sends the mirror view like any other portal view.
 
 ## Arrival warmer vs chunk pre-send
 

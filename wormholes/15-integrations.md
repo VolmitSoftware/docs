@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin support and metrics"
 published: true
-date: 2026-09-28T14:29:00.000Z
+date: 2026-09-30T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,12 @@ These plugin integrations apply to the Bukkit distribution. PlaceholderAPI, Iris
 | Vault (+ economy provider) | Portal menu travel cost type **Vault Economy** | Vault cost mode is unavailable. Free and item costs still work |
 | Iris | Pre-load RTP fluid and biome probes | RTP falls back to ordinary chunk-backed biome and landing-safety checks |
 | Citizens | Prevents standard tracked NPCs from relinking while a portal projection occludes their real local entity | Ordinary Bukkit entities still use the same local-occlusion path; no Citizens event hook is registered |
+
+## Wormholes client mod
+
+The Fabric, Forge, and NeoForge jars also act as a client mod for [ClientView](/wormholes/05-projection-modes-settings#clientview). A Paper, Purpur, or Folia server with the Bukkit plugin talks to the client mod over the `wormholes:v1` plugin channel, so a modded client receives ClientView there as it does on a Fabric, Forge, or NeoForge server. The server needs no extra plugin for this. Installation: [Client mod](/wormholes/01-installation-configuration#client-mod).
+
+The client mod adds no rendering hooks. It has been tested with Sodium, Lithium, and C2ME.
 
 ## WorldGuard
 
