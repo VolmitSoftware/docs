@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-09-30T09:01:00.000Z
+date: 2026-10-01T10:06:50.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -96,17 +96,39 @@ or admin.
 |---------|--------|
 | Placard | Name, type/mode, facing, destination or RTP summary |
 | Destination | Local destination list. Gateway pair submenu. Or RTP editor when type is RTP |
-| Rename | Chat name prompt |
+| Rename Portal | Chat name prompt |
 | Projection | Cycle `ON` / `OFF` |
 | Settings | Opens settings menu |
 | Orientation | Facing / flip / rotate submenu |
-| Type | Type and mirror submenu |
-| Destroy | **Shift-left-click** to destroy the portal |
+| Mode | Type and mirror submenu |
+| Delete Portal | **Shift-left-click** to destroy the portal |
 
 Managed dimensional portals refuse destination and type changes with managed
 notices.
 
 ## Destination menu
+
+<div class="wormholes-demo" data-demo="portal-linking">
+<div class="wormholes-demo-variant" data-client="standard">
+<p>WITHOUT Wormholes mod</p>
+<video src="/wormholes-assets/demos/portal-linking-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/portal-linking-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>WITH Wormholes mod</p>
+<video src="/wormholes-assets/demos/portal-linking-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/portal-linking-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+</div>
+</div>
+
+To connect two framed portals, build both openings first. You must be able to manage both portals to create the return link with **Link and return**.
+
+1. Aim at the first portal with the Portal Wand and click to open its home menu. Select **Rename Portal** and enter a name such as `Garden Arch` in chat. Name the second portal `Sun Court` in the same way.
+2. At Garden Arch, open **Destination** and left-click **Sun Court**. Garden Arch now points to Sun Court.
+3. Reopen Garden Arch's **Destination** menu and choose **Link and return**. Sun Court now points back to Garden Arch, creating a reciprocal pair.
+4. Close the menu and look through Garden Arch. With **Projection** set to `ON` and the surface clear, the opening shows the scene at Sun Court. Walk through the opening, turn around at the destination, and walk back through its portal to return.
+
+The recordings show a deepslate frame in a garden connected to a sandstone frame in a courtyard elsewhere in the same world. The **WITHOUT Wormholes mod** view uses standard projection; the **WITH Wormholes mod** view uses [ClientView](/wormholes/05-projection-modes-settings#clientview).
 
 Blocked for RTP, mirror mode, and managed dimensional portals.
 
@@ -139,8 +161,7 @@ control opens a pair menu:
 | Import | Chat prompt for peer invite code |
 
 Same-world links store `LOCAL`. Cross-world same-server links store
-`DIMENSIONAL`. Remotes store `UNIVERSAL`. Links are one-way. A→B does not
-create B→A.
+`DIMENSIONAL`. Remotes store `UNIVERSAL`. Ordinary destination selection is one-way: A→B does not create B→A. Select a return destination at B separately, or use **Link and return** at A after selecting a local destination. That control appears only when you own both portals or have administrator access to both. Deleting one end of a reciprocal pair clears its paired return link.
 
 Cross-server handoff detail:
 [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).

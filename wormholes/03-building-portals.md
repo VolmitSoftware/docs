@@ -2,13 +2,15 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-09-28T15:01:52.312712+00:00
+date: 2026-10-01T10:06:50.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 Build a flat frame portal with a Portal Wand selection or a connected set of matching runes. Non-flat rune sets are rejected before the blocks are consumed.
+
+Build the surrounding physical frame from ordinary blocks, such as deepslate tiles or cut sandstone. Both methods below create the opening inside that frame and leave its border in place. The border is decorative: Wormholes does not generate one or require a particular frame material.
 
 ## Tools and recipes
 
@@ -18,7 +20,7 @@ Build a flat frame portal with a Portal Wand selection or a connected set of mat
 | Portal Rune | Enchanted prismarine | No; recognized only for legacy placed items |
 | Wormhole Rune | Enchanted dark prismarine | No; supplied by an administrator |
 
-Runes are not craftable. `/wormholes wand` supplies only a Wormhole Rune.
+Runes are not craftable. `/wormholes wand` gives one Portal Wand and one Wormhole Rune; it does not supply other rune types.
 Breaking a tracked Portal or Wormhole rune block returns the matching item in
 survival. A tracked legacy Gateway rune block returns a Wormhole Rune; a tracked
 RTP rune block returns nothing.
@@ -48,9 +50,34 @@ Permission: `wormholes.admin.items`.
 
 `/wormholes wand` is the only source of new Wormhole Runes. It has no rune-type or count argument. Portal type is set later in the type menu.
 
+To supply nine runes for a 3×3 opening in survival, an administrator can run `/wormholes wand` nine times and distribute the nine rune items.
+
 ## Wand box construction
 
+<div class="wormholes-demo" data-demo="wand-creation">
+<div class="wormholes-demo-variant" data-client="standard">
+<p>WITHOUT Wormholes mod</p>
+<video src="/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/wand-creation-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>WITH Wormholes mod</p>
+<video src="/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/wand-creation-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+</div>
+</div>
+
 Left-click sets one corner. Right-click sets the other. Either order works. The selection must be one cell thick and at most 4096 cells. A valid selection is a light-blue pane. An invalid one is red. Left-click a block inside the box, or left-click air while aiming at the pane within 64 blocks, to open a `PORTAL` owned by that player. Change the type in the [portal menu](/wormholes/04-portal-types-menus-settings).
+
+For a framed 3×3 opening:
+
+1. Build a complete border around an opening three blocks wide and three blocks high.
+2. Put temporary glass blocks in the bottom-left and top-right cells of the opening, in the same plane. These mark the opening's corners; do not select the outer frame.
+3. Hold the Portal Wand. **Left-click** the bottom-left marker, then **right-click** the top-right marker. The light-blue pane covers the nine cells of the opening.
+4. **Left-click** while aiming at the selected pane to form the portal.
+5. Switch away from the wand and remove the two glass markers. Ordinary selection blocks remain until you break them; leave the surrounding frame intact.
+
+The portal can show its destination after you [link it to another portal](/wormholes/04-portal-types-menus-settings#destination-menu). `PORTAL` and `WORMHOLE` both support projection.
 
 Changing world, dropping the wand, or leaving it off the hotbar clears the selection.
 
@@ -66,7 +93,29 @@ default and do not expose the linked destination.
 
 ## Rune construction
 
+<div class="wormholes-demo" data-demo="rune-creation">
+<div class="wormholes-demo-variant" data-client="standard">
+<p>WITHOUT Wormholes mod</p>
+<video src="/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="WITHOUT Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/rune-creation-standard-observer.webm" aria-label="WITHOUT Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>WITH Wormholes mod</p>
+<video src="/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="WITH Wormholes mod, first person demonstration" muted loop playsinline controls preload="none"></video>
+<video src="/wormholes-assets/demos/rune-creation-clientview-observer.webm" aria-label="WITH Wormholes mod, third person demonstration" muted loop playsinline controls preload="none"></video>
+</div>
+</div>
+
 Place Wormhole Runes, or an already placed Portal Rune. A set connects by full faces of the same rune type. Diagonal contact does not connect. The set must be one flat axis-aligned surface. Left-click any rune in the set with the Portal Wand. Wormholes consumes the connected runes and opens a portal of that rune's type, owned by the clicking player.
+
+For a framed 3×3 opening:
+
+1. Obtain a Portal Wand and nine **Wormhole Runes**. These are the named, enchanted items supplied by an administrator; ordinary dark prismarine blocks do not create a portal.
+2. Build a complete border around the 3×3 opening, then fill its nine cells with Wormhole Runes in one flat plane. Use temporary backing blocks if you need a face to place against.
+3. Hold the Portal Wand and **left-click any of the nine runes**. The runes draw inward and are consumed as the opening forms; the surrounding frame stays in place.
+4. Remove any temporary backing blocks and [choose a destination](/wormholes/04-portal-types-menus-settings#destination-menu).
+
+The same gesture works for a flat 2×2 set of four matching runes; the recordings use a 3×3 opening.
 
 | Rune type | Resulting `PortalType` |
 |-----------|------------------------|
@@ -108,7 +157,7 @@ management menus.
 | Portal Wand, looking at portal, left or right click | Open portal home menu |
 | Sneak + empty main hand + right-click a block that is part of or adjoins the portal structure | Open portal home menu |
 
-Destroy: home menu **Destroy** control, **shift-left-click** (not a normal left
+Destroy: home menu **Delete Portal** control, **shift-left-click** (not a normal left
 click).
 
 ## Vanilla nether and end portals
