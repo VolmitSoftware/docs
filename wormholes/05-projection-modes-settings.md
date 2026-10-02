@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-02T10:28:31.216Z
+date: 2026-10-02T14:58:32.910713+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -379,7 +379,7 @@ Singleplayer worlds use ClientView by default and read `[client-view]` from `con
 
 ### Mirrors
 
-Mirrors use the same native model rendering, per-frame camera updates, and aperture clipping as linked portals. Blackout has no effect on these views. The dedicated renderer receives reflected destination sections for mirrors, with the same render-distance and memory limits as other portals. Entities and the player’s own reflection follow the mirror’s full rotation. The player sees their own reflection unless `self-reflection = false`. Reflections do not intercept local clicks or block breaking and do not physically collide with players or other entities. With `client-recursion` enabled at both ends, mirrors and linked portals visible inside another view show their own destinations, including repeated reflections. Native views follow each portal's recursion depth up to three nested steps, with at most 16 nested views per primary view.
+Mirrors use the same native model rendering, per-frame camera updates, and aperture clipping as linked portals. Blackout has no effect on these views. The dedicated renderer receives reflected destination sections for mirrors, with the same render-distance and memory limits as other portals. Entities and the player’s own reflection follow the mirror’s full rotation. The player sees their own reflection unless `self-reflection = false`. Reflections do not intercept local clicks or block breaking and do not physically collide with players or other entities. With `client-recursion` enabled at both ends, mirrors and linked portals visible inside another view show their own destinations, including repeated reflections. A native mirror chain stops after six reflections, including the first mirror. Linked portals follow each portal's recursion depth up to three nested steps. Each primary view has at most 16 nested views.
 
 
 ## Arrival warmer vs chunk pre-send

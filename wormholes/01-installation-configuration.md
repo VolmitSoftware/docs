@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-02T04:47:41.636Z
+date: 2026-10-02T14:58:32.909774+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -414,7 +414,7 @@ Projection behavior detail:
 | `entity-frames` | `true` | Send destination entities as one 20 Hz stream per portal, shared by every ClientView player watching it. Off shows no destination entities to ClientView players |
 | `standby-prestream` | `false` | Reserved; has no effect. ClientView sends only an RTP portal's current destination |
 | `view-stats` | `true` | Accept plate memory and apply timings from clients for `/wormholes clientview status` |
-| `client-recursion` | `true` | Send nested mirror and portal destination views. Native rendering allows up to three nested steps and 16 nested views per primary view |
+| `client-recursion` | `true` | Send nested mirror and portal destination views. Native mirrors allow six reflections per chain, including the first mirror; linked portals allow up to three nested steps. Each primary view has at most 16 nested views |
 
 ## Hot reload
 

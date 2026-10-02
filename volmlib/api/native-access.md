@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-01T21:05:01.862Z
+date: 2026-10-02T14:47:32.622901+00:00
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -70,6 +70,7 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `entity.EntityGlowAccess` | Create viewer-specific glow controls |
 | `entity.VirtualPlayerAccess` | Create and control virtual player entities |
 | `player.PlayerClientAccess` | Access client block tags and player motion |
+| `player.PlayerRespawnAccess` | Snapshot player respawn policy, validate personal spawns without consuming anchors, and resolve shared spawn positions |
 | `advancement.AdvancementAccess` | Create advancement wrappers |
 | `scoreboard.ScoreboardPackets` | Create and send scoreboard updates through opaque handles |
 | `monitor.NativeMonitor` | Install native tick hooks and read native metrics |
@@ -87,6 +88,10 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 `ItemStackAccess.encode(ItemStack)` returns compressed vanilla item NBT with its Minecraft data version. `decode(byte[])` restores Bukkit items through the current registry and data fixer, with a 16 MiB decompressed-data limit. Names, lore, enchantments, and custom components are retained. Empty items are rejected. Use the owning server context when converting live inventory items. The same bytes can be exchanged with native Minecraft item codecs on compatible Minecraft versions.
 
 `WorldEnvironmentAccess.sample(world, position)` returns an immutable `WorldEnvironment` snapshot at the supplied position. The 26.3 provider includes biome-dependent environment attributes and dimension settings; sky angles are in degrees. Call it in the owning world context with the sample chunk loaded. Consumers own chunk retention, scheduling, and handling unavailable capabilities.
+
+`PlayerRespawnAccess` is available on 26.2 and 26.3. `snapshot(player)` returns an immutable `RespawnPolicy` containing a nullable personal `RespawnPoint`, the forced-spawn flag, and a required shared point. Each point stores its world, block coordinates, yaw, and pitch; `location()` returns a fresh Bukkit location. A null personal point means no configured personal destination is available in a loaded world.
+
+Call `snapshot` on the player’s owning thread. After loading the surrounding destination chunks, call `validate(policy)` on the personal destination’s owning region; its optional location preserves vanilla orientation and does not consume respawn-anchor charges. For shared spawn, initiate `findSharedSpawn(policy.shared())` on the shared point’s owning region and compose its returned future before applying the result on the player’s owning thread. These methods do not schedule player mutations; the caller owns chunk loading and scheduling.
 
 See [Native spawn protection](/volmlib/api/spawn-protection) for the protection decision contract.
 

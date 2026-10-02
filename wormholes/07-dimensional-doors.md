@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-02T10:28:31.216Z
+date: 2026-10-02T14:58:32.911174+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -229,7 +229,7 @@ Clicking a door recipe in the recipe book fills the crafting grid from the playe
 
 A Pair kit is a bundle. Right-click to unpack its linked A and B items; unpacking consumes the kit in every game mode.
 
-Breaking a placed Pair, Personal, or Public door or trapdoor returns its bound item in survival and creative mode. The item retains its identity so it can be placed again without becoming an ordinary vanilla door.
+Successful placement consumes one bound dimensional door or trapdoor in survival and creative mode. Rejected placement leaves the item in the player’s hand. Ordinary vanilla doors retain their normal creative behavior. Breaking a placed Pair, Personal, or Public door or trapdoor returns its bound item in survival and creative mode. The item retains its identity so it can be placed again without becoming an ordinary vanilla door.
 
 Placing any crafted or granted Pair, Personal, or Public door/trapdoor requires
 `wormholes.doors.place`, which defaults to `op`. `wormholes.admin` and ops also

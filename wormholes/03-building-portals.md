@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-10-02T09:30:45.000Z
+date: 2026-10-02T14:58:32.910477+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -158,7 +158,7 @@ click).
 Config: `[main] replace-nether-and-end-portals` in `wormholes.toml`
 (default `true`). Hot-reloads with other main gameplay settings.
 
-When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination, type, and travel settings. Nether pairs work both ways. Generated Nether counterparts prefer nearby supported ground with clear headroom and avoid hazardous blocks and the roof. If no suitable ground is found within the search area, Wormholes builds a landing platform. End sources are outbound-only, with a hidden inbound receiver at the destination.
+When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination, type, and travel settings. Nether pairs work both ways. Generated Nether counterparts prefer nearby supported ground with clear headroom and avoid hazardous blocks and the roof. If no suitable ground is found within the search area, Wormholes builds a landing platform. End entry portals are one-way and deliver travelers near the center of the main End island. Their receiving area has no reverse travel route. Defeating the Ender Dragon activates the central return fountain as a separate one-way portal. Its view shows each player’s valid bed or respawn-anchor destination, or the world spawn when no valid personal destination exists. Entering the fountain keeps vanilla return routing, credits, and progression.
 
 Shaped Portals can supply irregular Nether openings directly. Wormholes preserves their exact interior shape, creates or reuses a counterpart, and owns projection and travel in both directions. Shaped Portals does not refill these openings with native Nether portal blocks. The source boundary may use Shaped Portals frame materials; generated counterparts use obsidian.
 
