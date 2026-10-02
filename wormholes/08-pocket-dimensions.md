@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-10-02T05:10:19.000Z
+date: 2026-10-02T10:28:31.216Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -109,7 +109,7 @@ Entry checks every shell block and loads every chunk the room covers. A 16-block
 | Wall | +Z face of the shell (`maxZ`) |
 | Position | Centered on the wall at floor level: lower block at `minY + 1`, facing south, left hinge, starts closed |
 | Identity | Deterministic from pocket `spaceId` (`wormholes:pocket-return-door:v1:…`) |
-| Entry landing | Just inside the door (`x + 0.5`, door Y, `z - 0.5`, yaw/pitch 0) |
+| Entry landing | Just inside the door (`x + 0.5`, door Y, `z - 0.5`); your view faces into the room with its angle relative to the entrance preserved |
 | Craft / place / break | Not craftable. Player place cancelled. Break cancelled (anchored) |
 | Access | Never gated |
 

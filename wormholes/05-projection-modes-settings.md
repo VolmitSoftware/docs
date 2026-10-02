@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-02T09:30:45.000Z
+date: 2026-10-02T10:28:31.216Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -347,7 +347,7 @@ client-side display panes. Opaque skins suppress through-projection.
 Transparent skins can remain in front of it.
 
 Entity projection covers players, living entities, and supported non-living
-entities. It carries position, pose, velocity, metadata, equipment, passengers,
+entities, including dropped items and world-backed ItemDisplay, BlockDisplay, and TextDisplay entities. Native ClientView shows their contents, transforms, and billboard orientation even when the destination lies outside locally loaded chunks. Enhanced dropped-item visuals from Gloss use these display entities and retain their configured viewer visibility. Projection carries position, pose, velocity, metadata, equipment, passengers,
 leash relationships, animations, hurt state, item-frame contents, and map data
 where the platform supports them. Range, refresh cadence, and the entity cap come from `[render]`. Partially exposed entities remain visible.
 

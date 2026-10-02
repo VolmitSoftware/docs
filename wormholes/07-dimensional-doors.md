@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-02T09:30:45.000Z
+date: 2026-10-02T10:28:31.216Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -168,7 +168,7 @@ Travelers are either `LIVING` (players, mobs, and vehicles) or `OBJECT` (project
 | `PUBLIC` | Yes | No | Yes |
 | `RETURN` | Yes | No | No |
 
-Pair and Public support object travel. Personal and Return stay player-only.
+Pair and Public support object travel. Personal and Return stay player-only. Your view turns with the doorway so forward movement continues away from the arrival side; looking off-center keeps the same angle within the doorway. Entering a Personal or Public pocket faces into its room from either entrance side. Trapdoor routes also turn pitch when the destination aperture is vertical or horizontal.
 Pair loads unloaded destination chunks before transit. Same-server
 cross-dimension travel is supported for eligible kinds.
 
