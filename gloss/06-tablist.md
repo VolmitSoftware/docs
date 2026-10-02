@@ -2,7 +2,7 @@
 title: "Tablist"
 description: "Configure the in-game player list"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-02T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -89,6 +89,35 @@ Once a template is picked, `$player` expands to the selected nametag identity an
 | `$group` | The player's current Vault primary group, or an empty string when unavailable. Vault is queried only when the selected format uses this token |
 
 A blank result restores the vanilla list name.
+
+## Sort order and layout cells
+
+`sort: {"enabled": true, "weight": "subject.op ? 100 : 0"}` places higher weights first.
+The expression sees the listed player as `subject` and the observer as `viewer`. Weights are
+rounded to integers; equal weights in a layout sort by account name, case-insensitively.
+
+A fixed layout uses `layout.enabled`, `columns` (1–4), and `rows` (1–20). Its optional `slots`
+array defines cells with zero-based `column`, `row`, `text`, `skin`, and `ping`. `skin` names an
+online player whose profile supplies the skin; an omitted skin uses the default skin. `ping`
+clamps to -1 through 10000 and defaults to 0. Cells fill down each column before the next column.
+
+```json
+"layout": {
+  "enabled": true,
+  "columns": 2,
+  "rows": 10,
+  "slots": [{"column": 0, "row": 0, "text": "&dOnline players"}],
+  "players": {"column": 1, "columns": 1, "rows": 10, "filter": "true", "overflow": "count"}
+}
+```
+
+The `players` rectangle starts at row 0. Its filter uses `viewer` and `subject` conditions.
+Player cells apply the selected `listNames` format and variants, configured sort order, current
+player skin, and ping. Sorting happens before truncation. With `overflow: "count"`, the final
+cell displays `+N` when players exceed the rectangle's capacity; `"hide"` omits excess players.
+
+`layout.show` defaults to `"!viewer.bedrock"`. While a layout is visible, its cells replace the
+ordinary player entries; disabling it restores the ordinary list.
 
 ## Header and footer
 

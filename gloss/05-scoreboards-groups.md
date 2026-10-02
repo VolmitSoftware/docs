@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-02T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -60,13 +60,30 @@ Each schema-2 JSON file in `plugins/Gloss/boards/` defines one scoreboard. Condi
 | `presentation` | empty | Complete fallback title, lines and number-visibility policy |
 | `variants` | `[]` | Complete alternate presentations, each with unique `id`, integer `priority`, `when`, and `presentation` |
 
-Every presentation has `title`, `lines` and `hideNumbers`. An empty base title falls back to the
-board id. At most 15 lines render. A variant presentation is complete and never inherits a title,
+Every presentation has `title`, `lines` and `hideNumbers`. An explicitly empty title stays blank.
+At most 15 lines render. A variant presentation is complete and never inherits a title,
 line or number policy from the base.
 
 There is no `id` key. The document id is the file name with `.json` removed. If you rename the file, you rename the board. Only files directly inside `boards/` are read. Subfolders are ignored.
 
 If an edit is invalid, Gloss logs the reason and keeps the last valid version active. Deleting a file removes that board.
+
+### Per-line score formats
+
+A line may be a text string or an object such as
+`{"text": "Balance", "value": "&a$100", "format": "fixed"}`. The `text` and `value` fields use
+the text pipeline. Explicit line formats override `hideNumbers` for that row.
+
+| `format` | Score column |
+|---|---|
+| `blank` | Empty |
+| `fixed` | The rendered `value` text |
+| `styled` | The numeric row score with the formatting from `value`, for example `"&c"` for red |
+| `number` | The numeric row score with default formatting |
+
+Without an explicit format, an object with a `value` uses `fixed`; a plain line follows the
+presentation's `hideNumbers` setting. The numeric row score determines line order; `styled` and
+`number` do not replace it with the contents of `value`.
 
 ### Defaults
 

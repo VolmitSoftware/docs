@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-02T18:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -34,7 +34,11 @@ Once it is open: follow the first-run tour or skip it, pick **New document** or 
 
 ## Editing
 
-The editor provides forms, JSON editing, undo and redo, image import, and rendered previews for every runtime document kind. Visual inspectors edit the same fields Gloss reads, and Code and Split views expose the JSON with validation and field completion. Use the image manager for PNG, GIF and supported Minecraft skins; imported assets are saved under `plugins/Gloss/images/`.
+The editor provides forms, JSON editing, undo and redo, image import, and previews for the document kinds below. Code and Split views expose the JSON with validation and field completion. Dedicated visual controls and local simulation cover a subset of runtime fields. Use the image manager for PNG, GIF and supported Minecraft skins; imported assets are saved under `plugins/Gloss/images/`.
+
+Menu import accepts every runtime action type and the `list`, `slider`, `field` and `tabs` components. Select these components to edit their fields through the generic key/value inspector, or edit them in Code view. Actions without dedicated controls keep their complete payload in the action's key/value editor. Local previews do not simulate these component types or execute these actions.
+
+Hologram lines may contain text strings or objects carrying `text`, `item`, `head`, `block` or `entity`. Editing text, moving lines, copying a document and exporting preserve object content, scale and conditions. Text objects use the text row; other object lines expose their fields in the generic inspector. The hologram stage previews text; verify object-line appearance in game.
 
 Preview exact Minecraft rendering, occlusion, sounds, particles and interaction in game before publishing.
 

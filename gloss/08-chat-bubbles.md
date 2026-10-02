@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-02T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -225,7 +225,7 @@ See also [Damage Indicators](/gloss/08b-damage-indicators) and [Drop Labels](/gl
 
 ## Chat channels and mentions
 
-Enable `channels = true` under `[features]` in `gloss.toml` to use Gloss chat formatting and mentions. The switch applies on config reload, including when enabling channels after startup. Channel documents use schema 1 under `channels/<id>.json`. Open the global channel with `/gloss web edit channel global` and choose **Mentions** to edit its enabled switch, highlighted message format, tagged-name style, and sound.
+Enable `channels = true` under `[features]` in `gloss.toml` to use Gloss chat formatting and mentions. The switch applies on config reload, including when enabling channels after startup. Chat commands are registered at startup and become usable when channels are enabled. Channel documents use schema 1 under `channels/<id>.json`. Open the global channel with `/gloss web edit channel global` and choose **Mentions** to edit its enabled switch, highlighted message format, tagged-name style, and sound.
 
 Type `@Alex` to mention the online player whose account name is Alex. Matching is case-insensitive and uses the whole name. The tagged recipient sees the highlighted message and hears one notification sound; other recipients see the ordinary channel format. Repeating the same mention in one message does not play multiple sounds. Only recipients allowed to hear the channel receive the notification.
 
@@ -269,3 +269,9 @@ The enabled switch affects both the highlighted token and the full highlighted m
 `items` has `enabled`, `token` (default `[item]`), and `permission` (default `gloss.chat.item`). `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. `filters` contains up to 64 regular-expression `match` and `replace` entries. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
 
 Use `/ch list` and `/ch <channel>` to choose a channel, `/msg <player> <message>` for direct messages, and `/r <message>` to reply.
+
+Direct messages use `channels/private.json`. In its format and hover card, `sender.*` describes
+the sender, `recipient.*` describes the intended recipient in both copies, and `viewer.*` describes
+the player reading that copy. For example, `&7[{{ sender.name }} -> {{ recipient.name }}] {{ message }}`
+shows the same sender and recipient to both players. The `recipient` role also works with role
+functions such as `hasPermission` and `papi`. For ordinary channel messages, it is the viewer.

@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, decorations, toggles, and their click areas"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-02T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -72,6 +72,20 @@ The `Required` column reflects the advisory `schema/gloss.schema.json`; a button
 An invalid action is dropped with a log line naming the menu and component, and the rest of the list still runs. A missing action list creates a button that does nothing. An icon that fails to resolve becomes the missing-icon checkerboard rather than dropping the component.
 
 A click runs matching actions in list order. `any` matches every supported click, and a `navigate` action stops the rest of that chain.
+
+## Slider and field
+
+A slider body uses `type: "slider"`, `var`, `min`, `max`, `step`, `width`, `label`, and optional
+shared text `style`. `width` defines its horizontal click area in menu units and follows the menu
+scale; it defaults to 2. The vertical click area follows the label. Left and right clicks step the
+value within its bounds, and shift-clicks use five steps.
+
+A field body uses `type: "field"`, `var`, `prompt` (`sign`, `anvil`, or `chat`), `label`, `initial`,
+and optional text `style`. Clicking opens the chosen prompt and writes the answer into the session
+variable. The current variable value seeds the prompt when present, otherwise `initial` is used.
+The anvil uses `label` as its title and seeds the rename field. A sign seeds its four editable
+lines and sends the label in chat. A chat prompt sends the label and a clickable suggestion for
+its initial value.
 
 ## Decoration
 

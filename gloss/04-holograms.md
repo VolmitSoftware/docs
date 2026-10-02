@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-10-02T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -162,3 +162,32 @@ Temporary holograms also accept particle layers through the API, and rendered-on
 ## Import
 
 `/gloss import legacy` converts an old hologram file into the current envelope and copies the original into `import-backups/<timestamp>/holograms/`. Files that already use an envelope are skipped.
+
+## World markers
+
+Files in `markers/<id>.json` use schema 1 and require an `anchor`. A fixed anchor has `world`, `x`,
+`y`, and `z`; a following anchor has either a player account name in `player` or an entity UUID in
+`entity`. Specify exactly one anchor form.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "anchor": {"world": "world", "x": 24, "y": 72, "z": 16},
+  "label": "Meeting point",
+  "icon": {"type": "item", "item": "minecraft:compass", "count": 1},
+  "lifetimeTicks": 200,
+  "edge": {"enabled": true, "margin": 0.8, "arrow": "&f>"}
+}
+```
+
+`icon` accepts the shared [icon types](/gloss/11-icons) and renders above the anchor. Its position
+and size follow `distanceScale`. `label` accepts Gloss text formatting and expressions.
+`lifetimeTicks` defaults to 0 for unlimited duration; a positive value starts when the marker is
+first offered to that viewer, including while hidden or out of range, and removes its label,
+icon, beam and edge indicator when it expires. Moving or editing the marker does not restart it;
+changing its duration or removing and reintroducing it does. Expiry is checked every 10 ticks.
+
+`edge.arrow` is a right-pointing glyph. Gloss rotates it toward the marker's off-screen direction.
+An empty arrow hides the indicator. `show`, audience conditions, `hideWithin`, and `maxDistance`
+control visibility without pausing its lifetime.

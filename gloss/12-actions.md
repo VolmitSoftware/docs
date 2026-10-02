@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Run commands, sounds, messages, teleports, proxy transfers, and menu navigation"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-02T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -38,6 +38,17 @@ A missing or unknown `type` rejects the menu file. Unknown extra keys inside a v
 | `shift_right_click` | Right click while sneaking |
 
 Values are exact and case-sensitive, and the four physical values are mutually exclusive: a shift-left-click does **not** match a `left_click` binding. Off-hand interactions are ignored.
+
+## `prompt`
+
+A `prompt` action accepts `kind` (`sign`, `anvil`, or `chat`), `label`, `initial`, `var`, `then`,
+and `timeoutTicks`. The label describes the requested input; the initial value seeds the sign or
+anvil editor, or appears as a clickable chat suggestion. A sign uses up to four newline-separated
+initial lines. The anvil uses the label as its window title.
+
+The answer is written to `var` when set and is available as `input.value` to the `then` actions.
+Provide a variable or at least one continuation action. The prompt ends the current action chain;
+use `then` for work that depends on the answer.
 
 ## `command`
 
