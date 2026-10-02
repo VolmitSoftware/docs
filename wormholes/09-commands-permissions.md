@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-01T19:10:41.982Z
+date: 2026-10-02T02:55:07.636Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -83,7 +83,7 @@ See [Languages](/languages).
 | `wormholes.*` | All Wormholes permissions |
 | `wormholes.language.self` | Choose or reset your Wormholes language; also requires `volmit.language.self` |
 | `volmit.language.self` | Shared requirement for personal language selection |
-| `wormholes.admin` | All administration permissions |
+| `wormholes.admin` | Administration, including applying and clearing portal surface skins |
 | `wormholes.debugdump` | Save and optionally upload diagnostic reports; default `op` |
 | `wormholes.admin.items` | Give portal and door items |
 | `wormholes.admin.network` | Manage linked servers |

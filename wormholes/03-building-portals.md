@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-10-01T10:52:30.000Z
+date: 2026-10-02T02:55:07.636Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -129,7 +129,7 @@ Wormholes rejects non-coplanar sets without consuming them. If a later construct
 
 ## Surface skin
 
-While you look at a portal, operators and owners may apply a skin:
+Applying or clearing a surface skin requires `wormholes.admin`. While looking at a portal, apply a skin as follows:
 
 - Main hand holds a **non-tool** item (not the wand or a portal or wormhole
   rune).
@@ -141,10 +141,7 @@ While you look at a portal, operators and owners may apply a skin:
 | Lava bucket | `minecraft:lava` |
 | Any block material | That block’s `BlockData` string |
 
-An empty hand does not apply a skin. Opaque skins **block projection** through
-the surface. Transparent and non-occluding skins (glass, ice, water, slime,
-honey, barrier, and similar) do not. Clear skins with the settings cosmetics
-control. See
+Sneak and right-click with an empty main hand while looking at a skinned portal to clear it. This takes priority over opening its menu. Opaque skins **block projection** through the surface. Transparent and non-occluding skins (glass, ice, water, slime, honey, barrier, and similar) do not. The settings cosmetics control can also clear the skin and requires the same permission. See
 [04 - Portal Types Menus & Settings](/wormholes/04-portal-types-menus-settings).
 
 ## Menu access
@@ -155,7 +152,7 @@ management menus.
 | Gesture | Action |
 |---------|--------|
 | Portal Wand, looking at portal, left or right click | Open portal home menu |
-| Sneak + empty main hand + right-click a block that is part of or adjoins the portal structure | Open portal home menu |
+| Sneak + empty main hand + right-click a block that is part of or adjoins the portal structure | Clear an applied skin with `wormholes.admin`; otherwise open the portal home menu |
 
 Destroy: home menu **Delete Portal** control, **shift-left-click** (not a normal left
 click).
@@ -165,7 +162,7 @@ click).
 Config: `[main] replace-nether-and-end-portals` in `wormholes.toml`
 (default `true`). Hot-reloads with other main gameplay settings.
 
-When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination, type, and travel settings. Nether pairs work both ways. End sources are outbound-only, with a hidden inbound receiver at the destination.
+When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination, type, and travel settings. Nether pairs work both ways. Generated Nether counterparts prefer nearby supported ground with clear headroom and avoid hazardous blocks and the roof. If no suitable ground is found within the search area, Wormholes builds a landing platform. End sources are outbound-only, with a hidden inbound receiver at the destination.
 
 Shaped Portals can supply irregular Nether openings directly. Wormholes preserves their exact interior shape, creates or reuses a counterpart, and owns projection and travel in both directions. Shaped Portals does not refill these openings with native Nether portal blocks. The source boundary may use Shaped Portals frame materials; generated counterparts use obsidian.
 

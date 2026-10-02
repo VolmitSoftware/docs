@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-02T00:30:40.230Z
+date: 2026-10-02T05:10:19.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,6 +21,20 @@ Players running the Wormholes client mod can receive [ClientView](#clientview) i
 
 ## ProjectionMode (ON / OFF)
 
+<div class="wormholes-demo" data-demo="projection-toggle">
+<p><strong>Projection on and off</strong> Toggle standard projection; native client views remain active.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/projection-toggle-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/projection-toggle-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/projection-toggle-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/projection-toggle-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
 | Value | Meaning |
 |-------|---------|
 | `ON` | Portal may project for interested observers (default for new portals). |
@@ -29,6 +43,34 @@ Players running the Wormholes client mod can receive [ClientView](#clientview) i
 Toggle this from the portal home menu.
 
 ## ProjectionRenderMode
+
+<div class="wormholes-demo" data-demo="render-panoptic">
+<p><strong>PanOptic: full volume</strong> Standard projection is frozen for the rear comparison. ClientView remains clipped to the aperture and does not expose the block volume.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/render-panoptic-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-panoptic-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/render-panoptic-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-panoptic-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+<div class="wormholes-demo" data-demo="render-venticular">
+<p><strong>Venticular: culled surfaces</strong> Standard projection is frozen for the rear comparison. ClientView remains clipped to the aperture and does not expose the block volume.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/render-venticular-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-venticular-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/render-venticular-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-venticular-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
 
 Default for new portals: **VENTICULAR**.
 
@@ -197,7 +239,21 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 
 ## Optional destination colors and lighting
 
-Standard projection and plate-based ClientView leave the viewer's biome colors and lighting unchanged by default. `[atmosphere]` defaults to `mode-default = "off"`, `biome-tint = false`, and `sky-light = false`; `[render] lighting-fidelity` also defaults to `false`.
+<div class="wormholes-demo" data-demo="atmosphere">
+<p><strong>Destination atmosphere</strong> Compare atmosphere modes with different destination colors, lighting, and weather.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/atmosphere-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/atmosphere-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/atmosphere-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/atmosphere-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+Standard projection leaves the viewer's biome colors and lighting unchanged by default. `[atmosphere]` defaults to `mode-default = "off"`, `biome-tint = false`, and `sky-light = false`; `[render] lighting-fidelity` also defaults to `false`.
 
 To enable destination biome colors, set `[atmosphere] biome-tint = true` and select `tint`, `tint_light`, or `full` atmosphere mode. To enable destination sky lighting through atmosphere mode, set `sky-light = true` and select `tint_light` or `full`. `[render] lighting-fidelity = true` enables projected lighting independently. Existing explicit settings remain in effect.
 
@@ -224,7 +280,21 @@ Dropping below 8 clears back to global (`0`).
 
 ## Primary, recursive, and remote views
 
-For standard projection and plate-based ClientView, primary block and entity
+<div class="wormholes-demo" data-demo="nested-views">
+<p><strong>Nested portal views</strong> Look through a second portal at the destination, then cross both portals.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/nested-views-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/nested-views-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/nested-views-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/nested-views-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+For standard projection, primary block and entity
 depth comes from the portal's `networkViewDepth` setting (default 64), including
 settings replicated from the linked gateway. Dedicated [ClientView](/wormholes/05-projection-modes-settings#clientview)
 uses the player's Minecraft render distance, clamped to 2–32 chunks; entity
@@ -261,6 +331,20 @@ Remote subscriptions, heartbeat, grace, and compression are in
 
 ## Surface and entity rendering
 
+<div class="wormholes-demo" data-demo="live-views" data-observer-label="Destination view">
+<p><strong>Live destination views</strong> A player at the destination lures a sheep with wheat while the other watches through the portal.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/live-views-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/live-views-standard-observer.webm" aria-label="No client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/live-views-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/live-views-clientview-observer.webm" aria-label="Client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
 A configured surface skin is rendered even when the portal itself is closed or
 projection is off. Water and lava use client block claims. Other skins use
 client-side display panes. Opaque skins suppress through-projection.
@@ -284,24 +368,23 @@ With an Iris shader pack enabled, the portal image retains native Minecraft rend
 For a ClientView player:
 
 - The view follows the camera every frame. Its target depth follows the player's Minecraft render distance, clamped to 2–32 chunks, independently of the portal's standard projection depth and lateral plate limit.
-- Visible destination sections arrive progressively across the full requested distance. Nearby sections arrive first, including a neighborhood around the aperture. Changing the viewing angle retains downloaded sections while newly visible sections load; retained sections continue receiving changes during loading. The client retains them within `max-plate-memory-mb`, shared across attended portals. Sections that have not arrived remain unavailable; unchanged section contents are not downloaded again while retained.
+- Visible destination sections arrive progressively across the full requested distance. Nearby sections arrive first, including a neighborhood around the aperture. Changing the viewing angle retains downloaded sections while newly visible sections load. Changes to nearby downloaded sections take priority while new and more distant sections continue loading. The client retains them within `max-plate-memory-mb`, shared across attended portals. Sections that have not arrived remain unavailable; unchanged section contents are not downloaded again while retained.
 - The renderer clips models at the aperture without replacing blocks in the local world. Blocks intersecting the portal plane retain the visible part of their model. Frame rotations turn destination models, fluids, entities, and block entities in three dimensions, including sideways slabs and stairs. Standard projection budgets, held cells, `max-projected-cells`, and Venticular buried-block omission do not limit the dedicated destination mesh.
-- Destination entities arrive through `entity-frames`, with range and cap from `[render]`. Dropped items interpolate their destination motion, and living entities retain independent body and head rotation. Native portal sections include destination block light, sky light, and biome colors, including biome-tinted foliage. These use the destination even when standard projection lighting options are disabled; local world lighting remains unchanged.
+- Destination entities arrive through `entity-frames`, with range and cap from `[render]`. Dropped items interpolate their destination motion, and living entities retain independent body and head rotation. Projected copies are visual and do not collide with or push local players. Native portal sections include destination block light, sky light, and biome colors, including biome-tinted foliage. These use the destination even when standard projection lighting options are disabled; local world lighting remains unchanged.
 - The portal view uses the destination dimension's sky, time, weather, fog, clouds, and lighting, sampled from the saved destination biome at the mapped camera position. Rotated portals and mirrors transform the clouds with the destination view. This does not require replacing the viewer's local sky. Portal animations, particles, RTP rims, and relayed destination sounds play on the client. Visual effects suspend while the game is paused or unfocused and resume without replaying accumulated bursts. In `full` atmosphere mode with `[atmosphere] weather = true`, nearby local-sky takeover remains controlled separately by `atmosphere-dominance-blocks`; set it to `0` to keep the local sky.
 
 Native mode retains native rendering when a destination capture, memory allocation, or render attempt fails. The affected view retries without switching to projected world blocks; other views remain active. Increasing render distance increases the requested view. The memory budget bounds retained data and does not silently shorten the native view distance. Select `renderer = "block-packets"` explicitly to use standard projection with the mod installed.
 
-Clients that negotiate plate-based ClientView receive the portal's configured depth and lateral plate extent instead. Its block application, cache, zero-copy handoff, and local-chunk mirror settings apply to that path. `/wormholes clientview` lists sessions and switches ClientView at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
+`/wormholes clientview` lists sessions and switches ClientView at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
 
 ### Singleplayer
 
-Singleplayer worlds use ClientView by default and read `[client-view]` from `config/wormholes/wormholes.toml` in the game folder. The dedicated renderer receives progressive sections from the integrated server, as modded LAN guests do from the host. The `zero-copy` setting applies to plate-based ClientView.
+Singleplayer worlds use ClientView by default and read `[client-view]` from `config/wormholes/wormholes.toml` in the game folder. The dedicated renderer receives progressive sections from the integrated server, as modded LAN guests do from the host.
 
 ### Mirrors
 
-Mirrors use the same native model rendering, per-frame camera updates, and aperture clipping as linked portals. Blackout has no effect on these views. The dedicated renderer receives reflected destination sections for mirrors, with the same render-distance and memory limits as other portals. Entities and the player’s own reflection follow the mirror’s full rotation. The player sees their own reflection unless `self-reflection = false`. Reflections do not intercept local clicks or block breaking. With `client-recursion` enabled at both ends, mirrors and linked portals visible inside another view show their own destinations, including repeated reflections. Native views follow each portal's recursion depth up to three nested steps, with at most 16 nested views per primary view.
+Mirrors use the same native model rendering, per-frame camera updates, and aperture clipping as linked portals. Blackout has no effect on these views. The dedicated renderer receives reflected destination sections for mirrors, with the same render-distance and memory limits as other portals. Entities and the player’s own reflection follow the mirror’s full rotation. The player sees their own reflection unless `self-reflection = false`. Reflections do not intercept local clicks or block breaking and do not physically collide with players or other entities. With `client-recursion` enabled at both ends, mirrors and linked portals visible inside another view show their own destinations, including repeated reflections. Native views follow each portal's recursion depth up to three nested steps, with at most 16 nested views per primary view.
 
-For plate-based ClientView, `client-mirror` enabled at both ends uses the client's loaded chunks instead of downloading a mirror plate. Disabling it sends a mirror plate from the server.
 
 ## Arrival warmer vs chunk pre-send
 

@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-10-02T04:00:47.169Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ Each frame portal has a type, destination, projection mode, travel direction, an
 |--------------|------|
 | `PORTAL` | Linkable frame portal. Default type for wand box construction. |
 | `WORMHOLE` | Linkable frame portal (same projection capability as `PORTAL`). |
-| `GATEWAY` | Cross-server capable type. Pairs with other gateway locals and remote gateways. Uses export/import codes. |
+| `GATEWAY` | Connects local or discovered remote gateways. Supports pairing with signed gateway codes. |
 | `RTP` | Random teleport portal. No destination tunnel. The RTP service samples the destination. |
 
 Every frame type can project when the portal is open, projection is on, and its surface does not block the view. A normal portal needs a destination or mirror mode; an RTP portal needs a ready destination. `PORTAL` and `WORMHOLE` follow the same projection rules. See
@@ -72,9 +72,7 @@ menu shows travel locked. If you enable mirror:
 - Managed-portal mirror is disabled for dimensional kinds.
 - If the portal was `RTP`, Wormholes converts the type to `PORTAL`.
 
-Mirror rotation is `0` / `90` / `180` / `270` degrees. Quarter turns (90/270)
-apply only when the portal frame normal is vertical. Non-vertical frames coerce
-90 to 0 and 270 to 180.
+Mirror rotation is `0` / `90` / `180` / `270` degrees. Native ClientView supports every rotation on any frame plane. Standard projection supports `0` and `180` for wall mirrors and all quarter turns for floor and ceiling mirrors; its wall view uses the nearest supported orientation.
 
 ## Travel modes
 
@@ -151,6 +149,4 @@ Per-portal permission node: `wormholes.portal.<sanitizedName>`. See
 
 Operators always pass the portal permission and travel-direction
 checks. Mirror state, portal topology, cooldowns, safety validation, configured
-travel costs, and external integration decisions still apply. Menu management
-(open settings, destroy, skin) needs a portal owner UUID match, op, or
-`wormholes.admin`.
+travel costs, and external integration decisions still apply. Opening settings and destroying a portal require ownership, operator status, or `wormholes.admin`. Setting or clearing a surface skin requires the exact `wormholes.admin` permission, including through menus.

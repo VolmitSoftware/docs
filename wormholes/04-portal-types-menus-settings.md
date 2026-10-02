@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-01T21:53:59.595Z
+date: 2026-10-02T05:10:19.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -172,6 +172,34 @@ Crossing is tested against the whole movement since the last check. Teleports, r
 
 ## Type menu
 
+<div class="wormholes-demo" data-demo="mirrors">
+<p><strong>Mirrors</strong> Reflect the player and rotate the reflected image.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/mirrors-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/mirrors-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/mirrors-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/mirrors-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+<div class="wormholes-demo" data-demo="gateways">
+<p><strong>Travel between worlds</strong> View and enter a gateway to another world.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/gateways-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/gateways-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/gateways-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/gateways-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
 Options: `PORTAL`, `WORMHOLE`, `GATEWAY`, `RTP`, and **Mirror**.
 
 | Choice | Effect |
@@ -230,6 +258,48 @@ Open **Settings → More settings → Fidelity** to change this portal's project
 
 ## Transit menu
 
+<div class="wormholes-demo" data-demo="arrival-orientation">
+<p><strong>Arrival orientation</strong> Compare frame, look, snap, and mirror policies at a rotated exit.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/arrival-orientation-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/arrival-orientation-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/arrival-orientation-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/arrival-orientation-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+<div class="wormholes-demo" data-demo="momentum">
+<p><strong>Traversal momentum</strong> Compare preserved, scaled, and zero velocity on arrival.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/momentum-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/momentum-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/momentum-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/momentum-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+<div class="wormholes-demo" data-demo="membrane-bounce">
+<p><strong>Membrane and bounce</strong> Pass through the permitted face, then compare rejected entry and bounce.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/membrane-bounce-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/membrane-bounce-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/membrane-bounce-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/membrane-bounce-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
 Open **Settings → More settings → Transit** to control movement through this portal and arrival effects. These settings apply when traveling; the separate [Orientation menu](/wormholes/04-portal-types-menus-settings#orientation-menu) changes the portal frame itself.
 
 **Momentum** cycles through `preserve`, `scale`, `clamp`, `zero`, and `impulse`. Right-click opens a chat prompt for the scale factor, from 0 to 10.
@@ -272,6 +342,20 @@ Vanilla-item and Vault charges commit only after successful travel. Failed trave
 
 ## Orientation menu
 
+<div class="wormholes-demo" data-demo="portal-orientation">
+<p><strong>Portal orientation</strong> Flip the portal face and rotate its frame.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/portal-orientation-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/portal-orientation-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/portal-orientation-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/portal-orientation-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
 | Control | Effect |
 |---------|--------|
 | Direction | Cycle facing |
@@ -284,6 +368,20 @@ Mirror image rotation is on the type-menu Mirror control (right / shift-right),
 not these buttons.
 
 ## Cosmetics and blackout
+
+<div class="wormholes-demo" data-demo="ambient-particles">
+<p><strong>Ambient particles and color</strong> Choose a particle style, dye color, and custom RGB color.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/ambient-particles-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/ambient-particles-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/ambient-particles-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/ambient-particles-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
 
 Active portal surfaces do not emit repeating portal or lava ambience. Projection synchronization is silent. Deliberate open, close, and traversal effects retain their sounds.
 
@@ -300,11 +398,39 @@ Rune construction draws the consumed blocks inward before the opening burst. A s
 
 Ambient RGB controls change a channel by 8 per click or 32 while shifting. The
 color picker also provides 16 dye presets. Left-click the surface-skin control
-to clear the skin. Right-click it to open the Glass/Clear choices.
+to clear the skin. Right-click it to open the Glass/Clear choices. Setting or clearing a skin requires `wormholes.admin`, including through these menu controls.
 
 Native ClientView ignores blackout, including its color and full-bright lighting. Standard projection and explicit block-packets mode place a concrete-colored background at the far boundary of the projected view, along the padded outer edge, only where the whole block stays clear of the opening. Opaque destination blocks stay as they are. An opaque surface skin blocks projection.
 
 ## Nexus networks and dialing
+
+<div class="wormholes-demo" data-demo="network-dialing">
+<p><strong>Nexus dialing</strong> Dial two addresses, link each return portal, and travel both ways.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/network-dialing-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/network-dialing-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/network-dialing-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/network-dialing-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+<div class="wormholes-demo" data-demo="redstone-control">
+<p><strong>Redstone dialing</strong> Configure the input action and use a lever to change destinations.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/redstone-control-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/redstone-control-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/redstone-control-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/redstone-control-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
 
 Select More settings, then **Network**, to create or join a named network. Members have unique addresses, optional public visibility, a topology, and a hub. Managers can change addresses, link reciprocal portals, choose routing policies, and configure redstone controls. Players with travel access can open the paged dial menu by sneaking and using an empty main hand on the portal. Sneaking while changing hotbar slots cycles the destination.
 

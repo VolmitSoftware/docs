@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-02T00:30:40.229Z
+date: 2026-10-02T05:10:19.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,6 +14,20 @@ destinations.
 
 ## Kinds
 
+<div class="wormholes-demo" data-demo="pair-doors">
+<p><strong>Paired doors</strong> Place, traverse, and relocate a linked pair.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/pair-doors-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/pair-doors-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/pair-doors-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/pair-doors-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
 | Kind | Source | Destination | Notes |
 |------|--------|-------------|-------|
 | `PAIR` | Crafted pair kit or admin item | The other linked endpoint of the same `pairId` | Kit unpacks A/B. Either endpoint may move without losing the link |
@@ -22,6 +36,20 @@ destinations.
 | `RETURN` | Pocket structure only | Traveler’s saved return ticket | Never craftable. Always `DOOR` form. Door material is per pocket, crimson by default. Not breakable by players |
 
 ## Forms
+
+<div class="wormholes-demo" data-demo="trapdoor-travel">
+<p><strong>Paired trapdoors</strong> Fall through a trapdoor and arrive at its linked exit.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/trapdoor-travel-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/trapdoor-travel-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/trapdoor-travel-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/trapdoor-travel-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
 
 | Form | Physical shape | Portal plane |
 |------|----------------|--------------|
@@ -32,6 +60,20 @@ A door identity cannot become a trapdoor (or the reverse) through reskinning.
 Return doors are always `DOOR`.
 
 ## OpenState
+
+<div class="wormholes-demo" data-demo="door-open-state">
+<p><strong>Door OpenState</strong> Compare open-door entry with the closed-door contact pad.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/door-open-state-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/door-open-state-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/door-open-state-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/door-open-state-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
 
 Each placed endpoint stores an OpenState. New placements default to `OPEN`.
 
@@ -111,7 +153,7 @@ Active door and trapdoor apertures that match their configured OpenState always 
 
 For standard projection and block-packets mode, set `[doors] projection-enabled = true`. The door's access menu cycles `INHERIT`, `ON`, and `OFF`; `OFF` disables that endpoint's standard view, and the global switch must be enabled for either of the other states.
 
-Players using native ClientView receive the same clipped models, destination lighting and environment, and per-frame camera updates as frame portals and mirrors. The view follows that player's resolved destination; personal pockets and return routes remain separate between players. Changing a route replaces its view; closing an aperture whose OpenState is open removes it. Players using standard projection or block-packets mode keep the standard through-door view.
+Players using native ClientView receive the same clipped models, destination lighting and environment, and per-frame camera updates as frame portals and mirrors. The view follows that player's resolved destination; personal pockets and return routes remain separate between players. Personal and Public doors prepare their pocket when first viewed through an active aperture, so the destination is visible before entry. The camera aligns with the doorway at both ends, including Return doors and trapdoors. Pocket views remain available while the room is unoccupied. Changing a route replaces its view; closing an aperture whose OpenState is open removes it. Players using standard projection or block-packets mode keep the standard through-door view.
 
 Native ClientView hides the animated veil and backing for each player receiving the destination view. For standard projection, `[doors] projection-hide-backing = true` (default) hides both surfaces; `false` retains them. The normal surface returns when that player's projection stops.
 
@@ -131,6 +173,20 @@ Pair loads unloaded destination chunks before transit. Same-server
 cross-dimension travel is supported for eligible kinds.
 
 ## Recipes
+
+<div class="wormholes-demo" data-demo="door-crafting">
+<p><strong>Crafting dimensional doors</strong> Craft a pair kit, a personal pocket door, and a public pocket door.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/door-crafting-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/door-crafting-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/door-crafting-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/door-crafting-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
 
 All product and reskin recipes require `wormholes.doors.craft`, which defaults
 to `op`. Without that permission, the crafting result is hidden and the craft

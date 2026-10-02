@@ -2,7 +2,7 @@
 title: "Wormholes"
 description: "Live portals, random teleport, Dimensional Doors, and cross-server travel"
 published: true
-date: 2026-09-30T20:00:00.000Z
+date: 2026-10-02T04:00:47.169Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,14 +10,14 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ![Wormholes](/home-assets/wormholes.png =112x){.align-center .radius-16}
 
-Wormholes adds frame portals with a live destination view, random teleport portals, Dimensional Doors, pocket rooms, and cross-server gateways.
+Wormholes adds frame portals with a live destination view, random teleport portals, Dimensional Doors, pocket rooms, and cross-server gateways. Players with the client mod see native Minecraft models and destination lighting through the portal opening; other players receive standard server projection.
 
 | | |
 |---|---|
-| Server | Paper and Folia. Spigot 26.2 compatibility build |
+| Server | Paper, Purpur, or Folia on Minecraft 26.1.2–26.3; Fabric, Forge, or NeoForge on Minecraft 26.3 |
 | Java | 25 |
 | Command | `/wormholes`, `/wh`, `/wormhole` |
-| Config | `plugins/Wormholes/wormholes.toml`, schema `3` |
+| Config | `plugins/Wormholes/wormholes.toml` on Bukkit, or `config/wormholes/wormholes.toml` on native loaders; schema `3` |
 | Optional | PlaceholderAPI, Iris, Vault, Citizens, WorldGuard |
 | Client mod | Optional Fabric, Forge, or NeoForge jar for [ClientView](/wormholes/05-projection-modes-settings#clientview) |
 

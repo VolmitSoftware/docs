@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-09-28T13:59:31.418Z
+date: 2026-10-02T05:10:19.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,6 +39,34 @@ change tracking, and pocket-world availability active.
 
 ## Allocation
 
+<div class="wormholes-demo" data-demo="personal-pockets" data-observer-label="Second player">
+<p><strong>Personal pockets</strong> Two players enter separate rooms and use their return doors.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/personal-pockets-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/personal-pockets-standard-observer.webm" aria-label="No client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/personal-pockets-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/personal-pockets-clientview-observer.webm" aria-label="Client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
+<div class="wormholes-demo" data-demo="public-pockets" data-observer-label="Second player">
+<p><strong>Public pockets</strong> Two players share one persistent room and its return door.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/public-pockets-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/public-pockets-standard-observer.webm" aria-label="No client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/public-pockets-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/public-pockets-clientview-observer.webm" aria-label="Client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
+
 Rooms are placed on a fixed square spiral.
 
 | Constant | Value |
@@ -47,6 +75,8 @@ Rooms are placed on a fixed square spiral.
 | Center Y | 128 |
 | Chunk center offset | +8 on X/Z so the seed sits inside the first room chunk |
 | Slot reuse | Never. Slots are monotonic |
+
+An active Personal or Public door prepares its destination when an eligible player first looks through it. This creates the room and its return door before travel, without issuing a return ticket. Personal previews resolve to the observing player's room; Public previews resolve to the door's shared room.
 
 Each pocket stores its binding, slot, location, size, and materials. Existing spaces reload from disk, and used slots are not reused.
 
@@ -83,8 +113,7 @@ Entry checks every shell block and loads every chunk the room covers. A 16-block
 | Craft / place / break | Not craftable. Player place cancelled. Break cancelled (anchored) |
 | Access | Never gated |
 
-The return route uses the traveler’s saved `ReturnTicket` (source endpoint,
-world, position, look). If the ticket world is missing or is itself a pocket
+The return route uses the traveler’s saved `ReturnTicket` (source endpoint, world, position, look). An active Return door shows that player's current entrance doorway with its physical orientation. Two players using the same return door can therefore see different entrances. If the ticket world is missing or is itself a pocket
 world, rescue uses a fallback. If the point is obstructed, rescue also uses a
 fallback. The fallback is a safe location near a loaded non-pocket world spawn.
 

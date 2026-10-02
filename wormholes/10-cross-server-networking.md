@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-09-28T14:07:12.047Z
+date: 2026-10-02T05:10:19.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -95,6 +95,20 @@ Peers with the old key will reject it until trust is deliberately replaced. The 
 TCP and Unix-domain listeners allow up to 128 inbound connections that have not completed a handshake. Excess connections close immediately. Ready peers and outbound reconnects do not use this limit.
 
 ## Transfer mode
+
+<div class="wormholes-demo" data-demo="cross-server-gateways">
+<p><strong>Travel between servers</strong> Select a remote gateway, travel to its server, and return.</p>
+<div class="wormholes-demo-variant" data-client="standard">
+<p>No client mod</p>
+<video src="/wormholes-assets/demos/cross-server-gateways-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/cross-server-gateways-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+<div class="wormholes-demo-variant" data-client="clientview">
+<p>Client mod</p>
+<video src="/wormholes-assets/demos/cross-server-gateways-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/cross-server-gateways-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+</div>
 
 `[network] transfer-mode` selects how players move between servers:
 
@@ -300,7 +314,7 @@ When queueing is enabled and every otherwise eligible candidate is full, the pla
 
 ## Wire protocol
 
-Peers must agree on their Minecraft, Wormholes, and wire versions. Upgrade every linked server
+Linked servers require matching Minecraft and Wormholes releases using wire protocol 23. Upgrade every linked server
 together, then export and import fresh `WHS2.` and `WHP6.` codes on both sides so each end picks up
 the current endpoint format. Keep each server's identity and trust files; gateway targets stay
 identified by peer name and portal UUID.
@@ -309,7 +323,9 @@ identified by peer name and portal UUID.
 
 When a player views a gateway, the linked server sends an initial block and entity snapshot, followed by changes and world time. Failed partial snapshots retry instead of becoming ready with missing data.
 
-The per-portal network-view preset controls block depth, resample heartbeat,
+Native ClientView requests destination sections to the viewer's Minecraft render distance, with full block models, destination light, biome colors, sky, fog, weather, and dimension settings. The receiving server waits for complete section data before sending it. Capture extent follows active viewers and releases larger regions after their unsubscribe grace.
+
+The per-portal network-view preset controls standard projection block depth, resample heartbeat,
 entity interval, and unsubscribe grace. Exact values and custom clamps are in
 [04 - Portal Types, Menus & Settings](/wormholes/04-portal-types-menus-settings).
 After the grace period, Wormholes releases the remote view. Raw peers can use Zstandard compression. Status-sideband transport is the lower-volume fallback.
