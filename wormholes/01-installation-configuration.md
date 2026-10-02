@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-02T00:30:40.230Z
+date: 2026-10-02T01:04:42.039Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,7 +30,7 @@ Native loaders store the same settings, portal records, network identity, routes
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases using protocol v3 and the same Minecraft version. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases using protocol v4 and the same Minecraft version. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 With an Iris shader pack enabled, portal views use native Minecraft models, textures, and lighting. The destination does not receive a separate rendering of the shader pack's full world effects.
 
