@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-09-28T16:21:40.517895+00:00
+date: 2026-10-02T00:30:40.229Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -104,6 +104,16 @@ Registered dimensional doors, their hinged-door support blocks, and pocket core
 blocks are protected from fire, piston movement, entity block changes, and
 explosion block removal. Normal player breaking still follows the identity
 rules below. Return doors remain unbreakable.
+
+## Through-door projection
+
+Active door and trapdoor apertures that match their configured OpenState always show their resolved destination to native ClientView players, including when `[doors] projection-enabled = false` or the endpoint projection control is `OFF`. Endpoints whose physical state does not match their OpenState, or whose destination cannot be resolved for the player, do not project.
+
+For standard projection and block-packets mode, set `[doors] projection-enabled = true`. The door's access menu cycles `INHERIT`, `ON`, and `OFF`; `OFF` disables that endpoint's standard view, and the global switch must be enabled for either of the other states.
+
+Players using native ClientView receive the same clipped models, destination lighting and environment, and per-frame camera updates as frame portals and mirrors. The view follows that player's resolved destination; personal pockets and return routes remain separate between players. Changing a route replaces its view; closing an aperture whose OpenState is open removes it. Players using standard projection or block-packets mode keep the standard through-door view.
+
+Native ClientView hides the animated veil and backing for each player receiving the destination view. For standard projection, `[doors] projection-hide-backing = true` (default) hides both surfaces; `false` retains them. The normal surface returns when that player's projection stops.
 
 ## Transit eligibility
 

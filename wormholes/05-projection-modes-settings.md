@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-01T21:05:01.862Z
+date: 2026-10-02T00:30:40.230Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -284,12 +284,12 @@ With an Iris shader pack enabled, the portal image retains native Minecraft rend
 For a ClientView player:
 
 - The view follows the camera every frame. Its target depth follows the player's Minecraft render distance, clamped to 2–32 chunks, independently of the portal's standard projection depth and lateral plate limit.
-- Visible destination sections arrive progressively across the full requested distance. Sections toward the center of the opening arrive before the view fills outward. The client retains them within `max-plate-memory-mb`, shared across attended portals. Sections that have not arrived remain unavailable; unchanged section contents are not downloaded again while retained.
-- The renderer clips models at the aperture without replacing blocks in the local world. Standard projection budgets, held cells, `max-projected-cells`, and Venticular buried-block omission do not limit the dedicated destination mesh.
-- Destination entities arrive through `entity-frames`, with range and cap from `[render]`. Native portal sections include destination block light, sky light, and biome colors, including biome-tinted foliage. These use the destination even when standard projection lighting options are disabled; local world lighting remains unchanged.
-- The portal view uses the destination dimension's sky, time, weather, fog, clouds, and lighting, sampled from the saved destination biome at the mapped camera position. Rotated portals and mirrors transform the clouds with the destination view. This does not require replacing the viewer's local sky. Portal animations, particles, RTP rims, and relayed destination sounds play on the client. In `full` atmosphere mode with `[atmosphere] weather = true`, nearby local-sky takeover remains controlled separately by `atmosphere-dominance-blocks`; set it to `0` to keep the local sky.
+- Visible destination sections arrive progressively across the full requested distance. Nearby sections arrive first, including a neighborhood around the aperture. Changing the viewing angle retains downloaded sections while newly visible sections load; retained sections continue receiving changes during loading. The client retains them within `max-plate-memory-mb`, shared across attended portals. Sections that have not arrived remain unavailable; unchanged section contents are not downloaded again while retained.
+- The renderer clips models at the aperture without replacing blocks in the local world. Blocks intersecting the portal plane retain the visible part of their model. Frame rotations turn destination models, fluids, entities, and block entities in three dimensions, including sideways slabs and stairs. Standard projection budgets, held cells, `max-projected-cells`, and Venticular buried-block omission do not limit the dedicated destination mesh.
+- Destination entities arrive through `entity-frames`, with range and cap from `[render]`. Dropped items interpolate their destination motion, and living entities retain independent body and head rotation. Native portal sections include destination block light, sky light, and biome colors, including biome-tinted foliage. These use the destination even when standard projection lighting options are disabled; local world lighting remains unchanged.
+- The portal view uses the destination dimension's sky, time, weather, fog, clouds, and lighting, sampled from the saved destination biome at the mapped camera position. Rotated portals and mirrors transform the clouds with the destination view. This does not require replacing the viewer's local sky. Portal animations, particles, RTP rims, and relayed destination sounds play on the client. Visual effects suspend while the game is paused or unfocused and resume without replaying accumulated bursts. In `full` atmosphere mode with `[atmosphere] weather = true`, nearby local-sky takeover remains controlled separately by `atmosphere-dominance-blocks`; set it to `0` to keep the local sky.
 
-A portal returns to standard projection for one player if its destination cannot be captured, its view cannot be retained within the client's memory budget, or native rendering fails for that portal. Other portals keep ClientView. Increasing render distance increases the requested view. The memory budget bounds retained data and does not silently shorten the native view distance.
+Native mode retains native rendering when a destination capture, memory allocation, or render attempt fails. The affected view retries without switching to projected world blocks; other views remain active. Increasing render distance increases the requested view. The memory budget bounds retained data and does not silently shorten the native view distance. Select `renderer = "block-packets"` explicitly to use standard projection with the mod installed.
 
 Clients that negotiate plate-based ClientView receive the portal's configured depth and lateral plate extent instead. Its block application, cache, zero-copy handoff, and local-chunk mirror settings apply to that path. `/wormholes clientview` lists sessions and switches ClientView at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
 
@@ -299,7 +299,7 @@ Singleplayer worlds use ClientView by default and read `[client-view]` from `con
 
 ### Mirrors
 
-The dedicated renderer receives reflected destination sections for mirrors, with the same render-distance and memory limits as other portals. The player sees their own reflection unless `self-reflection = false`. With `client-recursion` enabled at both ends, portals visible inside a mirror show their own destinations within that reflected view.
+Mirrors use the same native model rendering, per-frame camera updates, and aperture clipping as linked portals. Blackout has no effect on these views. The dedicated renderer receives reflected destination sections for mirrors, with the same render-distance and memory limits as other portals. Entities and the player’s own reflection follow the mirror’s full rotation. The player sees their own reflection unless `self-reflection = false`. Reflections do not intercept local clicks or block breaking. With `client-recursion` enabled at both ends, mirrors and linked portals visible inside another view show their own destinations, including repeated reflections. Native views follow each portal's recursion depth up to three nested steps, with at most 16 nested views per primary view.
 
 For plate-based ClientView, `client-mirror` enabled at both ends uses the client's loaded chunks instead of downloading a mirror plate. Disabling it sends a mirror plate from the server.
 

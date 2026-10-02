@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-01T18:29:27.000Z
+date: 2026-10-01T21:53:59.595Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Each frame portal has menus for type, orientation, destination, settings, cost, 
 | `projectionMode` | `ON` | Toggle on home menu |
 | `renderMode` | `VENTICULAR` | PanOptic / Venticular cycle |
 | `mirrorMode` | `false` | Set from type menu |
-| `mirrorRotation` | `0°` | Wall mirrors: 0° / 180°. Floor and ceiling mirrors: 0° / 90° / 180° / 270° |
+| `mirrorRotation` | `0°` | Native ClientView: 90° steps on every plane. Standard projection: wall mirrors 0° / 180°, floor and ceiling mirrors 90° steps |
 | `permissionMode` | `BLACKLIST` | See Access |
 | `outgoingTraversalsEnabled` | `true` | Travel mode `BOTH` |
 | `incomingTraversalsEnabled` | `true` | Travel mode `BOTH` |
@@ -179,7 +179,7 @@ Options: `PORTAL`, `WORMHOLE`, `GATEWAY`, `RTP`, and **Mirror**.
 | Portal / Wormhole / Gateway / RTP | Sets type and disables mirror mode if it was on. Switching to or from `RTP` force-closes the portal until RTP is READY or a new tunnel is set. |
 | Mirror | Enables mirror mode (travel locked. Tunnel cleared). Right-click rotates the mirror image clockwise. Shift-right-click rotates counterclockwise. |
 
-Wall mirrors flip between 0° and 180°. Horizontal mirrors on floors or ceilings rotate in 90° steps. These controls rotate the reflected image; they do not change the portal's facing or allow travel through a mirror.
+Players using native ClientView rotate mirrors in 90° steps on any plane. Standard projection uses 0° and 180° for wall mirrors and 90° steps for floor and ceiling mirrors; its wall view uses the nearest supported orientation when a native client saves a quarter turn. These controls rotate the reflected image; they do not change the portal's facing or allow travel through a mirror.
 
 RTP editor entry lives on the home destination control when type is RTP
 ([06 - Random Teleport Portals](/wormholes/06-random-teleport-portals)).
@@ -302,7 +302,7 @@ Ambient RGB controls change a channel by 8 per click or 32 while shifting. The
 color picker also provides 16 dye presets. Left-click the surface-skin control
 to clear the skin. Right-click it to open the Glass/Clear choices.
 
-Blackout places a concrete-colored background at the far boundary of the projected view, along the padded outer edge, only where the whole block stays clear of the opening. Opaque destination blocks stay as they are. An opaque surface skin blocks projection.
+Native ClientView ignores blackout, including its color and full-bright lighting. Standard projection and explicit block-packets mode place a concrete-colored background at the far boundary of the projected view, along the padded outer edge, only where the whole block stays clear of the opening. Opaque destination blocks stay as they are. An opaque surface skin blocks projection.
 
 ## Nexus networks and dialing
 
