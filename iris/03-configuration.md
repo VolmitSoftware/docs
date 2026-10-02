@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-09-29T00:00:00.000Z
+date: 2026-10-02T20:12:54.811921+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -96,7 +96,7 @@ These settings control Iris spawning and effects. Vanilla spawning has its own s
 | Key | Default | Takes effect | Use |
 |-----|---------|--------------|-----|
 | `postLoadBlockUpdates` | `true` | Live | Updates blocks near players after generation so placed objects settle and receive waterlogging updates |
-| `forcePersistEntities` | `true` | Live | Prevents normal despawning of Iris-spawned entities |
+| `forcePersistEntities` | `false` | Live, new spawns | Prevents distance despawning of Iris-spawned mobs when enabled. Normal chunk saving is independent of this setting |
 | `ambientEntitySpawningSystem` | `true` | Live | Enables biome and region ambient spawn lists |
 | `asyncTickIntervalMS` | `700` | Live, next tick | Milliseconds between Iris spawning, effects and cleanup passes |
 | `targetSpawnEntitiesPerChunk` | `0.95` | Live | Stops Iris spawning when entities per loaded chunk exceed this value |

@@ -2,7 +2,7 @@
 title: "Temperate River — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for temperate/sea/river"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,8 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 `mountain` maps to `-32..-10` relative to the dimension fluid height.
 
 ## Overworld treatment
+
+Overworld regional water spawners add glow squid and salmon to this biome and its water habitat. See [Temperate ecology](/iris/biomes/temperate#ecology).
 
 Derivative `minecraft:river`; vanilla derivative `minecraft:river`. Primary sea palette: `minecraft:sand`, `minecraft:clay`, `minecraft:gravel`, `minecraft:dirt`, `minecraft:coarse_dirt`. Decorator blocks: `minecraft:soul_sand`, `minecraft:magma_block`, `minecraft:seagrass`, `minecraft:kelp_plant`, `minecraft:sea_pickle`. Object set: `clutter/obelisk1`, `clutter/obelisk2`, `clutter/obelisk3`, `clutter/obelisk4`, `clutter/obelisk5`, `clutter/obelisk6`, `clutter/obelisk7`.
 

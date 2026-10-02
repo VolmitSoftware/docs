@@ -2,7 +2,7 @@
 title: "Tropical Submerged Volcanic — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for tropical/submerged-volcanic"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,8 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 `canyon-steep` maps to `-24..-3` relative to the dimension fluid height.
 
 ## Overworld treatment
+
+Overworld regional water spawners add tropical fish in this biome’s water. See [Tropical ecology](/iris/biomes/tropical#ecology).
 
 Derivative `minecraft:warm_ocean`; vanilla derivative `minecraft:warm_ocean`. Primary sea palette: `minecraft:basalt`, `minecraft:magma_block`, `minecraft:tuff`, `minecraft:stone`, `minecraft:andesite`, `minecraft:blackstone_slab`, `minecraft:air`.
 

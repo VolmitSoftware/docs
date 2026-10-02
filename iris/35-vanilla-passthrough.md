@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:12:54.812392+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -131,7 +131,7 @@ There is no `importedStructures.disabled` equivalent for mobs.
 
 **Success:** the vanilla derivative's cows and zombies are gone. Only the listed custom entries (and any Iris spawners you kept) appear.
 
-Adding custom colors or fog without `spawns` does **not** stop vanilla mobs, and Iris spawners never replace vanilla. `maxEntitiesPerChunk` on an Iris spawner defaults to `1`. `world.forcePersistEntities` (default true) marks Iris-spawned mobs persistent, so they do not despawn like vanilla.
+Adding custom colors or fog without `spawns` does **not** stop vanilla mobs, and Iris spawners never replace vanilla. `maxEntitiesPerChunk` on an Iris spawner defaults to `1` per native mob category. Iris mobs save with their chunks and permit native distance despawning by default. Set `keepEntity: true`, `removable: false`, or `world.forcePersistEntities: true` to retain mobs.
 
 Studio worlds freeze noon and clear weather when `studio.disableTimeAndWeather` is true (the default). Night and storm Iris spawners never fire there until you set that false or test in a production world.
 

@@ -2,7 +2,7 @@
 title: "Tropical Ocean — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for tropical/sea/ocean"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,8 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 `river` maps to `-78..-20` relative to the dimension fluid height.
 
 ## Overworld treatment
+
+Overworld regional water spawners add tropical fish in this biome and its coral-ocean children. See [Tropical ecology](/iris/biomes/tropical#ecology).
 
 Derivative `minecraft:deep_ocean`; vanilla derivative `minecraft:warm_ocean`. Primary sea palette: `minecraft:sand`, `minecraft:dirt`, `minecraft:gravel`, `minecraft:clay`, `minecraft:suspicious_gravel`, `minecraft:suspicious_sand`, `minecraft:coarse_dirt`, `minecraft:tube_coral_block`, and 7 more. Decorator blocks: `minecraft:tube_coral_block`, `minecraft:brain_coral_block`, `minecraft:fire_coral_block`, `minecraft:horn_coral_block`, `minecraft:bubble_coral_block`, `minecraft:soul_sand`, `minecraft:magma_block`, `minecraft:seagrass`, and 12 more.
 

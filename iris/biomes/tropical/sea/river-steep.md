@@ -2,7 +2,7 @@
 title: "Tropical River Steep — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for tropical/sea/river-steep"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -23,6 +23,8 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 Hydrology supplies the accepted channel height and shape when selecting this content biome.
 
 ## Overworld treatment
+
+Overworld regional water spawners add tropical fish in the water channel. See [Tropical ecology](/iris/biomes/tropical#ecology).
 
 Derivative `minecraft:warm_ocean`; vanilla derivative `minecraft:warm_ocean`. Primary sea palette: `minecraft:sand`, `minecraft:clay`, `minecraft:gravel`, `minecraft:dirt`. Decorator blocks: `minecraft:kelp_plant`, `minecraft:seagrass`, `minecraft:tall_seagrass`. Object set: `clutter/ellipsoid1`.
 

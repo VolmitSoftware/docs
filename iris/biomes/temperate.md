@@ -2,7 +2,7 @@
 title: "Temperate Biomes"
 description: "Navigation for the built-in temperate biomes across Overworld and Underworld"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biomes, overworld, underworld, temperate"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,6 +10,10 @@ dateCreated: 2026-08-27T00:00:00.000Z
 Plains, meadows, birch, oak, flowering and stylized forests, temperate waters, and shared shores.
 
 This family has **12 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
+
+## Ecology
+
+Overworld regions that use `temperate/water` add glow squid and salmon in water. This table is shared by Temperate, Forests, Estranged, Magnetics, Terralost, and Prismatics. Swamp frogs and tadpoles use the Swamp region’s separate ecology.
 
 ## Direct roots
 

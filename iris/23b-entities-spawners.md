@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:12:54.810856+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -13,7 +13,7 @@ Related: [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions
 
 ## Entities and spawners
 
-A background loop ticks each Iris world roughly twice a second. If there is room, it picks a handful of loaded chunks and tries one spawn in each. A spawn attempt gathers every spawner the dimension, region, and surface biome list, throws out the ones whose time, weather, rate, or crowding gates fail, pools their entries, picks exactly one, and places one to a few mobs.
+A background loop ticks each Iris world roughly twice a second. If there is room, it picks a handful of loaded chunks whose entities are ticking and tries one spawn in each. Ambient spawning respects the world’s mob-spawning gamerule; initial chunk populations also respect that gamerule. A spawn attempt gathers every spawner the dimension, region, and surface biome list, throws out the ones whose time, weather, rate, or crowding gates fail, pools their entries, picks exactly one, and places one to a few mobs.
 
 Vanilla natural spawning is a separate pipeline. It stays on via the biome `vanillaDerivative` unless you replace that table. Iris spawners do not turn it off, and nothing deduplicates between the two — a zombie spawner in your pack adds to whatever the server would have spawned anyway. Custom biome `spawns` merge with vanilla. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
@@ -24,7 +24,7 @@ Vanilla natural spawning is a separate pipeline. It stays on via the biome `vani
 
 Keys are the pack-relative path without `.json`. Dimensions, regions, and biomes list spawner keys in `entitySpawners`; ambient spawning needs `world.ambientEntitySpawningSystem` true.
 
-The bundled Overworld pack wires its spawners at region scope (`regions/*.json` list `<climate>/cave`, `/hostile`, `/passive`, `/water`). It also includes `standard/passive/sulfur-cube`, a native 26.2 sulfur cube entity template; [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) inherit the vanilla sulfur-cave spawn table instead of an Iris ambient spawner.
+The bundled Overworld pack wires its spawners at region scope. Frogs belong to the swamp passive pool, tadpoles to swamp water, and turtles to tropical beaches. Temperate and tropical water pools contain aquatic mobs. It also includes `standard/passive/sulfur-cube`, a native 26.2 sulfur cube entity template; [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) inherit the vanilla sulfur-cave spawn table instead of an Iris ambient spawner.
 
 ## Walkthrough: make a custom mob spawn in one biome
 
@@ -122,7 +122,7 @@ The `mythicmobs` namespace selects Iris's MythicMobs provider, and `JumpingSpide
 | `invulnerable` | boolean | `false` | Only creative-mode players can damage it |
 | `silent` | boolean | `false` | Suppresses the mob's sounds |
 | `pickupItems` | boolean | `false` | Whether it can pick up dropped gear |
-| `removable` | boolean | `false` | Whether the server may despawn it when players leave. Off keeps a set-piece mob alive |
+| `removable` | boolean | `true` | Allows native distance despawning. Set false for a permanent set-piece mob; `keepEntity` and `world.forcePersistEntities` also prevent distance despawning |
 | `keepEntity` | boolean | `false` | Forces persistence. Also forced globally by `world.forcePersistEntities` |
 | `baby` | boolean | `false` | Spawns the baby variant for ageable types |
 | `helmet` / `chestplate` / `leggings` / `boots` / `mainHand` / `offHand` | `IrisLoot` | null | One equipment slot each, built like a loot entry. The entry's own `rarity` is a 1-in-N roll for whether the slot gets filled at all. That is how you get "one in five wears a helmet" |
@@ -133,10 +133,10 @@ The `mythicmobs` namespace selects Iris's MythicMobs provider, and `JumpingSpide
 | `spawnEffect` | `IrisEffect` | null | A one-shot effect fired at the spawn position |
 | `spawnEffectRiseOutOfGround` | boolean | `false` | Spawns the mob five blocks lower when a player is nearby and walks it up out of the ground with block-crack particles. The mob is invulnerable and AI-less for up to five seconds while rising |
 | `pandaMainGene` / `pandaHiddenGene` | string | null | Panda genes. Unrecognised names fall back to `NORMAL` |
-| `surface` | `IrisSurface` | `LAND` | What the block under the spawn point must be — see below. Marker-driven spawns skip this check |
+| `surface` | `IrisSurface` | `LAND` | Required terrain: land checks the support block, fluids check the occupied body volume. Marker-driven land spawns skip the surface check |
 | `rawCommands` | `IrisCommand[]` | `[]` | Console commands run after the mob spawns |
 
-`IrisSurface` values, checked against the block directly below the spawn position:
+`IrisSurface` values apply to the supporting block for land entities and the occupied blocks for fluid entities:
 
 | Value | Matches |
 |-------|---------|
@@ -225,7 +225,7 @@ Folder: `spawners/`.
 |-------|------|---------|--------------|
 | `spawns` | `IrisEntitySpawn[]` | `[]` | The ongoing spawn pool. Every entry competes with entries from every other eligible spawner in the same chunk |
 | `initialSpawns` | `IrisEntitySpawn[]` | `[]` | A separate pool used once per chunk, the first time that chunk is maintained. For set dressing that should exist from the moment a chunk appears |
-| `maxEntitiesPerChunk` | int | `1` | Skip this spawner when the target chunk already holds this many living entities. The single most common reason a spawner looks dead — the default of 1 means almost any occupied chunk blocks it |
+| `maxEntitiesPerChunk` | int | `1` | Ambient population limit for the selected entity’s native spawn category in the target chunk. Monsters, creatures, ambient mobs, and aquatic categories have separate counts; players are excluded. A batch is limited to the remaining capacity. Entries without a known native mob category use the combined count |
 | `timeBlock` | `IrisTimeBlock` | any time | World-time window. Clock hours, 6 = sunrise, 18 = sunset |
 | `weather` | `IrisWeather` | `ANY` | `NONE`, `DOWNFALL`, `DOWNFALL_WITH_THUNDER`, or `ANY` |
 | `maximumRate` | `IrisRate` | infinite | World-wide throttle for this spawner. Stamped only when a spawn actually succeeds |
@@ -238,14 +238,13 @@ Folder: `spawners/`.
 | Value | Position chosen | Biome check (dimension scope only) |
 |-------|-----------------|------------------------------------|
 | `NORMAL` | Random x/z in the chunk, one block above the fluid-inclusive surface | Land biomes only |
-| `CAVE` | A random `cave_floor` mantle marker in the chunk, one block up | Accepted in every biome type |
+| `CAVE` | An underground floor with room for the mob; on Folia, placement uses the loaded chunk’s current blocks | Accepted in every biome type |
 | `UNDERWATER` | Random x/z, random Y between the solid top and the water surface | Sea biomes only |
 | `BEACH` | Same water-column position as `UNDERWATER` | Shore biomes only |
 
-The biome check only applies to spawners listed on a **dimension**. Region and biome `entitySpawners` bypass it, so a `CAVE`-group spawner listed on a surface biome still looks for cave floor markers and quietly does nothing if there are none.
+The biome check only applies to spawners listed on a **dimension**. Region and biome `entitySpawners` bypass it, so a `CAVE`-group spawner listed on a surface biome still searches underground and does nothing when no suitable location is found.
 
-> `CAVE` group spawners are unavailable on Folia.
-{.is-warning}
+Cave spawns accept ordinary air and cave air. The spawn point must meet the entity’s surface requirement and the spawner’s light range.
 
 `IrisRate` (snippet type `rate`):
 
@@ -332,7 +331,9 @@ From `iris.json` under `world` (see [03 - Configuration](/iris/03-configuration)
 | `effectSystem` | `true` | Biome and region `effects[]` |
 | `targetSpawnEntitiesPerChunk` | `0.95` | Living entity saturation limit per loaded chunk |
 | `asyncTickIntervalMS` | `700` | How often the spawn loop runs per world |
-| `forcePersistEntities` | `true` | Marks every Iris-spawned entity persistent regardless of `keepEntity` |
+| `forcePersistEntities` | `false` | Prevents distance despawning of Iris-spawned mobs regardless of `removable`. Ordinary mobs are still saved with their chunks when this is false |
+
+Existing explicit `forcePersistEntities: true` settings continue to retain new mobs. Set it to `false` to allow native despawning for entities with `removable: true`; this affects newly spawned mobs and does not rewrite existing entities. Each species keeps its native despawning rules; animals such as frogs normally remain in the world.
 
 ## Add entity spawns to a pack
 

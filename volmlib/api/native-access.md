@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-02T16:55:00.000Z
+date: 2026-10-02T20:12:54.813124+00:00
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -140,6 +140,8 @@ Call `NativeModdedChunkGenerator.initializeStructureState(world)` after publishi
 `NativeStructureOperations` enumerates registered structures, pools, and configured features, and captures placements into a world. Set the placement chunk limit and supply error and warning handlers. World writes require the owning server thread.
 
 The Bukkit and modded generation stages apply overlapping starts of each native structure in origin-chunk coordinate order. Persisting and reloading structure references preserves the placement sequence used for seeded choices and terrain adjustments.
+
+`NativeSpawnQueries.livingEntityCategories(world, chunkX, chunkZ)` returns native-category counts for living entities whose positions belong to the requested chunk, excluding players. Use it on the owning server thread when applying category-specific population limits. Native spawned entities save normally; their persistence flag controls distance despawning separately from saving.
 
 `NativeModdedLoader` exposes the current typed server and its world-access service. Register lifecycle callbacks with `NativeModdedCallbacks`; server, world, player, command, and block-interaction callbacks provide typed VolmLib contexts.
 

@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mushroom Forest"
 description: "Iris biome atlas entry for mushroom/forest in Overworld and Underworld"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -41,6 +41,8 @@ The table lists each profile’s density and crack noise. Active deformation sta
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 ## Overworld treatment
+
+Regional ambient spawns use `mushroom/passive`, `mushroom/hostile`, and `mushroom/cave`. See [Mushroom ecology](/iris/biomes/mushroom#ecology).
 
 - **Minecraft identity:** derivative `minecraft:mushroom_fields`; native-structure derivative `minecraft:mushroom_fields`; custom identities `mushroom_forest`.
 - **Surface:** 3-5 block(s) at slope >= 6.9: `minecraft:gravel`, `minecraft:red_mushroom_block`; 3-5 block(s) at slope >= 4.6: `minecraft:gravel`, `minecraft:brown_mushroom_block`; 1 block(s): `minecraft:mycelium`, `minecraft:gravel`; 2-4 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 6-18 block(s): `minecraft:stone`, `minecraft:andesite`. Wall palette: `minecraft:stone`, `minecraft:andesite`.

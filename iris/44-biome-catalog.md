@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-09-28T07:30:06.759Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -51,6 +51,8 @@ The paired catalog contains 375 reachable biome identities:
 The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. The cave root and its child contain ordinary short sulfur spikes, occasional taller clusters, tiny mineral pools, and rare banded spires. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
 
 Overworld [Tundra Autumn and its extended variant](/iris/biomes/tundra/autumn) scatter red shrubs on grass blocks, coarse dirt, and podzol, alongside the red shrub ground cover in the four poplar biomes. These plants require Minecraft 26.3.
+
+Overworld ambient frog and tadpole tables belong to [Swamp ecology](/iris/biomes/swamp#ecology). [Temperate waters](/iris/biomes/temperate#ecology) add glow squid and salmon, while [Tropical waters and shores](/iris/biomes/tropical#ecology) add tropical fish and beach turtles. [Mushroom ecology](/iris/biomes/mushroom#ecology) uses its passive, surface-hostile, and cave tables.
 
 ## Read the atlas
 

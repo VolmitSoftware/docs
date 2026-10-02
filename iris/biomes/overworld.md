@@ -2,7 +2,7 @@
 title: "Overworld"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -41,6 +41,10 @@ Every reachable land root and ordinary child has an explicit setting. [Terrain s
 The dimension first chooses one of twelve regions. Each region supplies independent land, sea, shore, and cave pools. The chosen role selects a root biome by its effective rarity, then the biome may resolve through children or contribute a floating biome above the column.
 
 The global Deep Dark band is different from an ordinary regional cave. Between Y `-250` and `-175`, the dimension carving entry selects `carving/standard-deepdark`, whose family reaches City Basin and Dark Depths variants independently of the surface region.
+
+## Regional ecology
+
+Ambient land, water, shore, and cave spawns use the tables attached to the selected region. Frogs occur in the Swamp passive table and tadpoles in its water table; Temperate waters add glow squid and salmon, and Tropical waters add tropical fish. Tropical beach turtles use the shore table, with three successful batches per seven minutes during Minecraft hours 4–18. Mushroom uses separate passive, surface-hostile, and cave tables.
 
 ## Relationship to Underworld
 

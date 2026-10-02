@@ -2,7 +2,7 @@
 title: "Tropical Biomes"
 description: "Navigation for the built-in tropical biomes across Overworld and Underworld"
 published: true
-date: 2026-09-09T01:34:05.711Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biomes, overworld, underworld, tropical"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,6 +10,10 @@ dateCreated: 2026-08-27T00:00:00.000Z
 Rainforests, bamboo forests, islands, volcanic terrain, tropical waters, and distinct tropical shores.
 
 This family has **7 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
+
+## Ecology
+
+Overworld `tropical/water` adds tropical fish in water. Turtles use `tropical/beach` on tropical shores between Minecraft hours 4 and 18, with a regional rate of three successful batches per seven minutes and a per-chunk rate of two batches per two Minecraft hours.
 
 ## Direct roots
 

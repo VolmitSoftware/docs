@@ -2,7 +2,7 @@
 title: "Temperate Ocean — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for temperate/sea/ocean"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,8 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 `mountain` maps to `-32..-10` relative to the dimension fluid height.
 
 ## Overworld treatment
+
+Overworld regional water spawners add glow squid and salmon to this biome and its water habitat. See [Temperate ecology](/iris/biomes/temperate#ecology).
 
 Both packs procedurally construct the `branch-coral` and `brain-coral` forms. Overworld builds them from coral blocks with sea-pickle tips; Underworld preserves the geometry with magma blocks and glowstone tips.
 

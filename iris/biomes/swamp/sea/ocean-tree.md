@@ -2,7 +2,7 @@
 title: "Swamp Ocean tree — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for swamp/sea/ocean-tree"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,8 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 `river` maps to `-2..-1` relative to the dimension fluid height.
 
 ## Overworld treatment
+
+Overworld `swamp/water` adds tadpoles in water. See [Swamp ecology](/iris/biomes/swamp#ecology).
 
 Derivative `minecraft:swamp`; vanilla derivative `minecraft:ocean`. Primary sea palette: `minecraft:sand`, `minecraft:dirt`, `minecraft:gravel`, `minecraft:clay`, `minecraft:coarse_dirt`, `minecraft:smooth_sandstone`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, and 1 more. Decorator blocks: `minecraft:lily_pad`, `minecraft:seagrass`, `minecraft:soul_sand`, `minecraft:magma_block`, `minecraft:kelp_plant`, `minecraft:sea_pickle`. Object set: `trees/jungle/lgeneric1`, `trees/jungle/lgeneric2`, `trees/jungle/lgeneric3`, `trees/jungle/lgeneric4`, `trees/jungle/lgeneric5`, `trees/jungle/lgeneric7`, `trees/jungle/lgeneric8`, `trees/jungle/lgeneric9`.
 

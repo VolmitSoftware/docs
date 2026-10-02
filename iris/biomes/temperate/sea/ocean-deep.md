@@ -2,7 +2,7 @@
 title: "Temperate Ocean Deep — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for temperate/sea/ocean-deep"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,6 +26,8 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 `mountain` maps to `-72..-40` relative to the dimension fluid height.
 
 ## Overworld treatment
+
+Overworld regional water spawners add glow squid and salmon to this biome and its water habitat. See [Temperate ecology](/iris/biomes/temperate#ecology).
 
 Derivative `minecraft:deep_ocean`; vanilla derivative `minecraft:deep_ocean`. Primary sea palette: `minecraft:sand`, `minecraft:clay`, `minecraft:gravel`, `minecraft:dirt`, `minecraft:coarse_dirt`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, `minecraft:air`. Decorator blocks: `minecraft:soul_sand`, `minecraft:magma_block`, `minecraft:seagrass`, `minecraft:kelp_plant`, `minecraft:sea_pickle`. Object set: `clutter/substat1`, `clutter/substat2`, `clutter/substat3`, `clutter/substat4`, `clutter/substat5`.
 

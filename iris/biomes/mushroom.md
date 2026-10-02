@@ -2,7 +2,7 @@
 title: "Mushroom Biomes"
 description: "Navigation for the built-in mushroom biomes across Overworld and Underworld"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-10-02T20:07:19.178Z
 tags: "iris, biomes, overworld, underworld, mushroom"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,6 +10,10 @@ dateCreated: 2026-08-27T00:00:00.000Z
 Fungal plains and forests with mushroom waters and shorelines selected by the Mushroom region.
 
 This family has **2 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
+
+## Ecology
+
+Overworld uses `mushroom/passive`, `mushroom/hostile`, and `mushroom/cave` for regional ecology. The surface hostile table contains zombies, skeletons, spiders, creepers, and endermen; the cave table contains zombies, skeletons, cave spiders, creepers, and bats.
 
 ## Direct roots
 
