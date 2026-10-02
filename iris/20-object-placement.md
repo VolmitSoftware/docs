@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T16:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -293,6 +293,8 @@ The value scales to vanilla eight layers. Each column gets a random count from 0
 
 `bore: true` clears the object's entire bounding box to air, including its rotation, translation, warp, and inversion. `boreExtendMaxY` and `boreExtendMinY` extend that box upward and downward. `smartBore: true` clears only the enclosed interior, so a house keeps its rooms clear without erasing the trees around it. Debug rendering affects only the current placement.
 
+`smartBore` applies only to placements that enable it. Other placements of the same object retain the saved interior. Random block edits and snow depths reproduce for the same placement seed and settings, regardless of object loading or chunk generation order.
+
 `meld: true` inverts the rule. The object only writes where a solid block already exists, which carves the object into terrain rather than adding to it. It is expensive. The placer samples the world per block.
 
 `edit` rewrites materials at placement time, so one saved object can serve several biomes:
@@ -397,7 +399,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 |---|---|---|
 | `bore` | `false` | Empties the whole bounding cuboid before writing |
 | `boreExtendMaxY` / `boreExtendMinY` | `0` | Grows that emptied box upward and downward |
-| `smartBore` | `false` | Raytraces the object once at load and clears only its enclosed interior |
+| `smartBore` | `false` | Clears only the object's enclosed interior for this placement |
 | `meld` | `false` | Writes only where solid terrain already exists, carving the object in rather than adding it |
 | `edit` | `[]` | Material find-and-replace applied as the object is written |
 | `snow` | `0` | Depth cap for a snow dusting laid over the object top blocks |

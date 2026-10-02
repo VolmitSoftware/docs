@@ -2,7 +2,7 @@
 title: "Procedural Objects"
 description: "Iris documentation: Procedural Objects"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T16:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,8 @@ Related: [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [15 -
 ## Placement
 
 Each entry generates `variants` different shapes from its settings and `seed`. Increase `variants` for more shapes, or change `seed` for a different set.
+
+With unchanged settings and the same Iris build, each variant retains its shape, accents, and attachments across server restarts and parallel generation.
 
 `chance` controls how often an entry places in a chunk. `density` is the number of attempts in a chunk that passes. `chance: 0.5, density: 4` gives four attempts in half the chunks.
 

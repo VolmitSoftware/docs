@@ -2,7 +2,7 @@
 title: "Noise and procedural streams"
 description: "Seeded noise, composition, interpolation, and procedural fields shared by Volmit plugins."
 published: true
-date: 2026-09-14T22:50:00.000Z
+date: 2026-10-02T16:35:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -35,7 +35,7 @@ double height = heights.get(128.5D, -32.25D);
 
 `NoiseGenerator` and `ProceduralStream` expose coordinate-specific sampling methods. Preserve the intended dimensions when choosing an overload. A two-dimensional sample and a three-dimensional sample with a zero coordinate are not interchangeable contracts.
 
-The canonical implementations retain Iris's seed handling, noise composition, interpolation, and cache invalidation. Configure a field before sharing it between workers. Do not change its configuration while workers sample it.
+The canonical implementations retain Iris's seed handling, noise composition, interpolation, and cache invalidation. Configure a field before sharing it between workers. Concurrent first samples of a configured `CNG` use the same scale, opacity, and fracture settings as serial samples. Do not change its configuration while workers sample it.
 
 Deep fixed two-dimensional fracture chains reuse repeated coordinate samples within one evaluation. The bounded temporary cache clears after that evaluation and preserves the original arithmetic. Shallow chains, expressions, custom generators and injectors, child compositions, and image caches keep their existing evaluation paths.
 

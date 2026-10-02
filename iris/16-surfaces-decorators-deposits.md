@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T16:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,6 +30,8 @@ Biome `layers` cover the terrain from the surface downward. Each layer starts wh
 Below the fluid level but above terrain, `seaLayers` are measured down from the water surface, with the dimension `fluidPalette` as fallback. Noise ores with `generateSurface: true` take priority over both layers and fluid.
 
 Deposits require solid host blocks and leave cave openings empty. Decorators require a suitable surface, so openings do not receive flowers across the gap.
+
+Ore `chanceStyle` and palette fields use the current terrain seed. Generating another world or enabling cache warming does not change their placement for the same seed, pack, and Iris build.
 
 A cold `derivative` tints grass and can freeze water. It does not stamp snow layers. Snow layers come from Iris decorators, object `snow`, or `importedFeatures` with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
@@ -202,6 +204,8 @@ Files under `blocks/<key>.json` use the same shape and act as reusable aliases. 
 ## Decorators
 
 Snippet key: `decorator`. Biome field: `decorators`. The dimension must have `decorate: true` (the default).
+
+For the same world seed, pack, and Iris build, `style`, `variance`, and `heightVariance` produce the same patterns at the same coordinates. Chunk exploration order, parallel generation, and startup cache warming do not choose a different pattern. Floating islands use the same seeded decorator fields as other surfaces.
 
 ### How a decorator is chosen
 

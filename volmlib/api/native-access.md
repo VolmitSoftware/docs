@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-02T14:47:32.622901+00:00
+date: 2026-10-02T16:55:00.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -138,6 +138,8 @@ Call `NativeModdedChunkGenerator.initializeStructureState(world)` after publishi
 `NativeModdedPregenRuntime.from(world)` provides chunk requests, ticket release, saves, worker information, and empty-server pause controls through `terrain.NativePregenRuntime`. The consumer owns concurrency limits, completion tracking, cancellation, and restoration of temporary settings.
 
 `NativeStructureOperations` enumerates registered structures, pools, and configured features, and captures placements into a world. Set the placement chunk limit and supply error and warning handlers. World writes require the owning server thread.
+
+The Bukkit and modded generation stages apply overlapping starts of each native structure in origin-chunk coordinate order. Persisting and reloading structure references preserves the placement sequence used for seeded choices and terrain adjustments.
 
 `NativeModdedLoader` exposes the current typed server and its world-access service. Register lifecycle callbacks with `NativeModdedCallbacks`; server, world, player, command, and block-interaction callbacks provide typed VolmLib contexts.
 

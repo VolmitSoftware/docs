@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-01T16:00:00.000Z
+date: 2026-10-02T16:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,6 +35,8 @@ Every task below changes newly generated chunks only. Nothing rewrites existing 
 
 Native placement stays in charge of where and how often.
 You only adjust how the structure meets the ground.
+
+When multiple starts of the same native structure overlap a chunk, Iris applies them in origin-chunk coordinate order. With the same seed, pack, Iris build, and server version, saving and resuming chunk generation retains that placement order and its seeded block choices.
 
 Prerequisite: the structure appears in `/iris structure list <dimension>`.
 

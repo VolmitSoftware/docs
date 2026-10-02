@@ -2,7 +2,7 @@
 title: "Procedural Trees"
 description: "Iris documentation: Procedural Trees"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T16:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -12,6 +12,8 @@ dateCreated: 2026-09-19T00:00:00.000Z
 The shared placement settings, the fields every procedural family has (`chance`, `density`, `variants`, `seed`, `mode`, `carvingSupport` and the rest), and the other five families are on [17 - Procedural Objects](/iris/17-procedural-objects). Sapling replacement is a different system, also documented there.
 
 Snippet key: `procedural-tree`.
+
+The variant seed controls attachment selection as well as tree shape. Identical tree settings and the same Iris build reproduce the same leaf, trunk, root, and branch-tip accents regardless of which chunk first requests the variant.
 
 ## Walkthrough: procedural trees in a biome
 

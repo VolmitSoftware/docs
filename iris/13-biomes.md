@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T16:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -386,6 +386,8 @@ The exclusion cascades upward. A region left with no land biomes is excluded in 
 Declaring a `blockFallbacks` entry on the dimension turns a missing block into a substitution and keeps the biome generating. See [11 - Dimensions](/iris/11-dimensions).
 
 ## Floating child biomes (`IrisFloatingChildBiomes`)
+
+Island selection, shape, and altitude use the current world's seed and parent biome. Loading another world or sampling another parent first does not change these fields for an otherwise identical world.
 
 `floatingChildBiomes` builds islands in the air above columns owned by this biome. Each entry names a target biome whose generators, layers, derivative, decorators and objects supply the island look; the entry's own fields control size, shape, altitude, rarity and internal water. With `mergeFloatingChildBiomes: false` (the default), `pickerStyle` and `rarity` choose one entry per column. With it true, every entry samples independently and islands may intersect.
 

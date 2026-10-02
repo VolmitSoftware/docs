@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-02T16:35:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -51,6 +51,8 @@ Then two optional post-passes:
 
 - **Cliffs** run when `cliffHeightMax > 0`. The value is quantised to steps of a per-column cliff height drawn between `cliffHeightMin` and `cliffHeightMax`. That turns smooth slopes into terraces and mesa walls.
 - **Cell fracture** runs when `cellFractureHeight` is non-zero. A cell distance field is sampled. Outside the cell cores the value is multiplied by `cellFractureHeight`, cutting canyon-like veins between plateaus.
+
+Noise and expression fields are bound to the current world seed and generation context. Reusing a generator or expression in another world does not carry the first world's pattern into it; keep the seed, pack, and Iris build unchanged when reproducing a world.
 
 ### Step 2 — generators are grouped by interpolator, and averaged within a group
 
@@ -213,7 +215,7 @@ Available as the `style` snippet, and accepted anywhere Iris configures noise: g
 | `cellularZoom` | double | `1` | Cell size after cellularising. Ignored when `cellularFrequency` is 0. |
 | `expression` | expression key | `null` | Use `expressions/<key>.json` as the noise source instead of `style`. |
 | `imageMap` | image-map key | `null` | Use a typed resource under `image-maps/` as the noise source instead of `style`. |
-| `cacheSize` | int 0..8192 | `0` | Above 0, enables a saved noise cache under the pack `.cache` folder. Useful for repeatedly sampled expressions or heavily fractured styles; leave at `0` for simple styles. |
+| `cacheSize` | int 0..8192 | `0` | Above 0, enables a saved noise cache under the pack `.cache` folder, reusable after restart with unchanged generation inputs. Useful for repeatedly sampled expressions or heavily fractured styles; leave at `0` for simple styles. |
 
 Source priority: if `expression` is set, Iris loads it and uses it. If the expression fails to load, the style falls straight back to `NoiseStyle`; `imageMap` is not tried. `imageMap` is consulted only when `expression` is unset. A missing or invalid image-map resource is a blocking pack error before world generation.
 
