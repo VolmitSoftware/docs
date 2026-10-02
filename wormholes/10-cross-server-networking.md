@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-10-02T05:10:19.000Z
+date: 2026-10-02T21:12:27.304361+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -314,7 +314,7 @@ When queueing is enabled and every otherwise eligible candidate is full, the pla
 
 ## Wire protocol
 
-Linked servers require matching Minecraft and Wormholes releases using wire protocol 23. Upgrade every linked server
+Linked servers require matching Minecraft and Wormholes releases using wire protocol 24. Upgrade every linked server
 together, then export and import fresh `WHS2.` and `WHP6.` codes on both sides so each end picks up
 the current endpoint format. Keep each server's identity and trust files; gateway targets stay
 identified by peer name and portal UUID.

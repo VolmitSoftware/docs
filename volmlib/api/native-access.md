@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-02T20:12:54.813124+00:00
+date: 2026-10-02T21:12:27.304531+00:00
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -67,6 +67,7 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `item.ItemStackAccess` | Encode and decode complete vanilla item data |
 | `map.MapPixelsAccess` | Capture vanilla map pixels and metadata |
 | `entity.EntityVisibilityAccess` | Evaluate per-viewer entity visibility |
+| `entity.EntityMetadataAccess` | Fingerprint current synchronized entity metadata |
 | `entity.EntityGlowAccess` | Create viewer-specific glow controls |
 | `entity.VirtualPlayerAccess` | Create and control virtual player entities |
 | `player.PlayerClientAccess` | Access client block tags and player motion |
@@ -87,7 +88,9 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 
 `ItemStackAccess.encode(ItemStack)` returns compressed vanilla item NBT with its Minecraft data version. `decode(byte[])` restores Bukkit items through the current registry and data fixer, with a 16 MiB decompressed-data limit. Names, lore, enchantments, and custom components are retained. Empty items are rejected. Use the owning server context when converting live inventory items. The same bytes can be exchanged with native Minecraft item codecs on compatible Minecraft versions.
 
-`WorldEnvironmentAccess.sample(world, position)` returns an immutable `WorldEnvironment` snapshot at the supplied position. The 26.3 provider includes biome-dependent environment attributes and dimension settings; sky angles are in degrees. Call it in the owning world context with the sample chunk loaded. Consumers own chunk retention, scheduling, and handling unavailable capabilities.
+`EntityMetadataAccess.fingerprint(entity)` is available on 26.2 and 26.3. Call it on the entity’s owning thread to read an opaque fingerprint of its current synchronized metadata without serialization or world and chunk loading. Unchanged data keeps the same fingerprint after vanilla sends its dirty fields; the value is not monotonic and must not be persisted as an entity revision.
+
+`WorldEnvironmentAccess.sample(world, position)` returns an immutable `WorldEnvironment` snapshot at the supplied position. The 26.3 provider includes biome-dependent environment attributes, the eye medium (`NONE`, `WATER`, `LAVA`, or `POWDER_SNOW`), and dimension settings including `logicalHeight`, `hasCeiling`, `ambientLight`, and `hasFixedTime`; sky angles are in degrees. Call it in the owning world context with the sample chunk loaded. Consumers own chunk retention, scheduling, and handling unavailable capabilities.
 
 `PlayerRespawnAccess` is available on 26.2 and 26.3. `snapshot(player)` returns an immutable `RespawnPolicy` containing a nullable personal `RespawnPoint`, the forced-spawn flag, and a required shared point. Each point stores its world, block coordinates, yaw, and pitch; `location()` returns a fresh Bukkit location. A null personal point means no configured personal destination is available in a loaded world.
 
