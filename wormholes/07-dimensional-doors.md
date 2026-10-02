@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-02T05:10:19.000Z
+date: 2026-10-02T09:30:45.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -179,12 +179,10 @@ cross-dimension travel is supported for eligible kinds.
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
 <video src="/wormholes-assets/demos/door-crafting-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/door-crafting-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
 <video src="/wormholes-assets/demos/door-crafting-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/door-crafting-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

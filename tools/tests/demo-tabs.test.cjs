@@ -6,15 +6,15 @@ const { JSDOM } = require('jsdom');
 
 const source = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.js'), 'utf8');
 
-function demonstration(id) {
+function demonstration(id, views = ['pov', 'observer']) {
   return `<div class="wormholes-demo" data-demo="${id}">${['standard', 'clientview'].map(client =>
-    `<div class="wormholes-demo-variant" data-client="${client}"><p>${client}</p>` + ['pov', 'observer'].map(view =>
+    `<div class="wormholes-demo-variant" data-client="${client}"><p>${client}</p>` + views.map(view =>
       `<video src="/wormholes-assets/demos/${id}-${client}-${view}.webm" controls></video>`).join('') + '</div>').join('')}</div>`;
 }
 
-async function page(t, perspective) {
+async function page(t, perspective, single = false) {
   const dom = new JSDOM('<div id="root"><div class="v-application"><main class="v-main"><div class="contents">'
-    + ['wand-creation', 'rune-creation', 'portal-linking'].map(demonstration).join('')
+    + ['wand-creation', 'rune-creation', 'portal-linking'].map(id => demonstration(id, single && id !== 'portal-linking' ? ['pov'] : ['pov', 'observer'])).join('')
     + '<div class="adapt-demo"><video src="/adapt-assets/demo-pov.webm"></video><video src="/adapt-assets/demo-observer.webm"></video></div>'
     + '</div></main></div></div>', { url: 'https://example.test/wormholes/03-building-portals', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
@@ -135,4 +135,27 @@ test('Wormholes shares Adapt perspective selection and remembers it across pages
   assert.equal(demos[0].querySelector('video[src$="clientview-pov.webm"]').paused, false);
   const restored = await page(t, 'third-person');
   assert.equal(restored.demos[0].querySelector('select').value, 'third-person');
+});
+
+
+test('first-person-only demonstrations play with a saved observer preference and omit camera controls', async t => {
+  const { window, demos, visible } = await page(t, 'third-person', true);
+  for (const demo of demos.slice(0, 2)) {
+    assert.equal(demo.classList.contains('demo-ready'), true);
+    assert.equal(demo.querySelectorAll('video').length, 2);
+    assert.equal(demo.querySelector('select'), null);
+    visible(demo, true);
+    const first = demo.querySelector('video[src$="standard-pov.webm"]');
+    assert.equal(first.parentElement.hidden, false);
+    assert.equal(first.paused, false);
+    demo.querySelectorAll(':scope > .demo-header button')[1].click();
+    assert.equal(first.paused, true);
+    assert.equal(demo.querySelector('video[src$="clientview-pov.webm"]').paused, false);
+  }
+  const camera = demos[2].querySelector('select');
+  camera.value = 'first-person';
+  camera.dispatchEvent(new window.Event('change', { bubbles: true }));
+  camera.value = 'third-person';
+  camera.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert.equal(demos[0].querySelector('video[src$="clientview-pov.webm"]').parentElement.hidden, false);
 });

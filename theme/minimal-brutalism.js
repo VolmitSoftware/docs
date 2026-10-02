@@ -624,14 +624,15 @@
   }
 
   function updateWormholePlayback(player) {
-    player.camera.value = demoPerspective;
+    const perspective = player.variants.get(player.client).views.has(demoPerspective) ? demoPerspective : 'first-person';
+    player.camera.value = perspective;
     for (const [client, variant] of player.variants) {
       const selected = client === player.client;
       variant.panel.hidden = !selected;
       variant.tab.setAttribute('aria-selected', String(selected));
       variant.tab.tabIndex = selected ? 0 : -1;
       for (const [perspective, view] of variant.views) {
-        const active = perspective === demoPerspective;
+        const active = perspective === player.camera.value;
         view.panel.hidden = !active;
         if (!selected || !active || !player.visible || document.hidden || !player.playing) {
           pauseDemo(view.video);
@@ -653,10 +654,10 @@
       const panel = container.querySelector('.wormholes-demo-variant[data-client="' + client + '"]');
       const first = panel?.querySelector('video[src$="-pov.webm"]');
       const third = panel?.querySelector('video[src$="-observer.webm"]');
-      if (!panel || !first || !third) {
+      if (!panel || !first) {
         return;
       }
-      variants.set(client, { panel, videos: [first, third], views: new Map() });
+      variants.set(client, { panel, videos: new Map([['first-person', first], ...(third ? [['third-person', third]] : [])]), views: new Map() });
     }
     const player = { variants, client: 'standard', visible: false, playing: true, camera: element('select') };
     const id = 'wormholes-demo-' + ++demoSequence;
@@ -668,12 +669,18 @@
     cameraLabel.append(element('span', null, 'Camera'), player.camera);
     player.camera.setAttribute('aria-label', 'Camera view for all demonstrations');
     for (const [perspective, name] of perspectives) {
+      if (![...variants.values()].every(variant => variant.videos.has(perspective))) {
+        continue;
+      }
       const option = element('option', null, name);
       option.value = perspective;
       player.camera.append(option);
     }
     player.camera.addEventListener('change', () => selectDemoPerspective(player.camera.value));
-    header.append(tabs, cameraLabel);
+    header.append(tabs);
+    if (player.camera.options.length > 1) {
+      header.append(cameraLabel);
+    }
     container.prepend(header);
     for (const [client, variant] of variants) {
       const label = client === 'clientview' ? 'Client mod' : 'No client mod';
@@ -683,8 +690,11 @@
         player.client = client;
         updateWormholePlayback(player);
       });
-      for (const [index, [perspective, name]] of perspectives.entries()) {
-        const video = variant.videos[index];
+      for (const [perspective, name] of perspectives) {
+        const video = variant.videos.get(perspective);
+        if (!video) {
+          continue;
+        }
         video.autoplay = false;
         video.muted = true;
         video.preload = 'none';
@@ -698,7 +708,7 @@
           if (video.paused) {
             return;
           }
-          if (player.client !== client || demoPerspective !== perspective || !player.visible || document.hidden) {
+          if (player.client !== client || player.camera.value !== perspective || !player.visible || document.hidden) {
             pauseDemo(video);
             return;
           }

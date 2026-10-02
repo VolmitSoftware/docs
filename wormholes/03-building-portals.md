@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-10-02T02:55:07.636Z
+date: 2026-10-02T09:30:45.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,12 +58,10 @@ To supply nine runes for a 3×3 opening in survival, an administrator can run `/
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
 <video src="/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/wand-creation-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
 <video src="/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/wand-creation-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -97,12 +95,10 @@ default and do not expose the linked destination.
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
 <video src="/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/rune-creation-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
 <video src="/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/rune-creation-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
