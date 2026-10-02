@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -153,7 +153,7 @@ Emoji tokens, function tokens and inline expressions work exactly as they do on 
 
 Dynamic text re-renders at `refreshTicks` while visible; plain text never refreshes periodically. A failed refresh leaves the previous text on screen, and unresolved PlaceholderAPI tokens stay as written. Changed text updates the click area with it.
 
-Text also re-renders when the component opens, when the session rescales after a `[menus] uiScale` or `[preview] scale` change, when an image asset is added or changed, when the menu file changes, and when the API applies a new icon. A toggle refreshes only its visible icon: its condition is read when it opens, and later changes happen on click.
+Text also re-renders when the component opens, when the session rescales after a `[menus] uiScale` or preview-document `scale` change, when an image asset is added or changed, when the menu file changes, and when the API applies a new icon. A toggle refreshes only its visible icon: its condition is read when it opens, and later changes happen on click.
 
 ## `textImage`
 
@@ -194,7 +194,9 @@ Animated images use the same pixel mapping, so the two-tick minimum caps them at
 | `count` | integer | no | `0` | `0` and negatives become `1` at icon construction |
 | `customModelValue` | integer | no | `0` | Applied unconditionally, including `0` |
 
-Item ids must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed ids use the missing icon without breaking the rest of the menu. A count above 1 adds a white bold count label above the item.
+Item ids must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed ids use the missing icon without breaking the rest of the menu. A count above 1 adds a stack badge. `countFormat` defaults to `&f&l{count}` and accepts colors, expressions, and the `{count}` token; an empty format hides its text. Custom-item icons use the same setting.
+
+Inventory item, player-head, and block icons accept `name` and a `lore` string array. Both use the inventory entry’s text and expression context. Omitted names preserve the normal item name.
 
 A material that reports `isBlock()` renders as a block model, except for `BARRIER`, `LIGHT`, `HOPPER`, `TURTLE_EGG`, grass (`grass` / `short_grass`), `TALL_GRASS`, `GLASS_PANE` and the sixteen stained glass panes, `POPPY` and `DANDELION`, which stay flat.
 

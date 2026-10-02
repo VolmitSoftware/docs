@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-02T16:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -49,7 +49,7 @@ apply. Each line below is one alternative value for the same field.
 
 `world.time` is Minecraft time of day in ticks; `time.hour` is calendar time. Wrapping the whole
 expression in `{{ }}` is accepted but optional. A raw `%placeholder%` is not a condition — use
-`papi` or `papiNumber`. Drop labels use `[drops] show` in `gloss.toml`, which takes the same
+`papi` or `papiNumber`. Drop labels use `presentation.labels.show` in `real-drops/default.json`, which takes the same
 booleans and expression strings and is normalized to a quoted string.
 
 Invalid syntax or a non-boolean type rejects the document at load. A runtime failure hides that
@@ -67,7 +67,7 @@ surface for that one evaluation.
 | Bubble style | document `show` | Each live viewer of the selected style's bubble; combines with `hideOwn` and other viewer rules |
 | Damage/healing indicators | document `show` | Live viewer plus event snapshot; combines with `audience.when` while the indicator lives |
 | Real Drops | document `show` | Live viewer plus item snapshot; combines with the selected presentation and audience rules |
-| Drop labels | `[drops] show` in `gloss.toml` | Live viewer plus item snapshot; hides the label without removing the item |
+| Drop labels | `presentation.labels.show` in `real-drops/default.json` | Live viewer plus item snapshot; hides the label without removing the item |
 | Menu | document `show`, `components[].show` | Session viewer; gates update while the session remains open, and hidden components cannot receive clicks |
 | Panel | document `show` | Panel viewer; also requires the current menu and component gates and existing panel access rules |
 | Container preview | document `show`, `card.show`, `elements[].show` | Preview DSL context; visibility updates every four ticks while open |
@@ -576,6 +576,43 @@ Related pages: [Holograms](/gloss/04-holograms),
 [Container Previews](/gloss/15-container-previews),
 [API: Placeholders](/gloss/23-api-placeholders),
 [API: Previews](/gloss/24-api-previews).
+
+## Game-object names
+
+`plugins/Gloss/names.json` is the shared schema-1 names catalog. Edit its eight maps:
+`materials`, `entities`, `worlds`, `gameModes`, `dimensions`, `damageCauses`, `effects`, and
+`groups`. Valid edits reload automatically. Missing entries use Title Case, with separators
+changed to spaces and the namespace omitted.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "materials": {"jack_o_lantern": "Jack o'Lantern"},
+  "entities": {"zombie_villager": "Infected Villager"},
+  "worlds": {"world_nether": "Nether"},
+  "gameModes": {"survival": "Survival"},
+  "dimensions": {"the_nether": "Nether"},
+  "damageCauses": {"fall": "Fall"},
+  "effects": {"speed": "Speed"},
+  "groups": {"member": "Member"}
+}
+```
+
+Keys are case-insensitive except world names, which match exactly. The `minecraft:` prefix is
+optional. Dimension keys `normal` and `nether` normalize to `overworld` and `the_nether`.
+Two keys that normalize to the same value are invalid.
+
+Use `{{ name('materials', 'minecraft:oak_log') }}` for direct lookup. Entity roles expose
+`typeName`, `worldName`, and `dimensionName`; player roles add `gameModeName` and `groupName`.
+World scopes expose `world.displayName` and `world.environmentName`. Raw keys remain available
+for conditions. Damage contexts add `event.causeName` and `event.directSourceTypeName`; drops
+provide `drop.materialName` and `drop.worldName`. Preview documents use `itemName(slot)` for
+the material in an inventory slot.
+
+Drop labels and chat item names share this catalog. Surface-specific overrides such as
+`real-drops/default.json` → `labels.names` take precedence. The shipped chat format omits its
+group badge when no group is available.
 
 ## Player names
 

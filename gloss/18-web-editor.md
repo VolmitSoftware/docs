@@ -46,6 +46,9 @@ Preview exact Minecraft rendering, occlusion, sounds, particles and interaction 
 
 | Kind | Where it lands | Reference |
 |---|---|---|
+| Names catalog | `names.json` | [Game-object names](/gloss/13-expressions-placeholders#game-object-names) |
+| Strings catalogs | `strings/<locale>.json` | [Localization](/gloss/19-localization) |
+| Waypoints | `waypoints/` | Anchor, color, style, range and audience conditions |
 | Menus | `menus/` | [Hologram Menus](/gloss/09-menus), [Components & Hitboxes](/gloss/10-components-hitboxes) |
 | World panels | `panels/` | [Panels](/gloss/16-panels) |
 | Container previews | `previews/` | [Container Previews](/gloss/15-container-previews) |
@@ -67,7 +70,16 @@ Preview exact Minecraft rendering, occlusion, sounds, particles and interaction 
 | Connection messages | `connections.json` | [Connection Messages](/gloss/26-connection-messages) |
 | Surfaces | `surfaces/`, one per action bar, boss bar or title | [Velocity Proxy](/gloss/27-velocity#surfaces) |
 
-Creating a singleton — entity overlays, damage indicators, Real Drops, tablist, MOTD, connections — opens its existing document instead of a second file the server would not load, so duplication and renaming are unavailable for those. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [Data Files & Hot Reload](/gloss/03-data-files).
+Creating a singleton — names, entity overlays, damage indicators, Real Drops, tablist, MOTD, connections — opens its existing document instead of a second file the server would not load, so duplication and renaming are unavailable for those. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [Data Files & Hot Reload](/gloss/03-data-files).
+
+Inspector controls cover marker anchors, beams, trails and edge indicators; nameplate styles,
+boxes, relations and health bars; inventory slots, lists and variants; channel cards, items,
+links, filters and variants; and hologram pages, actions, hitboxes and presentation variants.
+Menu and overlay variant controls preserve each authored condition and override. MOTD entries
+expose weights and conditions, and connection messages include the server first-join section.
+
+Scoreboards, tablists, MOTD and connections have field descriptions and validation in the editor,
+with matching JSON schemas in Gloss's `schema/` directory.
 
 Display style, boxes and card geometry use the same fields as the server documents; see [Display style and boxes](/gloss/11-icons#display-style-and-boxes) and [Container Previews](/gloss/15-container-previews).
 
@@ -76,6 +88,11 @@ Visibility fields accept a boolean or a Gloss expression, evaluated in the previ
 Text previews support authored MiniMessage, legacy colors, expressions, emoji and animations. Entity names, Adapt Insight details and player chat stay literal data. Particle controls cover the applicable whole-surface, component, line and named-span targets; see [Particle Layers](/gloss/25-particle-layers).
 
 Global feature switches, service limits and defaults stay in `gloss.toml`. The document editors do not replace it; see [Configuration](/gloss/02-configuration).
+
+Strings catalogs provide locale and fallback fields plus editable text entries. Numeric-looking
+values and empty strings stay text. Waypoint forms edit world, player, or entity anchors,
+color, style, range, and visibility/audience conditions. These catalog views show the saved data;
+waypoint client rendering remains a server/client concern.
 
 ### 3D previews
 

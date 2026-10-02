@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -267,3 +267,28 @@ Grant `gloss.open.*` to let a group open everything, or grant individual nodes t
 `schema/gloss.schema.json` is an editor schema with `$id` `https://volmit.com/gloss/schema.json`. The server does not read it — map it in your IDE or add a `"$schema"` key, which the runtime ignores. `schema/gloss-preview.schema.json` sits beside it and describes [Container Previews](/gloss/15-container-previews) instead.
 
 `/gloss import holoui` copies `plugins/holoui/menus/` into `plugins/Gloss/menus/`. Those menu files load as they are. World-anchored HoloUi boards are Gloss panels. Menu scale is `[menus] uiScale`.
+
+## Conditional variants
+
+A menu may declare up to 32 `variants`. Each has a unique `id`, integer `priority`, `when`
+condition, and replacement `components` array. The passing variant with highest priority wins;
+equal priorities use ID order. No match uses the menu’s base components.
+
+Variants may supply `particleLayers`; omission inherits the base layers, and an explicit `[]`
+clears them. Conditions are evaluated for the open session, so changes in viewer state can
+change the selected layout without closing the menu. Session variables keep their values.
+
+```json
+"variants": [
+  {
+    "id": "creative",
+    "priority": 10,
+    "when": "viewer.gameMode == 'creative'",
+    "components": [
+      {"id": "title", "offset": [0, 0, 0], "data": {
+        "type": "decoration", "icon": {"type": "text", "text": "Creative tools"}
+      }}
+    ]
+  }
+]
+```

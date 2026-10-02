@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-02T23:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -16,14 +16,13 @@ Gloss shows segmented health above nearby living entities by default.
 custom name above the bar. Attack damage and armor appear on the last line.
 
 **Who sees it.** Each viewer sees the nearest entities within `range`, up to `maxEntitiesPerViewer`
-and `maxActiveOverlays`. One display per entity is shared by everyone in range, except rows whose
-values differ per viewer, such as Insight or that viewer's own recent hits.
+and `maxActiveOverlays`. Viewer-independent presentations share a display; viewer-specific rows and conditional variants render separately for each recipient.
 
 **What is excluded.** The viewer themselves, invisible entities, spectators, armor stands by default,
 and anything in `blacklistWorlds` or `excludedEntityTypes`. Death, chunk unloading, disconnects and
 world changes remove the display.
 
-The health bar uses ten segments. A living entity retains at least one filled segment. Green means at least half health, yellow means at least one quarter, and red means less than one quarter. Empty segments are dark gray. A hit updates health, briefly marks lost segments red, and adds the damage amount. Healing updates the bar on the next refresh.
+The default health bar uses ten segments. A living entity retains at least one filled segment. Green means at least half health, yellow means at least one quarter, and red means less than one quarter. Empty segments are dark gray. A hit updates health, briefly marks lost segments red, and adds the damage amount. Healing updates the bar on the next refresh.
 
 Attack and armor are current Bukkit attribute values. An entity without an attribute shows zero. Attack is the attack-damage attribute, not a prediction of damage after weapon effects, projectiles, armor, or other plugins.
 
@@ -66,9 +65,9 @@ The `lines` array determines the visible order. Add, remove, or move any row, in
 
 Rows use the normal Gloss text engine: ampersand and hex colors, MiniMessage, emoji, registered functions, `|animation.name|`, PlaceholderAPI, and `{{ expressions }}`. Viewer functions and placeholders use the player who sees the pane. Entity values are copied on the entity's owning thread before viewer text evaluates.
 
-Tokens include `{name}`, `{bar}`, `{health}`, `{max_health}`, `{count}`, `{attack}`, `{armor}`, `{damage}`, `{type}`, `{distance}`, and `{insight}`. Numeric tokens use at most one decimal place. Expression results retain legacy colors and insert as text; place MiniMessage tags directly in the row template. Names and Insight details are literal data: their contents cannot execute functions, placeholders, expressions, MiniMessage, or particle tags.
+Tokens include `{name}`, `{bar}`, `{health}`, `{max_health}`, `{count}`, `{attack}`, `{armor}`, `{damage}`, `{type}`, `{distance}`, and `{insight}`. Numeric tokens use up to `healthBar.decimals` decimal places (default 1). `{typeName}` inserts the entity’s readable catalog name, while `{type}` remains its raw key. Expression results retain legacy colors and insert as text; place MiniMessage tags directly in the row template. Names and Insight details are literal data: their contents cannot execute functions, placeholders, expressions, MiniMessage, or particle tags.
 
-Expressions and `show` conditions can read `entity.name`, `entity.named`, `entity.type`, `entity.health`, `entity.maxHealth`, `entity.healthPercent`, `entity.damage`, `entity.damaged`, `entity.attack`, `entity.armor`, `entity.stackCount`, `entity.distance`, and `insight.active`. Health percent is `0` to `100`; distance is in blocks. Entity types use lowercase Bukkit key names, such as `zombie`. The normal viewer, server, time, metric, and PlaceholderAPI expression functions are also available.
+Expressions and `show` conditions can read `entity.name`, `entity.named`, `entity.type`, `entity.typeName`, `entity.health`, `entity.maxHealth`, `entity.healthPercent`, `entity.damage`, `entity.damaged`, `entity.attack`, `entity.armor`, `entity.stackCount`, `entity.distance`, and `insight.active`. Health percent is `0` to `100`; distance is in blocks. Entity types use lowercase Bukkit key names, such as `zombie`. The normal viewer, server, time, metric, and PlaceholderAPI expression functions are also available.
 
 For example, this layout puts combat statistics above health and adds a conditional warning:
 
@@ -80,6 +79,48 @@ For example, this layout puts combat statistics above health and adds a conditio
   {"id": "warning", "type": "text", "text": "<red>Low health</red>", "show": "entity.healthPercent < 25"},
   {"id": "insight", "type": "insight", "text": "{insight}"}
 ]
+```
+
+## Conditional variants
+
+Add up to 64 `variants` to select overlay presentations per viewer and entity. Each entry needs a unique `id`, a `when` expression, and a `presentation`; `priority` defaults to `0` and is clamped to `-1000`–`1000`. The first passing entry wins in descending priority and then ascending id order. No match uses the base presentation.
+
+`presentation` can replace `lines`, `style`, `box`, `particleLayers`, `verticalOffset`, `healthSegments`, and `healthBar`. Omitted fields inherit the base; empty line or particle arrays clear those fields. Conditions can use the same viewer and entity values as line visibility.
+
+```json
+"variants": [{
+  "id": "wounded",
+  "priority": 10,
+  "when": "entity.healthPercent < 25",
+  "presentation": {
+    "lines": [{"id": "warning", "text": "&c{typeName}: {health}/{max_health}"}],
+    "verticalOffset": 0.6
+  }
+}]
+```
+
+## Health bar formatting
+
+Overlays configure `healthBar` at the document root; nameplates configure it inside `presentation`.
+`glyph` and `emptyGlyph` select filled and empty segments, each up to 64 characters. `healthyColor`,
+`warningColor`, `criticalColor`, `damageColor`, and `emptyColor` accept text color codes. Defaults
+are `|` for both glyphs and `&a`, `&e`, `&c`, `&c`, and `&8` for those colors.
+
+`warningThreshold` defaults to `0.5` and `criticalThreshold` to `0.25`, expressed as fractions of
+maximum health from 0 to 1. The critical threshold cannot exceed the warning threshold.
+`decimals` controls numeric tokens from 0 to 6 decimal places; trailing zeroes are omitted.
+
+```json
+"healthBar": {
+  "glyph": "■",
+  "emptyGlyph": "□",
+  "healthyColor": "&b",
+  "warningColor": "&e",
+  "criticalColor": "&c",
+  "warningThreshold": 0.6,
+  "criticalThreshold": 0.2,
+  "decimals": 2
+}
 ```
 
 ## Style and decorations

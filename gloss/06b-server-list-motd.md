@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Randomize the message and icon shown in the server list"
 published: true
-date: 2026-09-28T00:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -117,7 +117,7 @@ While a Velocity Gloss proxy holds the MOTD claim, this server removes the links
 
 `[features] motd` defaults to `false`. Turning it on extracts the bundled file and starts using it without a restart.
 
-Gloss chooses one entry at random for each server-list request. Another MOTD plugin may override it if that plugin handles the event later.
+Gloss evaluates each entry’s `show` condition for each request, then selects among passing entries according to `weight`. An omitted `show` is true; an omitted weight is 1. Weights are integers from 1 to 1000000, so a weight of 3 is three times as likely as a weight of 1. With no passing entries, the existing ping response remains unchanged. Entry conditions share the document’s viewerless server and time scope. Another MOTD plugin may override it if that plugin handles the event later.
 
 The chosen text is rendered **statically**:
 

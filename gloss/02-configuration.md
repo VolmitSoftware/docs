@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-02T23:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -62,9 +62,7 @@ defaults on reload; previews require the restart noted above. See [Getting Start
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `stackDistance` | `0.26` | 0.05 – 2.0 | Vertical distance in blocks between stacked temporary holograms, and the value exposed to the API as the stack spread |
-| `updateIntervalTicks` | `10` | 1 – 200 | Ticks between ordinary persistent hologram refreshes; clock-driven expressions and named animations automatically sample every tick |
-| `viewRange` | `48.0` | 4.0 – 128.0 | Distance in blocks at which holograms become visible, and the radius within which personalized metadata is sent |
+| `viewRange` | `48.0` | 4.0 – 128.0 | Default range for temporary API holograms; persistent documents use their own `viewDistance` |
 | `perViewerPlaceholders` | `true` | Not applicable | Render complete placeholder, function and expression tokens per viewing player instead of once globally |
 | `temporaryUpdateIntervalTicks` | `2` | 1 – 20 | Ticks between refreshes of temporary holograms (bubbles, indicators, entity overlays, drop labels, and API temporaries) |
 | `interpolatedMotion` | `true` | Not applicable | Smooths moving temporary holograms between drive ticks via display teleport interpolation and smooths BubbleStyle scale/rotation through display transformation interpolation, using durations matched to `temporaryUpdateIntervalTicks`. It does not reduce the update rate. Unsupported interpolation controls fall back to immediate updates |
@@ -72,7 +70,7 @@ defaults on reload; previews require the restart noted above. See [Getting Start
 | `maxAnimationFps` | `120` | 1 – 240 | Frame-rate ceiling of the high-frequency animator loop. Sets its adaptive floor to `1000 / fps` ms (at least 4 ms) |
 | `animationPacketBudget` | `20000` | 100 – 1000000 | Hologram text-metadata recipients per second, shared by animated targets, personalized updates and personalized clears. Large aggregate audiences degrade animation frame rate proportionally |
 
-A non-finite `stackDistance` or `viewRange` falls back to its default. A finite value outside its documented range is clamped. See [Holograms](/gloss/04-holograms).
+A non-finite `viewRange` falls back to its default. A finite value outside its documented range is clamped. See [Holograms](/gloss/04-holograms).
 
 ## `[particles]`
 
@@ -80,7 +78,6 @@ These ceilings are shared by particle layers on holograms, temporary holograms, 
 
 | Key | Default | Range | Meaning |
 |---|---:|---:|---|
-| `viewRange` | `48.0` | 4.0 – 128.0 | Independent maximum distance in blocks between a viewer and a particle-layer origin |
 | `samplesPerViewerPerTick` | `128` | 1 – 4096 | Particle points admitted for one viewer during one tick |
 | `samplesPerTick` | `4096` | 16 – 65536 | Particle points admitted server-wide during one tick |
 | `maxCachedSamplesPerLayer` | `512` | 4 – 4096 | Maximum local geometry points sampled for one layer |
@@ -131,14 +128,6 @@ Stage gates for the rendering pipeline. Neither applies to chat messages.
 |---|---|---|
 | `color` | `true` | Translate color codes in player chat for players holding `gloss.chat.color` |
 
-## `[chatBubbles]`
-
-| Key | Default | Meaning |
-|---|---|---|
-| `blacklistWorlds` | `[]` | World folder names where chat bubbles never appear. Null entries are dropped. No case folding is applied, so match the folder name exactly |
-
-Bubble wrapping, appearance, lifetime, conditional selection, expression-driven motion and particle layers are per-style, in schema-5 `bubbles/<id>.json`. See [Chat Bubbles](/gloss/08-chat-bubbles).
-
 ## `damage-indicators/default.json`
 
 Nearby persistent health bars use the separate schema-2 `entity-overlays/default.json` document. They are enabled by default and have their own `enabled` switch. See [Entity Overlays](/gloss/20-entity-overlays) for range, segments, names, hit feedback, React counts, and Adapt Insight settings.
@@ -155,6 +144,8 @@ web editor.
 | `lifetimeMs` | `3000` | 250 – 30000 | Lifetime of each indicator in milliseconds |
 | `minimumDelta` | `0.009` | 0 – 1000 | Applied health delta at or below which no indicator is spawned |
 | `decimals` | `0` | 0 – 4 | Decimal places used for the `{amount}` value |
+| `viewRange` | `48` | 4 – 128 | Maximum indicator viewing distance in blocks |
+| `debounceMs` | `150` | 0 – 60000 | Coalescing delay in milliseconds |
 
 The live-indicator admission limit is derived from `maxPerSecond * lifetimeMs / 1000`, rounded up
 to a whole indicator, and hard-capped at 2,048. The defaults admit 120 simultaneous indicators.
@@ -205,20 +196,13 @@ Each presentation also carries `transform`:
 
 Damage conditions can use applied-delta event values plus immutable affected-entity and direct-damager snapshots. Audience conditions use a live viewer. World filters, permissions, groups, regions, PlaceholderAPI values and React samplers all use the shared language in [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
-## `[drops]`
-
-| Key | Default | Range | Meaning |
-|---|---|---|---|
-| `show` | `"true"` | Boolean or expression string | Per-viewer label visibility; accepts `show = false` or `show = "world.time > 12000"`. Gloss normalizes it to a quoted expression string. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) |
-| `preserveCustomNames` | `true` | Not applicable | Leave custom names other plugins already set on dropped item entities untouched. Gloss tracks its own labels with a persistent data key |
-
 ## `real-drops/default.json`
 
 Real Drops settings live in `plugins/Gloss/real-drops/default.json`, a schema-4 file with a base
 `presentation`, conditional `variants` and an `audience.when`. It reloads automatically and opens
 in the web editor with `/gloss web edit real-drops default`.
 
-It also holds the drop label text: `presentation.labels.format`, per-material `names`, `useItemDisplayNames` and the `bundle` formats. Every key, default and range is on [Drop Labels](/gloss/08c-drop-labels#real-drops).
+It also holds the drop label text: `presentation.labels.format`, per-material `names`, `useItemDisplayNames`, `show`, `preserveCustomNames`, and the `bundle` formats. Every key, default and range is on [Drop Labels](/gloss/08c-drop-labels#real-drops).
 
 ## `[commands]`
 
@@ -270,20 +254,13 @@ Gloss normalizes the scheme, host, and trailing slash before storing the endpoin
 
 See [Web Editor & Sync](/gloss/18-web-editor).
 
-## `[preview]`
-
-| Key | Default | Range | Meaning |
-|---|---|---|---|
-| `lookDistance` | `10.0` | 1.0 – 24.0 | Distance in blocks the look-at raycast reaches for container previews |
-| `scale` | `0.65` | 0.25 – 4.0 | Base render scale of container previews |
-
 ## `[menus]`
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
 | `uiScale` | `1.0` | 0.25 – 4.0 | Global render scale multiplier for holographic menus and panels |
 
-If you change `scale` or `uiScale`, Gloss invalidates the item provider cache. It then refreshes every open menu session and every live panel on reload.
+If you change `uiScale`, Gloss invalidates the item provider cache. It then refreshes every open menu session and every live panel on reload.
 
 ## `[items]`
 

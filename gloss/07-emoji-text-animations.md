@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-02T23:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -102,7 +102,7 @@ One JSON file per emoji in `plugins/Gloss/emoji/`. The id is the file name with 
 | `emoji` | yes | The replacement text. Blank or absent rejects the file with `emoji document requires an emoji value` |
 | `enabled` | no | **Absent means `true`.** Only an explicit `"enabled": false` turns an emoji off |
 
-Every emoji is always usable as `:<id>:`, whether or not it has a trigger. A trigger is an additional, shorter spelling.
+Every emoji is always usable as `:<id>:`, whether or not it has a trigger. A trigger is an additional, shorter spelling. A trigger beginning or ending in a letter, digit, underscore, or combining mark requires a word boundary at that end: `lol` matches `lol!` but not `lollipop`. Symbol triggers such as `<3` can remain adjacent to text or other symbol triggers.
 
 `emoji` is passed through the `U+<hex>;` escape decoder, where the hex run is everything between `U+` and the next `;`. An unparseable value becomes `?`, a string with no `U` at all is used verbatim, and a pasted glyph or resource-pack private-use character works directly.
 

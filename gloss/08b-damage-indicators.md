@@ -2,7 +2,7 @@
 title: "Damage Indicators"
 description: "Show damage and healing numbers beside entities"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-02T23:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -78,7 +78,7 @@ The included document is:
 }
 ```
 
-The limits are clamped when the document loads:
+`limits.viewRange` sets viewing distance in blocks (default 48, range 4–128), and `limits.debounceMs` sets the coalescing delay (default 150 milliseconds, range 0–60000). The limits are clamped when the document loads:
 
 | Key | Range |
 |---|---|
@@ -87,7 +87,7 @@ The limits are clamped when the document loads:
 | `minimumDelta` | `0`..`1000` |
 | `decimals` | `0`..`4` |
 
-The base `when` condition enables each event type. The matching variant with the highest priority wins; ties use the lexicographically smallest ID. `format` accepts any authored label, icon text, formatting, function, expression, or animation. Include `{amount}` where the numeric change belongs; it is optional. `offset` is measured from the affected entity and clamps each axis to `-32`..`32`.
+The base `when` condition enables each event type. The matching variant with the highest priority wins; ties use the lexicographically smallest ID. `format` accepts any authored label, icon text, formatting, function, expression, or animation. Include `{amount}` where the numeric change belongs; it is optional. `{cause}` inserts the readable damage cause, `{source}` the attacker name, and `{target}` the affected entity name. `offset` is measured from the affected entity and clamps each axis to `-32`..`32`.
 
 Each base or variant presentation accepts full shared `style` and `box` settings. Omitted styles use center billboard, see-through text and unit XYZ scale. Style scale multiplies the indicator transform, and style opacity multiplies its fade; boxes follow motion, rotation, visibility and expiry. See [Display style and boxes](/gloss/11-icons#display-style-and-boxes).
 

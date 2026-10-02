@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-02T23:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -34,11 +34,7 @@ The default gives `64x Cobblestone` and `1x Diamond Sword`, even when that sword
 }
 ```
 
-Under `[drops]` in `gloss.toml`, `show` accepts a boolean or an expression string. Use `show = false`
-to hide labels, or `show = "world.time > 12000"` to show them only after that world-time threshold.
-Gloss writes normalized values as quoted expression strings, so `show = false` becomes
-`show = "false"`. The condition uses each viewer and the item snapshot; the underlying item remains
-present. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+Set `presentation.labels.show` to a boolean or condition string, such as `"world.time > 12000"`, to control label visibility for each viewer. The condition uses that viewer and the item snapshot; the underlying item remains present. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ## Bundles
 
@@ -78,7 +74,7 @@ React super-stack bundles can supply their own label formats and entry limit.
 
 Real Drops, standalone, and conditional labels use the temporary-hologram engine for formatting, functions, animations, viewer expressions, PlaceholderAPI, and named particle spans. Gloss does not change the `ItemStack`.
 
-With `[drops] preserveCustomNames = true`, Gloss leaves names from other plugins unchanged. Set it to `false` to allow Gloss to overwrite them.
+With `presentation.labels.preserveCustomNames: true`, Gloss leaves names from other plugins unchanged. It defaults to `true`; set it to `false` to allow Gloss to overwrite them.
 
 Labels refresh after spawns, merges, partial pickups, loads, and reloads. Removing the item removes its presentation.
 

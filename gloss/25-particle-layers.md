@@ -2,7 +2,7 @@
 title: "Particle Layers"
 description: "Gloss documentation: particle geometry behind in-world displays"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-26T00:00:00.000Z
@@ -56,12 +56,16 @@ Moving without changing the player's look direction keeps the particle plane's o
 ## Emission
 
 Each layer emits on its own `emission.intervalTicks`, per viewer, with the first emission
-immediate. Missed emissions are never replayed. Geometry particles spawn with zero added speed, so
-Minecraft's own particle movement, lifetime and the client's particle setting still apply.
+immediate. Missed emissions are never replayed. `particle.count` defaults to 1 (range 1–64),
+`particle.spread` defaults to `[0, 0, 0]` (each axis 0–16), and `particle.speed` defaults to 0
+(range 0–10). These control the number of particles per sampled point, random positional spread,
+and added speed. Minecraft’s own particle movement, lifetime and the client’s particle setting
+also apply. Particle budgets count emitted particles, including `particle.count`.
 
 A document allows up to 64 uniquely named layers. Raise `geometry.spacing` or
 `emission.intervalTicks` to reduce particle work. Per-viewer and global particle budgets apply, as
-does the configured particle view range, which is independent of display view range. Drop-label
+does each layer’s `viewDistance` (default 48 blocks, range 4–128), independent of display view range.
+A layer’s `show` accepts a boolean or condition expression; false suppresses its emission for that viewer. Drop-label
 range is measured from the label's vertical offset.
 
 ## Java API

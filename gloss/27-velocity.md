@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-09-28T10:21:32.084Z
+date: 2026-10-02T23:50:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -324,6 +324,8 @@ The top-level `favicon` is the server-list icon for every entry. An entry's own 
 Put the 64×64 PNG icon at `plugins/gloss/images/network.png`. Icon paths must stay within `images/`. Icons load at startup or reload. The file must be a real PNG of exactly 64×64 pixels; another format or size fails the reload with a message naming the rule, and the previous configuration stays active.
 
 `sample` accepts up to twelve hover lines. `online` and `max` accept numeric text or text expressions. Counts clamp to nonnegative integers. `version` changes the displayed version name and preserves the protocol number.
+
+Each MOTD entry accepts `show` (boolean or proxy expression, default `true`) and `weight` (integer from `1` to `1000000`, default `1`). Each ping chooses among visible entries in proportion to their weights. With no passing entry, Gloss leaves the existing ping response unchanged. MOTD conditions have no player context.
 
 Omitted optional fields retain the proxy's existing ping values. An empty `sample` also retains the existing sample. When MOTD is disabled, Gloss leaves the proxy response unchanged.
 

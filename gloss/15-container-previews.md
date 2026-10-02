@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,7 +15,7 @@ opens one in a restricted live editor session; `/gloss web workspace` includes e
 
 ## What triggers a preview
 
-Look at a container within `[preview] lookDistance` blocks (default `10.0`, range `1.0`–`24.0`). A
+Look at a container within the matched preview document’s `viewDistance` blocks (default `10`, range `1`–`24`). A
 block card appears on the next tick; an entity card within four ticks. Fluids and passable blocks
 are skipped, and the entity wins a tie with a block behind it.
 
@@ -70,7 +70,7 @@ cancel to deny access. See [API: Previews](/gloss/24-api-previews).
 
 | Source | Range | Scope |
 |---|---|---|
-| `[preview] scale` in `gloss.toml` | `0.25`–`4.0`, default `0.65` | server-wide |
+| `scale` in the preview document | `0.25`–`4.0`, default `0.65` | one preview document |
 | The per-player factor | `0.25`–`2.5`, default `1.0` | one player |
 
 Both apply, and cards also shrink with distance. To resize a visible preview, double-tap sneak to
@@ -79,14 +79,16 @@ percent and the action bar shows the current size. Adjust mode also saves when t
 after 20 seconds of inactivity, into `plugins/Gloss/preview-scales.json` by UUID.
 
 Below 0.30 nothing is drawn at all and the action bar says so. That is the player-side opt-out;
-scrolling back up restores previews. Changing `[preview] scale` re-renders open previews
+scrolling back up restores previews. Changing a document’s `scale` re-renders open previews
 immediately.
 
 ## The preview document
 
 Each `.json` file in `plugins/Gloss/previews/` defines one preview, and its id is the filename
 without `.json`. Preview documents have no `schemaVersion` or `revision`, and subfolders are
-ignored. All top-level keys are optional:
+ignored. `scale` defaults to `0.65` (range `0.25`–`4`) and `viewDistance` to `10` blocks
+(range `1`–`24`). Discovery and retention use the matched document’s viewing distance.
+All top-level keys are optional:
 
 ```json
 {

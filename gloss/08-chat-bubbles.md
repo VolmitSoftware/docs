@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-10-02T16:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -59,6 +59,10 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 |---|---|---|
 | `schemaVersion` | required | Must be `5`. Any other version is silently ignored |
 | `revision` | required | `1` to `9007199254740991` |
+| `format` | `"{message}"` | Bubble text template, with `{message}` inserting literal player chat |
+| `stackDistance` | `0.26` | Vertical stack spacing in blocks, clamped to `0.05`..`2` |
+| `maxPerSender` | `4` | Maximum live bubbles per speaker, clamped to `1`..`64` |
+| `blacklistWorlds` | `[]` | Exact, case-sensitive world names where this style produces no bubbles |
 | `prefix` | `"&7"` | Configured text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
 | `offset` | `[0.0, 0.3, 0.0]` | Literal `[x, y, z]` added to the speaker's eye position before stack and motion translation. There is no hidden base lift. The full offset remains applied while a bubble follows its speaker |
 | `wordWrapChars` | `0` clamped to `8` | Visible characters per wrapped row. Color and format codes do not consume the width. Clamped to `8`..`128` |
@@ -74,7 +78,7 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 
 Write `followPlayer` and `hideOwn` explicitly — an omitted value is `false`, not the default shown above. Put bubble movement in `motion`; `shimmer.flyAway` only controls the shine pass. The [shared style and box settings](/gloss/11-icons#display-style-and-boxes) apply unchanged.
 
-There is no config table for bubble styles. `gloss.toml` carries exactly one bubble knob, `[chatBubbles] blacklistWorlds` (default `[]`). That is a list of world folder names matched exactly and case-sensitively. A speaker in a listed world produces no bubbles at all.
+Bubble presentation, spacing, world exclusions, and per-speaker limits are configured in each style document.
 
 ## Visibility
 
@@ -149,7 +153,7 @@ disable it.
 
 ## Motion
 
-The base position is the speaker's eye plus `offset`. Newer messages push older ones upward by `[holograms] stackDistance` per wrapped row. `followPlayer` controls whether that base follows the speaker.
+The base position is the speaker's eye plus `offset`. Newer messages push older ones upward by `stackDistance` per wrapped row. `followPlayer` controls whether that base follows the speaker.
 
 `motion` contains four expression surfaces:
 
@@ -264,9 +268,9 @@ The enabled switch affects both the highlighted token and the full highlighted m
 
 `channel.scope` accepts `global`, `world`, `radius`, `permission`, or `direct`. Radius channels require a positive `channel.radius`, up to 512 blocks. A permission channel requires `channel.permission`; a blank permission on other scopes imposes no additional permission gate. `channel.cooldownTicks` adds a sender cooldown from 0 through 72000 ticks.
 
-`format` is the ordinary message template. `card` contains up to 16 hover-text lines, inserted with `{{ card }}`. Up to 32 `variants`, each with `id`, `priority`, `when`, and `format`, choose the ordinary format by condition. `mentions.messageFormat` controls the tagged recipient's message independently.
+`format` is the ordinary message template. `card` contains up to 16 hover-text lines, inserted with `{{ card }}`. Up to 32 `variants`, each with `id`, `priority`, and `when`, can override `format`, `card`, `mentions`, `items`, `links`, `filters`, and `throttle`. The highest priority wins, with ID breaking ties. An omitted field inherits the base value; an explicit empty array clears that field. Nested objects replace their base object. Filters and throttle select in the sender’s scope; presentation fields select per reader. `mentions.messageFormat` controls the tagged recipient's message independently.
 
-`items` has `enabled`, `token` (default `[item]`), and `permission` (default `gloss.chat.item`). `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. `filters` contains up to 64 regular-expression `match` and `replace` entries. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
+`items` has `enabled`, `token` (default `[item]`), `permission` (default `gloss.chat.item`), and `render` (default `[{{ item.name }}]{{ item.countSuffix }}`). The render template accepts colors and `item.name`, `item.id`, `item.amount`, and `item.countSuffix` substitutions. The suffix is ` xN` for stacks above one, otherwise empty. Item names remain literal text. `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. `filters` contains up to 64 regular-expression `match` and `replace` entries. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
 
 Use `/ch list` and `/ch <channel>` to choose a channel, `/msg <player> <message>` for direct messages, and `/r <message>` to reply.
 

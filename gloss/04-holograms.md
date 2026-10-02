@@ -2,13 +2,13 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-10-02T16:00:00.000Z
+date: 2026-10-02T23:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Each JSON file in `plugins/Gloss/holograms/` defines one persistent text hologram. The file name is the hologram ID, and command or file edits apply live.
+Each JSON file in `plugins/Gloss/holograms/` defines one persistent hologram. The file name is the hologram ID, and command or file edits apply live.
 
 `/gloss web edit hologram <id>` opens one hologram in a restricted live editor session; `/gloss web workspace` includes every hologram. Check text size and placement in a Minecraft client, since the browser preview does not reproduce the client renderer.
 
@@ -44,6 +44,8 @@ Each JSON file in `plugins/Gloss/holograms/` defines one persistent text hologra
 | `anchor.position` | yes | `[x, y, z]` array of doubles. Missing rejects the file with `hologram anchor requires a position` |
 | `show` | no | Boolean or boolean expression; defaults to `true` |
 | `lines` | no | Absent or `null` becomes an empty list. A `null` entry becomes an empty string |
+| `viewDistance` | no | Viewing radius in blocks, default `48`, range `4`–`128` |
+| `refreshTicks` | no | Ordinary text refresh interval, default `10`, range `1`–`200` ticks |
 | `style` | no | Shared display style. An omitted object uses `center` billboard, see-through text, unit XYZ scale, transparent text background and full opacity |
 | `box` | no | Optional measured panel with a complete perimeter; disabled by default |
 | `yaw` | no | Finite degrees from `-180` through `180`; defaults to `0` |
@@ -62,6 +64,46 @@ Set document-level `"show": false` to hide the hologram, or use a boolean expres
 ### The default
 
 `/gloss hologram create` starts with `&dNew hologram`, `seeThrough` enabled, scale `1.0`, `CENTER` billboard mode, and no particle layers.
+
+## Mixed lines and pages
+
+A line can be a string or an object with exactly one content key: `text`, `item`, `head`, `block`, or `entity`. Item content uses the [icon contract](/gloss/11-icons); the other object values are strings. Object lines accept `show` as a boolean or viewer expression and `scale` from `0.01` to `64`, default `1`.
+
+```json
+"lines": [
+  {"item": {"type": "item", "item": "minecraft:diamond", "count": 1}, "scale": 0.5},
+  "&bTreasure",
+  {"entity": "minecraft:pig", "show": "viewer.gameMode == 'creative'"}
+]
+```
+
+Text and objects retain their authored row order. Each object reserves space for its authored scale in the text layout, including when its condition hides it, so conditional objects do not shift neighboring rows.
+
+For multiple pages, replace `lines` with `pages`. Each page needs a unique `id` and nonempty `lines`, and accepts its own `show`. A document supports up to 64 pages. Each viewer starts on the first visible page; navigation skips hidden pages and wraps. With no visible page, the hologram is hidden.
+
+```json
+"pages": [
+  {"id": "welcome", "lines": ["Welcome"]},
+  {"id": "creative", "show": "viewer.gameMode == 'creative'", "lines": ["Creative tools"]}
+]
+```
+
+Use `/gloss hologram page id=spawn page=next player=Alex`, `page=prev`, or an exact page id. `actions` accepts up to 32 [actions](/gloss/12-actions); a hologram with actions creates an interaction box. `hitbox.width` defaults to `1.2`, `height` to `0.35`, and `perLine` to `false`. Width and height must be positive and at most `64`.
+
+## Conditional variants
+
+`variants` selects a presentation independently for each viewer. Each entry has a unique `id`, optional `priority` (default `0`, clamped to `-1000`–`1000`), a boolean expression in `when`, and a `presentation`. Up to 64 variants are allowed. The first matching variant wins, ordered by descending priority then ascending id; without a match, the base presentation applies.
+
+A presentation can replace `lines`, `style`, `box`, and `particleLayers`. Omitted fields inherit the base or current page; explicit empty arrays clear lines or particles. Conditions and selected presentations update while the viewer remains nearby.
+
+```json
+"variants": [{
+  "id": "creative",
+  "priority": 10,
+  "when": "viewer.gameMode == 'creative'",
+  "presentation": {"lines": ["&bCreative tools"]}
+}]
+```
 
 ## Display style and boxes
 
@@ -131,11 +173,11 @@ Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the 
 
 ## Rendering
 
-Style, orientation and visibility edits apply to the existing display, and box geometry follows text, animation frames, orientation and scale. Ordinary text refreshes every `[holograms] updateIntervalTicks` (default 10); clock expressions and named animations can refresh every tick. Empty holograms and holograms in unloaded worlds do not render. Lines are rendered by the shared text pipeline described on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
+Style, orientation and visibility edits apply to the existing display, and box geometry follows text, animation frames, orientation and scale. Ordinary text refreshes every document `refreshTicks` (default 10, range 1–200); clock expressions and named animations can refresh every tick. Empty holograms and holograms in unloaded worlds do not render. Lines are rendered by the shared text pipeline described on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
 
 `[features] holograms = false` despawns every hologram on the next driver tick. Documents still load, hot-reload and accept command edits. Nothing renders.
 
-With `[holograms] perViewerPlaceholders = true`, each nearby player sees their own placeholder and viewer-expression values; viewer-independent text stays shared. Set it to `false` and player-only values stay unresolved unless a dynamic `show` needs per-viewer rendering.
+With `[holograms] perViewerPlaceholders = true`, each nearby player sees their own placeholder and viewer-expression values; viewer-independent text stays shared. Set it to `false` and player-only values stay unresolved unless a dynamic `show` or conditional variant needs per-viewer rendering.
 
 Displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap at a smaller pixel width. Configured entries stay separate logical lines, with a reset between them so `&k` and other styles cannot bleed into the next line.
 
@@ -182,7 +224,15 @@ Files in `markers/<id>.json` use schema 1 and require an `anchor`. A fixed ancho
 ```
 
 `icon` accepts the shared [icon types](/gloss/11-icons) and renders above the anchor. Its position
-and size follow `distanceScale`. `label` accepts Gloss text formatting and expressions.
+and size follow `distanceScale`. `label` accepts Gloss text formatting and expressions. The marker’s
+`style` and `box` control its label display and border, using the shared [icon style](/gloss/11-icons#display-style-and-boxes).
+
+`beam` accepts `enabled`, `height` (default 48, range 1–384), `width` (default 0.25, range
+0.02–8), a block `material`, and optional `glowColor` in `#RRGGBB`. `trail` accepts `enabled`,
+`particle` (default `minecraft:end_rod`), `spacing` (default 2, range 0.25–16), `maxPoints`
+(default 48, range 1–256), and `color` in `#RRGGBB` (default white). Trail color applies to dust;
+particles without color data retain their native color. Trails refresh as the viewer moves.
+
 `lifetimeTicks` defaults to 0 for unlimited duration; a positive value starts when the marker is
 first offered to that viewer, including while hidden or out of range, and removes its label,
 icon, beam and edge indicator when it expires. Moving or editing the marker does not restart it;

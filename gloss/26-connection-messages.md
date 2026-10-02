@@ -2,7 +2,7 @@
 title: "Connection Messages"
 description: "Replace the vanilla join and leave lines with conditional Gloss text"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-02T23:35:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -18,7 +18,7 @@ Gloss replaces the vanilla join and leave lines with text from `plugins/Gloss/co
 
 ## The document
 
-`connections.json` is a schema-1 document with a `join` and a `leave` section. Gloss watches it like the other documents; a valid edit reloads and logs `Connection messages reloaded from connections.json.`
+`connections.json` is a schema-1 document with `join`, `leave`, and optional `firstJoin` sections. Gloss watches it like the other documents; a valid edit reloads and logs `Connection messages reloaded from connections.json.`
 
 ```json
 {
@@ -54,6 +54,19 @@ Gloss replaces the vanilla join and leave lines with text from `plugins/Gloss/co
 | `<section>.audience` | Accepted, and must be `network` or `server`. One server is the whole network, so it changes nothing here |
 
 A `switch` block is read without complaint and does nothing. A backend never sees a server switch; the proxy edition is where that section matters.
+
+`firstJoin` has the same fields as `join`. When enabled, it replaces `join` for a player who has
+never played on this server. It does not also send the ordinary join message. Omitting or
+disabling `firstJoin` uses `join` for everyone. This is a server-local distinction; the proxy
+edition does not track first-time players.
+
+```json
+"firstJoin": {
+  "enabled": true,
+  "presentation": {"text": "&aWelcome {{ subject.name }}"},
+  "variants": []
+}
+```
 
 ## How a line is rendered
 

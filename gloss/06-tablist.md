@@ -2,7 +2,7 @@
 title: "Tablist"
 description: "Configure the in-game player list"
 published: true
-date: 2026-10-02T16:00:00.000Z
+date: 2026-10-02T23:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -114,7 +114,9 @@ clamps to -1 through 10000 and defaults to 0. Cells fill down each column before
 The `players` rectangle starts at row 0. Its filter uses `viewer` and `subject` conditions.
 Player cells apply the selected `listNames` format and variants, configured sort order, current
 player skin, and ping. Sorting happens before truncation. With `overflow: "count"`, the final
-cell displays `+N` when players exceed the rectangle's capacity; `"hide"` omits excess players.
+cell uses `players.overflowFormat` when players exceed the rectangle's capacity. Its default
+`+{count}` inserts the number of hidden players; colors, placeholders, and expressions also
+work. `"hide"` omits excess players.
 
 `layout.show` defaults to `"!viewer.bedrock"`. While a layout is visible, its cells replace the
 ordinary player entries; disabling it restores the ordinary list.
