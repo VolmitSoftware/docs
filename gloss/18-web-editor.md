@@ -54,7 +54,7 @@ Preview exact Minecraft rendering, occlusion, sounds, particles and interaction 
 | Container previews | `previews/` | [Container Previews](/gloss/15-container-previews) |
 | Holograms | `holograms/` | [Holograms](/gloss/04-holograms) |
 | Entity overlays | `entity-overlays/default.json` | [Entity Overlays](/gloss/20-entity-overlays) |
-| Bubble styles | `bubble-styles/` | [Chat Bubbles](/gloss/08-chat-bubbles) |
+| Bubble styles | `bubbles/` | [Chat Bubbles](/gloss/08-chat-bubbles) |
 | Damage indicators | `damage-indicators/default.json` | [Damage Indicators](/gloss/08b-damage-indicators) |
 | Real Drops | `real-drops/default.json` | [Drop Labels](/gloss/08c-drop-labels) |
 | Inventories | `inventories/` | Chest GUI resolution, mask, keys and slots |

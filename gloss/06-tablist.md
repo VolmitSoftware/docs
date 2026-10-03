@@ -148,5 +148,9 @@ The web editor can edit, export and live-sync the tablist document. Open it alon
 `/gloss web edit tablist tablist`, or include it in `/gloss web workspace`. `/gloss tablist reset`
 restores the default copy.
 
+The layout inspector edits grid dimensions, the player rectangle, filtering, and overflow mode
+and text. Its preview applies the sampled players’ list-name formats and sort weights before
+placing the overflow count. Static slot definitions survive form edits and can be edited in Code view.
+
 Gloss ignores schema-1 tablist files. Rewrite them as schema 2, or reset to the bundled
 document. See [Data Files & Hot Reload](/gloss/03-data-files) and [Server List MOTD](/gloss/06b-server-list-motd).

@@ -130,7 +130,7 @@ The bubble lives for `maxAliveMs`. Player chat is never interpreted as Gloss cod
 
 Particle layers can follow the bubble or target a line, prefix span, or local geometry. Chat text cannot create particle ranges. See [Particle Layers](/gloss/25-particle-layers).
 
-Gloss keeps at most four bubbles per speaker and 2,048 across the server. New bubbles above those limits are dropped or replace the speaker's oldest bubble.
+Gloss keeps at most the selected style’s `maxPerSender` bubbles per speaker (default four) and 2,048 across the server. New bubbles above those limits are dropped or replace the speaker's oldest bubble.
 
 ## Shimmer
 
