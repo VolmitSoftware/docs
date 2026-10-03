@@ -2,7 +2,7 @@
 title: "API: Previews"
 description: "Add custom variables and access checks to container previews"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-10-03T14:34:30.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,6 +12,16 @@ Use `PreviewStateProvider` to add variables to container-preview expressions.
 
 ```java
 public final class ChargeProvider implements PreviewStateProvider {
+    private final Map<UUID, Double> charges = new ConcurrentHashMap<>();
+
+    public void setCharge(UUID player, double level) {
+        charges.put(player, level);
+    }
+
+    public void forget(UUID player) {
+        charges.remove(player);
+    }
+
     @Override
     public String namespace() {
         return "charge";
@@ -19,7 +29,7 @@ public final class ChargeProvider implements PreviewStateProvider {
 
     @Override
     public Map<String, Object> snapshot(Block block, Entity entity, Player player) {
-        return Map.of("level", chargeLevel(player));
+        return Map.of("level", player == null ? 0D : charges.getOrDefault(player.getUniqueId(), 0D));
     }
 }
 ```
@@ -31,7 +41,7 @@ PreviewStateProviders.register(provider);
 PreviewStateProviders.unregister(provider);
 ```
 
-The example exposes `charge.level` to preview conditions and text expressions.
+The example exposes `charge.level` to preview conditions and text expressions. Publish changes through `setCharge` and call `forget` when a player leaves. The snapshot reads the published values without reading another entity's live state.
 
 `snapshot` runs on the thread that owns the preview target. Keep it fast and return a new immutable map. `block`, `entity`, or `player` may be `null` when that context does not exist. Namespace and key names must not collide with Gloss built-ins.
 

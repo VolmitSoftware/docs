@@ -2,7 +2,7 @@
 title: "Particle Layers"
 description: "Gloss documentation: particle geometry behind in-world displays"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T15:34:39.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-26T00:00:00.000Z
@@ -40,7 +40,13 @@ Wrap authored text in `<particles:name>text</particles>` and use `{"scope":"span
 
 ## Geometry
 
-Geometry types are `point`, `line`, `polyline`, `outline`, `filledPlane`, `cuboid`, `letterBounds`, `glyphOutline`, and `glyphFill`. Use `placement.layer` and `placement.depth` to move particles in front of or behind the display.
+<div class="gloss-demo" data-demo="particle-layers-pov">
+<p><strong>Particle layer geometry</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/particle-layers-pov.webm" aria-label="Particle layer geometry, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/gloss-assets/demos/particle-layers-observer.webm" aria-label="Particle layer geometry, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+Geometry types are `point`, `line`, `polyline`, `outline`, `filledPlane`, `cuboid`, `letterBounds`, `glyphOutline`, and `glyphFill`. Hologram text targets follow the native font advances, bold formatting, wrapping width, paragraph alignment, and text display scale. Use `placement.layer` and `placement.depth` to move particles in front of or behind the display.
 
 Particle layers attached to text displays follow the display's billboard mode. Gloss uses the player's look yaw and pitch for camera rotation:
 

@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Randomize the message and icon shown in the server list"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T15:56:23.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -52,7 +52,7 @@ An invalid document is rejected as a whole. Gloss keeps the built-in or last val
 
 The MOTD document also accepts `show`, defaulting to `true`. It is evaluated for each ping without
 a viewer or world. False leaves the existing ping response unchanged, including its player limit.
-Use server or calendar-time conditions here; see [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+Entry conditions use the same viewerless scope. Player and world conditions cannot match an unauthenticated ping. Use `server.online`, `server.maxPlayers` or calendar-time conditions here; see [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ## Server icon
 
@@ -66,6 +66,16 @@ Icons are decoded once per document change, never per ping. Replacing an image f
 the server list after the next `motd.json` change.
 
 ## Ping fields
+
+<div class="gloss-demo" data-demo="server-list-motd-pov">
+<p><strong>Server list and player sample</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/server-list-motd-pov.webm" aria-label="Server list and player sample, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="motd-editor">
+<p><strong>MOTD authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/motd-editor.webm" aria-label="MOTD authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Besides its text, an entry can set the hover sample, the two player counts, and the version line.
 
@@ -94,6 +104,11 @@ applied. `sample`, `online`, and `version` need Paper's server-list ping event. 
 keeps those parts of the vanilla response.
 
 ## Server links
+
+<div class="gloss-demo" data-demo="server-links-pov">
+<p><strong>Native pause-menu server links</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/server-links-pov.webm" aria-label="Native pause-menu server links, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 `links` publishes the server links that appear in the client's pause menu. It needs the Paper
 `ServerLinks` API, which is Paper 1.21 or newer; elsewhere the list is ignored. Links are published

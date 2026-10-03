@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -14,6 +14,11 @@ custom ones, and reloads the folder while the server runs. `/gloss web edit cont
 opens one in a restricted live editor session; `/gloss web workspace` includes every preview.
 
 ## What triggers a preview
+
+<div class="gloss-demo" data-demo="container-previews-pov">
+<p><strong>Container previews</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/container-previews-pov.webm" aria-label="Container previews, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Look at a container within the matched preview document’s `viewDistance` blocks (default `10`, range `1`–`24`). A
 block card appears on the next tick; an entity card within four ticks. Fluids and passable blocks
@@ -83,6 +88,11 @@ scrolling back up restores previews. Changing a document’s `scale` re-renders 
 immediately.
 
 ## The preview document
+
+<div class="gloss-demo" data-demo="container-preview-editor">
+<p><strong>Container preview authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/container-preview-editor.webm" aria-label="Container preview authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Each `.json` file in `plugins/Gloss/previews/` defines one preview, and its id is the filename
 without `.json`. Preview documents have no `schemaVersion` or `revision`, and subfolders are

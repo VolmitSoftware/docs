@@ -2,13 +2,15 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T16:51:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 A menu is a JSON document under `plugins/Gloss/menus/`. It can contain text, images, items, buttons and particle layers. Personal menus are visible only to the player who opens them; panels can show the same menu in the world.
+
+For menus drawn inside a Minecraft container screen, see [Inventory Menus](/gloss/09b-inventory-menus).
 
 ## Where menu documents live
 
@@ -74,7 +76,7 @@ Menu files have no `schemaVersion` or `revision`, but Gloss still rejects a stal
 | `followPlayer` | boolean | no | `false` | Re-anchor the menu to the viewer on every accepted move, adopting their yaw |
 | `maxDistance` | number | no | `6.0E7` | Blocks between viewer and menu center before the menu closes. Clamped to `[0, 6.0E7]`. `null` or absent gives `6.0E7` |
 | `closeOnDeath` | boolean | no | `false` | Close on `PlayerDeathEvent` |
-| `closeOnTeleport` | boolean | no | `false` | Close on `PlayerTeleportEvent` |
+| `closeOnTeleport` | boolean | no | `false` | Close when the viewer teleports, including server commands |
 
 `offset` and `components` are required to open the menu; a missing value is logged when the menu is opened.
 
@@ -100,13 +102,18 @@ The menu `offset` is **not** multiplied by `uiScale`, but component offsets are.
 
 `lockPosition` constrains the player; `followPlayer` constrains the menu. They are independent, and a document may set neither, either or both. A locked player can still look around and is never closed for distance.
 
-With neither flag set the menu stays where it is while the player walks away, up to `maxDistance`. Crossing that limit or changing worlds closes the menu, as do `closeOnDeath` and `closeOnTeleport` for their events.
+With neither flag set the menu stays where it is while the player walks away, up to `maxDistance`. Crossing that limit or changing worlds closes the menu. `closeOnDeath` closes it when the viewer dies, and `closeOnTeleport` closes it when the viewer teleports, including `/tp`. A cancelled teleport leaves the menu open. With `closeOnTeleport` disabled, a valid teleport repositions the menu at the destination and preserves `followPlayer`.
 
 `/gloss menu move` re-anchors an open session to your current position. It is translation only: it does not change the facing, either flag, or the file.
 
 These lifecycle settings apply only to personal menus. Panels use their own placement and range settings. See [Panels](/gloss/16-panels).
 
 ## The session model
+
+<div class="gloss-demo" data-demo="personal-menus-pov">
+<p><strong>Personal hologram menus</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/personal-menus-pov.webm" aria-label="Personal hologram menus, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Each player can have one personal menu open, and opening another replaces it. Personal menu displays are sent only to that player and are never saved in the world.
 

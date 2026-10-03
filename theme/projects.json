@@ -555,6 +555,10 @@
             "href": "/gloss/06b-server-list-motd"
           },
           {
+            "title": "Screen Surfaces",
+            "href": "/gloss/06c-screen-surfaces"
+          },
+          {
             "title": "Connection Messages",
             "href": "/gloss/26-connection-messages"
           },
@@ -586,6 +590,10 @@
           {
             "title": "Hologram Menus",
             "href": "/gloss/09-menus"
+          },
+          {
+            "title": "Inventory Menus",
+            "href": "/gloss/09b-inventory-menus"
           },
           {
             "title": "Components & Hitboxes",

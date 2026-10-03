@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T15:53:01.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,6 +15,11 @@ Open the editor with `/gloss web edit bubble-style <id>`. Styles are schema 5, i
 A player who cannot see the speaker does not see their bubble. Vanish works.
 
 ## Style documents
+
+<div class="gloss-demo" data-demo="bubble-style-editor">
+<p><strong>Bubble style authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/bubble-style-editor.webm" aria-label="Bubble style authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss restores a missing `default.json` while chat bubbles are enabled.
 
@@ -153,6 +158,11 @@ disable it.
 
 ## Motion
 
+<div class="gloss-demo" data-demo="chat-bubbles-pov">
+<p><strong>Chat bubbles</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/chat-bubbles-pov.webm" aria-label="Chat bubbles, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 The base position is the speaker's eye plus `offset`. Newer messages push older ones upward by `stackDistance` per wrapped row. `followPlayer` controls whether that base follows the speaker.
 
 `motion` contains four expression surfaces:
@@ -229,6 +239,23 @@ See also [Damage Indicators](/gloss/08b-damage-indicators) and [Drop Labels](/gl
 
 ## Chat channels and mentions
 
+<div class="gloss-demo" data-demo="chat-features-pov">
+<p><strong>Chat channels and rich messages</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/chat-features-pov.webm" aria-label="Chat channels and rich messages, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="chat-recipient-pov">
+<p><strong>Recipient mentions and item hover</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/chat-recipient-pov.webm" aria-label="Recipient mentions and item hover, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+Channel messages apply enabled emoji tokens and triggers when the sender has `gloss.emoji.use`. Configured emoji formatting remains active; MiniMessage tags written by the sender stay literal. Links, held-item cards and mentions retain their own formatting.
+
+<div class="gloss-demo" data-demo="channel-editor">
+<p><strong>Chat channel authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/channel-editor.webm" aria-label="Chat channel authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Enable `channels = true` under `[features]` in `gloss.toml` to use Gloss chat formatting and mentions. The switch applies on config reload, including when enabling channels after startup. Chat commands are registered at startup and become usable when channels are enabled. Channel documents use schema 1 under `channels/<id>.json`. Open the global channel with `/gloss web edit channel global` and choose **Mentions** to edit its enabled switch, highlighted message format, tagged-name style, and sound.
 
 Type `@Alex` to mention the online player whose account name is Alex. Matching is case-insensitive and uses the whole name. The tagged recipient sees the highlighted message and hears one notification sound; other recipients see the ordinary channel format. Repeating the same mention in one message does not play multiple sounds. Only recipients allowed to hear the channel receive the notification.
@@ -270,7 +297,7 @@ The enabled switch affects both the highlighted token and the full highlighted m
 
 `format` is the ordinary message template. `card` contains up to 16 hover-text lines, inserted with `{{ card }}`. Up to 32 `variants`, each with `id`, `priority`, and `when`, can override `format`, `card`, `mentions`, `items`, `links`, `filters`, and `throttle`. The highest priority wins, with ID breaking ties. An omitted field inherits the base value; an explicit empty array clears that field. Nested objects replace their base object. Filters and throttle select in the sender’s scope; presentation fields select per reader. `mentions.messageFormat` controls the tagged recipient's message independently.
 
-`items` has `enabled`, `token` (default `[item]`), `permission` (default `gloss.chat.item`), and `render` (default `[{{ item.name }}]{{ item.countSuffix }}`). The render template accepts colors and `item.name`, `item.id`, `item.amount`, and `item.countSuffix` substitutions. The suffix is ` xN` for stacks above one, otherwise empty. Item names remain literal text. `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. `filters` contains up to 64 regular-expression `match` and `replace` entries. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
+`items` has `enabled`, `token` (default `[item]`), `permission` (default `gloss.chat.item`), and `render` (default `[{{ item.name }}]{{ item.countSuffix }}`). The render template accepts colors and `item.name`, `item.id`, `item.amount`, and `item.countSuffix` substitutions. The suffix is ` xN` for stacks above one, otherwise empty. Item names remain literal text. Item links show the sender's held stack when the message is sent, including replacements within the same hotbar slot. On Paper, item-link messages use per-recipient system messages; ordinary chat retains the server's signed chat delivery. `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. Link labels accept authored colors and resets; only the label opens the URL. `filters` contains up to 64 regular-expression `match` and `replace` entries. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
 
 Use `/ch list` and `/ch <channel>` to choose a channel, `/msg <player> <message>` for direct messages, and `/r <message>` to reply.
 

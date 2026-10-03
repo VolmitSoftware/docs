@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-02T21:12:27.302969+00:00
+date: 2026-10-03T16:25:40.384381+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,7 +32,7 @@ The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the
 
 ClientView requires matching Wormholes releases using protocol v5 and the same Minecraft version. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
-Native portal views use Minecraft models, textures, and destination lighting. With Iris Shaders enabled, each destination receives the selected pack's terrain, entity, sky, lighting, and postprocessing effects using its own dimension, time, weather, and biome. Mirrors use the same shader pack and show at most six reflections per chain.
+Native portal views use Minecraft models, textures, and destination lighting. With Iris Shaders enabled, each destination receives the selected pack's terrain, entity, sky, lighting, and postprocessing effects using its own dimension, time, weather, and biome. Mirrors use the same shader pack and show at most four reflections per chain.
 
 For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for Minecraft 26.3. Iris Shaders is separate from the Iris world-generation plugin and mod. When using [Distant Horizons](https://modrinth.com/mod/distanthorizons), select a shader pack with explicit Distant Horizons support. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
 
@@ -43,7 +43,7 @@ The client creates this file in its `config/` folder on first launch and reads i
 | Key | Default | Notes |
 |-----|---------|--------|
 | `renderer` | `"native"` | `"native"` enables ClientView. `"block-packets"` keeps this client on the server's standard block and entity packets, including when a shader pack is active. Restart the game after changing it |
-| `max-plate-memory-mb` | `256` | Shared memory budget in MiB for received portal sections, 16–4096. Visible sections arrive progressively within this budget. Under memory pressure, native views release cached sections and reacquire needed content; they keep the native renderer |
+| `max-plate-memory-mb` | `256` | Shared memory budget in MiB for received portal sections, 16–4096. Retained destination history uses at most one third of this budget, capped at 128 MiB. Locally visited sections have a separate 64 MiB cache. Visible sections arrive progressively; evicted contents are reacquired with the native renderer |
 | `show-debug-overlay` | `false` | Show a ClientView status line on the F3 debug screen |
 | `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky; the destination sky inside native portal views is independent of this setting |
 | `client-recursion` | `true` | Show nested mirrors and portals through their own destinations when the server sends them |
@@ -52,7 +52,7 @@ The client creates this file in its `config/` folder on first launch and reads i
 
 ## Build distributions
 
-Build with Java 25 from the repository root. `./gradlew buildAllToOut` creates the four distributions in the sibling `PluginOuts/` directory. Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Each export replaces older Wormholes jars for that platform.
+Build with Java 25 from the repository root. `./gradlew buildAllToOut` creates the four distributions in the sibling `PluginOuts/` directory. Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Each export replaces older Wormholes jars for that platform. NeoForge filenames omit the loader’s trailing `-beta` suffix, for example `Wormholes v2.2.0 [NeoForge] 26.3+26.3.0.33.jar`.
 
 `./gradlew apiJar` creates the Bukkit compile dependency. Native integrations compile against their loader distribution; see [API](/wormholes/20-api-getting-started).
 
@@ -416,7 +416,7 @@ Projection behavior detail:
 | `entity-frames` | `true` | Send destination entities as one 20 Hz stream per portal, shared by every ClientView player watching it. Off shows no destination entities to ClientView players |
 | `standby-prestream` | `false` | Reserved; has no effect. ClientView sends only an RTP portal's current destination |
 | `view-stats` | `true` | Accept plate memory and apply timings from clients for `/wormholes clientview status` |
-| `client-recursion` | `true` | Send nested mirror and portal destination views. Native mirrors allow six reflections per chain, including the first mirror; linked portals allow up to three nested steps. Each primary view has at most 16 nested views |
+| `client-recursion` | `true` | Send nested mirror and portal destination views. Native mirrors allow four reflections per chain, including the first mirror; linked portals allow up to three nested steps. Each primary view has at most 16 nested views |
 
 ## Hot reload
 

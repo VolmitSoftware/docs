@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-02T18:00:00.000Z
+date: 2026-10-03T15:45:53.866Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -34,11 +34,18 @@ Once it is open: follow the first-run tour or skip it, pick **New document** or 
 
 ## Editing
 
+<div class="gloss-demo" data-demo="menu-shop-editor">
+<p><strong>Shop menu authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/menu-shop-editor.webm" aria-label="Shop menu authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 The editor provides forms, JSON editing, undo and redo, image import, and previews for the document kinds below. Code and Split views expose the JSON with validation and field completion. Dedicated visual controls and local simulation cover a subset of runtime fields. Use the image manager for PNG, GIF and supported Minecraft skins; imported assets are saved under `plugins/Gloss/images/`.
 
-Menu import accepts every runtime action type and the `list`, `slider`, `field` and `tabs` components. Select these components to edit their fields through the generic key/value inspector, or edit them in Code view. Actions without dedicated controls keep their complete payload in the action's key/value editor. Local previews do not simulate these component types or execute these actions.
+Menu creation supports decorations, buttons, toggles, lists, sliders, fields, and tabs. Lists expose source and page size; sliders expose bounds, step, label, and click width; fields expose label, initial value, and prompt type; tabs expose spacing and editable ids and labels. Structured Extras and Code view retain the full fields, including list templates and flow, styles, and actions. Actions without dedicated controls keep their complete payload in the action's key/value editor.
 
-Hologram lines may contain text strings or objects carrying `text`, `item`, `head`, `block` or `entity`. Editing text, moving lines, copying a document and exporting preserve object content, scale and conditions. Text objects use the text row; other object lines expose their fields in the generic inspector. The hologram stage previews text; verify object-line appearance in game.
+The menu preview expands the first list page, up to the default 64-entry limit, and binds each entry for text, visibility, and action-log expressions. Slider left-click raises its value and right-click lowers it; Shift uses five steps. Tabs set their session value. Fields open a browser input dialog whose Save button updates the local session value; this previews the form flow rather than opening a Minecraft sign, anvil, or chat prompt. External effects such as commands, economy transactions, inventory windows, and proxy transfers appear in the action log without running against a server.
+
+Hologram lines may contain text strings or objects carrying `text`, `item`, `head`, `block` or `entity`. Editing text, moving lines, copying a document and exporting preserve object content, scale and conditions. Text objects use the text row; other object lines expose their fields in the generic inspector. The hologram stage previews mixed text, item, head, block and entity lines in their authored order, with separate space reserved for each object. Head previews use the bundled player skin. The seven bundled entity rigs use measured bounds; other entity types use catalog sprites with approximate sizing. Custom items without a resolved material use a barrier preview. Verify the native model and skin in game.
 
 Preview exact Minecraft rendering, occlusion, sounds, particles and interaction in game before publishing.
 
@@ -96,7 +103,7 @@ waypoint client rendering remains a server/client concern.
 
 ### 3D previews
 
-The 3D previews draw the client's own block and item models and textures in WebGL2 over a rendered block world. The in-game frame uses a fixed player viewpoint; interactive authoring canvases retain their orbit, zoom, pan, and movement controls. Entities are textured rigs for the player, zombies, skeletons, creepers, pigs, cows and sheep, and a catalog sprite for every other mob. A browser without WebGL2 shows a rendered still instead of models.
+The 3D previews draw the client's own block and item models and textures in WebGL2 over a rendered block world. The in-game frame uses a fixed player viewpoint; interactive authoring canvases retain their orbit, zoom, pan, and movement controls. Entities are textured rigs for the player, zombies, skeletons, creepers, pigs, cows and sheep, and a catalog sprite for every other mob. These seven rigs use measured dimensions; other entity sprites use approximate sizes. Mixed holograms preserve text, item, head, block and entity order, with box padding extending outside the row bands. Unresolved custom items use a barrier preview until their provider resolves them on the server. A browser without WebGL2 shows a rendered still instead of models.
 
 ### Nametags, nameplates, and mentions
 
@@ -110,6 +117,11 @@ A menu flow map stores the workspace layout and can hold a linked runtime world 
 
 ## Seeded randomizer
 
+<div class="gloss-demo" data-demo="seeded-randomizer-editor">
+<p><strong>Seeded document generation</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/seeded-randomizer-editor.webm" aria-label="Seeded document generation, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 **Randomize document** generates a complete editable sample for the selected surface. Enter a seed and choose **Generate**, or use **Next seed** for another sample. The same seed, document identity and workspace assets reproduce the same result, and each generated document is one undoable edit.
 
 Samples exercise the supported finite choices across seeds but do not enumerate every expression, numeric combination, custom asset or provider value. A linked world panel can be randomized while keeping its identity, world binding and root menu; a flow map with no linked panel cannot be randomized.
@@ -118,7 +130,17 @@ Sample damage, health, viewer state, React counts and Adapt Insight controls aff
 
 ## Publish
 
-Publishing validates the changed documents and images, then writes them to `plugins/Gloss/`. Invalid content is refused and the current server files stay unchanged. If the server file changed after the editor opened, refresh the session before publishing so you do not overwrite newer work.
+<div class="gloss-demo" data-demo="live-sync-editor">
+<p><strong>Connected editor publication</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/live-sync-editor.webm" aria-label="Connected editor publication, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="editor-live-sync-pov">
+<p><strong>Published hologram in Minecraft</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/editor-live-sync-pov.webm" aria-label="Published hologram in Minecraft, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+Select **Publish** explicitly to send local edits from a connected session. Editing and autosave keep a browser draft until publication. Publishing validates the changed documents and images, then writes them to `plugins/Gloss/`. Invalid content is refused and the current server files stay unchanged. If the server file changed after the editor opened, refresh the session before publishing so you do not overwrite newer work.
 
 ## Sessions
 

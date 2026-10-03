@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-09-26T07:50:33.878Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,7 +15,7 @@ Compile against the API jar that matches the installed Gloss version. Do not inc
 
 ```gradle
 dependencies {
-    compileOnly(files("libs/Gloss-3.0.4-26.2-api.jar"))
+    compileOnly(files("libs/Gloss-3.2.0-26.2-api.jar"))
 }
 ```
 
@@ -134,6 +134,77 @@ String rendered = gloss.filter(player, "&d|animation.rainbow| %player_name% :hea
 ```
 
 This applies Gloss functions, inline expressions, PlaceholderAPI values, emoji, and colors. A `null` player leaves player placeholders unresolved; use a real player for expressions that read player state. MiniMessage tags remain available for the display renderer to interpret.
+
+## Beams and trails
+
+<div class="gloss-demo" data-demo="standalone-beam-pov">
+<p><strong>Standalone block-display beam</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/standalone-beam-pov.webm" aria-label="Standalone block-display beam, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/gloss-assets/demos/standalone-beam-observer.webm" aria-label="Standalone block-display beam, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+`Beams.link` draws a block-display beam between two supplied locations. A positive lifetime is measured in ticks; `0` keeps it until cancelled. The method returns `null` when the beam service is unavailable.
+
+```java
+Location start = new Location(world, 8.5, 72, 8.5);
+Location end = new Location(world, 16.5, 75, 8.5);
+BeamHandle beam = Beams.link(start::clone, end::clone,
+    BeamSpec.ofMaterial("minecraft:sea_lantern", 0.15),
+    200L, Set.of(viewer.getUniqueId()));
+
+Beams.trail(viewer, start, end, "minecraft:end_rod", 0.25, 64);
+```
+
+Beam width clamps to `0.01`–`8` blocks. Returning `null` from either location supplier ends the beam. Suppliers run on the beam driver's cadence; supply captured locations or thread-safe snapshots rather than reading a Bukkit entity from the callback. Retain each handle and call `cancel()` when its owning feature or plugin ends. `Beams.trail` sends a particle line to one viewer.
+
+## Entity glow
+
+<div class="gloss-demo" data-demo="viewer-glow-pov">
+<p><strong>Per-viewer entity glow</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/viewer-glow-pov.webm" aria-label="Per-viewer entity glow, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+Glow tags give an entity a colored outline for one viewer. Purposes keep contributions separate, and the highest priority wins:
+
+```java
+GlowTags.tag(viewer, target, "aqua", "quest-target", 20, 200L);
+GlowTags.untag(viewer, target, "quest-target");
+```
+
+Use a named text color. A lifetime of `0` retains the tag until it is removed; remove your own purposes when the feature ends. Call entity-facing operations from the appropriate owning context.
+
+## Locator waypoints
+
+Track an entry for a viewer with an explicit plugin owner:
+
+```java
+WaypointSpec destination = new WaypointSpec("quest-destination",
+    MarkerAnchor.position("world", 120, 72, -48),
+    0x55FFFF, "default", 64D);
+Waypoints.track(this, viewer, destination);
+Waypoints.untrack(this, viewer, "quest-destination");
+```
+
+`MarkerAnchor.entity(UUID)` and `MarkerAnchor.player(String)` follow a moving target. A positive range sends direction-only information beyond that distance; `0` always supplies the exact location. Range clamps to `0`–`8192` blocks. Entries end when their viewer leaves. Call `Waypoints.unregister(this)` during your plugin's disable lifecycle to remove its remaining entries. The client must support the locator bar and have it enabled.
+
+## Persistent state
+
+`GlossStateAccess.get()` returns an optional `GlossStateProvider`. Declare keys before writing them, using a unique key prefix for your plugin:
+
+```java
+Optional<GlossStateProvider> provider = GlossStateAccess.get();
+if (provider.isPresent()) {
+    GlossStateProvider state = provider.get();
+    state.declare(this, List.of(
+        new GlossStateSpec("quest.points", "player", "number", 0D),
+        new GlossStateSpec("quest.open", "global", "boolean", false)));
+    state.set(viewer.getUniqueId(), "quest.points", 25D);
+    state.setGlobal("quest.open", true);
+    Object points = state.get(viewer.getUniqueId(), "quest.points");
+}
+```
+
+Player keys use `get` and `set`; global keys use `global` and `setGlobal`. Types are `number`, `string`, and `boolean`, returned as `Double`, `String`, and `Boolean`. Undeclared keys, mismatched scopes, and conflicting declarations are rejected. Reacquire the provider and declare your keys when Gloss becomes available; do not call the provider after Gloss disables. The public provider has no declaration-removal method. [State actions](/gloss/12-actions#persistent-state-actions) use these declarations, and [expressions](/gloss/13-expressions-placeholders) can read their values.
 
 ## More APIs
 

@@ -1,14 +1,14 @@
 ---
 title: "Actions"
-description: "Run commands, sounds, messages, teleports, proxy transfers, and menu navigation"
+description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-10-02T16:00:00.000Z
+date: 2026-10-03T16:30:29.206Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Buttons and toggles run actions in the order written. Menus and panels support commands, sounds, messages, teleports, proxy transfers and page navigation.
+Buttons and toggles run actions in the order written. Menus and panels can open input flows, update session values, give items, display notices, and run conditional or timed action lists.
 
 ## The action model
 
@@ -22,12 +22,23 @@ Every action is a JSON object with a required `type` discriminator and an option
 | `teleport` | Teleports the clicking player through the async path |
 | `connect` | Requests a BungeeCord-compatible proxy transfer |
 | `navigate` | Changes that viewer's menu page stack |
+| `prompt` | Requests sign, anvil, or chat input and runs continuation actions |
+| `title`, `actionbar`, `bossbar` | Displays a screen notice |
+| `close`, `inventory`, `book` | Closes the flow or opens another client interface |
+| `setSession` | Writes a value used by the current menu session |
+| `give`, `take`, `economy` | Gives or removes items, or uses a Vault economy provider |
+| `delay`, `sequence`, `parallel`, `repeat` | Schedules or repeats nested actions |
+| `if`, `switch`, `chance`, `cooldown` | Selects a nested action branch |
+| `broadcast`, `effect`, `particle` | Sends messages or applies a visible world effect |
+| `stop` | Ends the current action program |
+| `setState`, `addState`, `clearState` | Updates a declared persistent state key |
+| `sky`, `glow` | Changes the viewer's sky or an entity outline |
 
 A missing or unknown `type` rejects the menu file. Unknown extra keys inside a valid action are ignored. A missing action list is empty, and one action object can be used where a list is expected.
 
 ## The click trigger
 
-`trigger` is shared by all six types. Omission and an explicit `null` both resolve to `any`.
+`trigger` is shared by action types. Omission and an explicit `null` both resolve to `any`.
 
 | JSON value | Matches |
 |---|---|
@@ -39,12 +50,29 @@ A missing or unknown `type` rejects the menu file. Unknown extra keys inside a v
 
 Values are exact and case-sensitive, and the four physical values are mutually exclusive: a shift-left-click does **not** match a `left_click` binding. Off-hand interactions are ignored.
 
+Actions also accept `when`, a boolean condition evaluated for the click context, and `cooldownTicks`, a nonnegative delay before the same action may run again for that viewer. An unmet condition or active cooldown skips the action. For `if`, `when` chooses its `then` or `else` branch instead of skipping the action.
+
 ## `prompt`
+
+<div class="gloss-demo" data-demo="prompt-chat-pov">
+<p><strong>Chat input and continuation</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/prompt-chat-pov.webm" aria-label="Chat input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="prompt-anvil-pov">
+<p><strong>Anvil input and continuation</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/prompt-anvil-pov.webm" aria-label="Anvil input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="prompt-sign-pov">
+<p><strong>Sign input and continuation</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/prompt-sign-pov.webm" aria-label="Sign input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 A `prompt` action accepts `kind` (`sign`, `anvil`, or `chat`), `label`, `initial`, `var`, `then`,
 and `timeoutTicks`. The label describes the requested input; the initial value seeds the sign or
-anvil editor, or appears as a clickable chat suggestion. A sign uses up to four newline-separated
-initial lines. The anvil uses the label as its window title.
+anvil editor, or appears as a clickable chat suggestion. A sign uses the first four newline-separated
+initial lines and closes without an answer when the player changes worlds or respawns. The next prompt can open immediately. The anvil uses the label as its window title.
 
 The answer is written to `var` when set and is available as `input.value` to the `then` actions.
 Provide a variable or at least one continuation action. The prompt ends the current action chain;
@@ -61,7 +89,7 @@ use `then` for work that depends on the answer.
 | `command` | yes | none | The command line. One leading slash is optional; `%player%` and `%player_name%` become the clicking player's name |
 | `source` | no | `player` | `player` or `server` |
 
-`player` runs the command as the clicker, with their own permissions, exactly as if they had typed it. `server` dispatches it from the console, with full console authority and no permission check, and can finish after later actions. A blank command is logged and dropped. Other PlaceholderAPI tokens are not expanded.
+`player` runs the command as the clicker, with their own permissions, exactly as if they had typed it. `server` dispatches it from the console, with full console authority and no permission check, and can finish after later actions. Expressions such as `{{ session.quantity }}` resolve against the clicking session, including a list entry variable inside a repeated component. A blank command is logged and dropped. Other PlaceholderAPI tokens are not expanded. Console commands containing `;`, a newline, a carriage return, or `/` after substitution are refused.
 
 > A `server` command is console authority handed to whoever can click the button. Gate the button with a `gloss.open.<menuId>` permission, or put the privileged step behind a command that does its own checks.
 {.is-warning}
@@ -96,7 +124,7 @@ Playback is positioned at the clicking player and heard only by them. A volume o
 }
 ```
 
-`message` is required and must contain non-whitespace text. On click, `%player%` becomes the clicking player's name, PlaceholderAPI expands any installed tokens, legacy `&` and `§` codes are rewritten as MiniMessage tags, and the result is parsed and sent to that player alone. Click and insertion events are stripped; formatting, gradients, decorations and hover text remain.
+`message` is required and must contain non-whitespace text. On click, `%player%` becomes the clicking player's name and `{{ ... }}` expressions can read the session and the current list entry. PlaceholderAPI expands installed tokens, legacy `&` and `§` codes are rewritten as MiniMessage tags, and the result is parsed and sent to that player alone. Click and insertion events are stripped; formatting, gradients, decorations and hover text remain.
 
 ## `teleport`
 
@@ -141,8 +169,11 @@ All six destination fields are required; if any is missing or non-finite the act
 | `back` | ignored | Opens the newest history entry and pops it |
 | `home` | ignored | Opens the flow root and clears history |
 | `close` | ignored | Closes the current flow |
+| `page` | `next`, `prev`, or a zero-based page number | Changes a paged inventory list |
 
 An omitted `mode` defaults to `push`. A `push` or `replace` with no non-blank `target` is warned once and dropped. Targets are exact, case-sensitive menu ids, including folder paths such as `shops/confirm`.
+
+In [Inventory Menus](/gloss/09b-inventory-menus), navigation opens another inventory document and `page` changes the current list page. Inventory navigation has a separate history from in-world menus.
 
 History is per viewer: a stack of menu ids plus the root, which is the first page opened in the flow. `close` ends a personal session, or dismisses that panel view for the viewer.
 
@@ -155,6 +186,121 @@ History is per viewer: a stack of menu ids plus the root, which is the first pag
 Panels make one exception: navigating to the panel's own **root** menu skips the `gloss.open.<menuId>` check, since a viewer who can see the panel is already looking at that menu. Every other target on a panel is checked normally. See [Panels](/gloss/16-panels).
 
 With `[features] menus = false`, every navigation mode except `close` is denied.
+
+## Session and client interfaces
+
+<div class="gloss-demo" data-demo="book-reading-pov">
+<p><strong>Written book action</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/book-reading-pov.webm" aria-label="Written book action, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+`setSession` accepts a `var` name and a string `value` expression. Other components read the result as `session.<name>`. `close` ends the current flow. `inventory` accepts an inventory document `id` and optional `args` object:
+
+```json
+[
+  { "type": "setSession", "var": "quantity", "value": "2" },
+  { "type": "inventory", "id": "shop", "args": { "category": "tools" } }
+]
+```
+
+`book` accepts `title`, `author`, and `pages`, an array of up to 100 text pages of 1,024 characters each. Its default title is `Book` and author is `Server`; opening it leaves the menu session in place.
+
+## Screen notices
+
+```json
+[
+  { "type": "title", "title": "<gold>Welcome", "subtitle": "Choose a destination", "fadeInTicks": 10, "stayTicks": 40, "fadeOutTicks": 10 },
+  { "type": "actionbar", "text": "Destination selected", "ticks": 60, "slots": ["center"] },
+  { "type": "bossbar", "id": "journey", "title": "Preparing departure", "progress": "0.75", "color": "blue", "style": "solid", "ticks": 100 }
+]
+```
+
+These notices accept a surface `priority`, defaulting to `notice`. Action-bar slots are `left`, `center`, and `right`. Boss-bar `progress` is a numeric string from `0` to `1`; `ticks: 0` removes that bar. See [Screen Surfaces](/gloss/06c-screen-surfaces) for priorities, colors, and styles.
+
+## Items and economy
+
+`give` and `take` accept an `item` using the shared [item icon](/gloss/11-icons) shape, and an `amount` expression string, defaulting to `"1"`. `give.dropIfFull` defaults to `true`; `take.denyMessage` supplies the rejection text when the player lacks the items. A failed take stops subsequent actions.
+
+```json
+[
+  { "type": "take", "item": { "type": "item", "item": "minecraft:emerald" }, "amount": "3", "denyMessage": "You need three emeralds." },
+  { "type": "give", "item": { "type": "item", "item": "minecraft:iron_sword" }, "amount": "1", "dropIfFull": true }
+]
+```
+
+`economy` requires Vault and an installed economy provider. Its `op` is `withdraw` (default), `deposit`, or `has`; `amount` is an expression string. A failed balance check or withdrawal sends the optional `denyMessage` and ends the action list.
+
+## Branches and timing
+
+| Action | Fields |
+|---|---|
+| `delay` | Positive `ticks` before the remaining actions resume |
+| `sequence` | `steps` containing actions with optional `atTicks` cues relative to the start; optional `skippable`, `onSkip`, and player boolean `once` key |
+| `parallel` | `branches`, an array of action lists started together |
+| `repeat` | `times`, `steps`, optional `everyTicks` and `while` condition |
+| `if` | `when` condition, `then` and optional `else` action lists |
+| `switch` | `on` expression, `cases` mapping string values to lists, and optional `default` list |
+| `chance` | `percent` from `0` to `100`, `then`, and optional `else` |
+| `cooldown` | Named `key`, positive `ticks`, `then`, and optional `else` when still cooling down |
+| `stop` | No effect fields; ends the running action program |
+
+```json
+{
+  "type": "if",
+  "when": "session.quantity > 0",
+  "then": [
+    { "type": "message", "message": "Preparing your order" },
+    { "type": "delay", "ticks": 20 },
+    { "type": "message", "message": "Order ready" }
+  ],
+  "else": [{ "type": "message", "message": "Choose a quantity first" }]
+}
+```
+
+Sequence steps without `atTicks` use the previous cue. A skippable sequence ends when its viewer sneaks and runs `onSkip`; `once` records completion for that player. Repeats accept `1`–`100000` iterations; repeats without a tick interval are limited to 1,024 iterations.
+
+## Messages and effects
+
+`broadcast` accepts `message`, a `scope` of `server`, `world`, or `radius`, optional receiver `permission`, and a positive `radius` for radius scope. `effect` accepts an effect registry key, positive `ticks`, an `amplifier` starting at `0`, and `target` (`viewer` or `subject`). In menu clicks both roles refer to the clicker.
+
+```json
+[
+  { "type": "effect", "effect": "minecraft:speed", "ticks": 100, "amplifier": 0, "target": "viewer" },
+  { "type": "particle", "particle": "minecraft:end_rod", "count": 12, "offset": 0.3, "at": "viewer" }
+]
+```
+
+Particle `count` defaults to `1` and clamps to `1`–`1024`; `offset` defaults to `0`. Its `at` is `viewer`, `subject`, `source`, or `location`.
+
+## Persistent state actions
+
+Declare a key through the [state API](/gloss/21-api-getting-started#persistent-state) before using these actions. `setState` writes a `value` expression, `addState` adds a numeric `value`, and `clearState` restores the declared default. Each takes a `key` and optional `target`, defaulting to `viewer`; the declaration chooses player, world, or global scope.
+
+```json
+[
+  { "type": "setState", "key": "quest.points", "value": "10" },
+  { "type": "addState", "key": "quest.points", "value": "5" },
+  { "type": "clearState", "key": "quest.points" }
+]
+```
+
+## Sky and glow
+
+<div class="gloss-demo" data-demo="sky-transition-pov">
+<p><strong>Per-viewer sky transition</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/sky-transition-pov.webm" aria-label="Per-viewer sky transition, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+`sky` changes time, weather, or the world border for the clicker under a required `purpose`. Time is a tick-count string modulo `24000`; weather can be `clear` or `rain`. `fadeTicks` controls the transition, up to `72000` ticks. A `border` object accepts `centerX`, `centerZ`, `size`, and `warningBlocks`.
+
+```json
+[
+  { "type": "sky", "purpose": "shop-preview", "time": "6000", "weather": "clear", "fadeTicks": 20 },
+  { "type": "glow", "target": "viewer", "color": "aqua", "purpose": "shop-preview", "priority": 10, "ticks": 100 }
+]
+```
+
+Release that sky purpose with `{ "type": "sky", "purpose": "shop-preview", "time": "reset" }`. Glow accepts `viewer`, `subject`, or an entity UUID as `target`, a named text `color`, and optional `purpose`, `priority`, and `ticks`. A glow lifetime of `0` persists until removed by its owner. Other plugins can create outlines and beams through the [public API](/gloss/21-api-getting-started).
 
 ## Execution order
 

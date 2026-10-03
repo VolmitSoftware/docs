@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-10-02T23:20:00.000Z
+date: 2026-10-03T18:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -301,10 +301,6 @@ Online profiles update immediately. Offline lookups time out after 15 seconds.
 The integration bridge only samples metric keys used by loaded content. Changes apply on the next config reload. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for its tokens and variables.
 
 Tablist text is `tablist.json`. MOTD lines are `motd.json`. Bubble layout is `bubbles/<id>.json`. Group conditions use Vault and the document `select` rules. `/gloss import legacy` copies supported older settings, bubble content, and MOTD content into the current files.
-
-## Glyph pack format
-
-Set `[forge].packFormat` to `0` to select the resource-pack format for the running server: `84` on Minecraft 26.1.2, `88` on 26.2, and `97` on 26.3. A positive value overrides this selection. Generated packs use `min_format` and `max_format` for format 65 or newer; an integer upper bound accepts all minor versions within that major format, including 26.3's format 97.1.
 
 ## `[nametags]`
 

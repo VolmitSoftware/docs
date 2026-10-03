@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Select server and player languages and edit message files"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -31,6 +31,34 @@ Key ids are dot-delimited and map onto TOML sections with short leaf keys. For e
 | `gloss.error.*` | Argument validation errors raised while parsing a command |
 
 Use `command.help.*` to change command and parameter descriptions.
+
+## Authored content strings
+
+<div class="gloss-demo" data-demo="strings-editor">
+<p><strong>Content string authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/strings-editor.webm" aria-label="Content string authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+Use `strings/<locale>.json` for text shared by your own menus, holograms, and other documents. These catalogs are separate from Gloss's operator messages in `languages/*.toml`.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "locale": "en_US",
+  "fallback": "",
+  "entries": {
+    "shop.title": "<gold>Supplies</gold>",
+    "shop.welcome": "Welcome, {name}"
+  }
+}
+```
+
+Reference entries with `lang('shop.title')` or `lang('shop.welcome', player.name)`. Positional arguments fill placeholders in their first appearance order, and inserted values cannot add color codes. Keys use lowercase letters, digits, dots, underscores, and hyphens, beginning with a letter or digit. A catalog accepts up to 8,192 entries and each value up to 4,096 characters.
+
+Locale ids use `language_COUNTRY`, such as `fr_FR`; hyphenated and differently cased ids normalize to that form. Content selection uses the player's explicit language, then their client locale, then the server language. Resolution follows the selected catalog's `fallback` chain, then `en_US`, then Gloss's own message catalog, and finally the key itself. Save a translated catalog with the same entry keys and its own `locale` and optional `fallback`.
+
+`/gloss strings list` lists loaded catalogs, and `/gloss strings missing <locale>` lists keys absent from a translation; both require `gloss.strings`. `/gloss strings reset [name=*]` restores shipped catalogs and requires `gloss.strings.reset`. Catalog edits reload automatically.
 
 ## Preview documents reference the catalog
 

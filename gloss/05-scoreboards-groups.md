@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-10-02T16:00:00.000Z
+date: 2026-10-03T13:21:49.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,10 +12,17 @@ For proxy tablists, scoreboards, surfaces, connection messages, and MOTD managem
 
 Each schema-2 JSON file in `plugins/Gloss/boards/` defines one scoreboard. Conditions select a board and its presentation for each player. Vault group names are available to those conditions when Vault is installed.
 
+For conditional action bars, boss bars, and titles, see [Screen Surfaces](/gloss/06c-screen-surfaces).
+
 `/gloss web edit scoreboard <id>` opens one board in a restricted live editor session;
 `/gloss web workspace` includes every board.
 
 ## The board document
+
+<div class="gloss-demo" data-demo="scoreboard-editor">
+<p><strong>Scoreboard authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/scoreboard-editor.webm" aria-label="Scoreboard authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 `plugins/Gloss/boards/staff.json`:
 

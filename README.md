@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-10-01T10:53:37.000Z
+date: 2026-10-03T15:45:53.866Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,7 +46,7 @@ See [Contributing](/contributing).
 
 ## Theme assets
 
-The Graphite theme uses `theme/minimal-brutalism.css`, `theme/minimal-brutalism.js`, and `theme/projects.json`. The stylesheet and script retain their deployed asset URLs. Wiki.js Git storage imports these files when the repository syncs.
+The Graphite theme uses `theme/minimal-brutalism.css`, `theme/minimal-brutalism.js`, and `theme/projects.json`. The stylesheet and script retain their deployed asset URLs. Wiki.js Git storage imports these files when the repository syncs. Gloss recordings live in `gloss-assets/demos/` and use the same asset import as the other plugin media directories.
 
 The homepage lists the published projects from `home.md`. Each project’s landing page supplies its documentation navigation. After adding a project or changing landing-page links, regenerate and validate the catalog:
 
@@ -58,11 +58,11 @@ node tools/build-theme-data.mjs --check
 In Wiki.js **Administration > Theme > Head HTML Injection**, include one stylesheet and one script reference. Update the version value when publishing theme changes:
 
 ```html
-<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261001-demos-wormholes-client-tabs">
-<script src="/theme/minimal-brutalism.js?v=graphite-20261001-demos-wormholes-client-tabs"></script>
+<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261003-gloss-demos">
+<script src="/theme/minimal-brutalism.js?v=graphite-20261003-gloss-demos"></script>
 ```
 
-Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and the wiki’s icon set. Each Wormholes demonstration has No client mod and Client mod tabs, plus a separate Camera dropdown for First person or Third person. Camera selection stays synchronized with Adapt's perspective tabs and is remembered across documentation pages. Each Wormholes demonstration selects its client mode independently. Visible clips autoplay muted and loop. Hidden, offscreen, and background clips pause. The project picker is searchable; the homepage filters plugins and developer tools. Project landing pages use section tabs, and reference pages use the project’s documentation sidebar. The wiki uses one dark palette with compact corners, flat surfaces, and red link accents. Its stylesheet applies independently of the navigation catalog; if the catalog is unavailable, the original page content remains readable.
+Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and the wiki’s icon set. Each Wormholes demonstration has No client mod and Client mod tabs, plus a separate Camera dropdown for First person or Third person. Camera selection stays synchronized with Adapt's perspective tabs and is remembered across documentation pages. Each Wormholes demonstration selects its client mode independently. Gloss demonstrations label Minecraft client footage and browser editor footage separately. Single-view clips use the same playback controls; paired client clips add First person and Third person tabs. Visible clips autoplay muted and loop. Hidden, offscreen, and background clips pause. The project picker is searchable; the homepage filters plugins and developer tools. Project landing pages use section tabs, and reference pages use the project’s documentation sidebar. The wiki uses one dark palette with compact corners, flat surfaces, and red link accents. Its stylesheet applies independently of the navigation catalog; if the catalog is unavailable, the original page content remains readable.
 
 From this repository, run the local theme preview:
 

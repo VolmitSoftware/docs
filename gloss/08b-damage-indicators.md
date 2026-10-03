@@ -2,7 +2,7 @@
 title: "Damage Indicators"
 description: "Show damage and healing numbers beside entities"
 published: true
-date: 2026-10-02T23:20:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -113,6 +113,12 @@ conditions rather than a separate disabled-world list.
 
 ## Runtime behavior
 
+<div class="gloss-demo" data-demo="damage-healing-pov">
+<p><strong>Damage and healing indicators</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/damage-healing-pov.webm" aria-label="Damage and healing indicators, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/gloss-assets/demos/damage-healing-observer.webm" aria-label="Damage and healing indicators, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 The number is the health actually applied, not the raw event amount — armor, resistance, absorption and other plugins are all accounted for. An event neutralized to zero produces no indicator.
 
 Bursts are coalesced, a change at or below `limits.minimumDelta` is discarded, and `limits.maxPerSecond`
@@ -128,6 +134,11 @@ Paper-derived servers provide the exact `event.critical` value. Spigot sets `eve
 `audience.when` decides which nearby players see an indicator. The default requires `gloss.indicators.show`.
 
 ## Web renderer
+
+<div class="gloss-demo" data-demo="damage-indicators-editor">
+<p><strong>Damage indicator authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/damage-indicators-editor.webm" aria-label="Damage indicator authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 The indicator stage previews damage, healing, criticals, motion, scale and fading against a rigged target. Check the final look in Minecraft — browser text and camera rendering differ from the client.
 

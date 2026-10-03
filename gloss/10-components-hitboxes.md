@@ -1,14 +1,14 @@
 ---
 title: "Components & Hitboxes"
-description: "Build menu buttons, decorations, toggles, and their click areas"
+description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-10-02T23:20:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-The `components` array holds a menu's buttons, decorations and toggles. See [Hologram Menus](/gloss/09-menus), [Icons](/gloss/11-icons) and [Actions](/gloss/12-actions).
+The `components` array holds buttons, decorations, toggles, sliders, input fields, lists, and tabs. See [Hologram Menus](/gloss/09-menus), [Icons](/gloss/11-icons) and [Actions](/gloss/12-actions).
 
 ## The component entry
 
@@ -21,7 +21,7 @@ The `components` array holds a menu's buttons, decorations and toggles. See [Hol
 
 `vector3` is always a three-element JSON array of numbers, `[x, y, z]`. The object form is not accepted. A missing `offset` or `data` value is reported when the menu opens.
 
-`show` applies to buttons, decorations and toggles. A hidden component has no visible icon and no active click target, and returns when its condition passes during a session tick. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+`show` controls component visibility. A hidden component has no visible icon and no active click target, and returns when its condition passes during a session tick. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 Component offsets use menu-relative axes: positive X moves to the viewer's right, positive Y up, and positive Z away from the viewer. Personal menus scale them by `[menus] uiScale`; panels multiply their own scale by `uiScale`. Only component offsets, icon geometry and hitbox geometry scale — the menu-level `offset` does not.
 
@@ -36,6 +36,10 @@ Duplicate ids do not reject the file. Gloss keeps the first component, logs each
 | `button` | yes |
 | `decoration` | no |
 | `toggle` | yes |
+| `slider` | yes |
+| `field` | yes |
+| `list` | Expands into template components |
+| `tabs` | Expands into buttons |
 
 Icons and actions use their own `type` fields inside `data`.
 
@@ -77,6 +81,16 @@ A click runs matching actions in list order. `any` matches every supported click
 
 ## Slider and field
 
+<div class="gloss-demo" data-demo="menu-slider-editor">
+<p><strong>Slider component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/menu-slider-editor.webm" aria-label="Slider component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="menu-field-editor">
+<p><strong>Field component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/menu-field-editor.webm" aria-label="Field component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A slider body uses `type: "slider"`, `var`, `min`, `max`, `step`, `width`, `label`, and optional
 shared text `style`. `width` defines its horizontal click area in menu units and follows the menu
 scale; it defaults to 2. The vertical click area follows the label. Left and right clicks step the
@@ -88,6 +102,61 @@ variable. The current variable value seeds the prompt when present, otherwise `i
 The anvil uses `label` as its title and seeds the rename field. A sign seeds its four editable
 lines and sends the label in chat. A chat prompt sends the label and a clickable suggestion for
 its initial value.
+
+## Lists and tabs
+
+<div class="gloss-demo" data-demo="menu-list-editor">
+<p><strong>Scoped list component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/menu-list-editor.webm" aria-label="Scoped list component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="menu-tabs-editor">
+<p><strong>Tabs component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/menu-tabs-editor.webm" aria-label="Tabs component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+A list repeats a component `template` for values from its `source` expression. Its `var` binds the current entry for text, conditions, tooltips, and action expressions. `pageSize` defaults to `6`; `flow` defaults to three columns with horizontal spacing `1` and vertical spacing `0.5`.
+
+```json
+{
+  "id": "woods",
+  "offset": [0, 0, 0],
+  "data": {
+    "type": "list",
+    "var": "wood",
+    "source": "['Oak', 'Birch', 'Spruce']",
+    "pageSize": 3,
+    "flow": { "columns": 3, "spacingX": 1.2, "spacingY": 0.5 },
+    "template": {
+      "type": "button",
+      "icon": { "type": "text", "text": "{{wood}}" },
+      "actions": [{ "type": "message", "message": "Selected {{wood}}" }]
+    }
+  }
+}
+```
+
+The optional `flow.x` and `flow.y` shift the grid from the list's component offset. The template is a component body, with its own `type`, rather than another entry with `id` and `offset`.
+
+Tabs create a row of buttons that write the chosen tab `id` to a session variable. Their `spacing` defaults to `1`, and `style` uses the shared text-display style:
+
+```json
+{
+  "id": "categories",
+  "offset": [0, 0.8, 0],
+  "data": {
+    "type": "tabs",
+    "var": "category",
+    "tabs": [
+      { "id": "tools", "label": "Tools" },
+      { "id": "blocks", "label": "Blocks" }
+    ],
+    "spacing": 1.2
+  }
+}
+```
+
+Use `show: "session.category == 'tools'"` on another component to show it for that tab. Variable names for lists and tabs must match `[a-z][a-z0-9_]*`; tab ids must be unique within the row.
 
 ## Decoration
 
@@ -109,6 +178,11 @@ its initial value.
 A decoration is not clickable and has no hitbox or hover effect. Animated images and dynamic text still update.
 
 ## Toggle
+
+<div class="gloss-demo" data-demo="menu-toggle-editor">
+<p><strong>Toggle component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/menu-toggle-editor.webm" aria-label="Toggle component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 ```json
 {

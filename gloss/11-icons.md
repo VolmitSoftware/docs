@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -11,6 +11,11 @@ dateCreated: 2026-08-19T00:00:00.000Z
 Each menu component has one icon. See [Components & Hitboxes](/gloss/10-components-hitboxes) for placement and clicks.
 
 ## Icon types
+
+<div class="gloss-demo" data-demo="menu-catalog-pov">
+<p><strong>Menu icon catalog</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/menu-catalog-pov.webm" aria-label="Menu icon catalog, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 The `type` key selects the icon.
 

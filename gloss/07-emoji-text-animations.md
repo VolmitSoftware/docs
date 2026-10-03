@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-10-02T23:20:00.000Z
+date: 2026-10-03T13:21:49.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -78,6 +78,11 @@ Colors in menu and preview documents end up as MiniMessage tags, and the color s
 
 ## Emoji
 
+<div class="gloss-demo" data-demo="emoji-editor">
+<p><strong>Emoji authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/emoji-editor.webm" aria-label="Emoji authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 ### The emoji document
 
 One JSON file per emoji in `plugins/Gloss/emoji/`. The id is the file name with `.json` removed, there is no id key inside, and only `.json` files directly inside `emoji/` are read.
@@ -146,6 +151,11 @@ With `[emoji] tabComplete = true` (the default), Paper-family servers suggest en
 `[features] emoji = false` stops the emoji service entirely: no defaults extracted, no documents loaded, no emoji stage, and `/gloss emoji list` empty. Tokens stay as written and chat is left alone. `/gloss emoji reset` still works, because it writes files rather than reading loaded state.
 
 ## Animations
+
+<div class="gloss-demo" data-demo="animation-editor">
+<p><strong>Text animation authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/animation-editor.webm" aria-label="Text animation authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 An animation is a list of frame strings that advances on wall-clock time, exposed to the text pipeline as `|animation.<id>|`.
 

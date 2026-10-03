@@ -2,7 +2,7 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-09-28T21:00:00.000Z
+date: 2026-10-03T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
@@ -47,6 +47,7 @@ On first start, Gloss can import menus, images, panels, previews, and settings f
 - [Scoreboards & Groups](/gloss/05-scoreboards-groups)
 - [Tablist](/gloss/06-tablist)
 - [Server List MOTD](/gloss/06b-server-list-motd)
+- [Screen Surfaces](/gloss/06c-screen-surfaces)
 - [Connection Messages](/gloss/26-connection-messages)
 - [Emoji, Text & Animations](/gloss/07-emoji-text-animations)
 - [Chat Bubbles](/gloss/08-chat-bubbles)
@@ -58,6 +59,7 @@ On first start, Gloss can import menus, images, panels, previews, and settings f
 ## Menus and previews
 
 - [Hologram Menus](/gloss/09-menus)
+- [Inventory Menus](/gloss/09b-inventory-menus)
 - [Components & Hitboxes](/gloss/10-components-hitboxes)
 - [Icons](/gloss/11-icons)
 - [Actions](/gloss/12-actions)

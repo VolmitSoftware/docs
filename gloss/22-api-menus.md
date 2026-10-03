@@ -2,7 +2,7 @@
 title: "API: Menus"
 description: "Build and open holographic menus through the Gloss API"
 published: true
-date: 2026-09-06T01:32:26.266Z
+date: 2026-10-03T13:52:57.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -62,6 +62,18 @@ HoloMenuHandle handle = gloss.open(plugin, player, "shop");
 ```
 
 File-backed menu handles support lifecycle and closing, but not component mutation or API click handlers.
+
+## Existing item stacks
+
+`HoloIcon.item(ItemStack)` displays an existing stack with its item metadata. The descriptor takes a copy, so later changes to the inventory stack do not alter the icon. Replace the icon to show another stack:
+
+```java
+ItemStack held = player.getInventory().getItemInMainHand();
+HoloIcon.Item item = HoloIcon.item(held);
+handle.setIcon("item-preview", item);
+```
+
+Add an `item-preview` component when creating the API menu. This `itemStack` representation is available through the API; JSON menus use `item` or `customItem`.
 
 ## Display style and text boxes
 

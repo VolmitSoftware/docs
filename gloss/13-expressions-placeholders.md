@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -579,6 +579,11 @@ Related pages: [Holograms](/gloss/04-holograms),
 
 ## Game-object names
 
+<div class="gloss-demo" data-demo="names-editor">
+<p><strong>Names catalog authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/names-editor.webm" aria-label="Names catalog authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 `plugins/Gloss/names.json` is the shared schema-1 names catalog. Edit its eight maps:
 `materials`, `entities`, `worlds`, `gameModes`, `dimensions`, `damageCauses`, `effects`, and
 `groups`. Valid edits reload automatically. Missing entries use Title Case, with separators
@@ -603,12 +608,9 @@ Keys are case-insensitive except world names, which match exactly. The `minecraf
 optional. Dimension keys `normal` and `nether` normalize to `overworld` and `the_nether`.
 Two keys that normalize to the same value are invalid.
 
-Use `{{ name('materials', 'minecraft:oak_log') }}` for direct lookup. Entity roles expose
-`typeName`, `worldName`, and `dimensionName`; player roles add `gameModeName` and `groupName`.
-World scopes expose `world.displayName` and `world.environmentName`. Raw keys remain available
-for conditions. Damage contexts add `event.causeName` and `event.directSourceTypeName`; drops
-provide `drop.materialName` and `drop.worldName`. Preview documents use `itemName(slot)` for
-the material in an inventory slot.
+Use `{{ name('materials', 'minecraft:oak_log') }}` for direct lookup on text surfaces. Condition and menu-session entity roles expose `typeName`, `worldName`, and `dimensionName`; player roles add `gameModeName` and `groupName`. Their world scope exposes `world.displayName` and `world.environmentName`. These role and world fields are not globals in the standard text scope used by ordinary scoreboard, tablist, and hologram text. That scope provides `player.name`, `player.displayName`, `player.username`, `player.ping`, `player.health`, `player.level`, and `player.bedrock`, plus its server and elapsed-time variables. Use direct `name(category, key)` lookup when the surface does not expose the corresponding role value.
+
+Damage contexts add `event.causeName` and `event.directSourceTypeName`; drops provide `drop.materialName` and `drop.worldName`. Preview documents use `itemName(slot)` for the material in an inventory slot. Raw keys remain available in their respective condition scopes.
 
 Drop labels and chat item names share this catalog. Surface-specific overrides such as
 `real-drops/default.json` → `labels.names` take precedence. The shipped chat format omits its
@@ -622,4 +624,4 @@ With `[features] nametags = true`, rendered `player.name`, `viewer.name`, `subje
 
 Other PlaceholderAPI expansions retain the values supplied by their provider. Player identifiers in commands, completions, and protocol profiles remain account names. Gloss chat names use the channel engine; when it is disabled, the server or another chat formatter controls the name field.
 
-Condition scopes keep `.name` as the raw account name, so comparisons and selection rules are independent of formatting. References to a live leaderboard player use that player's current nametag; offline leaderboard entries retain their recorded account name. Nametag prefix and suffix templates use raw player names while composing the identity. Configure assignments in [Nametags and nameplates](/gloss/20-entity-overlays#permission-selected-nametags).
+Condition scopes keep `.name` as the raw account name, so comparisons and selection rules are independent of formatting. Nametag prefix and suffix templates use raw player names while composing the identity. Configure assignments in [Nametags and nameplates](/gloss/20-entity-overlays#permission-selected-nametags).

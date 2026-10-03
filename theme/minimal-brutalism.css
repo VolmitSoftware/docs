@@ -266,7 +266,7 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .picker-footer a { color: var(--volmit-ink); text-decoration: underline; text-underline-offset: 4px; }
 #root .v-application:has(.contents) .picker-empty { padding: 24px; margin: 0; color: var(--volmit-muted); font-size: 14px; }
 
-#root .v-application:has(.contents) .contents :is(.adapt-demo, .wormholes-demo).demo-ready { margin: 20px 0 28px; overflow: hidden; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-paper); }
+#root .v-application:has(.contents) .contents :is(.adapt-demo, .wormholes-demo, .gloss-demo).demo-ready { margin: 20px 0 28px; overflow: hidden; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-paper); }
 #root .v-application:has(.contents) .demo-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px; border-bottom: 1px solid var(--volmit-line); background: var(--volmit-surface); }
 #root .v-application:has(.contents) .demo-tabs { display: flex; gap: 4px; }
 #root .v-application:has(.contents) .demo-tab { min-height: 44px; padding: 8px 12px; border: 1px solid transparent; border-radius: var(--volmit-radius-control); background: transparent; color: var(--volmit-muted); font-size: 13px; font-weight: 500; cursor: pointer; }
@@ -281,6 +281,8 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .demo-camera select { min-height: 44px; padding: 8px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-control); background: var(--volmit-surface-raised); color: var(--volmit-ink); font: inherit; }
 #root .v-application:has(.contents) .wormholes-demo .demo-tab { white-space: normal; text-align: left; }
 #root .v-application:has(.contents) .wormholes-demo [hidden] { display: none !important; }
+#root .v-application:has(.contents) .gloss-demo [hidden] { display: none !important; }
+#root .v-application:has(.contents) .gloss-demo > p { margin: 12px 16px; }
 
 @media (max-width: 1400px) {
   #root .v-application:has(.contents) .home-directory { margin: 0 48px; }

@@ -2,7 +2,7 @@
 title: "Tablist"
 description: "Configure the in-game player list"
 published: true
-date: 2026-10-02T23:20:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -122,6 +122,16 @@ work. `"hide"` omits excess players.
 ordinary player entries; disabling it restores the ordinary list.
 
 ## Header and footer
+
+<div class="gloss-demo" data-demo="boards-tablist-pov">
+<p><strong>Scoreboard and tablist</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/boards-tablist-pov.webm" aria-label="Scoreboard and tablist, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="tablist-editor">
+<p><strong>Tablist authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/tablist-editor.webm" aria-label="Tablist authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Headers and footers render per player. The highest-priority matching variant wins, with the base presentation as the fallback.
 

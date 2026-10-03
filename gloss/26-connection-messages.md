@@ -2,7 +2,7 @@
 title: "Connection Messages"
 description: "Replace the vanilla join and leave lines with conditional Gloss text"
 published: true
-date: 2026-10-02T23:35:00.000Z
+date: 2026-10-03T14:29:43.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -17,6 +17,16 @@ Gloss replaces the vanilla join and leave lines with text from `plugins/Gloss/co
 `[features] connections` defaults to `false`. Set it to `true` in `gloss.toml` and Gloss extracts `connections.json` and starts using it without a restart. Turning it off again also hot-reloads.
 
 ## The document
+
+<div class="gloss-demo" data-demo="connection-messages-pov">
+<p><strong>Connection messages</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/connection-messages-pov.webm" aria-label="Connection messages, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="connections-editor">
+<p><strong>Connection message authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/connections-editor.webm" aria-label="Connection message authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 `connections.json` is a schema-1 document with `join`, `leave`, and optional `firstJoin` sections. Gloss watches it like the other documents; a valid edit reloads and logs `Connection messages reloaded from connections.json.`
 

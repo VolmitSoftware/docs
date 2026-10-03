@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-03T18:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -59,6 +59,10 @@ selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/langu
 | `/gloss menu addrow <id> <text>` | `gloss.menus.edit` | Add a row |
 | `/gloss menu seticon <id> <row> <type> <value>` | `gloss.menus.edit` | Set a row icon |
 | `/gloss menu close` | `gloss.menus.close` | Close your menu |
+| `/gloss inventory list` | `gloss.inventories` | List inventory menus |
+| `/gloss inventory info <inventory>` | `gloss.inventories.info` | Inspect an inventory menu |
+| `/gloss inventory open <inventory> [player=] [args=]` | `gloss.inventories.open` | Open an inventory menu |
+| `/gloss inventory reset [name=*]` | `gloss.inventories.reset` | Restore shipped inventory menus |
 | `/gloss panel list` | `gloss.panels` | List panels |
 | `/gloss panel create <id> [menu=*]` | `gloss.panels` | Place a panel at your position |
 | `/gloss panel edit <id>` | `gloss.panels` | Start editing a panel |
@@ -66,6 +70,32 @@ selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/langu
 | `/gloss panel cancel` | `gloss.panels` | Discard your staged edit |
 | `/gloss preview list` | `gloss.previews` | List container previews |
 | `/gloss preview reset [name=*]` | `gloss.previews.reset` | Restore default previews |
+
+## Markers and waypoints
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/gloss marker list` / `/gloss marker info <id>` | `gloss.markers.list` / `gloss.markers.info` | Inspect marker documents |
+| `/gloss marker create <id> [label=]` | `gloss.markers.create` | Place a marker at your position |
+| `/gloss marker remove <id>` | `gloss.markers.remove` | Remove a marker |
+| `/gloss waypoint list` / `/gloss waypoint info <id>` | `gloss.waypoints.list` / `gloss.waypoints.info` | Inspect waypoint documents |
+| `/gloss waypoint set <name>` / `/gloss waypoint remove <name>` | `gloss.waypoints.self` | Add or remove your locator waypoint |
+
+## Content workflows
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/gloss pack list` / `/gloss pack info <id>` | `gloss.packs` | Inspect installed packs |
+| `/gloss pack install <source> [dry=true]` | `gloss.packs.install` | Preview or install a local or HTTPS pack |
+| `/gloss pack update <id>` | `gloss.packs.update` | Update from the installation source |
+| `/gloss pack remove <id>` | `gloss.packs.remove` | Remove unchanged pack files |
+| `/gloss history list <kind> <id> [page=1]` | `gloss.history` | List saved versions |
+| `/gloss restore document <kind> <id> <version>` | `gloss.history.restore` | Restore a saved version |
+| `/gloss check workspace [kind=*] [id=*] [page=1]` | `gloss.check` | Check authored documents |
+| `/gloss export documents [kind=*] [id=*] [dir=exports]` | `gloss.export` | Export JSON documents |
+| `/gloss export bundle [dir=exports]` | `gloss.export` | Export a workspace bundle |
+
+See [Data Files & Hot Reload](/gloss/03-data-files) for pack authoring and file handling. The server edition reloads content automatically; `/gloss reload` is a [Velocity command](/gloss/27-velocity).
 
 ## Player names and chat
 
@@ -96,6 +126,11 @@ selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/langu
 | `/gloss bubbles style <style>` | `gloss.bubbles.style` | Choose a bubble style |
 | `/gloss item status` | `gloss.items` | List custom-item providers |
 | `/gloss item export` | `gloss.items.export` | Export the custom-item catalog |
+| `/gloss surface list` / `/gloss surface info <id>` | Any Gloss command access | Inspect screen surfaces |
+| `/gloss surface test <id> [player=]` | `gloss.surfaces.test` | Evaluate normal surface selection for a player |
+| `/gloss surface reset [name=*]` | `gloss.surfaces.reset` | Restore shipped surfaces |
+| `/gloss strings list` / `/gloss strings missing <locale>` | `gloss.strings` | Inspect content string catalogs |
+| `/gloss strings reset [name=*]` | `gloss.strings.reset` | Restore shipped content strings |
 | `/gloss web open` | `gloss.web.open` | Open the web editor |
 | `/gloss web edit <kind> <id>` | `gloss.web.edit` | Edit one document |
 | `/gloss web workspace` | `gloss.web.workspace` | Open the complete workspace |

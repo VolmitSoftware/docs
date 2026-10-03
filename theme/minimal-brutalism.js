@@ -434,8 +434,9 @@
   }
 
   function updateDemoPlayback(player) {
+    const selected = player.views.has(demoPerspective) ? demoPerspective : player.views.keys().next().value;
     for (const [perspective, view] of player.views) {
-      const active = perspective === demoPerspective;
+      const active = perspective === selected;
       view.panel.hidden = !active;
       view.tab.setAttribute('aria-selected', String(active));
       view.tab.tabIndex = active ? 0 : -1;
@@ -480,10 +481,15 @@
   }
 
   function mountDemo(container) {
-    const first = container.querySelector('video[src$="-pov.webm"]');
+    const editor = container.querySelector('video[src$="-editor.webm"]');
+    const first = container.querySelector('video[src$="-pov.webm"]') || editor;
     const third = container.querySelector('video[src$="-observer.webm"]');
-    if (!first || !third) {
+    if (!first) {
       return;
+    }
+    const choices = [[editor ? 'editor' : 'first-person', editor ? 'Browser editor' : 'First person', first]];
+    if (third) {
+      choices.push(['third-person', 'Third person', third]);
     }
     const player = { views: new Map(), visible: false, playing: true };
     demoPlayers.set(container, player);
@@ -492,22 +498,30 @@
     tabs.setAttribute('role', 'tablist');
     tabs.setAttribute('aria-label', 'Perspective for all demonstrations');
     header.append(tabs, element('span', 'demo-scope', 'All demos'));
-    container.prepend(header);
+    if (choices.length > 1) {
+      container.prepend(header);
+    }
     const id = 'adapt-demo-' + ++demoSequence;
-    for (const [perspective, label, video] of [['first-person', 'First person', first], ['third-person', 'Third person', third]]) {
+    for (const [perspective, label, video] of choices) {
       video.autoplay = false;
       video.muted = true;
       video.preload = 'none';
       pauseDemo(video);
-      video.setAttribute('aria-label', label + ' demonstration');
+      if (!video.hasAttribute('aria-label')) {
+        video.setAttribute('aria-label', label + ' demonstration');
+      }
       const tab = element('button', 'demo-tab', label);
       tab.type = 'button';
       tab.id = id + '-' + perspective + '-tab';
       tab.setAttribute('role', 'tab');
       const panel = element('div', 'demo-panel');
       panel.id = id + '-' + perspective;
-      panel.setAttribute('role', 'tabpanel');
-      panel.setAttribute('aria-labelledby', tab.id);
+      if (choices.length > 1) {
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', tab.id);
+      } else {
+        panel.setAttribute('aria-label', label + ' demonstration');
+      }
       tab.setAttribute('aria-controls', panel.id);
       panel.append(video);
       tabs.append(tab);
@@ -518,7 +532,8 @@
         if (video.paused) {
           return;
         }
-        if (perspective !== demoPerspective || !player.visible || document.hidden) {
+        const selected = player.views.has(demoPerspective) ? demoPerspective : player.views.keys().next().value;
+        if (perspective !== selected || !player.visible || document.hidden) {
           pauseDemo(video);
           return;
         }
@@ -562,7 +577,7 @@
         demoPlayers.delete(container);
       }
     }
-    for (const container of content.querySelectorAll('.adapt-demo')) {
+    for (const container of content.querySelectorAll('.adapt-demo,.gloss-demo')) {
       if (!demoPlayers.has(container)) {
         mountDemo(container);
       }

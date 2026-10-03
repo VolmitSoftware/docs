@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-10-02T23:20:00.000Z
+date: 2026-10-03T15:53:01.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -11,6 +11,11 @@ dateCreated: 2026-09-05T20:00:00.000Z
 Gloss shows segmented health above nearby living entities by default.
 
 ## Default behavior
+
+<div class="gloss-demo" data-demo="entity-overlays-pov">
+<p><strong>Entity overlays</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/entity-overlays-pov.webm" aria-label="Entity overlays, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 **What you see.** A pane that follows the entity, with segmented health and, on a named entity, its
 custom name above the bar. Attack damage and armor appear on the last line.
@@ -162,12 +167,22 @@ An Insight target can appear beyond the ordinary overlay radius, and the hologra
 
 ## Web editor
 
+<div class="gloss-demo" data-demo="entity-overlays-editor">
+<p><strong>Entity overlay authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/entity-overlays-editor.webm" aria-label="Entity overlay authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Import, export, undo and live sync use the singleton id `default`, exported to
 `entity-overlays/default.json`. Sample controls change the preview only, never Adapt or React
 configuration. Check text size and placement in a Minecraft client — the browser preview does not
 reproduce the client renderer. See [Web Editor & Sync](/gloss/18-web-editor).
 
 ## Permission-selected nametags
+
+<div class="gloss-demo" data-demo="nametag-editor">
+<p><strong>Nametag authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/nametag-editor.webm" aria-label="Nametag authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Enable `nametags = true` under `[features]` in `gloss.toml`. Edit schema-1 `nametags/<id>.json` documents with `/gloss web edit nametags <id>`. A nametag controls the player's prefix, account-name color, suffix, vanilla label visibility, and collision rule.
 
@@ -212,6 +227,16 @@ The selected prefix, name color, and suffix also appear in rendered player-name 
 
 ## Permission-selected nameplates
 
+<div class="gloss-demo" data-demo="player-identities-pov">
+<p><strong>Nametag and nameplate live updates</strong> Minecraft client. Silent capture.</p>
+<video src="/gloss-assets/demos/player-identities-pov.webm" aria-label="Nametag and nameplate live updates, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="gloss-demo" data-demo="nameplate-editor">
+<p><strong>Nameplate authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
+<video src="/gloss-assets/demos/nameplate-editor.webm" aria-label="Nameplate authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Enable `nameplates = true` under `[features]`; the hologram and entity-overlay engine must also be enabled. Nameplates are schema-1 documents under `nameplates/<id>.json`, opened with `/gloss web edit nameplates <id>`. They replace the vanilla overhead label with ordered text rows and shared Gloss display styling.
 
 ```json
@@ -237,4 +262,4 @@ Nameplate document and variant permissions use the same assignment, condition, a
 
 A presentation accepts up to 16 `lines`, each with `text` and `show`; `style` and `box` use the [shared display settings](/gloss/11-icons#display-style-and-boxes). `offset` defaults to `0.3` and clamps to `-2` through `8`. `hideSneaking` defaults to `true`. Ordered `relations` contain `when` and `color`, with the first matching relation supplying the row color. A player cannot see their own plate, and spectators, invisible players, or players hidden from that viewer have no visible plate.
 
-Use `/gloss nametag refresh` or `/gloss nameplate refresh` to request a refresh. Valid document edits reload automatically; changing assignment permissions takes effect on the next feature refresh.
+Use `/gloss nametag refresh` or `/gloss nameplate refresh` to request a refresh. Valid document edits reload automatically, including the first saved change; deleting a document removes its assignment. Changing assignment permissions takes effect on the next feature refresh.

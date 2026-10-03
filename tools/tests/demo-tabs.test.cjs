@@ -16,6 +16,8 @@ async function page(t, perspective, single = false) {
   const dom = new JSDOM('<div id="root"><div class="v-application"><main class="v-main"><div class="contents">'
     + ['wand-creation', 'rune-creation', 'portal-linking'].map(id => demonstration(id, single && id !== 'portal-linking' ? ['pov'] : ['pov', 'observer'])).join('')
     + '<div class="adapt-demo"><video src="/adapt-assets/demo-pov.webm"></video><video src="/adapt-assets/demo-observer.webm"></video></div>'
+    + '<div class="gloss-demo"><p>Inventory menus. Minecraft client. Silent capture.</p><video src="/gloss-assets/demos/inventory-menus-pov.webm" aria-label="Inventory menus in Minecraft"></video></div>'
+    + '<div class="gloss-demo"><p>Menu authoring. Browser editor. Silent capture.</p><video src="/gloss-assets/demos/menu-editor.webm" aria-label="Menu authoring in the browser editor"></video></div>'
     + '</div></main></div></div>', { url: 'https://example.test/wormholes/03-building-portals', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
@@ -69,6 +71,26 @@ test('each demonstration mounts independent client tabs and paired perspectives'
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(demos[0].querySelectorAll(':scope > .demo-header').length, 1);
   assert.equal(window.document.querySelectorAll('.adapt-demo .demo-tab').length, 2);
+});
+
+test('single-view Gloss clips preserve labels and play independently of saved perspective', async t => {
+  const { window, visible } = await page(t, 'third-person');
+  const demos = [...window.document.querySelectorAll('.gloss-demo')];
+  for (const demo of demos) {
+    const video = demo.querySelector('video');
+    const label = video.getAttribute('aria-label');
+    assert.equal(demo.classList.contains('demo-ready'), true);
+    assert.equal(demo.querySelector('.demo-header'), null);
+    assert.equal(demo.querySelector('[role="tablist"]'), null);
+    visible(demo, true);
+    assert.equal(video.parentElement.hidden, false);
+    assert.equal(video.paused, false);
+    assert.equal(video.getAttribute('aria-label'), label);
+    visible(demo, false);
+    assert.equal(video.paused, true);
+    visible(demo, true);
+    assert.equal(video.paused, false);
+  }
 });
 
 test('keyboard navigation selects client tabs and the camera uses a separate selector', async t => {
