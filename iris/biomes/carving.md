@@ -2,16 +2,16 @@
 title: "Carving Biomes"
 description: "Navigation for the built-in carving biomes across Overworld and Underworld"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-10-04T12:29:38.588Z
 tags: "iris, biomes, overworld, underworld, carving"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Underground cave roots and the dimension-level Deep Dark carving band shared by both built-in packs.
+Underground cave roots, authored rooms and the dimension-level Deep Dark carving band shared by both built-in packs.
 
 This family has **49 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
-Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
+Both packs disable standalone aquifers in their dimension and region cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Authored rooms retain their configured water or lava, including Overworld lava-lamp tubes and sulfur colonnades. Deep lava retains its separate controls.
 
 ## Direct roots
 
@@ -27,13 +27,17 @@ Both packs disable standalone aquifers in dimension, region, and biome cave prof
 | [Drip](/iris/biomes/carving/drip) | `carving/drip` | Cave | Estranged, Swamp, Temperate, Tropical |
 | [Drip Lite](/iris/biomes/carving/drip-lite) | `carving/drip-lite` | Cave | Mushroom, Swamp |
 | [Ember Rifts](/iris/biomes/carving/ember-rifts) | `carving/ember-rifts` | Cave | Hot |
+| [Ember Vaults](/iris/biomes/carving/ember-vaults) | `carving/ember-vaults` | Subterrain | Dimension feature |
 | [Flux Crystal Caverns](/iris/biomes/carving/flux-crystal-caverns) | `carving/flux-crystal-caverns` | Cave | Magnetics |
 | [Frost Shards](/iris/biomes/carving/frost-shards) | `carving/frost-shards` | Cave | Frozen, Tundra |
+| [Frost Vaults](/iris/biomes/carving/frost-vaults) | `carving/frost-vaults` | Subterrain | Dimension feature |
 | [Glacial](/iris/biomes/carving/glacial) | `carving/glacial` | Cave | Frozen, Tundra |
 | [Ice](/iris/biomes/carving/ice) | `carving/ice` | Cave | Frozen, Tundra |
 | [Ice Lite](/iris/biomes/carving/ice-lite) | `carving/ice-lite` | Cave | Frozen, Tundra |
 | [Ice Ravine](/iris/biomes/carving/ice-ravine) | `carving/ice-ravine` | Cave | Frozen |
 | [Jungle](/iris/biomes/carving/jungle) | `carving/jungle` | Cave | Tropical |
+| [Lantern Grotto](/iris/biomes/carving/lantern-grotto) | `carving/lantern-grotto` | Subterrain | Dimension feature |
+| [Lava Lamp Caves](/iris/biomes/carving/lava-lamp) | `carving/lava-lamp` | Subterrain | Dimension feature |
 | [Lush](/iris/biomes/carving/lush) | `carving/lush` | Cave | Forests, Swamp, Tropical |
 | [Magnetic Hollows](/iris/biomes/carving/magnetic-hollows) | `carving/magnetic-hollows` | Cave | Magnetics |
 | [Mixed Sandstone](/iris/biomes/carving/mixed-sandstone) | `carving/mixed-sandstone` | Cave | Hot |
@@ -61,9 +65,29 @@ Both packs disable standalone aquifers in dimension, region, and biome cave prof
 | [Rocky Cavebiome](/iris/biomes/carving/rocky-cavebiome) | `carving/rocky-cavebiome` | Cave | Estranged, Forests, Mushroom, Temperate |
 | [Sand Hollows](/iris/biomes/carving/sand-hollows) | `carving/sand-hollows` | Cave | Hot, Tropical |
 | [Sandstone](/iris/biomes/carving/sandstone) | `carving/sandstone` | Cave | Hot |
+| [Sculk Cathedral](/iris/biomes/carving/sculk-cathedral) | `carving/sculk-cathedral` | Subterrain | Dimension feature |
 | [Standard Deepdark](/iris/biomes/carving/standard-deepdark) | `carving/standard-deepdark` | Carving | Dimension |
 | [Sulfur Galleries](/iris/biomes/carving/sulfur) | `carving/sulfur` | Cave | Estranged, Hot, Temperate, Tropical |
 | [Swamp](/iris/biomes/carving/swamp) | `carving/swamp` | Cave | Swamp |
+| [Travertine Gardens](/iris/biomes/carving/travertine-gardens) | `carving/travertine-gardens` | Subterrain | Dimension feature |
 | [Volcanic](/iris/biomes/carving/volcanic) | `carving/volcanic` | Cave | Hot |
+
+## Authored room selection
+
+Nine dimension feature definitions place bounded rooms below Y=0. Their biomes own the occupied room volume; ordinary cave selectors supply the surrounding cave system. The six dedicated roots above are reached through these definitions.
+
+| Feature ID | Biome | Geometry | Absolute world Y band | Overworld fluid | Underworld fluid |
+|---|---|---|---|---|---|
+| `lava-lamp-tubes` | [Lava Lamp Caves](/iris/biomes/carving/lava-lamp) | `LAVA_TUBE` | `-172..-68` | lava | lava |
+| `ember-vaults` | [Ember Vaults](/iris/biomes/carving/ember-vaults) | `CENOTE` | `-158..-60` | Dry | Dry |
+| `sculk-cathedrals` | [Sculk Cathedral](/iris/biomes/carving/sculk-cathedral) | `CENOTE` | `-168..-68` | Dry | Dry |
+| `lantern-grottos` | [Lantern Grotto](/iris/biomes/carving/lantern-grotto) | `CENOTE` | `-110..-24` | water | lava |
+| `frost-vaults` | [Frost Vaults](/iris/biomes/carving/frost-vaults) | `CENOTE` | `-104..-20` | Dry | Dry |
+| `travertine-gardens` | [Travertine Gardens](/iris/biomes/carving/travertine-gardens) | `TRAVERTINE_TERRACES` | `-150..-52` | water | lava |
+| `sulfur-colonnades` | [Sulfur Galleries](/iris/biomes/carving/sulfur) | `CENOTE` | `-156..-52` | lava | lava |
+| `crystal-faults` | [Flux Crystal Caverns](/iris/biomes/carving/flux-crystal-caverns) | `TECTONIC_FAULT` | `-160..-48` | Dry | Dry |
+| `drowned-galleries` | [Rocky Cavebiome](/iris/biomes/carving/rocky-cavebiome) | `CENOTE` | `-120..-28` | water | lava |
+
+Use `/iris find subterrain <feature-id> radius=8192 teleport=false` or `/iris find underground-biome <load-key> radius=8192 teleport=false` to locate an occupied point. See [Authored Subterrain Features](/iris/15b-subterrain-features).
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog).

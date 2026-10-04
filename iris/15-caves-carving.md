@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-04T12:39:17.121Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,6 +25,12 @@ Related:
 
 The current built-in pack sources include [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur), a 26.2 cave family derived from the dripstone profiles with sulfur spikes, banded mineral formations and contained pools. The paired Underworld uses the same shapes with lava and Nether ecology.
 
+## Authored rooms and passages
+
+Use dimension `subterrainFeatures` for parallel stepped tectonic faults, domed cenotes with sealed basins, lava tubes with elevated walkways and connected hornitos, and retained travertine terraces. Optional `fluid` chooses `WATER` or `LAVA` for any wet geometry; omission uses each family's default, and faults remain dry. These features own bounded 3D volumes and explicit solid boundaries; an absolute Y band alone does not assign their biome to the rest of the underground.
+
+Configure continuous floor-to-ceiling pillars with `pillarSpacing` and vault-proportional stalactites and stalagmites with `formationFraction`. Their shelves, rims, pillars and seals remain solid alongside noise caves. The selected feature biome's floor, ceiling and wall palettes can texture exposed boundaries using safe full solid blocks, with the feature's `solid` as fallback. Full settings and synthetic pack examples are in [Authored Subterrain Features](/iris/15b-subterrain-features).
+
 ## Biome overhangs and cave carving
 
 Dimension `focus` preserves the owning region when targeting a child or cave biome, including flooded cave targets. Its regional cave profile remains active in focused Studio previews.
@@ -43,7 +49,7 @@ Some settings measure height from the build floor; others use absolute world Y:
 
 | Height above the build floor | Absolute world Y |
 |---|---|
-| `caveProfile.verticalRange` | `carving[].worldYRange` |
+| `caveProfile.verticalRange` | `carving[].worldYRange`, `subterrainFeatures[].worldYRange` |
 | `IrisCaveFieldModule.verticalRange` | structure placement `minHeight` / `maxHeight` |
 | dimension `caveLavaHeight` | dimension `fluidHeight`; `depositVariants[].minHeight` / `maxHeight` |
 
@@ -158,9 +164,10 @@ Two rules decide whether any of this appears:
 
 For a given `(x, y, z)`, in order:
 
-1. If an enabled dimension `carving[]` entry `worldYRange` contains the absolute world Y, its biome wins outright. Child entries subdivide that band into patches.
-2. Otherwise the region `caveBiomes` pool is sampled by `caveBiomeStyle` and biome `rarity`, zoomed by the dimension `biomeZoom` multiplied by the region `caveBiomeZoom`. An omitted or empty pool uses the surface biome for biome queries and saved generation history. It does not enable cave generation.
-3. If the sampled cave biome `caveMinDepthBelowSurface` is deeper than the point, the **surface** biome is used instead. The same fallback applies if the point is at or above the surface.
+1. An occupied authored `subterrainFeatures` volume selects its configured biome before ordinary cave depth gates. Solid boundaries and points outside the volume do not inherit this owner.
+2. If an enabled dimension `carving[]` entry `worldYRange` contains the absolute world Y, its biome wins outright. Child entries subdivide that band into patches.
+3. Otherwise the region `caveBiomes` pool is sampled by `caveBiomeStyle` and biome `rarity`, zoomed by the dimension `biomeZoom` multiplied by the region `caveBiomeZoom`. An omitted or empty pool uses the surface biome for biome queries and saved generation history. It does not enable cave generation.
+4. If the sampled cave biome `caveMinDepthBelowSurface` is deeper than the point, the **surface** biome is used instead. The same fallback applies if the point is at or above the surface.
 
 Neighboring cave biomes blend through a speckled transition band.
 

@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-04T12:29:38.588Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -13,7 +13,7 @@ For biome configuration, see [13 - Biomes](/iris/13-biomes). To edit the built-i
 
 ## Catalog scope
 
-The paired catalog contains 375 reachable biome identities:
+The paired catalog contains 381 reachable biome identities:
 
 | Kind | Count | Documentation treatment |
 |---|---:|---|
@@ -22,6 +22,7 @@ The paired catalog contains 375 reachable biome identities:
 | Direct shore roots | 17 | Consolidated in [Shorelines](/iris/biomes/shorelines), with distinct variants called out |
 | Region-selected cave roots | 47 | One paired page per root, except the 16-color Prismatic family |
 | Dimension-carving roots | 1 | The global Deep Dark page includes its descendants |
+| Authored subterrain roots | 6 | One paired page per dimension-selected room biome |
 | Child-only and floating-only variants | 115 | Included with a parent root rather than given an orphan page |
 
 `mountain/shore/beach` and `vanilla/stony_shore` are available in both packs but are not selected by the built-in region lists. See [Shorelines](/iris/biomes/shorelines) for their materials and settings.
@@ -30,7 +31,7 @@ The paired catalog contains 375 reachable biome identities:
 
 | Family | Direct roots | Child-only variants | Scope |
 |---|---:|---:|---|
-| [Carving](/iris/biomes/carving) | 48 | 49 | Region cave selectors and the dimension-level Deep Dark band |
+| [Carving](/iris/biomes/carving) | 54 | 49 | Region cave selectors, six authored room roots and the dimension-level Deep Dark band |
 | [Estranged](/iris/biomes/estranged) | 15 | 1 | Surreal woodlands, wetlands, and sculptural terrain |
 | [Frozen](/iris/biomes/frozen) | 21 | 8 | Snow, ice, spruce, mountains, cold water, and shores |
 | [Hot](/iris/biomes/hot) | 10 | 2 | Dunes, desert mountains, oases, warm water, and shores |
@@ -48,7 +49,9 @@ The paired catalog contains 375 reachable biome identities:
 | [Tundra](/iris/biomes/tundra) | 17 | 11 | Taiga, redwoods, alpine terrain, mountains, water, and shores |
 | [Vanilla](/iris/biomes/vanilla) | 19 | 0 | Vanilla-compatible roots mixed into Iris selectors |
 
-The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. The cave root and its child contain ordinary short sulfur spikes, occasional taller clusters, tiny mineral pools, and rare banded spires. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
+The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. The cave root and its child contain short sulfur spikes, taller clusters, mineral pools, banded pillars and hanging mineral drips. Dimension-selected sulfur colonnades add broad retained lava basins beneath continuous columns. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
+
+The [Carving family](/iris/biomes/carving#authored-room-selection) includes lava-lamp tubes, ember vaults, sculk cathedrals, lantern grottos, frost vaults and travertine gardens. Nine dimension feature definitions also place sulfur colonnades, crystal faults and drowned galleries using existing cave roots. Each room has an absolute underground Y band, solid boundaries and its own material and ecology treatment.
 
 Overworld [Tundra Autumn and its extended variant](/iris/biomes/tundra/autumn) scatter red shrubs on grass blocks, coarse dirt, and podzol, alongside the red shrub ground cover in the four poplar biomes. These plants require Minecraft 26.3.
 
@@ -65,7 +68,7 @@ An atlas page lists every region and selection role that can choose the root. Re
 
 ## What counts as in use
 
-Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, children, floating targets, carving references, and hydrology biome references. River policies can select surface, mouth, shore, bank, and flooded-cave biomes. A file outside this graph is omitted even if it parses successfully.
+Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, authored `subterrainFeatures`, children, floating targets, carving references, and hydrology biome references. River policies can select surface, mouth, shore, bank, and flooded-cave biomes. A file outside this graph is omitted even if it parses successfully.
 
 This distinction matters when editing a pack. An authored biome can validate yet never generate because nothing selects it. Use [13 - Biomes](/iris/13-biomes) for the configuration contract and [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) for the editing workflow.
 
@@ -75,6 +78,7 @@ On Bukkit-family servers:
 
 ```text
 /iris find biome <load-key>
+/iris find underground-biome <load-key> radius=8192 teleport=false
 /iris what biome
 ```
 

@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-10-02T20:12:54.812392+00:00
+date: 2026-10-04T12:28:04.588Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -103,6 +103,10 @@ These three sources can spawn mobs together. Configuring one does not disable th
 | `entitySpawners` | Empty unless listed | Additional pack spawns; requires `world.ambientEntitySpawningSystem` (default true) |
 
 There is no `importedStructures.disabled` equivalent for mobs.
+
+### Underground native tables
+
+An authored `subterrainFeatures` biome supplies native biome cells sampled from its occupied air, water and lava volume. Native spawn tables attached through `customDerivitives[].spawns` therefore follow that underground owner rather than the surface biome above it. Iris coordinate queries and custom ambient spawns retain exact block ownership. Minecraft publishes physical biomes in 4×4×4 cells, so boundary cells can also cover adjacent solids. The same physical, light and native population rules still determine whether a listed mob can spawn. See [Authored Subterrain Features](/iris/15b-subterrain-features) for a water-biome example.
 
 ### Replace vanilla mobs with a custom list
 

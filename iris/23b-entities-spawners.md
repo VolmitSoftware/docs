@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-10-03T11:32:06.308185+00:00
+date: 2026-10-04T12:28:04.588Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -238,13 +238,13 @@ Folder: `spawners/`.
 | Value | Position chosen | Biome check (dimension scope only) |
 |-------|-----------------|------------------------------------|
 | `NORMAL` | Random x/z in the chunk, one block above the fluid-inclusive surface | Land biomes only |
-| `CAVE` | An underground floor with room for the mob; on Folia, placement uses the loaded chunk’s current blocks | Accepted in every biome type |
+| `CAVE` | A live underground dry, water or lava candidate with the support and body clearance required by the entity | Accepted in every biome type |
 | `UNDERWATER` | Random x/z, random Y between the solid top and the water surface | Sea biomes only |
 | `BEACH` | Same water-column position as `UNDERWATER` | Shore biomes only |
 
-The biome check only applies to spawners listed on a **dimension**. Region and biome `entitySpawners` bypass it, so a `CAVE`-group spawner listed on a surface biome still searches underground and does nothing when no suitable location is found.
+The category check only applies to spawners listed on a **dimension**. Region and biome `entitySpawners` bypass that category filter. For `CAVE` attempts, Iris first chooses an actual underground candidate, then combines dimension, region and the biome owning that XYZ position. Put underground-specific spawners on cave or authored feature biomes; the overlying surface biome does not contribute its cave pool.
 
-Cave spawns accept ordinary air and cave air. The spawn point must meet the entity’s surface requirement; ongoing spawns also require the spawner’s light range.
+Dry cave spawns accept ordinary air and cave air. Aquatic and lava entities require the matching actual fluid throughout their occupied body. Every candidate must meet the entity’s surface requirement, body clearance, light range and remaining category capacity. Existing generated locations use their retained biome definitions. Complete feature-biome examples are in [Authored Subterrain Features](/iris/15b-subterrain-features).
 
 `IrisRate` (snippet type `rate`):
 

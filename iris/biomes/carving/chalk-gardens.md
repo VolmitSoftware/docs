@@ -2,7 +2,7 @@
 title: "Chalk Gardens — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/chalk-gardens"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-04T12:29:38.588Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -35,9 +35,13 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 Derivative `minecraft:lush_caves`; vanilla derivative `minecraft:lush_caves`. Primary cave palette: `minecraft:calcite`, `minecraft:clay`, `minecraft:diorite`, `minecraft:deepslate`. Decorator blocks: `minecraft:small_dripleaf`, `minecraft:glow_lichen`. Object set: `clutter/stoneclutt4`, `clutter/stoneclutt5`, `clutter/amethyst-cluster4`, `clutter/amethyst-cluster1`, `clutter/amethyst-cluster2`, `clutter/amethyst-cluster3`, `clutter/amethyst-cluster5`.
 
+The root uses the [Travertine Gardens formation palette](/iris/biomes/carving/travertine-gardens): ceiling mineral curtains, moss-capped pinched columns, irregular bank arches and low rounded rocks. In ordinary noise caves, curtains use authored heights of 5–14 blocks, columns and arches 6–12, and rounded rocks 2–4. Authored rooms size the same forms to vault fractions `0.30`, `0.26`, `0.28` and `0.10` respectively. These formations add mineral silhouettes around the existing ground and object treatment.
+
 ## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:basalt`, `minecraft:soul_soil`, `minecraft:quartz_block`. Decorator blocks: `minecraft:nether_sprouts`, `minecraft:glowstone`. Object set: `underworld/soul/clutter/stoneclutt4`, `underworld/soul/clutter/stoneclutt5`, `underworld/soul/clutter/amethyst-cluster4`, `underworld/soul/clutter/amethyst-cluster1`, `underworld/soul/clutter/amethyst-cluster2`, `underworld/soul/clutter/amethyst-cluster3`, `underworld/soul/clutter/amethyst-cluster5`. Custom registered biome id: `underworld_carving_chalk_gardens_d73335c3`.
+
+The corresponding root formations use quartz, basalt and soul soil, with warped-nylium caps. Their silhouette, chances, authored height ranges and vault fractions match the Overworld forms.
 
 ## Child and floating variants
 

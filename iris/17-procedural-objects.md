@@ -2,7 +2,7 @@
 title: "Procedural Objects"
 description: "Iris documentation: Procedural Objects"
 published: true
-date: 2026-10-02T16:35:00.000Z
+date: 2026-10-04T13:00:54.342Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -103,7 +103,7 @@ Snippet key: `coral`. Defaults to `underwater: true` and `waterlogged: true`, so
 
 | Field | Default | What it does |
 |-------|---------|--------------|
-| `waterlogged` | `true` | Forces every waterloggable block in the structure waterlogged. Set false for dead, dry coral on a beach |
+| `waterlogged` | `true` | Requests waterlogging for waterloggable blocks submerged in actual water. Dry placements and lava clear wet states; set false for dry coral |
 | `form` | `BRANCHING` | `BRANCHING`, `FAN`, `BRAIN`, `PILLAR`, `TENDRIL`. Each runs a different generator |
 | `block` / `blockPalette` | `minecraft:tube_coral_block` | Structural body. A palette mixes tube/brain/bubble/fire/horn tones across one reef |
 | `tipBlock` / `tipPalette` | unset | Placed at branch tips and the top. `FAN` uses the highest occupied cell in each column, keeping tips on its silhouette |
@@ -159,7 +159,8 @@ Snippet key: `formation`. Natural and magical landmarks. Default `chance: 0.02` 
 | `capBlock` / `capPalette` | unset | Caprock on the crown, and the overhanging cap for `HOODOO`. Unset means the main rock everywhere |
 | `strataPalette` | unset | Horizontal color bands. Every `strataThickness` blocks the palette advances, which is what produces the badlands look |
 | `strataThickness` | `3` (1–32) | Band thickness |
-| `heightMin` / `heightMax` | `14` / `26` | Total height |
+| `heightMin` / `heightMax` | `14` / `26` | Total height when `roomHeightFraction` is zero |
+| `roomHeightFraction` | `0` (0..1) | In an authored subterrain cave room, sizes the formation to this fraction of the available vault. Zero uses `heightMin` / `heightMax` |
 | `baseWidthMin` / `baseWidthMax` | `3` / `6` | Base radius |
 | `topWidth` | `0` | Radius at the very top before the profile applies. 0 tapers to a point |
 | `profile` | `TAPER` | `CONSTANT`, `LINEAR`, `TAPER`, `PARABOLIC`, `BULGE` — how the radius changes with height |
@@ -186,6 +187,10 @@ Snippet key: `formation`. Natural and magical landmarks. Default `chance: 0.02` 
 | `spiralThickness` | `2` (1–8) | `SPIRAL`: radius of the swept tube |
 | `overhangReach` | `8` (1–32) | `OVERHANG`: horizontal reach of the hooked cantilever |
 | `overhangDrop` | `3` (0–16) | `OVERHANG`: downward curl at the free tip |
+
+When a procedural cave placement resolves to `FLOOR`, its lowest occupied block rests in the first open cell above the supporting floor. Alignment accounts for rotation; configured `translate` and random Y offsets still apply afterward. Ceiling, `CENTER` and surface placements keep their own anchor behavior.
+
+For room-scaled formations, set `carvingSupport: "CARVING_ONLY"` and `roomHeightFraction`, for example `0.25`. The selected room supplies the local floor and ceiling after anchoring; placements still respect its protected solids and passage. A formation that cannot fit is skipped. Feature-owned continuous pillars are configured separately with `pillarSpacing` in [Authored Subterrain Features](/iris/15b-subterrain-features).
 
 `ICEBERG` combines a low, wide body with independently varied summits. `FISSURE` keeps its shards disconnected so the cracks remain real negative space. `SPIRAL` sweeps a tightening helix with an open center. `OVERHANG` grows vertically before curling outward and down. `ARCH` sweeps one connected bridge between independently shaped feet, its configured height is the actual top bound, and the opening stays traversable. A pointed `SPIRE` always retains its final tip even at a zero-width top.
 

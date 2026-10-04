@@ -2,12 +2,12 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-02T16:35:00.000Z
+date: 2026-10-04T12:28:04.588Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A biome is where terrain height, surface materials, decoration and placement all come together. Files live at `biomes/<loadKey>.json`. Regions list root biomes. Roots can nest children, swap themselves out under carvings, and publish custom datapack biomes for colors, tags and mob spawns.
+A biome supplies terrain height, materials, decoration, placement and entity spawning. Files live at `biomes/<loadKey>.json`. Regions list root biomes. Roots can nest children, swap themselves out under carvings, and publish custom datapack biomes for colors, tags and mob spawns.
 
 Related:
 
@@ -50,6 +50,12 @@ column (x, z)
 - **Height is relative to `fluidHeight`, not to Y=0.** `min: 4, max: 10` means "4 to 10 blocks above the water line". Negative values put the natural surface under water. See [36 - Rivers](/iris/36-rivers) for river channels.
 - **A biome has no `type` field.** `carving/drip` is a cave biome only because a region put it in `caveBiomes`. The same file placed in `landBiomes` would generate as land.
 - **The role can be corrected after height is known.** If a land biome height lands below the water line, Iris swaps in a sea biome from the same region. If it lands in the shore band, a shore biome. A "land" biome with a negative generator will simply never render as itself.
+
+### Bounded underground ownership
+
+A dimension `subterrainFeatures[].biome` selects this biome inside that feature's actual air, water or lava volume. The reference makes the biome reachable without adding it to a region pool. Its surrounding terrain, solid boundaries and other Y levels retain their ordinary owner. Feature ownership is used by biome publication, coordinate queries and underground entity spawning before ordinary cave depth gates.
+
+Put room-specific `entitySpawners` and `customDerivitives[].spawns` on that biome. Iris `CAVE` spawners obtain the biome at the selected underground position; the overlying surface biome does not supply a room's cave pool. Native spawning uses the published underground biome. Minecraft physical biome cells are 4×4×4 blocks; a boundary cell can cover neighboring solids even though Iris queries and custom ambient spawning retain exact block ownership. See [Authored Subterrain Features](/iris/15b-subterrain-features) and [Entities & Spawners](/iris/23b-entities-spawners).
 
 ### Children
 

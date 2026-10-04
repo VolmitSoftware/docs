@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-04T13:00:54.342Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -92,6 +92,36 @@ For biome [`terrain3D`](/iris/47-volumetric-terrain), natural-height queries ret
 `RiverPolicyResolver.resolveWithStatus(dimension, region, biome)` returns the inherited policy and a `complete` flag. The flag is false if a declared river-biome reference returns null during that resolution. Filtering and inheritance match `resolve(...)`.
 
 `IrisRiverPolicy.compatBiomes(declared, data, field, onUnresolvedReference)` calls the callback for each reference that the loader cannot resolve.
+
+## Authored subterrain sampling and locate
+
+`Engine.getSubterrainCell(x, internalY, z)` returns the composed authored feature cell. Engine Y is measured above the dimension build floor; convert an absolute world Y by subtracting `engine.getWorld().minHeight()`. The result kind is `OUTSIDE`, `SOLID`, `AIR`, `WATER` or `LAVA`. Fluid kind and block material reflect the feature's selected `fluid`, independently of its geometry family. `occupied()` includes only air and fluid; `owned()` also includes solid boundaries. `Engine.getSubterrainBiome` returns the configured biome only for occupied cells, or null otherwise.
+
+Each owned cell has `room()` context containing its stable feature instance ID, family and biome, center and path coordinates, solid `floorY` and `ceilingY`, boundary distance, fluid head, occupancy and reserved passage/solid flags. These context Y coordinates are absolute world Y. `vaultHeight()` is the open height between the floor and ceiling.
+
+For `SOLID` cells, `material()` reports the feature's structural `solid` fallback. Generated exposed boundaries can use the owning biome's safe floor, ceiling or wall palette; interior solids keep the fallback. Air and fluid materials directly match their planned kinds.
+
+Procedural placement implementations receive room context through `getVariantObject(IrisData data, RNG rng, SubterrainRoom room)`. Cave placement resolves the room before baking a variant; ordinary placements pass null. Implementations use the three-argument contract. The two-argument interface method has been removed.
+
+For floor-aligned object placement, use `IrisObject.placeOnFloor(int x, int firstAirY, int z, IObjectPlacer placer, IrisObjectPlacement config, RNG rng, BiConsumer<BlockPosition, NativeBlockState> listener, IrisData data)`, which returns the placement result Y. Supply the first open internal Y above the chosen supporting floor. The object's lowest rotated non-air block aligns to that Y before configured translation and random Y offsets. The supplied placer continues to govern placement guards; the method does not search for a floor. Use an explicit nonnegative Y and a floor placement mode; ceiling-hung and structure-piece placements use `place`.
+
+```java
+int resultY = object.placeOnFloor(
+        blockX, firstOpenInternalY, blockZ, placer, placement, rng, listener, data);
+```
+
+For retained generation definitions and XYZ locate:
+
+```java
+SubterrainLocator.Query query = new SubterrainLocator.Query(
+        "", IrisSubterrainFamily.CENOTE, "subterrain/cenote");
+Optional<SubterrainLocator.Result> result = GenerationSemanticQueries.nearestSubterrain(
+        engine, query, blockX, absoluteWorldY, blockZ, 8192);
+```
+
+Query filters can use a feature definition ID, family or biome; empty strings and a null family leave that filter unset. A result contains the stable instance `featureId`, `family`, `biome` and an occupied `x`, absolute `y`, `z` anchor. Searches use bounded candidates without generating chunks or mantle data and verify occupied ownership before reporting a result. Run wide searches on a worker thread. A search exceeding its bounded candidate budget reports an error; reduce the radius. Search duration depends on radius, density and configured feature count.
+
+Use `IrisTerrainService.biomeKey(world, x, absoluteY, z)` for the saved-aware biome key at a world coordinate. Engine feature reads use retained generation definitions for generated chunks and the active plan for eligible ungenerated coordinates. Saved logical biome queries preserve exact per-block XYZ ownership inside authored feature chunks. Minecraft physical biomes remain 4×4×4 cells, which can cover adjacent solids at a feature boundary. They do not inspect player changes. Saved biome and generation-history APIs remain authoritative for existing generated chunks.
 
 ## Engine biome previews
 

@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-02T16:35:00.000Z
+date: 2026-10-04T12:39:17.121Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -224,7 +224,7 @@ By default the surface block must have a sturdy full up-face and satisfy the pla
 
 Crimson and warped roots can grow on soul soil or either nylium type. Nether sprouts can grow on either nylium type. Use ordinary decorators and substrate whitelists for these plants.
 
-Vines get their attachment faces recomputed, and stacked weeping and twisting vines use the matching `_plant` state for their body with one tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` get correct direction and taper states for both single decorations and stacks, and adjacent opposing tips of the same material become `tip_merge` (sulfur and dripstone never merge with each other). Spikes require a full sturdy support face in their growth direction or another matching spike behind them, **even when force-placed**. They are waterlogged automatically when they replace water and never replace lava. Sulfur spikes require Minecraft 26.2.
+Vines get their attachment faces recomputed, and stacked weeping and twisting vines use the matching `_plant` state for their body with one tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` get correct direction and taper states for both single decorations and stacks, and adjacent opposing tips of the same material become `tip_merge` (sulfur and dripstone never merge with each other). Spikes require a full sturdy support face in their growth direction or another matching spike behind them, **even when force-placed**. They are waterlogged automatically when they replace actual water and never replace lava. Authored wet states are cleared when the decoration lands in dry space. Sulfur spikes require Minecraft 26.2.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
@@ -311,6 +311,14 @@ A reusable snippet at `snippet/decorator/bush.json`, using an air-weighted palet
 ```
 
 An air entry leaves the selected column empty. Use its weight to make a decorator sparse within its patches.
+
+### Decoration inside authored rooms
+
+Authored subterrain rooms expose their local floor and ceiling to cave decoration.
+
+Their biome `layers`, `caveCeilingLayers` and `wall` palettes texture the top exposed solid boundary block beside the same feature's air or fluid. The selected material must be a dry, full, opaque vanilla solid without gravity; missing or unsafe choices retain the feature's `solid`. Interior solids and the protected geometry remain unchanged.
+
+Existing `scaleStack` uses the available vault height, with `absoluteMaxStack` as its hard cap. Central passages and solid seals, retaining rims, shelves and pillars remain reserved from unrelated decoration. For continuous pillars and matched rock formations, use the feature's `pillarSpacing` and `formationFraction` in [Authored Subterrain Features](/iris/15b-subterrain-features).
 
 ## Deposits
 

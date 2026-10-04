@@ -2,7 +2,7 @@
 title: "Ice Cavern — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/ice"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-04T12:29:38.588Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -12,7 +12,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
-Both packs place the rock and boulder objects at `scale.size: 0.375` in the root and child. Their procedural formations use their authored cave dimensions.
+Both packs place the rock and boulder objects at `scale.size: 0.375` in the root and child. The root and child share the [Frost Vaults formation palette](/iris/biomes/carving/frost-vaults), including hanging icicles, fractured ridges, low terraces and small arches. Ordinary noise caves use the authored formation dimensions; placements inside authored rooms use the configured vault fractions.
 
 ## Selection role and weight
 
@@ -33,9 +33,11 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 ## Overworld treatment
 
-The Overworld cave adds `snippet/procedural-objects/frozen/magical-ice-cave`; Underworld pairs the same role with `snippet/procedural-objects/frozen/magical-soul-cave`.
+The root and child use `snippet/procedural-objects/carving/frost-vaults` in each pack. Overworld formations use packed ice, blue ice, calcite and snow. Underworld matches their geometry with quartz, smooth basalt and soul soil.
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:ice`, `minecraft:packed_ice`, `minecraft:blue_ice`, `minecraft:blackstone`. Decorator blocks: `minecraft:cornflower`, `minecraft:ice`, `minecraft:packed_ice`. Object set: `clutter/rock1`, `clutter/rock2`, `clutter/rock3`, `clutter/rock4`, `clutter/boulder1`, `clutter/boulder2`, `clutter/boulder3`, `clutter/boulder4`.
+
+Floor ice stacks scale to 8–24% of the local opening and are capped at eight blocks; ceiling stacks scale to 10–30% and are capped at twelve. Root chances are `0.01` on the floor and `0.012` on the ceiling; child chances are `0.012` and `0.014`. Linear icicles, split ridges, snow terraces and irregular ice arches occupy separate formation roles.
 
 ## Underworld treatment
 

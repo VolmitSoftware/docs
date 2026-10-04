@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-01T18:00:00.000Z
+date: 2026-10-04T12:39:17.121Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -72,11 +72,11 @@ The dimension type key is the load key lowercased, with path separators and any 
 Dimension → regions[] → Region → land/sea/shore/cave biomes[] → Biome → generators[]
           → ores, deposits, depositVariants, overlayNoise
           → imageMaps[] → image-maps/<key>.json → images/<source>.png
-          → caveProfile, carving[], structures[], importedStructures, importedFeatures
+          → caveProfile, carving[], subterrainFeatures[], structures[], importedStructures, importedFeatures
           → loot, entitySpawners, blockDrops
 ```
 
-The dimension never names a biome directly, except in `focus` and carving entries. Biomes are reached through regions. An unreferenced region file is dead weight, and a biome missing from every region list never generates.
+Dimensions can name biomes directly through `focus`, `carving`, `subterrainFeatures` and hydrology content policies. Ordinary surface pools are reached through regions. Feature-owned biomes do not also need a region-list reference.
 
 ## Engine mode
 
@@ -239,6 +239,12 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 | `dimensionAngleDeg` | double | `0` | Rotates every input coordinate by this angle. Breaks up axis-aligned artifacts. Pick something off 45 and 90. The bundled overworld uses 69 |
 | `focus` | string | `""` | Forces the whole world to one biome load key, in the **land** role. A sea biome under `focus` generates as land, so sea and shore structure eligibility never runs. Testing only. Remove before packaging |
 | `focusRegion` | string | `""` | Forces the whole world to one region load key. Testing only. Remove before packaging |
+
+## Authored underground features
+
+`subterrainFeatures` is a list of bounded underground fault, cenote, lava-tube and travertine definitions. Each entry supplies a unique stable `id`, `family`, `biome`, absolute `worldYRange`, placement `spacing` and `probability`, and geometry and material settings. The entire feature including its solid seals must fit its Y band and the dimension height. Optional `fluid: "WATER"` or `"LAVA"` selects the retained fluid independently of geometry; omission uses water for cenotes/terraces and lava for lava tubes. Tectonic faults remain dry.
+
+The feature biome owns only its air, water and lava volume. Solid rims, shelves, walkways and pillars remain protected against unrelated carving and placement. See [Authored Subterrain Features](/iris/15b-subterrain-features) for every field and a complete four-family configuration with biome and spawn resources.
 
 ## Terrain-first hydrology
 

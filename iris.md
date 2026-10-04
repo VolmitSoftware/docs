@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-04T12:28:04.588Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -57,6 +57,7 @@ Use Iris commands to create and remove worlds. For Multiverse commands and suppo
 - [Generators, Noise & Expressions](/iris/14-generators-noise)
 - [Noise Atlas](/iris/45-noise-atlas)
 - [Caves & Carving](/iris/15-caves-carving)
+- [Authored Subterrain Features](/iris/15b-subterrain-features)
 - [Sulfur Galleries & Hollows](/iris/biomes/carving/sulfur)
 - [Rivers & Hydrology](/iris/36-rivers)
 - [River Policy](/iris/36b-river-policy)

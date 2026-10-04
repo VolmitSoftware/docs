@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-04T12:28:04.588Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -191,6 +191,8 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | Command | Params | Description |
 |---------|--------|-------------|
 | `biome` | **Bukkit:** `<biome> [teleport=true]`. **Modded:** `<key>` | Find an Iris biome. Teleport defaults to true on Bukkit |
+| `subterrain` | **Bukkit:** `<feature-id or family> [radius=8192] [teleport=true]` | Find an occupied authored underground feature by definition ID or `tectonic_fault`, `cenote`, `lava_tube`, `travertine_terraces` |
+| `underground-biome` | **Bukkit:** `<biome> [radius=8192] [teleport=true]` | Find an occupied authored underground feature with this biome |
 | `region` | **Bukkit:** `<region> [teleport=true]`. **Modded:** `<key>` | Find an Iris region |
 | `object` | **Bukkit:** `<object> [teleport=true]`. **Modded:** `<key>` | Find an object placement (Bukkit may teleport to the object studio first) |
 | `river` | **Bukkit:** `type=<type> [teleport=true]`. **Modded:** `<type>` | Find an accepted hydrology feature. Use `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `deep`, `pool`, a deep-fluid ID, or a surface-pool ID |
@@ -201,6 +203,8 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the selectors in the table with the active dimension's configured deep-fluid and surface-pool IDs; `deep_lava` and `lava_pool` are pack-defined examples, not built-in selectors. Locators merge recorded facts from generated chunks with current-activation predictions in eligible ungenerated terrain. Hydrology search never reports a suppressed transition candidate or an unaccepted route, outlet, or deep-fluid feature. On Bukkit, a hydrology teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
 
 ---
+
+`subterrain` and `underground-biome` return X, absolute Y and Z for an occupied point. Radius accepts 0..32768 blocks. Their searches do not generate chunks or mantle data; teleporting can load the destination afterward. They honor retained definitions in generated chunks. `underground-biome` searches authored feature volumes, not ordinary noise caves. Biome completion includes enabled `subterrainFeatures` references. See [Authored Subterrain Features](/iris/15b-subterrain-features).
 
 ## What: `/iris what`
 

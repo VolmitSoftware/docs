@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-02T16:35:00.000Z
+date: 2026-10-04T12:28:04.588Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -155,7 +155,7 @@ By default a placement is surface-only, unlimited in height, unlimited in slope,
 
 `SURFACE_ONLY` (the default) rejects any anchor in carved space. `CARVING_ONLY` requires carved space at the anchor or within three blocks below it, and hunts for an anchor Y inside the cave column instead of using the terrain surface. A biome-owned cave placement accepts only cells owned by that exact cave biome; a region-owned one spans every cave biome in the region. Unless `underwater: true` opts into fluid anchors, the anchor must be dry carved air above the dimension cave-lava height. `ANYWHERE` sits in both lists, so it rolls `chance` **twice** per chunk, once for each pass. A cave pass resolves its biome by sampling 48, 80, and 112 blocks down and taking the deepest sample that differs from the surface biome.
 
-`caveAnchorMode` picks which carved cells count. `FLOOR` needs solid support below. `CEILING` needs solid above. `CENTER` needs neither. `ANY` takes anything carved. `PROFILE_DEFAULT` defers to the cave profile ([15 - Caves & Carving](/iris/15-caves-carving)). `CEILING_HANG` overrides this to `CEILING` regardless of what you wrote. Later placement retains the underlying cave-fluid boundaries used to select anchors.
+`caveAnchorMode` picks which carved cells count. `FLOOR` needs solid support below. `CEILING` needs solid above. `CENTER` needs neither. `ANY` takes anything carved. `PROFILE_DEFAULT` defers to the cave profile ([15 - Caves & Carving](/iris/15-caves-carving)). `CEILING_HANG` overrides this to `CEILING` regardless of what you wrote. Later placement retains the underlying cave-fluid boundaries used to select anchors. Authored subterrain floors, shelves, rims, seals and pillars are protected, as are reserved passage cells. A placement touching those protected cells is rejected even when another cave crosses the room.
 
 **Height band.** `clamp` rejects placements whose resolved top or bottom leaves the band.
 
@@ -275,7 +275,7 @@ Jigsaw structure pieces are excluded from `allObjectScaleFactor` and retain thei
 { "underwater": true, "waterloggable": true, "isDolphinTarget": true }
 ```
 
-`underwater: true` places on the terrain floor and ignores the fluid surface. It additionally rejects the placement if the resolved Y is at or above the solved head at that X/Z, so it really is an underwater-only switch. Ordinary columns use the dimension fluid height; an accepted wet hydrology layer uses its exact local head, and a dry footprint exposes no fluid. Structure placements invert this flag: `underwater: true` **allows** submerged starts, and `false` skips underwater columns. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). `onwater: true` places on the fluid surface instead, for boats and docks. `waterloggable: true` waterlogs any placed block that can be waterlogged and lands in water. `underwater` implies the same behavior. `isDolphinTarget: true` combined with `underwater` marks placed storage chests as buried-treasure points of interest so dolphins swim players to them.
+`underwater: true` places on the terrain floor and ignores the fluid surface. It additionally rejects the placement if the resolved Y is at or above the solved head at that X/Z, so it really is an underwater-only switch. Ordinary columns use the dimension fluid height; an accepted wet hydrology layer uses its exact local head, and a dry footprint exposes no fluid. Structure placements invert this flag: `underwater: true` **allows** submerged starts, and `false` skips underwater columns. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). `onwater: true` places on the fluid surface instead, for boats and docks. `waterloggable: true` waterlogs any placed block that can be waterlogged and lands in actual water. Authored `waterlogged=true` states are cleared in dry space or lava, including ceiling-hung placements. `underwater` implies the same behavior. `isDolphinTarget: true` combined with `underwater` marks placed storage chests as buried-treasure points of interest so dolphins swim players to them.
 
 **Snow.** `snow` caps the snow layer depth dripped over the top of every column the object writes.
 
