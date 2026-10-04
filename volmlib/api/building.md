@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-09-28T14:18:51.171Z
+date: 2026-10-04T12:20:50.645203+00:00
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -21,6 +21,32 @@ Run from the VolmitSoftware workspace:
 The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `build buildAll buildAllToOut`. Wormholes also produces its compile-time API jar with `apiJar`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
 
 VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. ShapedPortals starts after Wormholes finishes so it can compile against the current Wormholes API jar. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
+
+## Native Billow artifacts
+
+The optional native Billow library requires Java 25 and `rustc` with Rust 2024 edition support on the build host. Native builds support macOS and GNU Linux on aarch64 or x86_64. The JVM and Rust compiler must use the same host architecture. Build on the target operating system and architecture; each artifact includes that host's library only.
+
+From the VolmLib project root:
+
+```bash
+./gradlew :shared:build -PincludeNativeBillow=true
+```
+
+`shared:buildNativeBillow` compiles `shared/src/main/rust/billow.rs` as an optimized dynamic library. `-PincludeNativeBillow=true` packages the library in the shared jar, and must also be supplied to the consuming plugin build when it builds VolmLib through the local composite. Without this property, ordinary builds require no Rust toolchain and omit the native library.
+
+At runtime, the bundled matching library is selected by default; `-Dvolmlib.noise.nativeBillow=false` disables it. Native access must be enabled for the containing Java module. An absolute `-Dvolmlib.noise.nativeBillowLibrary=/opt/noise/libvolmlib-billow.so` selects a separately built compatible library instead. Keep that library's exported interface aligned with the bundled VolmLib version. Missing or unusable libraries leave Java sampling active. See [Noise and procedural streams](/volmlib/api/noise#native-billow-backend).
+
+### Portable batch library
+
+The separate `BillowBatch` API uses Cargo to build a Rust/wgpu library with an embedded WGSL shader. From VolmLib, run:
+
+```bash
+./gradlew :shared:buildBillowNative
+```
+
+The library is written to `shared/native/billow/target/release/` as `libvolmlib_billow.dylib` on macOS, `libvolmlib_billow.so` on Linux, or `volmlib_billow.dll` on Windows. Supply its absolute path in `BillowBatch.Options` and enable JVM native access. This library is separate from the bundled scalar Billow library and is not included by `includeNativeBillow`.
+
+Build for the target host with its Rust toolchain. wgpu selects an available supported hardware adapter; a GPU or driver that does not satisfy the required compute capabilities leaves the exact CPU paths available. Ordinary Java builds do not compile this optional library. See [Noise and procedural streams](/volmlib/api/noise#optional-native-batches) for the batch API.
 
 ## Loader-neutral dependencies
 

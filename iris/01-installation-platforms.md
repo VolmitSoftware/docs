@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-01T18:00:00.000Z
+date: 2026-10-04T12:20:50.645203+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,6 +33,8 @@ Before you replace an existing installation:
 4. Back up the Iris jar/mod, the Iris data directory, and every Iris world you intend to keep.
 
 Install only one Iris platform jar in the `plugins/` or `mods/` folder.
+
+Native Billow noise is enabled by default when the jar contains a compatible native library. Start Java 25 with `--enable-native-access=ALL-UNNAMED` before `-jar` to allow it; unavailable native support uses Java sampling. See [Configuration](/iris/03-configuration#native-billow-noise) and [Workspace builds](/volmlib/api/building).
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 

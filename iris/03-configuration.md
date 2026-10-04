@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-02T20:12:54.811921+00:00
+date: 2026-10-04T12:20:50.645203+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -47,6 +47,26 @@ This example shows where the fields belong; keep the other settings in your file
 ## Storage durability
 
 Iris writes generation-history and saved-biome records immediately and forces them to storage in the background within about two seconds. It also forces every pending record when the world saves, when the server shuts down, when a pregeneration job finishes, and before a pack update is activated. A crash of the server process loses no records. An operating-system crash or power loss can lose the records written in the last two seconds. The JVM option `-Diris.durability=relaxed` disables forced writes entirely and relies on operating-system buffering. It preserves the record formats, but a crash or power loss can lose recent writes. Remove the option to restore the default policy.
+
+## Native Billow noise
+
+Native Billow noise is enabled by default when your Iris artifact contains a compatible native library. On Java 25, add this JVM option before `-jar` to permit native access:
+
+```text
+--enable-native-access=ALL-UNNAMED
+```
+
+Only two-dimensional Billow fields with 8 or 9 octaves and coordinates from −30,000,000 through 30,000,000 use this backend. Their results preserve the Java implementation's raw floating-point bits. Other fields continue to use Java. Generation throughput depends on the pack and workload; enabling this option does not guarantee faster world generation.
+
+| JVM property | Default | Takes effect | Use |
+|---|---|---|---|
+| `volmlib.noise.nativeBillow` | `true` | **Restart** | Selects the available native Billow backend; set `false` to use Java |
+| `volmlib.noise.nativeBillowLibrary` | Unset | **Restart** | Optional absolute path to a compatible native Billow library instead of the bundled library |
+| `volmlib.noise.nativeBillowDiagnostics` | `false` | **Restart** | Enables the native sample counter exposed by the shared noise API |
+
+The backend uses Java when the library is absent, the platform is unsupported, native access is disabled, or its startup comparison fails. Set `-Dvolmlib.noise.nativeBillow=false` to select Java on the next startup. `/iris reload`, pack hotload, and live system-property changes do not load or replace the native library. Named-module deployments must enable native access for the module containing VolmLib instead of `ALL-UNNAMED`.
+
+See [Workspace builds](/volmlib/api/building) for native artifact requirements and [Noise and procedural streams](/volmlib/api/noise) for backend diagnostics.
 
 ## Settings groups
 
