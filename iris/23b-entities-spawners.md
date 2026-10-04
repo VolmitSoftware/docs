@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-10-02T20:12:54.810856+00:00
+date: 2026-10-03T11:32:06.308185+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -13,7 +13,7 @@ Related: [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions
 
 ## Entities and spawners
 
-A background loop ticks each Iris world roughly twice a second. If there is room, it picks a handful of loaded chunks whose entities are ticking and tries one spawn in each. Ambient spawning respects the world’s mob-spawning gamerule; initial chunk populations also respect that gamerule. A spawn attempt gathers every spawner the dimension, region, and surface biome list, throws out the ones whose time, weather, rate, or crowding gates fail, pools their entries, picks exactly one, and places one to a few mobs.
+A background loop ticks each Iris world roughly twice a second. If there is room, it picks a handful of loaded chunks whose entities are ticking and tries one spawn in each. Ambient spawning respects the world’s mob-spawning gamerule; initial chunk populations also respect that gamerule. An ongoing spawn attempt gathers every spawner the dimension, region, and surface biome list, throws out the ones whose time, weather, rate, or crowding gates fail, pools their entries, picks exactly one, and places one to a few mobs.
 
 Vanilla natural spawning is a separate pipeline. It stays on via the biome `vanillaDerivative` unless you replace that table. Iris spawners do not turn it off, and nothing deduplicates between the two — a zombie spawner in your pack adds to whatever the server would have spawned anyway. Custom biome `spawns` merge with vanilla. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
@@ -127,7 +127,7 @@ The `mythicmobs` namespace selects Iris's MythicMobs provider, and `JumpingSpide
 | `baby` | boolean | `false` | Spawns the baby variant for ageable types |
 | `helmet` / `chestplate` / `leggings` / `boots` / `mainHand` / `offHand` | `IrisLoot` | null | One equipment slot each, built like a loot entry. The entry's own `rarity` is a 1-in-N roll for whether the slot gets filled at all. That is how you get "one in five wears a helmet" |
 | `passengers` | `IrisEntity[]` | `[]` | Riders, spawned and mounted after the host. Nests, so a rider can carry a rider |
-| `attributes` | `IrisAttributeModifier[]` | `[]` | Attribute modifiers applied to the mob |
+| `attributes` | `IrisAttributeModifier[]` | `[]` | Attribute modifiers applied to the mob. Generated inhabitants derive authored modifier rolls and identities from their spawn seed |
 | `loot` | `IrisLootReference` | empty | Drop tables. Replaces the mob's vanilla drops. Only `tables` is read |
 | `leashHolder` | `IrisEntity` | null | Spawns a second entity and leashes this one to it. No effect on ender dragons, withers, players, or bats |
 | `spawnEffect` | `IrisEffect` | null | A one-shot effect fired at the spawn position |
@@ -224,13 +224,13 @@ Folder: `spawners/`.
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
 | `spawns` | `IrisEntitySpawn[]` | `[]` | The ongoing spawn pool. Every entry competes with entries from every other eligible spawner in the same chunk |
-| `initialSpawns` | `IrisEntitySpawn[]` | `[]` | A separate pool used once per chunk, the first time that chunk is maintained. For set dressing that should exist from the moment a chunk appears |
-| `maxEntitiesPerChunk` | int | `1` | Ambient population limit for the selected entity’s native spawn category in the target chunk. Monsters, creatures, ambient mobs, and aquatic categories have separate counts; players are excluded. A batch is limited to the remaining capacity. Entries without a known native mob category use the combined count |
-| `timeBlock` | `IrisTimeBlock` | any time | World-time window. Clock hours, 6 = sunrise, 18 = sunset |
-| `weather` | `IrisWeather` | `ANY` | `NONE`, `DOWNFALL`, `DOWNFALL_WITH_THUNDER`, or `ANY` |
-| `maximumRate` | `IrisRate` | infinite | World-wide throttle for this spawner. Stamped only when a spawn actually succeeds |
+| `initialSpawns` | `IrisEntitySpawn[]` | `[]` | A separate pool used once when the chunk is ready for its initial population. Choices, positions, and authored equipment use the world seed and spawn location |
+| `maxEntitiesPerChunk` | int | `1` | Ambient population limit for the selected entity’s native spawn category in the target chunk. Monsters, creatures, ambient mobs, and aquatic categories have separate counts; players are excluded. A batch is limited to the remaining capacity. Entries without a known native mob category use the combined count. An initial ambient batch uses this limit independently of existing mobs |
+| `timeBlock` | `IrisTimeBlock` | any time | World-time window for ongoing spawns. Clock hours, 6 = sunrise, 18 = sunset |
+| `weather` | `IrisWeather` | `ANY` | Weather required for ongoing spawns: `NONE`, `DOWNFALL`, `DOWNFALL_WITH_THUNDER`, or `ANY` |
+| `maximumRate` | `IrisRate` | infinite | World-wide throttle for ongoing spawns. Stamped only when an ongoing spawn succeeds |
 | `maximumRatePerChunk` | `IrisRate` | infinite | Same throttle, tracked per chunk. Use it to stop one chunk hogging a generous global rate |
-| `allowedLightLevels` | `IrisRange` | `0`..`15` | Inclusive light range. Skipped entirely when left at the full range. Measured as the combined maximum of sky and block light |
+| `allowedLightLevels` | `IrisRange` | `0`..`15` | Inclusive light range for ongoing spawns. Skipped for initial populations or when left at the full range. Measured as the combined maximum of sky and block light |
 | `group` | `IrisSpawnGroup` | `NORMAL` | Where in the column mobs are placed, and which biomes accept this spawner at dimension scope |
 
 `IrisSpawnGroup`:
@@ -244,7 +244,7 @@ Folder: `spawners/`.
 
 The biome check only applies to spawners listed on a **dimension**. Region and biome `entitySpawners` bypass it, so a `CAVE`-group spawner listed on a surface biome still searches underground and does nothing when no suitable location is found.
 
-Cave spawns accept ordinary air and cave air. The spawn point must meet the entity’s surface requirement and the spawner’s light range.
+Cave spawns accept ordinary air and cave air. The spawn point must meet the entity’s surface requirement; ongoing spawns also require the spawner’s light range.
 
 `IrisRate` (snippet type `rate`):
 
@@ -273,7 +273,7 @@ Cave spawns accept ordinary air and cave air. The spawn point must meet the enti
 |-------|------|---------|--------------|
 | `entity` | string | `""` | Required. The entity key |
 | `rarity` | int >= 1 | `1` | Inverse weight. All eligible entries from all eligible spawners go into one pool. Each entry gets `totalRarity / rarity` slots. Low numbers are common, high numbers are rare. Exactly one entry wins per chunk attempt |
-| `minSpawns` / `maxSpawns` | int >= 1 | `1` / `1` | Inclusive range of placement attempts once this entry wins. Each attempt can still fail the surface, light, or clearance check, so this is a ceiling not a guarantee |
+| `minSpawns` / `maxSpawns` | int >= 1 | `1` / `1` | Inclusive range of placement attempts once this entry wins. Each attempt can still fail a surface or clearance check, and ongoing attempts also check light, so this is a ceiling not a guarantee |
 
 Rarity is applied exactly once, as pool weighting, on both platforms.
 
@@ -306,7 +306,9 @@ Attach it on a dimension, region, or biome:
 
 Enable `world.ambientEntitySpawningSystem` for ambient spawns. Studio also requires `studio.entitySpawning`. Pregeneration and world maintenance pause spawning in that world.
 
-`initialSpawns` run once per generated chunk and require both `world.ambientEntitySpawningSystem` and `world.markerEntitySpawningSystem`.
+Initial ambient populations require `world.ambientEntitySpawningSystem`; initial marker populations require `world.markerEntitySpawningSystem`. Both respect the mob-spawning gamerule and Studio’s entity-spawning setting. A skipped pass can run when the chunk is ready and spawning is enabled.
+
+Use `initialSpawns` for generated inhabitants. Initial populations ignore time, weather, light, existing mobs, and ongoing-spawn cooldowns; they still require suitable placement and obey the initial ambient batch limit. Initial spawning does not consume an ongoing cooldown. Later `spawns` use the current world conditions.
 
 ## Content unavailable on this Minecraft version
 
@@ -327,7 +329,7 @@ From `iris.json` under `world` (see [03 - Configuration](/iris/03-configuration)
 | Key | Default | Effect |
 |-----|---------|--------|
 | `ambientEntitySpawningSystem` | `true` | Dimension, region, and biome `entitySpawners` |
-| `markerEntitySpawningSystem` | `true` | Marker-driven spawners, and the chunk pass that runs `initialSpawns` |
+| `markerEntitySpawningSystem` | `true` | Marker-driven ongoing and initial spawners |
 | `effectSystem` | `true` | Biome and region `effects[]` |
 | `targetSpawnEntitiesPerChunk` | `0.95` | Living entity saturation limit per loaded chunk |
 | `asyncTickIntervalMS` | `700` | How often the spawn loop runs per world |

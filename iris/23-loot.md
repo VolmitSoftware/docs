@@ -2,7 +2,7 @@
 title: "Loot"
 description: "Iris documentation: Loot"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-03T11:32:06.308185+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -118,7 +118,7 @@ Folder: `loot/`.
 | `unbreakable` | boolean | `false` | Marks the item unbreakable |
 | `itemFlags` | string[] | `[]` | Bukkit `ItemFlag` names, for hiding enchantments or attributes in the tooltip. Unrecognised names are skipped silently |
 | `enchantments` | `IrisEnchantment[]` | `[]` | Each has its own level range and application chance |
-| `attributes` | `IrisAttributeModifier[]` | `[]` | Attribute modifiers baked into the item |
+| `attributes` | `IrisAttributeModifier[]` | `[]` | Attribute modifiers baked into the item. Their values and modifier identities follow the loot roll’s seeded randomness |
 | `dyeColor` | string | null | A `DyeColor` name, applied to items that are colourable |
 | `leatherColor` | string | null | `#RRGGBB`, applied to leather armour |
 | `customNbt` | object | null | Raw platform NBT merged into the item. Also carries the payload for namespaced third-party items |

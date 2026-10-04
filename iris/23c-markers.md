@@ -2,7 +2,7 @@
 title: "Markers"
 description: "Iris documentation: Markers"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-03T11:32:06.308185+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -19,7 +19,7 @@ Folder: `markers/`. The key is the pack-relative path without `.json`.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `spawners` | string[] | `[]` | Spawner keys. One is picked at random each time the marker fires |
+| `spawners` | string[] | `[]` | Spawner keys. One is selected for each firing; the initial selection uses the world seed and marker position |
 | `removeOnChange` | boolean | `true` | Delete the marker when a player breaks the block it sits on. Leave on unless you want a spawn point that survives being mined out |
 | `emptyAbove` | boolean | `true` | Require two non-solid blocks above. Checked twice — see below |
 | `exhaustionChance` | double | `0` | Odds the marker deletes itself when it fires. `0.25` averages four uses. Anything at or below 0 never exhausts. 1 or higher exhausts on the first use |
@@ -51,6 +51,6 @@ On an object placement's `markers[]`:
 
 When marker spawning is enabled, an unobstructed marker uses one of its configured spawners at random. The names `cave_floor` and `cave_ceiling` are reserved and cannot be used for marker spawning.
 
-Marker spawns **bypass** the entity `surface` check and the bounding-box clearance check — the marker is taken as authoritative about the position being valid. They still honor `allowedLightLevels` and the spawner's time, weather, and rate gates. `exhaustionChance` is rolled once per firing, before the mobs are placed.
+Land marker spawns bypass the entity’s surface and body-clearance checks because the marker defines the placement. Fluid entities still require suitable fluid throughout their body. Ongoing marker spawns honor `allowedLightLevels` and the spawner's time, weather, and rate gates. Initial marker populations ignore those live conditions and use the world seed and marker position for selection, count, authored customization, and exhaustion. `exhaustionChance` is rolled once per firing, before the mobs are placed.
 
 A block in a placement's `markers[].mark` list that does not exist on the running Minecraft version simply matches nothing; the placement keeps generating. See [25 - Pack Management](/iris/25-pack-management).
