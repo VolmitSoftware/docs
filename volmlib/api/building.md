@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-04T12:20:50.645203+00:00
+date: 2026-10-04T16:29:12.907453+00:00
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -32,7 +32,7 @@ From the VolmLib project root:
 ./gradlew :shared:build -PincludeNativeBillow=true
 ```
 
-`shared:buildNativeBillow` compiles `shared/src/main/rust/billow.rs` as an optimized dynamic library. `-PincludeNativeBillow=true` packages the library in the shared jar, and must also be supplied to the consuming plugin build when it builds VolmLib through the local composite. Without this property, ordinary builds require no Rust toolchain and omit the native library.
+`shared:buildNativeBillow` compiles `shared/src/main/rust/billow.rs` as an optimized dynamic library. `-PincludeNativeBillow=true` packages the library in the shared jar, and must also be supplied to the consuming plugin build when it builds VolmLib through the local composite. Iris forwards this property to its nested Fabric, Forge, and NeoForge builds so every platform uses the selected native packaging setting. Without this property, ordinary builds require no Rust toolchain and omit the native library.
 
 At runtime, the bundled matching library is selected by default; `-Dvolmlib.noise.nativeBillow=false` disables it. Native access must be enabled for the containing Java module. An absolute `-Dvolmlib.noise.nativeBillowLibrary=/opt/noise/libvolmlib-billow.so` selects a separately built compatible library instead. Keep that library's exported interface aligned with the bundled VolmLib version. Missing or unusable libraries leave Java sampling active. See [Noise and procedural streams](/volmlib/api/noise#native-billow-backend).
 
@@ -94,12 +94,12 @@ With one packed artifact, the task is `packedJar`. Multiple packed artifacts get
 | Option | Default | Meaning |
 |---|---|---|
 | `--jobs` | Up to 4, capped at the logical CPU count | Concurrent plugin builds |
-| `--max-workers` | Logical CPU count divided by jobs, rounded down, minimum 1 | Gradle worker limit per build |
-| `--test-forks` | 2, capped at the Gradle worker limit | Separate JVMs per test task |
+| `--max-workers` | Iris: logical CPU count; other projects: CPU count divided by jobs, minimum 1 | Gradle worker limit per build |
+| `--test-forks` | Iris: half the logical CPUs, maximum 8; other projects: 2; React: 1 | Separate JVMs per test task, capped by the worker limit |
 
-On a machine with 16 logical CPUs, the defaults are four plugin builds and four Gradle workers per build. The worker limit also reaches Iris's nested loader builds. Gradle workers cover build tasks and test processes; these limits do not cap every thread created by compiler plugins or application code.
+On a machine with 16 logical CPUs, the defaults are four plugin builds. Iris receives sixteen Gradle workers and up to eight test JVMs per task; other projects receive four workers and two test JVMs, except React, which uses one. The worker limit also reaches Iris's nested loader builds. Gradle workers cover build tasks and test processes; these limits do not cap every thread created by compiler plugins or application code.
 
-React uses one test JVM because its jqwik property tests share a replay database. Iris and the other suites honor `--test-forks`, capped by `--max-workers`; `--test-forks 1` runs one JVM per test task. This does not enable JUnit concurrency inside a JVM.
+Iris automatically uses all logical CPUs as its Gradle worker limit and half the logical CPUs, capped at eight, as its test JVM limit. Its Bukkit test modules use at most two JVMs and its probe module uses at most four. Explicit `--test-forks` and `--max-workers` values override the automatic overall limits; the Bukkit and probe module limits still apply. React uses one test JVM because its jqwik property tests share a replay database. Other suites honor `--test-forks`, capped by `--max-workers`; `--test-forks 1` runs one JVM per test task. This does not enable JUnit concurrency inside a JVM.
 
 ```bash
 ./build-psycho-lt.sh --jobs 4 --max-workers 4 --test-forks 2
@@ -108,6 +108,8 @@ React uses one test JVM because its jqwik property tests share a replay database
 ```
 
 Other arguments are forwarded to each top-level Gradle invocation, including `--no-parallel` when serial execution is needed. The runner controls the local dependency paths and worker limit. Use an individual project's wrapper for a build with different dependency resolution.
+
+From the Iris checkout, its Gradle test tasks use the same automatic test JVM limit. Set `-PtestForks=<count>` to override it, capped by Gradle’s `--max-workers` limit and the Bukkit/probe module limits. Artifact copies default to `../PluginOuts/`; `-PpluginOutDirectory=<directory>` overrides that destination. `-Plocation=<consumer-root>` sets the consumer dropin root.
 
 ## Run only tests
 

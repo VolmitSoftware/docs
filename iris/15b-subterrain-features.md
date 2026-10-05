@@ -2,7 +2,7 @@
 title: "Authored Subterrain Features"
 description: "Configure bounded faults, cenotes, lava tubes and travertine terraces with underground biomes and retained fluids"
 published: true
-date: 2026-10-04T13:09:05.410Z
+date: 2026-10-05T16:32:02.924733+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-04T12:39:17.121Z
@@ -13,10 +13,12 @@ Add `subterrainFeatures` to a dimension to place deliberate underground rooms an
 
 | `family` | Geometry |
 |---|---|
-| `TECTONIC_FAULT` | A long passage between parallel walls, with stepped solid side shelves. Requires a length of at least 200 blocks and remains dry |
-| `CENOTE` | A round chamber with a domed ceiling and sealed floor. Retains water by default |
-| `LAVA_TUBE` | An arched tubular passage with elevated side walkways and two connected hornito shafts. Retains lava by default. The shafts end underground within the configured Y band |
-| `TRAVERTINE_TERRACES` | A sequence of stepped basins with solid retaining rims and elevated side paths. Retains water by default |
+| `TECTONIC_FAULT` | A long, bending passage with irregular tapered walls, a varying vault and stepped solid side shelves. Requires a length of at least 200 blocks and remains dry |
+| `CENOTE` | A round chamber with a domed ceiling, sealed basin and sloping dry bank. Retains water by default |
+| `LAVA_TUBE` | An arched tubular passage with tapered ends, elevated side walkways and two connected hornito shafts. Retains lava by default. The shafts end underground within the configured Y band |
+| `TRAVERTINE_TERRACES` | Stepped basins with curved retaining rims, raised bank paths and an irregular vaulted chamber that narrows at its ends. Retains water by default |
+
+Set `shapeWarp` toward `1` for asymmetric lobed chambers, variable-width winding passages, and uneven rock floors and vaults. Wet basins have rounded, uneven rock undersides that must also fit inside the configured Y band. Basins retain their fluid. Set `pillarSpacing`, `formationFraction` and `chimneyHeight` to `0` when the room should rely on its eroded boundaries and biome decoration.
 
 `solid` supplies the structural base and material fallback for boundaries, shelves, rims, pillars and rock formations. It accepts a dry, full, opaque vanilla block state without gravity. Air, fluids, waterlogged states, partial blocks, transparent blocks and gravity blocks are not valid boundary materials. `fluidDepth: 0` disables retained fluid. Set optional `fluid` to `"WATER"` or `"LAVA"` independently of the geometry. Omitting `fluid`, or setting it to null, uses water for cenotes and terraces and lava for lava tubes. Tectonic faults remain dry with either value.
 
@@ -143,7 +145,7 @@ This dimension fragment retains lava in a domed chamber and stepped terrace basi
 
 Keep feature definition IDs stable when updating a pack. The world seed and ID determine placement. `probability` controls whether a placement cell contains a feature; `spacing` controls the distance between placement cells. Passages choose one of the two horizontal axes from their seed.
 
-The full chamber, floor, ceiling, seals and hornito height must fit both `worldYRange` and the dimension build range. A feature crossing a boundary into chunks retained from a different pack generation is skipped as a whole, so an update does not leave half a sealed basin. A band too narrow for the feature produces no placements. Choose bands below the terrain surface when the feature should remain underground; a Y band does not follow local terrain height.
+The full chamber, floor, rounded basin underside, ceiling, seals and hornito height must fit both `worldYRange` and the dimension build range. A feature crossing a boundary into chunks retained from a different pack generation is skipped as a whole, so an update does not leave half a sealed basin. A band too narrow for the feature produces no placements. Choose bands below the terrain surface when the feature should remain underground; a Y band does not follow local terrain height.
 
 ### Settings reference
 
@@ -155,32 +157,34 @@ A dimension accepts at most 64 feature definitions. Disabled definitions do not 
 | `enabled` | `true` | Enables this definition |
 | `family` | `CENOTE` | One of the four families above |
 | `biome` | empty | Biome load key for occupied cells. Empty retains ordinary biome selection |
+| `allowedRegions` | empty | Region load keys allowed at the placement center. Empty permits all regions; `["hot"]` restricts placement to the Hot region |
 | `worldYRange` | `-48..48` | Inclusive absolute world Y band for the entire feature |
 | `spacing` | `512` | 32..8192 blocks, and at least twice the horizontal reach plus 8. Reach is `radius` for cenotes and the larger of `length / 2` or `radius` for other families |
 | `probability` | `0.35` | 0..1 probability per placement cell |
 | `length` | `256` | 16..2048 blocks; faults require at least 200. Ignored by cenote geometry |
 | `radius` | `32` | 6..256 blocks; cenote radius or passage half-width |
 | `height` | `32` | 8..192 blocks; main vault height |
+| `shapeWarp` | `0` | 0..1; strength of seeded, multiscale variation in chamber outline, passage course, walls, floor and ceiling. Larger values produce more irregular shapes within the configured bounds |
 | `fluid` | family default | Optional `WATER` or `LAVA`; omitted or null selects water for cenotes/terraces and lava for lava tubes. Faults remain dry |
 | `fluidDepth` | `4` | 0..32, limited to one third of `height`. Zero disables retained fluid; faults remain dry regardless |
 | `chimneyHeight` | `16` | 0..96 blocks above a lava-tube vault; 0 disables hornitos. Other families ignore it |
 | `terraceCount` | `6` | 2..16 basins; used by travertine terraces |
-| `pillarSpacing` | `24` | 0..128 blocks; 0 disables continuous pillars |
+| `pillarSpacing` | `24` | 0..128 blocks; typical spacing between tapered, irregularly positioned continuous pillars. 0 disables them |
 | `formationFraction` | `0.15` | 0..0.4 of the local vault height for each stalactite or stalagmite; 0 disables them |
 | `solid` | `minecraft:stone` | Dry, full, opaque vanilla block state without gravity; structural base and fallback for owned boundaries and formations |
 | `priority` | `0` | Higher values choose occupied ownership where rooms overlap. Stable instance IDs break ties |
 
 ## Boundaries, overlaps and decorations
 
-Authored features take precedence within their entire owned volume over noise caves, hydrology, floating biome terrain and stacked terrain. Owned solid floors, shelves, rims, seals and pillars survive unrelated placements. Solid boundaries take precedence where authored features overlap, including over a higher-priority room's open volume. Fluids are sealed against adjacent dry openings and incompatible fluid. Ordinary cave aquifers and dimension deep-lava settings do not replace a feature's authored fluid intent.
+Authored air volumes join existing dry caves through their outer skin. Dry outer boundaries texture rock that already exists and leave adjoining air or fluid openings intact. Where authored rooms overlap, occupied air can pass through another room’s dry outer skin; retained fluid basins, rims, seals and structural formations remain protected. Fluids stay sealed against adjacent dry openings and incompatible fluid. Ordinary cave aquifers and dimension deep-lava settings do not replace a feature’s authored fluid intent.
 
 The feature biome also textures exposed solid boundaries. Set its `layers` for floor tops, `caveCeilingLayers` for ceilings, and `wall` for vertical faces. Only the top exposed block is painted, and only where it borders occupied air, water or lava belonging to the same feature. Floor material wins when a block also exposes a ceiling or wall. Pillars, rims, walkways and rock formations follow the same rules; interior solids keep `solid`.
 
 A selected boundary material must be a dry, full, opaque vanilla solid without gravity. Missing or unsafe choices use the feature's `solid`; Iris does not try another palette entry. Material palettes leave the shape, retained fluid and protected passages intact. Air and fluid cells do not receive boundary materials.
 
-The biome owns the actual air, water and lava volume. Iris coordinate queries and custom ambient spawning use exact block ownership. Minecraft publishes physical biomes in 4×4×4 cells, so a native biome cell at a room boundary can also cover adjacent solid blocks. A point elsewhere in the same X/Z column or Y band does not inherit that feature biome. Solid boundaries retain ordinary biome selection. Higher-priority occupied ownership applies only after protected solids have been respected.
+The biome owns the actual air, water and lava volume. Iris coordinate queries and custom ambient spawning use exact block ownership. Minecraft publishes physical biomes in 4×4×4 cells, so a native biome cell at a room boundary can also cover adjacent solid blocks. A point elsewhere in the same X/Z column or Y band does not inherit that feature biome. Solid boundaries retain ordinary biome selection. Higher-priority occupied ownership applies after retained basin solids and formations have been respected. Dry boundary skins do not close another room’s occupied air volume.
 
-Central passages remain reserved from unrelated objects. Procedural cave formations with a resolved `FLOOR` anchor seat their lowest occupied block above the supporting floor after rotation, with configured translation offsets still applied. Cave decorations fit within the room's available floor and ceiling; retaining walls and seals remain protected. Built-in `pillarSpacing` pillars run continuously from floor to ceiling, and `formationFraction` scales rock formations to the local dome or passage height. For additional procedural formations, use `roomHeightFraction` as described in [Procedural Objects](/iris/17-procedural-objects). Ordinary decorator `scaleStack` and `absoluteMaxStack` continue to control stacked decoration in [Surfaces & Decorators](/iris/16-surfaces-decorators-deposits).
+Central passages reserve three blocks of clearance above the floor or retained fluid level. Ceiling decoration can hang above that clearance. Procedural cave formations with a resolved `FLOOR` anchor seat their lowest occupied block above the supporting floor after rotation, with configured translation offsets still applied. The feature biome supplies its own floor and ceiling decorators even where the room meets a natural terrain opening. Cave decorations fit within the room’s available floor and ceiling. A floor decorator’s `forceBlock` substrate remains in place when it is a full, opaque, nongravity solid; retaining walls and seals remain protected. Built-in `pillarSpacing` pillars run continuously from floor to ceiling, and `formationFraction` scales rock formations to the local dome or passage height. For additional procedural formations, use `roomHeightFraction` as described in [Procedural Objects](/iris/17-procedural-objects). Ordinary decorator `scaleStack` and `absoluteMaxStack` continue to control stacked decoration in [Surfaces & Decorators](/iris/16-surfaces-decorators-deposits).
 
 For cave objects, `underwater: true` accepts anchors in actual water or lava belonging to the feature and uses that room's retained fluid head, including rooms above the dimension's surface fluid level. Dry placements require air. Solid boundaries and reserved passages remain protected for both modes.
 
@@ -287,6 +291,7 @@ The cenote example enables both custom native glow-squid spawning and an Iris gl
 On Bukkit-family servers:
 
 ```text
+/iris goto biome biome=subterrain/cenote
 /iris find subterrain calcite-cenote radius=8192 teleport=false
 /iris find subterrain lava_tube radius=8192 teleport=false
 /iris find underground-biome subterrain/cenote radius=8192 teleport=false

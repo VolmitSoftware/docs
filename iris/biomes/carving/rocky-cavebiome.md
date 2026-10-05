@@ -2,7 +2,7 @@
 title: "Rocky Hollows — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/rocky-cavebiome"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T15:44:42.596587+00:00
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -21,7 +21,7 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 | Overworld | `estranged` (1/6 slots; region rarity 1, weight `1/1`); `forests` (1/4 slots; region rarity 1, weight `1/1`); `mushroom` (1/5 slots; region rarity 15, weight `1/15`); `temperate` (1/6 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
 | Underworld | `estranged` (1/6 slots; region rarity 1, weight `1/1`); `forests` (1/4 slots; region rarity 1, weight `1/1`); `mushroom` (1/5 slots; region rarity 15, weight `1/15`); `temperate` (1/6 slots; region rarity 1, weight `1/1`) | `1` | `1/1` |
 
-The `drowned-galleries` dimension feature also selects this root within absolute world Y `-120..-28`. It places a radius-52 dome with a 48-block vault, a seven-block contained basin and continuous pillars spaced 30 blocks apart. Placement uses spacing `512` and probability `0.26`; local roof and floor formations use `0.14` of the vault height. Overworld rooms have stone boundaries and retained water, while Underworld rooms use basalt boundaries and retained lava.
+The `drowned-galleries` dimension feature also selects this root within absolute world Y `-120..-28`. It places an asymmetric basin within radius `34` and height `30`, with `shapeWarp: 0.94`, a four-block retained pool, spacing `1152` and probability `0.18`. Uneven banks and ceilings define the chamber; continuous pillars and built-in roof formations are disabled. Overworld rooms have stone boundaries and retained water, while Underworld rooms use basalt boundaries and retained lava.
 
 ## Terrain and generator
 

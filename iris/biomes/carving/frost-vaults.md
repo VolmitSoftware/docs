@@ -2,13 +2,13 @@
 title: "Frost Vaults - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/frost-vaults"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T16:28:23.269830+00:00
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
 ---
 
-`carving/frost-vaults` is selected through dimension `subterrainFeatures` in both built-in packs. A dry, pale dome contains hanging icicles, split crystal ridges, low snow terraces and narrow ice bridges. Continuous mineral pillars and local roof drips frame the interior.
+`carving/frost-vaults` is selected through dimension `subterrainFeatures` in both built-in packs. Asymmetric pale chambers have uneven ice-lined roofs and banks. Layered snow, broken ice, small mineral growth and isolated thaw vegetation decorate the rock.
 
 ## Selection and shape
 
@@ -18,12 +18,13 @@ The feature ID is `frost-vaults`. Room frequency comes from its placement probab
 |---|---|
 | Geometry | `CENOTE` |
 | Absolute world Y band | `-104..-20` |
-| Placement spacing | `512 blocks` |
-| Placement probability | `0.28` |
-| Vault height | `54 blocks` |
-| Radius | `46 blocks` |
-| Continuous pillar spacing | `28 blocks` |
-| Roof and floor formation fraction | `0.16` |
+| Placement spacing | `1152 blocks` |
+| Placement probability | `0.2` |
+| Vault height | `36 blocks` |
+| Radius | `32 blocks` |
+| Continuous pillar spacing | `0` |
+| Roof and floor formation fraction | `0` |
+| Shape variation (`shapeWarp`) | `0.96` |
 
 | Treatment | Overworld | Underworld |
 |---|---|---|
@@ -35,22 +36,25 @@ Floors, roofs and retaining boundaries remain solid. Decorations fit within the 
 
 ## Overworld treatment
 
-Packed ice, blue ice, calcite, diorite and snow form the walls and ledges. Linear tapering icicles hang from the ceiling, separated crystal ridges retain open cracks, snow terraces form broad low steps, and irregular ice arches bridge small gaps. Sparse glow lichen and ceiling lights provide local highlights.
+Calcite, packed ice and stone form broad muted patches with small blue-ice accents. Snow varies from one to three layers, with glow lichen and amethyst buds across the exposed surfaces. Partly embedded fragments, short icicles and irregular ice clusters occur on the floor and ceiling. Small mushrooms, grass and ferns occupy mossy thaw patches; roots and short berry vines hang above them.
 
 ## Underworld treatment
 
-Quartz, smooth basalt, basalt and soul soil replace the ice and snow palette. Glowstone and shroomlights provide the corresponding ceiling highlights, with white-ash ambience and the soul-sand-valley derivative.
+Quartz, blackstone, smooth basalt and soul soil replace the ice and snow palette. Nylium patches support sprouts, roots and small fungi, while glowstone and glow lichen provide light. Quartz and basalt clusters, short mineral pendants and weeping vines accompany the white-ash ambience.
 
-## Formation settings
+## Decoration settings
 
-The placement chance is per chunk; density is the number of attempts after that chance passes. Vault fractions size formations to their available authored room. Placement still depends on support and clearance.
+Decorator `chance` controls the scatter rate with `STATIC` and acts as a noise threshold with `SIMPLEX`. A noise threshold is not a percentage of surfaces. Eligible decorators share each surface, and support, clearance and fluid requirements affect placement.
 
-| Formation | Form | Chance | Density | Vault fraction | Authored height |
-|---|---|---:|---:|---:|---|
-| `frost-vault-icicles` | `SPIRE` | `0.46` | `3` | `0.32` | 5–18 blocks |
-| `frost-vault-crystal-ridges` | `FISSURE` | `0.2` | `1` | `0.24` | 4–12 blocks |
-| `frost-vault-snow-terraces` | `ICEBERG` | `0.38` | `2` | `0.12` | 3–7 blocks |
-| `frost-vault-ice-bridge` | `ARCH` | `0.09` | `1` | `0.26` | 6–12 blocks |
+Procedural `chance` is a per-chunk placement roll; `density` is the number of attempts after that roll succeeds. Attempts can fail, so these settings do not guarantee an object count. Rubble is embedded one block into its support. Objects keep their authored sizes in larger rooms; crystal clusters use random shard directions.
+
+| Placement | Kind | Surface | Chance | Density | Authored size |
+|---|---|---|---:|---:|---|
+| `frost-thaw-fragments` | BOULDER | Floor | `0.85` | `3` | 3–4 blocks high |
+| `frost-short-icicles` | SPIRE | Ceiling | `0.8` | `2` | 3–5 blocks high |
+| `frost-shattered-ice` | Random crystal cluster | Floor | `0.7` | `2` | 2–4 shards, 2–4 blocks long |
+| `frost-hanging-ice-splinters` | Random crystal cluster | Ceiling | `0.7` | `2` | 2–4 shards, 2–4 blocks long |
+| `frost-thaw-fungi` | FUNNEL fungus | Floor | `0.4` | `1` | 1–2-block stem; 1–2-block cap radius |
 
 ## Ecology
 

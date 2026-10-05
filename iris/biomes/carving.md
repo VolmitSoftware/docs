@@ -2,7 +2,7 @@
 title: "Carving Biomes"
 description: "Navigation for the built-in carving biomes across Overworld and Underworld"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T16:28:23.269830+00:00
 tags: "iris, biomes, overworld, underworld, carving"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -11,7 +11,7 @@ Underground cave roots, authored rooms and the dimension-level Deep Dark carving
 
 This family has **49 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
-Both packs disable standalone aquifers in their dimension and region cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Authored rooms retain their configured water or lava, including Overworld lava-lamp tubes and sulfur colonnades. Deep lava retains its separate controls.
+Both packs disable standalone aquifers in their dimension and region cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Authored rooms retain their configured water or lava, including Overworld ochre hollows and sulfur chambers. Deep lava retains its separate controls.
 
 ## Direct roots
 
@@ -37,7 +37,7 @@ Both packs disable standalone aquifers in their dimension and region cave profil
 | [Ice Ravine](/iris/biomes/carving/ice-ravine) | `carving/ice-ravine` | Cave | Frozen |
 | [Jungle](/iris/biomes/carving/jungle) | `carving/jungle` | Cave | Tropical |
 | [Lantern Grotto](/iris/biomes/carving/lantern-grotto) | `carving/lantern-grotto` | Subterrain | Dimension feature |
-| [Lava Lamp Caves](/iris/biomes/carving/lava-lamp) | `carving/lava-lamp` | Subterrain | Dimension feature |
+| [Ochre Hollows](/iris/biomes/carving/lava-lamp) | `carving/lava-lamp` | Subterrain | Hot; dimension feature |
 | [Lush](/iris/biomes/carving/lush) | `carving/lush` | Cave | Forests, Swamp, Tropical |
 | [Magnetic Hollows](/iris/biomes/carving/magnetic-hollows) | `carving/magnetic-hollows` | Cave | Magnetics |
 | [Mixed Sandstone](/iris/biomes/carving/mixed-sandstone) | `carving/mixed-sandstone` | Cave | Hot |
@@ -74,11 +74,11 @@ Both packs disable standalone aquifers in their dimension and region cave profil
 
 ## Authored room selection
 
-Nine dimension feature definitions place bounded rooms below Y=0. Their biomes own the occupied room volume; ordinary cave selectors supply the surrounding cave system. The six dedicated roots above are reached through these definitions.
+Nine dimension feature definitions place bounded rooms below Y=0. Their biomes own the occupied room volume; ordinary cave selectors supply the surrounding cave system. The six dedicated roots above are reached through these definitions. All nine use `shapeWarp: 0.9..1.0`, disabled continuous pillars and chimney shafts, and layered biome decoration. Small ground cover, hanging vegetation, fungi, irregular mineral clusters and local wildlife vary by room theme. Placement cells are 896–1536 blocks apart with probabilities of 0.16–0.22 per cell.
 
 | Feature ID | Biome | Geometry | Absolute world Y band | Overworld fluid | Underworld fluid |
 |---|---|---|---|---|---|
-| `lava-lamp-tubes` | [Lava Lamp Caves](/iris/biomes/carving/lava-lamp) | `LAVA_TUBE` | `-172..-68` | lava | lava |
+| `lava-lamp-tubes` | [Ochre Hollows](/iris/biomes/carving/lava-lamp) | `LAVA_TUBE` | `-172..-68` | lava | lava |
 | `ember-vaults` | [Ember Vaults](/iris/biomes/carving/ember-vaults) | `CENOTE` | `-158..-60` | Dry | Dry |
 | `sculk-cathedrals` | [Sculk Cathedral](/iris/biomes/carving/sculk-cathedral) | `CENOTE` | `-168..-68` | Dry | Dry |
 | `lantern-grottos` | [Lantern Grotto](/iris/biomes/carving/lantern-grotto) | `CENOTE` | `-110..-24` | water | lava |
@@ -87,6 +87,10 @@ Nine dimension feature definitions place bounded rooms below Y=0. Their biomes o
 | `sulfur-colonnades` | [Sulfur Galleries](/iris/biomes/carving/sulfur) | `CENOTE` | `-156..-52` | lava | lava |
 | `crystal-faults` | [Flux Crystal Caverns](/iris/biomes/carving/flux-crystal-caverns) | `TECTONIC_FAULT` | `-160..-48` | Dry | Dry |
 | `drowned-galleries` | [Rocky Cavebiome](/iris/biomes/carving/rocky-cavebiome) | `CENOTE` | `-120..-28` | water | lava |
+
+Ochre Hollows uses `allowedRegions: ["hot"]` in both packs. Its lava passages belong to the Hot region. The other listed features have no region restriction.
+
+Small decorators use `STATIC` scatter or `SIMPLEX` noise thresholds; a noise threshold is not a surface coverage percentage. Procedural objects use a per-chunk chance followed by `density` placement attempts. Surface support, free space and fluid requirements can prevent individual placements. Each room page lists its current formation, fungus and crystal settings.
 
 Use `/iris find subterrain <feature-id> radius=8192 teleport=false` or `/iris find underground-biome <load-key> radius=8192 teleport=false` to locate an occupied point. See [Authored Subterrain Features](/iris/15b-subterrain-features).
 

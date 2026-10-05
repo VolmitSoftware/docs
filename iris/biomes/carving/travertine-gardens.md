@@ -2,13 +2,13 @@
 title: "Travertine Gardens - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/travertine-gardens"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T16:28:23.269830+00:00
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
 ---
 
-`carving/travertine-gardens` is selected through dimension `subterrainFeatures` in both built-in packs. Seven stepped mineral basins descend through a long gallery with solid retaining rims and raised side paths. Hanging mineral curtains, capped columns and bank arches surround the pools.
+`carving/travertine-gardens` is selected through dimension `subterrainFeatures` in both built-in packs. Four shallow mineral basins descend through a winding gallery with uneven roofs and curved retaining edges. Mossy banks, dripleaves, mushrooms and calcite growth surround the pools beneath hanging roots and vines.
 
 ## Selection and shape
 
@@ -18,18 +18,19 @@ The feature ID is `travertine-gardens`. Room frequency comes from its placement 
 |---|---|
 | Geometry | `TRAVERTINE_TERRACES` |
 | Absolute world Y band | `-150..-52` |
-| Placement spacing | `448 blocks` |
-| Placement probability | `0.34` |
-| Vault height | `42 blocks` |
-| Radius | `23 blocks` |
-| Continuous pillar spacing | `32 blocks` |
-| Roof and floor formation fraction | `0.12` |
-| Passage length | `168 blocks` |
-| Basin count | `7` |
+| Placement spacing | `1152 blocks` |
+| Placement probability | `0.2` |
+| Vault height | `30 blocks` |
+| Radius | `19 blocks` |
+| Continuous pillar spacing | `0` |
+| Roof and floor formation fraction | `0` |
+| Shape variation (`shapeWarp`) | `0.9` |
+| Passage length | `112 blocks` |
+| Basin count | `4` |
 
 | Treatment | Overworld | Underworld |
 |---|---|---|
-| Retained fluid | water; 3 blocks deep | lava; 3 blocks deep |
+| Retained fluid | water; 2 blocks deep | lava; 2 blocks deep |
 | Solid room boundary | `minecraft:calcite` | `minecraft:quartz_block` |
 | Derivative | `minecraft:lush_caves` | `minecraft:warped_forest` |
 
@@ -37,32 +38,36 @@ Floors, roofs and retaining boundaries remain solid. Decorations fit within the 
 
 ## Overworld treatment
 
-Calcite, diorite and clay form the pale mineral banks, with moss carpet and glowing cave vines on the supported edges. Moss caps crown pinched hoodoo columns; irregular arches and low rounded rocks interrupt the terraces. Glow squid use the contained water and bats occupy dry space.
+Calcite, dripstone and clay form the pale mineral banks. Moss carpet, grass, ferns, azaleas, dripleaves and mushrooms occupy patches beside low bank fragments and irregular calcite clusters. Pointed dripstone reaches two blocks from the floor and four from the ceiling. Berry vines hang up to seven blocks among roots, spore blossoms and glow lichen; small bent mushrooms carry scattered luminous gills.
 
 ## Underworld treatment
 
-Quartz, basalt and soul soil line the coordinate-matched lava terraces. Warped nylium caps replace the moss caps; warped-wart ground clumps, weeping vines and glowstone provide the corresponding vegetation and light. Striders use the contained lava and occasional endermen occupy dry space.
+Quartz, smooth basalt and soul soil line the coordinate-matched lava basins. Warped roots, sprouts and fungi grow on nylium patches, with small warped-stem mushrooms and quartz clusters. Weeping vines and shroomlights accompany the matching dripstone and glow-lichen decoration.
 
-## Formation settings
+## Decoration settings
 
-The placement chance is per chunk; density is the number of attempts after that chance passes. Vault fractions size formations to their available authored room. Placement still depends on support and clearance.
+Decorator `chance` controls the scatter rate with `STATIC` and acts as a noise threshold with `SIMPLEX`. A noise threshold is not a percentage of surfaces. Eligible decorators share each surface, and support, clearance and fluid requirements affect placement.
 
-| Formation | Form | Chance | Density | Vault fraction | Authored height |
-|---|---|---:|---:|---:|---|
-| `travertine-mineral-curtains` | `SPIRE` | `0.32` | `2` | `0.3` | 5–14 blocks |
-| `travertine-mineral-columns` | `HOODOO` | `0.2` | `1` | `0.26` | 6–12 blocks |
-| `travertine-bank-arches` | `ARCH` | `0.14` | `1` | `0.28` | 6–12 blocks |
-| `travertine-basin-knuckles` | `BOULDER` | `0.28` | `2` | `0.1` | 2–4 blocks |
+Procedural `chance` is a per-chunk placement roll; `density` is the number of attempts after that roll succeeds. Attempts can fail, so these settings do not guarantee an object count. Rubble is embedded one block into its support. Objects keep their authored sizes in larger rooms; crystal clusters use random shard directions.
+
+| Placement | Kind | Surface | Chance | Density | Authored size |
+|---|---|---|---:|---:|---|
+| `travertine-weathered-banks` | BOULDER | Floor | `0.85` | `3` | 3–4 blocks high |
+| `travertine-short-pendants` | SPIRE | Ceiling | `0.8` | `2` | 3–4 blocks high |
+| `travertine-bank-fungi` | FLAT fungus | Floor | `0.7` | `2` | 2–4-block stem; 1–2-block cap radius |
+| `travertine-small-fungi` | FUNNEL fungus | Floor | `0.5` | `1` | 1–2-block stem; 1–2-block cap radius |
+| `travertine-calcite-blossoms` | Random crystal cluster | Floor | `0.65` | `2` | 2–4 shards, 2–4 blocks long |
 
 ## Ecology
 
-The `carving/travertine-gardens` CAVE spawner caps each chunk at three entities and permits one attempt every 40 seconds within light levels `0..12`. Its swimmer template requires water in Overworld or lava in Underworld, while the roamer template uses land. The registered biome declares an empty native spawn table.
+The `carving/travertine-gardens` CAVE spawner caps each chunk at three entities and permits one attempt every 40 seconds within light levels `0..12`. Overworld selects glow squid in water and bats on land; Underworld selects striders in lava and endermen on land. The registered biome declares an empty native spawn table.
 
 ## Find the room
 
 On Bukkit-family servers:
 
 ```text
+/iris goto biome biome=carving/travertine-gardens
 /iris find subterrain travertine-gardens radius=8192 teleport=false
 /iris find underground-biome carving/travertine-gardens radius=8192 teleport=false
 /iris what biome

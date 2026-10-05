@@ -2,13 +2,13 @@
 title: "Ember Vaults - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/ember-vaults"
 published: true
-date: 2026-10-04T12:47:19.912Z
+date: 2026-10-05T16:28:23.269830+00:00
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
 ---
 
-`carving/ember-vaults` is selected through dimension `subterrainFeatures` in both built-in packs. Dry, domed black-and-red galleries contain irregular arches, basalt ribs and hanging cinder formations. Continuous room pillars frame the open floor. Rock arches and basalt ribs extend supported feet to the cave floor, while cinder drips use narrow roof attachments.
+`carving/ember-vaults` is selected through dimension `subterrainFeatures` in both built-in packs. Dry basalt chambers have asymmetric lobed outlines, uneven ceilings and shallow mineral banks. Crimson growth, bent mushrooms, hanging vines and patches of light accompany the broken stone.
 
 ## Selection and shape
 
@@ -18,12 +18,13 @@ The feature ID is `ember-vaults`. Room frequency comes from its placement probab
 |---|---|
 | Geometry | `CENOTE` |
 | Absolute world Y band | `-158..-60` |
-| Placement spacing | `448 blocks` |
-| Placement probability | `0.24` |
-| Vault height | `50 blocks` |
-| Radius | `44 blocks` |
-| Continuous pillar spacing | `30 blocks` |
-| Roof and floor formation fraction | `0.08` |
+| Placement spacing | `1024 blocks` |
+| Placement probability | `0.2` |
+| Vault height | `34 blocks` |
+| Radius | `31 blocks` |
+| Continuous pillar spacing | `0` |
+| Roof and floor formation fraction | `0` |
+| Shape variation (`shapeWarp`) | `0.96` |
 
 | Treatment | Overworld | Underworld |
 |---|---|---|
@@ -35,21 +36,24 @@ Floors, roofs and retaining boundaries remain solid. Decorations fit within the 
 
 ## Overworld treatment
 
-Deepslate and smooth basalt walls carry red terracotta and sparse magma patches. Basalt ribs terminate in magma, while red hanging mineral drips, weeping vines, crimson roots and occasional red mushrooms populate the edges.
+Smooth basalt and deepslate carry muted red terracotta and occasional magma patches. Brown and red mushrooms, crimson roots and fungi, dry scrub and glow lichen cover the floor among partly embedded scree. Weeping vines hang up to seven blocks, accompanied by short dripstone and occasional shroomlights. Small flat and funnel mushrooms have bent stems and scattered luminous gills.
 
 ## Underworld treatment
 
-Blackstone, smooth basalt and netherrack replace the Overworld rock treatment. The matching arches, ribs and drips retain their dimensions, with magma highlights and crimson vegetation.
+Blackstone and netherrack replace the deepslate and red terracotta. Crimson nylium supports roots and fungi; warped stems and Nether-wart caps form the larger mushrooms. Matching rubble, weeping vines, dripstone and lighting retain the same placement rates and dimensions.
 
-## Formation settings
+## Decoration settings
 
-The placement chance is per chunk; density is the number of attempts after that chance passes. Vault fractions size formations to their available authored room. Placement still depends on support and clearance.
+Decorator `chance` controls the scatter rate with `STATIC` and acts as a noise threshold with `SIMPLEX`. A noise threshold is not a percentage of surfaces. Eligible decorators share each surface, and support, clearance and fluid requirements affect placement.
 
-| Formation | Form | Chance | Density | Vault fraction | Authored height |
-|---|---|---:|---:|---:|---|
-| `ember-vault-organic-arches` | `ARCH` | `0.075` | `1` | `0.38` | 9–17 blocks |
-| `ember-vault-basalt-ribs` | `BASALT_COLUMN` | `0.16` | `1` | `0.27` | 6–13 blocks |
-| `ember-vault-hanging-cinders` | `SPIRE` | `0.23` | `1` | `0.19` | 4–10 blocks |
+Procedural `chance` is a per-chunk placement roll; `density` is the number of attempts after that roll succeeds. Attempts can fail, so these settings do not guarantee an object count. Rubble is embedded one block into its support. Objects keep their authored sizes in larger rooms.
+
+| Placement | Kind | Surface | Chance | Density | Authored size |
+|---|---|---|---:|---:|---|
+| `ember-fallen-scree` | BOULDER | Floor | `0.85` | `3` | 3–4 blocks high |
+| `ember-cinder-fragments` | BOULDER | Floor | `0.85` | `2` | 3–4 blocks high |
+| `ember-cinder-fungi` | FLAT fungus | Floor | `0.7` | `2` | 2–4-block stem; 1–2-block cap radius |
+| `ember-small-shelf-fungi` | FUNNEL fungus | Floor | `0.55` | `2` | 1–2-block stem; 1–2-block cap radius |
 
 ## Ecology
 

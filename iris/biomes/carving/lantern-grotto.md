@@ -2,13 +2,13 @@
 title: "Lantern Grotto - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/lantern-grotto"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T16:28:23.269830+00:00
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
 ---
 
-`carving/lantern-grotto` is selected through dimension `subterrainFeatures` in both built-in packs. A planted dome surrounds a contained pool beneath berry vines and hanging canopy patches. Low arches and dangling roots give the banks their shape.
+`carving/lantern-grotto` is selected through dimension `subterrainFeatures` in both built-in packs. An irregular planted chamber surrounds a shallow contained pool. Mossy banks, small mushrooms and calcite growth sit beneath leaf clusters, roots and berry vines.
 
 ## Selection and shape
 
@@ -18,16 +18,17 @@ The feature ID is `lantern-grottos`. Room frequency comes from its placement pro
 |---|---|
 | Geometry | `CENOTE` |
 | Absolute world Y band | `-110..-24` |
-| Placement spacing | `448 blocks` |
-| Placement probability | `0.3` |
-| Vault height | `40 blocks` |
-| Radius | `42 blocks` |
-| Continuous pillar spacing | `28 blocks` |
-| Roof and floor formation fraction | `0.08` |
+| Placement spacing | `896 blocks` |
+| Placement probability | `0.22` |
+| Vault height | `28 blocks` |
+| Radius | `28 blocks` |
+| Continuous pillar spacing | `0` |
+| Roof and floor formation fraction | `0` |
+| Shape variation (`shapeWarp`) | `0.92` |
 
 | Treatment | Overworld | Underworld |
 |---|---|---|
-| Retained fluid | water; 5 blocks deep | lava; 5 blocks deep |
+| Retained fluid | water; 3 blocks deep | lava; 3 blocks deep |
 | Solid room boundary | `minecraft:moss_block` | `minecraft:warped_nylium` |
 | Derivative | `minecraft:lush_caves` | `minecraft:warped_forest` |
 
@@ -35,24 +36,28 @@ Floors, roofs and retaining boundaries remain solid. Decorations fit within the 
 
 ## Overworld treatment
 
-Moss, prismarine, calcite and clay line the banks. Moss carpet, grass, azaleas and flowering azaleas occur on moss support. Berry cave vines hang up to twelve blocks, leaf curtains up to nine, and sparse spore blossoms add canopy detail. Submerged blue tube-coral fans grow in actual water; moss arches occupy 26% of a room vault and dangling root overhangs 18%.
+Stone, moss and clay form the banks, with occasional calcite. Moss carpet, grass, ferns, azaleas, flowering azaleas and dripleaves grow beside mushrooms and partly embedded rubble. Berry vines hang up to eight blocks, with hanging roots, short persistent azalea-leaf clusters, spore blossoms and glow lichen. Bent mushrooms with small caps and luminous gills occur alongside compact calcite clusters.
 
 ## Underworld treatment
 
-Warped nylium, warped wart, soul soil and blackstone line the matching lava basin. Roots, sprouts and warped fungi supply the ground cover, while weeping vines and shroomlights hang above the fluid. Warped-wart fans with sparse shroomlight tips replace the submerged coral.
+Blackstone, warped nylium, soul soil and quartz line the matching lava basin. Roots, sprouts and fungi grow on nylium patches, with warped and Nether-wart clusters above them. Weeping vines replace berry vines, while shroomlights replace spore blossoms; warped-stem mushrooms and quartz growth share the Overworld object dimensions.
 
-## Formation settings
+## Decoration settings
 
-The placement chance is per chunk; density is the number of attempts after that chance passes. Vault fractions size formations to their available authored room. Placement still depends on support and clearance.
+Decorator `chance` controls the scatter rate with `STATIC` and acts as a noise threshold with `SIMPLEX`. A noise threshold is not a percentage of surfaces. Eligible decorators share each surface, and support, clearance and fluid requirements affect placement.
 
-| Formation | Form | Chance | Density | Vault fraction | Authored height |
-|---|---|---:|---:|---:|---|
-| `lantern-moss-arch` | `ARCH` | `0.055` | `1` | `0.26` | 5–10 blocks |
-| `lantern-hanging-root` | `OVERHANG` | `0.1` | `1` | `0.18` | 5–10 blocks |
+Procedural `chance` is a per-chunk placement roll; `density` is the number of attempts after that roll succeeds. Attempts can fail, so these settings do not guarantee an object count. Rubble is embedded one block into its support. Objects keep their authored sizes in larger rooms; crystal clusters use random shard directions.
+
+| Placement | Kind | Surface | Chance | Density | Authored size |
+|---|---|---|---:|---:|---|
+| `lantern-mossy-rubble` | BOULDER | Floor | `0.85` | `3` | 3–4 blocks high |
+| `lantern-moss-fungi` | FLAT fungus | Floor | `0.85` | `2` | 2–4-block stem; 1–2-block cap radius |
+| `lantern-red-fungi` | FUNNEL fungus | Floor | `0.6` | `2` | 1–2-block stem; 1–2-block cap radius |
+| `lantern-calcite-growth` | Random crystal cluster | Floor | `0.5` | `1` | 2–4 shards, 2–4 blocks long |
 
 ## Ecology
 
-The `subterrain/lantern-grotto` CAVE spawner supplies glow squid in Overworld water and striders in Underworld lava. It caps each chunk at two entities and allows one attempt per chunk every 45 seconds. The entity templates require the corresponding actual fluid.
+The `subterrain/lantern-grotto` CAVE spawner supplies glow squid and bats in Overworld, or striders and endermen in Underworld. It caps each chunk at four entities and allows one attempt per chunk every 45 seconds at light levels `0..15`. Aquatic templates require the corresponding water or lava; bats and endermen use land placements.
 
 ## Find the room
 

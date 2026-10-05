@@ -1,8 +1,8 @@
 ---
 title: "Sulfur Galleries — Cave Biome"
-description: "Sulfur Galleries and Sulfur Hollows, with sulfur pools, banded pillars, hanging mineral drips and native cube ecology"
+description: "Sulfur Galleries and Sulfur Hollows, with sulfur pools, banded spires, short mineral drips and native cube ecology"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T15:44:42.596587+00:00
 tags: "iris, biome-atlas, cave, sulfur"
 editor: markdown
 dateCreated: 2026-09-03T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-09-03T00:00:00.000Z
 
 `carving/sulfur` is a regional cave root in the Overworld and Underworld packs, with `carving/sulfur-hollows` as its child. Both require Minecraft 26.2.
 
-Both packs disable standalone cave aquifers in this family and its children. Mineral pool objects and contained hydrology use water in Overworld and lava in Underworld; the dimension-selected colonnade room retains its own lava basin in both packs. The profiles retain their separate deep-lava permission.
+Both packs disable standalone cave aquifers in this family and its children. Mineral pool objects and contained hydrology use water in Overworld and lava in Underworld; the dimension-selected mineral chamber retains its own lava basin in both packs. The profiles retain their separate deep-lava permission.
 
 ## Selection and shape
 
@@ -21,19 +21,18 @@ Both packs disable standalone cave aquifers in this family and its children. Min
 
 Slot fractions describe the regional lists, not whole-world probabilities. The root has one child selected with Simplex noise at zoom `0.62` and shrink factor `1.3`.
 
-The `sulfur-colonnades` dimension feature also selects this root independently of the regional cave slots. It places a radius-48 dome with a 60-block vault within absolute world Y `-156..-52`, spacing `576` and placement probability `0.26`. A six-block retained lava basin surrounds continuous mineral pillars spaced 24 blocks apart; local roof and floor formations use `0.17` of the vault height. Yellow terracotta supplies the solid chamber boundary.
+The `sulfur-colonnades` dimension feature also selects this root independently of regional cave slots. It places an irregular chamber within radius `32` and height `36`, inside absolute world Y `-156..-52`, with spacing `1280`, probability `0.16` and `shapeWarp: 0.96`. A three-block lava basin follows uneven mineral banks. Continuous pillars and built-in roof formations are disabled. Yellow terracotta supplies the solid chamber boundary.
 
 Both caves use dripstone-derived profiles with a declared engine-local vertical range `12..620`, sample step `2`, minimum surface depth `18`, surface clearance `12`, and surface breaks disabled. The root retains the larger dripstone profile; the hollows use the companion child profile. Profiles, child layout, regional selectors, formation dimensions and pool silhouettes match across both packs.
 
 ## Overworld treatment
 
-Sulfur supplies the dominant yellow rock, cinnabar introduces red mineral patches and spire bands, and tuff and smooth basalt break up the palette. The shared `expressions/sulfur-strata.json` cycles sulfur, cinnabar, sulfur and smooth basalt in two-block horizontal bands on the spires. Small spires coexist with larger pinched mineral pillars and ceiling-anchored tapered drips. Their horizontal sulfur, cinnabar and smooth-basalt bands follow the same palette in both packs. In authored rooms, the larger pillars and drips scale to the available vault; ordinary noise caves use their authored height ranges. Placement still requires cave support and clearance.
+Sulfur supplies the dominant yellow rock, cinnabar introduces red mineral patches and spire bands, and tuff and smooth basalt break up the palette. The shared `expressions/sulfur-strata.json` cycles sulfur, cinnabar, sulfur and smooth basalt in two-block horizontal bands on the spires. Small banded spires coexist with sparse, short, irregular sulfur drips anchored to the ceiling. Ceiling drips retain their fixed height in both authored rooms and ordinary noise caves. Placement still requires cave support and clearance.
 
 | Formation | Galleries chance | Galleries authored height | Galleries vault fraction | Hollows chance | Hollows authored height | Hollows vault fraction |
 |---|---:|---|---:|---:|---|---:|
 | Small banded spires | `0.035` | 6–12 blocks | Fixed | `0.015` | 3–6 blocks | Fixed |
-| Pinched mineral pillars | `0.07` | 16–30 blocks | `0.52` | `0.025` | 10–18 blocks | `0.35` |
-| Hanging mineral drips | `0.32` | 8–18 blocks | `0.32` | `0.18` | 5–10 blocks | `0.22` |
+| Hanging mineral drips | `0.11` | 3–6 blocks | Fixed | `0.065` | 3–6 blocks | Fixed |
 
 Each passing formation chance produces one placement attempt.
 

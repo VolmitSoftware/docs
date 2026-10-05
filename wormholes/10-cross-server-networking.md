@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-10-02T21:12:27.304361+00:00
+date: 2026-10-04T18:00:48.921Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -321,7 +321,7 @@ identified by peer name and portal UUID.
 
 ## Remote portal views
 
-When a player views a gateway, the linked server sends an initial block and entity snapshot, followed by changes and world time. Failed partial snapshots retry instead of becoming ready with missing data.
+When a player views a gateway, the linked server sends an initial block and entity snapshot, followed by changes and world time. Failed chunk loads, captures, and snapshot encoding remain unready and retry while the gateway view is active. Only complete snapshots become ready for projection.
 
 Native ClientView requests destination sections to the viewer's Minecraft render distance, with full block models, destination light, biome colors, sky, fog, weather, and dimension settings. The receiving server waits for complete section data before sending it. Capture extent follows active viewers and releases larger regions after their unsubscribe grace.
 

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-04T12:28:04.588Z
+date: 2026-10-04T17:24:27.355412+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -190,7 +190,7 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 
 | Command | Params | Description |
 |---------|--------|-------------|
-| `biome` | **Bukkit:** `<biome> [teleport=true]`. **Modded:** `<key>` | Find an Iris biome. Teleport defaults to true on Bukkit |
+| `biome` | **Bukkit:** `<biome> [teleport=true]`. **Modded:** `<key>` | Find a surface, cave or authored underground biome. Teleport defaults to true on Bukkit |
 | `subterrain` | **Bukkit:** `<feature-id or family> [radius=8192] [teleport=true]` | Find an occupied authored underground feature by definition ID or `tectonic_fault`, `cenote`, `lava_tube`, `travertine_terraces` |
 | `underground-biome` | **Bukkit:** `<biome> [radius=8192] [teleport=true]` | Find an occupied authored underground feature with this biome |
 | `region` | **Bukkit:** `<region> [teleport=true]`. **Modded:** `<key>` | Find an Iris region |
@@ -199,6 +199,8 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `structure` | **Bukkit:** `<structure>`, runs sync. **Modded:** `<key>` | Find a vanilla/datapack/Iris structure |
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
+
+`goto biome` and `find biome` resolve cave and authored-room targets at their underground Y coordinate. Cave teleports load the destination and require two clear air blocks above a safe solid floor within the requested biome. Coordinate-only searches with `teleport=false` do not teleport the player.
 
 Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the selectors in the table with the active dimension's configured deep-fluid and surface-pool IDs; `deep_lava` and `lava_pool` are pack-defined examples, not built-in selectors. Locators merge recorded facts from generated chunks with current-activation predictions in eligible ungenerated terrain. Hydrology search never reports a suppressed transition candidate or an unaccepted route, outlet, or deep-fluid feature. On Bukkit, a hydrology teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
 

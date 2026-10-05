@@ -2,7 +2,7 @@
 title: "Flux Crystal Caverns — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/flux-crystal-caverns"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T15:44:42.596587+00:00
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -23,7 +23,7 @@ Biome and region `rarity` values contribute relative weight as `1 / rarity`; slo
 | Overworld | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
 | Underworld | `magnetics` (1/3 slots; region rarity 15, weight `1/15`) | `1` | `1/1` |
 
-The `crystal-faults` dimension feature also selects this root within absolute world Y `-160..-48`. It forms a dry, 256-block fault passage with radius `16`, a 64-block vault and solid side shelves. Placement uses spacing `640` and probability `0.28`; local roof and floor formations use `0.05` of the vault. Overworld boundaries are deepslate, with blackstone in Underworld.
+The `crystal-faults` dimension feature also selects this root within absolute world Y `-160..-48`. It forms a dry, winding 208-block fault passage with radius `13`, height `44`, `shapeWarp: 0.9` and irregular side shelves. Placement uses spacing `1536` and probability `0.18`; continuous pillars and built-in roof formations are disabled. Overworld boundaries are deepslate, with blackstone in Underworld.
 
 ## Terrain and generator
 
@@ -37,13 +37,13 @@ No surface generator band is declared; this root supplies biome treatment to an 
 
 Derivative `minecraft:dripstone_caves`; vanilla derivative `minecraft:dripstone_caves`. Primary cave palette: `minecraft:calcite`, `minecraft:smooth_basalt`, `minecraft:amethyst_block`, `minecraft:tuff`. Object set: `clutter/amethyst-cluster1`, `clutter/amethyst-cluster2`, `clutter/amethyst-cluster3`, `clutter/amethyst-cluster4`, `clutter/amethyst-cluster5`, `clutter/stoneboulder1`, `clutter/stoneboulder2`, `clutter/stoneboulder3`, and 3 more.
 
-Hanging amethyst rosettes carry three to six shards, each three to six blocks long, with sparse sea-lantern tips. Their chunk placement chance is `0.19` with two attempts. Grounded calcite fissures use chance `0.12`, three separated shards and a vault fraction of `0.24`; their authored height range is 5–10 blocks.
+Sparse hanging amethyst clusters carry two to four shards, each two to four blocks long. Their chunk placement chance is `0.09` with one attempt. Short calcite fractures use chance `0.055`, two irregular pieces and a fixed height range of 3–5 blocks. Both use twenty variants and retain their scale in large rooms.
 
 ## Underworld treatment
 
 Derivative `minecraft:soul_sand_valley`; vanilla derivative `minecraft:soul_sand_valley`. Primary cave palette: `minecraft:quartz_block`, `minecraft:smooth_basalt`, `minecraft:crying_obsidian`, `minecraft:blackstone`. Object set: `underworld/basalt/clutter/amethyst-cluster1`, `underworld/basalt/clutter/amethyst-cluster2`, `underworld/basalt/clutter/amethyst-cluster3`, `underworld/basalt/clutter/amethyst-cluster4`, `underworld/basalt/clutter/amethyst-cluster5`, `underworld/basalt/clutter/stoneboulder1`, `underworld/basalt/clutter/stoneboulder2`, `underworld/basalt/clutter/stoneboulder3`, and 3 more.
 
-The hanging rosettes use crying obsidian on obsidian bases with sparse shroomlight tips. Fissures use blackstone. Shard dimensions, fissure spacing and room fractions match the Overworld treatment.
+The hanging clusters use crying obsidian on obsidian bases. Short fractures use blackstone. Shard dimensions, spacing and fixed formation heights match the Overworld treatment.
 
 ## Child and floating variants
 

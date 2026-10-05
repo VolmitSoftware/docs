@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T16:28:23.269830+00:00
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -49,9 +49,9 @@ The paired catalog contains 381 reachable biome identities:
 | [Tundra](/iris/biomes/tundra) | 17 | 11 | Taiga, redwoods, alpine terrain, mountains, water, and shores |
 | [Vanilla](/iris/biomes/vanilla) | 19 | 0 | Vanilla-compatible roots mixed into Iris selectors |
 
-The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. The cave root and its child contain short sulfur spikes, taller clusters, mineral pools, banded pillars and hanging mineral drips. Dimension-selected sulfur colonnades add broad retained lava basins beneath continuous columns. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
+The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. The cave root and its child contain short sulfur spikes, taller clusters, mineral pools, banded spires and short hanging mineral drips. Rare dimension-selected sulfur chambers surround shallow lava basins with irregular mineral banks. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
 
-The [Carving family](/iris/biomes/carving#authored-room-selection) includes lava-lamp tubes, ember vaults, sculk cathedrals, lantern grottos, frost vaults and travertine gardens. Nine dimension feature definitions also place sulfur colonnades, crystal faults and drowned galleries using existing cave roots. Each room has an absolute underground Y band, solid boundaries and its own material and ecology treatment.
+The [Carving family](/iris/biomes/carving#authored-room-selection) includes ochre hollows, ember vaults, sculk cathedrals, lantern grottos, frost vaults and travertine gardens. Nine dimension feature definitions also place sulfur chambers, crystal faults and drowned galleries using existing cave roots. These rare underground features use asymmetric chamber outlines, winding passages, uneven rock surfaces and layered decoration: ground cover, hanging vegetation, bent mushrooms, irregular mineral clusters and local wildlife. Placement spacing is 896–1536 blocks with a per-cell probability of 0.16–0.22; Overworld and Underworld share geometry while retaining their own materials and fluids. Ochre Hollows is restricted to the Hot region through `allowedRegions: ["hot"]` in both packs.
 
 Overworld [Tundra Autumn and its extended variant](/iris/biomes/tundra/autumn) scatter red shrubs on grass blocks, coarse dirt, and podzol, alongside the red shrub ground cover in the four poplar biomes. These plants require Minecraft 26.3.
 

@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-04T12:28:04.588Z
+date: 2026-10-04T22:59:50.523Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -297,13 +297,13 @@ Slabs and walls only appear when the dimension has `postProcessing`, `postProces
 
 The JSON key really is `customDerivitives`. The misspelling is baked into the engine field. `customDerivatives` is silently ignored.
 
-Type: `IrisBiomeCustom`, available as the `custom-biome` snippet. Existing custom-biome definitions work on Minecraft 26.3 without changing their pack fields. Iris compiles these into a datapack and registers them as `<dimensionLoadKey>:<id>`.
+Type: `IrisBiomeCustom`, available as the `custom-biome` snippet. Existing custom-biome definitions work on Minecraft 26.3 without changing their pack fields. Iris compiles these into a datapack. F3 shows `iris:<dimensionLoadKey>/<id>`, using the authored biome ID in lowercase. For example, `id: "mist"` in the `overworld` dimension appears as `iris:overworld/mist`. When distinct definitions share an ID, additional variants use numbered namespaces such as `iris_2:overworld/mist`. These client names apply to existing and newly generated chunks after restarting the server and reconnecting. Use server registry keys, rather than the F3 label, with vanilla registry commands.
 
 When a biome has any custom derivative, that custom biome becomes the visible biome for the column. `derivative` / `biomeScatter` / `biomeSkyScatter` stop driving what players see. `vanillaDerivative` still drives structure eligibility and tag inheritance. With several entries, `biomeStyle` picks between them per position.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `id` | string | `""` | Resource path, lowercased on read. Must be unique in the pack. Required. |
+| `id` | string | `""` | Readable biome ID, lowercased in the F3 identifier. Required. |
 | `category` | `IrisBiomeCustomCategory` | `plains` | Vanilla category written into the biome JSON. Required. |
 | `temperature` | double -3..3 | `0.8` | Vanilla temperature: drives snow versus rain, water freezing and some mob behavior. |
 | `humidity` | double -3..3 | `0.4` | Written as vanilla `downfall`. Affects foliage tint and fire spread. |

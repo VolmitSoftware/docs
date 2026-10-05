@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-05T17:37:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -18,12 +18,12 @@ With `[features] drops = true` (the default) every item entity that spawns gets 
 |---|---|---|
 | `labels.format` | `"&7{count}x {type}"` | Label text for a dropped stack. A blank value uses the default |
 | `labels.names` | `{}` | Per-material names used as `{type}`, such as `{"COBBLESTONE": "&7Cobble", "IRON_BLOCK": "Block of Iron"}`. Keys are material names in any case. Entries with a blank name are ignored |
-| `labels.useItemDisplayNames` | `false` | Uses the item's own display name, such as an anvil rename, as `{type}` when it has one |
+| `labels.useItemDisplayNames` | `false` | Uses the item's custom name, CraftEngine display name, or item-name component as `{type}` when available |
 
 | Token | Replaced with |
 |---|---|
 | `{count}` | The stack size |
-| `{type}` | The item's own display name when `labels.useItemDisplayNames` is on and the item has one; otherwise the `labels.names` entry for the material; otherwise the material name in Title Case, so `COBBLESTONE` becomes `Cobblestone` and `HEART_OF_THE_SEA` becomes `Heart of the Sea` |
+| `{type}` | With `labels.useItemDisplayNames` enabled: the custom name, then the CraftEngine name resolved for the viewer, then the item-name component. Otherwise, or if no name is available: the `labels.names` entry for the material, then its readable material name |
 
 The default gives `64x Cobblestone` and `1x Diamond Sword`, even when that sword was renamed in an anvil. Turn on `labels.useItemDisplayNames` to show `1x Excalibur` instead. The format runs through the Gloss text pipeline, so color codes, emoji, `|function|` calls, `%placeholders%` and `{{ expressions }}` all work. For example, this prints the name first and renames two materials:
 
@@ -36,7 +36,11 @@ The default gives `64x Cobblestone` and `1x Diamond Sword`, even when that sword
 
 Set `presentation.labels.show` to a boolean or condition string, such as `"world.time > 12000"`, to control label visibility for each viewer. The condition uses that viewer and the item snapshot; the underlying item remains present. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
+For CraftEngine items, set `presentation.labels.useItemDisplayNames` to `true` in `plugins/Gloss/real-drops/default.json`, including any selected variant that overrides this setting. Gloss resolves CraftEngine's client-bound names for each viewer, including its conditions and player placeholders. An explicit server-side custom name, such as an anvil rename, takes precedence. Item names retain their colors but cannot execute Gloss expressions, functions, placeholders, or markup. CraftEngine remains optional.
+
 ## Bundles
+
+`presentation.labels.useItemDisplayNames` also applies to items inside bundles, including CraftEngine names resolved for the viewer.
 
 Bundle label text lives in `labels.bundle`:
 
@@ -56,7 +60,7 @@ A dropped `BUNDLE` whose `BundleMeta` carries stacks gets its single-line name f
 | `{total}` | The summed amount of every stack inside the bundle |
 | `{contents}` | The rendered content list |
 
-Contents are aggregated by material. Every stack of the same type is summed into one entry. They are ordered largest amount first; ties use the material name. `labels.bundle.entryLimit` caps the listed entries, and the remainder counts hidden material types, not hidden items.
+Contents are aggregated by their resolved label name. Matching names are summed into one entry, ordered largest amount first; ties use the resolved name. With `useItemDisplayNames` disabled, names come from the material catalog or configured material overrides. `labels.bundle.entryLimit` caps the listed entries, and the remainder counts hidden entries, not hidden items.
 
 With `[features] realDrops = true` and `labels.bundle.vertical = true`, the visible display is vertical. `headerFormat`, `entryFormat`, and `moreFormat` produce:
 
@@ -159,7 +163,7 @@ The table below uses paths relative to `presentation`; the same fields exist ins
 | `labels.enabled` | `true` | Shows the effective drop name through the Gloss text engine |
 | `labels.yOffset` | `0.55` | Label translation above the item; -4 – 16 blocks |
 | `labels.format` | `"&7{count}x {type}"` | Stack label text; see the start of this page |
-| `labels.useItemDisplayNames` | `false` | Uses the item's own display name as `{type}` |
+| `labels.useItemDisplayNames` | `false` | Uses custom names, per-viewer CraftEngine names, or the item-name component as `{type}` |
 | `labels.names` | `{}` | Per-material `{type}` names |
 | `labels.bundle` | See [Bundles](/gloss/08c-drop-labels#bundles) | Bundle label text and entry limit |
 | `labels.style` | See below | Shared Gloss display style, including independent XYZ scale, billboard, alignment, opacity, lights, view range, culling, and glow |

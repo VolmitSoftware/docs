@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-02T14:58:32.911174+00:00
+date: 2026-10-05T13:58:13.639Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -93,7 +93,8 @@ Each placed endpoint stores an OpenState. New placements default to `OPEN`.
   consume an open cycle.
 - Destination behavior: a hinged door with OpenState `OPEN` may be auto-opened
   by the server for an arriving living traveler. The server later closes it
-  only if the server opened it. A player-opened door is left alone. Trapdoor
+  only if the server opened it. For prepared arrivals, automatic closing waits
+  until the traveler clears the doorway. A player-opened door is left alone. Trapdoor
   destinations are not auto-swung for arrival. OpenState `CLOSED` destinations
   stay shut.
 - Trapdoor through-mapping is straight (drop in the top of one → exit under
@@ -153,7 +154,7 @@ Active door and trapdoor apertures that match their configured OpenState always 
 
 For standard projection and block-packets mode, set `[doors] projection-enabled = true`. The door's access menu cycles `INHERIT`, `ON`, and `OFF`; `OFF` disables that endpoint's standard view, and the global switch must be enabled for either of the other states.
 
-Players using native ClientView receive the same clipped models, destination lighting and environment, and per-frame camera updates as frame portals and mirrors. The view follows that player's resolved destination; personal pockets and return routes remain separate between players. Personal and Public doors prepare their pocket when first viewed through an active aperture, so the destination is visible before entry. The camera aligns with the doorway at both ends, including Return doors and trapdoors. Pocket views remain available while the room is unoccupied. Changing a route replaces its view; closing an aperture whose OpenState is open removes it. Players using standard projection or block-packets mode keep the standard through-door view.
+Players using native ClientView receive the same clipped models, destination lighting and environment, and per-frame camera updates as frame portals and mirrors. With `client-recursion` enabled at both ends, frame portals, mirrors, and active dimensional doors visible through a door show their own destinations, including across worlds. Nested views follow the transformed viewpoint and each aperture’s recursion depth. The view follows that player's resolved destination; personal pockets and return routes remain separate between players. Opening a linked door beside a frame portal keeps both destination views active. Personal and Public doors prepare their pocket when first viewed through an active aperture, so the destination is visible before entry. The camera aligns with the doorway at both ends, including Return doors and trapdoors. Pocket views remain available while the room is unoccupied. Changing a route replaces its view; closing an aperture whose OpenState is open removes it. Players using standard projection or block-packets mode keep the standard through-door view.
 
 Native ClientView hides the animated veil and backing for each player receiving the destination view. For standard projection, `[doors] projection-hide-backing = true` (default) hides both surfaces; `false` retains them. The normal surface returns when that player's projection stops.
 
@@ -167,6 +168,8 @@ Travelers are either `LIVING` (players, mobs, and vehicles) or `OBJECT` (project
 | `PERSONAL` | Yes | No | No |
 | `PUBLIC` | Yes | No | Yes |
 | `RETURN` | Yes | No | No |
+
+Compatible Wormholes clients can prepare same-server door arrivals before entry when the server supports [prepared travel](/wormholes/05-projection-modes-settings#clientview). A ready crossing preserves your position relative to the doorway, movement, and view direction without a loading screen, travel sound, or darkness mask. Unready or unsupported arrivals use the normal transition. Normal player arrivals land at rest.
 
 Pair and Public support object travel. Personal and Return stay player-only. Your view turns with the doorway so forward movement continues away from the arrival side; looking off-center keeps the same angle within the doorway. Entering a Personal or Public pocket faces into its room from either entrance side. Trapdoor routes also turn pitch when the destination aperture is vertical or horizontal.
 Pair loads unloaded destination chunks before transit. Same-server

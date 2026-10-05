@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-10-02T10:28:31.216Z
+date: 2026-10-05T13:43:59.266Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -78,12 +78,24 @@ Rooms are placed on a fixed square spiral.
 
 An active Personal or Public door prepares its destination when an eligible player first looks through it. This creates the room and its return door before travel, without issuing a return ticket. Personal previews resolve to the observing player's room; Public previews resolve to the door's shared room.
 
-Each pocket stores its binding, slot, location, size, and materials. Existing spaces reload from disk, and used slots are not reused.
+Each pocket stores its binding, slot, location, size, materials, and rules. Existing spaces reload from disk, and used slots are not reused.
 
-A pocket keeps the size and materials used when it was created. Later configuration changes apply only to new pockets unless an operator resizes an existing one.
+A pocket takes its configured size, materials, and rules when first allocated, whether allocation begins with a preview or entry. Later entry and configuration reloads preserve those stored values. Change an existing pocket with the pocket commands; resizing changes its shell without resetting its rules.
 
 The 8,192-block stride leaves room for any supported size, so a pocket never
 grows into its neighbour.
+
+### New-pocket rules
+
+Set these keys in `[pockets]` in `wormholes.toml`. They apply to newly allocated Personal, Public, and instanced pockets on Bukkit, Fabric, Forge, and NeoForge. A preview can allocate a pocket before anyone enters it, so changing these defaults afterward does not change that pocket.
+
+| Key | Default | Meaning |
+|-----|---------|---------|
+| `rules-default-mobs` | `false` | Whether mobs may spawn in a new pocket |
+| `rules-default-pvp` | `false` | Whether players may damage other players in a new pocket |
+| `rules-default-keep-inventory` | `true` | Whether death retains inventory and levels in a new pocket |
+| `rules-default-fixed-time` | `-1` | Client time in ticks, from `0` to `23999`; `-1` follows the pocket world's time |
+| `rules-default-build` | `"builders"` | `everyone` permits every visitor to build; `builders` requires Builder or Owner; `owner` permits only the Owner |
 
 ## Layout
 

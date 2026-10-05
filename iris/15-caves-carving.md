@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-10-04T12:39:17.121Z
+date: 2026-10-05T16:32:02.924733+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,9 +27,9 @@ The current built-in pack sources include [Sulfur Galleries and Hollows](/iris/b
 
 ## Authored rooms and passages
 
-Use dimension `subterrainFeatures` for parallel stepped tectonic faults, domed cenotes with sealed basins, lava tubes with elevated walkways and connected hornitos, and retained travertine terraces. Optional `fluid` chooses `WATER` or `LAVA` for any wet geometry; omission uses each family's default, and faults remain dry. These features own bounded 3D volumes and explicit solid boundaries; an absolute Y band alone does not assign their biome to the rest of the underground.
+Use dimension `subterrainFeatures` for irregular stepped tectonic faults, domed cenotes with sealed basins and sloping dry banks, tapered lava tubes with elevated walkways and connected hornitos, and curved travertine basins beneath varying vaulted ceilings. Optional `fluid` chooses `WATER` or `LAVA` for any wet geometry; omission uses each family's default, and faults remain dry. Use `shapeWarp` near `1` for irregular chamber outlines, winding passages and uneven floors and ceilings. The built-in packs use this setting with smaller, widely spaced rooms and without continuous pillars or chimney shafts. Their cave biomes supply layered vegetation, mineral growth, fungi and fauna; the Lava Lamp feature is restricted to Hot-region placement. These features own bounded 3D volumes and explicit solid boundaries; an absolute Y band alone does not assign their biome to the rest of the underground.
 
-Configure continuous floor-to-ceiling pillars with `pillarSpacing` and vault-proportional stalactites and stalagmites with `formationFraction`. Their shelves, rims, pillars and seals remain solid alongside noise caves. The selected feature biome's floor, ceiling and wall palettes can texture exposed boundaries using safe full solid blocks, with the feature's `solid` as fallback. Full settings and synthetic pack examples are in [Authored Subterrain Features](/iris/15b-subterrain-features).
+Configure tapered, irregularly positioned floor-to-ceiling pillars with `pillarSpacing` and vault-proportional stalactites and stalagmites with `formationFraction`. Retained basin floors, rims, pillars and fluid seals remain solid alongside noise caves. Dry outer skins leave adjoining cave openings intact, with rounded exterior corners and uneven rock undersides beneath wet basins. The selected feature biome's floor, ceiling and wall palettes can texture exposed boundaries using safe full solid blocks, with the feature's `solid` as fallback. Full settings and synthetic pack examples are in [Authored Subterrain Features](/iris/15b-subterrain-features).
 
 ## Biome overhangs and cave carving
 

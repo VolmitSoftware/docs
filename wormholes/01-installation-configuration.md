@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-03T16:25:40.384381+00:00
+date: 2026-10-04T22:58:33.181162+00:00
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,8 @@ The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the
 
 ClientView requires matching Wormholes releases using protocol v5 and the same Minecraft version. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
+The F3 debug screen shows `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wormholes: Disconnected`. The Wormholes label is gold; connected is green, mismatch is yellow, and disconnected is red. Mismatch means the ClientView protocol or Minecraft version is incompatible. Connection status appears on F3 without a chat notification.
+
 Native portal views use Minecraft models, textures, and destination lighting. With Iris Shaders enabled, each destination receives the selected pack's terrain, entity, sky, lighting, and postprocessing effects using its own dimension, time, weather, and biome. Mirrors use the same shader pack and show at most four reflections per chain.
 
 For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for Minecraft 26.3. Iris Shaders is separate from the Iris world-generation plugin and mod. When using [Distant Horizons](https://modrinth.com/mod/distanthorizons), select a shader pack with explicit Distant Horizons support. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
@@ -44,11 +46,10 @@ The client creates this file in its `config/` folder on first launch and reads i
 |-----|---------|--------|
 | `renderer` | `"native"` | `"native"` enables ClientView. `"block-packets"` keeps this client on the server's standard block and entity packets, including when a shader pack is active. Restart the game after changing it |
 | `max-plate-memory-mb` | `256` | Shared memory budget in MiB for received portal sections, 16–4096. Retained destination history uses at most one third of this budget, capped at 128 MiB. Locally visited sections have a separate 64 MiB cache. Visible sections arrive progressively; evicted contents are reacquired with the native renderer |
-| `show-debug-overlay` | `false` | Show a ClientView status line on the F3 debug screen |
+| `show-debug-overlay` | `false` | Show detailed ClientView metrics on F3 alongside the connection status |
 | `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky; the destination sky inside native portal views is independent of this setting |
 | `client-recursion` | `true` | Show nested mirrors and portals through their own destinations when the server sends them |
 | `self-reflection` | `true` | Show your own reflection in mirrors this client draws |
-| `connection-message` | `true` | Show "Wormholes Connection Established" in this client's chat when a server confirms ClientView. Only this client sees it |
 
 ## Build distributions
 

@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-02T21:12:27.304531+00:00
+date: 2026-10-04T22:59:50.523Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -62,7 +62,7 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | Interface | Operations |
 | --- | --- |
 | `block.BlockEntityAccess` | Capture block-entity NBT and evaluate native container locks |
-| `chunk.ChunkPacketAccess` | Send a loaded chunk to a player |
+| `chunk.ChunkPacketAccess` | Send loaded chunks, capture native chunk packets, and read world metadata |
 | `chunk.ChunkSendRateAccessor` | Read and change server chunk send and load rates |
 | `item.ItemStackAccess` | Encode and decode complete vanilla item data |
 | `map.MapPixelsAccess` | Capture vanilla map pixels and metadata |
@@ -79,6 +79,8 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `monitor.NativeWorldAccess` | Access hopper, navigation, and fluid-tick operations |
 | `protection.SpawnProtectionAccess` | Create native spawn-protection checks |
 | `proxy.ProxyForwardingAccess` | Read the active Velocity forwarding key |
+
+`ChunkPacketAccess.snapshotSupported()` checks whether the binding can encode native chunk snapshots. On supported 26.2 and 26.3 bindings, `snapshot(world, new ChunkPosition(x, z))` returns an optional `ChunkPacketSnapshot` for an already-loaded column, including its block, biome, block-entity, and light data. The snapshot copies its bytes on construction and access, with a 2 MiB limit. `context(world)` returns an optional immutable `ChunkWorldContext` with separate world and dimension-type keys, the normal client spawn seed, dimension bounds, and time and weather values. Call both methods in the destination region's owning context; they do not load chunks or send packets. Consumers own registry and Minecraft-version matching when decoding the snapshot.
 
 `ChunkSendRateAccessor` reads and writes live server limits. Consumers own rate validation and change policy. A missing field returns an empty read or a failed write.
 
@@ -106,13 +108,15 @@ Add `native-terrain-api` and `shared` at the same VolmLib release for terrain in
 NativeTerrainAccess terrain = NativeAdapters.require(NativeTerrainAccess.class);
 ```
 
+`terrain.RegistryClientNames.register(registryKey, physicalKey, clientKey)` assigns a client-visible registry name. Register names before players connect. Biome registry synchronization applies these names on Bukkit 26.2/26.3 and the modded terrain bindings; entry order and definition data are preserved. Server lookups and saved palettes continue using their physical keys. `resolve(registryKey, physicalKeys)` returns the corresponding names in the supplied order, retaining unmapped entries and assigning numbered namespaces to conflicting client names.
+
 Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `NativeBlockState` and `NativeBiome` at interface boundaries. Keep your generator's dimension settings, terrain decisions, and feature selection in your plugin.
 
 `NativeBlockProperties.canPlaceOnto` checks substrate compatibility. It accepts crimson and warped roots on soul soil or either nylium type, and Nether sprouts on either nylium type. Placement code must also enforce its clearance and surface-support rules.
 
 `NativeGenerationRegistry.canonicalDefinition(...)` creates a typed registry definition from its registry key, entry key, and JSON. Resolve the registry through `NativeAdapters.require(NativeGenerationRegistry.class)`.
 
-`NativeWorldGeneration.inject(world, context)` installs the selected version’s generator using your `NativeBukkitGeneratorContext`. The context supplies terrain, biome, structure, spawn, and generation-history policy through typed contracts. `lifecycle(policy)` creates its lifecycle controller; retain the controller and close its hooks during shutdown. Use `completeBootstrap(world)` after initial generation and `abandonBootstrap(world)` when creation fails.
+`NativeWorldGeneration.inject(world, context)` installs the selected version’s generator using your `NativeBukkitGeneratorContext`. The context supplies terrain, biome, structure, spawn, and generation-history policy through typed contracts. Native structure stages respect the world’s Generate Structures setting: disabled worlds skip starts, references, placement, native locate predictions, and structure-volume prediction while terrain and feature stages continue. `lifecycle(policy)` creates its lifecycle controller; retain the controller and close its hooks during shutdown. Use `completeBootstrap(world)` after initial generation and `abandonBootstrap(world)` when creation fails.
 
 `NativeWorldRuntime` inspects runtime world-loading capabilities, creates worlds from `WorldRuntimeOptions`, and unloads worlds asynchronously. Check `available()` before runtime creation. Supply a `WorldRuntimeExecution` implementation for global-thread scheduling, background work, and failure reporting. Dimension keys, the Bukkit generator identifier, persistence, seed selection, and storage paths are explicit options. Leave `dimensionTypeKey` null to use the configured overworld generation settings.
 

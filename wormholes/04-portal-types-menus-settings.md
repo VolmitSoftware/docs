@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-02T09:30:45.000Z
+date: 2026-10-04T13:26:30.499Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -319,7 +319,7 @@ Open **Settings → More settings → Transit** to control movement through this
 
 **Membrane** permits entry from the front and pushes travelers away from the back. **Bounce** pushes travelers back instead of transporting them, from either side. Left-click either control to toggle it.
 
-**Transition cues** accepts a threshold particle key on left-click and an arrival sound key on right-click, entered in chat. An empty value, `-`, `none`, or `default` restores the default cue. Shift-left-click sets arrival-mask duration from 0 to 200 ticks; an empty value or `-1` restores the default duration.
+**Transition cues** accepts a threshold particle key on left-click and an arrival sound key on right-click, entered in chat. An empty value, `-`, `none`, or `default` restores the default cue. Shift-left-click sets arrival-mask duration from 0 to 200 ticks; an empty value or `-1` restores the default duration. Ready [prepared travel](/wormholes/05-projection-modes-settings#clientview) skips these travel cues and the mask for the traveler; bystanders keep the normal effects.
 
 ## Travel cost menu
 

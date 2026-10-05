@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-05T00:06:29.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -150,7 +150,7 @@ When MythicMobs is active it gives Iris two location conditions.
 | `irisbiome` | `biome` / `b` — comma-separated biome load keys. `surface` / `s` — boolean, default `false` | With `s=true`, the surface biome at the target's X/Z. With the default `s=false`, the biome at the target's actual Y, which includes cave and mantle biomes |
 | `irisregion` | `region` / `r` — comma-separated region load keys | The region load key at the target's X/Z |
 
-Both compare against **load keys**, not display names, and both return `false` when the target world is not an Iris world or its engine is unavailable. A condition can fail quietly while a world is still booting, so do not make a mob's only spawn gate an Iris condition during startup.
+Both compare against **load keys**, not display names. Both return `false` when the target world is not an Iris world, its engine is unavailable, or its saved biome information is still loading. Later checks use the saved information once it is ready. MythicMobs applies its normal condition inversion, so a condition configured as `false` can pass during loading; use a positive condition to require a confirmed biome or region match.
 
 ### RandomSpawns by Iris biome
 

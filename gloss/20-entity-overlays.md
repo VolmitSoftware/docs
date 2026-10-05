@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-10-03T15:53:01.000Z
+date: 2026-10-05T17:37:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -73,6 +73,8 @@ Rows use the normal Gloss text engine: ampersand and hex colors, MiniMessage, em
 Tokens include `{name}`, `{bar}`, `{health}`, `{max_health}`, `{count}`, `{attack}`, `{armor}`, `{damage}`, `{type}`, `{distance}`, and `{insight}`. Numeric tokens use up to `healthBar.decimals` decimal places (default 1). `{typeName}` inserts the entity’s readable catalog name, while `{type}` remains its raw key. Expression results retain legacy colors and insert as text; place MiniMessage tags directly in the row template. Names and Insight details are literal data: their contents cannot execute functions, placeholders, expressions, MiniMessage, or particle tags.
 
 Expressions and `show` conditions can read `entity.name`, `entity.named`, `entity.type`, `entity.typeName`, `entity.health`, `entity.maxHealth`, `entity.healthPercent`, `entity.damage`, `entity.damaged`, `entity.attack`, `entity.armor`, `entity.stackCount`, `entity.distance`, and `insight.active`. Health percent is `0` to `100`; distance is in blocks. Entity types use lowercase Bukkit key names, such as `zombie`. The normal viewer, server, time, metric, and PlaceholderAPI expression functions are also available.
+
+When EcoMobs is enabled, `{name}` and `entity.name` use the EcoMobs display name for its mobs, including its resolved mob placeholders and colors. `entity.named` recognizes that name, so the default name row works without changing its condition. Other entities use their Bukkit custom name. EcoMobs is optional and requires no additional Gloss setting.
 
 For example, this layout puts combat statistics above health and adds a conditional warning:
 

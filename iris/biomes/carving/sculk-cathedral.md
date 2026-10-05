@@ -2,13 +2,13 @@
 title: "Sculk Cathedral - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/sculk-cathedral"
 published: true
-date: 2026-10-04T12:29:38.588Z
+date: 2026-10-05T16:28:23.269830+00:00
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
 ---
 
-`carving/sculk-cathedral` is selected through dimension `subterrainFeatures` in both built-in packs. A tall, dry dome combines sculk ground cover, purple crystal rosettes and cyan tendrils beneath hanging canopy patches. Solid pillars continue from the floor to the roof.
+`carving/sculk-cathedral` is selected through dimension `subterrainFeatures` in both built-in packs. A tall, irregular dark chamber opens around uneven stone banks. Creeping sculk, small amethyst clusters, pale mushrooms and hanging roots decorate its exposed surfaces.
 
 ## Selection and shape
 
@@ -18,12 +18,13 @@ The feature ID is `sculk-cathedrals`. Room frequency comes from its placement pr
 |---|---|
 | Geometry | `CENOTE` |
 | Absolute world Y band | `-168..-68` |
-| Placement spacing | `512 blocks` |
-| Placement probability | `0.3` |
-| Vault height | `52 blocks` |
-| Radius | `48 blocks` |
-| Continuous pillar spacing | `28 blocks` |
-| Roof and floor formation fraction | `0.12` |
+| Placement spacing | `1280 blocks` |
+| Placement probability | `0.18` |
+| Vault height | `40 blocks` |
+| Radius | `36 blocks` |
+| Continuous pillar spacing | `0` |
+| Roof and floor formation fraction | `0` |
+| Shape variation (`shapeWarp`) | `1.0` |
 
 | Treatment | Overworld | Underworld |
 |---|---|---|
@@ -35,24 +36,28 @@ Floors, roofs and retaining boundaries remain solid. Decorations fit within the 
 
 ## Overworld treatment
 
-Sculk, deepslate, moss and amethyst form the floor and walls. Floor and ceiling rosettes use three to six amethyst shards, each three to six blocks long, with occasional sea-lantern tips. Low sculk mounds, short room-scaled spires, dry cyan warped-wart tendrils and patchy azalea-leaf curtains occupy the interior.
+Deepslate and tuff dominate the rock, with sculk patches and occasional amethyst. Sculk veins and glow lichen spread across floor and ceiling patches; buds range from small growth to clusters, with occasional sculk sensors on the floor. Irregular amethyst clumps grow from both surfaces among low rock fragments, small pale mushrooms, hanging roots and short berry vines.
 
 ## Underworld treatment
 
-Blackstone, warped wart, warped nylium and crying obsidian supply the equivalent habitat. Obsidian bases support the crying-obsidian rosettes, and sparse shroomlight tips replace the sea lanterns. Soul particles and the soul-sand-valley derivative retain the Nether treatment.
+Blackstone and basalt carry warped-wart and crying-obsidian patches. Glow lichen, glowstone accents, fungi on nylium and short weeping vines supply the smaller growth. Crying-obsidian clusters and warped fungi retain the matching irregular dimensions and placement rates.
 
-## Formation settings
+## Decoration settings
 
-The placement chance is per chunk; density is the number of attempts after that chance passes. Vault fractions size formations to their available authored room. Placement still depends on support and clearance.
+Decorator `chance` controls the scatter rate with `STATIC` and acts as a noise threshold with `SIMPLEX`. A noise threshold is not a percentage of surfaces. Eligible decorators share each surface, and support, clearance and fluid requirements affect placement.
 
-| Formation | Form | Chance | Density | Vault fraction | Authored height |
-|---|---|---:|---:|---:|---|
-| `cathedral-sculk-spire` | `SPIRE` | `0.16` | `1` | `0.2` | 5–10 blocks |
-| `cathedral-sculk-mound` | `BOULDER` | `0.22` | `2` | `0` | 1–2 blocks |
+Procedural `chance` is a per-chunk placement roll; `density` is the number of attempts after that roll succeeds. Attempts can fail, so these settings do not guarantee an object count. Rubble is embedded one block into its support. Objects keep their authored sizes in larger rooms; crystal clusters use random shard directions.
+
+| Placement | Kind | Surface | Chance | Density | Authored size |
+|---|---|---|---:|---:|---|
+| `sculk-buried-fragments` | BOULDER | Floor | `0.85` | `3` | 3–4 blocks high |
+| `sculk-amethyst-clumps` | Random crystal cluster | Floor | `0.8` | `3` | 2–4 shards, 2–4 blocks long |
+| `sculk-hanging-crystals` | Random crystal cluster | Ceiling | `0.75` | `2` | 2–4 shards, 2–4 blocks long |
+| `sculk-pale-fungi` | FUNNEL fungus | Floor | `0.55` | `2` | 1–2-block stem; 1–2-block cap radius |
 
 ## Ecology
 
-Native derivatives are `minecraft:deep_dark` in Overworld and `minecraft:soul_sand_valley` in Underworld. Dimension and region spawner scopes continue to apply.
+The `carving/sculk-cathedral` CAVE pool selects bats and occasional cave spiders in Overworld, or endermen and occasional skeletons in Underworld. It caps each chunk at three entities and allows one attempt per chunk every 45 seconds at light levels `0..12`. Dimension and region spawner scopes also apply.
 
 ## Find the room
 

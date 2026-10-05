@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-02T16:55:00.000Z
+date: 2026-10-04T19:22:20.966Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,6 +30,8 @@ These tasks are separate workflows. None of them requires the others.
 | Import vanilla ores, geodes, or snow, or control mobs, loot, and saplings | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 
 Every task below changes newly generated chunks only. Nothing rewrites existing terrain or existing starts.
+
+The world’s Generate Structures setting controls all native structure generation, including native structures requested by Iris pack placements. On dedicated servers, `generate-structures=false` in `server.properties` disables these structures. Iris terrain, objects, editable Iris jigsaw structures, and enabled imported features continue generating. Enable native structures for the world before using the native placement workflows below.
 
 ## Task 1: Make a vanilla structure fit Iris terrain
 
