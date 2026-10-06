@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-04T12:20:50.645203+00:00
+date: 2026-10-06T20:00:37.423Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -245,7 +245,7 @@ Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris c
 |-----|---------|-----|
 | `defaultPack` | `"overworld"` | Pack used by `/iris create` when omitted. Install the pack separately |
 | `primaryWorld` | `""` | Iris dimension id used for player routing |
-| `routePlayersToPrimaryWorld` | `true` | Sends players to the primary world when one is set |
+| `routePlayersToPrimaryWorld` | `true` | Sends players to the primary world when one is set. Disconnecting cancels pending routing; a new session starts its own attempt |
 | `mainWorldPack` | `""` | Pack or `pack:dimensionKey` for the main-world preset |
 | `mainWorldSeed` | `0` | Seed for the main-world preset |
 | `mainWorldAutoRestart` | `false` | Restarts automatically after a main-world inject |

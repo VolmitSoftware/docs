@@ -115,5 +115,8 @@ Use Iris commands to create and remove worlds. For Multiverse commands and suppo
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/Iris*](https://github.com/VolmitSoftware/Iris)
+- [Spigot *spigotmc.org*](https://www.spigotmc.org/resources/iris-dimension-engine.84586/)
+- [BuiltByBit *builtbybit.com*](https://builtbybit.com/resources/iris-dimension-engine.56258/)
+- [MCModels *mcmodels.net*](https://mcmodels.net/products/15167/iris-dimension-engine)
 - [Dimension packs *github.com/IrisDimensions*](https://github.com/IrisDimensions)
 {.links-list}

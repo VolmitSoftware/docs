@@ -1,23 +1,27 @@
-:root { background: #101114; color-scheme: dark; }
+:root { background: #000; color-scheme: dark; }
 
-html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hidden; }
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: volmit-page-out 150ms ease-out both; }
+::view-transition-new(root) { animation: volmit-page-in 150ms ease-out both; }
+@keyframes volmit-page-out { to { opacity: 0; } }
+@keyframes volmit-page-in { from { opacity: 0; } }
 
 #root .v-application:has(.contents) {
-  --volmit-paper: #101114;
-  --volmit-surface: #181a1e;
-  --volmit-surface-raised: #23262c;
-  --volmit-selected: #30343d;
-  --volmit-ink: #f3f4f6;
-  --volmit-muted: #b0b6c2;
-  --volmit-line: #32363f;
-  --volmit-line-strong: #757f90;
-  --volmit-accent: #ff6b7e;
-  --volmit-focus: #c0d4ff;
-  --volmit-info: #88b8ff;
-  --volmit-success: #7edca3;
-  --volmit-warning: #edc16d;
-  --volmit-radius-control: 3px;
-  --volmit-radius-panel: 4px;
+  --volmit-paper: #000;
+  --volmit-surface: #0a0a0b;
+  --volmit-surface-raised: #141416;
+  --volmit-selected: #1c1c1f;
+  --volmit-ink: #fafafa;
+  --volmit-muted: #a1a1aa;
+  --volmit-line: rgba(255, 255, 255, 0.08);
+  --volmit-line-strong: rgba(255, 255, 255, 0.16);
+  --volmit-accent: #fb7185;
+  --volmit-focus: #e4e4e7;
+  --volmit-info: #7dd3fc;
+  --volmit-success: #4ade80;
+  --volmit-warning: #fbbf24;
+  --volmit-radius-control: 6px;
+  --volmit-radius-panel: 8px;
   --volmit-header-height: 72px;
   --volmit-sidebar-width: 266px;
   --volmit-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -46,25 +50,48 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .nav-header .v-toolbar__content,
 #root .v-application:has(.contents) .nav-header .nav-header-inner {
   height: var(--volmit-header-height) !important;
-  background: var(--volmit-paper) !important;
+  background: transparent !important;
   box-shadow: none !important;
   transition: none !important;
 }
-#root .v-application:has(.contents) .nav-header { border-bottom: 1px solid var(--volmit-line); }
-#root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row { display: grid; grid-template-columns: 250px minmax(220px, 600px) 1fr; width: 100%; gap: 24px; align-items: center; margin: 0 !important; }
+#root .v-application:has(.contents) .nav-header {
+  z-index: 30 !important;
+  background: rgba(0, 0, 0, 0.62) !important;
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border-bottom: 1px solid var(--volmit-line);
+}
+#root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row { display: grid; grid-template-columns: 250px minmax(0, 1fr) auto; width: 100%; gap: 24px; align-items: center; margin: 0 !important; }
 #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row > .flex { width: auto; max-width: none; min-width: 0; }
 #root .v-application:has(.contents) .nav-header :where(.v-toolbar__title, .subheading) { color: var(--volmit-ink) !important; font-family: var(--volmit-font) !important; font-size: 18px; font-weight: 600; letter-spacing: -.5px; }
 #root .v-application:has(.contents) .nav-header .v-toolbar__title a { color: inherit; text-decoration: none; }
 #root .v-application:has(.contents) .nav-header .v-icon { color: var(--volmit-muted) !important; }
 #root .v-application:has(.contents) .nav-header .v-divider { border-color: var(--volmit-line) !important; }
-#root .v-application:has(.contents) .nav-header .v-input__slot { min-height: 40px !important; transition: none !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background: var(--volmit-surface) !important; box-shadow: none !important; }
+#root .v-application:has(.contents) .nav-header .v-input__slot { height: 40px !important; min-height: 40px !important; max-height: 40px; margin: 0 !important; transition: none !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background: var(--volmit-surface) !important; box-shadow: none !important; }
+#root .v-application:has(.contents) .nav-header .v-input__slot::before,
+#root .v-application:has(.contents) .nav-header .v-input__slot::after { display: none !important; border: 0 !important; background: none !important; }
+#root .v-application:has(.contents) .nav-header .v-text-field { position: relative; height: 40px; margin: 0; padding-top: 0; overflow: visible; }
+#root .v-application:has(.contents) .nav-header .v-text-field > .v-input__control { height: 40px; min-height: 0 !important; padding: 0; }
+#root .v-application:has(.contents) .nav-header .v-text-field__details { display: none !important; }
 #root .v-application:has(.contents) .nav-header :where(input, label) { color: var(--volmit-muted) !important; font-family: var(--volmit-font); font-size: 14px; }
 #root .v-application:has(.contents) .nav-header input { color: var(--volmit-ink) !important; }
 #root .v-application:has(.contents) .nav-header .v-input__slot:focus-within { outline: 2px solid var(--volmit-focus); outline-offset: 2px; }
 #root .v-application:has(.contents) .nav-header input:focus-visible { outline: none; }
 #root .v-application:has(.contents) .volmit-home-link { cursor: pointer; border-radius: var(--volmit-radius-control); }
+#root .v-application:has(.contents) .v-ripple__container { display: none !important; }
+#root .v-application:has(.contents) .nav-header .v-btn--icon { width: 36px; height: 36px; border-radius: var(--volmit-radius-control) !important; }
+#root .v-application:has(.contents) .nav-header .v-btn--icon:hover { background-color: var(--volmit-selected) !important; }
+#root .v-application:has(.contents) .nav-header .v-btn:is(:has(.mdi-account-circle), :has(.mdi-account)) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3'/%3E%3Cpath d='M5.5 19.25c.7-3.1 3.3-5 6.5-5s5.8 1.9 6.5 5'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: center !important; background-size: 18px 18px !important; }
+#root .v-application:has(.contents) .nav-header .v-btn :is(.mdi-account-circle, .mdi-account) { opacity: 0; }
+#root .v-application:has(.contents) .nav-header .v-btn .v-avatar:is(:has(.mdi-account), :has(.mdi-account-circle)) { border-radius: var(--volmit-radius-control) !important; background-color: transparent !important; }
+#root .v-application:has(.contents) .v-btn[aria-label="Return to top"] { right: 24px !important; bottom: 24px !important; left: auto !important; width: 40px !important; height: 40px !important; min-width: 40px !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background-color: var(--volmit-surface) !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23fafafa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 13V3M3.5 7.5 8 3l4.5 4.5'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: center !important; background-size: 16px 16px !important; box-shadow: none !important; }
+#root .v-application:has(.contents) .v-btn[aria-label="Return to top"]::before { display: none !important; }
+#root .v-application:has(.contents) .v-btn[aria-label="Return to top"] .v-icon { opacity: 0; }
+#root .v-application:has(.contents) .v-btn[aria-label="Return to top"]:hover { background-color: var(--volmit-surface-raised) !important; }
+#root .v-application:has(.contents) .v-chip { height: 26px; border: 1px solid var(--volmit-line) !important; border-radius: var(--volmit-radius-control) !important; background: var(--volmit-surface-raised) !important; color: var(--volmit-ink) !important; box-shadow: none !important; }
+#root .v-application:has(.contents) .v-snack__wrapper { border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-panel) !important; background: var(--volmit-surface) !important; color: var(--volmit-ink) !important; box-shadow: none !important; }
 
-#root .v-application:has(.contents) .search-results { top: var(--volmit-header-height) !important; z-index: 1000 !important; padding: 24px !important; overflow-y: auto !important; background: var(--volmit-paper) !important; }
+#root .v-application:has(.contents) .search-results { display: none !important; }
 #root .v-application:has(.contents) .search-results-container { width: min(900px, 100%) !important; max-width: 900px !important; min-height: 0 !important; max-height: calc(100dvh - var(--volmit-header-height) - 48px); margin: 0 auto !important; padding: 20px !important; overflow-y: auto; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-surface) !important; }
 #root .v-application:has(.contents) .search-results .v-list { background: transparent !important; }
 #root .v-application:has(.contents) .search-results-help { color: var(--volmit-muted); }
@@ -78,7 +105,7 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .search-results .v-pagination__item--active { border-color: var(--volmit-line-strong) !important; background: var(--volmit-selected) !important; }
 #root .v-application:has(.contents) .search-results .v-pagination .v-icon { color: var(--volmit-ink) !important; }
 
-#root .v-application:has(.contents) .volmit-project-bar { position: sticky; top: var(--volmit-header-height); z-index: 6; display: flex; align-items: center; gap: 32px; min-height: 76px; flex: 0 0 auto; width: 100%; padding: 10px max(32px, calc((100vw - 1280px) / 2)); border-bottom: 1px solid var(--volmit-line); background: var(--volmit-surface); }
+#root .v-application:has(.contents) .volmit-project-bar { position: sticky; top: var(--volmit-header-height); z-index: 6; display: flex; align-items: center; gap: 32px; min-height: 76px; flex: 0 0 auto; width: 100%; padding: 10px max(32px, calc((100vw - 1280px) / 2)); border-bottom: 1px solid var(--volmit-line); background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); }
 #root .v-application:has(.contents) .volmit-project-bar .project-switch { width: 236px; flex: 0 0 236px; padding: 8px 12px; }
 #root .v-application:has(.contents) .project-switch { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-control); background: var(--volmit-surface); color: var(--volmit-ink); text-align: left; cursor: pointer; line-height: 1.5; }
 #root .v-application:has(.contents) .project-switch:hover { border-color: var(--volmit-line-strong); background: var(--volmit-surface-raised); }
@@ -88,21 +115,25 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .project-switch strong { display: block; font-size: 15px; font-weight: 600; }
 #root .v-application:has(.contents) .project-switch small { display: block; font-size: 11px; color: var(--volmit-muted); }
 #root .v-application:has(.contents) .switch-chevron { color: var(--volmit-muted); font-size: 19px; }
-#root .v-application:has(.contents) .project-tabs { display: flex; align-items: center; flex: 1; flex-wrap: wrap; gap: 4px; }
+#root .v-application:has(.contents) .project-tabs { display: flex; align-items: center; flex: 1; flex-wrap: nowrap; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
 #root .v-application:has(.contents) .project-tabs a { padding: 10px 12px; border-radius: var(--volmit-radius-control); color: var(--volmit-muted); font-size: 13px; text-decoration: none; white-space: nowrap; }
 #root .v-application:has(.contents) .project-tabs a:is(:hover, [aria-current]) { color: var(--volmit-ink); background: var(--volmit-selected); }
 #root .v-application:has(.contents) .all-projects { color: var(--volmit-muted); font-size: 12px; text-decoration: none; white-space: nowrap; }
 #root .v-application:has(.contents) .all-projects:hover { color: var(--volmit-ink); text-decoration: underline; }
 #root .v-application:has(.contents) .volmit-section-sidebar { position: fixed; z-index: 6; left: 0; top: var(--volmit-header-height); bottom: 0; width: var(--volmit-sidebar-width); padding: 24px 18px; overflow-y: auto; overscroll-behavior: contain; border-right: 1px solid var(--volmit-line); background: var(--volmit-surface); scrollbar-color: var(--volmit-line-strong) transparent; }
 #root .v-application:has(.contents) .volmit-section-sidebar .project-switch { margin-bottom: 24px; }
-#root .v-application:has(.contents) .reference-nav h3 { margin: 24px 10px 8px; color: var(--volmit-muted); font-size: 12px; font-weight: 600; }
+#root .v-application:has(.contents) .reference-nav h3,
+#root .v-application:has(.contents) .reference-section-toggle { display: flex; align-items: center; width: 100%; margin: 24px 0 8px; padding: 0 10px; border: 0; background: transparent; color: var(--volmit-muted); font: 600 12px/1.5 var(--volmit-font); text-align: left; cursor: pointer; }
+#root .v-application:has(.contents) .reference-section-toggle::before { content: "▸"; display: inline-block; width: 12px; margin-right: 4px; }
+#root .v-application:has(.contents) .reference-section-toggle[aria-expanded="true"]::before { content: "▾"; }
 #root .v-application:has(.contents) .reference-nav a { display: block; padding: 9px 10px; margin: 3px 0; border-radius: var(--volmit-radius-control); color: var(--volmit-muted); font-size: 13px; text-decoration: none; overflow-wrap: anywhere; }
 #root .v-application:has(.contents) .reference-nav a:is(:hover, .active, [aria-current]) { color: var(--volmit-ink); background: var(--volmit-selected); }
-#root .v-application:has(.contents) .reference-nav a:is(.active, [aria-current]) { color: var(--volmit-accent); font-weight: 600; }
+#root .v-application:has(.contents) .reference-nav a:is(.active, [aria-current]) { color: var(--volmit-ink); font-weight: 600; }
 #root .v-application:has(.contents) .reference-nav .parent { color: var(--volmit-muted); }
 #root .v-application:has(.contents) .sidebar-footer { border-top: 1px solid var(--volmit-line); margin-top: 24px; padding-top: 12px; }
 #root .v-application:has(.contents) .sidebar-footer a { display: block; padding: 10px; color: var(--volmit-muted); font-size: 12px; text-decoration: none; }
-#root .v-application:has(.contents) :where(.mobile-section-toggle, .mobile-nav-close) { display: none; min-height: 44px; padding: 9px 12px; border: 1px solid var(--volmit-line-strong); border-radius: var(--volmit-radius-control); color: var(--volmit-ink); background: var(--volmit-surface-raised); font-size: 13px; cursor: pointer; }
+#root .v-application:has(.contents) :where(.mobile-section-toggle, .mobile-nav-close, .page-toc-toggle) { display: none; min-height: 44px; padding: 9px 12px; border: 1px solid var(--volmit-line-strong); border-radius: var(--volmit-radius-control); color: var(--volmit-ink); background: var(--volmit-surface-raised); font-size: 13px; cursor: pointer; }
+#root .v-application:has(.contents) .page-header-section > :where(.mobile-section-toggle, .page-toc-toggle) { margin-right: 8px; }
 #root .v-application:has(.contents) .section-menu-backdrop { display: none; }
 
 #root .v-application:has(.contents) .page-header-section { height: auto !important; padding: 40px 0 28px !important; background: var(--volmit-paper) !important; box-shadow: none !important; border: 0; }
@@ -125,6 +156,13 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .page-toc-card .v-list-item .v-icon { display: none; }
 #root .v-application:has(.contents) .page-toc-card .v-list-item__title { color: var(--volmit-muted); font: 400 13px/1.5 var(--volmit-font); white-space: normal; padding: 0 !important; }
 #root .v-application:has(.contents) .page-toc-card .v-list-item:hover .v-list-item__title { color: var(--volmit-ink); }
+#root .v-application:has(.contents) .page-toc-card .v-list-item:has(.v-list-item__title.caption) { padding-left: 14px; }
+#root .v-application:has(.contents) .page-toc-card .v-list-item.is-current { background: transparent; }
+#root .v-application:has(.contents) .page-toc-card .v-list-item.is-current .v-list-item__title { color: var(--volmit-ink); font-weight: 600; }
+#root .v-application:has(.contents) .volmit-page-toc { display: none; }
+#root .v-application:has(.contents) .volmit-page-toc a { display: block; padding: 6px 0; color: var(--volmit-muted); font-size: 13px; line-height: 1.45; text-decoration: none; }
+#root .v-application:has(.contents) .volmit-page-toc a.is-sub { padding-left: 14px; }
+#root .v-application:has(.contents) .volmit-page-toc a.is-current { color: var(--volmit-ink); font-weight: 600; }
 #root .v-application:has(.contents) .page-col-sd .v-card { background: var(--volmit-surface) !important; color: var(--volmit-muted); box-shadow: none; border-radius: var(--volmit-radius-panel); }
 #root .v-application:has(.contents) .page-col-sd .page-toc-card { background: transparent !important; }
 #root .v-application:has(.contents) .volmit-project-overview .page-header-headings .headline { font-size: 48px !important; letter-spacing: -1.4px !important; }
@@ -133,7 +171,8 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl { width: calc(100% - 96px); max-width: 1260px; }
 
 #root .v-application:has(.contents) .contents { padding: 0 !important; background: transparent; color: var(--volmit-ink); font: 400 15px/1.8 var(--volmit-font); overflow-wrap: anywhere; }
-#root .v-application:has(.contents) .contents > div > p:first-child { color: var(--volmit-muted); font-size: 16px; max-width: 80ch; margin: 0 0 28px; }
+#root .v-application:has(.contents) .contents > div > p:first-child { color: var(--volmit-muted); font-size: 16px; max-width: 72ch; margin: 0 0 28px; }
+#root .v-application:has(.contents) .contents :where(p, ul:not(.links-list):not(.grid-list), ol:not(.links-list), blockquote) { max-width: 72ch; }
 #root .v-application:has(.contents) .contents :where(h1, h2, h3, h4, h5, h6) { color: var(--volmit-ink); font-family: var(--volmit-font); font-weight: 600; line-height: 1.4; border: 0; padding: 0; scroll-margin-top: calc(var(--volmit-header-height) + 100px); }
 #root .v-application:has(.contents) .contents h1 { font-size: 32px; letter-spacing: -.7px; }
 #root .v-application:has(.contents) .contents h2 { margin: 36px 0 16px; font-size: 24px; letter-spacing: -.5px; }
@@ -153,10 +192,14 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .contents table { width: 100%; border-collapse: collapse; margin: 0; background: var(--volmit-surface); font-size: 13px; border: 0; border-radius: 0; box-shadow: none; overflow-wrap: normal; }
 #root .v-application:has(.contents) .contents :where(th, td) { padding: 12px 16px; border: 0; border-bottom: 1px solid var(--volmit-line); background: transparent; color: var(--volmit-ink); text-align: left; }
 #root .v-application:has(.contents) .contents th { background: var(--volmit-surface-raised); font-weight: 600; }
+#root .v-application:has(.contents) .contents .table-container:not(:has(.spec-strip)) thead th { position: sticky; top: 0; z-index: 1; }
+#root .v-application:has(.contents) .contents .table-container:not(:has(.spec-strip)) :where(th, td):first-child { position: sticky; left: 0; z-index: 1; background: var(--volmit-surface); }
+#root .v-application:has(.contents) .contents .table-container:not(:has(.spec-strip)) thead th:first-child { z-index: 2; background: var(--volmit-surface-raised); }
 #root .v-application:has(.contents) .contents tr:last-child td { border-bottom: 0; }
 #root .v-application:has(.contents) .contents table thead:has(th:empty):not(:has(th:not(:empty))) { display: none; }
 #root .v-application:has(.contents) .contents :where(code, pre, kbd, samp) { font-family: var(--volmit-mono) !important; font-size: 13px; }
 #root .v-application:has(.contents) .contents :not(pre) > code { padding: 2px 5px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-control); background: var(--volmit-surface-raised); color: var(--volmit-ink); box-shadow: none; white-space: break-spaces; }
+#root .v-application:has(.contents) .contents :is(p, li, td) > code { padding: 0 0.15em; border-width: 0; border-radius: 0.2em; background: color-mix(in srgb, var(--volmit-ink) 8%, transparent); }
 #root .v-application:has(.contents) .contents :not(pre) > code::before,
 #root .v-application:has(.contents) .contents :not(pre) > code::after { content: none; }
 #root .v-application:has(.contents) .contents :where(pre, pre[class*="language-"], .prismjs) { max-width: 100%; padding: 20px; overflow-x: auto; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-surface) !important; color: var(--volmit-ink); text-shadow: none; line-height: 1.7; box-shadow: none; margin: 22px 0; }
@@ -189,12 +232,26 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .contents ul.grid-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li { margin: 0; padding: 0; border: 0; background: transparent !important; border-radius: 0 !important; box-shadow: none !important; list-style: none; overflow: visible; }
 #root .v-application:has(.contents) .contents :where(ul.links-list, ol.links-list) li + li { margin-top: 10px; }
+#root .v-application:has(.contents) .landing-group { margin: 28px 0 8px; }
+#root .v-application:has(.contents) .landing-group h2 { margin-top: 0; }
+#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-width: none; margin-top: 12px; }
+#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) li + li { margin-top: 0; }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip { display: block; width: 100%; max-width: none; background: transparent; }
+#root .v-application:has(.contents) .volmit-project-overview .table-container:has(table.spec-strip) { border: 0; background: transparent; overflow: visible; }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip-plain thead { display: none; }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip tbody { display: grid; gap: 8px; }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip tr { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-surface); }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip :where(th, td) { border: 0; padding: 0; background: transparent; }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip :where(th, td):first-child { color: var(--volmit-muted); font-weight: 600; }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a { display: block; margin: 0; padding: 14px 16px; min-height: 54px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-surface); color: var(--volmit-ink); font-size: 14px; font-weight: 600; line-height: 1.6; text-decoration: none; box-shadow: none; }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a:hover { background: var(--volmit-surface-raised); border-color: var(--volmit-line-strong); }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a::before,
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a::after { display: none; }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) :where(em, .text--secondary) { display: block; margin-top: 6px; color: var(--volmit-muted) !important; font-size: 13px; font-style: normal; font-weight: 400; line-height: 1.6; }
 #root .v-application:has(.contents) .contents .links-list .title { font-family: var(--volmit-font) !important; font-size: 16px !important; font-weight: 600; color: var(--volmit-ink); }
+#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) { align-items: stretch; }
+#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) > li { display: flex; }
+#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) > li > a { flex: 1 1 auto; height: 100%; display: flex; flex-direction: column; justify-content: center; }
 
 #root .v-application:has(.contents) .volmit-home-page .v-main__wrap > :not(.home-directory) { display: none !important; }
 #root .v-application:has(.contents) .home-directory { max-width: 1280px; margin: 0 auto; padding: 48px 0 36px; }
@@ -220,15 +277,27 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .directory-filters button span { color: var(--volmit-muted); font-size: 11px; font-weight: 400; }
 #root .v-application:has(.contents) .directory-result-count { margin: 0; color: var(--volmit-muted); font-size: 12px; }
 #root .v-application:has(.contents) .directory-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-#root .v-application:has(.contents) .directory-card { position: relative; display: flex; align-items: flex-start; gap: 16px; padding: 22px 20px; min-height: 110px; min-width: 0; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-surface); color: var(--volmit-ink); text-decoration: none; }
+#root .v-application:has(.contents) .featured-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 22px; }
+#root .v-application:has(.contents) .featured-card,
+#root .v-application:has(.contents) .directory-card { position: relative; display: flex; align-items: flex-start; gap: 16px; min-width: 0; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); color: var(--volmit-ink); text-decoration: none; }
+#root .v-application:has(.contents) .featured-card { min-height: 148px; padding: 22px 18px; background: var(--volmit-surface); }
+#root .v-application:has(.contents) .directory-card { padding: 22px 20px; min-height: 110px; background: var(--volmit-surface); }
+#root .v-application:has(.contents) .featured-card small { display: block; margin-top: 10px; color: var(--volmit-muted); font-size: 12px; }
 #root .v-application:has(.contents) .directory-card:hover { border-color: var(--volmit-line-strong); background: var(--volmit-surface-raised); }
+#root .v-application:has(.contents) .featured-card:hover { border-color: var(--volmit-line-strong); }
+#root .v-application:has(.contents) .directory-icon,
+#root .v-application:has(.contents) .project-switch-icon,
+#root .v-application:has(.contents) .picker-icon { background: transparent; border-radius: var(--volmit-radius-control); }
 #root .v-application:has(.contents) .directory-icon { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; margin-top: 2px; }
+#root .v-application:has(.contents) .featured-card .directory-icon { flex-basis: 48px; width: 48px; height: 48px; }
+#root .v-application:has(.contents) .featured-card .directory-icon img { width: 48px; height: 48px; }
 #root .v-application:has(.contents) .directory-icon img { width: 36px; height: 36px; object-fit: contain; }
 #root .v-application:has(.contents) img[src$="riftworldmanager.jpg"] { filter: invert(1); }
 #root .v-application:has(.contents) .directory-mark { border: 1px solid var(--volmit-line-strong); border-radius: var(--volmit-radius-control); background: var(--volmit-surface-raised); color: var(--volmit-muted); font-size: 12px; font-weight: 600; }
 #root .v-application:has(.contents) .directory-card-copy { min-width: 0; flex: 1; }
-#root .v-application:has(.contents) .directory-card h3 { margin: 0 0 5px; color: var(--volmit-ink); font: 600 15px/1.5 var(--volmit-font); letter-spacing: -.15px; overflow-wrap: anywhere; }
-#root .v-application:has(.contents) .directory-card p { margin: 0; max-width: 35ch; color: var(--volmit-muted); font-size: 12px; line-height: 1.65; }
+#root .v-application:has(.contents) :where(.directory-card, .featured-card) h3 { margin: 0 0 5px; color: var(--volmit-ink); font: 600 15px/1.5 var(--volmit-font); letter-spacing: -.15px; overflow-wrap: anywhere; }
+#root .v-application:has(.contents) .featured-card h3 { font-size: 18px; }
+#root .v-application:has(.contents) :where(.directory-card, .featured-card) p { margin: 0; max-width: 35ch; color: var(--volmit-muted); font-size: 12px; line-height: 1.65; }
 #root .v-application:has(.contents) .directory-type { position: absolute; top: 9px; right: 12px; color: var(--volmit-muted); font-size: 10px; line-height: 1.4; }
 #root .v-application:has(.contents) .directory-card:has(.directory-type) h3 { padding-right: 24px; }
 #root .v-application:has(.contents) .directory-footer { display: flex; justify-content: space-between; align-items: center; gap: 32px; margin-top: 30px; padding-top: 24px; border-top: 1px solid var(--volmit-line); }
@@ -266,6 +335,21 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 #root .v-application:has(.contents) .picker-footer a { color: var(--volmit-ink); text-decoration: underline; text-underline-offset: 4px; }
 #root .v-application:has(.contents) .picker-empty { padding: 24px; margin: 0; color: var(--volmit-muted); font-size: 14px; }
 
+#root .v-application:has(.contents) .volmit-search-host { display: grid !important; flex: 1 1 auto; grid-template-columns: minmax(0, 1fr) minmax(0, 0fr); column-gap: 0; align-items: start; width: auto; max-width: 100%; height: 40px; min-width: 0; transition: grid-template-columns 420ms cubic-bezier(.2, .7, .2, 1), column-gap 420ms; }
+#root .v-application:has(.contents) .volmit-search-host.is-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 8px; }
+#root .v-application:has(.contents) .volmit-search-host > .v-text-field { width: 100%; min-width: 0; height: 40px; margin: 0; }
+#root .v-application:has(.contents) .volmit-plugin-search { position: relative; width: 100%; height: 40px; min-width: 0; }
+#root .v-application:has(.contents) .volmit-plugin-field { display: block; height: 40px; min-width: 0; margin: 0; overflow: hidden; }
+#root .v-application:has(.contents) .volmit-plugin-search input { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: 40px; margin: 0; padding: 0 12px; border: 1px solid var(--volmit-line-strong); border-radius: var(--volmit-radius-control); background: var(--volmit-surface); color: var(--volmit-ink); font-size: 14px; }
+#root .v-application:has(.contents) .volmit-plugin-search input::placeholder { color: var(--volmit-muted); opacity: 1; }
+#root .v-application:has(.contents) .volmit-plugin-search input:focus-visible { outline: 2px solid var(--volmit-focus); outline-offset: 2px; }
+#root .v-application:has(.contents) .plugin-search-results { position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; right: 0; max-height: min(360px, 50dvh); overflow: auto; padding: 6px; border: 1px solid var(--volmit-line-strong); border-radius: var(--volmit-radius-panel); background: #0a0a0b; box-shadow: 0 16px 40px #000c; }
+#root .v-application:has(.contents) .plugin-search-hit { display: block; padding: 8px 10px; border-radius: var(--volmit-radius-control); color: var(--volmit-ink); text-decoration: none; }
+#root .v-application:has(.contents) .plugin-search-hit strong { display: block; font-size: 14px; font-weight: 600; }
+#root .v-application:has(.contents) .plugin-search-hit small { display: block; color: var(--volmit-muted); font-size: 12px; line-height: 1.5; }
+#root .v-application:has(.contents) .plugin-search-hit:is(:hover, :focus-visible, .is-active) { background: var(--volmit-selected); }
+#root .v-application:has(.contents) .plugin-search-empty { margin: 0; padding: 12px; color: var(--volmit-muted); font-size: 13px; }
+
 #root .v-application:has(.contents) .contents :is(.adapt-demo, .wormholes-demo, .gloss-demo).demo-ready { margin: 20px 0 28px; overflow: hidden; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-paper); }
 #root .v-application:has(.contents) .demo-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px; border-bottom: 1px solid var(--volmit-line); background: var(--volmit-surface); }
 #root .v-application:has(.contents) .demo-tabs { display: flex; gap: 4px; }
@@ -294,6 +378,7 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
 
 @media (max-width: 1150px) {
   #root .v-application:has(.contents) .volmit-reference-page .page-col-sd { display: none; }
+  #root .v-application:has(.contents) .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row { grid-template-columns: 210px minmax(180px, 1fr) auto; gap: 12px; }
   #root .v-application:has(.contents) .volmit-project-bar { gap: 12px; padding-inline: 24px; }
   #root .v-application:has(.contents) .project-tabs a { padding-inline: 9px; }
@@ -310,7 +395,7 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
   #root .v-application:has(.contents) .mobile-nav-close { display: block; margin-bottom: 16px; }
   #root .v-application:has(.contents) .volmit-project-bar .project-tabs { display: none; }
   #root .v-application:has(.contents) .volmit-project-bar .all-projects { margin-left: auto; }
-  #root .v-application:has(.contents).show-section-menu .project-tabs { display: flex; position: absolute; inset: 100% 0 auto; padding: 16px 24px; border-bottom: 1px solid var(--volmit-line-strong); background: var(--volmit-surface); box-shadow: 0 18px 24px #0003; }
+  #root .v-application:has(.contents).show-section-menu .project-tabs { display: flex; flex-wrap: wrap; overflow: visible; position: absolute; inset: 100% 0 auto; padding: 16px 24px; border-bottom: 1px solid var(--volmit-line-strong); background: var(--volmit-surface); box-shadow: 0 18px 24px #0003; }
   #root .v-application:has(.contents) .project-tabs .mobile-nav-close { margin: 0; }
   #root .v-application:has(.contents) .page-header-section,
   #root .v-application:has(.contents) .v-main .container.grid-list-xl,
@@ -351,7 +436,11 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
   #root .v-application:has(.contents) .contents { font-size: 14px; }
   #root .v-application:has(.contents) .contents > div > p:first-child { font-size: 15px; }
   #root .v-application:has(.contents) .contents h2 { font-size: 22px; }
-  #root .v-application:has(.contents) .contents ul.grid-list { grid-template-columns: 1fr; }
+  #root .v-application:has(.contents) .contents ul.grid-list,
+  #root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) { grid-template-columns: 1fr; }
+  #root .v-application:has(.contents) .volmit-project-overview table.spec-strip tr { grid-template-columns: 1fr; }
+  #root .v-application:has(.contents) .featured-grid { grid-template-columns: 1fr; }
+  #root .v-application:has(.contents) .volmit-plugin-search input { font-size: 16px; }
   #root .v-application:has(.contents) .contents :where(th, td) { padding: 10px 12px; }
   #root .v-application:has(.contents) .home-directory { margin: 0 24px; padding: 30px 0; }
   #root .v-application:has(.contents) .directory-intro { display: block; margin-bottom: 30px; }
@@ -383,6 +472,163 @@ html.volmit-loading #root .v-application:has(.contents) .v-main { visibility: hi
   #root .v-application:has(.contents) .search-results-container { max-height: calc(100dvh - var(--volmit-header-height) - 24px); padding: 12px !important; }
 }
 
+@media (max-width: 1263px) {
+  #root .v-application:has(.contents) .page-toc-toggle { display: inline-flex; align-items: center; }
+  #root .v-application.show-page-toc:has(.contents) .volmit-page-toc {
+    display: block;
+    position: fixed;
+    z-index: 12;
+    top: calc(var(--volmit-header-height) + 12px);
+    right: 16px;
+    left: auto;
+    width: min(320px, calc(100vw - 32px));
+    max-width: min(320px, calc(100vw - 32px));
+    max-height: min(70dvh, 560px);
+    margin: 0;
+    padding: 12px 14px;
+    overflow: auto;
+    border: 1px solid var(--volmit-line-strong);
+    border-radius: var(--volmit-radius-panel);
+    background: #0a0a0b;
+    box-shadow: 0 16px 40px #000c;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
   #root .v-application:has(.contents) *, #root .v-application:has(.contents) *::before, #root .v-application:has(.contents) *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; }
+}
+
+.v-application:has(.notfound) {
+  --volmit-surface: #0a0a0b;
+  --volmit-surface-raised: #141416;
+  --volmit-ink: #fafafa;
+  --volmit-muted: #a1a1aa;
+  --volmit-line-strong: rgba(255, 255, 255, 0.16);
+  --volmit-focus: #e4e4e7;
+  --volmit-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --volmit-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  min-height: 100vh;
+  background: #000 !important;
+  color: var(--volmit-ink);
+  font-family: var(--volmit-font);
+}
+.v-application .notfound {
+  position: relative;
+  isolation: isolate;
+  display: block !important;
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  overflow: hidden;
+  background: #000 !important;
+  color: var(--volmit-ink);
+}
+.v-application .notfound::before,
+.v-application .notfound::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+  background: none !important;
+}
+.v-application .notfound:has(.volmit-lost) .notfound-content { display: none !important; }
+.volmit-lost {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-items: end;
+  min-height: 100vh;
+  padding: 18vh 7vw 12vh;
+}
+.volmit-lost-sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.volmit-lost-sky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 42%, transparent 0 46%, rgba(0, 0, 0, 0.28) 100%);
+}
+.volmit-lost-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  pointer-events: none;
+}
+.volmit-lost-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  width: min(100%, 34rem);
+  padding: 28px 28px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--volmit-radius-panel, 8px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  animation: volmit-lost-in 320ms ease-out;
+}
+.volmit-lost-kicker,
+.volmit-lost h1,
+.volmit-lost-note,
+.volmit-lost-path,
+.v-application .notfound a.volmit-lost-home { position: relative; z-index: 1; }
+.volmit-lost-kicker,
+.volmit-lost-note,
+.volmit-lost-path { margin: 0; }
+.volmit-lost-kicker { color: var(--volmit-muted); font-size: 0.95rem; }
+.volmit-lost h1 {
+  margin: 0;
+  color: var(--volmit-ink);
+  font-family: var(--volmit-font);
+  font-size: clamp(5.5rem, 16vw, 9.5rem);
+  font-weight: 560;
+  letter-spacing: -0.06em;
+  line-height: 0.82;
+}
+.volmit-lost-note { max-width: 28ch; color: var(--volmit-ink); font-size: 1.05rem; }
+.volmit-lost-path {
+  max-width: 100%;
+  color: var(--volmit-muted);
+  font-family: var(--volmit-mono);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.v-application .notfound a.volmit-lost-home {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 10px;
+  padding: 0 16px;
+  border: 1px solid var(--volmit-line-strong);
+  border-radius: 6px;
+  background: var(--volmit-surface);
+  color: var(--volmit-ink);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.v-application .notfound a.volmit-lost-home:hover { background: var(--volmit-surface-raised); color: var(--volmit-ink); }
+.v-application .notfound a.volmit-lost-home:visited { color: var(--volmit-ink); }
+.volmit-lost-home:focus-visible { outline: 2px solid var(--volmit-focus); outline-offset: 3px; }
+@keyframes volmit-lost-in { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 700px) {
+  .volmit-lost { align-items: start; padding: 28px 20px 32px; }
+  .volmit-lost h1 { font-size: clamp(4.6rem, 22vw, 6rem); }
+  .volmit-lost-copy { width: 100%; padding: 22px 18px 18px; background: rgba(0, 0, 0, 0.78); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .volmit-lost-copy { animation: none; }
 }

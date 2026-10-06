@@ -9,6 +9,23 @@ const groups = new Map([
   ["plugins", "Plugins"],
   ["developer tools", "Developer tools"]
 ]);
+const projectMeta = new Map([
+  ["iris", { color: "#2dd4bf", featured: true }],
+  ["adapt", { color: "#fb7185", featured: true }],
+  ["wormholes", { color: "#f5b942", featured: true }],
+  ["gloss", { color: "#c084fc", featured: true }],
+  ["react", { color: "#38bdf8", featured: true }],
+  ["foundation", { color: "#a8a29e" }],
+  ["hiddenore", { color: "#e7c15a" }],
+  ["rift", { color: "#e4e4e7" }],
+  ["shapedportals", { color: "#e879f9" }],
+  ["skyprime", { color: "#7dd3fc" }],
+  ["static", { color: "#cbd5e1" }],
+  ["gamemodeswitcher", { color: "#bef264" }],
+  ["biletools", { color: "#4ade80" }],
+  ["volmlib", { color: "#d4d4d8" }],
+  ["servermultiplexor", { color: "#818cf8" }]
+]);
 
 function plainText(value) {
   return value.replace(/<[^>]*>/g, " ").replace(/\{\.[^}]*\}/g, "")
@@ -139,12 +156,15 @@ async function buildCatalog() {
           await readPage(entry.href);
         }
       }
+      const meta = projectMeta.get(link.href.slice(1));
       projects.push({
         name: link.title || landing.fields.get("title"),
         path: link.href.slice(1),
         href: link.href,
         description: link.description || landing.fields.get("description") || "",
         ...(link.icon ? { icon: link.icon } : { mark: link.mark || link.title.slice(0, 1) }),
+        ...(meta?.color ? { color: meta.color } : {}),
+        ...(meta?.featured ? { featured: true } : {}),
         group,
         sections: projectSections
       });

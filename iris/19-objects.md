@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-06T19:12:27.334Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,7 +46,7 @@ Not stored:
 
 ### Size limits
 
-Objects support coordinates up to 32,767 blocks from the center on each axis and up to 32,767 distinct block states.
+Object width, height, and depth must each be positive. Objects support coordinates up to 32,767 blocks from the center on each axis and up to 32,767 distinct block states. Incomplete files, invalid record counts, and invalid palette references cannot be loaded as partial objects.
 
 ### Where objects live and how they are named
 
@@ -107,7 +107,7 @@ Rough-select the base of a build, then run `x+y` to wrap it tightly.
 
 - `name` is required and positional. It is the path under `objects/`, and `/` creates subfolders.
 - `dimension` resolves from the Iris world you are standing in. Pass `dimension=<pack>` anywhere else.
-- Without `overwrite=true` (alias `force=true`) an existing file aborts the save. There is no backup.
+- Without `overwrite=true` (alias `force=true`) an existing file aborts the save. There is no backup. Overwrites replace the file only after the complete object has been written successfully. A failed save leaves the previous file intact.
 - `legacy` defaults to **true**, which writes reduced tile records for signs, spawners, banners, and loot containers (section 1). Pass `legacy=false` when full block-entity fidelity matters, especially for double-sided signs.
 - The saved volume is the **full selection box**. Nothing is shrinkwrapped, so deliberate air padding is preserved, which moves the center.
 

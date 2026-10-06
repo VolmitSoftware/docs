@@ -38,4 +38,7 @@ The same jar runs on Bukkit servers and on Velocity proxies.
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/BileTools*](https://github.com/VolmitSoftware/BileTools)
 - [Releases *Download built jars*](https://github.com/VolmitSoftware/BileTools/releases/)
+- [Spigot *spigotmc.org*](https://www.spigotmc.org/resources/biletools-test-plugins-faster.54823/)
+- [BuiltByBit *builtbybit.com*](https://builtbybit.com/resources/biletools-test-plugins-faster.121368/)
+- [MCModels *mcmodels.net*](https://mcmodels.net/products/17491/biletools-test-plugins-faster)
 {.links-list}

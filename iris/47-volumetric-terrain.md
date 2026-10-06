@@ -2,7 +2,7 @@
 title: "Volumetric Terrain"
 description: "Iris documentation: Volumetric Terrain"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-06T19:12:27.335Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T12:00:00.000Z
@@ -113,7 +113,7 @@ The modded `/iris studio package` export copies the entire `snippet/` tree so te
 
 **Hydrology.** River channels keep their continuous bed without volumetric shaping. See [36 - Rivers](/iris/36-rivers).
 
-**Dimension stack and upper dimensions.** Each stacked layer and the referenced upper terrain carry their own column, so stack top heights, solidity and surface lookups follow the spans, and each exposed face draws its palette from its own source height and slope. See [11 - Dimensions](/iris/11-dimensions).
+**Dimension stack and upper dimensions.** Stacked overhangs use the same two-block ceiling palette and surface precedence described above. Each stacked layer and the referenced upper terrain carry their own column, so stack top heights, solidity and surface lookups follow the spans, and each exposed face draws its palette from its own source height and slope. See [11 - Dimensions](/iris/11-dimensions).
 
 ## Validation
 

@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-04T22:59:50.523Z
+date: 2026-10-06T20:30:00.449Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -129,6 +129,8 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 The shared mod-loader sources provide `NativeModdedServer` for server scheduling, loaded-world lookup, player lookup, dimension storage paths, and datapack selection. `NativeWorld` identifies a loaded world and provides block, biome, height, and weather access. Use live-world lookup only on the server thread; `worlds()` uses the published world snapshot.
 
 `NativeRegistryAccess` accepts a `Configuration` containing a `Supplier<NativeModdedServer>` and a warning consumer. Return the current server after its datapacks have loaded, or null while no server is available. Registry lookups resolve against the supplied server on each call, including loot tables after datapack reloads. `NativeTileReader.forServer(serverSupplier)` uses the current server for live block-entity reads. The `NativeTileReader` constructor also accepts a registry-provider supplier for offline use. Keep the supplied context available until the owning integration closes.
+
+`NativeProtocolPlayer.isGameMaster()` checks command permission level, while `isServerOwner()` identifies the singleplayer host independently of cheats. Use the owner check to deliver local maintenance notices without granting command permissions; it is false for dedicated-server players.
 
 `NativeCommandRegistration` registers Brigadier trees with `NativeCommandSource`. Read the command's world, player, position, and permission context through that source. Build formatted responses with `NativeCommandText`; `NativeCommandArguments` resolves native player, dimension, and identifier arguments.
 

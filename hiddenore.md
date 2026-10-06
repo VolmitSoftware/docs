@@ -48,4 +48,6 @@ See [Configuration](/hiddenore/configuration) for drop modes, vein stability, an
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/HiddenOre*](https://github.com/VolmitSoftware/HiddenOre)
+- [BuiltByBit *builtbybit.com*](https://builtbybit.com/resources/hiddenore-mining-drop-control.96415/)
+- [MCModels *mcmodels.net*](https://mcmodels.net/products/17490/hiddenore-mining-drop-control)
 {.links-list}

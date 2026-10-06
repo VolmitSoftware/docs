@@ -47,4 +47,6 @@ Wormholes adds frame portals with a live destination view, random teleport porta
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/Wormholes*](https://github.com/VolmitSoftware/Wormholes)
+- [BuiltByBit *builtbybit.com*](https://builtbybit.com/resources/wormholes-see-the-otherside.123138/)
+- [MCModels *mcmodels.net*](https://mcmodels.net/products/17488/wormholes-see-the-otherside)
 {.links-list}

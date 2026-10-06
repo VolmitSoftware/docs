@@ -69,4 +69,6 @@ React measures where server time goes, then gives you tools to act on it.
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/React*](https://github.com/VolmitSoftware/React)
+- [BuiltByBit *builtbybit.com*](https://builtbybit.com/resources/react-smart-server-performance.56257/)
+- [MCModels *mcmodels.net*](https://mcmodels.net/products/17487/react-smart-server-performance)
 {.links-list}

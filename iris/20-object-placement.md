@@ -2,12 +2,12 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-04T12:28:04.588Z
+date: 2026-10-06T19:12:27.334Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A biome or region `objects[]` entry distributes objects over terrain. A dimension `staticObjects[]` entry places one saved object at an exact world position with fixed rotation, scale, and block edits. Building the objects themselves is [19 - Objects](/iris/19-objects). Multi-piece assemblies are [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+A biome or region `objects[]` entry distributes objects over terrain. If publishing an object into a chunk fails, earlier completed placements in that chunk remain intact. A dimension `staticObjects[]` entry places one saved object at an exact world position with fixed rotation, scale, and block edits. Building the objects themselves is [19 - Objects](/iris/19-objects). Multi-piece assemblies are [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 ## Static objects at fixed coordinates
 
@@ -40,7 +40,7 @@ Use dimension `staticObjects` for a landmark, spawn building, or other object th
 
 Static objects generate after terrain and decoration, regardless of biome, slope, water, caves, density, or chance, and later native structures cannot overwrite them. Entries apply in array order and the later entry wins where they overlap. Saved air writes air; unsaved space stays unchanged unless `bore` or `smartBore` fills it. **This can replace terrain, including the bedrock layer.**
 
-Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles work, but angles other than multiples of 90 round onto the block grid and can create holes or merge voxels. Saved block-entity data accompanies its transformed blocks; edits apply before rotation, leave the source `.iob` unchanged, and changing a block's material discards incompatible block-entity data. A non-solid directional block that cannot represent its rotated orientation is skipped along with its tile data; the rest of the object still places.
+Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles work, but angles other than multiples of 90 round onto the block grid and can create holes or merge voxels. When rotated voxels merge or a later placement replaces a block, the surviving block keeps only its own block-entity data. Saved block-entity data accompanies its transformed blocks; edits apply before rotation, leave the source `.iob` unchanged, and changing a block's material discards incompatible block-entity data. A non-solid directional block that cannot represent its rotated orientation is skipped along with its tile data; the rest of the object still places.
 
 | Field | Default | Meaning |
 |-------|---------|---------|
@@ -253,7 +253,7 @@ They anchor like `CENTER_HEIGHT`. They then raise or carve every column out to a
 { "rotation": { "enabled": true, "yAxis": { "enabled": true, "min": 0, "max": 270, "interval": 90 } } }
 ```
 
-Per axis (`xAxis`, `yAxis`, `zAxis`, each `{enabled, min, max, interval}`): `min == max == 0` means any multiple of `interval`. `min == max` at some other value locks the object to that angle. Anything else picks a multiple of `interval` and clips it into `[min, max]`. In the free case an `interval` below 1 is treated as 1 (one-degree steps). In a clipped range always set a real `interval`. Non-90-degree angles look bad at block resolution. Turn rotation off with `"rotation": { "enabled": false }`. X and Z rotation are incompatible with `bottom: true`.
+Per axis (`xAxis`, `yAxis`, `zAxis`, each `{enabled, min, max, interval}`): `min == max == 0` means any multiple of `interval`. `min == max` at some other value locks the object to that angle. Anything else picks a multiple of `interval` and clips it into `[min, max]`. In the free case an `interval` below 1 is treated as 1 (one-degree steps). In a clipped range, `interval: 0` also uses one-degree steps; positive fractional intervals retain their authored step size. Non-90-degree angles look bad at block resolution. Turn rotation off with `"rotation": { "enabled": false }`. X and Z rotation are incompatible with `bottom: true`.
 
 An omitted `scale` inherits the dimension's `allObjectScaleFactor`, which defaults to `1`. An explicit `scale` object replaces that default entirely, including `{ "size": 1 }` or `{}`. Use `{ "size": 1 }` to keep one placement at its saved size when the rest of the pack is scaled.
 

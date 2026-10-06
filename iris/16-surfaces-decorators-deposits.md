@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-04T12:39:17.121Z
+date: 2026-10-06T20:30:00.449Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -222,6 +222,8 @@ The block is written one above the surface block (`height + 1`), and only into a
 
 By default the surface block must have a sturdy full up-face and satisfy the placed block platform support rule. For example, cactus accepts sand, red sand, or another cactus, but not stone. `forcePlace: true` skips that test entirely. `forceBlock` replaces the surface block with the given block first and implies `forcePlace`. When not force-placing, `whitelist` and `blacklist` are matched against the surface block. An explicitly empty `whitelist` matches nothing and blocks all placement. Omit the field rather than setting it to `[]`.
 
+Stairs and trapdoors keep their authored `half: bottom` or `half: top` state and occupy one block. Plants with `half: lower` and `half: upper` occupy two blocks and require room for both halves. Decorators stay within the dimension’s build height.
+
 Crimson and warped roots can grow on soul soil or either nylium type. Nether sprouts can grow on either nylium type. Use ordinary decorators and substrate whitelists for these plants.
 
 Vines get their attachment faces recomputed, and stacked weeping and twisting vines use the matching `_plant` state for their body with one tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` get correct direction and taper states for both single decorations and stacks, and adjacent opposing tips of the same material become `tip_merge` (sulfur and dripstone never merge with each other). Spikes require a full sturdy support face in their growth direction or another matching spike behind them, **even when force-placed**. They are waterlogged automatically when they replace actual water and never replace lava. Authored wet states are cleared when the decoration lands in dry space. Sulfur spikes require Minecraft 26.2.
@@ -230,14 +232,14 @@ Vines get their attachment faces recomputed, and stacked weeping and twisting vi
 |-------|------|---------|--------------|
 | `chance` | double 0..1 | `0.1` | Fraction of the noise field that qualifies |
 | `palette` | block-entry array | grass | Blocks to place. Pack validation requires the field and at least one entry. An empty snippet places nothing |
-| `topPalette` | block-entry array | `[]` | Used for the upper part of a stack — bamboo tips, cactus flowers. Empty falls back to `palette` |
+| `topPalette` | block-entry array | `[]` | Used for the upper part of a stack, such as bamboo tips or cactus flowers. Multiple entries use `variance` even when `palette` contains one block. Empty falls back to `palette` |
 | `topThreshold` | double 0.01..1 | `1` | Normalized stack position where `topPalette` takes over. `0.8` gives a tip roughly a fifth of the stack tall |
 | `style` | generator style | `STATIC` | The field that gates `chance`. `STATIC` gives even scatter. Wispy or cellular styles give meadows and bare patches |
 | `variance` | generator style | `STATIC` | Chooses between palette entries once a column has passed. Scattered variance mixes flowers per block. Wispy variance gives single-species drifts |
 | `heightVariance` | generator style | `STATIC` | Shapes stack height across the terrain when `stackMin` and `stackMax` differ |
 | `stackMin` / `stackMax` | int 1..2032 | `1` / `1` | Inclusive stack-height range in blocks. `1..4` produces stacks from 1 to 4 blocks tall |
 | `scaleStack` | boolean | `false` | Reinterprets `stackMin`/`stackMax` as a percentage of the available vertical space instead of a block count. Meant for cave stalagmites that should scale with cavern height |
-| `absoluteMaxStack` | int | `30` | Hard cap when `scaleStack` is on, so a huge cavern does not produce a 60-block column |
+| `absoluteMaxStack` | int | `30` | Hard cap when `scaleStack` is on, including shoreline stacks |
 | `partOf` | decoration part | `NONE` | Which pass places this decorator. See the table below |
 | `forcePlace` | boolean | `false` | Ignores the sturdy-surface test, the slope clip, the whitelist, and the blacklist |
 | `forceBlock` | block entry | `null` | Replaces the surface block before placing. Implies `forcePlace` |

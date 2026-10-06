@@ -48,5 +48,8 @@ Adapt adds 23 skills. Actions award skill XP. Levels award knowledge, which buys
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/Adapt*](https://github.com/VolmitSoftware/Adapt)
+- [Spigot *spigotmc.org*](https://www.spigotmc.org/resources/adapt-leveling-skills-and-abilities.103790/)
+- [BuiltByBit *builtbybit.com*](https://builtbybit.com/resources/adapt-leveling-skills-and-abilities.56260/)
+- [MCModels *mcmodels.net*](https://mcmodels.net/products/17486/adapt-leveling-skills-and-abilities)
 - [Translations *gitlocalize.com/repo/8085*](https://gitlocalize.com/repo/8085)
 {.links-list}

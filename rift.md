@@ -37,4 +37,5 @@ Rift creates, imports, loads, unloads, quarantines, restores, and teleports betw
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/Rift*](https://github.com/VolmitSoftware/Rift)
+- [Spigot *spigotmc.org*](https://www.spigotmc.org/resources/rift-world-manager.99359/)
 {.links-list}

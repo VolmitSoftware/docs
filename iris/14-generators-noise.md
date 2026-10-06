@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-10-02T16:35:00.000Z
+date: 2026-10-06T20:56:47.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -218,6 +218,8 @@ Available as the `style` snippet, and accepted anywhere Iris configures noise: g
 | `cacheSize` | int 0..8192 | `0` | Above 0, enables a saved noise cache under the pack `.cache` folder, reusable after restart with unchanged generation inputs. Useful for repeatedly sampled expressions or heavily fractured styles; leave at `0` for simple styles. |
 
 Source priority: if `expression` is set, Iris loads it and uses it. If the expression fails to load, the style falls straight back to `NoiseStyle`; `imageMap` is not tried. `imageMap` is consulted only when `expression` is unset. A missing or invalid image-map resource is a blocking pack error before world generation.
+
+An expression or image map remains the active source when `style` is omitted or set to `FLAT`. Styled ranges and shaped generators sample that source at the requested coordinates; equal range endpoints still produce their fixed value.
 
 ### Scale, detail, and geometry
 

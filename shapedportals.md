@@ -65,7 +65,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 ## Support
 
-- [Download *spigotmc.org*](https://www.spigotmc.org/resources/shaped-portals.95595/)
+- [Spigot *spigotmc.org*](https://www.spigotmc.org/resources/shaped-portals.95595/)
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [Source *github.com/VolmitSoftware/ShapedPortals*](https://github.com/VolmitSoftware/ShapedPortals)
 {.links-list}

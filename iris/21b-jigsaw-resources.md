@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-06T22:44:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -207,6 +207,8 @@ Place an Iris jigsaw by adding an `IrisStructurePlacement` object to `structures
 `placementId` is the stable authored identity used for distribution. Set it when multiple placements share the same structure, or when you want field and list reordering to leave existing starts where they are. A placement listing several `structures` keys chooses one uniformly. Pool weights control pieces inside the chosen graph, not world-level start frequency.
 
 Only newly generated chunks use a changed placement. `/iris structure place` and the Jigsaw Studio preview place assemblies directly without the natural placement settings.
+
+For editable Iris structures, an optional placement `stilt` supplies foundation blocks beneath the lowest supporting block in each occupied column. Set `maxDepth` to limit the downward search and `palette` to choose the support material; `supportNonOccluding: true` also permits solid partial blocks to seed supports. Surface supports stop at carved-space boundaries instead of extending through caves.
 
 ### Cave anchors
 

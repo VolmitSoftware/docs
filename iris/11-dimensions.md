@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-04T12:39:17.121Z
+date: 2026-10-06T20:00:37.422Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -124,7 +124,8 @@ Minecraft imposes hard rules on the generated dimension type. Iris fails when th
 
 - `dimensionHeight.max - dimensionHeight.min` must be a multiple of 16, and between 16 and 4064.
 - `dimensionHeight.min` must be a multiple of 16, and between -2032 and 2031.
-- `logicalHeight` must be between 0 and the total height.
+- `logicalHeight` must be a whole number between 0 and the total height.
+- An explicit `dimensionHeight` must be a range object or a resolvable range snippet; `null`, missing snippets, and malformed or non-finite endpoints are invalid.
 
 `/iris pack validate` reports all three as blocking errors before world creation or Studio open.
 
@@ -511,7 +512,7 @@ Anchor values for editable placements: `LEGACY`, `SURFACE`, `HEIGHT_BAND`, `CAVE
 
 ## Upper dimension (inverted ceiling terrain)
 
-Set `upperDimension` to another dimension load key (or this dimension own key). Iris generates that dimension terrain upside-down against the world ceiling, nether-style. `"none"` or an empty string disables it. The bundled Overworld pack uses `""`.
+Set `upperDimension` to an existing dimension load key (or this dimension own key). Missing referenced dimensions block pack validation. Iris generates that dimension terrain upside-down against the world ceiling, nether-style. `"none"` or an empty string disables it. The bundled Overworld pack uses `""`.
 
 ```json
 {

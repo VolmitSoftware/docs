@@ -90,4 +90,6 @@ On first start, Gloss can import menus, images, panels, previews, and settings f
 
 - [Discord *Support and development chat*](https://volmitsoftware.com/discord)
 - [GitHub *Source and issue tracker*](https://github.com/VolmitSoftware/Gloss)
+- [BuiltByBit *builtbybit.com*](https://builtbybit.com/resources/gloss-your-servers-holographic-maest.123139/)
+- [MCModels *mcmodels.net*](https://mcmodels.net/products/17489/gloss-your-servers-holographic-maestro)
 {.links-list}

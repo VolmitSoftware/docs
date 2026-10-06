@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-09-27T16:24:29.137Z
+date: 2026-10-06T20:31:03.698Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,6 +29,10 @@ Keep these three copies separate:
 
 Validate the authoring pack before creating or updating a world. Editing that pack does not update an existing production world automatically.
 
+## Remove an authoring pack
+
+There is no whole-pack removal command. Close Studio and wait for downloads to finish, then remove `packs/<key>/` from the platform's data folder. Existing production worlds keep their saved generation snapshots; removing the authoring copy prevents new worlds and Studio sessions from using it. To delete a world and its terrain, use the separate [world removal commands](/iris/06-worlds-lifecycle#load-unload-and-remove).
+
 ## Walkthrough: take a pack from workspace to release
 
 Run this after the pack works in Studio and before you create or update a production world.
@@ -47,7 +51,7 @@ Run this after the pack works in Studio and before you create or update a produc
 /iris pack status <key>
 ```
 
-`validate` re-runs every check and republishes the result. `status` prints the last published result, which can be stale after an edit. Continue only when the pack reports loadable with zero blocking errors. Warnings are informational, but read them — unresolved content keys become blocking the moment strict content mode is on. If the console names content unavailable on this Minecraft version, run `/iris pack compat` and decide whether to accept the loss or declare a fallback before you release.
+`validate` re-runs every check and publishes the result only while the pack contents and validation context still match. Download replacement, cleanup, and restore invalidate earlier validation; edits that preserve file timestamps still require current validation. `status` prints the last published result, which can be stale after an edit. Continue only when the pack reports loadable with zero blocking errors. Warnings are informational, but read them — unresolved content keys become blocking the moment strict content mode is on. If the console names content unavailable on this Minecraft version, run `/iris pack compat` and decide whether to accept the loss or declare a fallback before you release.
 
 **3. Preview cleanup without writing anything.**
 
@@ -127,7 +131,7 @@ Close Studio before replacing its authoring pack.
 /iris download link=https://packs.example.test/custom.zip overwrite=true
 ```
 
-Run one command at a time and wait for completion — the download slot never queues a second request. Iris validates the new pack before replacement and prints the retained backup path; a failed publication restores the previous directory. Replacement uses the complete downloaded pack, so **local edits survive only in the backup.**
+Run one command at a time and wait for completion — the download slot never queues a second request. Iris requires a complete ZIP archive, validates the new pack before replacement, and prints the retained backup path; a failed publication restores the previous directory. Replacement uses the complete downloaded pack, so **local edits survive only in the backup.**
 
 Restart after downloading an update, then run `/iris pack validate <pack>`. Existing production worlds keep their current pack until you run the world-update command below.
 
@@ -143,6 +147,10 @@ Startup checks installed `overworld` and `underworld` packs against their latest
 ```
 
 These version numbers are examples. The list shows authoring pack versions, which can differ from the packs active in existing worlds. The check never downloads anything, and shows `(update check unavailable)` beside the installed version when it cannot reach GitHub. Custom packs have no release check.
+
+Fabric, Forge, and NeoForge also send outdated-release notices to operators and the singleplayer owner, including when cheats are disabled. The notice gives the installed and latest versions, the actual `config/irisworldgen/packs/<key>/` path, and `/iris download pack=<key> overwrite=true`. Review custom edits before replacing a pack. Successful downloads refresh the notice; existing worlds retain their saved production pack.
+
+Modded checks run when a local or dedicated server starts, not when a client merely launches or joins a remote server. Missing or unrecognized version metadata is shown as unknown rather than claimed to be outdated. Packs and settings are never copied between remote clients and servers.
 
 ### Replacing the vanilla dimensions
 

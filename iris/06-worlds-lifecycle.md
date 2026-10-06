@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-09-27T18:54:47.925Z
+date: 2026-10-06T20:00:37.422Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,7 +30,7 @@ Install and validate the pack, then choose a world name and seed:
 
 Names are lowercased and spaces become underscores. `iris` and `benchmark` are reserved. Creation requires an unused world name.
 
-A player who creates a world is teleported into it. Use `/iris tp <world>` to enter a loaded world. Complete any restart Iris requests before using the world.
+A player who creates a world is teleported into it. Use `/iris tp <world>` to enter a loaded world. A cancelled or timed-out entry does not trigger a delayed teleport. Complete any restart Iris requests before using the world.
 
 You can preview a pack before creating a permanent world:
 
@@ -52,6 +52,8 @@ Install the pack and restart before creating its dimension. For custom packs wit
 /iris tp irisworldgen:myworld
 ```
 
+Teleports require dry, non-hazardous footing and enough unobstructed space for the player’s full standing body, including across chunk boundaries. Reconnecting does not inherit an earlier session’s pending teleport.
+
 `enable` also accepts the alias `create`. The seed is optional and defaults to `1337`; the command group also accepts `/iris w`.
 
 ## Load, unload, and remove
@@ -68,7 +70,7 @@ Install the pack and restart before creating its dimension. For custom packs wit
 | `/iris remove <name> delete=false` | Unload and unregister the world; keep its files |
 | `/iris remove <name>` | Unregister the world and delete its files |
 
-Loading requires the world's saved pack and registration data. Restore complete world backups, including these files.
+Loading requires the world's saved pack and registration data. Restore complete world backups, including these files. Wait for an unload to finish before starting another operation on that world. If creation cannot close its partial generator, Iris retains the files for startup cleanup instead of deleting storage still in use.
 
 > `/iris remove` deletes world data by default. Back up first, and wait for unload or removal to finish before moving or deleting any world directory. If Iris requests a restart, complete it before retrying.
 {.is-warning}

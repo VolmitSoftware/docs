@@ -2,7 +2,7 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-06T18:48:43.443Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,7 +41,7 @@ Note `hills/rolling`. Subfolders are yours to organize however you like. They be
 
 ## Resource keys
 
-**A key is the file's path under its type folder, with the extension removed.**
+**A key is the file's path under its type folder, with only the final extension removed.** Dots in directory names and earlier parts of the filename remain in the key. For example, `objects/trees.v2/oak.iob.iob` uses `trees.v2/oak.iob`.
 
 | File on disk | Type folder | Key you write in JSON |
 |---|---|---|

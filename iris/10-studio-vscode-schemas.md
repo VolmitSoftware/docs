@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-06T22:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,7 +20,7 @@ Prerequisites: a writable packs directory, operator access on Bukkit or gamemast
 1. **Create a project.** `/iris studio create name=tutorial`
    Writes `packs/tutorial/` with a dimension, region, biome, generator, and a `tutorial.code-workspace`. Follow any restart prompt before opening the pack.
 2. **Open it as a world.** `/iris studio open tutorial seed=1337`
-   You enter the transient world in spectator mode at its fixed generator anchor, centered on `0,0` near Y 96. A fixed seed matters because you will be comparing the same coordinates across reloads.
+   You enter the transient world in spectator mode at its fixed generator anchor, centered on `0,0` near Y 96. A fixed seed matters because you will be comparing the same coordinates across reloads. Pack edits saved during opening are picked up after entry completes.
 3. **Open the editor workspace.** `/iris studio vscode dimension=tutorial`
    Refreshes `<pack>/<pack>.code-workspace`, rewrites `.iris/schema/*`, and opens that workspace. Generation still completes when `studio.openVSCode` is false or the server is headless; only the desktop launch is skipped. Copy the pack folder to your machine and open the workspace file yourself.
    Type `"` inside an object in `biomes/starter.json` for field suggestions. Hover a field for its description, type, and default.
@@ -41,11 +41,11 @@ Same loop, positional arguments, and the modded studio create always copies a te
 5. Wait for the hotload result, then enter newly generated terrain and check it with `/iris what biome`.
 6. `/iris pack validate tutorial`, then `/iris studio close`.
 
-Validate your changes and inspect new chunks before using the pack in a production world.
+Validate your changes and inspect new chunks before using the pack in a production world. On modded servers, wait for shutdown to finish before restarting: Studio stops accepting file-watch work and waits for active hotloads to finish. Studio remains unavailable if an active hotload cannot finish stopping.
 
 ### Opening requirements
 
-Complete any requested server restart and resolve blocking pack-validation errors before opening Studio. Bukkit ordinary Studio accepts `force=true` when only a registry restart is pending; it does not bypass pack validation or native-integration failures.
+Complete any requested server restart and resolve blocking pack-validation errors before opening Studio. On Fabric, Forge, and NeoForge, `/iris pack validate <pack>` checks the same pack folder used for world creation; revalidate after changing pack contents. Bukkit ordinary Studio accepts `force=true` when only a registry restart is pending; it does not bypass pack validation or native-integration failures.
 
 Changes to height or dimension type require closing and reopening Studio, and may require a restart. See [Hotload rules](/iris/10-studio-vscode-schemas#hotload-rules). Studio worlds are temporary: reopening after a restart creates a new world from the saved pack.
 

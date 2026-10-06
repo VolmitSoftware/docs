@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-04T22:59:50.523Z
+date: 2026-10-06T20:00:37.423Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -280,7 +280,7 @@ The stacks:
 
 | Field | What it fills |
 |-------|---------------|
-| `layers` | The column downward from the terrain surface. First entry is the top. Anything below the stack becomes the dimension rock palette (or an ore, if an ore generator claims that block). Required. The default is a single grass layer. |
+| `layers` | The column downward from the terrain surface. First entry is the top. With dimension `bedrock: false`, the stack can reach the lowest buildable block, including in stacked or inverted upper terrain. Anything below the stack becomes the dimension rock palette (or an ore, if an ore generator claims that block). Required. The default is a single grass layer. |
 | `seaLayers` | The water column, indexed **downward from the water surface**, not upward from the sea floor. Index 0 sits at `fluidHeight`. Anything the stack does not cover becomes the dimension fluid. This is how you get a layer of ice or a band of murky water on top of an ocean. |
 | `caveCeilingLayers` | Carved ceiling material, upward from the first solid block above the highest carved cell. The default is empty, so an omitted field leaves the existing ceiling material unchanged. |
 | `slab` | Palette for the half-slabs the post processor adds on single-block steps. Default is an empty palette, meaning no slabs. |
@@ -289,7 +289,7 @@ The stacks:
 | `lockLayers` | When true, the stack repeats as horizontal bands keyed to world height instead of following the surface, giving mesa striping. |
 | `lockLayersMax` | Depth cap, in blocks, for locked layers. Default `7`. |
 
-`caveCeilingLayers` uses its own thickness generators, so its entry count is independent of `layers`, and it does not apply `slopeCondition`. The surface wall pass skips shore biomes, preserving their beach material beside coastal drops.
+Layer lists may be omitted or empty, but explicit `null` lists and null or non-object/non-snippet entries are invalid. `caveCeilingLayers` uses its own thickness generators, so its entry count is independent of `layers`, and it does not apply `slopeCondition`. The surface wall pass skips shore biomes, preserving their beach material beside coastal drops.
 
 Slabs and walls only appear when the dimension has `postProcessing`, `postProcessingSlabs` and `postProcessingWalls` enabled. See [11 - Dimensions](/iris/11-dimensions).
 
@@ -395,7 +395,7 @@ Declaring a `blockFallbacks` entry on the dimension turns a missing block into a
 
 Island selection, shape, and altitude use the current world's seed and parent biome. Loading another world or sampling another parent first does not change these fields for an otherwise identical world.
 
-`floatingChildBiomes` builds islands in the air above columns owned by this biome. Each entry names a target biome whose generators, layers, derivative, decorators and objects supply the island look; the entry's own fields control size, shape, altitude, rarity and internal water. With `mergeFloatingChildBiomes: false` (the default), `pickerStyle` and `rarity` choose one entry per column. With it true, every entry samples independently and islands may intersect.
+`floatingChildBiomes` builds islands in the air above columns owned by this biome. Each entry names a target biome whose generators, layers, derivative, decorators and objects supply the island look; the entry's own fields control size, shape, altitude, rarity and internal water. With `mergeFloatingChildBiomes: false` (the default), `pickerStyle` and `rarity` choose one entry per column. With it true, every entry samples independently and islands may intersect. With `bottomPaletteMode: "DEPTH"`, a target biome with `lockLayers: true` aligns its bands by source height, including across islands of different thickness and internal air gaps. `MIRROR_TOP` and `CUSTOM` retain their top/underside palette selection.
 
 A floating target does not need to be listed in a region. Iris registers every biome generation can reach — through region roots, carving biomes, `children`, carving replacements, and floating targets — for spawns, placements, structures and lookups.
 

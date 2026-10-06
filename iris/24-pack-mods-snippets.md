@@ -2,7 +2,7 @@
 title: "Snippets"
 description: "Reuse palettes, decorators, noise styles, and other JSON definitions across an Iris pack."
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-06T18:48:43.443Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -70,7 +70,7 @@ Use `snippet/<type>/<name>` without `.json`, matching the field's type in the ta
 
 References must begin with `snippet/`. Use the correct type: `snippet/style/bedrock` in a decorator field looks for `snippet/decorator/style/bedrock.json`, not the style file. Missing or incorrect references leave the field without a value.
 
-Subfolders are allowed, using `/` in the reference. A snippet can contain further snippet references in its nested fields. Studio completions list the available files for each supported field.
+Subfolders are allowed, using `/` in the reference. Dots remain part of the key: `snippet/style/hills.v2/soft.json` is referenced as `snippet/style/hills.v2/soft`. A snippet can contain further snippet references in its nested fields. Studio completions list the available files for each supported field.
 
 ### Disk layout
 
