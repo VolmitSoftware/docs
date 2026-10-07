@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-10-06T20:31:03.698Z
+date: 2026-10-07T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -133,7 +133,7 @@ Close Studio before replacing its authoring pack.
 
 Run one command at a time and wait for completion — the download slot never queues a second request. Iris requires a complete ZIP archive, validates the new pack before replacement, and prints the retained backup path; a failed publication restores the previous directory. Replacement uses the complete downloaded pack, so **local edits survive only in the backup.**
 
-Restart after downloading an update, then run `/iris pack validate <pack>`. Existing production worlds keep their current pack until you run the world-update command below.
+After the download completes, validate with `/iris pack validate pack=<key>` on Bukkit or `/iris pack validate <key>` on modded. Existing production worlds keep their current pack until you stage a world update and restart as described below.
 
 ### Startup update notices
 
@@ -148,7 +148,7 @@ Startup checks installed `overworld` and `underworld` packs against their latest
 
 These version numbers are examples. The list shows authoring pack versions, which can differ from the packs active in existing worlds. The check never downloads anything, and shows `(update check unavailable)` beside the installed version when it cannot reach GitHub. Custom packs have no release check.
 
-Fabric, Forge, and NeoForge also send outdated-release notices to operators and the singleplayer owner, including when cheats are disabled. The notice gives the installed and latest versions, the actual `config/irisworldgen/packs/<key>/` path, and `/iris download pack=<key> overwrite=true`. Review custom edits before replacing a pack. Successful downloads refresh the notice; existing worlds retain their saved production pack.
+Fabric, Forge, and NeoForge also send outdated-release notices to operators and the singleplayer owner, including when cheats are disabled. The notice gives the installed and latest versions, the actual `config/irisworldgen/packs/<key>/` path, and `/iris download pack=<key> overwrite=true`. Review custom edits before replacing a pack. Successful downloads refresh the notice; existing worlds retain their saved production pack. To update one, back up the complete world, run `/iris world update <dimension> <pack>` on modded, and restart the server after staging succeeds.
 
 Modded checks run when a local or dedicated server starts, not when a client merely launches or joins a remote server. Missing or unrecognized version metadata is shown as unknown rather than claimed to be outdated. Packs and settings are never copied between remote clients and servers.
 

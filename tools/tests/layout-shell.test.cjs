@@ -298,6 +298,15 @@ test('phone search stacks and the section menu stays in flow', () => {
   assert.match(css, /\.nav-header \.deep-purple \{[^}]*background-color: var\(--volmit-paper\) !important;/);
 });
 
+test('admin edit dial is a flat control', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.css'), 'utf8');
+  assert.match(css, /\.v-speed-dial \.v-btn \{[^}]*border-radius: var\(--volmit-radius-control\) !important;/);
+  assert.match(css, /\.v-speed-dial \.v-btn \{[^}]*box-shadow: none !important;/);
+  assert.match(css, /\.v-speed-dial \.v-btn:has\(\.mdi-pencil\) \{[^}]*background-image:/);
+  assert.match(css, /\.v-speed-dial \.v-btn \.v-icon \{[^}]*opacity: 0;/);
+  assert.match(css, /:has\(\.v-speed-dial\) \.v-btn\[aria-label="Return to top"\] \{[^}]*right: 76px !important;/);
+});
+
 test('a real page description stays visible', async () => {
   const { window, close } = await boot(
     '/adapt/11-skill-agility',

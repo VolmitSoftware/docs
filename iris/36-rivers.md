@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Surface rivers, shaped valleys, underground rivers, grottos, deep fluids, and standing pools: the physical configuration"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-07T12:15:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -122,7 +122,7 @@ The surface section carries every field so the three sections share one shape, b
 
 ### `surface.channel`
 
-The channel is the wet part of the river. Its cross-section is a broad bowl: nearly level across the middle of the width, then curving up into the banks.
+The channel is the wet part of the river. Its cross-section is a broad bowl: nearly level across the middle of the width, then curving up into the banks. Local and regional rivers widen and narrow gradually within the configured width range, combining the authored style with coherent variation along the course. Setting equal width endpoints disables this additional variation; biome multipliers, source widening, and mouth flaring still apply.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
@@ -132,9 +132,9 @@ The channel is the wet part of the river. Its cross-section is a broad bowl: nea
 | `maximumIncision` | `10` | Maximum channel cut below natural terrain, `1..32`; also limits bank fill together with `banks.excavation.maximumDepth` |
 | `roughness` | `0.25` | Strength of the coherent wobble applied to the channel outline, `0..1`; `0` gives a perfectly smooth outline |
 | `roughnessWavelength` | `16` | Wavelength of that wobble in blocks, `4..64` |
-| `springWidthRatio` | `2.5` | Width of the spring pool at the headwater relative to the channel width, `1..4`; `1` starts the river at its normal width |
-| `springLength` | `24` | Blocks over which the pool narrows back to the channel, `4..96` |
-| `smoothingRadius` | `16` | Stations along the course the sampled width and depth are averaged over, `0..64`, so the channel changes size gradually; `0` follows the sampled values exactly at every station |
+| `springWidthRatio` | `2.5` | Peak spring-pool width relative to the channel width, reached near the first quarter of `springLength`, `1..4`; `1` keeps the source at normal channel width |
+| `springLength` | `24` | Blocks over which the source opens into its spring pool and narrows back to the channel, `4..96` |
+| `smoothingRadius` | `16` | Stations along the course the varied width and sampled depth are averaged over, `0..64`; `0` retains their unsmoothed values at each station |
 | `outlineMinimumRatio` | `0.6` | Narrowest the roughened waterline may pinch, as a fraction of the channel half-width, `0.2..1`; `1` stops the outline from ever narrowing below the nominal width |
 | `outlineMaximumRatio` | `1.4` | Widest the roughened waterline may bulge, as a fraction of the channel half-width, `1..3`; `1` stops the outline from ever widening beyond the nominal width |
 | `springExtraDepth` | `1` | Extra bed depth in blocks at the headwater spring, fading to nothing over `springLength`, `0..8`; `0` keeps the spring pool as deep as the channel |
@@ -186,7 +186,7 @@ To turn the valley off for one area without touching the rest of the dimension, 
 
 ### `surface.ponds`
 
-Every surface river rises from a round pond and, when it ends inland, drains into one. A pond is a bowl holding the river's water level at that end, with the same shore band and eroded rim as the channel. Its radius is chosen per river within the configured range and shrinks where the ground around the rim falls below the water; where even the smallest radius does not fit, the river starts or ends as a channel. A river that reaches the ocean gets no terminal pond.
+Surface rivers can rise from a source pond and end in an inland pond. These bowls follow the direction of the channel, with elongated outlines and an offset basin that joins the river. They hold the river's water level and use the same shore band and eroded rim as the channel. The radius is chosen per river within the configured range and sets the pond's length scale; its width and rough shoreline vary. The pond shrinks where surrounding ground cannot hold the water. Where even the smallest radius does not fit, the river starts or ends as a channel. A river that reaches the ocean gets no terminal pond.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
