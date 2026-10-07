@@ -2,7 +2,7 @@
 title: "Tablist"
 description: "Configure the in-game player list"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-07T16:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -14,7 +14,7 @@ Player-list text lives in `plugins/Gloss/tablist.json` and reloads automatically
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "revision": 1,
   "headerFooter": {
     "enabled": true,
@@ -57,7 +57,7 @@ Player-list text lives in `plugins/Gloss/tablist.json` and reloads automatically
 
 | Key | Default | Notes |
 |---|---|---|
-| `schemaVersion` | required | Must be `2`. Any other version is silently ignored |
+| `schemaVersion` | required | Must be `3`. Any other version is silently ignored |
 | `revision` | required | `1` to `9007199254740991` |
 | `headerFooter.enabled` | `true` | When false, Gloss never touches the header or footer |
 | `headerFooter.presentation` | required | Complete base `header` and `footer` pair |
@@ -96,30 +96,37 @@ A blank result restores the vanilla list name.
 The expression sees the listed player as `subject` and the observer as `viewer`. Weights are
 rounded to integers; equal weights in a layout sort by account name, case-insensitively.
 
-A fixed layout uses `layout.enabled`, `columns` (1–4), and `rows` (1–20). Its optional `slots`
-array defines cells with zero-based `column`, `row`, `text`, `skin`, and `ping`. `skin` names an
-online player whose profile supplies the skin; an omitted skin uses the default skin. `ping`
-clamps to -1 through 10000 and defaults to 0. Cells fill down each column before the next column.
+Fixed layouts require Java 1.21.2 or later; older clients retain their ordinary tablist. A fixed layout uses `layout.enabled` and `entries` (1–80). Minecraft derives its columns as `ceil(entries / 20)` and rows as `ceil(entries / columns)`. Cells fill down each column before the next column. A partially filled final column has no cells beyond the entry count. Fixed slots and roster sections must fit those cells and cannot overlap.
 
 ```json
 "layout": {
   "enabled": true,
-  "columns": 2,
-  "rows": 10,
-  "slots": [{"column": 0, "row": 0, "text": "&dOnline players"}],
-  "players": {"column": 1, "columns": 1, "rows": 10, "filter": "true", "overflow": "count"}
+  "entries": 40,
+  "slots": [{"column": 0, "row": 0, "text": "&dOnline players", "hat": true}],
+  "sections": [{
+    "id": "members", "column": 1, "row": 1, "columns": 1, "rows": 19,
+    "filter": "true", "overflow": "count",
+    "sort": [
+      {"expression": "subject.op ? 1 : 0", "type": "number", "direction": "descending"},
+      {"expression": "subject.name", "type": "text", "direction": "ascending"}
+    ]
+  }]
 }
 ```
 
-The `players` rectangle starts at row 0. Its filter uses `viewer` and `subject` conditions.
-Player cells apply the selected `listNames` format and variants, configured sort order, current
-player skin, and ping. Sorting happens before truncation. With `overflow: "count"`, the final
-cell uses `players.overflowFormat` when players exceed the rectangle's capacity. Its default
-`+{count}` inserts the number of hidden players; colors, placeholders, and expressions also
-work. `"hide"` omits excess players.
+Each `slots` entry has zero-based `column` and `row`, `text`, optional `skin`, optional `ping`, and `hat` (default `true`). Fixed text resolves expressions and placeholders for the viewer. Ping clamps to -1 through 10000 and defaults to 0.
 
-`layout.show` defaults to `"!viewer.bedrock"`. While a layout is visible, its cells replace the
-ordinary player entries; disabling it restores the ordinary list.
+Each roster section has a unique `id`, zero-based starting `column` and `row`, `columns` (1–4), `rows` (1–20), and a `filter` expression (default `true`). Conditions see the observer as `viewer` and the listed player as `subject`. Sections select independently, so a player may appear in several sections. `includeNpcs` defaults to `false` and applies to online Bukkit players carrying NPC metadata. Players hidden from the viewer remain hidden. Tab entries created by other plugins remain under those plugins’ control and can affect the client’s final geometry.
+
+The optional section `format` overrides the selected `listNames` presentation and supports `$player`, `$group`, placeholders, and expressions. Without it, list-name variants apply per viewer and listed player. Each section can override `skin` and `hat`; otherwise rows use captured player skins and show the hat layer.
+
+Section `sort` accepts up to 16 keys. Each key has `expression`, `type` (`number` or `text`, default `text`), and `direction` (`ascending` or `descending`, default `ascending`). Keys are evaluated in array order. Text comparison is case-sensitive. Equal keys fall back to account name, case-insensitively, then UUID. An empty sort list uses the document’s numeric `sort.weight` followed by the same stable fallback.
+
+Sorting happens before truncation. With `overflow: "count"`, the final cell uses `overflowFormat` when players exceed capacity. The default `+{count}` inserts the number omitted from that section; colors, placeholders, and expressions also work. `"hide"` omits excess players. Subject values are captured on the subject’s owning region; a missing sample retains the previous layout until it is available.
+
+`skins` maps names to `{ "value": "<base64 texture property>", "signature": "<optional signature>" }`. `skin` first resolves a named definition, then an online account’s captured texture. No profile lookup or network download is performed. Values and signatures each accept up to 16384 characters. An omitted or unresolved skin uses the client’s default skin. Hat visibility requires Java 1.21.4 or later; older clients keep their native appearance.
+
+`layout.variants` selects complete layouts with `{ "id", "priority", "when", "presentation" }`. Presentations contain `entries`, `slots`, `sections`, and `skins`. Highest priority wins, then identifier; the base layout is the fallback. `layout.show` defaults to `"!viewer.bedrock"`. While a layout is visible, Gloss unlists ordinary player entries and restores only entries it still owns when the layout closes.
 
 ## Header and footer
 
@@ -145,6 +152,7 @@ Other plugins can override both per player through `GlossAPI.setTab(player, head
 |---|---|---|
 | `[features] tablist` | `true` | Enables header/footer and list-name management |
 | `[tablist] updateIntervalTicks` | `40` | 1..400 |
+| `[tablist] snapshotReadLimit` | `4096` | 16..65536 demanded values per sampled entity |
 
 Content refreshes every `updateIntervalTicks`. A list-name format containing a clock expression or a named animation updates every tick instead. Joins, respawns, world changes and document edits refresh that player immediately.
 
@@ -158,9 +166,6 @@ The web editor can edit, export and live-sync the tablist document. Open it alon
 `/gloss web edit tablist tablist`, or include it in `/gloss web workspace`. `/gloss tablist reset`
 restores the default copy.
 
-The layout inspector edits grid dimensions, the player rectangle, filtering, and overflow mode
-and text. Its preview applies the sampled players’ list-name formats and sort weights before
-placing the overflow count. Static slot definitions survive form edits and can be edited in Code view.
+The layout inspector edits the entry count, fixed cells, roster sections, named textures, and complete conditional presentations. Each section exposes its origin, dimensions, filter, ordered sort keys, format, overflow policy, NPC inclusion, skin, and hat visibility. The preview selects conditional presentations and applies sampled viewer and subject expressions, section filters, sorting, and overflow counts. Texture and hat appearance require an in-game client; the editor preserves their authored values through edits, export, and live sync.
 
-Gloss ignores schema-1 tablist files. Rewrite them as schema 2, or reset to the bundled
-document. See [Data Files & Hot Reload](/gloss/03-data-files) and [Server List MOTD](/gloss/06b-server-list-motd).
+Tablist documents use schema 3. Use the import preview to convert earlier formats; layouts needing extra blank cells to preserve their authored columns are reported as approximate conversions. See [Data Files & Hot Reload](/gloss/03-data-files) and [Server List MOTD](/gloss/06b-server-list-motd).

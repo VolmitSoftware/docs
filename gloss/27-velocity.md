@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-10-02T23:50:00.000Z
+date: 2026-10-07T00:00:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -22,14 +22,14 @@ Gloss on Velocity provides network tablists, scoreboard sidebars, server-list MO
 
 Reload with `/gloss reload` (`gloss.admin`). An XZ jar extracts `plugins/Gloss/cache/runtime/`, separate from the lowercase `plugins/gloss/` settings folder. That cache directory must be writable. PacketEvents is bundled in Gloss and does not require a separate plugin or startup download.
 
-The proxy edition covers the server-list MOTD and its pause-menu links, network tablists, conditional scoreboard sidebars, action bar, boss bar, and title surfaces, and join, switch, and leave messages. The shared emoji and named-animation catalogs render inside all of them. Fixed virtual tablist grids are not part of the proxy edition. Holograms, menus, chat effects, Vault groups, backend placeholders, and the web editor require the server edition.
+The proxy edition covers the server-list MOTD and its pause-menu links, network tablists, conditional scoreboard sidebars, action bar, boss bar, and title surfaces, and join, switch, and leave messages. The shared emoji and named-animation catalogs render inside all of them. Fixed virtual tablist grids use the same schema as the server edition. Holograms, menus, chat effects, Vault groups, backend placeholders, and the web editor require the server edition.
 
 ## Backend feature ownership
 
-Install the same jar on your backend servers for holograms, menus, and the other server features.
+Install the same Gloss release on the proxy and backend servers. Update both sides together so their feature-ownership protocol supports the same claims.
 
 **Proxy settings win.** A feature enabled on the proxy turns off on the backend: tablists,
-scoreboards, and surfaces switch off per player; MOTD and connection messages switch off for the
+scoreboards, and surfaces switch off per player; MOTD, pause-menu links, and connection messages switch off independently for the
 whole server. Everything else on the backend keeps running, and Gloss never rewrites the backend
 configuration. The backend console reports what the proxy has taken over and what it has handed back.
 
@@ -45,7 +45,8 @@ keep the clocks in sync. Never share that file.
 |---|---|---|
 | `proxy.json` | 1 | Feature switches, update interval, network tablist scope |
 | `motd.json` | 1 | Server-list messages, ping fields, pause-menu links, and the default icon |
-| `tablist.json` | 2 | Headers, footers, player names, and sorting |
+| `tablist.json` | 3 | Headers, footers, player names, sorting, and conditional layouts |
+| `presets.json` | 1 | Shared defaults and named presets for proxy documents |
 | `boards/*.json` | 2 | Conditional scoreboard sidebars |
 | `surfaces/*.json` | 1 | Conditional action bar, boss bar, and title surfaces |
 | `connections.json` | 1 | Network join, switch, and leave messages |
@@ -63,20 +64,21 @@ Default `proxy.json`:
   "motd": { "enabled": true },
   "tablist": { "enabled": true },
   "scoreboards": { "enabled": true },
-  "surfaces": { "enabled": true },
+  "surfaces": { "enabled": true, "maxBossBarsPerViewer": 3 },
   "connections": { "enabled": true },
   "emoji": { "enabled": true },
   "animations": { "enabled": true },
   "refreshMillis": 500,
-  "networkTablist": true
+  "networkTablist": true,
+  "networkVisibility": "true"
 }
 ```
 
-Every switch defaults to on. `connections` gates the join, switch, and leave messages. `refreshMillis` controls tablist, scoreboard, and surface updates. Gloss clamps it to 50 to 60000 milliseconds. MOTD rendering occurs on each server-list ping.
+Every switch defaults to on. `connections` gates the join, switch, and leave messages. `refreshMillis` controls tablist, scoreboard, surface, and MOTD snapshot updates. Gloss clamps it to 50 to 60000 milliseconds. Each server-list ping selects an already prepared MOTD response.
 
 Tablist sorting uses native list order and requires Minecraft clients 1.21.2 or newer.
 
-Set `networkTablist` to `true` to include connected players across the proxy. With `false`, Gloss formats existing entries for players on the viewer's backend.
+Set `networkTablist` to `true` to include connected players across the proxy. With `false`, Gloss formats existing entries for players on the viewer's backend. `networkVisibility` is a proxy condition evaluated for every viewer/subject pair before adding remote entries or including players in a fixed grid; its default is `"true"`. Ordinary local entries remain controlled by the backend: use the backend vanish integration to hide those rows. For example, `"subject.server == viewer.server || hasPermission('viewer', 'network.roster')"` restricts remote listings to permitted viewers. A local entry absent from the backend list is never recreated, and entries removed or unlisted by another plugin stay hidden.
 
 ## Text and conditions
 
@@ -94,7 +96,7 @@ Text supports legacy `&` colors, `§` colors, `[RRGGBB]` colors, tokens, and `{{
 
 | Expression name | Value |
 |---|---|
-| `viewer.*`, `subject.*`, `player.*` | `present`, `name`, `uuid`, `ping`, `server`. `player` means the subject |
+| `viewer.*`, `subject.*`, `player.*` | `present`, `name`, `uuid`, `ping`, `server`, `bedrock`, `npc`, `visible`. `player` means the subject |
 | `server.online`, `server.maxPlayers` | Proxy player counts |
 | `time.ms`, `time.seconds`, `time.ticks` | Server clock |
 | `connection.from`, `connection.to` | Same backend names as `$from` and `$to` |
@@ -109,11 +111,11 @@ PlaceholderAPI, Vault groups, health, world, and economy values are unavailable 
 
 ## Tablist
 
-Use schema 2 with `show`, `headerFooter`, `listNames`, and `sort`:
+Use schema 3 with `show`, `headerFooter`, `listNames`, `sort`, and optional `layout`:
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "revision": 1,
   "show": true,
   "headerFooter": {
@@ -138,6 +140,18 @@ Use schema 2 with `show`, `headerFooter`, `listNames`, and `sort`:
 Each section can select a full `presentation` from `variants`. Each variant has `priority`, `when`, and `presentation`. The first matching variant in descending priority order wins. Without a match, Gloss uses the base presentation.
 
 Enable sorting to evaluate `weight` as an integer list order for each subject. Client support determines whether the client applies this order.
+
+Fixed layouts require Java 1.21.2 or later; older clients retain their ordinary list. Layouts support the [server tablist fields](/gloss/06-tablist): 1–80 count-derived entries, viewer-aware fixed cells, conditional complete layouts, separate roster sections, numeric/text sort keys, overflow counts, named texture values, and hats on supporting clients. Proxy expressions must use the names listed above. Unknown backend variables reject the document. Player rows use captured proxy profiles and latency; `format` uses proxy tokens, so `$group` and PlaceholderAPI tokens are unavailable.
+
+A named preset or global default is resolved from `presets.json` before a document is validated. Proxy MOTD, tablists, boards, surfaces, connections, emoji, and animations support the same [preset inheritance](/gloss/03-data-files) as the server edition. Reload reads one catalog for all documents and retains the previous configuration if any resolution fails.
+
+### Network visibility integration
+
+Backend-only vanish, NPC metadata, and Bedrock identity are unavailable to Velocity automatically. Without an integration feed, `npc` and `bedrock` are false and `visible` is true; existing tab entries and `networkVisibility` still control remote and fixed-grid inclusion. The visibility feed does not override backend ownership of ordinary local rows. Use a proxy integration to publish complete snapshots when those states change.
+
+Obtain the `GlossVelocity` plugin instance through Velocity's plugin manager, then call `updateTablistVisibility(new ProxyTablistVisibility(hidden, npcs, bedrock))`. `hidden` maps viewer UUIDs to hidden subject UUID sets; `npcs` and `bedrock` are UUID sets. The constructor copies every collection. Each call atomically replaces the prior complete snapshot and applies on subsequent display refreshes. Send an empty set/map to clear a state and remove disconnected identities from the next snapshot. The feed does not grant access to players hidden by another plugin's tab entries.
+
+Publish only already captured data. Read backend entity state on that entity's owning scheduler before transporting it to the proxy; the update method accepts immutable UUID data from any thread and performs no backend reads. It throws `IllegalStateException` if the proxy tablist service is not running. Configure an explicit visibility condition when your integration feed is required for displaying remote players; the proxy cannot determine whether an external feed is complete or current.
 
 ## Scoreboards
 
@@ -213,13 +227,15 @@ Each schema-1 document in `surfaces/` drives one action bar, boss bar, or title.
 
 `progress` takes a bare expression or a `{{ ... }}` block.
 
-Per viewer, each surface kind selects the matching document with the highest `select.priority` whose `show` and `select.when` are both true. Equal priorities use filename order. The first variant in descending priority order whose `when` is true then replaces the base presentation.
+Per viewer, actionbars and titles each select one matching document; bossbars select independently by root `group` (default `main`). Each selection takes the highest `select.priority` whose `show` and `select.when` are both true. Equal priorities use filename order. The first variant in descending priority order whose `when` is true then replaces the base presentation.
 
-A server-edition surface file loads unchanged. Raise `refreshMillis` above 2000 and the action bar
+A surface file using events available on both platforms loads unchanged. Proxy actionbars support only the native centered slot: omit `presentation.slots` or use `["center"]`. Other actionbar slot names require the backend compositor and reject loading on Velocity. Raise `refreshMillis` above 2000 and the action bar
 blinks between sends; title timing is also quantized to it.
 
 Boss bars and action bars clear when their document stops being selected. Titles run out their own
 timing. A `once` trigger fires once per connection, and `/gloss reload` does not re-arm it.
+
+Root `automatic`, `delivery`, `on`, and bossbar `presentation.flags` follow the [screen surface contract](/gloss/06c-screen-surfaces). Proxy `on` supports `join`, `server_change`, and `interval`; backend-only `world_change` rejects the proxy document. `surfaces.maxBossBarsPerViewer` in `proxy.json` defaults to 3 and clamps to 1–64. Groups above the cap are ranked by presentation priority, then group name. Client screen size controls how much of a large stack remains visible.
 
 The included `surfaces/welcome.json` uses `"when": "false"`, so nothing appears until you edit it.
 
@@ -285,7 +301,7 @@ The proxy reads `emoji/` and `animations/` in its data directory. Both folders a
 `:id:` and `|animation.<id>|` expand anywhere proxy text renders — MOTD, tablist, scoreboards,
 surfaces, connection messages, and link labels. A token Gloss cannot resolve is left exactly as
 written; a hidden animation renders empty. `refreshMillis` bounds the visible frame rate, and the
-MOTD renders fresh on each ping.
+MOTD samples an animation frame when its response snapshot refreshes. The client retains that frame until another status request.
 
 > The proxy serves no resource pack, so an emoji pointing at a Gloss glyph-font codepoint renders as
 > tofu. Use codepoints the vanilla font carries.
@@ -295,7 +311,7 @@ Set `"emoji": { "enabled": false }` or `"animations": { "enabled": false }` in `
 
 ## MOTD
 
-Gloss randomly selects one entry for each ping. Each entry requires one or two description lines.
+Gloss selects a prepared entry for each ping. Each entry requires one or two description lines. Text, expressions, and viewerless conditions refresh on the `proxy.json` refresh interval, outside ping handling. Icons load only at startup or reload.
 
 ```json
 {
@@ -325,13 +341,15 @@ Put the 64×64 PNG icon at `plugins/gloss/images/network.png`. Icon paths must s
 
 `sample` accepts up to twelve hover lines. `online` and `max` accept numeric text or text expressions. Counts clamp to nonnegative integers. `version` changes the displayed version name and preserves the protocol number.
 
-Each MOTD entry accepts `show` (boolean or proxy expression, default `true`) and `weight` (integer from `1` to `1000000`, default `1`). Each ping chooses among visible entries in proportion to their weights. With no passing entry, Gloss leaves the existing ping response unchanged. MOTD conditions have no player context.
+Each MOTD entry accepts `show` (boolean or proxy expression, default `true`) and `weight` (integer from `1` to `1000000`, default `1`). The default weighted policy chooses among visible entries in proportion to their weights. With no passing entry, Gloss leaves the existing ping response unchanged. MOTD conditions have no player context.
 
-Omitted optional fields retain the proxy's existing ping values. An empty `sample` also retains the existing sample. When MOTD is disabled, Gloss leaves the proxy response unchanged.
+The backend and proxy share `rotation`, `icons`, `state`, entry `select`, `counts`, and `sampleMode` semantics documented in [Server List MOTD](/gloss/06b-server-list-motd). Hostname and protocol selection uses the current status connection's metadata; state, time windows, and real online counts are sampled at refresh. Selection never authenticates the requester or provides player permissions. Animation tokens yield a still frame in each response, not a continuously animated server-list entry.
+
+Omitted optional fields retain the proxy's existing ping values. `sampleMode: "hide"` clears the hover sample; `counts.hide: true` omits the player-count section. When MOTD is disabled, Gloss leaves the proxy response unchanged.
 
 ### Server links
 
-`links` is an optional top-level array in `motd.json` that becomes the client's pause-menu server-link list. It accepts up to sixteen entries. Each entry needs a `url` and either a `type` or a `label`.
+`serverLinks: {"enabled": true, "links": [...]}` in `motd.json` controls pause-menu links independently of status visibility and the MOTD feature toggle. Its list accepts up to sixteen entries. Existing top-level `links` is used when `serverLinks` is absent and follows the MOTD feature toggle and document `show`. Each entry needs a `url` and either a `type` or a `label`.
 
 | Key | Notes |
 |---|---|
@@ -357,7 +375,7 @@ Omitted optional fields retain the proxy's existing ping values. An empty `sampl
 
 An unknown `type`, a url that is not an http or https address with a host, and an entry with neither `type` nor `label` each fail the load, so the previous configuration stays active.
 
-Gloss sends the list after every backend connection, on join and on each switch, so the proxy's list is the last one the client received. Nothing is sent when `motd` is off, the MOTD `show` is false, `links` is empty, or the client is older than 1.21.
+Gloss sends the list after every backend connection and configuration reload, so the proxy's list is the last one the client received. An explicitly enabled empty `serverLinks.links` list clears the client list. Clients older than 1.21 receive no links. Link ownership is claimed independently of status MOTD ownership. Disabling previously published links clears the client list; the backend can then publish its own list when its ownership lease expires.
 
 ## Commands
 

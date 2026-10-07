@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-07T15:46:35Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -281,9 +281,9 @@ family and leaves the tokens as written. See
 `|metric.<key>|` reads a metric published by another installed Volmit plugin, under that plugin's
 own dotted key, as in `|metric.adapt.player-sessions|`. Values render compact (`42`, `3.14`, `1.2K`,
 `1.5M`, `2B`, `3.5T`). A key whose publishing plugin is not installed is never registered and stays
-in the line. A token is empty on its first render and fills in on the next sampler pass,
+in the line. A registered token displays `[integration] unavailableText` (empty by default) on its first render and fills in on the next sampler pass,
 `[integration] sampleIntervalTicks` later (default 20). Sampling stops 60 seconds after the last
-use. Gloss's own `gloss.*` metrics are published to React, not through `|metric.|` tokens.
+use. `maxSampleAgeMs` expires old samples, `retainUnavailableMs` optionally retains a recent successful value during provider failures, and `errorRetryTicks` controls retry after a provider throws. Retained values still obey the sample-age limit. Gloss's own `gloss.*` metrics are published to React, not through `|metric.|` tokens.
 
 ## Inline text expressions
 
@@ -618,7 +618,7 @@ group badge when no group is available.
 
 ## Player names
 
-With `[features] nametags = true`, rendered `player.name`, `viewer.name`, `subject.name`, `source.name`, and chat `sender.name` include the selected nametag prefix, account-name color, and suffix. The matching `.username` variable gives the unformatted account name for command arguments and identifiers. `.displayName` explicitly requests the same styled identity as `.name`.
+With `[features] nametags = true`, rendered `player.name`, `viewer.name`, `subject.name`, `source.name`, and chat `sender.name` include the selected nametag prefix, account-name color, and suffix. This formatting also applies to captured player roles on Folia, including a nameplate subject in another region. The matching `.username` variable gives the unformatted account name for command arguments and identifiers. `.displayName` explicitly requests the same styled identity as `.name`.
 
 `%player_name%`, `%player_displayname%`, `|player.name|`, and `|player.displayName|` use the viewer's selected identity. `%player_username%` and `|player.username|` return the raw account name. `papi('player_name')` and role-aware `papi('subject', 'player_name', '')` use the selected identity in rendered text as well.
 

@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-10-05T19:34:32.000Z
+date: 2026-10-07T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -47,6 +47,7 @@ The shared engine also requires `[features] holograms = true` in `gloss.toml`. I
 | `updateIntervalTicks` | `5` | Entity and viewer refresh, `1` to `40` ticks |
 | `maxEntitiesPerViewer` | `16` | Maximum overlays per viewer, nearest first, `1` to `256` |
 | `maxActiveOverlays` | `1024` | Server-wide maximum of entities carrying an overlay, `16` to `16384` |
+| `snapshotReadLimit` | `4096` | Maximum distinct captured variable/function reads per entity, `16` to `65536` |
 | `includePlayers` | `true` | Include other visible players |
 | `overrideNametag` | `false` | Hide native mob nametags for Java viewers while their Gloss overlay is visible; the mob's stored name is preserved |
 | `verticalOffset` | `0.35` | Offset above entity height, `-2` to `8` blocks |
@@ -77,7 +78,7 @@ Expressions and `show` conditions can read `entity.name`, `entity.named`, `entit
 
 When EcoMobs is enabled, `{name}` and `entity.name` use the EcoMobs display name for its mobs, including its resolved mob placeholders and colors. `entity.named` recognizes that name, so the default name row works without changing its condition. Other entities use their Bukkit custom name. EcoMobs is optional and requires no additional Gloss setting.
 
-Set `overrideNametag` to `true` at the document root to replace a mob's native tag with the configured Gloss pane. Its native tag returns when the pane is hidden, the viewer leaves overlay range, or the option is disabled. Each viewer is handled independently, and name changes continue to update normally. This setting applies to mobs; player nameplates retain their own controls. Bedrock viewers keep native tags.
+Set `overrideNametag` to `true` at the document root to replace a mob's native tag with the configured Gloss pane. Its native tag returns when the pane is hidden, the display budget refuses it, the viewer leaves overlay range, or the option is disabled. Each viewer is handled independently, and name changes continue to update normally. This setting applies to mobs; player nameplates retain their own controls. Bedrock viewers keep native tags.
 
 To leave native tags visible and show a Gloss species name only for unnamed mobs, replace the name row with:
 
@@ -236,6 +237,10 @@ The highest-priority matching document wins; equal priorities use the alphabetic
 
 `color` accepts Minecraft named colors such as `white`, `gold`, and `dark_red`. `nameTagVisibility` accepts `always`, `never`, `hide_for_other_teams`, or `hide_for_own_team`. `collision` accepts `always`, `never`, `push_other_teams`, or `push_own_team`. Prefix and suffix accept MiniMessage, legacy colors, and the Gloss text pipeline, and can refer to `subject` and `viewer`. Their styling is preserved in both rich chat and legacy text surfaces. Their player names resolve as raw account names while the tag itself is composed, preventing a tag from including itself.
 
+Nametag, nameplate, mob-label and glow team fields follow the shared `[teams]` conflict policy. The default yields to observed external team membership; choose `override` when Gloss must own these client fields. Layer priorities and visibility/collision composition are configurable in [Configuration](/gloss/02-configuration#teams).
+
+Viewer-dependent nametags use `[nametags] viewerRange` and `maxSubjectsPerViewer` to select the nearest eligible subjects. `refreshIntervalTicks` controls selection and sampled permission or placeholder refreshes. While a new cross-region provider value is being collected, an existing tag remains visible until selection can finish. `snapshotReadLimit` bounds the distinct sampled fields and provider argument combinations for each player; exceeding it reports a condition error. Reload nametags after reducing the number of dynamic keys or raising that limit.
+
 The selected prefix, name color, and suffix also appear in rendered player-name references across Gloss, including chat, tablist, nameplates, boards, menus, holograms, and connection messages. See [Player names](/gloss/13-expressions-placeholders#player-names) for formatted and raw tokens. Disabling nametags or selecting no document returns the account name on these text surfaces. Visibility and collision apply to the vanilla overhead label, not to names shown in chat or other text.
 
 ## Permission-selected nameplates
@@ -273,6 +278,18 @@ Enable `nameplates = true` under `[features]`; the hologram and entity-overlay e
 
 Nameplate document and variant permissions use the same assignment, condition, and priority rules as nametags. Each variant contains `id`, `priority`, `permission`, `when`, and a complete `presentation`. Use `subject.name` to include the selected nametag or `subject.username` for only the account name. The `subject` is the player wearing the plate; `viewer` is its reader.
 
-A presentation accepts up to 16 `lines`, each with `text` and `show`; `style` and `box` use the [shared display settings](/gloss/11-icons#display-style-and-boxes). `offset` defaults to `0.3` and clamps to `-2` through `8`. `hideSneaking` defaults to `true`. Ordered `relations` contain `when` and `color`, with the first matching relation supplying the row color. A player cannot see their own plate, and spectators, invisible players, or players hidden from that viewer have no visible plate.
+A presentation accepts up to 16 `lines`, each with `text` and `show`; `style` and `box` use the [shared display settings](/gloss/11-icons#display-style-and-boxes). `offset` defaults to `0.3` and clamps to `-2` through `8`. `healthSegments` defaults to `10` and clamps to `1` through `40`; `healthBar` defines its filled, empty, lost-health and numeric formatting. Ordered `relations` contain `when` and `color`, with the first matching relation supplying the row color.
+
+| Presentation field | Default | Meaning |
+|---|---|---|
+| `hideSneaking` | `true` | Hide the plate while its wearer sneaks |
+| `hideInvisible` | `true` | Hide the plate for invisible wearers |
+| `hideSpectator` | `true` | Hide the plate for spectators |
+| `includeNpcs` | `true` | Include player entities marked with Bukkit `NPC` metadata |
+| `showSelf` | `false` | Permit the wearer to receive their own plate, visible where the client camera can see it |
+
+Players hidden from a viewer remain excluded regardless of these settings. Vanilla name suppression starts only after the replacement display is admitted for that viewer; refused or culled replacements leave the native name available. Team-conflict policy can allow another plugin to retain control of that native name.
+
+`[nameplates]` in `config.toml` controls `viewerRange`, `maxSubjectsPerViewer`, and `refreshIntervalTicks`. Each defaults to `0`, inheriting the entity-overlay document’s corresponding value. Explicit values give nameplates their own range, nearest-player population limit, and update cadence. Both features still share `maxActiveOverlays` and the configured display budgets. The editor exposes these presentation controls for base layouts and variants, and its player preview can simulate sneaking, invisibility, spectator mode, NPCs, and the wearer’s own view.
 
 Use `/gloss nametag refresh` or `/gloss nameplate refresh` to request a refresh. Valid document edits reload automatically, including the first saved change; deleting a document removes its assignment. Changing assignment permissions takes effect on the next feature refresh.

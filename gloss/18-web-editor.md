@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-03T15:45:53.866Z
+date: 2026-10-07T23:55:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -53,9 +53,12 @@ Preview exact Minecraft rendering, occlusion, sounds, particles and interaction 
 
 | Kind | Where it lands | Reference |
 |---|---|---|
+| Preset catalog | `presets.json` | Collection defaults and named preset inheritance |
 | Names catalog | `names.json` | [Game-object names](/gloss/13-expressions-placeholders#game-object-names) |
 | Strings catalogs | `strings/<locale>.json` | [Localization](/gloss/19-localization) |
 | Waypoints | `waypoints/` | Anchor, color, style, range and audience conditions |
+| Glyphs | `glyphs/` | [Font bitmaps, overlays, spacing and waypoint styles](/gloss/28-resource-packs) |
+| Behaviors | `behaviors/` | [Event triggers, state and bounded chat matching](/gloss/19b-behaviors) |
 | Menus | `menus/` | [Hologram Menus](/gloss/09-menus), [Components & Hitboxes](/gloss/10-components-hitboxes) |
 | World panels | `panels/` | [Panels](/gloss/16-panels) |
 | Container previews | `previews/` | [Container Previews](/gloss/15-container-previews) |
@@ -77,16 +80,26 @@ Preview exact Minecraft rendering, occlusion, sounds, particles and interaction 
 | Connection messages | `connections.json` | [Connection Messages](/gloss/26-connection-messages) |
 | Surfaces | `surfaces/`, one per action bar, boss bar or title | [Velocity Proxy](/gloss/27-velocity#surfaces) |
 
-Creating a singleton — names, entity overlays, damage indicators, Real Drops, tablist, MOTD, connections — opens its existing document instead of a second file the server would not load, so duplication and renaming are unavailable for those. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [Data Files & Hot Reload](/gloss/03-data-files).
+Creating a singleton — presets, names, entity overlays, damage indicators, Real Drops, tablist, MOTD, connections — opens its existing document instead of a second file the server would not load, so duplication and renaming are unavailable for those. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [Data Files & Hot Reload](/gloss/03-data-files).
+
+The preset catalog editor selects one of the supported document collections, edits shared defaults, and creates or removes named presets. **Extends** names a parent in the same collection. Default values and preset values accept nested JSON objects and arrays. Objects merge recursively; an authored array replaces the inherited array. Validation reports missing parents, inheritance cycles, and forbidden identity fields. The catalog always saves as `presets.json`; its revision remains server-owned. Other documents show an **Inheritance → Preset** selector when a catalog is available. Selecting a preset preserves authored overrides; remove an override in Code view to use the inherited value.
+
+The Glyphs inspector edits the namespace and font, bitmap glyph metrics and fallbacks, overlays, space-provider range, and custom waypoint styles with ordered sprites. Image paths are relative to `images/`; add the PNG files through the image manager. The asset list shows declared paths and dimensions. Build and offer the resource pack on the server to verify client rendering. Waypoints accept a namespaced custom style plus a `default` or `bowtie` fallback for viewers without the loaded pack.
+
+HUD surface controls expose automatic selection, named bossbar groups, native bossbar flags, and queue delivery policies. Use Code view for the `on` event and interval array. Event-only surfaces remain quiet in the preview until delivered in game. Scoreboard rows preserve stable ids, conditions, sections, score formatting, and native objectives during visual edits.
+
+Inventory controls include independent title, slot, condition, and list refresh rates. Action lists offer **Add dialog** for native dialog titles, kind, timeout, Escape behavior, body text, input definitions, and buttons. Nested definitions use editable JSON fields; Code completion describes each supported control. The browser preserves dialog branches and reports invalid input contracts, but does not simulate Minecraft's dialog screen. **Call named action** references a list in the menu or inventory's root `actions` object; edit the shared lists in Code or the root extra fields. Validation reports missing names and recursive calls.
 
 Inspector controls cover marker anchors, beams, trails and edge indicators; nameplate styles,
 boxes, relations and health bars; inventory slots, lists and variants; channel cards, items,
-links, filters and variants; and hologram pages, actions, hitboxes and presentation variants.
+links, filters, filter policies and variants; and hologram pages, actions, hitboxes and presentation variants.
 Menu and overlay variant controls preserve each authored condition and override. MOTD entries
 expose weights and conditions, and connection messages include the server first-join section.
 
 Scoreboards, tablists, MOTD and connections have field descriptions and validation in the editor,
-with matching JSON schemas in Gloss's `schema/` directory.
+with matching JSON schemas in Gloss's `schema/` directory. Tablist schema 3 forms include fixed cells, named skins, independent roster sections, ordered sort keys, NPC and hat options, overflow policies, and complete conditional layouts. The tab preview evaluates sample conditions and roster ordering; skin textures and hats require an in-game client.
+
+Holograms, bubbles, damage indicator presentations, and drop labels include **Display refresh** controls. Enable an override for content, visibility, or motion to enter an independent 1–1200 tick interval; disabling it removes that override. The preview preserves these settings; server scheduling determines their runtime cadence.
 
 Display style, boxes and card geometry use the same fields as the server documents; see [Display style and boxes](/gloss/11-icons#display-style-and-boxes) and [Container Previews](/gloss/15-container-previews).
 
@@ -109,7 +122,7 @@ The 3D previews draw the client's own block and item models and textures in WebG
 
 Nametag and nameplate stages render the selected player presentation above a Minecraft player model. Edit the document's assignment permission and each variant's permission alongside their priority and conditions. Preview sample values describe the wearer as `subject` and the reader as `viewer`. Nameplate previews inherit the selected nametag from the same workspace, so `subject.name` shows the composed identity. Enter permission nodes in the preview controls to test document and variant eligibility; these sample grants affect the preview only.
 
-Use **Randomize document** on nametags or nameplates to generate an editable presentation, then adjust its permission assignments before exporting. Chat channels provide ordinary and mentioned-message previews, an enabled switch for mentions, and separate controls for the tagged token, complete highlighted message, and sound key. In-game sound and client rendering follow the saved channel document.
+Use **Randomize document** on nametags or nameplates to generate an editable presentation, then adjust its permission assignments before exporting. Chat channels provide ordinary and mentioned-message previews, an enabled switch for mentions, and separate controls for the tagged token, complete highlighted message, and sound key. In-game sound and client rendering follow the saved channel document. Channel documents use schema 2. **Filter policy** exposes every input, output, expression, match, work, and elapsed limit, plus **Drop message** or **Keep completed** behavior. Each variant can inherit or replace the whole policy block. The browser runs RE2 filters with literal replacements before showing the sample message; unsupported expressions and limits appear as validation errors. Preview notices identify limit results or an unavailable filter engine. Elapsed results depend on the browser workload and do not predict server timing. Import older channels through the server importer before opening them here.
 
 ## World panels and flow maps
 

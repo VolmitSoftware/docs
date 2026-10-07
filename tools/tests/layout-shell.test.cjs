@@ -80,6 +80,9 @@ async function boot(pathname, body, title = 'Page', caption = 'Caption', options
     window.MutationObserver = class { observe() {} disconnect() {} };
   }
   const calls = [];
+  if (options.innerWidth) {
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: options.innerWidth });
+  }
   window.fetch = (url, options = {}) => {
     const target = String(url);
     calls.push({ target, options });
@@ -234,6 +237,56 @@ test('reference pages collapse other sections and scope plugin search', async ()
   } finally {
     close();
   }
+});
+
+test('reference sidebar width follows the keyboard and is remembered', async () => {
+  const { window, close } = await boot(
+    '/iris/01-installation',
+    '<h2 id="requirements">Requirements</h2><p>Install the jar.</p>',
+    'Installation',
+    'Iris documentation: Installation'
+  );
+  try {
+    const handle = window.document.querySelector('.sidebar-resize');
+    const app = window.document.querySelector('.v-application');
+    assert.equal(handle.getAttribute('role'), 'separator');
+    assert.equal(handle.getAttribute('aria-orientation'), 'vertical');
+    const before = Number.parseInt(app.style.getPropertyValue('--volmit-sidebar-width'), 10);
+    assert.equal(before, 320);
+    assert.equal(window.localStorage.getItem('volmit-sidebar-width'), null);
+    handle.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    const after = Number.parseInt(app.style.getPropertyValue('--volmit-sidebar-width'), 10);
+    assert.equal(after, 336);
+    assert.equal(window.localStorage.getItem('volmit-sidebar-width'), '336');
+  } finally {
+    close();
+  }
+});
+
+test('a narrow reference page keeps the desktop sidebar width', async () => {
+  const { window, close } = await boot(
+    '/iris/01-installation',
+    '<h2 id="requirements">Requirements</h2><p>Install the jar.</p>',
+    'Installation',
+    'Iris documentation: Installation',
+    { innerWidth: 390 }
+  );
+  try {
+    const app = window.document.querySelector('.v-application');
+    assert.equal(app.style.getPropertyValue('--volmit-sidebar-width'), '320px');
+    assert.equal(window.localStorage.getItem('volmit-sidebar-width'), null);
+  } finally {
+    close();
+  }
+});
+
+test('page frame, toc, and header share one spacing system', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.css'), 'utf8');
+  assert.match(css, /\.nav-header > \.v-toolbar__content \{[^}]*padding-inline: 10% !important;/);
+  assert.match(css, /grid-template-columns: auto minmax\(0, 1fr\) auto;/);
+  assert.match(css, /\.page-toc-card \.v-list-item__title \{[^}]*text-align: right;/);
+  assert.match(css, /\.volmit-reference-page \.container\.grid-list-xl \{[^}]*width: calc\(100% - var\(--volmit-edge\)\);/);
+  assert.match(css, /\.sidebar-resize \{[^}]*cursor: col-resize;/);
 });
 
 test('missing pages replace the wiki 404 and keep a way home', async () => {

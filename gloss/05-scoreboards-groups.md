@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-10-03T13:21:49.000Z
+date: 2026-10-07T16:10:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -16,6 +16,8 @@ For conditional action bars, boss bars, and titles, see [Screen Surfaces](/gloss
 
 `/gloss web edit scoreboard <id>` opens one board in a restricted live editor session;
 `/gloss web workspace` includes every board.
+
+In the editor, expand **Row settings** beneath a row to set its stable ID, visibility condition, score value, score format, or section reference. Editing the label preserves these settings. Use the JSON editor for `presentation.layout` and `objectives`; these fields survive visual editing and export. The sidebar preview expands sections and rotates eligible pages against the selected viewer context and the browser clock. Native player-list and below-name placement is controlled by Minecraft and is not rendered in the sidebar preview.
 
 ## The board document
 
@@ -66,9 +68,10 @@ For conditional action bars, boss bars, and titles, see [Screen Surfaces](/gloss
 | `select.when` | `"false"` | Required boolean condition. False keeps the board out of automatic selection |
 | `presentation` | empty | Complete fallback title, lines and number-visibility policy |
 | `variants` | `[]` | Complete alternate presentations, each with unique `id`, integer `priority`, `when`, and `presentation` |
+| `objectives` | `{}` | Optional native `playerList` and `belowName` score displays for the selected board |
 
-Every presentation has `title`, `lines` and `hideNumbers`. An explicitly empty title stays blank.
-At most 15 lines render. A variant presentation is complete and never inherits a title,
+Every presentation has `title`, `lines`, `hideNumbers`, and optional `layout`. An explicitly empty title stays blank.
+At most 15 visible lines render. A variant presentation is complete and never inherits a title,
 line or number policy from the base.
 
 There is no `id` key. The document id is the file name with `.json` removed. If you rename the file, you rename the board. Only files directly inside `boards/` are read. Subfolders are ignored.
@@ -79,7 +82,9 @@ If an edit is invalid, Gloss logs the reason and keeps the last valid version ac
 
 A line may be a text string or an object such as
 `{"text": "Balance", "value": "&a$100", "format": "fixed"}`. The `text` and `value` fields use
-the text pipeline. Explicit line formats override `hideNumbers` for that row.
+the text pipeline. Values refresh even when the label and row order stay unchanged. Explicit line
+formats override `hideNumbers` for that row; removing a line format restores the presentation's
+number-visibility policy.
 
 | `format` | Score column |
 |---|---|
@@ -91,6 +96,119 @@ the text pipeline. Explicit line formats override `hideNumbers` for that row.
 Without an explicit format, an object with a `value` uses `fixed`; a plain line follows the
 presentation's `hideNumbers` setting. The numeric row score determines line order; `styled` and
 `number` do not replace it with the contents of `value`.
+
+### Conditional rows, sections, and pages
+
+Object rows also accept `id` and `show`. Give a row a unique `id` to keep its client entry stable
+when earlier rows disappear or the same row moves between pages. Without an ID, identity follows
+its expanded position. `show` defaults to `true` and accepts the same viewer conditions as board
+selection. Hidden rows consume no sidebar space.
+
+`presentation.layout.sections` defines reusable lists within that presentation. Insert one with
+`{"section":"account"}`; a reference may also have `show`, which gates all its rows. References
+cannot declare their own text, value, format, or ID. Sections may reference other sections, but
+cycles, unknown references, and duplicate explicit row IDs within an expanded page are rejected.
+
+```json
+{
+  "title": "&dOverview",
+  "hideNumbers": true,
+  "lines": [{"section": "account"}],
+  "layout": {
+    "sections": {
+      "account": [
+        {"id": "name", "text": "&f{{ player.name }}"},
+        {"id": "balance", "text": "Balance", "value": "%vault_eco_balance_formatted%"},
+        {"id": "staff", "text": "&6Staff online", "show": "viewer.op"}
+      ]
+    },
+    "pages": [
+      {"id": "account", "durationTicks": 100, "lines": [{"section": "account"}]},
+      {"id": "server", "title": "&bServer", "durationTicks": 60,
+       "show": "viewer.world == 'world'", "lines": ["Online: {{ server.online }}"]}
+    ],
+    "overflow": "truncate",
+    "refresh": {"titleTicks": 20, "textTicks": 20, "valueTicks": 5}
+  }
+}
+```
+
+Pages rotate in authored order through the pages whose `show` conditions match. Each page has a
+unique `id`, `lines`, optional `title`, and `durationTicks` (default 100; range 1–72000). An omitted
+page title uses the presentation title. Timing follows the server's running clock; viewers with
+the same eligible pages see the same rotation. If no page matches, the presentation's base lines
+appear. Pages inherit the presentation's sections, number policy, overflow policy, and refresh
+intervals. Variants keep their own complete layouts.
+
+| Layout key | Default | Behavior |
+|---|---|---|
+| `sections` | `{}` | Up to 64 named reusable line lists |
+| `pages` | `[]` | Up to 64 timed pages; no pages uses the base lines |
+| `overflow` | `"truncate"` | `truncate` shows the first 15 visible rows. `error` rejects a document with more than 15 expanded rows on any page, including conditional rows |
+| `refresh.titleTicks` | automatic | Independent title sampling interval, 1–72000 ticks |
+| `refresh.textTicks` | automatic | Independent row-label sampling interval, 1–72000 ticks |
+| `refresh.valueTicks` | automatic | Independent score-value sampling interval, 1–72000 ticks |
+
+A line list may contain at most 256 entries and each page may expand to at most 256 rows. Row,
+section, and page IDs contain 1–64 letters, digits, dots, underscores, or hyphens and start with a
+letter or digit. The same explicit row ID may appear on different pages. An explicit refresh
+interval also controls animated text in that column. With no override, animated text updates each
+tick and other dynamic text uses `[boards] updateIntervalTicks`. Static text does not need repeated
+placeholder evaluation. Conditional rows and rotating pages update each tick.
+
+### Native player-list and below-name scores
+
+Add `objectives.playerList` or `objectives.belowName` beside `presentation` to display native
+scores for online players. Minecraft provides one player-list objective and one below-name
+objective per viewer, alongside the sidebar. Scores use real player usernames as entries.
+The client controls their placement, visibility distance, and rendering; below-name scores are
+attached to player nameplates, and player-list scores appear in the tab overlay.
+
+```json
+"objectives": {
+  "playerList": {
+    "title": "Points",
+    "value": "papiNumber('subject', '%points_total%', 0)",
+    "renderType": "integer",
+    "format": "number",
+    "show": true,
+    "subjects": "hasPermission('subject', 'example.scores.visible')",
+    "refreshTicks": 20,
+    "conflict": "yield"
+  },
+  "belowName": {
+    "title": "Health",
+    "value": "subject.health",
+    "renderType": "hearts",
+    "refreshTicks": 5,
+    "conflict": "yield"
+  }
+}
+```
+
+| Objective key | Default | Behavior |
+|---|---|---|
+| `title` | `""` | Title text, rendered for the viewer; the native display slot determines where it is visible |
+| `value` | `"subject.health"` | Numeric expression evaluated for each online subject; rounds to the nearest integer and clamps to the signed 32-bit score range |
+| `renderType` | `"integer"` | Native `integer` or `hearts` rendering; the client controls support and appearance in each slot |
+| `format` | `"number"` | `number`, `blank`, `fixed`, or `styled`, with the same number-format meanings as sidebar rows |
+| `valueText` | `""` | Text for `fixed` or styling for `styled`, rendered for the subject |
+| `show` | `true` | Viewer condition controlling whether this objective is displayed |
+| `subjects` | `true` | Condition evaluated for each subject; false removes that subject's score |
+| `refreshTicks` | `20` | Subject-value and viewer-title sampling interval, 1–72000 ticks |
+| `conflict` | `"yield"` | `yield` leaves an occupied native display slot alone; `override` explicitly replaces it and restores the last observed foreign objective on release if it still exists |
+
+Subject expressions and `valueText` use that subject as the player context. Scores are sampled
+independently of viewers, so they do not vary by viewer. Use `show` to vary objective visibility and
+`subjects` to control which players publish values. Identical sources share sampling across boards.
+Invalid or nonfinite subject values are logged and that subject's score is removed until a valid
+sample arrives. Scores disappear when their subjects disconnect.
+
+Native objectives follow the selected board, including its visibility and proxy ownership. Hiding
+or replacing that board releases its native objectives. If the platform cannot report an existing
+slot and Gloss has not observed a display-slot packet, `yield` waits until ownership is known.
+`override` can claim that slot, but an unobserved prior objective cannot be restored. Objective
+definitions remain independent of sidebar presentation variants and pages.
 
 ### Defaults
 
@@ -185,11 +303,11 @@ Required arguments are positional in the order shown. Optional arguments must be
 info` reports the selection priority, condition, variant count, title and lines. Variants remain a
 JSON/editor surface so their complete presentations can be edited atomically.
 
-Command edits save the document and increment its revision. See [Data Files & Hot Reload](/gloss/03-data-files).
+Command edits save the document and increment its revision. Changes to inherited values in `presets.json` also update active sidebars, including titles, without changing the board document's revision. Rows with unchanged IDs retain their scoreboard slots across these updates. See [Data Files & Hot Reload](/gloss/03-data-files).
 
 ## Rendering
 
-Sidebars update at `[boards] updateIntervalTicks` (default 20). On a board with a clock expression or named animation, only the rows carrying one update every tick; the other dynamic rows keep the configured interval.
+Sidebars update at `[boards] updateIntervalTicks` (default 20). Without explicit layout refresh intervals, a board with a clock expression or named animation refreshes that text every tick; other dynamic text keeps the configured interval. Title, label, and value intervals can be set separately in the presentation layout.
 
 Titles and lines support functions, PlaceholderAPI, emoji, colors, and viewer expressions. Minecraft displays at most 15 sidebar rows. Newlines inside one JSON row become spaces.
 

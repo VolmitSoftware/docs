@@ -2,7 +2,7 @@
 title: "Damage Indicators"
 description: "Show damage and healing numbers beside entities"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-07T23:55:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -78,7 +78,7 @@ The included document is:
 }
 ```
 
-`limits.viewRange` sets viewing distance in blocks (default 48, range 4–128), and `limits.debounceMs` sets the coalescing delay (default 150 milliseconds, range 0–60000). The limits are clamped when the document loads:
+`limits.viewRange` sets viewing distance in blocks (default 48, range 4–128), and `limits.debounceMs` sets the minimum time between starting samples for the same target (default 150 milliseconds, range 0–60000). The limits are clamped when the document loads:
 
 | Key | Range |
 |---|---|
@@ -86,12 +86,16 @@ The included document is:
 | `lifetimeMs` | `250`..`30000` |
 | `minimumDelta` | `0`..`1000` |
 | `decimals` | `0`..`4` |
+| `aggregationTicks` | `1`..`200`, default `2`; ticks from the first admitted event to the net-health reading |
+| `maxPendingSamples` | `1`..`16384`, default `256`; simultaneous targets awaiting a health reading |
 
 The base `when` condition enables each event type. The matching variant with the highest priority wins; ties use the lexicographically smallest ID. `format` accepts any authored label, icon text, formatting, function, expression, or animation. Include `{amount}` where the numeric change belongs; it is optional. `{cause}` inserts the readable damage cause, `{source}` the attacker name, and `{target}` the affected entity name. `offset` is measured from the affected entity and clamps each axis to `-32`..`32`.
 
 Each base or variant presentation accepts full shared `style` and `box` settings. Omitted styles use center billboard, see-through text and unit XYZ scale. Style scale multiplies the indicator transform, and style opacity multiplies its fade; boxes follow motion, rotation, visibility and expiry. See [Display style and boxes](/gloss/11-icons#display-style-and-boxes).
 
 For a text-only hit label, a presentation can use `"format": "<gold>HIT</gold>"` with no `{amount}` token. To add a frame, include `"box": {"enabled": true, "padding": 4, "borderWidth": 1}` in that same presentation. Set the presentation's `style` explicitly when changing billboard, independent scale axes, brightness, alignment, or text opacity. These fields apply equally to the base presentation and every conditional variant.
+
+Each base or variant presentation also accepts `refresh`: optional `contentTicks`, `visibilityTicks`, and `motionTicks`, each from 1 to 1200 ticks. These control dynamic text reevaluation, viewer condition checks, and lifetime motion sampling independently. Omitted fields use the normal temporary-display cadence; updates cannot run faster than `[holograms] temporaryUpdateIntervalTicks`. Particle emission, named animation playback, and expiry retain their own clocks.
 
 Each presentation can include particle layers that follow the indicator. A named span can limit particles to part of the format. See [Particle Layers](/gloss/25-particle-layers).
 
@@ -121,7 +125,9 @@ conditions rather than a separate disabled-world list.
 
 The number is the health actually applied, not the raw event amount — armor, resistance, absorption and other plugins are all accounted for. An event neutralized to zero produces no indicator.
 
-Bursts are coalesced, a change at or below `limits.minimumDelta` is discarded, and `limits.maxPerSecond`
+Events on a target during `aggregationTicks` share one net-health sample. Event metadata and the damage or healing direction come from the first admitted event. Opposing health changes cancel within that window; a net change in the opposite direction produces no indicator for that sample. Increasing the window delays the number. New targets are omitted while `maxPendingSamples` is full.
+
+A change at or below `limits.minimumDelta` is discarded, and `limits.maxPerSecond`
 caps the rate. The defaults allow about 120 indicators on screen at once; past that, new ones are
 dropped. `limits.decimals` sets the displayed precision.
 

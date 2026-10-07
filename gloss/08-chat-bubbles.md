@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-10-03T15:53:01.000Z
+date: 2026-10-07T23:55:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -67,6 +67,7 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 | `format` | `"{message}"` | Bubble text template, with `{message}` inserting literal player chat |
 | `stackDistance` | `0.26` | Vertical stack spacing in blocks, clamped to `0.05`..`2` |
 | `maxPerSender` | `4` | Maximum live bubbles per speaker, clamped to `1`..`64` |
+| `overflow` | `"replace-oldest"` | At `maxPerSender`, replace the oldest bubbles until the new one fits; `"reject-new"` keeps existing bubbles and omits the new message |
 | `blacklistWorlds` | `[]` | Exact, case-sensitive world names where this style produces no bubbles |
 | `prefix` | `"&7"` | Configured text prepended to the already-formatted chat message. `null` or absent becomes `"&7"`. An explicit `""` stays empty |
 | `offset` | `[0.0, 0.3, 0.0]` | Literal `[x, y, z]` added to the speaker's eye position before stack and motion translation. There is no hidden base lift. The full offset remains applied while a bubble follows its speaker |
@@ -74,6 +75,7 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 | `maxAliveMs` | `0` clamped to `500` | Milliseconds a bubble lives. Clamped to `500`..`60000` |
 | `followPlayer` | `false` | When true the bubble tracks the speaker. When false it stays where it spawned |
 | `hideOwn` | `false` | When true the speaker cannot see their own bubbles |
+| `refresh` | normal temporary-display cadence | Optional `contentTicks`, `visibilityTicks`, and `motionTicks`, each `1`..`1200`; see below |
 | `motion` | default late-fly motion shown above | Expression-driven translation, scale, rotation and opacity over the bubble lifetime; see below |
 | `shimmer` | default shine shown above | One solid white three-glyph wave crosses the complete wrapped message after a short delay, then crosses it again during fly-away; see below |
 | `select` | absent | Auto-match rules, see below. Absent means the style never auto-matches |
@@ -83,7 +85,7 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 
 Write `followPlayer` and `hideOwn` explicitly — an omitted value is `false`, not the default shown above. Put bubble movement in `motion`; `shimmer.flyAway` only controls the shine pass. The [shared style and box settings](/gloss/11-icons#display-style-and-boxes) apply unchanged.
 
-Bubble presentation, spacing, world exclusions, and per-speaker limits are configured in each style document.
+Bubble presentation, spacing, world exclusions, and per-speaker limits are configured in each style document. Optional `refresh.contentTicks` controls dynamic text reevaluation, `refresh.visibilityTicks` controls viewer condition checks, and `refresh.motionTicks` controls sampling of the speaker position and lifetime motion. Omitted fields use the normal cadence. Intervals take effect on the next temporary-display update, whose base interval is `[holograms] temporaryUpdateIntervalTicks`. Shimmer, named animation playback, particle emission, and expiry retain their own clocks.
 
 ## Visibility
 
@@ -262,7 +264,7 @@ Type `@Alex` to mention the online player whose account name is Alex. Matching i
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "revision": 1,
   "show": "true",
   "channel": { "name": "global", "default": true, "scope": "global", "permission": "" },
@@ -295,9 +297,9 @@ The enabled switch affects both the highlighted token and the full highlighted m
 
 `channel.scope` accepts `global`, `world`, `radius`, `permission`, or `direct`. Radius channels require a positive `channel.radius`, up to 512 blocks. A permission channel requires `channel.permission`; a blank permission on other scopes imposes no additional permission gate. `channel.cooldownTicks` adds a sender cooldown from 0 through 72000 ticks.
 
-`format` is the ordinary message template. `card` contains up to 16 hover-text lines, inserted with `{{ card }}`. Up to 32 `variants`, each with `id`, `priority`, and `when`, can override `format`, `card`, `mentions`, `items`, `links`, `filters`, and `throttle`. The highest priority wins, with ID breaking ties. An omitted field inherits the base value; an explicit empty array clears that field. Nested objects replace their base object. Filters and throttle select in the sender’s scope; presentation fields select per reader. `mentions.messageFormat` controls the tagged recipient's message independently.
+`format` is the ordinary message template. `card` contains up to 16 hover-text lines, inserted with `{{ card }}`. Up to 32 `variants`, each with `id`, `priority`, and `when`, can override `format`, `card`, `mentions`, `items`, `links`, `filters`, `filtering`, and `throttle`. The highest priority wins, with ID breaking ties. An omitted field inherits the base value; an explicit empty array clears that field. Nested objects replace their base object. Filters and throttle select in the sender’s scope; presentation fields select per reader. `mentions.messageFormat` controls the tagged recipient's message independently.
 
-`items` has `enabled`, `token` (default `[item]`), `permission` (default `gloss.chat.item`), and `render` (default `[{{ item.name }}]{{ item.countSuffix }}`). The render template accepts colors and `item.name`, `item.id`, `item.amount`, and `item.countSuffix` substitutions. The suffix is ` xN` for stacks above one, otherwise empty. Item names remain literal text. Item links show the sender's held stack when the message is sent, including replacements within the same hotbar slot. On Paper, item-link messages use per-recipient system messages; ordinary chat retains the server's signed chat delivery. `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. Link labels accept authored colors and resets; only the label opens the URL. `filters` contains up to 64 regular-expression `match` and `replace` entries. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
+`items` has `enabled`, `token` (default `[item]`), `permission` (default `gloss.chat.item`), and `render` (default `[{{ item.name }}]{{ item.countSuffix }}`). The render template accepts colors and `item.name`, `item.id`, `item.amount`, and `item.countSuffix` substitutions. The suffix is ` xN` for stacks above one, otherwise empty. Item names remain literal text. Item links show the sender's held stack when the message is sent, including replacements within the same hotbar slot. On Paper, item-link messages use per-recipient system messages; ordinary chat retains the server's signed chat delivery. `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. Link labels accept authored colors and resets; only the label opens the URL. `filters` contains ordered RE2 `match` expressions and literal `replace` strings. Dollar signs and backslashes in replacements remain literal. Filtering applies before formatting; an empty result cancels the message. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
 
 Use `/ch list` and `/ch <channel>` to choose a channel, `/msg <player> <message>` for direct messages, and `/r <message>` to reply.
 
@@ -306,3 +308,26 @@ the sender, `recipient.*` describes the intended recipient in both copies, and `
 the player reading that copy. For example, `&7[{{ sender.name }} -> {{ recipient.name }}] {{ message }}`
 shows the same sender and recipient to both players. The `recipient` role also works with role
 functions such as `hasPermission` and `papi`. For ordinary channel messages, it is the viewer.
+
+
+### Channel filter policy
+
+Channel documents use `schemaVersion: 2`. `filtering.syntax` is `re2`. Expressions support literals, groups, alternation, character classes, repetition, and supported RE2 flags. Lookaround, backreferences, atomic groups, and possessive quantifiers are unsupported. RE2 character classes, Unicode boundaries, and flags can differ from Java regex; for example, `(?U)` makes repetition ungreedy. Use the importer preview to review schema 1 conversions before applying them. Unsupported expressions require an explicit rewrite; no alternate regex engine runs them.
+
+`filtering` can be set on the document or replaced as a whole by a variant. Omitted fields use the defaults below. Limits apply when the selected channel has filters; channels without filters pass the message through unchanged.
+
+| Field | Default | Allowed range / behavior |
+| --- | --- | --- |
+| `maxInputCharacters` | 4096 | 1–32768 UTF-16 units; oversized input is dropped |
+| `maxOutputCharacters` | 16384 | 1–262144 UTF-16 units; also bounds accepted input |
+| `maxPatternCharacters` | 1024 | 1–4096 UTF-16 units per expression |
+| `maxReplacementCharacters` | 4096 | 0–16384 UTF-16 units per replacement |
+| `maxFilters` | 64 | 0–256 entries |
+| `maxMatches` | 4096 | 1–65536 matches across the complete chain |
+| `maxProgramSize` | 16384 | 16–1000000; bounds compiled expressions and conservative repetition expansion |
+| `maxNestingDepth` | 32 | 1–128 nested expression groups |
+| `maxWorkUnits` | 2000000 | 1–100000000; each search reserves compiled expression size multiplied by remaining input length plus one |
+| `budgetMicros` | 2000 | 1–100000; elapsed target checked during matching and between filters, not a hard execution deadline |
+| `onLimit` | `drop` | `drop` cancels the message; `keep-completed` retains only fully completed filters |
+
+A chain that finishes after its elapsed target keeps its completed result and reports the missed target. A limit reached while further work remains uses `onLimit`. `keep-completed` may deliver text that later filters would have removed, so use `drop` when all filters must run. Input above either input or output capacity always drops. Invalid expressions and limits reject the document at load time.

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-10-03T18:00:00.000Z
+date: 2026-10-07T15:45:58Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -48,6 +48,10 @@ selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/langu
 | `/board show <id>` | `gloss.boards.show` | Show it to yourself |
 | `/board hide` | `gloss.boards.hide` | Hide your scoreboard |
 | `/board delete <id>` | `gloss.boards.delete` | Delete it |
+
+## Resource packs
+
+`/gloss forge build`, `status`, `export`, `serve`, and `reset` manage glyph fonts and pack delivery. Build and export prepare their results in the background and send completion feedback. See [Resource Packs & Glyph Fonts](/gloss/28-resource-packs) for arguments and permissions.
 
 ## Menus, panels, and previews
 
@@ -121,7 +125,7 @@ See [Data Files & Hot Reload](/gloss/03-data-files) for pack authoring and file 
 |---|---|---|
 | `/gloss debug version` | any Gloss command access | Show the installed plugin version |
 | `/gloss debug dump [upload=true]` | `gloss.debugdump` | Save a diagnostic report, uploading by default |
-| `/gloss status` | `gloss.admin` | Show feature counts |
+| `/gloss status` | `gloss.admin` | Show feature counts, display admissions/refusals and cleanup, and image cache size, memory weight, pending loads and refusals |
 | `/gloss emoji list` | `gloss.emoji.use` | List emoji |
 | `/gloss bubbles style <style>` | `gloss.bubbles.style` | Choose a bubble style |
 | `/gloss item status` | `gloss.items` | List custom-item providers |
@@ -135,7 +139,15 @@ See [Data Files & Hot Reload](/gloss/03-data-files) for pack authoring and file 
 | `/gloss web edit <kind> <id>` | `gloss.web.edit` | Edit one document |
 | `/gloss web workspace` | `gloss.web.workspace` | Open the complete workspace |
 | `/gloss import preview <source>` | `gloss.import` | Preview an import |
-| `/gloss import apply <source>` | `gloss.import.apply` | Apply an import without overwriting existing Gloss data |
+| `/gloss import apply <source>` | `gloss.import.apply` | Apply an import without overwriting existing Gloss data; document sources require your unchanged reviewed preview |
+| `/gloss import holoui [mode=preview] [overwrite=false]` | `gloss.import` | Preview HoloUi conversion; `overwrite=true` includes replacement of customized destinations |
+| `/gloss import holoui mode=apply` | `gloss.import.apply` | Apply your prepared HoloUi preview before its configured expiry |
+| `/gloss import legacy [mode=preview]` | `gloss.import` | Preview an older Gloss data upgrade |
+| `/gloss import legacy mode=apply` | `gloss.import.apply` | Apply the sender’s unchanged preview before its configured expiry, preserving originals and recording successful configuration conversion |
+
+For `featherboard`, `animated-scoreboard` and `tab`, run `preview` before `apply` from the same player or console. Each preview expires according to `[imports] previewLifetimeSeconds`. Source edits, changed destinations or a changed project document collection require a new preview. The import preserves source files and validates all resulting Gloss documents before writing.
+
+FeatherBoard and AnimatedScoreboard imports produce board and animation documents; imported boards require an explicit `select.when` before automatic selection. TAB imports global and per-group headers and footers. Other TAB features, per-world/per-server overrides and TAB-specific display conditions are reported as unsupported and require explicit Gloss configuration.
 
 ## Permissions
 

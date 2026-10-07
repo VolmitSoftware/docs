@@ -32,7 +32,7 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `util.nbt` / `util.nbt.mca` | NBT and region files |
 | `util.noise` / `util.interpolation` / `util.stream` | Seeded procedural fields and interpolation |
 | `util.hunk` / `util.math` | Three-dimensional storage, coordinates, and rarity selection |
-| `integration` | Cooperative plugin reload and Vault economy operations |
+| `integration` | Cooperative plugin reload, integration metrics, and Vault economy operations |
 
 For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/api/noise) and [Hunks and coordinate math](/volmlib/api/hunks).
 

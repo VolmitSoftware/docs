@@ -718,6 +718,91 @@
     header?.prepend(toggle);
   }
 
+  const sidebarWidthKey = 'volmit-sidebar-width';
+  const sidebarWidthMin = 240;
+  const sidebarWidthMax = 480;
+
+  function sidebarWidthLimit() {
+    if (window.innerWidth < 960) {
+      return sidebarWidthMax;
+    }
+    return Math.min(sidebarWidthMax, Math.max(sidebarWidthMin, window.innerWidth - 640));
+  }
+
+  function applySidebarWidth(app, width, remember) {
+    const next = Math.round(Math.min(sidebarWidthLimit(), Math.max(sidebarWidthMin, width)));
+    app.style.setProperty('--volmit-sidebar-width', next + 'px');
+    const handle = app.querySelector('.sidebar-resize');
+    if (handle) {
+      handle.setAttribute('aria-valuenow', String(next));
+    }
+    if (remember) {
+      try {
+        window.localStorage.setItem(sidebarWidthKey, String(next));
+      } catch {
+        // Private browsing can reject storage. The width still applies for this page.
+      }
+    }
+    return next;
+  }
+
+  function mountSidebarResize(app, sidebar) {
+    const handle = element('button', 'sidebar-resize');
+    handle.type = 'button';
+    handle.setAttribute('aria-label', 'Resize documentation sidebar');
+    handle.setAttribute('role', 'separator');
+    handle.setAttribute('aria-orientation', 'vertical');
+    handle.setAttribute('aria-valuemin', String(sidebarWidthMin));
+    handle.setAttribute('aria-valuemax', String(sidebarWidthMax));
+    let stored = 320;
+    try {
+      const raw = window.localStorage.getItem(sidebarWidthKey);
+      const value = Number(raw);
+      if (raw !== null && Number.isFinite(value) && value > 0) {
+        stored = value;
+      }
+    } catch {
+      stored = 320;
+    }
+    handle.setAttribute('aria-valuenow', String(applySidebarWidth(app, stored, false)));
+    handle.addEventListener('keydown', (event) => {
+      const current = Number.parseInt(app.style.getPropertyValue('--volmit-sidebar-width'), 10);
+      if (event.key === 'ArrowRight') {
+        applySidebarWidth(app, current + 16, true);
+      } else if (event.key === 'ArrowLeft') {
+        applySidebarWidth(app, current - 16, true);
+      } else if (event.key === 'Home') {
+        applySidebarWidth(app, sidebarWidthMin, true);
+      } else if (event.key === 'End') {
+        applySidebarWidth(app, sidebarWidthLimit(), true);
+      } else {
+        return;
+      }
+      event.preventDefault();
+    });
+    handle.addEventListener('pointerdown', (event) => {
+      if (window.innerWidth < 960) {
+        return;
+      }
+      event.preventDefault();
+      handle.setPointerCapture?.(event.pointerId);
+      const startX = event.clientX;
+      const startWidth = sidebar.getBoundingClientRect().width;
+      const move = (moveEvent) => {
+        applySidebarWidth(app, startWidth + moveEvent.clientX - startX, true);
+      };
+      const stop = () => {
+        handle.removeEventListener('pointermove', move);
+        handle.removeEventListener('pointerup', stop);
+        handle.removeEventListener('pointercancel', stop);
+      };
+      handle.addEventListener('pointermove', move);
+      handle.addEventListener('pointerup', stop);
+      handle.addEventListener('pointercancel', stop);
+    });
+    sidebar.append(handle);
+  }
+
   function mountProjectNavigation(app, main, content, project, path) {
     const overview = path === project.path;
     main.classList.add(overview ? 'volmit-project-overview' : 'volmit-reference-page');
@@ -786,6 +871,7 @@
     footer.append(link('Community support', 'https://volmitsoftware.com/discord'), link('Source on GitHub', 'https://github.com/VolmitSoftware'));
     nav.append(footer);
     sidebar.append(nav);
+    mountSidebarResize(app, sidebar);
     main.prepend(sidebar);
     mobileControls(app, main, nav);
     window.requestAnimationFrame(() => {

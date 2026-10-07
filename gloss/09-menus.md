@@ -2,13 +2,15 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-10-03T16:51:00.000Z
+date: 2026-10-07T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 A menu is a JSON document under `plugins/Gloss/menus/`. It can contain text, images, items, buttons and particle layers. Personal menus are visible only to the player who opens them; panels can show the same menu in the world.
+
+The `[visibility]` limits count every entity in a menu, including image rows and tooltip parts. The menu is admitted as one group, so reaching the limit does not leave an incomplete clickable menu. Refused menus retry during their normal updates. Reduced and minimal detail retain menu content and omit particle layers; culled detail hides the menu and disables its clicks.
 
 For menus drawn inside a Minecraft container screen, see [Inventory Menus](/gloss/09b-inventory-menus).
 

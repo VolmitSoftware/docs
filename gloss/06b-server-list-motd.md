@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Randomize the message and icon shown in the server list"
 published: true
-date: 2026-10-03T15:56:23.000Z
+date: 2026-10-07T20:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -50,9 +50,41 @@ An invalid document is rejected as a whole. Gloss keeps the built-in or last val
 
 `/gloss motd reset` restores the included document (permission `gloss.motd.reset`).
 
-The MOTD document also accepts `show`, defaulting to `true`. It is evaluated for each ping without
+The MOTD document also accepts `show`, defaulting to `true`. It is evaluated when the response snapshot refreshes, without
 a viewer or world. False leaves the existing ping response unchanged, including its player limit.
 Entry conditions use the same viewerless scope. Player and world conditions cannot match an unauthenticated ping. Use `server.online`, `server.maxPlayers` or calendar-time conditions here; see [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+
+## Selection and rotation
+
+`rotation` defaults to `{"mode":"weighted","intervalSeconds":60}`. `weighted` randomly selects among eligible entries using their weights; `first` selects the first eligible entry; `sequence` advances through eligible entries on each handled status request; `time` uses the current epoch time divided by `intervalSeconds` (1–86400). A sequence is shared by requests to this Gloss instance, including different hostnames. No eligible entry leaves the original response intact.
+
+Each entry accepts `select`:
+
+| Field | Meaning |
+|---|---|
+| `hostnames` | Exact requested hostnames or `*.example.org` suffixes; an empty list matches any host. Matching ignores case and a trailing dot; no DNS lookup is performed |
+| `minProtocol`, `maxProtocol` | Inclusive client protocol-number bounds. Unavailable or legacy protocol metadata does not match a bounded selector. Supported on Paper and Velocity |
+| `zone` | IANA time zone for calendar selection; defaults to `UTC` |
+| `startTime`, `endTime` | Paired `HH:mm` times, start inclusive and end exclusive. A range crossing midnight is supported; equal times cover the full day |
+| `days` | ISO weekdays, 1 (Monday) through 7 (Sunday); empty means every day. After midnight, the current calendar day applies |
+| `states` | Values matching top-level `state`, which defaults to `normal`. For example, set `state` to `maintenance` in the document |
+| `minOnline`, `maxOnline` | Inclusive real online-count bounds sampled at refresh, before display count overrides |
+
+```json
+{
+  "lines": ["&6Evening event", "&7Join the event world"],
+  "select": {
+    "hostnames": ["events.example.org"],
+    "zone": "UTC",
+    "startTime": "18:00",
+    "endTime": "23:00",
+    "states": ["normal"],
+    "minOnline": 1
+  }
+}
+```
+
+Status requests are unauthenticated. Hostnames and client protocol numbers are client-supplied routing metadata; they do not establish a player identity, permission, or entitlement. Player permissions, groups, personal locale, and per-player placeholders cannot select a status response.
 
 ## Server icon
 
@@ -61,6 +93,8 @@ it for that entry. Blank or absent at both levels leaves the vanilla `server-ico
 
 A 64×64 PNG in `plugins/Gloss/images/`. Anything else — a JPEG, a 128×128 image, a path outside
 that folder — is refused and logged, and that entry falls back to the vanilla icon.
+
+`icons` at document or entry level defines up to 64 PNG paths. The entry icon set takes precedence, followed by its single `favicon`, the document icon set, and the document `favicon`. Icon selection follows `rotation`: random for `weighted`, first for `first`, and the same sequence/time position for the other modes.
 
 Icons are decoded once per document change, never per ping. Replacing an image file on disk reaches
 the server list after the next `motd.json` change.
@@ -87,6 +121,10 @@ Besides its text, an entry can set the hover sample, the two player counts, and 
 | `entries[].max` | The count after the slash | Must render to a number |
 | `entries[].version` | The version name a client shows when its protocol does not match | Free text. The protocol number is untouched |
 
+`sampleMode` is `inherit`, `replace`, or `hide`. It defaults to `replace` when `sample` has lines and `inherit` otherwise. `hide` clears the hover sample; `replace` with an empty list also clears it.
+
+`counts` accepts `onlineMode` and `maximumMode` (`inherit`, `fixed`, or `offset`), with integer `onlineValue` and `maximumValue`. Offsets apply to the incoming response counts and clamp to 0–2147483647; fixed values must be nonnegative. These explicit policies take precedence over `online` and `max` text when their mode is not `inherit`. `counts.hide: true` hides the player-count section on Paper and Velocity. These fields change status presentation, not admission limits.
+
 The client measures latency and draws the ping bars. Gloss cannot set their strength or replace
 them with text. Setting `version` only changes the label shown to an incompatible client;
 compatible clients keep the player count and ping bars.
@@ -95,9 +133,7 @@ These fields go through the same static render as the MOTD text, described below
 are rendered and then read as a number; a value that does not render to one is skipped and logged
 once as `MOTD count "<raw>" did not render to a number.`
 
-An entry whose sample, counts, or version carries a `|function|` token or a `{{ expression }}` block
-is re-rendered on every ping, so a live count stays live. Everything else is rendered once per
-document revision.
+All text, conditions, and numeric expressions refresh outside ping handling. `[motd] snapshotRefreshTicks` controls the server refresh interval (default 20 ticks, range 1–1200). The Velocity edition uses `refreshMillis` from `proxy.json`. Counts and provider output can therefore be one refresh interval old. Incoming pings select a prepared response; they do not invoke providers, read image files, or run text expansions.
 
 Not every field reaches every server. On Spigot, only the MOTD text, the icon, and `max` are
 applied. `sample`, `online`, and `version` need Paper's server-list ping event. A server without it
@@ -110,9 +146,9 @@ keeps those parts of the vanilla response.
 <video src="/gloss-assets/demos/server-links-pov.webm" aria-label="Native pause-menu server links, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-`links` publishes the server links that appear in the client's pause menu. It needs the Paper
+`serverLinks: {"enabled": true, "links": [...]}` publishes the links that appear in the client's pause menu independently of `[features] motd`, document `show`, and entry selection. Set `enabled` to false to disable them. Existing top-level `links` remains supported when `serverLinks` is absent and follows the MOTD feature switch. It needs the Paper
 `ServerLinks` API, which is Paper 1.21 or newer; elsewhere the list is ignored. Links are published
-when the document loads and again whenever it changes, and Gloss removes only the ones it added when
+when the document loads and again whenever it changes, including players already connected. Gloss removes only the ones it added when
 the feature is turned off or the plugin disables.
 
 Each link needs a `url` and either a `type` or a `label`. A link with neither is rejected with
@@ -126,13 +162,13 @@ Each link needs a `url` and either a `type` or a `label`. A link with neither is
 
 An unknown `type` or a non-web `url` rejects the whole document, so the previous one stays active.
 
-While a Velocity Gloss proxy holds the MOTD claim, this server removes the links it published and publishes none; it republishes this list when the claim is released or expires. See [Velocity Proxy](/gloss/27-velocity).
+While a Velocity Gloss proxy holds the server-links claim, this server removes the links it published and publishes none; it republishes this list when the claim is released or expires. See [Velocity Proxy](/gloss/27-velocity).
 
 ## How a ping is answered
 
 `[features] motd` defaults to `false`. Turning it on extracts the bundled file and starts using it without a restart.
 
-Gloss evaluates each entry’s `show` condition for each request, then selects among passing entries according to `weight`. An omitted `show` is true; an omitted weight is 1. Weights are integers from 1 to 1000000, so a weight of 3 is three times as likely as a weight of 1. With no passing entries, the existing ping response remains unchanged. Entry conditions share the document’s viewerless server and time scope. Another MOTD plugin may override it if that plugin handles the event later.
+Gloss evaluates each entry’s `show` condition during snapshot refresh, then selects among passing entries according to `rotation` and the request selectors. With the default `weighted` rotation it uses `weight`. An omitted `show` is true; an omitted weight is 1. Weights are integers from 1 to 1000000, so a weight of 3 is three times as likely as a weight of 1. With no passing entries, the existing ping response remains unchanged. Entry conditions share the document’s viewerless server and time scope. Another MOTD plugin may override it if that plugin handles the event later.
 
 The chosen text is rendered **statically**:
 
@@ -150,9 +186,9 @@ Player PlaceholderAPI values do not resolve because a server-list request has no
 
 The current request latency is also unavailable. MOTD expressions can use time, server counts, TPS, and integration metrics. Use a fallback for any player-backed value.
 
-Animations use server time and work in the MOTD. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
+Animation tokens choose a frame when the response snapshot refreshes. The client shows that still frame until it requests status again; a server cannot continuously animate an already displayed server-list entry. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations).
 
-A render failure logs `MOTD render failed; keeping the server default.` and leaves that ping untouched.
+A refresh failure retains the previous prepared response and logs the cause. Until a first response is ready, Gloss leaves status unchanged.
 
 Edits to `motd.json` and to `[features] motd` in `gloss.toml` both apply automatically.
 

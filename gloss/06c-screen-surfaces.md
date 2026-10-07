@@ -2,7 +2,7 @@
 title: "Screen Surfaces"
 description: "Configure conditional action bars, boss bars, and titles"
 published: true
-date: 2026-10-03T15:33:39.029Z
+date: 2026-10-07T14:44:56.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-03T00:00:00.000Z
@@ -46,12 +46,16 @@ Save this example as `surfaces/health.json`:
 |---|---|
 | `surface` | Required: `actionbar`, `bossbar`, or `title` |
 | `show` | Boolean or condition; defaults to `true` |
+| `group` | Bossbar selection group, default `main`; 1–64 letters, digits, dots, underscores or hyphens, starting with a letter or digit |
+| `automatic` | Default `true`; `false` enables only event and action deliveries |
+| `delivery` | Queue, preemption, cooldown, deduplication, and waiting expiration for finite deliveries |
+| `on` | Up to 64 event or interval subscriptions |
 | `select.priority` | Document selection priority; defaults to `0` |
 | `select.when` | Condition; defaults to `false`, so omission keeps the document unselected |
 | `presentation` | Required fields for the selected surface |
 | `variants` | Unique `id`, integer `priority`, `when`, and complete replacement `presentation` |
 
-The file name without `.json` is the id. Each surface kind selects its highest-priority passing document; equal priorities use id order. The same order selects a variant. Text uses the shared [text pipeline](/gloss/07-emoji-text-animations#the-text-pipeline); conditions and progress use [expressions](/gloss/13-expressions-placeholders).
+The file name without `.json` is the id. Action bars and titles each select their highest-priority passing document; bossbars select independently within each `group`. Within a selection group, equal priorities use id order. The same order selects a variant. Text uses the shared [text pipeline](/gloss/07-emoji-text-animations#the-text-pipeline); conditions and progress use [expressions](/gloss/13-expressions-placeholders).
 
 ## Action bars
 
@@ -75,6 +79,10 @@ Boss-bar presentations require `title`. `progress` is an expression clamped to 0
 
 `color` accepts `pink`, `blue`, `red`, `green`, `yellow`, `purple`, or `white`, default `white`. `style` accepts `solid`, `segmented_6`, `segmented_10`, `segmented_12`, or `segmented_20`, default `solid`.
 
+`presentation.flags` accepts up to three distinct values: `darken_sky`, `play_boss_music`, and `create_fog`. An empty list removes the effects. These are Minecraft's native bossbar effects; the client controls their appearance and audio. Flags are valid only on bossbars.
+
+Set different root `group` names, such as `health` and `quests`, to display independently selected bars. All groups still share `[surfaces] maxBossBarsPerViewer` with participating plugins. A higher compositor priority can displace a lower one when that cap is reached.
+
 ## Titles
 
 Title presentations require `title`; `subtitle` defaults to empty. Use `fadeInTicks`, `stayTicks`, and `fadeOutTicks` for timing, defaulting to 10, 40, and 10. Each clamps to 0–1200.
@@ -93,6 +101,53 @@ Title presentations require `title`; `subtitle` defaults to empty. Use `fadeInTi
 
 `trigger` accepts `select` (default), `once`, or `repeat`. `select` fires when the selected document or variant changes. `once` fires once per viewer for that document during the connection. `repeat` uses `repeatTicks`, clamped to 1–72000 and raised to at least `stayTicks`; omission repeats at the stay duration.
 
+## Event and scheduled announcements
+
+Set `automatic: false` to keep a document out of continuous selection. Its `on` entries submit finite deliveries. Each entry requires `trigger`, accepts `when` (default `"true"`), and optionally delays submission with `delayTicks` (0–72000). `join` runs after joining; `world_change` runs on the backend; `server_change` runs only on Velocity. Unavailable platform events reject the document. `interval` requires `everyTicks` (1–1728000). Entry conditions and `select.when` both evaluate against the recipient when the event fires. `show` must still pass at delivery submission.
+
+Backend event and interval entries require `[features] behaviors`. They use the same event targeting and schedules as behavior documents. Delayed events follow the behavior timer limit. On Velocity, intervals and delays advance on the existing `refreshMillis` sweep, with at most 256 pending delayed triggers per viewer; excess triggers are rejected and logged.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "surface": "actionbar",
+  "automatic": false,
+  "select": {"when": "true"},
+  "on": [{"trigger": "interval", "everyTicks": 1200}],
+  "delivery": {
+    "mode": "queue", "preempt": "higher", "maxPending": 8,
+    "overflow": "reject", "cooldownTicks": 100,
+    "deduplicate": "purpose", "expireTicks": 200
+  },
+  "presentation": {"text": "&eVisit the market", "ttlTicks": 80}
+}
+```
+
+Actionbar and bossbar requests default to 100 ticks when `ttlTicks` is omitted. A title request lasts for its fade-in, stay, and fade-out total, with a one-tick minimum. Refreshing an active request does not restart its duration. Waiting expiration starts at submission; display duration starts when that request becomes active in its Gloss lane. Ordinary selected content returns when finite requests finish. Text and progress in a finite request are sampled when it is submitted.
+
+| `delivery` key | Default | Meaning |
+|---|---|---|
+| `mode` | `replace` | `queue` waits when interruption is disallowed; `replace` rejects in that case; `drop` rejects whenever busy |
+| `preempt` | `always` | `higher` interrupts only for higher presentation priority, `always` permits interruption, `never` waits or rejects. Applies to `queue` and `replace` |
+| `maxPending` | `32` | 1–256 waiting requests per viewer and native lane; each bossbar group is a separate lane |
+| `overflow` | `reject` | At capacity, reject the incoming request or use `drop-oldest` to discard the oldest waiting request |
+| `cooldownTicks` | `0` | 0–72000 ticks between accepted requests for this document |
+| `deduplicate` | `none` | `purpose` coalesces the same document; `content` coalesces identical rendered text; both include active and waiting requests |
+| `expireTicks` | `1200` | 1–72000 ticks a queued request may wait before being discarded |
+
+Preemption discards the interrupted request. Cooldown begins when a request is accepted, including acceptance into the queue. A rejected or coalesced request does not restart cooldown. The shared HUD compositor still arbitrates against other participating plugins; an accepted Gloss request does not force ownership from a higher-priority producer.
+
+Use a `surface` action in any behavior event, interval, scene, or menu to submit a named document. This example targets online players whose recipient condition passes:
+
+```json
+{"type":"surface","surface":"notice","audience":{"scope":"server","when":"hasPermission('viewer', 'gloss.notices')"}}
+```
+
+`audience.scope` defaults to `viewer`; `server`, `world`, and `radius` are also supported. World and radius scopes use the triggering player's location. Radius requires a positive `audience.radius` of at most 4096 blocks. `audience.when` is a boolean or expression, default `true`, evaluated for each recipient. Explicit actions use `show` and the audience condition; `select.when` remains automatic/event selection. Global behavior intervals can use server scope without a triggering player.
+
+The editor exposes automatic selection, bossbar group and flags, and delivery policy fields. Edit `on` in the JSON panel. Event-only documents remain silent in the automatic preview, and client sky, fog, and music effects require Minecraft to view.
+
 ## Settings and commands
 
 `[features] surfaces` defaults to `true`. Valid file edits reload automatically, and deleting a file removes that surface from selection. The included `welcome.json` has `select.when: "false"`, so edit that condition to show it.
@@ -100,7 +155,7 @@ Title presentations require `title`; `subtitle` defaults to empty. Use `fadeInTi
 | `[surfaces]` setting | Default | Range |
 |---|---|---|
 | `refreshIntervalTicks` | `10` | 1–200 |
-| `maxBossBarsPerViewer` | `3` | 1–8 |
+| `maxBossBarsPerViewer` | `3` | 1–64 |
 | `titleQueueLimit` | `8` | 1–64 |
 
 | Command | Permission | Result |

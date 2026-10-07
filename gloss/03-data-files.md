@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-10-03T14:34:30.000Z
+date: 2026-10-07T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -14,6 +14,7 @@ Gloss stores editable JSON under `plugins/Gloss/`.
 
 | Content | Path | Reset |
 |---|---|---|
+| Shared defaults and presets | `presets.json` | None |
 | Holograms | `holograms/<id>.json` | None |
 | Scoreboards | `boards/<id>.json` | `/gloss board reset [name=*]` |
 | Tablist | `tablist.json` | `/gloss tablist reset` |
@@ -59,11 +60,14 @@ Use the schema version for the document being edited:
 | Document | `schemaVersion` |
 |---|---|
 | Holograms | `3` |
-| Scoreboards and tablist | `2` |
+| Scoreboards | `2` |
+| Tablist | `3` |
+| Chat channels | `2` |
+| Behaviors | `2` |
 | Bubble styles | `5` |
 | Damage indicators and Real Drops | `4` |
 | Entity overlays | `2` |
-| Animations, emoji, MOTD, connections, panels, inventory menus, screen surfaces, markers, waypoints, and strings | `1` |
+| Presets, animations, emoji, MOTD, connections, panels, inventory menus, screen surfaces, markers, waypoints, and strings | `1` |
 | Menus and container previews | No version envelope |
 
 Gloss updates `revision` when it writes a versioned file. Hand edits to panel files must also increment it; other document kinds do not require a manual revision change. An invalid file leaves the previous valid version active. Menu and preview documents use their own root fields without `schemaVersion` or `revision`.
@@ -74,7 +78,49 @@ Display documents accept an optional boolean or expression `show` field, default
 See [Show conditions](/gloss/13-expressions-placeholders#show-conditions) for supported fields, contexts, and examples. Drop-label visibility uses
 `presentation.labels.show` in `real-drops/default.json`.
 
-Nametags, nameplates, and chat channels use schema `1`. Their permission, selection, and style edits reload automatically.
+Nametags and nameplates use schema `1`; chat channels use schema `2`. Their permission, selection, and style edits reload automatically.
+
+## Shared defaults and named presets
+
+Use `presets.json` for values shared by documents of the same kind. Keys are collection names such as `boards`, `holograms`, `menus`, or `surfaces`; single-file documents use `tablist`, `motd`, `names`, or `connections`.
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "defaults": {
+    "boards": {
+      "presentation": {"title": "Server", "layout": {"refresh": {"titleTicks": 40}}}
+    }
+  },
+  "presets": {
+    "boards": {
+      "compact": {"values": {"presentation": {"lines": ["Welcome", "Players: %server_online%"]}}},
+      "lobby": {"extends": "compact", "values": {"presentation": {"title": "Lobby"}}}
+    }
+  }
+}
+```
+
+Select a named preset in a document:
+
+```json
+{
+  "schemaVersion": 2,
+  "revision": 1,
+  "preset": "lobby",
+  "select": {"priority": 0, "when": "true"},
+  "presentation": {"title": "Welcome"}
+}
+```
+
+Values apply in this order: collection defaults, parent presets, selected preset, document fields, then the feature's selected conditional variant. Objects merge by field. Arrays replace the complete inherited array; they do not concatenate. An explicit `null` replaces an inherited value and then follows that field's normal null/default rules. The example keeps the preset's lines and global title refresh rate while using `Welcome` as its title.
+
+Presets cannot supply `schemaVersion`, `revision`, `id`, `uuid`, or another `preset` selection. Those remain document-owned. Missing parents, inheritance cycles, unknown collection names, and invalid resolved documents are errors. Preset names are local to their collection. Omitting `presets.json` preserves ordinary document behavior; omitting `preset` still applies that collection's global defaults.
+
+Catalog edits refresh dependent documents without rewriting their authored JSON or incrementing their revisions. Invalid edits retain the last working documents. A focused editor session carries a read-only preset snapshot and must be reopened if the server's catalog changes before publication. Workspace sessions can edit the catalog and dependent documents together.
+
+Open an existing catalog with `/gloss web edit presets presets`, or create it in the workspace editor. Visual edits and in-game menu, panel, board and hologram updates preserve inherited fields that were not changed. Catalogs are limited to 2 MiB of source, 128 nested object or array levels, and an estimated 64 MiB of prepared data including expanded parent presets.
 
 ## Reloading
 
@@ -92,7 +138,18 @@ Preview third-party hologram imports with:
 
 Apply them with `/gloss import apply <source>`. Supported sources are `gholo`, `decent-holograms`, `holographic-displays`, and `fancy-holograms`.
 
-Use `/gloss import holoui` for HoloUi data and `/gloss import legacy` for supported older Gloss data. Back up `plugins/Gloss/` first.
+For HoloUi data, run `/gloss import holoui mode=preview`, then `/gloss import holoui mode=apply` after reviewing the report. The prepared plan belongs to the command sender and expires after `[imports] previewLifetimeSeconds` (ten minutes by default). `/gloss import holoui mode=preview overwrite=true` explicitly prepares replacement of conflicting destination content; apply always uses the same reviewed plan. Changed source or destination files require a new preview. For older Gloss data, run `/gloss import legacy mode=preview`, review the reported changes and conflicts, then run `/gloss import legacy mode=apply`. Both import commands apply the sender’s captured preview, reject changed files, and require a new preview after its configured lifetime. Omitting the mode previews the upgrade. The `[imports]` file, preview-byte and path limits apply to source files, affected destinations, and complete-project validation; see [Configuration](/gloss/02-configuration). Preview requires `gloss.import`; applying requires `gloss.import.apply`.
+
+HoloUi imports preserve menu paths, panel IDs and UUIDs, menu references, and original source files. `boards/` becomes `panels/`. Preview language keys move from `holoui.preview.*` to `gloss.preview.*`, and historical `previewScale` and `previewLookDistance` settings become each imported preview's `scale` and `viewDistance`. Player scale preferences use the current UUID-to-number map. Editor credentials, sessions, transactions, backups, and regenerable custom-item exports are excluded.
+
+The report identifies exact copies and setting mappings, normalized approximations, unchanged content, unsupported settings, and destination conflicts. Unsupported content, invalid current documents, missing menu/image references, and duplicate panel UUIDs prevent the whole import. Customized destination settings require an overwrite preview. A successful transaction retains destination backups and writes `holoui-import.json` together with the imported content; failed imports do not mark completion. Repeating an unchanged import leaves files intact. HoloUi `language.yml` has no verified automatic conversion to the current localization catalog.
+
+
+A legacy import prepares and validates the resulting documents before writing. Resolve every reported unsupported format, invalid document or customized-document conflict before applying. If a source or destination changes during preparation, run the preview again. Original replaced files are retained under `editor-sync-backups/<transaction>/backup/`. The original `config.yml` remains unchanged; `legacy-import.json` records its successfully applied content hash so a repeated import does not overwrite later TOML edits.
+
+Supported historical envelopes are holograms 1–2, bubbles 1–4, boards 1, tablist 1–2, channels 1, behaviors 1, damage indicators 1–3, real drops 1–3 and entity overlays 1. Current envelopes are validated and retained. Conversion increments a changed document's revision once. The preview distinguishes exact conversions from approximations; wrapped legacy bubbles use one display block, and historical board group/permission fallback combinations need review across the converted boards.
+
+The YAML overlay transfers supported feature switches and refresh settings, tab headers and footers, bubble world exclusions, MOTD text, drop labels and indicator text, limits and motion rates. Bubble line staggering and the old indicator scatter distribution are approximations reported in the preview.
 
 ## Packs
 

@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-09-28T10:21:32.084Z
+date: 2026-10-07T18:30:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -60,8 +60,9 @@ Other paths appear only when Gloss has data to store:
 | `editor-sync-transactions/` | A web editor publication is in flight |
 | `editor-sync-backups/<id>/` | A web editor publication replaced at least one file |
 | `custom-items.json` | `/gloss item export` runs. Regenerable, so nothing preserves it |
-| `holoui-import.json` | The HoloUi importer runs. Its presence is what stops the boot-time import re-running |
-| `import-backups/<timestamp>/` | An explicit `/gloss import legacy` rewrites at least one file |
+| `holoui-import.json` | A HoloUi import commits successfully. Its presence prevents automatic repeat imports |
+| `editor-sync-backups/<transaction>/backup/` | A committed import or editor publication replaces existing files |
+| `legacy-import.json` | A legacy Gloss configuration import commits successfully |
 
 ## Defaults
 
@@ -88,4 +89,4 @@ Enabling a document-backed feature extracts its defaults on reload; `previews` n
 
 ## Import
 
-On first start, Gloss can import menus, images, panels, preview definitions, preview scales, and settings from `plugins/holoui` or `plugins/HoloUi`. It does not change that folder or copy session secrets. `/gloss import holoui` runs the same import later. HoloUi world boards are Gloss panels. `/gloss board` is the scoreboard command. See [Data files](/gloss/03-data-files).
+On first start, Gloss can import supported menus, images, panels, preview definitions, player preview scales, and settings from `plugins/holoui` or `plugins/HoloUi`. The source remains unchanged, and credentials and editor sessions are excluded. Existing destination conflicts or invalid documents prevent activation. For an explicit import, run `/gloss import holoui mode=preview`, review its results, then `/gloss import holoui mode=apply`; see [Data files](/gloss/03-data-files). HoloUi world boards become Gloss panels; `/gloss board` controls scoreboards.

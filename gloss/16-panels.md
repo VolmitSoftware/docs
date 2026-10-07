@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-07T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -11,6 +11,8 @@ A panel places a persistent hologram menu at a world location. Panel documents l
 `plugins/Gloss/panels/` and point to a menu document for their content.
 
 ## Panels, holograms, menus and boards
+
+Each viewer’s panel uses the `PANEL` limits in `[visibility]`, counting the actual menu entities, including image rows. Admission applies to the whole menu; hidden or refused panels do not receive clicks. Reduced and minimal detail omit menu particle layers, while culled detail hides the panel.
 
 | Feature | What it is | Where it lives | Command |
 |---|---|---|---|

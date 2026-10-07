@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-07T21:46:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,6 +12,8 @@ Container previews show a private holographic card when a player looks at a supp
 Preview layouts are JSON documents in `plugins/Gloss/previews/`. Gloss includes 14 layouts, supports
 custom ones, and reloads the folder while the server runs. `/gloss web edit container-preview <id>`
 opens one in a restricted live editor session; `/gloss web workspace` includes every preview.
+
+Container preview cards use the `PREVIEW` limits in `[visibility]`. All content and card parts are admitted together; a refused preview remains hidden until its normal updates can admit it. Reduced and minimal detail omit particle layers, and culled detail hides the card.
 
 ## What triggers a preview
 
@@ -98,6 +100,11 @@ Each `.json` file in `plugins/Gloss/previews/` defines one preview, and its id i
 without `.json`. Preview documents have no `schemaVersion` or `revision`, and subfolders are
 ignored. `scale` defaults to `0.65` (range `0.25`–`4`) and `viewDistance` to `10` blocks
 (range `1`–`24`). Discovery and retention use the matched document’s viewing distance.
+`contentRefreshTicks` controls live slot, label, color and visibility refreshes (default `4`);
+`accessCheckTicks` controls container-protection rechecks (default `10`). Both accept integers
+from `1` through `1200`, and neither can disable checking. An access recheck also refreshes content.
+Lower access intervals detect protection changes sooner; changed access closes the current preview.
+Valid document reloads rebuild open previews using the new intervals. The editor exposes both under Refresh.
 All top-level keys are optional:
 
 ```json
@@ -129,7 +136,7 @@ rules JSON Schema cannot express.
 `show`, `card.show` and `elements[].show` take booleans or preview expressions and default to
 `true`. The document gate hides the whole preview without selecting another document; `card.show`
 combines with `card.framed` and hides only the frame and title chrome; element `show` combines with
-`visible`. Dynamic gates update every four ticks while open, so hidden content returns without
+`visible`. Dynamic gates update at `contentRefreshTicks` and on access rechecks while open, so hidden content returns without
 reopening.
 
 Use preview state and declared `vars.*` values, as in `"show": "cookTime > 0"` or `"show":
@@ -299,10 +306,10 @@ elements are skipped.
 
 ### What is live and what is not
 
-`cell.color`, `label.text` and the visibility fields update every four ticks, and a visibility
+`cell.color`, `label.text` and the visibility fields update at `contentRefreshTicks` and on access rechecks, and a visibility
 change rebuilds the layout. Positions, sizes, `z`, panel and well colors, repeat counts and the
 other card fields are evaluated at build. The item in a `slot` is not an expression: the renderer
-re-reads that inventory slot on the same four-tick beat and swaps the item and count when it
+re-reads that inventory slot on the same refresh cadence and swaps the item and count when it
 changes.
 
 ### Failure policy
@@ -436,7 +443,7 @@ own variables, so all three share the layout with different colors and titles:
 - `sin(time / vars.pulseRate + i)` gives each cell its own phase, and `mix(vars.fill, vars.pulse,
   ...)` turns that phase into a color pulse.
 
-`cell.color` refreshes every four ticks; `x` is evaluated when the layout builds. Recolor an
+`cell.color` refreshes at `contentRefreshTicks` and on access rechecks; `x` is evaluated when the layout builds. Recolor an
 existing cell with a color expression, or use `show`/`visible` to remove and restore it.
 
 ### Inventory, formatting and state labels

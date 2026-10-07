@@ -2,7 +2,7 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-10-03T16:00:00.000Z
+date: 2026-10-07T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
@@ -75,7 +75,9 @@ On first start, Gloss can import menus, images, panels, previews, and settings f
 - [Web Editor & Sync](/gloss/18-web-editor)
 - [Web editor tutorial](/gloss/18-web-editor-tutorial)
 - [Localization](/gloss/19-localization)
+- [Behaviors and State](/gloss/19b-behaviors)
 - [Particle Layers](/gloss/25-particle-layers)
+- [Resource Packs & Glyph Fonts](/gloss/28-resource-packs)
 {.links-list}
 
 ## Developer API

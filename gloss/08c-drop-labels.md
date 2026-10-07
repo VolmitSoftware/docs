@@ -2,13 +2,15 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-10-05T17:37:52.000Z
+date: 2026-10-07T23:55:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 Gloss can label dropped items and render them as display-backed models.
+
+The `DROP` limits in `[visibility]` apply to drop labels, their boxes and real-drop cosmetic models. Refusing a cosmetic model keeps the original dropped item visible for that viewer. Entity limits do not delete items or change pickup, merging or despawn rules. Labels and models use separate admission groups.
 
 Open the editor with `/gloss web edit real-drops default`. Documents are schema 4.
 
@@ -168,6 +170,7 @@ The table below uses paths relative to `presentation`; the same fields exist ins
 | `labels.bundle` | See [Bundles](/gloss/08c-drop-labels#bundles) | Bundle label text and entry limit |
 | `labels.style` | See below | Shared Gloss display style, including independent XYZ scale, billboard, alignment, opacity, lights, view range, culling, and glow |
 | `labels.box` | Disabled | Shared padded background and uniform border; colors use `#AARRGGBB` |
+| `labels.refresh` | Normal temporary-display cadence | Optional `contentTicks`, `visibilityTicks`, and `motionTicks`, each 1–1200 ticks |
 | `filters.disabledWorlds` | `[]` | Case-insensitive world folder names that retain vanilla rendering |
 | `filters.materialBlacklist` | `["BEDROCK", "BARRIER"]` | Case-insensitive material names that retain vanilla rendering |
 | `filters.onlyPlayerDrops` | `false` | Requires a non-null item thrower UUID |
@@ -176,6 +179,8 @@ The table below uses paths relative to `presentation`; the same fields exist ins
 An omitted `labels.style` uses center billboard, glyph shadow, see-through, center alignment, background `#50000000`, opacity 255, line width 16384, view range 0.5, and scale 0.85 on each axis. Display-style view range is a native multiplier: 0.5 corresponds to 32 blocks. Fields omitted from an explicitly supplied style use the shared display defaults. See [Icons](/gloss/11-icons) for field ranges.
 
 `labels.box` accepts `enabled`, `padding` (0–64 font pixels), `borderWidth` (0–16 font pixels), `backgroundArgb`, and `borderArgb`. A visible box uses up to five extra display parts. The Real Drops chunk budget reserves the label and its maximum box parts; personalized boxes are sent only to their viewer. The box follows the item, label scale, billboard, and audience; it is removed with the label. Ordinary Gloss-owned drop names also use the shared style and box when Real Drops models are disabled. Externally authored item names remain subject to `preserveCustomNames`.
+
+`labels.refresh.contentTicks` controls dynamic label text reevaluation, and `labels.refresh.visibilityTicks` controls viewer condition checks. Omitted fields keep the normal cadence. Updates run on the temporary-display interval, `[holograms] temporaryUpdateIntervalTicks`. `motionTicks` applies to sampled temporary-display bindings; item movement and cosmetic models continue to use the Real Drops movement settings. Stack changes, pickup, and removal still update the label directly.
 
 Labels retain their authored functions, viewer expressions, and named particle spans. Viewer-dependent formats keep a literal count/type name on the underlying item; their authored text is evaluated only for the player viewing the label. Label particles use the label's vertical offset and the configured global particle range; a larger display view range does not increase the particle range.
 

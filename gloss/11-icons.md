@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-07T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -172,7 +172,7 @@ Text also re-renders when the component opens, when the session rescales after a
 
 Image assets live in `plugins/Gloss/images/`. Paths are relative to that folder and cannot be URLs. Blank, absolute, missing, directory, traversal and symlink-escape paths are rejected, and API paths are limited to 256 characters with no control characters or `:`. Adding, replacing or removing an image refreshes open menus and panels automatically.
 
-Images are limited to 16 by 16 pixels; anything larger shows the missing-image checkerboard. Transparency is binary — any pixel below full alpha becomes a transparent spacer, and JPEG has no alpha channel at all.
+Text rasters default to a maximum of 16 by 16 pixels. Set `[images] rasterMaxDimension` from 1 through 128 to change that limit; larger images require a declared pack glyph or show the missing-image checkerboard. Source files also obey `[images] maxFileBytes`, `maxDimension`, and `maxPixels`. Images prepare in the background, with a checkerboard shown until preparation finishes; open menus and panels refresh automatically. Transparency is binary — any pixel below full alpha becomes a transparent spacer, and JPEG has no alpha channel at all.
 
 ## `animatedTextImage`
 
@@ -297,7 +297,7 @@ The `scale` command property sets all three scale axes and `brightness` sets bot
 | `entity` | | An entity id, lower-cased for you | `{"type":"entity","entity":...}` |
 | `customItem` | `customitem` | `provider@item` | `{"type":"customItem","provider":...,"item":...,"count":1}` |
 
-Type names ignore case, hyphens and underscores. Replacing an icon keeps its style unless the new type is `entity`. `/gloss menu image <menu> <path>` replaces the component list with one centered image.
+Type names ignore case, hyphens and underscores. Replacing an icon keeps its style unless the new type is `entity`. `/gloss menu image <menu> <path>` replaces the component list with one centered image. A command referencing an image that has not finished preparing asks you to retry shortly; it leaves the existing menu intact.
 
 ## When an icon fails
 

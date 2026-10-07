@@ -2,7 +2,7 @@
 title: "Inventory Menus"
 description: "Build item-slot menus with masks, actions, conditional layouts, and paged lists"
 published: true
-date: 2026-10-03T13:23:12.000Z
+date: 2026-10-07T21:45:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-03T00:00:00.000Z
@@ -48,7 +48,8 @@ Save this example as `inventories/supplies.json`, then run `/gloss inventory ope
 | `mask` | `[]` | Rows of characters describing the slot layout; each row must have exactly the window width |
 | `keys` | `{}` | A component body for each named mask character |
 | `slots` | `{}` | Component bodies keyed by zero-based slot index; these override mask entries |
-| `show` | `true` | Boolean or viewer condition checked when opening |
+| `show` | `true` | Boolean or viewer condition checked when opening and at the condition refresh rate; a false result closes the menu |
+| `refresh` | Dynamic, 20 ticks | Separate title, slot, condition and list refresh rates |
 | `closeOnTeleport` | `true` | Close when the viewer teleports, when also enabled in `[inventories]` |
 | `variants` | `[]` | Conditional presentations selected for the viewer |
 
@@ -61,17 +62,19 @@ An unmapped mask character leaves an empty slot. Fewer mask rows are allowed; un
 <video src="/gloss-assets/demos/inventory-menus-pov.webm" aria-label="Inventory menu interaction, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Buttons use their `icon` and `actions`. Decorations supply an item without click actions. A toggle supplies its `trueIcon` and `trueActions` as a clickable slot; inventory slots do not switch between toggle states. Slider and field components belong to [hologram menus](/gloss/09-menus).
+Buttons use their `icon` and `actions`. Decorations supply an item without click actions. A toggle compares its rendered `condition` and `expectedValue`, ignoring case, to choose `trueIcon` or `falseIcon`. Clicking the true state runs `falseActions`; clicking the false state runs `trueActions`. When the action chain continues, the toggle switches state. Dynamic conditions are checked again when slots refresh. Slider and field components belong to [hologram menus](/gloss/09-menus).
 
 Vanilla items, blocks, player heads, and supported custom items have item forms. A `text` icon becomes paper named with that text. `textImage`, `animatedTextImage`, and entity icons use `[inventories] unsupportedIconItem`, with a lore line identifying the unsupported icon type. Use item icons when the screen must show an actual model.
 
 Slots accept the shared [Actions](/gloss/12-actions), including command, message, prompt, and navigation actions. Left, right, shift-left, and shift-right clicks map to the same trigger names as hologram buttons. A `navigate` action ends the current action chain.
 
+Declare reusable lists in the root `actions` object and invoke them with `{"type":"call","action":"name"}`. Named calls also work in toggle branches, conditional variants, paged list templates, and dialog callbacks. Prompt and dialog continuations keep the original inventory's session values after its container closes; opening a replacement Gloss inventory invalidates those old continuations.
+
 `navigate` modes `push`, `replace`, `back`, `home`, and `close` operate on inventory menus. An inventory session keeps its own navigation history and opening arguments. Use `args.<key>` in expressions for values passed through the command's `args=` argument.
 
 ## Paged lists
 
-A `list` fills every occurrence of one mask character with entries from a source expression. The expression must return a list. Each entry is available under the variable named by `var` when the template icon renders.
+A `list` fills every occurrence of one mask character with entries from a source expression. The expression must return a list. Each entry is available under the variable named by `var` when the template icon renders and when its click actions run.
 
 ```json
 "mask": ["LLLLLLLLL", ".........", "P.......N"],
@@ -93,7 +96,21 @@ A `list` fills every occurrence of one mask character with entries from a source
 
 `area` must be exactly one character present in the mask. `var` must match `[a-z][a-z0-9_]*`. `pageSize` defaults to the number of matching cells; a positive override determines the entries per page. Use `navigate` with `mode: "page"` and `target: "next"`, `"prev"`, or a zero-based page number. Page targets clamp to the available range.
 
-Viewer-dependent sources refresh at `refreshTicks`, default 20 and clamped to 0–1200. Zero disables those refreshes. Constant lists render when opening or changing pages.
+List sources or template icons that depend on viewer or time values refresh at `refreshTicks`, default 20 and clamped to 0–1200. `refresh.listTicks` overrides that interval. Constant lists with static icons render when opening or changing pages.
+
+## Refresh rates
+
+```json
+"refresh": {
+  "mode": "dynamic",
+  "titleTicks": 20,
+  "slotsTicks": 10,
+  "conditionsTicks": 20,
+  "listTicks": 40
+}
+```
+
+`dynamic` refreshes categories with changing content; `always` also refreshes static content. Title, slot and condition intervals default to 20 ticks. The list interval defaults to `list.refreshTicks`. Every interval accepts 0–1200; zero disables automatic refresh for that category, while opening, clicking a toggle and changing pages can still update it. Conditions control document visibility and selection of variants. Titles retain the same native window when their rendered text has not changed. Slot updates retain the container's item-transfer protection.
 
 ## Conditional layouts and reload
 

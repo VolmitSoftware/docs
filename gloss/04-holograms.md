@@ -2,13 +2,15 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-10-03T15:34:39.000Z
+date: 2026-10-07T23:55:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 Each JSON file in `plugins/Gloss/holograms/` defines one persistent hologram. The file name is the hologram ID, and command or file edits apply live.
+
+Hologram text, object lines and box parts share the limits in `[visibility]`. Each entity shown to one viewer consumes one unit; a world display shown to ten viewers consumes ten units. A refused group stays hidden and retries on its next refresh. Reduced and minimal detail omit boxes and particle layers; culled detail hides the hologram. Text and object-line groups are admitted independently of optional boxes. World displays require a server API that can hide an entity before viewer admission; Gloss does not publish a display when that capability fails.
 
 `/gloss web edit hologram <id>` opens one hologram in a restricted live editor session; `/gloss web workspace` includes every hologram. Check text size and placement in a Minecraft client, since the browser preview does not reproduce the client renderer.
 
@@ -46,6 +48,7 @@ Each JSON file in `plugins/Gloss/holograms/` defines one persistent hologram. Th
 | `lines` | no | Absent or `null` becomes an empty list. A `null` entry becomes an empty string |
 | `viewDistance` | no | Viewing radius in blocks, default `48`, range `4`–`128` |
 | `refreshTicks` | no | Ordinary text refresh interval, default `10`, range `1`–`200` ticks |
+| `refresh` | no | Optional independent `contentTicks`, `visibilityTicks`, and `motionTicks`, each `1`–`1200` |
 | `style` | no | Shared display style. An omitted object uses `center` billboard, see-through text, unit XYZ scale, transparent text background and full opacity |
 | `box` | no | Optional measured panel with a complete perimeter; disabled by default |
 | `yaw` | no | Finite degrees from `-180` through `180`; defaults to `0` |
@@ -196,7 +199,7 @@ Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the 
 
 ## Rendering
 
-Style, orientation and visibility edits apply to the existing display, and box geometry follows text, animation frames, orientation and scale. Ordinary text refreshes every document `refreshTicks` (default 10, range 1–200); clock expressions and named animations can refresh every tick. Empty holograms and holograms in unloaded worlds do not render. Lines are rendered by the shared text pipeline described on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
+Style, orientation and visibility edits apply to the existing display, and box geometry follows text, animation frames, orientation and scale. Ordinary text refreshes every document `refreshTicks` (default 10, range 1–200); clock expressions and named animations can refresh every tick. Optional `refresh.contentTicks` sets the interval for dynamic content, `refresh.visibilityTicks` sets condition and presentation selection intervals, and `refresh.motionTicks` sets object-line and box update intervals. Each accepts 1–1200 ticks. Omitted fields retain the normal cadence. Conditional lines may refresh sooner when needed for visibility. Particle emission and animation playback retain their own clocks; direct document edits apply without waiting for these intervals. Empty holograms and holograms in unloaded worlds do not render. Lines are rendered by the shared text pipeline described on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
 
 `[features] holograms = false` despawns every hologram on the next driver tick. Documents still load, hot-reload and accept command edits. Nothing renders.
 
@@ -226,7 +229,7 @@ Temporary holograms also accept particle layers through the API, and rendered-on
 
 ## Import
 
-`/gloss import legacy` converts an old hologram file into the current envelope and copies the original into `import-backups/<timestamp>/holograms/`. Files that already use an envelope are skipped.
+`/gloss import legacy mode=preview` lists conversions of old hologram files without writing. `/gloss import legacy mode=apply` validates the complete import and saves the original files under `editor-sync-backups/<transaction>/backup/holograms/` before replacing them. Current envelopes remain unchanged. Resolve reported conversion errors or conflicts before applying.
 
 ## World markers
 
@@ -240,9 +243,11 @@ Temporary holograms also accept particle layers through the API, and rendered-on
 <video src="/gloss-assets/demos/marker-editor.webm" aria-label="Marker authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
+Marker parts use the `MARKER` limits in `[visibility]`, including every image row in an icon. Reduced detail keeps the label and icon; minimal detail keeps the label; culled detail hides the marker. Beams, edge arrows and particle trails require full detail. Native locator entries have no display-entity cost.
+
 Files in `markers/<id>.json` use schema 1 and require an `anchor`. A fixed anchor has `world`, `x`,
 `y`, and `z`; a following anchor has either a player account name in `player` or an entity UUID in
-`entity`. Specify exactly one anchor form.
+`entity`. Specify exactly one anchor form. Following locations are captured on the target entity’s owning region and shared between viewers; the `[markers]` anchor settings control their refresh interval, maximum age, and cache size. An unavailable or expired target hides until a fresh capture succeeds.
 
 ```json
 {
@@ -296,6 +301,6 @@ Files in `waypoints/<id>.json` describe native locator-bar entries for Java clie
 }
 ```
 
-`style` is `default` or `bowtie`. `range` defaults to zero for an exact position; beyond a positive range, the locator receives direction only. `show` and `audience.when` limit which viewers receive the entry. Enable the waypoint module in `gloss.toml`; Bedrock clients do not receive locator-bar packets.
+`style` accepts `default`, `bowtie`, or a namespaced style such as `trails:quest` declared in [resource-pack waypoint styles](/gloss/28-resource-packs#waypoint-styles). Custom styles appear after the viewer loads the current Gloss pack; `fallbackStyle` selects `default` or `bowtie` while the style or pack is unavailable. `range` defaults to zero for an exact position; beyond a positive range, the locator receives direction only. `show` and `audience.when` limit which viewers receive the entry. Enable the waypoint module in `gloss.toml`; Bedrock clients do not receive locator-bar packets.
 
 `/gloss waypoint set <name>` saves a player's current position, and `/gloss waypoint remove <name>` deletes that personal entry; both require `gloss.waypoints.self`. `/gloss waypoint list` requires `gloss.waypoints.list`. `/gloss waypoint info <id>` inspects a file-backed entry and requires `gloss.waypoints.info`. Plugin authors can register viewer-specific entries with `Waypoints.track(...)`; see [API: Getting Started](/gloss/21-api-getting-started).

@@ -2,13 +2,15 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-07T21:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 The `components` array holds buttons, decorations, toggles, sliders, input fields, lists, and tabs. See [Hologram Menus](/gloss/09-menus), [Icons](/gloss/11-icons) and [Actions](/gloss/12-actions).
+
+Hologram interaction entities count against the `HOLOGRAM` limits in `[visibility]` and require the hologram to be visible to that viewer. A refused or culled hitbox cannot receive clicks and retries on the next interaction refresh. Menu and panel clicks also require their visible menu group to be admitted.
 
 ## The component entry
 

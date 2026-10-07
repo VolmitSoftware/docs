@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-10-03T16:30:29.206Z
+date: 2026-10-07T21:45:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -23,7 +23,9 @@ Every action is a JSON object with a required `type` discriminator and an option
 | `connect` | Requests a BungeeCord-compatible proxy transfer |
 | `navigate` | Changes that viewer's menu page stack |
 | `prompt` | Requests sign, anvil, or chat input and runs continuation actions |
-| `title`, `actionbar`, `bossbar` | Displays a screen notice |
+| `dialog` | Opens a native Java dialog with validated inputs and button actions |
+| `call` | Runs a named action list declared by the menu or inventory |
+| `title`, `actionbar`, `bossbar`, `surface` | Displays a screen notice or submits an authored surface |
 | `close`, `inventory`, `book` | Closes the flow or opens another client interface |
 | `setSession` | Writes a value used by the current menu session |
 | `give`, `take`, `economy` | Gives or removes items, or uses a Vault economy provider |
@@ -51,6 +53,68 @@ A missing or unknown `type` rejects the menu file. Unknown extra keys inside a v
 Values are exact and case-sensitive, and the four physical values are mutually exclusive: a shift-left-click does **not** match a `left_click` binding. Off-hand interactions are ignored.
 
 Actions also accept `when`, a boolean condition evaluated for the click context, and `cooldownTicks`, a nonnegative delay before the same action may run again for that viewer. An unmet condition or active cooldown skips the action. For `if`, `when` chooses its `then` or `else` branch instead of skipping the action.
+
+## Named actions
+
+Menus and inventories can declare an `actions` object at the document root. Each key names an ordinary action array. Use `call` from a button, toggle, list template, variant, or nested action to run it in the same viewer, arguments, list-entry, and session scope. Conditions, triggers, delays, and terminal actions retain their usual behavior.
+
+```json
+{
+  "actions": {
+    "saved": [
+      {"type": "message", "message": "<green>Saved.</green>"},
+      {"type": "sound", "sound": "ui.button.click"}
+    ]
+  }
+}
+```
+
+Place `{"type":"call","action":"saved","when":"true","cooldownTicks":20}` in an action list. Names use 1–64 letters, digits, underscores, or hyphens. A document supports up to 256 named lists and 32 nested calls. Missing names, cycles, and expansion above 100,000 JSON nodes reject the document. Calls remain named references when saved; common lists can also come from a document preset. Other document kinds do not accept `call`.
+
+## `dialog`
+
+Native dialogs require both the Java client and server to support Minecraft 1.21.6 or newer. A dialog ends its originating action chain; put follow-up work in its buttons. `unsupported` runs when a native dialog cannot open. Native dialogs use Minecraft's fixed layout and controls. They do not provide arbitrary custom screens, and the client controls the server-dialog warning and screen styling. See the [Minecraft dialog specification](https://www.minecraft.net/en-us/article/minecraft-java-edition-1-21-6).
+
+```json
+{
+  "type": "dialog",
+  "kind": "confirmation",
+  "title": "Choose a label",
+  "body": [{"text": "Enter the label to save.", "width": 240}],
+  "inputs": [{"key": "label", "type": "text", "label": "Label", "maxLength": 32}],
+  "buttons": [
+    {"label": "Save", "actions": [{"type": "setSession", "var": "label", "value": "input.label"}]},
+    {"label": "Cancel", "actions": []}
+  ],
+  "timeoutTicks": 1200,
+  "unsupported": [{"type": "prompt", "kind": "chat", "var": "label", "label": "Enter a label"}]
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `title` | Rendered dialog title |
+| `kind` | `notice` has one button; `confirmation` has two; `multi_action` has 1–64 |
+| `body` | Up to 64 text objects with `text` and `width` (1–1024, default 200) |
+| `inputs` | Up to 64 native controls, described below |
+| `buttons` | Objects with `label`, optional `tooltip`, `width` (1–1024, default 150), and `actions`; omission creates an OK button |
+| `exitButton` | Optional button for `multi_action` only |
+| `columns` | `multi_action` button columns, 1–64, default 2 |
+| `escape` | Allows Escape to close, default true; a notice runs its only button, confirmation runs its second button, and multi-action uses its exit button when present |
+| `timeoutTicks` | Lifetime from opening, 1–72,000 ticks, default 1,200 |
+| `onTimeout` | Actions when the current unanswered dialog expires |
+| `unsupported` | Actions when native dialogs cannot open |
+
+Each input requires a unique `key` of 1–64 letters, digits, or underscores. Submitted values are available as `input.<key>` throughout button actions, including delayed actions. Every response is checked against the declared keys, types, choices, length, and numeric range before actions run.
+
+| Input `type` | Fields and submitted value |
+|---|---|
+| `text` | `label`, `width` (default 200), `labelVisible` (default true), string `initial`, `maxLength` (1–4096, default 32); returns a string. `maxLines` (1–4096) or `height` (1–512) enables multiline input |
+| `boolean` | `label`, boolean `initial` (default false); returns a boolean |
+| `single_option` | `label`, `width`, `labelVisible`, 1–64 `options` with unique `id` (1–256 characters) and optional `label`; string `initial` names an option. Returns the selected id |
+| `number_range` | `label`, `width`, distinct finite `start` and `end`, optional numeric `initial` within the range, optional positive `step`, and `labelFormat` (default `options.generic_value`); returns a number. Steps are relative to the initial value, which defaults to the range midpoint |
+
+Input widths are 1–1024. The combined input length budget is 16,000 characters: text contributes its `maxLength`, other controls contribute 256 each. Dialogs close after a button is selected, and each response runs at most once. Opening another form replaces the previous form. A replaced dialog, foreign dialog, world reset, disconnect, or service reload invalidates its response. Timed-out dialogs close only while Gloss still owns that screen. Actions from a replaced menu or inventory session do not mutate the new session.
 
 ## `prompt`
 
@@ -205,6 +269,26 @@ With `[features] menus = false`, every navigation mode except `close` is denied.
 
 `book` accepts `title`, `author`, and `pages`, an array of up to 100 text pages of 1,024 characters each. Its default title is `Book` and author is `Server`; opening it leaves the menu session in place.
 
+## Camera rides
+
+`camera` follows a spline in the viewer's current world. Each `path` node supplies `x`, `y`, and `z`, with optional `yaw`, `pitch`, and `durationTicks` (default `20`). `skippable` defaults to `true`; sneaking ends a skippable ride. `letterbox` requests the configured title provider's bars and defaults to `false`. `[camera] maxRideSeconds` limits the path duration.
+
+```json
+{
+  "type": "camera",
+  "path": [
+    { "x": 0, "y": 80, "z": 0, "yaw": 0, "pitch": 10, "durationTicks": 80 },
+    { "x": 0, "y": 80, "z": 20, "yaw": 90, "pitch": 10, "durationTicks": 0 }
+  ],
+  "skippable": true,
+  "letterbox": false
+}
+```
+
+The viewer enters spectator mode while following the camera carrier. Ending the ride returns them to their saved position, game mode, flight settings, and velocity. A transfer already in progress finishes before restoration begins. A player cannot begin another ride while a previous ride still needs restoration.
+
+Recovery state is saved before the ride begins and retained until the return teleport and player-state restoration succeed. If the player disconnects or restoration cannot complete during shutdown, recovery is retried on their next join or respawn. The saved world must be available for that return. A camera action ends its click action list; inside a timed sequence, later cues still run.
+
 ## Screen notices
 
 ```json
@@ -214,6 +298,8 @@ With `[features] menus = false`, every navigation mode except `close` is denied.
   { "type": "bossbar", "id": "journey", "title": "Preparing departure", "progress": "0.75", "color": "blue", "style": "solid", "ticks": 100 }
 ]
 ```
+
+`{"type":"surface","surface":"notice","audience":{"scope":"server","when":"viewer.op"}}` submits an authored `surfaces/notice.json` through its configured delivery policy. Audience scope defaults to `viewer`; `server`, `world`, and `radius` select recipients, with a positive `radius` of at most 4096 blocks required for radius scope. The audience condition evaluates per recipient. See [event and scheduled announcements](/gloss/06c-screen-surfaces#event-and-scheduled-announcements) for queues, cooldowns, expiration, and behavior schedules.
 
 These notices accept a surface `priority`, defaulting to `notice`. Action-bar slots are `left`, `center`, and `right`. Boss-bar `progress` is a numeric string from `0` to `1`; `ticks: 0` removes that bar. See [Screen Surfaces](/gloss/06c-screen-surfaces) for priorities, colors, and styles.
 
@@ -300,7 +386,7 @@ Declare a key through the [state API](/gloss/21-api-getting-started#persistent-s
 ]
 ```
 
-Release that sky purpose with `{ "type": "sky", "purpose": "shop-preview", "time": "reset" }`. Glow accepts `viewer`, `subject`, or an entity UUID as `target`, a named text `color`, and optional `purpose`, `priority`, and `ticks`. A glow lifetime of `0` persists until removed by its owner. Other plugins can create outlines and beams through the [public API](/gloss/21-api-getting-started).
+Release that sky purpose with `{ "type": "sky", "purpose": "shop-preview", "time": "reset" }`. Sky purposes compose time, weather, and border independently: releasing a time-only purpose preserves another purpose's weather. Updates are queued per viewer and save recovery state before changing the player; release or shutdown clears that state only after restoration succeeds. `[sky]` sets fade cadence and admission limits. Glow accepts `viewer`, `subject`, or an entity UUID as `target`, a named text `color`, and optional `purpose`, `priority`, and `ticks`. A glow lifetime of `0` persists until removed by its owner. Other plugins can create outlines and beams through the [public API](/gloss/21-api-getting-started).
 
 ## Execution order
 

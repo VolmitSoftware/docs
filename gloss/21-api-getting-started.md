@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-10-05T17:37:52.000Z
+date: 2026-10-07T15:57:31Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -92,6 +92,8 @@ tag.viewers().whitelist();
 tag.viewers().add(player.getUniqueId());
 ```
 
+`Gloss.instance.holograms().setVisibilityObserver(temporary, (viewerId, visible) -> ...)` observes actual display admission and removal, including budget refusal after a visible frame, distance culling, and teardown. Register before showing the temporary hologram. Notifications contain IDs and run on the visibility or teardown caller; schedule entity reads on their owners. The callback must be brief and must not throw. A display that has never been admitted produces no initial `false` notification.
+
 Use `setStyle(IconDisplayStyle)` for the shared text-display appearance and `setBox(HologramBox)` for an automatically sized background and border. Both follow the temporary hologram's position binding, presentation, and viewers. Box dimensions use Minecraft text pixels; decorations disappear with the hologram. `setParticleLayers(List<ParticleLayer>)` adds shared particle effects.
 
 Use `setLines` for authored MiniMessage, functions, animations, player expressions, and PlaceholderAPI. With `[holograms] perViewerPlaceholders` enabled, Gloss resolves viewer-dependent content on each viewer's scheduler and measures that viewer's box from the rendered text. `setRenderedLines` and `bindRenderedFrames` accept section-formatted text without interpreting player-written markup or expressions. `setRenderedParticleText(String, List<ParticleTextSpan>)` supplies particle geometry and named ranges; it does not replace the displayed lines. Each range uses zero-based Java string offsets, with an exclusive end, in the supplied rendered text. `setRenderedLines` clears the prior particle override, so set its matching particle text afterward.
@@ -145,7 +147,7 @@ This applies Gloss functions, inline expressions, PlaceholderAPI values, emoji, 
 <video src="/gloss-assets/demos/standalone-beam-observer.webm" aria-label="Standalone block-display beam, third person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-`Beams.link` draws a block-display beam between two supplied locations. A positive lifetime is measured in ticks; `0` keeps it until cancelled. The method returns `null` when the beam service is unavailable.
+`Beams.link` draws a block-display beam between two supplied locations. Each receiving viewer consumes one `SURFACE` entity unit from `[visibility]`; refused or culled beams retry during their normal updates. A positive lifetime is measured in ticks; `0` keeps it until cancelled. The method returns `null` when the beam service is unavailable.
 
 ```java
 Location start = new Location(world, 8.5, 72, 8.5);
@@ -173,7 +175,7 @@ GlowTags.tag(viewer, target, "aqua", "quest-target", 20, 200L);
 GlowTags.untag(viewer, target, "quest-target");
 ```
 
-Use a named text color. A lifetime of `0` retains the tag until it is removed; remove your own purposes when the feature ends. Call entity-facing operations from the appropriate owning context.
+Use a named text color. A lifetime of `0` retains the tag until it is removed; remove your own purposes when the feature ends. Glow captures entity flags on the target owner and applies the result on the viewer owner, so appearance updates may complete after the call returns. A disabled glow feature or a request exceeding `[glow] maxTargetsPerViewer` throws `IllegalStateException`; use a configured distance limit to retain tags while withholding distant outlines. Named colors follow the shared `[teams]` conflict policy.
 
 ## Locator waypoints
 
@@ -184,8 +186,16 @@ WaypointSpec destination = new WaypointSpec("quest-destination",
     MarkerAnchor.position("world", 120, 72, -48),
     0x55FFFF, "default", 64D);
 Waypoints.track(this, viewer, destination);
+
+WaypointSpec quest = new WaypointSpec("quest", MarkerAnchor.of(viewer.getLocation()),
+    0x55FFFF, "trails:quest", 128);
+Waypoints.track(this, viewer, quest, new WaypointOptions("bowtie"));
 Waypoints.untrack(this, viewer, "quest-destination");
 ```
+
+`WaypointOptions` selects the vanilla fallback used until the current Gloss pack provides a custom style. Declare that style in [glyphs waypoint assets](/gloss/28-resource-packs#waypoint-styles). The existing three-argument `Waypoints.track` call uses `default` as its fallback.
+
+`WaypointSpec.style` accepts `default`, `bowtie`, or a namespaced resource key such as `trails:quest`. Null and blank values select `default`; keys are trimmed and lowercased, and `minecraft:default`/`minecraft:bowtie` select their built-in forms. Keys must not contain `..` or `//`, and the path must not begin or end with `/`. Other unnamespaced values and invalid resource paths throw `IllegalArgumentException` when constructing the spec. Pass an explicit built-in style when the integration does not provide a resource-pack key.
 
 `MarkerAnchor.entity(UUID)` and `MarkerAnchor.player(String)` follow a moving target. A positive range sends direction-only information beyond that distance; `0` always supplies the exact location. Range clamps to `0`–`8192` blocks. Entries end when their viewer leaves. Call `Waypoints.unregister(this)` during your plugin's disable lifecycle to remove its remaining entries. The client must support the locator bar and have it enabled.
 
