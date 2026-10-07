@@ -32,9 +32,13 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `util.nbt` / `util.nbt.mca` | NBT and region files |
 | `util.noise` / `util.interpolation` / `util.stream` | Seeded procedural fields and interpolation |
 | `util.hunk` / `util.math` | Three-dimensional storage, coordinates, and rarity selection |
-| `integration` | Vault economy availability, charging, and settlement |
+| `integration` | Cooperative plugin reload and Vault economy operations |
 
 For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/api/noise) and [Hunks and coordinate math](/volmlib/api/hunks).
+
+## Cooperative plugin reload
+
+`ReloadAware` lets Bukkit plugins report asynchronous readiness, refuse an unload, resume cancelled preparation, and complete committed cleanup before BileTools tears down their registrations. The explicit contract works across separate classloaders and relocated VolmLib packages. See [Cooperative plugin reload](/volmlib/api/reloading) for signatures and scheduling rules.
 
 ## Chunk loading
 

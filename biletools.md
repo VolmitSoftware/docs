@@ -2,7 +2,7 @@
 title: "BileTools"
 description: "Plugin hot-reload and deployment utility"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-07T13:32:12.955Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,6 +31,7 @@ The same jar runs on Bukkit servers and on Velocity proxies.
 - [Hot reload behavior *Limits and restart guidance*](/biletools/hot-reload)
 - [Velocity proxy *Hot reload for proxy plugins*](/biletools/velocity)
 - [Remote deploy *Setup and security*](/biletools/remote-deploy)
+- [Plugin integration API *Cooperative reload and owned registrations*](/biletools/api)
 {.links-list}
 
 ## Support

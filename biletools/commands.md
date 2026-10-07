@@ -2,7 +2,7 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-07T13:32:12.955Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,6 +29,7 @@ The root command is `/biletools`. On a Bukkit server the aliases are `bile`, `bi
 | `/bile load <plugin>` | Load a plugin jar from the plugins directory |
 | `/bile unload <plugin>` | Unload an installed plugin |
 | `/bile reload <plugin>` | Reload an installed plugin |
+| `/bile inspect <plugin>` | Inspect dependents, recovery availability, reload participation, and teardown capability |
 | `/bile uninstall <plugin>` | Delete a plugin jar from the plugins directory |
 | `/bile install <plugin> [version]` | Install a plugin from the Bile library |
 | `/bile library [plugin]` | List library plugins, or versions for one plugin |
@@ -37,7 +38,7 @@ The root command is `/biletools`. On a Bukkit server the aliases are `bile`, `bi
 
 | Command | Parameter | Default | Notes |
 |---|---|---|---|
-| `load` / `unload` / `reload` / `uninstall` | `plugin` | *required* | Tab-completes from installed plugins |
+| `load` / `unload` / `reload` / `inspect` / `uninstall` | `plugin` | *required* | Tab-completes from installed plugins |
 | `install` | `plugin` | *required* | Tab-completes from the Bile library |
 | `install` | `version` | `latest` | Tab-completes from available library versions |
 | `library` | `plugin` | `*` | Omit or pass `*` to list everything |
@@ -50,6 +51,8 @@ The root command is `/biletools`. On a Bukkit server the aliases are `bile`, `bi
 
 Manual `/bile load|unload|reload` **always bypasses** the `watcher.ignore` and
 `watcher.only` filters. Those filters control only automatic watcher reloads.
+
+`/bile inspect` is read-only and uses the same `bile.use` permission as the lifecycle commands. A reported recovery copy or cooperative contract does not guarantee that a plugin can reverse its external side effects. See [Hot reload behavior](/biletools/hot-reload) for deadlines and recovery limits.
 
 ## Permissions
 
@@ -72,6 +75,7 @@ On a Velocity proxy BileTools registers a smaller command set. Every subcommand 
 | `/biletools load <jar or id>` | Load a plugin from the proxy's plugins directory |
 | `/biletools unload <id>` | Unload a loaded plugin |
 | `/biletools reload <id>` | Unload a loaded plugin and load it again |
+| `/biletools inspect <id>` | Inspect dependencies, recovery copies, owned resources, and the lifecycle worker |
 | `/biletools list` | List loaded plugins and the watcher state |
 | `/biletools version` | Show the installed BileTools version |
 | `/biletools help` | List the proxy subcommands |

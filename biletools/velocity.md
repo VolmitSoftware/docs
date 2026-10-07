@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Hot reload for proxy plugins on Velocity"
 published: true
-date: 2026-09-26T06:29:51.520Z
+date: 2026-10-07T13:43:24.328Z
 tags: "biletools, velocity"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -32,7 +32,11 @@ Backend servers need nothing. A backend BileTools installation keeps its own sep
 
 Unloading sends the plugin a shutdown event scoped to it alone, then unregisters its listeners, cancels its tasks, removes its commands, drops it from the plugin manager, and closes its class loader. Loading registers it and sends a scoped initialize event. No other plugin sees either event.
 
-Plugins that depend on the target are unloaded first and reloaded afterwards, in dependency order.
+Plugins that depend on the target are unloaded first and reloaded afterwards, in dependency order. BileTools keeps recovery copies of the running group and attempts to restore their previous versions if a replacement fails. A failed dependent reload makes the operation fail even if the root plugin enabled successfully.
+
+Cooperative plugins can asynchronously prepare, refuse, or commit cleanup through [ReloadParticipant](/biletools/api#velocity-reload-participation). BileTools prepares the affected group before shutdown. Scoped initialize and shutdown handlers finish before their lifecycle phase completes; handler failures are reported.
+
+Recovery cannot undo plugin data writes or external effects, and it does not overwrite the source jars you deployed. Restore working source jars before the next proxy restart after a failed deployment.
 
 ## Startup capability report
 
@@ -47,6 +51,7 @@ The root command is `/biletools`, with one alias, `bile`. Every subcommand requi
 | `/biletools load <jar or id>` | Load a plugin from the proxy's plugins directory |
 | `/biletools unload <id>` | Unload a loaded plugin |
 | `/biletools reload <id>` | Unload a loaded plugin and load it again |
+| `/biletools inspect <id>` | Inspect dependencies, recovery copies, owned resources, and the lifecycle worker |
 | `/biletools list` | List loaded plugins and the watcher state |
 | `/biletools version` | Show the installed BileTools version |
 | `/biletools help` | List the proxy subcommands |
@@ -69,7 +74,7 @@ Proxy settings live in `plugins/biletools/biletools.json`. Missing keys are rest
 | `watcher.only` | `[]` | If non-empty, switches to allowlist mode: only these ids are managed automatically |
 | `archive-plugins` | `true` | Move a plugin's working copy to `plugins/biletools/archive/` when it is unloaded instead of deleting it |
 | `lifecycle.health-check` | `true` | Fail the operation if the plugin is not actually registered and running afterwards |
-| `lifecycle.operation-timeout-seconds` | `120` | Give up on a plugin that never returns from its initialize or shutdown event. Clamped to 5–3600 |
+| `lifecycle.operation-timeout-seconds` | `120` | Deadline for lifecycle results and cooperative/event completion. Expired queued work never starts; running work stays tracked until it finishes. Clamped to 5–3600 |
 | `observability.log-timings` | `true` | Log one timing line per load, unload, and reload |
 | `notifications.players` | `true` | Send automatic reload results to players with `bile.use`, not just the console |
 {.dense}
@@ -78,7 +83,7 @@ Plugin ids are matched without case. Manual commands ignore `watcher.ignore` and
 
 ## How automatic reload behaves
 
-Manual commands run immediately. Automatic work waits.
+Manual commands enter the lifecycle queue without the watcher delay. Automatic work first waits for stable jar files.
 
 When a jar changes, BileTools waits for it to stop changing, then applies queued changes in one batch. A jar identical to what is already loaded is skipped. Deleting a jar unloads that plugin after a three-second grace period, unless the file reappears first.
 
@@ -96,18 +101,12 @@ Remote deploy is not available on the proxy. The listener and the push side are 
 
 Proxy output is English only. There are no language files and no language commands.
 
-Plugin message channels stay registered after their plugin unloads. Re-registering on load is harmless, so this costs nothing in practice.
+Plugin message channels registered through BileTools' [owned resource API](/biletools/api#velocity-channel-ownership) can be released when their last tracked owner unloads. Existing, shared, replaced, and untracked registrations are preserved when ownership is ambiguous. Packet registrations whose classes or suppliers belong to the unloaded plugin's classloader are removed on supported proxy internals. Unloading also releases event-handler caches owned by that classloader. Plugins remain responsible for untracked channels, private executors, and external packet hooks.
 
 A plugin that reads its shutdown event as "the proxy is stopping" can misbehave after a reload. Plugins holding static state, running threads, or hooking packets are poor reload candidates, the same as on a backend server.
 
-## When to restart the proxy
+A timeout reports failure without abandoning a running lifecycle callback. The worker remains occupied until that callback finishes, and subsequent operations are refused while it remains timed out. Use `/bile inspect <id>` to read the worker and resource state. A callback that never finishes, an incomplete recovery, or an unavailable required lifecycle capability requires a proxy restart.
 
-Restart the proxy when:
-
-- the BileTools jar itself changed;
-- the capability report names a missing internal after a proxy update;
-- an unload reported failures in the log, and the plugin was still dropped;
-- a plugin's dependencies changed, since boot-time dependency ordering cannot be recreated at runtime;
-- you see duplicate listeners or commands, stale behavior, or memory that keeps growing across reloads.
+Changing BileTools itself or a plugin's startup-only dependency arrangement also requires a restart.
 
 Related pages: [Commands and permissions](/biletools/commands), [Configuration](/biletools/configuration), [Hot reload behavior](/biletools/hot-reload).

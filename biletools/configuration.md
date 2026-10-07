@@ -2,7 +2,7 @@
 title: "BileTools: Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-07T13:45:13.245Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,7 +59,19 @@ automatic filter and cadence.
 | `observability.log-timings` | `true` | Log unload, load and reload phase timings |
 | `archive-plugins` | `true` | Archive a copy of a jar before `uninstall` deletes it |
 
-Keep `health-check` enabled so a failed `onEnable` does not report a successful reload.
+Exceptions raised during plugin enable or disable always fail the lifecycle operation, even when `health-check` is disabled. The optional health check additionally verifies the resulting enabled and registered state. Bukkit lifecycle operations have a fixed 120-second deadline; an unfinished callback keeps later lifecycle operations blocked until it finishes. Runtime recovery copies are independent of `archive-plugins`; see [Hot reload behavior](/biletools/hot-reload).
+
+### Native Paper author declarations
+
+These keys belong in the target plugin's `paper-plugin.yml`, not in `biletools.yml`. Each defaults to `false` when omitted and must be a YAML boolean.
+
+| Key | Meaning |
+|---|---|
+| `biletools.runtime-load` | Opt into experimental native loading on Paper 26.3 build 142 |
+| `biletools.runtime-bootstrap` | Declare a repeatable runtime bootstrapper; required if `bootstrapper` is present |
+| `biletools.runtime-classpath` | Declare repeatable runtime classpath setup; required if `loader` is present |
+
+Plugin authors must satisfy the [native Paper contract](/biletools/api#native-paper-author-contract). The declarations do not bypass the exact-build or lifecycle-event restrictions.
 
 ## Remote deploy
 
