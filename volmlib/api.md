@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-09-27T20:06:54.786Z
+date: 2026-10-07T13:55:11.158Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -35,6 +35,12 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `integration` | Vault economy availability, charging, and settlement |
 
 For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/api/noise) and [Hunks and coordinate math](/volmlib/api/hunks).
+
+## Chunk loading
+
+`art.arcane.volmlib.util.scheduling.WorldChunks.load(plugin, world, x, z, generate)` returns a `CompletableFuture<Chunk>`. Set `generate` to `false` to request only existing terrain; a missing chunk completes with `null`. Paper and Folia use the asynchronous chunk-loading API; servers without it execute the load on the chunk's owning scheduler. Scheduling rejection and loading failures complete the future exceptionally.
+
+Future completion does not grant ownership of world or entity state. Schedule any chunk inspection or mutation on its region, and recheck that the target world and chunk are still available. Canceling the returned future does not guarantee that a server load already requested will stop.
 
 ## Block-state NBT
 

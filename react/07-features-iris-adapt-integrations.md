@@ -2,7 +2,7 @@
 title: "Features - Iris Adapt & Integrations"
 description: "React documentation: Features - Iris Adapt & Integrations"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-07T13:18:48.708Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -74,7 +74,7 @@ Requires `iris`. Secret: yes. A world is surging while tick time reaches `trigge
 
 ### `feature-trinity-incident-mode`
 
-Requires `iris` **and** `adapt`. Secret: yes. It enters when Iris or Adapt pressure coincides with server pressure. Iris pressure is a pregeneration with at least `enterIrisPregenInFlight` chunk requests in flight. Adapt pressure is session load at `enterAdaptSessionLoad` or a guard-check timing budget at `enterAdaptAbilityTimingBudgetPercent`. Server pressure is tick time at `enterTickMS` or incident score at `enterIncidentScore`. On entry it activates each enabled incident, quarantine, and surge-guard feature. It queues `action-incident-playbook` on a cooldown. Each activated feature still evaluates its own engagement gates.
+Requires `iris` **and** `adapt`. Secret: yes. It enters when Iris or Adapt pressure coincides with server pressure. Iris pressure is a pregeneration with at least `enterIrisPregenInFlight` chunk requests in flight. Adapt pressure is session load at `enterAdaptSessionLoad` or a guard-check timing budget at `enterAdaptAbilityTimingBudgetPercent`. Server pressure is tick time at `enterTickMS` or incident score at `enterIncidentScore`. On entry it activates each enabled incident, quarantine, and surge-guard feature. It queues `action-incident-playbook` on a cooldown, with at most one active playbook. Disabling Trinity stops its active playbook. Each activated feature still evaluates its own engagement gates.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

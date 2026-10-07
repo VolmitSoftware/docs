@@ -2,12 +2,12 @@
 title: "Incident Mode & Playbooks"
 description: "React documentation: Incident Mode & Playbooks"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-07T13:18:48.707Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-The `incident-score` sampler combines eight pressure signals into a 0–100 value. `incident-mode` applies event-rate limits while that pressure lasts. `action-incident-playbook` queues a separate set of cleanup and recovery actions.
+The `incident-score` sampler combines eight pressure signals into a 0–100 value. `incident-mode` applies event-rate limits while that pressure lasts. `action-incident-playbook` runs relevant mitigations sequentially while pressure persists.
 
 ## Incident score
 
@@ -54,15 +54,19 @@ React Web's Incident Center refreshes this endpoint every five seconds. Its curr
 
 ## Action `action-incident-playbook`
 
-Run `/react action incident-playbook [include-gc=true] [tier=-1] [world=ALL]` (alias `aip`). The auto tier is severe (`2`) at incident score 70 or tick time 75 ms. The auto tier is medium (`1`) at score 45 or tick time 58 ms. The auto tier is mild (`0`) otherwise.
+Run `/react action incident-playbook [include-gc=false] [tier=-1] [world=ALL]` (alias `aip`). The auto tier is severe (`2`) at incident score 70 or tick time 75 ms. The auto tier is medium (`1`) at score 45 or tick time 58 ms. The auto tier is mild (`0`) otherwise.
 
-The playbook tries to queue registered quarantine, trim, hopper-normalization, prewarm, and optional GC tickets. It then completes its own ticket at once. The action controller ignores disabled child actions. The playbook still counts that queue attempt in its completion total. Accepted child actions may overlap. This is queue orchestration, not a sequential transaction.
+With default parameters, the playbook continues only while incident score is at least 35 or tick time is at least 48 ms. It selects enabled stages in order: hopper normalization where hopper activity meets the tier threshold, entity trimming where a chunk holds at least 80 entities, then quarantine where chunk cost meets the tier threshold. With `world=ALL`, each stage targets the world with the strongest matching evidence. Each stage runs at most once.
 
-| Tier | Quarantine | Entity trim | Hopper normalize | Prewarm |
-|---|---|---|---|---|
-| 0 mild | 16 chunks, score 100, player radius 64 | 300 total, 8/chunk, age 8 min | 12 chunks, 30 updates/chunk, 36 merges | 20 chunks, radius 1 |
-| 1 medium | 28 chunks, score 80, player radius 56 | 600 total, 12/chunk, age 5 min | 20 chunks, 25 updates/chunk, 48 merges | 32 chunks, radius 1 |
-| 2 severe | 42 chunks, score 60, player radius 48 | 1,000 total, 16/chunk, age 3 min | 32 chunks, 18 updates/chunk, 64 merges | 48 chunks, radius 2 |
+The parent ticket waits for the active stage to finish, then waits at least two seconds and for available incident telemetry to refresh before selecting another stage. Recovery or unavailable pressure ends the playbook without further mitigation. A stage failure, cancellation, or 60-second timeout stops escalation; stopping the parent also stops its child. The completion count includes successful stages only.
+
+Hopper normalization does not unload chunks, and quarantine does not cull entities or expand to neighboring chunks. Prewarming is excluded. Garbage collection is disabled by default; `include-gc=true` permits it only when heap use is at least 90%, estimated reclaimable heap is at least 10% of maximum heap, and GC time is below 2%.
+
+| Tier | Quarantine | Entity trim | Hopper normalize |
+|---|---|---|---|
+| 0 mild | 16 chunks, score 100, player radius 64 | 300 total, 8/chunk, age 8 min | 12 chunks, 30 updates/chunk, 36 merges |
+| 1 medium | 28 chunks, score 80, player radius 56 | 600 total, 12/chunk, age 5 min | 20 chunks, 25 updates/chunk, 48 merges |
+| 2 severe | 42 chunks, score 60, player radius 48 | 1,000 total, 16/chunk, age 3 min | 32 chunks, 18 updates/chunk, 64 merges |
 
 The action defaults and full parameter objects are in [09 - Actions Catalog](/react/09-actions-catalog).
 

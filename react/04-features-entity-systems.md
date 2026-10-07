@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "Entity stacking, sleeping, trimming, item, spawn, vehicle, portal, and explosion features"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-07T13:21:29.919Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,7 +42,7 @@ Restored mobs use the surviving mob's state. React stores the count, not separat
 
 ### `adaptive-entity-sleep`
 
-This feature puts distant living entities into sleep or pause under load. Optional mid-range duty-cycling uses `Mob#setAware` when available. When `wakeOnDamage` or `wakeOnTarget` is enabled, an entity this feature paused or duty-cycled wakes as soon as it takes damage, targets something, or is targeted.
+This feature puts distant living entities into sleep or pause under load. Its sample budget rotates through worlds and candidates so a busy first world does not consume every cycle. Optional mid-range duty-cycling uses `Mob#setAware` when available. When `wakeOnDamage` or `wakeOnTarget` is enabled, an entity this feature paused or duty-cycled wakes as soon as it takes damage, targets something, or is targeted.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

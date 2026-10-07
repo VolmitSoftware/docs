@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-07T13:52:00.694Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,9 @@ This feature lowers the activation radius when tick time rises, pausing distant 
 
 ### `dynamic-view-distance`
 
-This feature adjusts each world's view and simulation distance from tick time and player count. It restores the previous values when disabled and requires Paper or Purpur.
+This feature adjusts each world's view and simulation distance from tick time and player count. It restores the previous values when disabled and requires world-distance setter support.
+
+Enable `playerChunkBudgetEnabled` to also limit predicted player-loaded chunks per world. Overlapping player areas count once. The ticking budget covers simulation areas; the view-only budget covers the remaining view area. These budgets further restrict the normal distance target and do not include spawn tickets, forced chunks, or plugin tickets. Configured minimum distances take priority if the budget cannot fit them. Recovery requires consecutive healthy evaluations and grows by at most `budgetRecoveryStep` chunks per accepted recovery. An incomplete player index or unavailable tick telemetry holds the current distances in budget mode.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -66,6 +68,11 @@ This feature adjusts each world's view and simulation distance from tick time an
 | `simulationDistance` | MinMax | min `4`, max `10` | Simulation distance range. |
 | `lerpTickTime` | MinMax | min `45`, max `140` | Tick-time interpolation domain. |
 | `lerpPlayersOnline` | MinMax | min `3`, max `100` | Player-count interpolation domain. |
+| `playerChunkBudgetEnabled` | boolean | `false` | Apply per-world player chunk budgets and gradual recovery. |
+| `playerTickingChunkBudget` | long | `6000` | Target maximum unique chunks in player simulation areas, per world. |
+| `playerViewOnlyChunkBudget` | long | `6000` | Target maximum unique player-view chunks outside simulation areas, per world. |
+| `budgetRecoveryChecks` | int | `3` | Consecutive healthy cooldown-spaced evaluations required before increasing distance. |
+| `budgetRecoveryStep` | int | `1` | Maximum distance increase in chunks after a successful recovery check. |
 
 ### `afk-view-shedding`
 

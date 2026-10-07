@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React documentation: Commands & Permissions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-07T13:54:17.453Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -93,14 +93,15 @@ Use `/react config` or `/react cfg` for configuration. `/react c` opens the chun
 | `purge-chunks` | `pc` | Unload chunks in selected world/area |
 | `purge-entities` | `pe` | Purge matching entities |
 | `collect-garbage` | `gc` | Request JVM GC |
+| `capture-profile` | | Save a local JFR profile; optional `seconds` defaults to 30 |
 | `quarantine-hot-chunks` | `aqhc` | Isolate hottest sampled chunks |
 | `trim-entities-by-age-priority` | `ateap` | Trim old low-priority entities |
 | `hopper-network-normalize` | `ahnn` | Normalize hopper hotspots |
 | `prewarm-critical-chunks` | `apcc` | Preload critical chunks |
-| `incident-playbook` | `aip` | Queue full incident mitigation sequence |
+| `incident-playbook` | `aip` | Run staged mitigation selected from current pressure |
 | `audit` | `list`, `ls` | List actions and enabled state |
 
-Parameters vary by action (world, radius, max entities/chunks, ages). Defaults come from each action’s TOML. See [09 - Actions Catalog](/react/09-actions-catalog).
+Parameters vary by action (world, radius, max entities/chunks, ages). Execution defaults are listed in the action catalog; each action’s TOML controls its persistent settings. See [09 - Actions Catalog](/react/09-actions-catalog).
 
 ## `/react chunk` (`c`)
 

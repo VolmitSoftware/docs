@@ -2,7 +2,7 @@
 title: "Actions Catalog"
 description: "Operator actions, parameters, and safety rules"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-07T13:54:17.452Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -101,6 +101,7 @@ This action trims old low-priority entities. Protection guards apply.
 | `world` | String | null/empty | Optional world name filter. |
 | `maxTrim` | int | `600` | Maximum entities trimmed total. |
 | `maxTrimPerChunk` | int | `12` | Maximum trimmed per chunk. |
+| `minimumEntitiesPerChunk` | int | `0` | Minimum observed entity count for a chunk to qualify; zero allows any density. The incident playbook supplies its own threshold. |
 | `minEntityAgeTicks` | int | `6000` | Minimum entity age (`20 * 60 * 5` ticks). |
 | `protectNamed` | boolean | `true` | Protect named entities. |
 | `protectTamed` | boolean | `true` | Protect tamed entities. |
@@ -132,7 +133,7 @@ This action normalizes hopper hotspots. It merges nearby transfer items. It can 
 
 ### `action-prewarm-critical-chunks`
 
-This action preloads critical sampled chunks and neighbors.
+This action preloads critical sampled chunks and neighbors. On Paper and Folia, chunk loads use the server's asynchronous loading API with at most 32 pending loads per ticket. Snapshot and entity preparation run after loading on the owning region. The ticket completes after those steps finish. Canceling stops further dispatch and preparation; already requested server loads may still finish. Other supported servers load on their owning scheduler.
 
 - **Config:** `plugins/React/action/action-prewarm-critical-chunks.toml`
 - **CLI:** `/react action prewarm-critical-chunks [max-chunks=40] [neighbor-radius=1] [world=ALL]` (alias `apcc`). The command clamps chunk count to 1–512 and radius to 0–4 chunks.
@@ -148,16 +149,35 @@ This action preloads critical sampled chunks and neighbors.
 | `generateMissingChunks` | boolean | `true` | Generate missing chunks when prewarming. |
 | `touchChunkSnapshot` | boolean | `true` | Touch chunk snapshot during prewarm. |
 
+### `capture-profile`
+
+This action saves a local JDK Flight Recorder capture containing execution samples, allocation samples, and garbage-collection events. Captures are written under `plugins/React/diagnostics/profiles/`; the three newest React captures are retained. Nothing is uploaded. Open a completed `.jfr` file with a compatible Java profiler to inspect it.
+
+- **Config:** `plugins/React/action/capture-profile.toml`
+- **CLI:** `/react action capture-profile [seconds=30]`. Duration is clamped to 1–300 seconds.
+- **TOML fields:** `enabled`
+
+Only one React capture can run at a time. A capture uses a 64 MiB rolling recording limit and stops after its requested duration. Output larger than 64 MiB is discarded with an error. Disabling the action or stopping React cancels its active capture. Initial JVM arguments, environment variables, and system-property events are excluded.
+
+| Execution parameter | Type | Default | Description |
+|---|---|---|---|
+| `seconds` | int | `30` | Recording duration, clamped to 1–300 seconds. |
+
 ### `action-incident-playbook`
 
-This action queues quarantine, trim, hopper normalization, prewarm, and optional garbage-collection tickets. Tickets are scaled by tier. The child tickets are queued independently and may overlap. The playbook ticket does not wait for them to finish.
+This action runs one relevant mitigation at a time and waits for its outcome. It selects hopper normalization, entity trimming, then chunk quarantine from observed hotspots, checking sustained pressure between stages. It completes when pressure subsides or no relevant enabled stage remains; a failed or timed-out stage fails the playbook. Prewarming is not part of this action.
 
 - **Config:** `plugins/React/action/action-incident-playbook.toml`
-- **CLI:** `/react action incident-playbook [include-gc=true] [tier=-1] [world=ALL]` (alias `aip`). Tier is clamped to `-1`–`2`.
+- **CLI:** `/react action incident-playbook [include-gc=false] [tier=-1] [world=ALL]` (alias `aip`). Tier is clamped to `-1`–`2`.
 - **TOML fields:** `enabled`
 
 | Execution parameter | Type | Default | Description |
 |---|---|---|---|
 | `world` | String | null/empty | Optional world name filter. |
-| `includeGarbageCollection` | boolean | `true` | Include GC in the playbook. |
-| `tierOverride` | int | `-1` | Force mitigation tier. `-1` infers from incident score and tick MS. |
+| `includeGarbageCollection` | boolean | `false` | Permit a final GC stage only with at least 90% heap use, estimated reclaimable heap of at least 10% of maximum heap, and GC time below 2%. |
+| `tierOverride` | int | `-1` | Force mitigation intensity. `-1` infers it from incident score and tick MS. Pressure and hotspot evidence are still required. |
+| `minimumIncidentScore` | double | `35` | Continue while this score or `minimumTickMS` is reached. |
+| `minimumTickMS` | double | `48` | Tick-time threshold for continued mitigation. |
+| `minimumEntitiesPerChunk` | int | `80` | Minimum observed entity count in a chunk before selecting entity trimming. |
+| `recheckDelayMS` | long | `2000` | Minimum observation delay after each completed stage; clamped to at least 1,000 ms. Available incident telemetry must refresh before continuing. |
+| `childTimeoutMS` | long | `60000` | Maximum stage runtime or wait for refreshed incident telemetry; clamped to at least 1,000 ms. |
