@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-09-28T12:50:51.000Z
+date: 2026-10-07T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Pregeneration creates chunks before players explore them. Each job covers a square around a center coordinate, with the radius measured in blocks. Iris runs one pregeneration job at a time per server.
 
 Iris limits concurrent chunk requests and retained generation data according to the Java heap. When memory is under pressure, it pauses new requests while active work finishes and saved data is released. A larger requested area increases the work and disk space needed, rather than reserving memory for the whole area.
+
+Asynchronous jobs can start chunks in the next MCA region while requests from the previous region are still finishing. Chunk concurrency and memory limits apply to the whole job across these regions.
 
 ## Start
 
