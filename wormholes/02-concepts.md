@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-10-02T04:00:47.169Z
+date: 2026-10-07T11:54:34.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -72,7 +72,7 @@ menu shows travel locked. If you enable mirror:
 - Managed-portal mirror is disabled for dimensional kinds.
 - If the portal was `RTP`, Wormholes converts the type to `PORTAL`.
 
-Mirror rotation is `0` / `90` / `180` / `270` degrees. Native ClientView supports every rotation on any frame plane. Standard projection supports `0` and `180` for wall mirrors and all quarter turns for floor and ceiling mirrors; its wall view uses the nearest supported orientation.
+Floor and ceiling mirrors rotate in 90-degree steps. Wall mirrors switch between `0` and `180` degrees for every player, including players running the client mod.
 
 ## Travel modes
 
@@ -91,6 +91,10 @@ Operators bypass the outgoing and incoming direction flags during player
 travel, but mirror mode remains a hard travel lock. Vanilla-managed nether/end
 portals keep fixed travel rules. See
 [03 - Building Portals](/wormholes/03-building-portals) and vanilla replace.
+
+## Traversal modes
+
+Every platform teleports a traveler through frame portals and dimensional doors after checking direction, access, cooldown, cost, and destination readiness. A player with the [client mod](/wormholes/01-installation-configuration#client-mod) gets one of two smoother transitions. On Paper, Purpur, and Folia the client prepares the arrival area before the crossing, so a ready crossing shows no loading screen while the server still teleports the player. On Fabric, Forge, and NeoForge servers and in singleplayer the player crosses seamlessly: the client predicts the crossing, the server confirms it, and there is no teleport, respawn, or loading screen. Vehicles, passengers, random teleport, and cross-server travel always use the ordinary teleport. Details: [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
 ## Local vs remote portals
 

@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-04T13:26:30.499Z
+date: 2026-10-07T11:54:34.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Each frame portal has menus for type, orientation, destination, settings, cost, 
 | `projectionMode` | `ON` | Toggle on home menu |
 | `renderMode` | `VENTICULAR` | PanOptic / Venticular cycle |
 | `mirrorMode` | `false` | Set from type menu |
-| `mirrorRotation` | `0°` | Native ClientView: 90° steps on every plane. Standard projection: wall mirrors 0° / 180°, floor and ceiling mirrors 90° steps |
+| `mirrorRotation` | `0°` | Floor and ceiling mirrors: 90° steps. Wall mirrors: 0° / 180° for every player, including the client mod |
 | `permissionMode` | `BLACKLIST` | See Access |
 | `outgoingTraversalsEnabled` | `true` | Travel mode `BOTH` |
 | `incomingTraversalsEnabled` | `true` | Travel mode `BOTH` |
@@ -207,7 +207,7 @@ Options: `PORTAL`, `WORMHOLE`, `GATEWAY`, `RTP`, and **Mirror**.
 | Portal / Wormhole / Gateway / RTP | Sets type and disables mirror mode if it was on. Switching to or from `RTP` force-closes the portal until RTP is READY or a new tunnel is set. |
 | Mirror | Enables mirror mode (travel locked. Tunnel cleared). Right-click rotates the mirror image clockwise. Shift-right-click rotates counterclockwise. |
 
-Players using native ClientView rotate mirrors in 90° steps on any plane. Standard projection uses 0° and 180° for wall mirrors and 90° steps for floor and ceiling mirrors; its wall view uses the nearest supported orientation when a native client saves a quarter turn. These controls rotate the reflected image; they do not change the portal's facing or allow travel through a mirror.
+Floor and ceiling mirrors rotate in 90° steps. Wall mirrors switch between 0° and 180° for every player, including players running the client mod. These controls rotate the reflected image; they do not change the portal's facing or allow travel through a mirror.
 
 RTP editor entry lives on the home destination control when type is RTP
 ([06 - Random Teleport Portals](/wormholes/06-random-teleport-portals)).
@@ -319,7 +319,7 @@ Open **Settings → More settings → Transit** to control movement through this
 
 **Membrane** permits entry from the front and pushes travelers away from the back. **Bounce** pushes travelers back instead of transporting them, from either side. Left-click either control to toggle it.
 
-**Transition cues** accepts a threshold particle key on left-click and an arrival sound key on right-click, entered in chat. An empty value, `-`, `none`, or `default` restores the default cue. Shift-left-click sets arrival-mask duration from 0 to 200 ticks; an empty value or `-1` restores the default duration. Ready [prepared travel](/wormholes/05-projection-modes-settings#clientview) skips these travel cues and the mask for the traveler; bystanders keep the normal effects.
+**Transition cues** accepts a threshold particle key on left-click and an arrival sound key on right-click, entered in chat. An empty value, `-`, `none`, or `default` restores the default cue. Shift-left-click sets arrival-mask duration from 0 to 200 ticks; an empty value or `-1` restores the default duration. With the client mod, [seamless crossings and ready prepared arrivals](/wormholes/05-projection-modes-settings#travel-with-the-client-mod) skip these travel cues and the mask for the traveler; bystanders keep the normal effects.
 
 ## Travel cost menu
 

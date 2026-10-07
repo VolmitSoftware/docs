@@ -2,7 +2,7 @@
 title: "Wormholes"
 description: "Live portals, random teleport, Dimensional Doors, and cross-server travel"
 published: true
-date: 2026-10-02T04:00:47.169Z
+date: 2026-10-07T11:54:34.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ![Wormholes](/home-assets/wormholes.png =112x){.align-center .radius-16}
 
-Wormholes adds frame portals with a live destination view, random teleport portals, Dimensional Doors, pocket rooms, and cross-server gateways. Players with the client mod see native Minecraft models and destination lighting through the portal opening; other players receive standard server projection.
+Wormholes adds frame portals with a live destination view, random teleport portals, Dimensional Doors, pocket rooms, and cross-server gateways. Players with the client mod see native Minecraft models and destination lighting through the portal opening, and on Fabric, Forge, and NeoForge servers and in singleplayer they cross portals and doors without a teleport or loading screen; other players receive standard server projection.
 
 | | |
 |---|---|
