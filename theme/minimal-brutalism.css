@@ -67,6 +67,7 @@
 #root .v-application:has(.contents) .nav-header .v-toolbar__title a { color: inherit; text-decoration: none; }
 #root .v-application:has(.contents) .nav-header .v-icon { color: var(--volmit-muted) !important; }
 #root .v-application:has(.contents) .nav-header .v-divider { border-color: var(--volmit-line) !important; }
+#root .v-application:has(.contents) .nav-header .deep-purple { background-color: var(--volmit-paper) !important; border-color: transparent !important; color: var(--volmit-ink) !important; }
 #root .v-application:has(.contents) .nav-header .v-input__slot { height: 40px !important; min-height: 40px !important; max-height: 40px; margin: 0 !important; transition: none !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background: var(--volmit-surface) !important; box-shadow: none !important; }
 #root .v-application:has(.contents) .nav-header .v-input__slot::before,
 #root .v-application:has(.contents) .nav-header .v-input__slot::after { display: none !important; border: 0 !important; background: none !important; }
@@ -395,8 +396,19 @@
   #root .v-application:has(.contents) .mobile-nav-close { display: block; margin-bottom: 16px; }
   #root .v-application:has(.contents) .volmit-project-bar .project-tabs { display: none; }
   #root .v-application:has(.contents) .volmit-project-bar .all-projects { margin-left: auto; }
-  #root .v-application:has(.contents).show-section-menu .project-tabs { display: flex; flex-wrap: wrap; overflow: visible; position: absolute; inset: 100% 0 auto; padding: 16px 24px; border-bottom: 1px solid var(--volmit-line-strong); background: var(--volmit-surface); box-shadow: 0 18px 24px #0003; }
-  #root .v-application:has(.contents) .project-tabs .mobile-nav-close { margin: 0; }
+  #root .v-application:has(.contents).show-section-menu .volmit-project-bar { flex-wrap: wrap; align-items: stretch; }
+  #root .v-application:has(.contents).show-section-menu .volmit-project-bar .all-projects { order: 1; }
+  #root .v-application:has(.contents).show-section-menu .project-tabs { display: flex; flex-direction: column; align-items: stretch; flex: 1 0 100%; order: 2; position: static; gap: 4px; max-height: min(60dvh, 420px); margin-top: 8px; padding: 8px 0 4px; overflow-x: hidden; overflow-y: auto; border-top: 1px solid var(--volmit-line); background: transparent; box-shadow: none; }
+  #root .v-application:has(.contents).show-section-menu .project-tabs a { display: flex; align-items: center; justify-content: flex-start; width: 100%; min-height: 44px; white-space: normal; }
+  #root .v-application:has(.contents) .project-tabs .mobile-nav-close { display: flex; align-items: center; width: 100%; min-height: 44px; margin: 0 0 4px; }
+  #root .v-application:has(.contents) .reference-nav :where(a, .reference-section-toggle) { min-height: 44px; }
+  #root .v-application:has(.contents) .nav-header > .v-toolbar__content .v-btn--icon { width: 44px; height: 44px; min-width: 44px; margin-inline: 4px; }
+  #root .v-application:has(.contents):has(.nav-header > .v-toolbar__extension) { --volmit-header-height: 120px; }
+  #root .v-application:has(.contents) .nav-header > .v-toolbar__content,
+  #root .v-application:has(.contents) .nav-header .nav-header-inner,
+  #root .v-application:has(.contents) .nav-header .nav-header-inner .v-toolbar__content { height: 72px !important; }
+  #root .v-application:has(.contents) .nav-header .v-toolbar__extension { height: 48px !important; padding: 0 16px 8px; background: var(--volmit-paper) !important; }
+  #root .v-application:has(.contents) .nav-header .v-toolbar__extension :where(header, .v-toolbar__content) { width: 100%; height: 40px !important; padding: 0; background: var(--volmit-paper) !important; }
   #root .v-application:has(.contents) .page-header-section,
   #root .v-application:has(.contents) .v-main .container.grid-list-xl,
   #root .v-application:has(.contents) .volmit-reference-page .page-header-section,
@@ -420,9 +432,13 @@
   #root .v-application:has(.contents) .nav-header :where(.v-toolbar__title, .subheading) { font-size: 16px; }
   #root .v-application:has(.contents) .nav-header .navHeaderLoading:has([style*="display: none"]) { display: none; }
   #root .v-application:has(.contents):has(.nav-header > .v-toolbar__extension) { --volmit-header-height: 112px; }
+  #root .v-application:has(.contents):has(.nav-header .v-toolbar__extension .volmit-search-host.is-split) { --volmit-header-height: 160px; }
   #root .v-application:has(.contents) .nav-header > .v-toolbar__content { height: 64px !important; }
   #root .v-application:has(.contents) .nav-header .v-toolbar__extension { height: 48px !important; padding: 0 16px 8px; background: var(--volmit-paper) !important; }
   #root .v-application:has(.contents) .nav-header .v-toolbar__extension :where(header, .v-toolbar__content) { width: 100%; height: 40px !important; padding: 0; background: var(--volmit-paper) !important; }
+  #root .v-application:has(.contents) .nav-header .v-toolbar__extension:has(.volmit-search-host.is-split) { height: auto !important; min-height: 96px; }
+  #root .v-application:has(.contents) .nav-header .v-toolbar__extension:has(.volmit-search-host.is-split) :where(header, .v-toolbar__content) { height: auto !important; min-height: 88px; }
+  #root .v-application:has(.contents) .nav-header .volmit-search-host.is-split { grid-template-columns: minmax(0, 1fr); grid-template-rows: 40px 40px; column-gap: 0; row-gap: 8px; height: auto; transition: none; }
   #root .v-application:has(.contents) .nav-header .v-input__slot { margin-bottom: 0; }
   #root .v-application:has(.contents) .nav-header input { font-size: 16px; }
   #root .v-application:has(.contents) .nav-header .v-text-field__details { display: none; }
@@ -442,6 +458,7 @@
   #root .v-application:has(.contents) .featured-grid { grid-template-columns: 1fr; }
   #root .v-application:has(.contents) .volmit-plugin-search input { font-size: 16px; }
   #root .v-application:has(.contents) .contents :where(th, td) { padding: 10px 12px; }
+  #root .v-application:has(.contents) .contents .table-container:not(:has(.spec-strip)) table { width: max-content; min-width: 100%; }
   #root .v-application:has(.contents) .home-directory { margin: 0 24px; padding: 30px 0; }
   #root .v-application:has(.contents) .directory-intro { display: block; margin-bottom: 30px; }
   #root .v-application:has(.contents) .community-link { display: inline-block; margin-top: 20px; }
@@ -454,7 +471,8 @@
   #root .v-application:has(.contents) .directory-search input { font-size: 16px; }
   #root .v-application:has(.contents) .directory-filter-row { display: block; margin-bottom: 14px; }
   #root .v-application:has(.contents) .directory-filters { gap: 4px; }
-  #root .v-application:has(.contents) .directory-filters button { min-height: 44px; padding-inline: 8px; font-size: 11px; gap: 5px; }
+  #root .v-application:has(.contents) .directory-filters button { min-height: 44px; padding-inline: 12px; font-size: 13px; gap: 6px; }
+  #root .v-application:has(.contents) .v-btn[aria-label="Return to top"] { width: 44px !important; height: 44px !important; min-width: 44px !important; }
   #root .v-application:has(.contents) .directory-result-count { margin-top: 12px; }
   #root .v-application:has(.contents) .directory-grid { grid-template-columns: 1fr; gap: 10px; }
   #root .v-application:has(.contents) .directory-card { padding: 19px 16px; min-height: 104px; gap: 14px; }

@@ -287,6 +287,17 @@ test('landing rows share a height and pages crossfade', () => {
   assert.match(css, /\.landing-group :where\(ul\.links-list, ol\.links-list\) > li > a \{[^}]*justify-content: center;/);
 });
 
+test('phone search stacks and the section menu stays in flow', () => {
+  const css = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.css'), 'utf8');
+  const phone = css.slice(css.indexOf('@media (max-width: 700px)'));
+  assert.match(phone, /\.volmit-search-host\.is-split \{[^}]*grid-template-columns: minmax\(0, 1fr\);/);
+  assert.match(phone, /--volmit-header-height: 160px/);
+  assert.match(css, /\.show-section-menu \.project-tabs \{[^}]*position: static;/);
+  assert.match(phone, /\.table-container:not\(:has\(\.spec-strip\)\) table \{[^}]*width: max-content;/);
+  assert.equal(css.includes('overflow: clip'), false);
+  assert.match(css, /\.nav-header \.deep-purple \{[^}]*background-color: var\(--volmit-paper\) !important;/);
+});
+
 test('a real page description stays visible', async () => {
   const { window, close } = await boot(
     '/adapt/11-skill-agility',

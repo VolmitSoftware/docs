@@ -703,8 +703,9 @@
         menu.removeAttribute('role');
       }
     });
-    const close = element('button', 'mobile-nav-close', 'Close page navigation');
+    const close = element('button', 'mobile-nav-close', 'Close');
     close.type = 'button';
+    close.setAttribute('aria-label', 'Close page navigation');
     close.addEventListener('click', () => closeSectionMenu(app, true));
     menu.prepend(close);
     const backdrop = element('button', 'section-menu-backdrop');

@@ -55,11 +55,11 @@ node tools/build-theme-data.mjs
 node tools/build-theme-data.mjs --check
 ```
 
-In Wiki.js **Administration > Theme > Head HTML Injection**, include one stylesheet and one script reference. Update the version value when publishing theme changes:
+In Wiki.js **Administration > Theme > Head HTML Injection**, include one stylesheet and one script reference. Update the version value when publishing theme changes. Browsers keep the previous URL for several hours, so a Git sync alone does not refresh a browser that already loaded the same `?v=` value.
 
 ```html
-<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261003-gloss-demos">
-<script src="/theme/minimal-brutalism.js?v=graphite-20261003-gloss-demos"></script>
+<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261006-mobile">
+<script src="/theme/minimal-brutalism.js?v=graphite-20261006-mobile"></script>
 ```
 
 Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and the wiki’s icon set. Each Wormholes demonstration has No client mod and Client mod tabs, plus a separate Camera dropdown for First person or Third person. Camera selection stays synchronized with Adapt's perspective tabs and is remembered across documentation pages. Each Wormholes demonstration selects its client mode independently. Gloss demonstrations label Minecraft client footage and browser editor footage separately. Single-view clips use the same playback controls; paired client clips add First person and Third person tabs. Visible clips autoplay muted and loop. Hidden, offscreen, and background clips pause. The project picker is searchable. On a project page the header search splits: site search stays on the left, and the right field searches only that project. The homepage filters plugins and developer tools and leads with Iris, Adapt, Wormholes, Gloss, and React. Project landing pages use section tabs, and reference pages use the project’s documentation sidebar. The page background is black. Surfaces use a short zinc scale, the header and project bar are frosted glass, and the rules around the current project use that project’s color. Body links stay rose. Its stylesheet applies independently of the navigation catalog; if the catalog is unavailable, the original page content remains readable.
