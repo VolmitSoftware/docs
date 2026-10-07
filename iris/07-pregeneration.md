@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-10-07T00:00:00.000Z
+date: 2026-10-07T13:26:04.074Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,6 +43,8 @@ The command root also accepts `/iris pregenerate`.
 
 Status reports the world, completed and total chunks, progress, generation rate, elapsed time, estimated time remaining, and pause state. Failed chunks are reported separately when present. Check the final console summary for the completed and failed counts.
 
+The desktop map includes generated and already-present chunks as the job reaches them, including starting-area chunks processed while the window opens. Hover over the map to read chunk coordinates. The sidebar shows the current generation rate, estimated time remaining, longer-term rates, elapsed time, and memory use. Failure details appear at the top of the sidebar and can be selected and copied.
+
 Slow generation tasks produce a warning and continue waiting for their required terrain data. River planning errors are logged and retried while the job remains active. Chunks wait for complete river plans; exceeding a warning interval does not discard a chunk or omit its rivers, caves, or objects.
 
 A chunk generation error on a Paper-family server halts the server's chunk system, so the job aborts at once, reports the failing chunk, and counts its outstanding requests as failed instead of waiting for them. When the job is stopped or the server shuts down, requests that have not completed within 60 seconds are counted as failed and regenerate on the next run. Fix the reported error, then rerun the job.
@@ -56,6 +58,8 @@ A chunk generation error on a Paper-family server halts the server's chunk syste
 ```
 
 `pause` and `resume` are aliases for the same toggle. Either command pauses a running job or resumes a paused job; the reply confirms the resulting state.
+
+In the desktop window, use **Pause** or **Resume**, or press **P**. Tab to the button and press **Enter** or **Space** to activate it. Controls are disabled while the job is preparing, stopping, complete, or failed.
 
 `stop` cancels the job after active chunk work finishes. Wait for `/iris pregen status` to report no active job before starting another. Closing the desktop progress window leaves generation running.
 

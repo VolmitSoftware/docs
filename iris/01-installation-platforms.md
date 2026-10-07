@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-04T12:20:50.645203+00:00
+date: 2026-10-07T13:43:14.820Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,6 +35,8 @@ Before you replace an existing installation:
 Install only one Iris platform jar in the `plugins/` or `mods/` folder.
 
 Native Billow noise is enabled by default when the jar contains a compatible native library. Start Java 25 with `--enable-native-access=ALL-UNNAMED` before `-jar` to allow it; unavailable native support uses Java sampling. See [Configuration](/iris/03-configuration#native-billow-noise) and [Workspace builds](/volmlib/api/building).
+
+For a local source build, run `./gradlew buildPsychoLT` from the Iris repository, or select that task in IntelliJ's Gradle window. It builds and verifies all four platform jars, exports them to `PluginOuts`, and stages them in the local test-server consumer dropins. Use `./gradlew buildAllToOut` to export the jars without staging them in a test server.
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 
