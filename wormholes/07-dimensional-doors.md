@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-07T11:54:34.000Z
+date: 2026-10-07T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -169,7 +169,7 @@ Travelers are either `LIVING` (players, mobs, and vehicles) or `OBJECT` (project
 | `PUBLIC` | Yes | No | Yes |
 | `RETURN` | Yes | No | No |
 
-On Fabric, Forge, and NeoForge servers and in singleplayer, players with the client mod cross doors seamlessly, with no teleport, respawn, or loading screen, under the same access, OpenState, and transit rules as any other door crossing. On Paper, Purpur, and Folia the client mod prepares the door arrival before entry instead: a ready crossing preserves your position relative to the doorway, movement, and view direction without a loading screen, travel sound, or darkness mask, and unready or unsupported arrivals use the normal transition. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod). Normal player arrivals land at rest.
+On Fabric, Forge, and NeoForge servers and in singleplayer, players with the client mod cross doors seamlessly, with no teleport, respawn, or loading screen, under the same access, OpenState, and transit rules as any other door crossing. Every door crossing, seamless or not, starts a one-second wait before the traveler can cross another door. On Paper, Purpur, and Folia the client mod prepares the door arrival before entry instead: a ready crossing preserves your position relative to the doorway, movement, and view direction without a loading screen, travel sound, or darkness mask, and unready or unsupported arrivals use the normal transition. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod). Normal player arrivals land at rest.
 
 Pair and Public support object travel. Personal and Return stay player-only. Your view turns with the doorway so forward movement continues away from the arrival side; looking off-center keeps the same angle within the doorway. Entering a Personal or Public pocket faces into its room from either entrance side. Trapdoor routes also turn pitch when the destination aperture is vertical or horizontal.
 Pair loads unloaded destination chunks before transit. Same-server

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-07T11:54:34.000Z
+date: 2026-10-07T20:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -204,7 +204,7 @@ the runtime does not use.
 | `portal-collapse-speed` | `0.91` | Collapse animation factor |
 | `verbose-logging` | `false` | Persistent console debug: one-second telemetry, access checks, handoffs, and failure details |
 | `debug-rendering` | `false` | Debug rendering aids |
-| `teleport-cooldown-millis` | `1000` | Local teleport cooldown. Also floors cross-server handoff rate limit (min 1000 ms) |
+| `teleport-cooldown-millis` | `1000` | Wait after a portal crossing before the traveler can cross another portal. Seamless crossings with the client mod skip it. With `[transit] object-transit-continuous = true` (default), so do projectiles and dropped items on Paper, Purpur, and Folia, and traveling groups without a player on Fabric, Forge, and NeoForge. Also floors cross-server handoff rate limit (min 1000 ms) |
 | `portal-pushback-multiplier` | `1.0` | Rejected-traversal push scale. 0 mutes knockback |
 | `portal-sound-volume-multiplier` | `1.0` | Portal/door/traversal sound scale. 0 mutes |
 | `traversal-api-enabled` | `true` | If false, new evaluations skip cost providers and the pre-event. Existing tickets still settle or expire and may fire their completion event |
@@ -226,7 +226,7 @@ the runtime does not use.
 | `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
 
-Normal console output covers lifecycle changes and failures that need attention. Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled. `/wh debug toggle` enables the same diagnostics temporarily. A settings hot-reload restores the file's value. See [Diagnostic reports](/wormholes/09-commands-permissions#diagnostic-reports).
+Normal console output covers lifecycle changes and failures that need attention. Fabric, Forge, NeoForge, and singleplayer also log one `Crossing` line for each player crossing through a frame portal or dimensional door; see [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod). Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled. `/wh debug toggle` enables the same diagnostics temporarily. A settings hot-reload restores the file's value. See [Diagnostic reports](/wormholes/09-commands-permissions#diagnostic-reports).
 
 Traversal API behavior and provider contracts are in
 [21 - API - Traversal Cost & Events](/wormholes/21-api-traversal-cost-events).
@@ -430,7 +430,7 @@ Projection behavior detail:
 | `client-mirror` | `true` | Let clients draw mirror portals from their own loaded chunks, so no mirror plate is built or streamed for them. The client's `client-mirror` must also be on; otherwise mirrors stream like linked portals |
 | `client-recursion` | `true` | Send nested mirror and portal destination views. Native mirrors allow four reflections per chain, including the first mirror; linked portals allow up to three nested steps. Each primary view has at most 16 nested views |
 | `seamless-travel` | `true` | Fabric, Forge, NeoForge, and singleplayer only. Let players with the mod cross portals and doors with no teleport, respawn, or loading screen, with destination chunks and entities streamed ahead. Off keeps the prepared arrival |
-| `remote-view-routes` | `2` | Fabric, Forge, NeoForge, and singleplayer only. Portal destinations streamed ahead per seamless player, 1–4 |
+| `remote-view-routes` | `2` | Fabric, Forge, NeoForge, and singleplayer only. Portal destinations in other worlds or beyond the player's view distance streamed ahead per seamless player, 1–4. Same-world destinations within the player's view distance do not count against it |
 | `remote-view-chunks-per-tick` | `8` | Fabric, Forge, NeoForge, and singleplayer only. Destination chunk columns streamed per seamless player per tick, 1–64. The client's acknowledgements can lower it further |
 | `remote-view-bytes-per-tick` | `196608` | Fabric, Forge, NeoForge, and singleplayer only. Destination bytes streamed per seamless player per tick, 16384–2097152 (192 KiB by default) |
 
