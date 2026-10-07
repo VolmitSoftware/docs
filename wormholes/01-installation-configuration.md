@@ -51,6 +51,7 @@ The client creates this file in its `config/` folder on first launch and reads i
 | `resident-level-memory-mb` | `512` | Memory budget in MiB for destination worlds kept loaded behind portals on servers with seamless crossing, 64–8192. Closed destinations beyond it are released, oldest first |
 | `show-debug-overlay` | `false` | Show detailed ClientView metrics on F3 alongside the connection status |
 | `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky; the destination sky inside native portal views is independent of this setting |
+| `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it |
 | `client-recursion` | `true` | Show nested mirrors and portals through their own destinations when the server sends them |
 | `self-reflection` | `true` | Show your own reflection in mirrors this client draws |
 
@@ -420,9 +421,13 @@ Projection behavior detail:
 | `hello-grace-millis` | `100` | Extra milliseconds a joining client with a modded brand has to answer the offer. Clients with the vanilla brand never wait |
 | `max-frame-kb` | `512` | Largest ClientView message in KiB. Larger updates are split |
 | `ack-window-frames` | `8` | Native section transfers use a bounded acknowledgement window independently of this value |
+| `brick-cache` | `true` | Send a hash list for each destination plate first and resend only the 16×16×16 bricks the client reports missing, so unchanged bricks the client already holds cost 12 bytes. Off sends every brick with each update |
+| `destination-light` | `true` | Send destination block and sky light with each section so native views are lit like the destination. Off sends sections without destination light |
 | `entity-frames` | `true` | Send destination entities as one 20 Hz stream per portal, shared by every ClientView player watching it. Off shows no destination entities to ClientView players |
+| `zero-copy` | `true` | In singleplayer, hand plates to the local client by reference instead of encoding them. Clients connected over the network always receive encoded plates |
 | `standby-prestream` | `false` | Reserved; has no effect. ClientView sends only an RTP portal's current destination |
 | `view-stats` | `true` | Accept plate memory and apply timings from clients for `/wormholes clientview status` |
+| `client-mirror` | `true` | Let clients draw mirror portals from their own loaded chunks, so no mirror plate is built or streamed for them. The client's `client-mirror` must also be on; otherwise mirrors stream like linked portals |
 | `client-recursion` | `true` | Send nested mirror and portal destination views. Native mirrors allow four reflections per chain, including the first mirror; linked portals allow up to three nested steps. Each primary view has at most 16 nested views |
 | `seamless-travel` | `true` | Fabric, Forge, NeoForge, and singleplayer only. Let players with the mod cross portals and doors with no teleport, respawn, or loading screen, with destination chunks and entities streamed ahead. Off keeps the prepared arrival |
 | `remote-view-routes` | `2` | Fabric, Forge, NeoForge, and singleplayer only. Portal destinations streamed ahead per seamless player, 1–4 |
