@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-07T11:54:34.000Z
+date: 2026-10-08T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,6 +30,8 @@ Each frame portal has menus for type, orientation, destination, settings, cost, 
 | `ambientStyle` | `SPARKS` | `SPARKS` / `OUTLINE` / `CORNERS` / `OFF` |
 | `ambientColor` | `0xB969FF` | RGB 0–0xFFFFFF |
 | `surfaceSkin` | empty | No skin |
+| `apertureShape` | `full` | Settings menu **Aperture shape**. Never copied by Settings sync |
+| Traveller scale | `off`, range `0.25`–`4` | Transit menu. Never copied by Settings sync |
 | `publicLookLabel` | `false` | Off keeps look subtitles portal-tool only |
 | `travelCost` | free (`null`) | Free / vanilla item / Vault |
 | `settingsSyncEnabled` | `true` | Broadcast settings to linked/remote when applicable |
@@ -62,7 +64,7 @@ as `CUSTOM` on load.
 
 ### Settings sync
 
-Settings Sync copies supported changes to linked local portals and gateways. When disabled, edits stay local. `publicLookLabel` is never copied.
+Settings Sync copies supported changes to linked local portals and gateways. When disabled, edits stay local. `publicLookLabel`, the aperture shape, and the Transit menu's traveller scale are never copied.
 
 ## Per-portal permission node
 
@@ -229,6 +231,7 @@ is still ON/OFF for all types
 | Blackout | Left toggles background. Right opens color picker (16 concrete colors) |
 | Ambient particles | Left cycles style. Right opens RGB/dye color menu |
 | Surface skin | Menu control for skin display/clear (in-world apply in `03`) |
+| Aperture shape | Left cycles the presets, right rotates the shape 45°, shift-right resets to `full`. See [Aperture shape](#aperture-shape) |
 | Activation range | ±8 / ±32 steps. Below 8 snaps to global (`0`) |
 | Render mode | Cycle PanOptic / Venticular |
 | Public look label | Toggle whether nearby players without a portal tool see this portal's name while looking at it. Off by default |
@@ -244,6 +247,14 @@ interval, and view grace editors.
 Portal-tool holders always retain the route subtitle, including the linked
 destination or active progress text. A player without a portal tool sees only
 the portal name, and only when Public Look Label is On.
+
+## Aperture shape
+
+The aperture shape is the outline of the opening inside the built frame. A new portal uses `full`, the whole rectangle of built cells. Any other shape is fitted to that rectangle, scaled to its shorter side and centred, and masks it: only cells at least half inside the shape stay open. The built cells themselves are kept, so `full` restores the original opening at any time. A shape that would leave no cell open is refused; the menu shows the refused shape under the control and the command reports it.
+
+The **Aperture shape** control in the Settings menu cycles the presets `full`, `circle`, `rounded`, `polygon` (a hexagon), `star`, `flower`, `heart`, `feather`, and `ring` on left-click, rotates the current shape by 45° on right-click, and resets to `full` on shift-right-click. Its lore shows the current shape text and the number of open cells. Any shape the text grammar can express, including custom polygons, splines, paths, and boolean combinations, is set with `/wormholes admin portals shape`; see [Aperture shape text](/wormholes/09-commands-permissions#aperture-shape-text) and the [shape grammar](/optics/02-shapes#text-grammar). The stored text is canonical, for example `circle(radius=1)`.
+
+Travel is judged against the exact shape on every platform, not the cell approximation: a wall portal tests the traveller's eye position, a floor or ceiling portal tests the crossing point. Players with the client mod see the destination clipped to the shape with a smooth edge; standard projection and vanilla clients see the open cells. See [Shaped apertures](/wormholes/05-projection-modes-settings#shaped-apertures). The `OUTLINE` ambient style traces the shape. The shape is stored per portal, turns with the frame when the frame is rotated or flipped, and is never copied to linked portals by Settings sync. It is distinct from the [Shaped Portals](/shapedportals) integration, which supplies irregular built openings for vanilla Nether portals; an aperture shape masks a Wormholes frame however it was built.
 
 ## Fidelity menu
 
@@ -312,10 +323,22 @@ Open **Settings → More settings → Transit** to control movement through this
 
 | Mode | Arrival view |
 |------|--------------|
-| `frame` | Rotates the entry look through the linked frames. |
+| `frame` | Carries the full look through the linked frames: yaw and pitch, and the body and head facing of players and entities. Looking straight down into a floor portal whose exit faces up arrives looking straight up; a floor portal exiting through a wall arrives level, facing out of the exit. |
 | `look` | Preserves the traveler's absolute look direction. |
 | `snap` | Faces straight out of the exit. |
 | `mirror` | Reflects the frame-transformed look across the exit plane, facing back toward the portal. |
+
+All four modes apply on teleport, prepared, and seamless crossings. With `[transit] gravity-flip-enabled = true` (default `false`), `frame`, `snap`, and `mirror` arrivals through an exit that points up or down are turned upright, forward and screen-up together; `look` ignores the flip. A pair whose frames are twisted relative to each other leaves a camera tilt on arrival, which the client mod eases back to level over `camera-roll-ease-seconds` (default `0.35`). See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
+
+**Traveller scale** maps travel between portals of different sizes. The rule of the portal a traveller enters applies, so set it on both ends of a pair that should work in both directions; Settings sync never copies it. Left-click cycles the mode, right-click opens a chat prompt for the minimum size factor, and shift-right-click one for the maximum (defaults `0.25` and `4`, kept within `0.0625`–`16`).
+
+| Mode | Effect on arrival |
+|------|-------------------|
+| `off` | 1:1. Position and velocity carry over unscaled. Default. |
+| `motion` | Position and velocity are multiplied by the pair's size ratio: a 3×3 portal into a 9×9 is ×3, and the way back is ×1/3. The traveller's size is unchanged. |
+| `ratio` | As `motion`, and the traveller's size is multiplied by the ratio as well, through a `wormholes:portal_scale` modifier on the scale attribute, clamped to the minimum and maximum. Crossing back through a pair that uses `ratio` at both ends restores the original size. |
+
+Random teleport portals and cross-server gateways, including Nexus members on other servers, never scale. A `ratio` rule on a fall loop between two portals compounds on every pass until it reaches the clamp; use `off` or `motion` for loops. Players with the client mod see a scaled pair's destination at the matching scale, while standard projection stays a 1:1 window. `/wormholes admin portals scale` sets the rule by command and `/wormholes admin scale reset` restores entities that kept a portal scale; see [Commands & Permissions](/wormholes/09-commands-permissions).
 
 **Membrane** permits entry from the front and pushes travelers away from the back. **Bounce** pushes travelers back instead of transporting them, from either side. Left-click either control to toggle it.
 

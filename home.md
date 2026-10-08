@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-08T12:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -224,6 +224,19 @@ Pick a project to open its documentation.
           <span>
             <strong class="title">VolmLib</strong>
             <span class="d-block text--secondary">Shared APIs and utilities for Volmit plugins</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/optics" class="d-flex align-center">
+          <span class="project-mark mr-4" aria-hidden="true">OP</span>
+          <span>
+            <strong class="title">Optics</strong>
+            <span class="d-block text--secondary">Portal geometry, shape masks and projection math library</span>
           </span>
         </a>
       </li>

@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-10-02T14:58:32.910477+00:00
+date: 2026-10-08T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -122,6 +122,10 @@ There is no Gateway or RTP rune product. Switch a finished portal to `GATEWAY`
 or `RTP` from the type menu.
 
 Wormholes rejects non-coplanar sets without consuming them. If a later construction step fails, it restores or refunds the runes. Breaking a placed rune in survival follows the drop policy above; breaking one with the wand is cancelled.
+
+## Aperture shape
+
+Any built frame can carry an aperture shape set afterwards. The shape outlines the opening inside the built rectangle: cells outside it neither show the destination nor admit travel, while the cells you built stay stored unchanged, so resetting the shape to `full` restores the whole opening. Set it from the portal's Settings menu or with `/wormholes admin portals shape`; see [Aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape).
 
 ## Surface skin
 

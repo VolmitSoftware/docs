@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-10-07T20:00:00.000Z
+date: 2026-10-08T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -95,6 +95,10 @@ portals keep fixed travel rules. See
 ## Traversal modes
 
 Frame portals and dimensional doors check direction, access, cooldown, cost, and destination readiness before moving a traveler, then teleport it. A player with the [client mod](/wormholes/01-installation-configuration#client-mod) gets one of two smoother transitions. On Paper, Purpur, and Folia the client prepares the arrival area before the crossing, so a ready crossing shows no loading screen while the server still teleports the player. On Fabric, Forge, and NeoForge servers and in singleplayer the player crosses seamlessly: the client predicts the crossing, the server checks it, and there is no teleport, respawn, loading screen, or frame-portal cooldown, so the player can cross straight back. Players with the mod on those servers also see entities pass smoothly through frame portals within the same world. Players riding or carrying a passenger, random teleport, and cross-server travel use the ordinary teleport. Details: [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
+
+## Size ratios and traveller scale
+
+Linked portals may differ in size. The size ratio of a pair is the destination's cell count divided by the source's along each axis of the link; a 3×3 portal linked to a 9×9 has a ratio of 3. By default the ratio changes nothing: position and velocity carry over 1:1. The entered portal's **Traveller scale** rule in its Transit menu can instead map position and velocity by the ratio (`motion`), or also multiply the traveller's size by it within a clamp (`ratio`), so a player who walks through the small portal comes out three times larger and three times faster and returns to normal by walking back through a pair that uses the same rule. Random teleport portals and cross-server gateways never scale. See [Transit menu](/wormholes/04-portal-types-menus-settings#transit-menu).
 
 ## Local vs remote portals
 

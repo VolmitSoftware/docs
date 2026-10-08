@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-05T13:45:00.068198+00:00
+date: 2026-10-08T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,6 +36,9 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 | `/wormholes pocket resizeall ...` | `wormholes.admin.pocket` | Resize every pocket |
 | `/wormholes admin freeze [seconds=30]` | `wormholes.admin.projection` | Freeze projections; use `seconds=0` to resume |
 | `/wormholes admin flush` | `wormholes.admin.projection` | Clear and rebuild projections |
+| `/wormholes admin portals shape <portal> [shape=<text>]` | `wormholes.admin.portals` | Show the portal's aperture shape, or set it from [shape text](#aperture-shape-text); `shape=full` restores the rectangle. `<portal>` is a name or UUID. Completion offers the preset names |
+| `/wormholes admin portals scale <portal> [mode=<off\|motion\|ratio>] [min=<factor>] [max=<factor>]` | `wormholes.admin.portals` | Show or set the portal's [traveller scale](/wormholes/04-portal-types-menus-settings#transit-menu) rule; omitted parts keep their value |
+| `/wormholes admin scale reset [target=self] [radius=<blocks>]` | `wormholes.admin.scale` | Restore the default size of yourself, a named player (`target=<name>`), or every entity within `radius` (1–256) of you (`target=all`); reports how many were restored |
 | `/wormholes admin deleteallportals` | `wormholes.admin.reset` | Immediately delete every local portal, its links, and its portal-network memberships |
 | `/wormholes admin deleteeverything` | `wormholes.admin.reset` | Reset Wormholes data immediately |
 | `/wormholes network status` | `wormholes.admin.network` | Show peer connection status |
@@ -78,6 +81,29 @@ These commands manage [ClientView](/wormholes/05-projection-modes-settings#clien
 
 `on` and `off` last until the next restart. Players receive ClientView only while it is on here and `[client-view] enabled = true`; `on` with `enabled = false` offers nothing. The `status` header shows both states (`runtime` for this command, `configured` for the file) and the session count. Each row shows the player, the session state (`VANILLA`, `PENDING`, or `CLIENT_VIEW`), the negotiated features, attended portals, frames and KiB sent, unacknowledged frame groups, acknowledgement round trip, and applied cells. With `[client-view] view-stats = true`, rows also show the client's plate memory and median sweep and apply times. `dropped` counts client messages the server rejected as protocol violations (oversized, malformed, unknown, or beyond the per-second limit); `stale` counts messages it ignored as expected, such as acknowledgements from before a session change or a repeated view report. `reset` reports when the player has no active ClientView session. Modded clients also show their ClientView connection status on F3 as `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wormholes: Disconnected`.
 
+## Aperture shape text
+
+`shape=` on Bukkit and the trailing text on native loaders accept the shape grammar of the Optics library; the full grammar is in [Shapes](/optics/02-shapes#text-grammar). Presets take positional or `name=value` arguments, `+`, `&`, and `-` combine shapes, and `@rotate`, `@scale`, `@offset`, `@flipU`, `@flipV`, and `@fit` modify the preceding shape. A shape that leaves no open cell is refused, and a shape that does not parse is reported with the position of the error.
+
+| Text | Opening |
+|---|---|
+| `full` | The whole built rectangle |
+| `circle` | A circle filling the shorter side |
+| `circle(radius=0.8)` | A smaller circle |
+| `polygon(sides=8)` | An octagon |
+| `star(points=5,outer=1,inner=0.45)` | A five-point star |
+| `flower(petals=7,depth=0.5)` | Seven shallow petals |
+| `heart@rotate(180)` | An upside-down heart |
+| `feather(curve=-0.3)` | A feather curving the other way |
+| `ring(outer=1,inner=0.5)` | A ring with a wide hole |
+| `polygon(points=0:1;1:-1;-1:-1)` | A triangle from unit-space corners |
+| `path(d=M -1:-1 L 1:-1 L 0:1 Z)` | The same triangle as a path |
+| `circle+rectangle(width=2,height=0.5)` | A circle with a bar through it |
+| `circle-circle(radius=0.5)@offset(0.3,0)` | A circle with an off-centre hole |
+| `circle@fit(cover)` | A circle sized to the longer side, overflowing the shorter one |
+
+The stored text is canonical, for example `circle(radius=0.8)`, and the current value prints with its open-cell count.
+
 ## Permissions
 
 Personal language selection requires both `wormholes.language.self` and `volmit.language.self`. Both are granted by default.
@@ -96,6 +122,8 @@ See [Languages](/languages).
 | `wormholes.admin.projection` | Freeze or rebuild projections |
 | `wormholes.admin.reset` | Destructive reset commands |
 | `wormholes.admin.pocket` | Inspect and resize pockets |
+| `wormholes.admin.portals` | Portal administration, including the aperture shape and traveller scale commands |
+| `wormholes.admin.scale` | Restore the default size of players and entities scaled by portals |
 | `wormholes.doors.bypass` | Bypass door access lists |
 | `wormholes.doors.craft` | Craft and reskin dimensional doors |
 | `wormholes.doors.place` | Place dimensional doors |
@@ -175,6 +203,9 @@ containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address t
 | `/wh admin portals unlink <portal>` | `wormholes.admin.portals` | Remove its destination |
 | `/wh admin portals prune [dry] [confirm]` | `wormholes.admin.portals` | Report broken links by default; `false true` removes them |
 | `/wh admin portals rename-server <old> <new> [confirm]` | `wormholes.admin.portals` | Rewrite matching remote destinations when confirmation is `true` |
+| `/wh portals shape <uuid> [shape]` | operator level 3 | Show or set the portal's aperture shape from [shape text](#aperture-shape-text); completion offers the preset names |
+| `/wh portals scale <uuid> [mode] [min] [max]` | operator level 3 | Show or set the portal's traveller scale rule |
+| `/wh scale reset [self\|player <name>\|all <radius>]` | `wormholes.admin.scale` | Restore the default size of yourself, a named player, or every entity within the radius (1–256); reports how many were restored |
 | `/wh admin deleteallportals` | `wormholes.admin.reset` | Immediately remove local portals |
 | `/wh admin deleteeverything` | `wormholes.admin.reset` | Immediately reset Wormholes configuration and saved data |
 

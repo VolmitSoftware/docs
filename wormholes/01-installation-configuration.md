@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-07T20:00:00.000Z
+date: 2026-10-08T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,7 +30,7 @@ Native loaders store the same settings, portal records, network identity, routes
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases using protocol 6 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases using protocol 7 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia the mod prepares the arrival ahead of the crossing instead. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
@@ -54,6 +54,9 @@ The client creates this file in its `config/` folder on first launch and reads i
 | `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it |
 | `client-recursion` | `true` | Show nested mirrors and portals through their own destinations when the server sends them |
 | `self-reflection` | `true` | Show your own reflection in mirrors this client draws |
+| `portal-shape-subdivisions` | `8` | Mesh subdivisions per block along the edge of a portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape), 1–16. Higher values give a smoother edge. Very large shaped portals use fewer so the mesh stays within its budget |
+| `portal-edge-feather` | `0.0` | Width in blocks of a band inside the edge of a shaped portal tinted with the destination's fog colour, 0–2. `0` draws no band |
+| `camera-roll-ease-seconds` | `0.35` | Seconds over which the camera tilt left after crossing a twisted or upside-down portal pair eases back to level, 0–2. `0` levels the camera at once |
 
 ## Build distributions
 
@@ -88,7 +91,7 @@ and trust under `routes/` and `trust/`. See
 | Path | Bukkit: `plugins/Wormholes/wormholes.toml`; native loaders: `config/wormholes/wormholes.toml` |
 | Schema | `schema = 3` |
 | Quality key | Top-level `quality` |
-| Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`, `[client-view]` |
+| Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`, `[transit]`, `[client-view]` |
 | Key form | kebab-case (`teleport-cooldown-millis`) |
 
 A startup load rewrites the file with every known key. Custom comments and unknown keys are removed. A hot reload does not rewrite the file.
@@ -409,6 +412,25 @@ Projection behavior detail:
 | `rtp-rim-interval-ticks` | `5` | Ticks between RTP rim particle refreshes while the rim color is unchanged. Color and phase changes refresh at once |
 | `entity-velocity-epsilon` | `0.005` | Smallest per-axis velocity change that sends a projected entity a new velocity packet. Stopping always sends |
 | `ambient-particle-interval-ticks` | `1` | Ticks between `SPARKS` ambient bursts. Each burst carries the sparks of every skipped tick, so average density is unchanged |
+
+## `[transit]`
+
+Portal physics, convoy traversal, and traversal cues. Changes hot-reload. A portal's own [Transit menu](/wormholes/04-portal-types-menus-settings#transit-menu) settings override `momentum-default` and `orientation-default`.
+
+| Key | Default | Notes |
+|-----|---------|--------|
+| `momentum-default` | `preserve` | Momentum policy for portals that set none of their own: `preserve`, `scale`, `clamp`, `zero`, or `impulse` |
+| `momentum-max-speed` | `4.0` | Speed ceiling in blocks per tick for the `clamp` and `scale` policies |
+| `orientation-default` | `frame` | Arrival orientation for portals that set none of their own: `frame`, `look`, `snap`, or `mirror` |
+| `gravity-flip-enabled` | `false` | Arrive upright through exits that point up or down instead of carrying the look rigidly through the pair. The flip turns the whole camera basis and does not apply to the `look` policy. Existing files keep the value they already hold |
+| `object-transit-continuous` | `true` | Projectiles and dropped items keep their velocity through local tunnels without a re-entry cooldown. On Fabric, Forge, and NeoForge this also covers traveling groups without a player |
+| `convoy-enabled` | `true` | Move vehicles, passengers, and leashed mobs through a portal as one rig, or refuse the whole rig |
+| `convoy-max-entities` | `16` | Largest rig moved as a unit |
+| `convoy-cross-server-enabled` | `true` | Allow rigs through cross-server gateways when the peer supports convoys |
+| `convoy-cross-server-timeout-sec` | `20` | Seconds a cross-server rig transfer waits for the destination before the source restores the rig |
+| `cinematics-enabled` | `true` | Play threshold and arrival cues (sound and particles) |
+| `arrival-mask-adaptive` | `true` | Size the arrival darkness mask by the destination chunks still streaming instead of the fixed tick count |
+| `arrival-mask-min-ticks` | `5` | Shortest adaptive arrival mask while any destination chunk is missing |
 
 ## `[client-view]`
 
