@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-08T12:10:00.000Z
+date: 2026-10-08T18:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,11 +32,11 @@ The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the
 
 ClientView requires matching Wormholes releases using protocol 7 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
-On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia the mod prepares the arrival ahead of the crossing instead. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
+On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia every player crosses with the ordinary teleport. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
 The F3 debug screen shows `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wormholes: Disconnected`. The Wormholes label is gold; connected is green, mismatch is yellow, and disconnected is red. Mismatch means the ClientView protocol or Minecraft version is incompatible. Connection status appears on F3 without a chat notification.
 
-Native portal views use Minecraft models, textures, and destination lighting. With Iris Shaders enabled, each destination receives the selected pack's terrain, entity, sky, lighting, and postprocessing effects using its own dimension, time, weather, and biome. Mirrors use the same shader pack and show at most four reflections per chain.
+Native portal views use Minecraft models, textures, and destination lighting. On Fabric, Forge, and NeoForge servers and in singleplayer, portals and doors the player can travel through are drawn from the destination world itself by the game's renderer, Sodium, and Iris Shaders; other views are streamed from the server. See [ClientView](/wormholes/05-projection-modes-settings#clientview). With Iris Shaders, the client creates the shader pipeline of every dimension while the world loads, so approaching a portal never compiles shaders.
 
 For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for Minecraft 26.3. Iris Shaders is separate from the Iris world-generation plugin and mod. When using [Distant Horizons](https://modrinth.com/mod/distanthorizons), select a shader pack with explicit Distant Horizons support. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
 
@@ -52,10 +52,10 @@ The client creates this file in its `config/` folder on first launch and reads i
 | `show-debug-overlay` | `false` | Show detailed ClientView metrics on F3 alongside the connection status |
 | `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky; the destination sky inside native portal views is independent of this setting |
 | `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it |
-| `client-recursion` | `true` | Show nested mirrors and portals through their own destinations when the server sends them |
-| `self-reflection` | `true` | Show your own reflection in mirrors this client draws |
+| `client-recursion` | `true` | Show nested mirrors and portals through their own destinations, in world views and in streamed views the server sends them for |
+| `self-reflection` | `true` | Show your own reflection in streamed mirror views |
 | `portal-shape-subdivisions` | `8` | Mesh subdivisions per block along the edge of a portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape), 1–16. Higher values give a smoother edge. Very large shaped portals use fewer so the mesh stays within its budget |
-| `portal-edge-feather` | `0.0` | Width in blocks of a band inside the edge of a shaped portal tinted with the destination's fog colour, 0–2. `0` draws no band |
+| `portal-edge-feather` | `0.0` | Width in blocks of a band inside the edge of a shaped portal's streamed view tinted with the destination's fog colour, 0–2. `0` draws no band |
 | `camera-roll-ease-seconds` | `0.35` | Seconds over which the camera tilt left after crossing a twisted or upside-down portal pair eases back to level, 0–2. `0` levels the camera at once |
 
 ## Build distributions
@@ -465,8 +465,8 @@ Portal physics, convoy traversal, and traversal cues. Changes hot-reload. A port
 | `standby-prestream` | `false` | Reserved; has no effect. ClientView sends only an RTP portal's current destination |
 | `view-stats` | `true` | Accept plate memory and apply timings from clients for `/wormholes clientview status` |
 | `client-mirror` | `true` | Let clients draw mirror portals from their own loaded chunks, so no mirror plate is built or streamed for them. The client's `client-mirror` must also be on; otherwise mirrors stream like linked portals |
-| `client-recursion` | `true` | Send nested mirror and portal destination views. Native mirrors allow four reflections per chain, including the first mirror; linked portals allow up to three nested steps. Each primary view has at most 16 nested views |
-| `seamless-travel` | `true` | Fabric, Forge, NeoForge, and singleplayer only. Let players with the mod cross portals and doors with no teleport, respawn, or loading screen, with destination chunks and entities streamed ahead. Off keeps the prepared arrival |
+| `client-recursion` | `true` | Send nested mirror and portal destination views inside streamed views. Streamed mirrors allow four reflections per chain, including the first mirror; linked portals allow up to three nested steps. Each primary view has at most 16 nested views |
+| `seamless-travel` | `true` | Fabric, Forge, NeoForge, and singleplayer only. Let players with the mod cross portals and doors with no teleport, respawn, or loading screen, with destination chunks and entities streamed ahead. Off uses the ordinary teleport and streamed portal views |
 | `remote-view-routes` | `2` | Fabric, Forge, NeoForge, and singleplayer only. Portal destinations in other worlds or beyond the player's view distance streamed ahead per seamless player, 1–4. Same-world destinations within the player's view distance do not count against it |
 | `remote-view-chunks-per-tick` | `8` | Fabric, Forge, NeoForge, and singleplayer only. Destination chunk columns streamed per seamless player per tick, 1–64. The client's acknowledgements can lower it further |
 | `remote-view-bytes-per-tick` | `196608` | Fabric, Forge, NeoForge, and singleplayer only. Destination bytes streamed per seamless player per tick, 16384–2097152 (192 KiB by default) |

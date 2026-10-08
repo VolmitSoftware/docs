@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-08T18:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -328,7 +328,7 @@ Open **Settings → More settings → Transit** to control movement through this
 | `snap` | Faces straight out of the exit. |
 | `mirror` | Reflects the frame-transformed look across the exit plane, facing back toward the portal. |
 
-All four modes apply on teleport, prepared, and seamless crossings. With `[transit] gravity-flip-enabled = true` (default `false`), `frame`, `snap`, and `mirror` arrivals through an exit that points up or down are turned upright, forward and screen-up together; `look` ignores the flip. A pair whose frames are twisted relative to each other leaves a camera tilt on arrival, which the client mod eases back to level over `camera-roll-ease-seconds` (default `0.35`). See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
+All four modes apply on teleport and seamless crossings. With `[transit] gravity-flip-enabled = true` (default `false`), `frame`, `snap`, and `mirror` arrivals through an exit that points up or down are turned upright, forward and screen-up together; `look` ignores the flip. A pair whose frames are twisted relative to each other leaves a camera tilt on arrival, which the client mod eases back to level over `camera-roll-ease-seconds` (default `0.35`). See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
 
 **Traveller scale** maps travel between portals of different sizes. The rule of the portal a traveller enters applies, so set it on both ends of a pair that should work in both directions; Settings sync never copies it. Left-click cycles the mode, right-click opens a chat prompt for the minimum size factor, and shift-right-click one for the maximum (defaults `0.25` and `4`, kept within `0.0625`–`16`).
 
@@ -342,7 +342,7 @@ Random teleport portals and cross-server gateways, including Nexus members on ot
 
 **Membrane** permits entry from the front and pushes travelers away from the back. **Bounce** pushes travelers back instead of transporting them, from either side. Left-click either control to toggle it.
 
-**Transition cues** accepts a threshold particle key on left-click and an arrival sound key on right-click, entered in chat. An empty value, `-`, `none`, or `default` restores the default cue. Shift-left-click sets arrival-mask duration from 0 to 200 ticks; an empty value or `-1` restores the default duration. With the client mod, [seamless crossings and ready prepared arrivals](/wormholes/05-projection-modes-settings#travel-with-the-client-mod) skip these travel cues and the mask for the traveler; bystanders keep the normal effects.
+**Transition cues** accepts a threshold particle key on left-click and an arrival sound key on right-click, entered in chat. An empty value, `-`, `none`, or `default` restores the default cue. Shift-left-click sets arrival-mask duration from 0 to 200 ticks; an empty value or `-1` restores the default duration. [Seamless crossings](/wormholes/05-projection-modes-settings#travel-with-the-client-mod) with the client mod skip these travel cues and the mask for the traveler; bystanders keep the normal effects.
 
 ## Travel cost menu
 

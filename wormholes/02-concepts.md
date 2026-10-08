@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-08T18:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -94,7 +94,7 @@ portals keep fixed travel rules. See
 
 ## Traversal modes
 
-Frame portals and dimensional doors check direction, access, cooldown, cost, and destination readiness before moving a traveler, then teleport it. A player with the [client mod](/wormholes/01-installation-configuration#client-mod) gets one of two smoother transitions. On Paper, Purpur, and Folia the client prepares the arrival area before the crossing, so a ready crossing shows no loading screen while the server still teleports the player. On Fabric, Forge, and NeoForge servers and in singleplayer the player crosses seamlessly: the client predicts the crossing, the server checks it, and there is no teleport, respawn, loading screen, or frame-portal cooldown, so the player can cross straight back. Players with the mod on those servers also see entities pass smoothly through frame portals within the same world. Players riding or carrying a passenger, random teleport, and cross-server travel use the ordinary teleport. Details: [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
+Frame portals and dimensional doors check direction, access, cooldown, cost, and destination readiness before moving a traveler, then teleport it. On Fabric, Forge, and NeoForge servers and in singleplayer, a player with the [client mod](/wormholes/01-installation-configuration#client-mod) crosses seamlessly instead: the client predicts the crossing, the server checks it, and there is no teleport, respawn, loading screen, or frame-portal cooldown, so the player can cross straight back. Players with the mod on those servers also see entities pass smoothly through frame portals within the same world. On Paper, Purpur, and Folia every player uses the teleport. Players riding or carrying a passenger, random teleport, and cross-server travel use the ordinary teleport. Details: [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
 ## Size ratios and traveller scale
 
