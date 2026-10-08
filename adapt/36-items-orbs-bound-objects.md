@@ -2,19 +2,19 @@
 title: "Items, Orbs & Bound Objects"
 description: "Experience orbs, backpacks, bound items, and stored item data"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-10-08T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt stores custom data on ordinary items. Most of these items require the owning adaptation and still check level, permission, world, and protection. Experience and knowledge orbs do not: the thrower receives the stored reward.
+Adapt stores custom data on ordinary items. Most of these items require the owning adaptation and still check level, permission, world, and protection. Experience and knowledge orbs do not: the player using them receives the stored reward.
 
 ## Orbs
 
-Both orbs are snowballs. `/adapt experience` and `/adapt knowledge` need `adapt.cheatitem`. From console the player argument is required. `all` writes every enabled skill. `random` picks one skill. Any other argument must be a skill id. `master` is not a skill id.
+Both orbs default to snowballs. Their material, model, and optional head texture are configurable through `items.experience-orb` and `items.knowledge-orb` in [models.toml](/adapt/06-gui-customization#modelstoml-format). `/adapt experience` and `/adapt knowledge` need `adapt.cheatitem`. From console the player argument is required. `all` writes every enabled skill. `random` picks one skill. Any other argument must be a skill id. `master` is not a skill id.
 
-The orb applies on throw, to the player who threw it.
+Right-click with an orb in either hand to receive its reward. Successful use consumes one orb, including in Creative mode, and suppresses the base item's placement or projectile action. Existing orbs remain usable after appearance configuration changes; new orbs use the current appearance. Names and lore are editable through [Localization](/adapt/07-localization).
 
 | Orb | Command | Payload |
 |---|---|---|

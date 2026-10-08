@@ -2,7 +2,7 @@
 title: "Resource Packs & Glyph Fonts"
 description: "Author bitmap glyphs, build named fonts, and deliver the Gloss resource pack"
 published: true
-date: 2026-10-07T22:10:00.000Z
+date: 2026-10-08T13:00:00Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T00:00:00.000Z
@@ -26,6 +26,12 @@ Set `[features] forge = true` in `gloss.toml`. Put PNG files under `images/` and
 | `listenerBacklog` | `32` | Connection backlog and bounded queued HTTP work, clamped to `1`–`4096` |
 | `buildDebounceTicks` | `100` | Quiet ticks before a file-change rebuild, clamped to `1`–`1200` |
 | `buildQueueCapacity` | `1` | Waiting build/export jobs behind the active job, clamped to `1`–`64`; restart to change |
+| `maxBuildFiles` | `8192` | Generated files per build, clamped to `2`–`65536` |
+| `maxBuildBytes` | `67108864` | Total generated file bytes and ZIP bytes, checked separately; clamped to `1024`–`1073741824` |
+| `maxBuildPixels` | `67108864` | Total decoded texture pixels per build, clamped to `1`–`1073741824`; separate texture outputs count separately |
+| `maxRetainedArtifacts` | `8` | Retained immutable ZIP count, clamped to `2`–`4096` |
+| `maxRetainedBytes` | `536870912` | Combined retained immutable ZIP bytes, clamped to `1024`–`17179869184` |
+| `artifactRetentionSeconds` | `600` | Minimum retention after publication or release of an offer/download, clamped to `1`–`2592000` seconds |
 | `required` | `false` | Mark the Java pack request as required; the client disconnects if it declines |
 | `prompt` | `"Gloss glyphs and icons"` | Text shown with the pack request |
 | `packFormat` | `0` | Positive values override the resource-pack format; zero uses the server-version table |
@@ -34,6 +40,10 @@ Set `[features] forge = true` in `gloss.toml`. Put PNG files under `images/` and
 For external hosting, upload `forge/out/gloss-pack.zip` to the configured URL after building it. For the embedded listener, choose an address and port reachable by your players; a wildcard bind is not a public hostname. A configured `url` takes precedence over the listener's inferred URL.
 
 The mergeable pack tree is `forge/out/pack/`; the ZIP and hash are `forge/out/gloss-pack.zip` and `forge/out/gloss-pack.sha1`. The listener serves immutable hash-addressed ZIPs retained under `forge/out/artifacts/`. Keep `forge/ledger.json` with server backups: it preserves existing glyph codepoints when files are reordered or edited. Raising `codepointBase` affects future allocations and does not renumber existing entries.
+
+A refused build leaves the last good pack available, including when limits change on reload. Old hash URLs remain available during their retention period. Current packs, outstanding player offers, and active downloads cannot be pruned; an offer remains protected until the client reports a terminal result, the player disconnects, or delivery is disabled. Replacing an offer alone does not release its old ZIP. Releasing protection starts a fresh retention period, and restarting grants existing ZIPs a fresh period.
+
+Builds prune expired unprotected ZIPs before admitting new immutable artifacts. If protected ZIPs fill the count or byte allowance, the new build is refused. Lowering limits preserves protected files even if they exceed the new allowance. These storage limits cover `artifacts/`, not the mergeable tree, convenience ZIP, or temporary staging; each new tree and ZIP obeys the build limits while the previous output is retained. External hosts must apply their own storage and URL-retention policies.
 
 ## Glyph documents
 
@@ -87,7 +97,7 @@ The space provider accepts a `[minimum, maximum]` range within `-256`–`256`. T
 
 ## Use glyphs in text and menus
 
-Use these expressions anywhere Gloss supports expressions:
+Use these expressions in rendered Gloss text, including scoreboard titles and rows and inventory item names and lore. Inventory tooltips retain the rendered name and lore, including each glyph's declared font. Text can combine glyphs from different fonts on the same line:
 
 ```text
 {{ glyph('coin') }} Balance

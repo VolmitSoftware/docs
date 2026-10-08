@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-10-01T06:38:12.571Z
+date: 2026-10-08T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -78,6 +78,8 @@ When an adaptation launches or repurposes a projectile it stamps an ownership ke
 
 `DataItem<T>` is a Bukkit item with a typed JSON payload in its persistent data. You implement four methods. The interface handles storage, lore, meta, and cooldown stamping. The persistent-data key is derived from Adapt's namespace and the hash of the payload class's canonical name. Renaming or moving the payload class orphans every item already in a player's inventory. Declaring a cooldown group keeps the vanilla cooldown sweep on your item rather than on every stack of the same material.
 
+`DataItem.acceptsMaterial(Material)` defaults to matching `getMaterial()`. Override it when an item's persistent identity must survive a configurable base-material change. `setData` refreshes the target stack's material and metadata from the newly built item while retaining its amount.
+
 `MaterialValue.getValue(material)` returns Adapt's cached computed value for a material. `debugValue(material)` logs how that value was expanded from recipes. Config reload invalidates the cache. Later reads pick up new value settings. Persisted values only last for the current server process.
 
 ## Notifications and HUD
@@ -144,7 +146,7 @@ Every read takes `now` in epoch milliseconds.
 |------|----------|
 | `ProjectileClaims` | `isUnclaimed(Projectile, NamespacedKey...)`, `isUnclaimedContainer(PersistentDataContainer, NamespacedKey...)`. `false` for a null container. `true` for an empty one |
 | `ProjectileReplacementRegistry` | `register(Projectile, Claim)`, `begin(Projectile)` returning a `Ticket`, `unregister(UUID)`. `Ticket.complete(replacement)` or `cancel()` exactly once. `clear()` is Adapt shutdown only |
-| `DataItem<T>` | Implement `getMaterial`, `getType`, `applyLore`, and `applyMeta`. Optionally implement `getCooldownGroup`. Provided: `blank`, `withData`, `setData`, `getData`, `hasData`, `ensureCooldownGroup`. The persistent-data key comes from Adapt's namespace plus the payload class canonical name's hash |
+| `DataItem<T>` | Implement `getMaterial`, `getType`, `applyLore`, and `applyMeta`. Optionally implement `getCooldownGroup` and `acceptsMaterial`. Provided: `blank`, `withData`, `setData`, `getData`, `hasData`, `ensureCooldownGroup`. The persistent-data key comes from Adapt's namespace plus the payload class canonical name's hash |
 | `PotionItem` and its nested `Data` | The built-in potion-item base, not a registered public item type |
 | `MaterialValue` | `getValue(Material)` reads the cached computed value. `debugValue(Material)` logs the recipe expansion. `get()`, `save()` and `invalidateCache()` are Adapt-owned singleton and cache lifecycle |
 | `MaterialCount`, `MaterialRecipe` | Mutable material-and-amount and inputs-and-output pairs used by the calculator. Neither registers Bukkit recipes |

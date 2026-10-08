@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-10-07T15:46:35Z
+date: 2026-10-08T01:01:30Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -19,6 +19,24 @@ A valid save reloads. Invalid TOML keeps the current settings. A startup load re
 | `language` | `"en_US"` | Server default for players without a personal override. Official translations download when selected; custom IDs use their local file with English fallback. Blank values become `en_US`. Select defaults or player overrides with `/gloss language` |
 | `metrics` | `true` | Send anonymous bStats usage metrics |
 | `splashScreen` | `true` | Console banner. A failed enable still prints it |
+
+## Bedrock viewers
+
+`[bedrock]` identifies Geyser viewers and withholds Java display surfaces they cannot render. It does not convert Java resource packs or display entities into Bedrock equivalents. Ordinary chat and inventory menus remain available through the server's Geyser translation; use those for an accessible alternative to holographic menus.
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `detection` | `"auto"` | Probe the enabled Floodgate API first, then the enabled Geyser-Spigot API. `floodgate` or `geyser` selects only that API; `uuid` explicitly enables the Floodgate UUID-shape heuristic; `off` disables detection |
+| `hideHolograms` | `true` | Withhold holograms from detected Bedrock viewers |
+| `hidePanels` | `true` | Withhold panels and refuse holographic menu opens with an unavailable message |
+| `hideBubbles` | `true` | Withhold chat bubbles |
+| `hideIndicators` | `true` | Withhold damage indicators |
+| `hideDrops` | `true` | Withhold custom real-drop presentations |
+| `hideOverlays` | `true` | Withhold entity overlays; native mob tags remain available |
+
+When no detector API is available, automatic detection retries every five seconds and does not classify players as Bedrock. Proxy-only Geyser installations therefore need an available backend detector or the explicitly selected UUID heuristic. Turning a hide switch off permits that surface's delivery; it does not add Bedrock rendering support.
+
+Detected Bedrock viewers are not offered the [Java resource pack](/gloss/28-resource-packs), and glyph expressions use their declared text fallback. Native locator waypoints, world markers and camera letterboxing are withheld. Velocity's tablist visibility feed handles Bedrock identity separately; see [network visibility integration](/gloss/27-velocity#network-visibility-integration).
 
 ## Markers and moving anchors
 
@@ -74,6 +92,35 @@ Claims and releases keep their submission order. A refused owner task remains pe
 | `workerThreads` | `1` | `1`–`4`; concurrent preparation workers; restart to change |
 
 `cacheBytes` limits retained preparation results, not total JVM memory. Active menu sessions retain the rows they display, and each worker temporarily holds a bounded encoded source and decoded image. An asset whose prepared weight exceeds the cache limit is refused. Larger rasters still consume one display entity per row and obey the visibility limits.
+
+## Delayed actions
+
+`[behaviors]` limits delayed continuations from behaviors, menus, and scenes, including runs without a player.
+
+| Key | Default | Range and meaning |
+| --- | --- | --- |
+| `maxTimersPerPlayer` | `16` | `1`–`256`; pending continuations for one player |
+| `maxTimersGlobal` | `8192` | `1`–`1048576`; pending continuations across all players and playerless runs |
+| `maxTimersWithoutPlayer` | `256` | `1`–`65536`; pending playerless continuations, also subject to the global limit |
+
+Admission must fit every applicable limit. Refused continuations are not scheduled. Reloaded limits apply to new admissions without canceling accepted timers. Completion, scheduling refusal, retirement, and successful cancellation release capacity. Disconnect resets the player's session and cancels its pending tasks; service disable cancels all pending tasks. Global and playerless reservations remain charged until cancellation succeeds or the callback drains. See [Behaviors](/gloss/19b-behaviors) for action and state settings.
+
+## Resource pack generation
+
+`[forge]` controls generated resource packs. Enable generation with `[features] forge = true`; delivery settings and glyph authoring are described in [Resource Packs](/gloss/28-resource-packs).
+
+| Key | Default | Range and meaning |
+| --- | --- | --- |
+| `maxBuildFiles` | `8192` | `2`–`65536`; maximum generated files per pack |
+| `maxBuildBytes` | `67108864` | `1024`–`1073741824`; maximum total generated file bytes and maximum ZIP bytes, checked separately |
+| `maxBuildPixels` | `67108864` | `1`–`1073741824`; total decoded texture pixels per build; separate texture outputs count separately |
+| `maxRetainedArtifacts` | `8` | `2`–`4096`; maximum retained immutable ZIPs |
+| `maxRetainedBytes` | `536870912` | `1024`–`17179869184`; maximum combined immutable ZIP bytes |
+| `artifactRetentionSeconds` | `600` | `1`–`2592000`; minimum retention after publication or release of an offer/download |
+
+The current pack, outstanding player offers, and active HTTP downloads remain protected. Expired unprotected ZIPs are pruned during builds. A build that exceeds a limit keeps the last good pack; protected ZIPs can prevent another build from fitting. Lowering limits does not delete protected files. Restarting grants existing ZIPs a fresh retention period.
+
+Retained ZIP limits exclude the mergeable tree, convenience ZIP, and temporary build files. The generated-file and ZIP limits apply to each new build while the previous output remains available. Individual textures also obey `[images]` limits.
 
 ## `[features]`
 
@@ -136,11 +183,36 @@ Legacy Gloss, HoloUi, FeatherBoard, AnimatedScoreboard and TAB header/footer pre
 | `maxFileBytes` | `16777216` | 1024 – 268435456 | Maximum bytes in one source file or observed destination |
 | `maxPreviewBytes` | `134217728` | `maxFileBytes` – 1073741824 | Maximum retained source and staged replacement bytes in one preview |
 | `maxFiles` | `4096` | 1 – 65536 | Maximum source and destination paths retained by one preview, including missing destinations |
+| `maxVisitedEntries` | `65536` | 1 – 1048576 | Maximum entries visited per source or project validation scan, including collection roots, directories, ignored files and symbolic links |
+| `maxDirectoryDepth` | `16` | 1 – 128 | Maximum nested directory depth in recursive HoloUi source collections and project menu/panel collections; each collection root has depth 0 |
+| `maxPreparationBytes` | `1073741824` | 1024 – 17179869184 | Maximum combined staged replacement and backup bytes for one applied import; excludes previously retained backups |
+| `maxPreparationMillis` | `30000` | 1 – 600000 | Cooperative deadline for apply-time revalidation and transaction preparation, before publication starts |
 | `previewLifetimeSeconds` | `600` | 1 – 86400 | Reviewed preview lifetime; captured when the preview becomes available |
 | `maxPreparedPreviews` | `8` | 1 – 1024 | Maximum reviewed previews across all senders and supported document import formats |
 | `maxCachedBytes` | `268435456` | `maxPreviewBytes` – 1073741824 | Maximum retained source and staged bytes across reviewed previews |
 
-A preview that exceeds a limit cannot apply. All current project documents count toward whole-project validation, and staged replacements count separately from their original bytes. Converted documents use the resulting preset catalog regardless of staging order. When the reviewed-preview cache is full, a new preview is refused without evicting another sender’s reviewed content. Applying, expiry or shutdown releases its cached data; idle previews expire without another command.
+A preview that exceeds a limit cannot apply. Preparation checks its deadline between operations and streaming chunks; a blocked filesystem call cannot be interrupted, and publication or recovery is allowed to finish after preparation succeeds. Byte admission includes both replaced originals and staged replacements. Existing transaction backups use the separate `[history]` retention targets. HoloUi, FeatherBoard and AnimatedScoreboard source scans count ignored entries toward the scan budget before sorting or reading selected files. Recursive scans reject deeper directories even when empty, and staged menu or panel documents must fit the same depth limit. Files directly inside a collection are at directory depth 0; `menus/one/two/menu.json` has directory depth 2. Flat collections remain nonrecursive. Scans never follow symbolic links; a supported JSON document path must be a regular file. Singleton documents count toward `maxFiles`. All current project documents count toward whole-project validation, and staged replacements count separately from their original bytes. Converted documents use the resulting preset catalog regardless of staging order. When the reviewed-preview cache is full, a new preview is refused without evicting another sender’s reviewed content. Applying, expiry or shutdown releases its cached data; idle previews expire without another command.
+
+## `[panels]`
+
+These reloadable intervals control world-panel discovery, movement and permission sampling. Active menus retain their content cadence, editing previews update immediately, and world changes trigger an immediate visibility check. Tick-based scheduling slows with the server; the permission cache uses 50 milliseconds per configured tick.
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `visibilityIntervalTicks` | `1` | 1 – 1200 | Owner ticks between range and audience checks |
+| `followIntervalTicks` | `1` | 1 – 1200 | Ticks between applying the latest captured follow-target poses |
+| `permissionCacheTicks` | `20` | 0 – 1200 | How long to reuse a permission answer; `0` checks each visibility evaluation |
+
+Followed panels already visible to a player can move between visibility checks. New or removed audience membership follows the configured visibility interval.
+
+## `[temporaryDisplays]`
+
+These reloadable limits count active bubble and indicator presentations across the server, independently of the per-viewer entity budgets. Lowering a limit refuses new admissions until enough existing presentations retire.
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `maxActiveBubbles` | `2048` | 1 – 1048576 | Maximum concurrent chat bubbles across senders |
+| `maxActiveIndicators` | `2048` | 1 – 1048576 | Maximum concurrent damage and healing indicators across entities; the authored rate and lifetime may impose a lower limit |
 
 ## `[visibility]`
 
@@ -403,13 +475,15 @@ Online profiles update immediately. Offline lookups time out after 15 seconds.
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
+| `maxReferencedMetrics` | `256` | 1 – 65536 | Maximum distinct demanded metric keys; a new key evicts the least recently requested key when full |
+| `referenceWindowMs` | `60000` | 1 – 86400000 | Demand lifetime after a metric's last use |
 | `sampleIntervalTicks` | `20` | 1 – 200 | Ticks between samples of the metrics other Volmit plugins publish, for `\|metric.<key>\|` text tokens and preview metric variables |
 | `maxSampleAgeMs` | `5000` | 0 – 86400000 | Maximum age of a provider's sample; zero disables timestamp expiry |
 | `retainUnavailableMs` | `0` | 0 – 86400000 | Retain the last successful value for this many milliseconds after its last successful collection when a provider becomes unavailable; zero clears it immediately |
 | `errorRetryTicks` | `100` | 1 – 12000 | Delay before retrying a provider that throws during sampling |
 | `unavailableText` | `""` | Up to 1024 characters | Text for a registered metric without an available value; numeric expressions and preview variables remain absent |
 
-The integration bridge only samples metric keys used by loaded content. Retention also obeys `maxSampleAgeMs`; an expired sample cannot be retained. Changes apply on the next config reload and clear cached values until the next sample. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for its tokens and variables.
+The integration bridge samples demanded metric keys; preview namespace reads demand that namespace's fields. Configure `maxReferencedMetrics` for the distinct keys used together. Evicted keys can be requested again, but exceeding the limit continuously can leave fields unavailable. Providers advertising `metric-snapshots-v1` return cached values from their own collection cadence; other providers are sampled synchronously. Retention also obeys `maxSampleAgeMs`; an expired sample cannot be retained. Changes apply on the next config reload and clear cached values until the next sample. See [Expressions & Placeholders](/gloss/13-expressions-placeholders) for its tokens and variables.
 
 Tablist text is `tablist.json`. MOTD lines are `motd.json`. Bubble layout is `bubbles/<id>.json`. Group conditions use Vault and the document `select` rules. `/gloss import legacy mode=preview` previews supported older settings and content; `/gloss import legacy mode=apply` publishes the validated conversion.
 
@@ -458,3 +532,16 @@ Higher priorities win, with purpose names breaking ties alphabetically. Prefix a
 | `maxTargetsPerViewer` | `1024` | 1–65536 | Maximum distinct tagged targets per viewer; further requests fail explicitly |
 
 A distance-hidden tag remains assigned and reappears when the target returns in range before its lifetime expires. Expiry checks do not change a target's natural server-wide glow. Disabling the glow feature releases all Gloss glow claims.
+
+## `[history]`
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `maxVersions` | `20` | 1–500 | Saved versions retained per document |
+| `maxAgeDays` | `30` | 1–3650 | Maximum age of saved document versions |
+| `maxTransactionBackups` | `20` | 1–1000 | Retained completed transaction archives across editor publication, imports, pack installation, and restores |
+| `maxTransactionBackupBytes` | `1073741824` | 1048576–68719476736 | Combined file bytes in retained transaction archives, including journals, original files, and remaining staged files |
+
+Transaction backup retention applies even when `features.history` is disabled. Gloss removes eligible archives oldest first until both transaction limits fit. It always preserves the newest committed archive whose original files pass their recorded integrity checks; if none exists, it preserves the newest completed archive. This protected archive can exceed the byte target by itself.
+
+Pending recovery suspends archive pruning. Archives found unreadable, incomplete, or corrupt, plus unknown archives and those containing symbolic links, remain protected and can also keep storage above the targets. Recovery runs before configuration loads; boot and config reload then apply the configured retention policy, and completed publications also check retention. Cleanup stops if the filesystem cannot safely delete directories. Diagnostic dumps include retained and protected counts and bytes, whether the targets are exceeded, whether recovery blocks cleanup, and whether the last inventory completed.

@@ -676,8 +676,16 @@
             "href": "/gloss/19-localization"
           },
           {
+            "title": "Behaviors and State",
+            "href": "/gloss/19b-behaviors"
+          },
+          {
             "title": "Particle Layers",
             "href": "/gloss/25-particle-layers"
+          },
+          {
+            "title": "Resource Packs & Glyph Fonts",
+            "href": "/gloss/28-resource-packs"
           }
         ]
       },
@@ -709,7 +717,7 @@
     "path": "foundation",
     "href": "/foundation",
     "description": "Homes, moderation, utilities, kits, and economy",
-    "mark": "F",
+    "icon": "/home-assets/foundation.png",
     "color": "#a8a29e",
     "group": "Plugins",
     "sections": [
@@ -901,7 +909,7 @@
     "path": "skyprime",
     "href": "/skyprime",
     "description": "Shared-grid survival islands, teams, and progression",
-    "mark": "SP",
+    "icon": "/home-assets/skyprime.png",
     "color": "#7dd3fc",
     "group": "Plugins",
     "sections": [
@@ -950,7 +958,7 @@
     "path": "static",
     "href": "/static",
     "description": "Player statistics, profiles, and rankings",
-    "mark": "ST",
+    "icon": "/home-assets/static.png",
     "color": "#cbd5e1",
     "group": "Plugins",
     "sections": [
@@ -995,7 +1003,7 @@
     "path": "gamemodeswitcher",
     "href": "/gamemodeswitcher",
     "description": "Gamemode gestures, a selector menu, and commands",
-    "mark": "GM",
+    "icon": "/home-assets/gamemodeswitcher.png",
     "color": "#bef264",
     "group": "Plugins",
     "sections": [
@@ -1057,6 +1065,10 @@
           {
             "title": "Remote deploy",
             "href": "/biletools/remote-deploy"
+          },
+          {
+            "title": "Plugin integration API",
+            "href": "/biletools/api"
           }
         ]
       }
@@ -1111,6 +1123,10 @@
             "href": "/volmlib/api/github-releases"
           },
           {
+            "title": "Cooperative plugin reload",
+            "href": "/volmlib/api/reloading"
+          },
+          {
             "title": "Inventory-view access",
             "href": "/volmlib/api/inventory-views"
           },
@@ -1131,11 +1147,46 @@
     ]
   },
   {
+    "name": "Optics",
+    "path": "optics",
+    "href": "/optics",
+    "description": "Portal geometry, shape masks and projection math library",
+    "mark": "OP",
+    "group": "Developer tools",
+    "sections": [
+      {
+        "title": "Documentation",
+        "links": [
+          {
+            "title": "Overview",
+            "href": "/optics/00-overview"
+          },
+          {
+            "title": "Frames and transforms",
+            "href": "/optics/01-frames-and-transforms"
+          },
+          {
+            "title": "Shapes",
+            "href": "/optics/02-shapes"
+          },
+          {
+            "title": "Animation",
+            "href": "/optics/03-animation"
+          },
+          {
+            "title": "Portals",
+            "href": "/optics/04-portals"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Multiplexor",
     "path": "servermultiplexor",
     "href": "/servermultiplexor",
     "description": "Local and Pterodactyl servers, remote profiling, and gameplay tools",
-    "mark": "M",
+    "icon": "/home-assets/multiplexor.png",
     "color": "#818cf8",
     "group": "Developer tools",
     "sections": [

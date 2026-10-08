@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-07T23:55:00.000Z
+date: 2026-10-08T00:06:43.153Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -86,15 +86,16 @@ The preset catalog editor selects one of the supported document collections, edi
 
 The Glyphs inspector edits the namespace and font, bitmap glyph metrics and fallbacks, overlays, space-provider range, and custom waypoint styles with ordered sprites. Image paths are relative to `images/`; add the PNG files through the image manager. The asset list shows declared paths and dimensions. Build and offer the resource pack on the server to verify client rendering. Waypoints accept a namespaced custom style plus a `default` or `bowtie` fallback for viewers without the loaded pack.
 
-HUD surface controls expose automatic selection, named bossbar groups, native bossbar flags, and queue delivery policies. Use Code view for the `on` event and interval array. Event-only surfaces remain quiet in the preview until delivered in game. Scoreboard rows preserve stable ids, conditions, sections, score formatting, and native objectives during visual edits.
+HUD surface controls expose automatic selection, named bossbar groups, native bossbar flags, and queue delivery policies. Typed event subscriptions configure join, world-change, server-change and interval events with conditions, delays, ordering and undo. Backend world changes and Velocity server changes follow the selected platform; event-only surfaces remain quiet in the preview until delivered in game. Unknown subscription fields survive edits. Scoreboard rows preserve stable ids, conditions and score formatting during visual edits. Scoreboards expose reusable section lists, reference-preserving section rename, ordered conditional pages with title inheritance and durations, overflow policy, and independent title/text/value intervals for the default presentation and every variant. Native objective controls configure player-list and below-name slots, numeric expressions, formats, viewer/subject conditions, refresh intervals, and yield/override conflicts. The sidebar preview expands sections and rotates eligible pages; native slot appearance and conflicts require Minecraft.
 
 Inventory controls include independent title, slot, condition, and list refresh rates. Action lists offer **Add dialog** for native dialog titles, kind, timeout, Escape behavior, body text, input definitions, and buttons. Nested definitions use editable JSON fields; Code completion describes each supported control. The browser preserves dialog branches and reports invalid input contracts, but does not simulate Minecraft's dialog screen. **Call named action** references a list in the menu or inventory's root `actions` object; edit the shared lists in Code or the root extra fields. Validation reports missing names and recursive calls.
 
 Inspector controls cover marker anchors, beams, trails and edge indicators; nameplate styles,
 boxes, relations and health bars; inventory slots, lists and variants; channel cards, items,
 links, filters, filter policies and variants; and hologram pages, actions, hitboxes and presentation variants.
-Menu and overlay variant controls preserve each authored condition and override. MOTD entries
-expose weights and conditions, and connection messages include the server first-join section.
+Menu and overlay variant controls preserve each authored condition and override. Connection messages include the server first-join section.
+
+MOTD controls edit rotation, request selectors, icon sets, count/sample policies and independent server links. The status-request simulator accepts hostname, client protocol, timestamp, server state and real player counts, with Paper, Spigot and Velocity capability choices. Authored time zones determine entry time windows. Entry inspection remains available independently of request selection. Unknown imported policy fields survive edits and undo.
 
 Scoreboards, tablists, MOTD and connections have field descriptions and validation in the editor,
 with matching JSON schemas in Gloss's `schema/` directory. Tablist schema 3 forms include fixed cells, named skins, independent roster sections, ordered sort keys, NPC and hat options, overflow policies, and complete conditional layouts. The tab preview evaluates sample conditions and roster ordering; skin textures and hats require an in-game client.
@@ -135,9 +136,9 @@ A menu flow map stores the workspace layout and can hold a linked runtime world 
 <video src="/gloss-assets/demos/seeded-randomizer-editor.webm" aria-label="Seeded document generation, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-**Randomize document** generates a complete editable sample for the selected surface. Enter a seed and choose **Generate**, or use **Next seed** for another sample. The same seed, document identity and workspace assets reproduce the same result, and each generated document is one undoable edit.
+**Randomize document** generates a complete editable sample for the selected runtime surface. Catalogs for presets, names, strings, glyphs, behaviors, and waypoints do not offer randomization. Enter a seed and choose **Generate**, or use **Next seed** for another sample. The same seed, document identity and workspace assets reproduce the same result, and each generated document is one undoable edit.
 
-Samples exercise the supported finite choices across seeds but do not enumerate every expression, numeric combination, custom asset or provider value. A linked world panel can be randomized while keeping its identity, world binding and root menu; a flow map with no linked panel cannot be randomized.
+Samples exercise the supported finite choices across seeds but do not enumerate every expression, numeric combination, custom asset or provider value. Select a linked world panel to randomize its content while keeping its identity, world binding and root menu. Undo restores its previous content. A flow map with no linked panel cannot be randomized.
 
 Sample damage, health, viewer state, React counts and Adapt Insight controls affect the preview only. Configure Adapt's `restrictGlossToInsight` option in Adapt itself.
 

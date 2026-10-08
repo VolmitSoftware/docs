@@ -2,7 +2,7 @@
 title: "Damage Indicators"
 description: "Show damage and healing numbers beside entities"
 published: true
-date: 2026-10-07T23:55:00.000Z
+date: 2026-10-08T00:27:49.396Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -15,6 +15,8 @@ Open the editor with `/gloss web edit damage-indicators default`. The profile is
 The indicator document accepts `show`, defaulting to `true`. It combines with `audience.when` for
 each viewer and uses the same event snapshot. Dynamic conditions are reevaluated while an indicator
 is alive; hidden indicators cannot outlive their normal lifetime. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+
+The reloadable `[temporaryDisplays] maxActiveIndicators` setting limits concurrent damage and healing indicators across the server. The authored rate and lifetime can impose a lower active limit, and per-viewer visibility budgets still apply; see [Configuration](/gloss/02-configuration).
 
 ## Profile document
 

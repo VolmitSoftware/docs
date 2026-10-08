@@ -2,7 +2,7 @@
 title: "Screen Surfaces"
 description: "Configure conditional action bars, boss bars, and titles"
 published: true
-date: 2026-10-07T14:44:56.000Z
+date: 2026-10-08T03:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-03T00:00:00.000Z
@@ -146,7 +146,9 @@ Use a `surface` action in any behavior event, interval, scene, or menu to submit
 
 `audience.scope` defaults to `viewer`; `server`, `world`, and `radius` are also supported. World and radius scopes use the triggering player's location. Radius requires a positive `audience.radius` of at most 4096 blocks. `audience.when` is a boolean or expression, default `true`, evaluated for each recipient. Explicit actions use `show` and the audience condition; `select.when` remains automatic/event selection. Global behavior intervals can use server scope without a triggering player.
 
-The editor exposes automatic selection, bossbar group and flags, and delivery policy fields. Edit `on` in the JSON panel. Event-only documents remain silent in the automatic preview, and client sky, fog, and music effects require Minecraft to view.
+The editor exposes automatic selection, bossbar group and flags, delivery policy, and **Event subscriptions**. Add up to 64 subscriptions, choose each event, and set its interval, delay, and viewer condition. Blank delay and condition use the runtime defaults. Changing an interval event to another event removes its interval; choosing an interval starts at 20 ticks unless a value already exists. Subscriptions can be reordered or removed, and edits support undo and redo. Imported extension fields remain intact. Malformed subscription shapes remain available in Code view for repair.
+
+Event-only documents remain silent in the automatic preview. Subscriptions execute on their supported server platform; the browser does not generate join, world-change, or timer events. Client sky, fog, and music effects require Minecraft to view.
 
 ## Settings and commands
 

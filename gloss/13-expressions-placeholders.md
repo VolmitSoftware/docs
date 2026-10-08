@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-07T15:46:35Z
+date: 2026-10-08T14:17:00Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -87,6 +87,8 @@ hides the whole preview and its particles without selecting a different document
 A condition is the complete JSON string in a `when` field, with no wrapper, and must evaluate to a
 boolean. A syntax or type error rejects that document at load. A missing runtime value or failed
 evaluation treats that one condition as `false` and leaves the rest of the feature running.
+Use `"true"` or `"false"` for a fixed decision, including row and page visibility. Conditions containing
+viewer, role, or other runtime values evaluate those values at the feature's condition interval.
 
 ```json
 "when": "viewer.world == 'world_nether' && viewer.health < 5"
@@ -282,8 +284,8 @@ family and leaves the tokens as written. See
 own dotted key, as in `|metric.adapt.player-sessions|`. Values render compact (`42`, `3.14`, `1.2K`,
 `1.5M`, `2B`, `3.5T`). A key whose publishing plugin is not installed is never registered and stays
 in the line. A registered token displays `[integration] unavailableText` (empty by default) on its first render and fills in on the next sampler pass,
-`[integration] sampleIntervalTicks` later (default 20). Sampling stops 60 seconds after the last
-use. `maxSampleAgeMs` expires old samples, `retainUnavailableMs` optionally retains a recent successful value during provider failures, and `errorRetryTicks` controls retry after a provider throws. Retained values still obey the sample-age limit. Gloss's own `gloss.*` metrics are published to React, not through `|metric.|` tokens.
+`[integration] sampleIntervalTicks` later (default 20). Sampling stops `referenceWindowMs` after the last
+use (default 60 seconds). Snapshot providers may need a further provider collection pass before a newly requested key becomes available. `maxReferencedMetrics` bounds distinct demanded keys; the least recently requested key is evicted when full. `maxSampleAgeMs` expires old samples, `retainUnavailableMs` optionally retains a recent successful value during provider failures, and `errorRetryTicks` controls retry after a provider throws. Retained values still obey the sample-age limit. Gloss's own `gloss.*` metrics are published to React, not through `|metric.|` tokens.
 
 ## Inline text expressions
 

@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-10-07T16:10:00.000Z
+date: 2026-10-08T14:17:00Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -17,7 +17,7 @@ For conditional action bars, boss bars, and titles, see [Screen Surfaces](/gloss
 `/gloss web edit scoreboard <id>` opens one board in a restricted live editor session;
 `/gloss web workspace` includes every board.
 
-In the editor, expand **Row settings** beneath a row to set its stable ID, visibility condition, score value, score format, or section reference. Editing the label preserves these settings. Use the JSON editor for `presentation.layout` and `objectives`; these fields survive visual editing and export. The sidebar preview expands sections and rotates eligible pages against the selected viewer context and the browser clock. Native player-list and below-name placement is controlled by Minecraft and is not rendered in the sidebar preview.
+In the editor, expand **Row settings** beneath a row to set its stable ID, visibility condition, score value, score format, or section reference. Editing the label preserves these settings. Use **Reusable sections** to add, rename, or remove named row lists; renaming updates references throughout that presentation. **Rotating pages** edits each page’s ID, condition, duration, title inheritance, rows, and rotation order. Removing a referenced section leaves a validation error until its references are updated. **Layout policy** selects truncation or overflow rejection and overrides title, text, and value intervals independently. These controls are available for the default presentation and every variant. **Native objectives** enables and configures player-list and below-name slots, including viewer and subject conditions, formats, refresh intervals, and conflict policies. Unknown properties survive editing, export, and undo. The sidebar preview expands sections and rotates eligible pages against the selected viewer context and the browser clock. Native player-list and below-name placement is controlled by Minecraft and is not rendered in the sidebar preview.
 
 ## The board document
 
@@ -101,8 +101,9 @@ presentation's `hideNumbers` setting. The numeric row score determines line orde
 
 Object rows also accept `id` and `show`. Give a row a unique `id` to keep its client entry stable
 when earlier rows disappear or the same row moves between pages. Without an ID, identity follows
-its expanded position. `show` defaults to `true` and accepts the same viewer conditions as board
-selection. Hidden rows consume no sidebar space.
+its expanded position before visibility filtering; hiding a preceding row does not change that identity.
+`show` defaults to `true`; use `true` or `false` for fixed visibility, or the same viewer conditions
+as board selection for changing visibility. Hidden rows consume no sidebar space.
 
 `presentation.layout.sections` defines reusable lists within that presentation. Insert one with
 `{"section":"account"}`; a reference may also have `show`, which gates all its rows. References
@@ -307,7 +308,7 @@ Command edits save the document and increment its revision. Changes to inherited
 
 ## Rendering
 
-Sidebars update at `[boards] updateIntervalTicks` (default 20). Without explicit layout refresh intervals, a board with a clock expression or named animation refreshes that text every tick; other dynamic text keeps the configured interval. Title, label, and value intervals can be set separately in the presentation layout.
+Sidebars update at `[boards] updateIntervalTicks` (default 20). Without explicit layout refresh intervals, a board with a clock expression or named animation refreshes that text every tick; other dynamic text keeps the configured interval. Title, label, and value intervals can be set separately in the presentation layout. Pages, row conditions, explicit refresh intervals and native objectives retain their cadence when text functions are disabled.
 
 Titles and lines support functions, PlaceholderAPI, emoji, colors, and viewer expressions. Minecraft displays at most 15 sidebar rows. Newlines inside one JSON row become spaces.
 

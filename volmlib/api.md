@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-10-07T13:55:11.158Z
+date: 2026-10-08T12:00:00Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -84,6 +84,12 @@ Plugins that disable VolmLib's transitive dependencies must include `net.kyori:a
 
 `LegacyLoreLayout.wrap(legacyText, columns)` wraps item lore while preserving legacy colors and formatting across lines. It keeps surrogate pairs and combining marks together and conservatively counts wide Unicode characters as two columns. Plugins choose the column budget for their inventory layout.
 
+## Scoreboard text
+
+`BoardProvider.getTextFormat()` defaults to `BoardTextFormat.LEGACY`, preserving section-code strings and literal markup. Return `BoardTextFormat.MINI_MESSAGE` to render trusted MiniMessage titles and rows, including namespaced resource-pack fonts and mixed legacy colors. Rich text uses the native packet sidebar and requires an available native scoreboard provider; it is not flattened into legacy Bukkit strings. Unchanged rows retain the normal board update cache.
+
+`ScoreboardPackets.newObjectiveJson` and `sendTeamPacketJson` accept serialized Minecraft text components for objective display names and team prefixes/suffixes. The existing string methods retain their legacy-text behavior.
+
 ## Commands
 
 Director accepts keyed values such as `player=Alex`. Use brackets for spaces:
@@ -127,6 +133,24 @@ Gameplay listeners should return early when `ProtectionProbe.isProbe(event)` is 
 `UIWindow.inventoryViewTopInventory(view)` returns the top inventory through the shared reflective Bukkit boundary. Plugins compiled against 1.20.1 can use it across the later `InventoryView` class-to-interface change without emitting an incompatible direct invocation. A null view returns null; callers must still access a player's view on the owning thread.
 
 Use `FoliaScheduler` for Bukkit work. Entity and player state belongs on the entity scheduler; world and block state belongs on the owning region; global tasks use the global scheduler. Keep file and network I/O off those threads. Inventory-window clicks and close continuations stay on the viewing player's entity scheduler; when that owner retires or rejects a continuation, VolmLib discards the callback and runs only its retirement cleanup instead of retrying player work on the global scheduler.
+
+For a cancellable one-shot delay, call `FoliaScheduler.scheduleGlobal(plugin, options)` or `scheduleEntity(plugin, entity, options)`. Pass `new FoliaScheduler.DelayedTask(delayTicks, action, retired)`; delays are at least one tick. The methods return a `SchedulerUtils.TaskHandle`, or `null` when scheduling is refused. Entity actions preserve the player's localization audience.
+
+Keep the handle while the task is pending and call `cancel()` during owner cleanup. It cancels the native Bukkit or Paper task. The action and retirement paths are mutually exclusive; successful cancellation or entity retirement invokes retirement cleanup at most once, while an already executing action finishes normally. A cancellation that cannot finish immediately waits for the callback to drain. Unexpected cancellation failures throw and leave retirement pending; callers must log the failure and keep any capacity reservation until retirement or execution occurs.
+
+Retirement cleanup can run on the thread that requests cancellation. Keep it limited to thread-safe bookkeeping or explicitly schedule entity/world mutations onto their owner. Handle a `null` scheduling result as refusal, and make caller-side refusal cleanup idempotent because retirement may already have run.
+
+## Integration metric snapshots
+
+Register providers under `IntegrationServiceContract` and retain `sampleMetrics(Set<String>)` for consumers that use synchronous sampling. To offer cached metrics, also implement `IntegrationSnapshotProvider` and advertise `IntegrationSnapshotProvider.CAPABILITY` (`metric-snapshots-v1`) in capabilities and accepted handshake responses.
+
+`snapshotMetrics(Set<String>)` records demand and returns an `IntegrationMetricSnapshot` containing already captured values. It must not collect metrics, wait for collection, submit a job per request, or access Bukkit state. Collect demanded metrics on a provider-owned cadence; use the correct global, region, or entity owner for Bukkit reads, then publish immutable numeric values. Return an empty or unavailable result while a requested metric is warming up.
+
+`IntegrationMetricSnapshot(generation, capturedAtMs, samples)` uses a nonnegative capture sequence that increases for each publication within a provider instance. Repeated reads of one publication preserve its generation and timestamps. Keep each sample's actual capture time, including older samples carried into a newer publication; it cannot exceed the publication's capture time. Sample map keys must match their descriptors. Consumers use these timestamps for freshness and retain their previous successful value only within their configured age and unavailable-retention limits.
+
+`IntegrationMetricPublisher(capacity, demandTtlMs)` supplies bounded demand tracking and immutable publication. Delegate snapshot requests to `snapshotMetrics(keys, nowMs)`. During collection, obtain `Demand` from `demandedKeys(nowMs)`, collect its `keys()`, and call `publish(demand, capturedAtMs, samples)`. Publishing accepts only keys from that demand. Call `clear()` on disable or reload to invalidate both current values and captures still using an older demand epoch; rejected publication returns `false`. A capture older than the latest publication is also rejected. `reconfigureCapacity(capacity)` clears demand and publication when capacity changes, invalidating pending captures while preserving the increasing capture sequence. Choose a capacity sufficient for supported consumers: oversized individual requests or publications throw, while multiple consumers share a least-recently-requested demand limit, reported by `evictions()`.
+
+Legacy providers remain synchronous. A consumer cannot make arbitrary provider code safe to run asynchronously or interrupt a blocking provider call by applying a timeout after it returns.
 
 ## Economy
 

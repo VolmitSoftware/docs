@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-10-07T15:45:58Z
+date: 2026-10-08T00:57:06Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -21,7 +21,7 @@ selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/langu
 
 ## Diagnostic reports
 
-`/gloss debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. Permission `gloss.debugdump` (default op). A failed upload keeps the file. Contents: [Shared diagnostic reports](/volmlib/api/diagnostics).
+`/gloss debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. Permission `gloss.debugdump` (default op). A failed upload keeps the file. Contents: [Shared diagnostic reports](/volmlib/api/diagnostics). Gloss includes configured and active scoreboard/tablist refresh schedules, panel cadences, temporary-display limits, integration provider sampling modes and demand usage, and transaction-backup retention counts, bytes, and protected overage. Tick schedules are configuration and runtime state, not measurements of wall-clock latency.
 
 ## Holograms
 

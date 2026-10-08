@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-10-07T23:55:00.000Z
+date: 2026-10-08T00:27:49.396Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -13,6 +13,8 @@ Gloss can show chat above the player who sent it.
 Open the editor with `/gloss web edit bubble-style <id>`. Styles are schema 5, in `bubbles/<id>.json`.
 
 A player who cannot see the speaker does not see their bubble. Vanish works.
+
+The reloadable `[temporaryDisplays] maxActiveBubbles` setting limits concurrent bubbles across all senders. Per-style limits and per-viewer visibility budgets also apply; see [Configuration](/gloss/02-configuration).
 
 ## Style documents
 

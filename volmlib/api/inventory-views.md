@@ -2,7 +2,7 @@
 title: "Bukkit inventory views and editors"
 description: "Inventory access, shared configuration menus, and menu shutdown"
 published: true
-date: 2026-09-28T16:00:00.000Z
+date: 2026-10-08T13:00:00.000Z
 tags: "volmlib, api, bukkit, inventory, compatibility"
 editor: markdown
 dateCreated: 2026-09-05T04:40:00.000Z
@@ -31,6 +31,8 @@ The utility resolves `getTopInventory` and `getPlayer` once through the runtime 
 Relocate `art.arcane.volmlib` into the consuming plugin's private namespace. See [VolmLib API](/volmlib/api) for dependency and threading conventions.
 
 ## Update an open menu control
+
+`UIElement.setBaseItemStack(item)` preserves the item's component name and lore, including custom fonts, when the element has no text overrides. `setName(value)` replaces the name, and `setName(null)` removes it. Nonempty element lore replaces the base item's lore; an empty element lore list preserves it.
 
 `Window.updateElement(position, row, element)` replaces a control in an open `UIWindow` and computes only its visible slot. It updates the item only when its contents change, without reopening the inventory or rendering other controls. Coordinates use the window's centered horizontal positions and absolute layout rows. Pass `null` to restore the background decorator at that position.
 

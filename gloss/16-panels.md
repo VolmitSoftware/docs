@@ -2,13 +2,15 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-10-07T21:00:00.000Z
+date: 2026-10-08T00:27:49.396Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 A panel places a persistent hologram menu at a world location. Panel documents live in
 `plugins/Gloss/panels/` and point to a menu document for their content.
+
+The `[panels]` settings in `gloss.toml` independently configure visibility checks, follow-pose updates and permission caching. Menu content keeps its own cadence, and editing previews remain immediate; see [Configuration](/gloss/02-configuration).
 
 ## Panels, holograms, menus and boards
 

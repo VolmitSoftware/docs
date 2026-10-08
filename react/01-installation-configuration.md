@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-08T01:00:00Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,6 +46,7 @@ PlaceholderAPI and the other Volmit plugins are optional.
 |---|---:|---|
 | `language` | `en_US` | Message language |
 | `metrics` | `true` | Enable anonymous bStats metrics; changes apply automatically |
+| `integrationSnapshotMaxMetrics` | `65536` | Maximum distinct metrics retained for snapshot consumers, clamped to 1–65536. A changed limit clears the snapshot cache on the next collection cycle |
 | `verbose` | `false` | Additional operator logs |
 | `debug` | `false` | Debug diagnostics |
 | `slowTickLogMode` | `BLAME` | `OFF`, `BLAME`, `SHORT`, or `DETAILED` slow-tick reports |

@@ -94,7 +94,7 @@ Pick a project to open its documentation.
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/foundation" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">F</span>
+          <img src="/home-assets/foundation.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span>
             <strong class="title">Foundation</strong>
             <span class="d-block text--secondary">Homes, moderation, utilities, kits, and economy</span>
@@ -146,7 +146,7 @@ Pick a project to open its documentation.
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/skyprime" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">SP</span>
+          <img src="/home-assets/skyprime.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span>
             <strong class="title">SkyPrime</strong>
             <span class="d-block text--secondary">Shared-grid survival islands, teams, and progression</span>
@@ -159,7 +159,7 @@ Pick a project to open its documentation.
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/static" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">ST</span>
+          <img src="/home-assets/static.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span>
             <strong class="title">Static</strong>
             <span class="d-block text--secondary">Player statistics, profiles, and rankings</span>
@@ -172,7 +172,7 @@ Pick a project to open its documentation.
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/gamemodeswitcher" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">GM</span>
+          <img src="/home-assets/gamemodeswitcher.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span>
             <strong class="title">GamemodeSwitcher</strong>
             <span class="d-block text--secondary">Gamemode gestures, a selector menu, and commands</span>
@@ -242,10 +242,20 @@ Pick a project to open its documentation.
       </li>
     </ul>
   </div>
+  <div class="flex xs12 sm6 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/servermultiplexor" class="d-flex align-center">
+          <img src="/home-assets/multiplexor.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
+          <span>
+            <strong class="title">Multiplexor</strong>
+            <span class="d-block text--secondary">Local and Pterodactyl servers, remote profiling, and gameplay tools</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
-
-- [Multiplexor *Local and Pterodactyl servers, remote profiling, and gameplay tools*](/servermultiplexor)
-{.links-list}
 
 ## Community and source
 

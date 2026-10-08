@@ -2,7 +2,7 @@
 title: "Behaviors and State"
 description: "Run actions from player events, chat matches, timers, and named events"
 published: true
-date: 2026-10-07T22:00:00.000Z
+date: 2026-10-08T04:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T22:00:00.000Z
@@ -75,9 +75,19 @@ An oversized line skips the affected document's chat entries. A document that ex
 
 ## State declarations
 
-Declare each key in `state` with `scope: "player"`, `"world"`, or `"global"` and `type: "number"`, `"string"`, or `"boolean"`. The optional `default` supplies its initial value. Documents declaring the same key must agree on scope, type, and default. Use `setState`, `addState`, and `clearState` actions to modify declared state.
+Declare each key in `state` with `scope: "player"`, `"world"`, or `"global"` and `type: "number"`, `"string"`, or `"boolean"`. The optional `default` supplies its initial value; omission uses `0`, an empty string, or `false` for the declared type. Numeric strings and booleans can supply number defaults; boolean defaults also accept numeric values and the strings `true`, `yes`, `on`, `1`, `false`, `no`, `off`, and `0`. State keys start with a lowercase letter and contain lowercase letters, digits, underscores, or dots. Documents declaring the same key must agree on scope, type, and default. Use `setState`, `addState`, and `clearState` actions to modify declared state.
 
-`[behaviors] maxActionsPerTick` defaults to 256 and accepts 16–65536; excess actions defer. `maxTimersPerPlayer` defaults to 16 and accepts 1–256. `stateFlushSeconds` defaults to 30 and accepts 1–600. `[features] behaviors` enables the service.
+`[behaviors] maxActionsPerTick` defaults to 256 and accepts 16–65536; excess actions defer. `stateFlushSeconds` defaults to 30 and accepts 1–600. `[features] behaviors` enables behavior documents.
+
+Delayed action continuations, including menu and scene actions, share three limits in `[behaviors]`:
+
+| Setting | Default | Range and scope |
+| --- | --- | --- |
+| `maxTimersPerPlayer` | `16` | `1`–`256`; pending continuations for each player |
+| `maxTimersGlobal` | `8192` | `1`–`1048576`; all pending continuations, including those without a player |
+| `maxTimersWithoutPlayer` | `256` | `1`–`65536`; pending continuations without a player, also counted against the global limit |
+
+A full applicable limit stops the delayed run before scheduling its continuation. A continuation releases its place when it resumes, cannot be scheduled, retires, or is successfully canceled. Lowering a limit on reload keeps accepted current-session timers and refuses new ones until capacity becomes available. Disconnecting resets the player's session and cancels its pending tasks; disabling the service cancels pending tasks across all sessions, including playerless runs. Global and playerless capacity remains reserved until cancellation succeeds or the pending callback drains, so repeated reconnects or service reloads cannot bypass those limits. Invalidated callbacks cannot execute their actions or release reservations belonging to a later session.
 
 ## Commands and editor
 
@@ -89,7 +99,11 @@ Declare each key in `state` with `scope: "player"`, `"world"`, or `"global"` and
 
 `fire` uses a one-based entry number and runs the selected entry with its permission and condition checks; it does not require its usual event selector to match. Set `player` when actions need a player.
 
-In the [web editor](/gloss/18-web-editor), create or import a Behaviors document. The inspector edits matching limits, trigger names, chat patterns, conditions, permissions, state declarations, and action arrays. Browser validation uses RE2 for patterns. The browser does not execute server actions.
+In the [web editor](/gloss/18-web-editor), create or import a Behaviors document. The inspector edits matching limits, trigger names, chat patterns, conditions, and permissions. **State declarations** provides named rows with scope, type, and an optional default value. The **Override** switch enables an explicit default; disabled, the declared type supplies its default. Renaming a key does not rewrite expressions or actions referring to that key.
+
+Action lists support add, remove, reorder, and undo. The shared action controls include commands, sounds, messages, navigation, teleportation, proxy connections, dialogs, and supported flow and state actions. Nested controls edit `sequence` steps and `onSkip`, `parallel` branches, `repeat` steps, `if`/`chance`/`cooldown` branches, and `switch` cases and defaults. Sequence steps expose their `atTicks` cue. State actions expose the key, value expression, and target role. Use the remaining action fields or Code view for payloads without dedicated controls.
+
+Imported extension fields and untouched omitted defaults survive form edits. Malformed action lists and state declarations remain available in Code view; nested lists beyond 32 editor levels also use Code view. Browser validation checks flow limits, state defaults, server-command authorization, and RE2 patterns. Named action calls are unavailable in behaviors; imported calls report errors at their action paths and remain editable in Code view. The browser does not execute server actions.
 
 ## Importing older Gloss documents
 

@@ -1,8 +1,8 @@
 ---
 title: "Server List MOTD"
-description: "Randomize the message and icon shown in the server list"
+description: "Configure server-list responses, request selectors, icons and server links"
 published: true
-date: 2026-10-07T20:00:00.000Z
+date: 2026-10-08T00:06:43.153Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -195,8 +195,13 @@ Edits to `motd.json` and to `[features] motd` in `gloss.toml` both apply automat
 The web editor can live-sync this singleton with `/gloss web edit motd motd`, or include it in
 `/gloss web workspace`.
 
-The editor previews a compatible client, so configured version text leaves the player count and
-ping bars visible. Hover the player count to read the complete sample list.
+The editor exposes rotation, icon sets, server state, request selectors, count policies, hover-sample modes, and independent server links in the inspector. Unknown imported fields remain in the exported document, including fields inside policy objects. Edits participate in undo and redo.
+
+Enable **Status request simulator** in the preview to supply a requested hostname, client protocol number, an ISO timestamp with `Z` or a UTC offset, real online and maximum counts, and a server-state override. Select Paper, Spigot, or Velocity to apply that platform's supported status fields. A blank protocol represents unavailable metadata; a blank state uses the document state. The simulator shows eligible responses, the selected entry, resolved icon path, and published links. Turn off **MOTD feature enabled** to check independently published links.
+
+**Refresh ping** advances the simulated sequence position and weighted sample. Time rotation uses the supplied timestamp. Named time zones apply IANA calendar and daylight-saving rules. The preview's weighted samples are reproducible; they do not predict a live server's random selection. Direct entry inspection bypasses request selectors.
+
+The editor previews a compatible client, so configured version text leaves the player count and ping bars visible. Hover the player count to read a replacement sample list. Inherited samples come from the real server response and are not available in this preview. Images render when their files are available in the editor workspace; otherwise the resolved path is still shown. Server-link labels and URLs are listed for inspection rather than rendered as a Minecraft pause menu.
 
 MOTD documents stay schema 1. See [Data Files & Hot Reload](/gloss/03-data-files) and
 [Tablist](/gloss/06-tablist).

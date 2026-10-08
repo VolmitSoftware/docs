@@ -2,13 +2,17 @@
 title: "Inventory Menus"
 description: "Build item-slot menus with masks, actions, conditional layouts, and paged lists"
 published: true
-date: 2026-10-07T21:45:00.000Z
+date: 2026-10-08T13:02:00Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-03T00:00:00.000Z
 ---
 
 Inventory menus open a normal Minecraft container screen. Each schema-1 document under `plugins/Gloss/inventories/` defines its title, size, item slots, and click actions. The file name without `.json` is its menu id.
+
+Set `[features] inventories = false` in `gloss.toml` to close open inventory menus, stop their refreshes, and prevent new opens. Enabling inventories again makes their documents available for opening; previously closed windows remain closed.
+
+Reopening a menu after closing it starts a new window session with its configured refreshes and click actions.
 
 ## The inventory document
 
@@ -48,7 +52,7 @@ Save this example as `inventories/supplies.json`, then run `/gloss inventory ope
 | `mask` | `[]` | Rows of characters describing the slot layout; each row must have exactly the window width |
 | `keys` | `{}` | A component body for each named mask character |
 | `slots` | `{}` | Component bodies keyed by zero-based slot index; these override mask entries |
-| `show` | `true` | Boolean or viewer condition checked when opening and at the condition refresh rate; a false result closes the menu |
+| `show` | `true` | JSON boolean (`true` or `false`) or a viewer condition string checked when opening and at the condition refresh rate; a false result closes the menu |
 | `refresh` | Dynamic, 20 ticks | Separate title, slot, condition and list refresh rates |
 | `closeOnTeleport` | `true` | Close when the viewer teleports, when also enabled in `[inventories]` |
 | `variants` | `[]` | Conditional presentations selected for the viewer |

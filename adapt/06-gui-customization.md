@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-08T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,7 +73,7 @@ models.toml (when it actually overrides, and customModels = true)
 
 ### models.toml format
 
-`plugins/Adapt/models.toml`, dotted-path tables holding `material`, `model` and `modelKey`:
+`plugins/Adapt/models.toml` uses dotted-path tables holding `material`, `model`, `modelKey`, and optional `headTexture`:
 
 ```toml
 [skill.stealth]
@@ -98,8 +98,33 @@ modelKey = "minecraft:empty"
 | `adaptation.<name>.icon` | The adaptation entry in a skill's list |
 | `adaptation.<name>.level-<n>` | The level-`n` button in an adaptation's window |
 | `snippets.gui.level.<n>` | Fallback level button when the adaptation defines none |
+| `items.experience-orb` | Newly created experience orbs |
+| `items.knowledge-orb` | Newly created knowledge orbs |
+| `gui.navigation.back` | Back buttons |
+| `gui.navigation.<role>` | Navigation controls: `first`, `previous`, `next`, `last`, `page`, or `disabled`; the config editor also uses `page-info` and `empty` |
+| `gui.confirmation.<role>` | Confirmation screens: `message`, `confirm`, or `cancel` |
+| `gui.preferences.reset` | Personal settings reset buttons |
+| `gui.preferences.adaptation.<id>.<preference>.<state>` | Adaptation control choices; state is the lowercase enum value or `locked` |
+| `gui.preferences.skill.<id>.enabled.<state>` | Skill enable control; state is `on`, `off`, or `locked` |
+| `gui.background.<role>` | Menu background: `header-even`, `header-odd`, `separator`, `body-even`, or `body-odd` |
 
 `model` is a custom model data number, `0` meaning none. `modelKey` is an item-model namespaced key, defaulting to `minecraft:empty`.
+
+For a textured head, set `material = "PLAYER_HEAD"` and `headTexture` to the base64-encoded Minecraft texture property. Omit `headTexture` for the normal material appearance. Overrides require `customModels = true`; omitted entries use the built-in appearance.
+
+```toml
+[items.experience-orb]
+material = "EXPERIENCE_BOTTLE"
+model = 71
+
+[items.knowledge-orb]
+material = "PLAYER_HEAD"
+
+[gui.preferences.reset]
+material = "COMPASS"
+```
+
+Right-click an orb to receive its stored reward. A successful use consumes one orb, including in Creative mode, without placing or throwing its base item. Existing orbs retain their appearance and remain usable after their model configuration changes. Newly created orbs use the current configuration. Orb names and lore are configured through [Localization](/adapt/07-localization).
 
 ### Example
 

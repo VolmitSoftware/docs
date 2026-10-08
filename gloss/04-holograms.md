@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-10-07T23:55:00.000Z
+date: 2026-10-08T15:12:00Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Each JSON file in `plugins/Gloss/holograms/` defines one persistent hologram. The file name is the hologram ID, and command or file edits apply live.
 
-Hologram text, object lines and box parts share the limits in `[visibility]`. Each entity shown to one viewer consumes one unit; a world display shown to ten viewers consumes ten units. A refused group stays hidden and retries on its next refresh. Reduced and minimal detail omit boxes and particle layers; culled detail hides the hologram. Text and object-line groups are admitted independently of optional boxes. World displays require a server API that can hide an entity before viewer admission; Gloss does not publish a display when that capability fails.
+Hologram text, object lines and box parts share the limits in `[visibility]`. Each entity shown to one viewer consumes one unit; a world display shown to ten viewers consumes ten units. Existing groups reconcile their membership and admission on each refresh; a refused group stays hidden and retries on its next refresh. Reduced and minimal detail omit boxes and particle layers; culled detail hides the hologram. Text and object-line groups are admitted independently of optional boxes. World displays require a server API that can hide an entity before viewer admission; Gloss does not publish a display when that capability fails.
 
 `/gloss web edit hologram <id>` opens one hologram in a restricted live editor session; `/gloss web workspace` includes every hologram. Check text size and placement in a Minecraft client, since the browser preview does not reproduce the client renderer.
 
@@ -62,7 +62,7 @@ There is no `id` key. The document id is the file name with `.json` removed, so 
 
 ### Visibility
 
-Set document-level `"show": false` to hide the hologram, or use a boolean expression to decide per viewer. Gloss reevaluates it during updates and hides text, decorations and particles when false, even when the lines are static or `perViewerPlaceholders` is off. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
+Set document-level `"show": false` to hide the hologram, or use a boolean expression to decide per viewer. Gloss reevaluates viewer conditions on the viewer's owning region and hides text, decorations and particles when false, even when the lines are static or `perViewerPlaceholders` is off. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
 ### The default
 
@@ -287,7 +287,7 @@ control visibility without pausing its lifetime.
 <video src="/gloss-assets/demos/waypoint-editor.webm" aria-label="Waypoint authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Files in `waypoints/<id>.json` describe native locator-bar entries for Java clients from 1.21.6 onward. They use the same fixed, player-following, or entity-following anchor forms as world markers. Valid edits reload automatically; deleting a file withdraws its locator entry.
+Files in `waypoints/<id>.json` describe native locator-bar entries for Java clients from 1.21.6 onward. They use the same fixed, player-following, or entity-following anchor forms as world markers. Valid edits reload automatically, including icon colors and styles for connected viewers; deleting a file withdraws its locator entry.
 
 ```json
 {
@@ -301,6 +301,6 @@ Files in `waypoints/<id>.json` describe native locator-bar entries for Java clie
 }
 ```
 
-`style` accepts `default`, `bowtie`, or a namespaced style such as `trails:quest` declared in [resource-pack waypoint styles](/gloss/28-resource-packs#waypoint-styles). Custom styles appear after the viewer loads the current Gloss pack; `fallbackStyle` selects `default` or `bowtie` while the style or pack is unavailable. `range` defaults to zero for an exact position; beyond a positive range, the locator receives direction only. `show` and `audience.when` limit which viewers receive the entry. Enable the waypoint module in `gloss.toml`; Bedrock clients do not receive locator-bar packets.
+`style` accepts `default`, `bowtie`, or a namespaced style such as `trails:quest` declared in [resource-pack waypoint styles](/gloss/28-resource-packs#waypoint-styles). Custom styles appear after the viewer loads the current Gloss pack; `fallbackStyle` selects `default` or `bowtie` while the style or pack is unavailable. `range` defaults to zero for an exact position; crossing a positive range switches between an exact position and direction only without requiring a reconnect. `show` and `audience.when` limit which viewers receive the entry. Enable the waypoint module in `gloss.toml`; Bedrock clients do not receive locator-bar packets.
 
 `/gloss waypoint set <name>` saves a player's current position, and `/gloss waypoint remove <name>` deletes that personal entry; both require `gloss.waypoints.self`. `/gloss waypoint list` requires `gloss.waypoints.list`. `/gloss waypoint info <id>` inspects a file-backed entry and requires `gloss.waypoints.info`. Plugin authors can register viewer-specific entries with `Waypoints.track(...)`; see [API: Getting Started](/gloss/21-api-getting-started).

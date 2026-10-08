@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-10-07T00:00:00.000Z
+date: 2026-10-08T11:26:11Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -170,7 +170,7 @@ Text also re-renders when the component opens, when the session rescales after a
 |---|---|---|---|---|
 | `path` | string | yes (schema) | `null` | Record component is `relativePath`, bound to the JSON key `path`. Must resolve to a regular file inside the images folder |
 
-Image assets live in `plugins/Gloss/images/`. Paths are relative to that folder and cannot be URLs. Blank, absolute, missing, directory, traversal and symlink-escape paths are rejected, and API paths are limited to 256 characters with no control characters or `:`. Adding, replacing or removing an image refreshes open menus and panels automatically.
+Image assets live in `plugins/Gloss/images/`. Paths are relative to that folder and cannot be URLs. Blank, absolute, missing, directory, traversal and symlink-escape paths are rejected, and API paths are limited to 256 characters with no control characters or `:`. Images can be organized in nested folders. Adding, replacing or removing an image refreshes open menus and panels automatically; creating an empty folder does not load an image.
 
 Text rasters default to a maximum of 16 by 16 pixels. Set `[images] rasterMaxDimension` from 1 through 128 to change that limit; larger images require a declared pack glyph or show the missing-image checkerboard. Source files also obey `[images] maxFileBytes`, `maxDimension`, and `maxPixels`. Images prepare in the background, with a checkerboard shown until preparation finishes; open menus and panels refresh automatically. Transparency is binary — any pixel below full alpha becomes a transparent spacer, and JPEG has no alpha channel at all.
 

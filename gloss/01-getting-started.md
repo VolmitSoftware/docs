@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-10-07T18:30:00.000Z
+date: 2026-10-08T01:00:00Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -16,10 +16,12 @@ Settings are `plugins/Gloss/gloss.toml`. Display content is JSON under `plugins/
 
 | Item | Value |
 |---|---|
-| Server | Paper, Purpur, Leaf, Folia, Canvas, or Spigot. Minecraft 26.1.2 through 26.3 |
+| Server | Paper or Spigot API-compatible servers, including Folia. Use a Gloss release built for your Minecraft version |
 | Java | 25 |
 | Jar | `Gloss-<version>-packed.jar` |
 | Optional | PlaceholderAPI, Vault, and supported item plugins |
+
+Paper-derived forks use their advertised Paper API compatibility. Features requiring a client protocol or a Paper-only API are available only when that capability exists; see [Velocity](/gloss/27-velocity) and [Bedrock viewers](/gloss/02-configuration#bedrock-viewers).
 
 An XZ packed jar extracts `plugins/Gloss/cache/runtime/` on first start. That directory must be writable. PacketEvents is bundled in the jar; no separate PacketEvents installation or download is required. Other runtime libraries still need a network on first start if their cache is empty.
 
