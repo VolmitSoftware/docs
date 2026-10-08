@@ -53,7 +53,7 @@ The client creates this file in its `config/` folder on first launch and reads i
 | `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky; the destination sky inside native portal views is independent of this setting |
 | `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it |
 | `client-recursion` | `true` | Show nested mirrors and portals through their own destinations, in world views and in streamed views the server sends them for |
-| `self-reflection` | `true` | Show your own reflection in streamed mirror views |
+| `self-reflection` | `true` | Show your own reflection in mirror views |
 | `portal-shape-subdivisions` | `8` | Mesh subdivisions per block along the edge of a portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape), 1–16. Higher values give a smoother edge. Very large shaped portals use fewer so the mesh stays within its budget |
 | `portal-edge-feather` | `0.0` | Width in blocks of a band inside the edge of a shaped portal's streamed view tinted with the destination's fog colour, 0–2. `0` draws no band |
 | `camera-roll-ease-seconds` | `0.35` | Seconds over which the camera tilt left after crossing a twisted or upside-down portal pair eases back to level, 0–2. `0` levels the camera at once |
