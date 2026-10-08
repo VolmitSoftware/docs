@@ -25,6 +25,7 @@
   --volmit-header-height: 72px;
   --volmit-edge: 32px;
   --volmit-sidebar-width: 320px;
+  --volmit-sidebar-gap: 48px;
   --volmit-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --volmit-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color-scheme: dark;
@@ -65,7 +66,7 @@
 #root .v-application:has(.contents) .nav-header > .v-toolbar__content { padding-inline: 10% !important; }
 #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; width: 100%; gap: 24px; align-items: center; margin: 0 !important; }
 #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content { padding-left: 0 !important; padding-right: var(--volmit-edge) !important; }
-#root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content > .layout.row { grid-template-columns: var(--volmit-sidebar-width) minmax(0, 1fr) auto; gap: 0 24px; }
+#root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content > .layout.row { grid-template-columns: var(--volmit-sidebar-width) minmax(0, 1fr) auto; gap: 0 var(--volmit-sidebar-gap); }
 #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content > .layout.row > .flex:first-child { padding-left: 24px; }
 #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row > .flex { width: auto; max-width: none; min-width: 0; }
 #root .v-application:has(.contents) .nav-header :where(.v-toolbar__title, .subheading) { color: var(--volmit-ink) !important; font-family: var(--volmit-font) !important; font-size: 18px; font-weight: 600; letter-spacing: -.5px; }
@@ -189,9 +190,12 @@
 #root .v-application:has(.contents) .page-col-sd .v-card { background: var(--volmit-surface) !important; color: var(--volmit-muted); box-shadow: none; border-radius: var(--volmit-radius-panel); }
 #root .v-application:has(.contents) .page-col-sd .page-toc-card { background: transparent !important; }
 #root .v-application:has(.contents) .volmit-project-overview .page-header-headings .headline { font-size: 48px !important; letter-spacing: -1.4px !important; }
-#root .v-application:has(.contents) .volmit-reference-page { padding-left: var(--volmit-sidebar-width) !important; }
+#root .v-application:has(.contents) .volmit-reference-page { padding-left: calc(var(--volmit-sidebar-width) + var(--volmit-sidebar-gap)) !important; }
 #root .v-application:has(.contents) .volmit-reference-page .page-header-section,
 #root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl { width: calc(100% - var(--volmit-edge)); max-width: none; margin-left: 0; margin-right: 0; }
+#root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl > .layout.row { gap: var(--volmit-sidebar-gap); }
+#root .v-application:has(.contents) .volmit-reference-page .page-col-sd { top: var(--volmit-header-height); z-index: 2; }
+#root .v-application:has(.contents) .volmit-reference-page .page-header-headings { max-width: calc(100% - 220px - var(--volmit-sidebar-gap)); }
 
 #root .v-application:has(.contents) .contents { padding: 0 !important; background: transparent; color: var(--volmit-ink); font: 400 15px/1.8 var(--volmit-font); overflow-wrap: anywhere; }
 #root .v-application:has(.contents) .contents > div > p:first-child { color: var(--volmit-muted); font-size: 16px; max-width: 72ch; margin: 0 0 28px; }
@@ -395,7 +399,6 @@
   #root .v-application:has(.contents) .home-directory { margin-inline: auto; }
   #root .v-application:has(.contents) .directory-card { padding: 20px 16px; gap: 12px; }
   #root .v-application:has(.contents) .volmit-project-bar { gap: 20px; }
-  #root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl > .layout.row { gap: 32px; }
 }
 
 @media (max-width: 1150px) {

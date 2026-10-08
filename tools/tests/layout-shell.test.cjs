@@ -286,6 +286,10 @@ test('page frame, toc, and header share one spacing system', () => {
   assert.match(css, /grid-template-columns: auto minmax\(0, 1fr\) auto;/);
   assert.match(css, /\.page-toc-card \.v-list-item__title \{[^}]*text-align: right;/);
   assert.match(css, /\.volmit-reference-page \.container\.grid-list-xl \{[^}]*width: calc\(100% - var\(--volmit-edge\)\);/);
+  assert.match(css, /--volmit-sidebar-gap: 48px;/);
+  assert.match(css, /\.volmit-reference-page \{[^}]*padding-left: calc\(var\(--volmit-sidebar-width\) \+ var\(--volmit-sidebar-gap\)\) !important;/);
+  assert.match(css, /grid-template-columns: var\(--volmit-sidebar-width\) minmax\(0, 1fr\) auto; gap: 0 var\(--volmit-sidebar-gap\);/);
+  assert.match(css, /\.volmit-reference-page \.page-col-sd \{[^}]*top: var\(--volmit-header-height\);/);
   assert.match(css, /\.sidebar-resize \{[^}]*cursor: col-resize;/);
 });
 

@@ -195,6 +195,48 @@
   }
 
   let stopTocWatch = null;
+  let stopTocAlign = null;
+
+  function alignReferenceToc(main) {
+    stopTocAlign?.();
+    stopTocAlign = null;
+    const toc = main.querySelector('.page-col-sd');
+    const title = main.querySelector('.page-header-headings .headline');
+    if (!main.classList.contains('volmit-reference-page') || !toc || !title) {
+      toc?.style.removeProperty('margin-top');
+      return;
+    }
+    const header = title.closest('.page-header-section') || title;
+    const row = toc.parentElement;
+    const apply = () => {
+      if (!toc.isConnected || !row || toc.offsetParent === null) {
+        toc.style.removeProperty('margin-top');
+        return;
+      }
+      const next = Math.round(title.getBoundingClientRect().top - row.getBoundingClientRect().top);
+      const applied = Number.parseFloat(toc.style.marginTop) || 0;
+      if (Math.abs(next - applied) > 1) {
+        toc.style.marginTop = next + 'px';
+      }
+    };
+    apply();
+    const cleanups = [];
+    if (typeof window.ResizeObserver === 'function') {
+      const observer = new window.ResizeObserver(apply);
+      observer.observe(header);
+      if (title !== header) {
+        observer.observe(title);
+      }
+      cleanups.push(() => observer.disconnect());
+    }
+    window.addEventListener('resize', apply);
+    cleanups.push(() => window.removeEventListener('resize', apply));
+    stopTocAlign = () => {
+      for (const cleanup of cleanups) {
+        cleanup();
+      }
+    };
+  }
 
   function headingLabel(node) {
     if (!node) {
@@ -993,6 +1035,8 @@
     for (const node of main.querySelectorAll('.volmit-project-bar,.volmit-section-sidebar,.home-directory,.mobile-section-toggle,.section-menu-backdrop,.page-toc-toggle,.volmit-page-toc')) {
       node.remove();
     }
+    stopTocAlign?.();
+    stopTocAlign = null;
     main.classList.remove('volmit-home-page', 'volmit-project-overview', 'volmit-reference-page');
     app.classList.remove('show-page-toc');
     closeSectionMenu(app, false);
@@ -1676,6 +1720,7 @@
       if (project) {
         mountPageToc(app, main, content);
       }
+      alignReferenceToc(main);
     }
   }
 
