@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-10-07T20:00:00.000Z
+date: 2026-10-08T12:10:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,6 +36,12 @@ after start, PERSONAL/PUBLIC entry cannot provision or enter pockets.
 If the pocket world unloads, dimensional doors wait until it loads again. A
 cancelled world unload leaves its region tasks, RTP registrations, projection
 change tracking, and pocket-world availability active.
+
+In singleplayer, each world has its own `wormholes:pockets` dimension and keeps
+its door and pocket records in `wormholes/` inside its save folder, also when
+`shared-singleplayer-store` is on. Pockets and doors made in one world never
+appear in another. See
+[Native loaders and singleplayer](/wormholes/01-installation-configuration#native-loaders-and-singleplayer).
 
 ## Allocation
 

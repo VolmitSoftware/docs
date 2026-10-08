@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-08T12:10:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ Install the artifact for your server platform: the CraftBukkit jar goes in `plug
 
 An XZ packed jar extracts `plugins/Wormholes/cache/runtime/` on first start. That directory must be writable. PacketEvents is bundled in the Bukkit jar; no separate PacketEvents installation or download is required. Other runtime libraries still need a network on first start if their cache is empty. `wormholes.toml` must contain `schema = 3`. A valid save applies on its own. Invalid TOML is rejected and the current settings stay. WorldGuard, when present, checks RTP destinations. Edits to `languages/*.toml` apply on save. Dimensional Door pack changes need a restart. See [Dimensional Doors](/wormholes/07-dimensional-doors).
 
-Native loaders store the same settings, portal records, network identity, routes, trust, and language overrides under `config/wormholes/`. Reload native settings with `/wormholes reload`. Bukkit plugin integrations such as Vault and PlaceholderAPI require the Bukkit distribution. Native currency and permission integrations use the native registration APIs.
+Fabric, Forge, and NeoForge servers store the same settings, portal records, door and pocket state, network identity, routes, trust, and language overrides under `config/wormholes/`. In singleplayer, each world keeps its own portals, doors, and pockets inside its save folder; see [Native loaders and singleplayer](#native-loaders-and-singleplayer). Reload native settings with `/wormholes reload`. Bukkit plugin integrations such as Vault and PlaceholderAPI require the Bukkit distribution. Native currency and permission integrations use the native registration APIs.
 
 ## Client mod
 
@@ -83,6 +83,20 @@ plugins/Wormholes/
 Peers are not listed under `[network]` in TOML. Import and export write routes
 and trust under `routes/` and `trust/`. See
 [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
+
+### Native loaders and singleplayer
+
+Fabric, Forge, and NeoForge servers keep the same files under `config/wormholes/` in the server folder, with backups under `backups/`, atlas discoveries and Nexus networks under `atlas/`, rule templates under `rules/templates/`, and pocket templates under `pockets/templates/`.
+
+In singleplayer, each world keeps its Wormholes data in a `wormholes/` folder inside its save folder, so portals, doors, and pockets made in one world do not appear in another. Settings, language overrides, diagnostic reports, and the stats snapshot stay in `config/wormholes/` in the game folder and apply to every world.
+
+| Data | Fabric, Forge, or NeoForge server | Singleplayer | Singleplayer with `shared-singleplayer-store = true` |
+|---|---|---|---|
+| `wormholes.toml`, `languages/`, `debug/`, stats snapshot | `config/wormholes/` | `config/wormholes/` in the game folder | `config/wormholes/` in the game folder |
+| Portals, atlas discoveries, Nexus networks, rule templates, backups, network identity, routes, and trust | `config/wormholes/` | `wormholes/` in the save folder | `config/wormholes/` in the game folder |
+| Dimensional doors, pockets, and pocket templates | `config/wormholes/` | `wormholes/` in the save folder | `wormholes/` in the save folder |
+
+With `[main] shared-singleplayer-store = true`, every singleplayer world reads and writes one shared set of portals, so a portal built in one world also appears at the same position in every other world, and crossing it leads to its destination position in the world that is open. Dimensional doors and pocket rooms are blocks in the world where they were placed, so their records stay in that world's save folder. Wormholes reads the setting when a world opens; `/wormholes reload` does not move the data of the open world.
 
 ## Config path and schema
 
@@ -228,6 +242,7 @@ the runtime does not use.
 | `chunk-send-rate-tuner` | `true` | Once at startup, raise Paper per-player chunk send/load rate caps (never lowers) |
 | `chunk-send-rate-target` | `1000.0` | Target chunks/sec send. Paper default 75. `<=0` or `>10000` is unlimited |
 | `chunk-load-rate-target` | `1000.0` | Target chunks/sec load. Paper default 100. `<=0` or `>10000` is unlimited |
+| `shared-singleplayer-store` | `false` | Fabric, Forge, and NeoForge singleplayer only. Keep portals, atlas discoveries, Nexus networks, rule templates, backups, and network identity in `config/wormholes/` in the game folder, shared by every singleplayer world, instead of in each world's save folder. Doors and pockets always stay with their world. Read when a world opens. Servers write it to the file and ignore it. See [Native loaders and singleplayer](#native-loaders-and-singleplayer) |
 
 Normal console output covers lifecycle changes and failures that need attention. Fabric, Forge, NeoForge, and singleplayer also log one `Crossing` line for each player crossing through a frame portal or dimensional door; see [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod). Enable `verbose-logging` for routine portal, recipe, travel, and network details. Repeated failures are throttled. `/wh debug toggle` enables the same diagnostics temporarily. A settings hot-reload restores the file's value. See [Diagnostic reports](/wormholes/09-commands-permissions#diagnostic-reports).
 

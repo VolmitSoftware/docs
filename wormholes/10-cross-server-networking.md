@@ -2,13 +2,13 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-10-04T18:00:48.921Z
+date: 2026-10-08T12:10:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Wormholes links servers through pasteable codes. It stores routes under `routes/` and trusted public keys under `trust/` within its data directory: `plugins/Wormholes/` on Bukkit or `config/wormholes/` on Fabric, Forge, and NeoForge. Linked servers must run compatible Minecraft and Wormholes versions.
+Wormholes links servers through pasteable codes. It stores routes under `routes/` and trusted public keys under `trust/` within its data directory: `plugins/Wormholes/` on Bukkit, `config/wormholes/` on Fabric, Forge, and NeoForge servers, or `wormholes/` in the save folder in singleplayer (`config/wormholes/` in the game folder with `shared-singleplayer-store = true`). Linked servers must run compatible Minecraft and Wormholes versions.
 
 ## Enable and auto-enable
 

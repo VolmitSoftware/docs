@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-08T12:10:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -210,12 +210,16 @@ containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address t
 | `/wh admin deleteeverything` | `wormholes.admin.reset` | Immediately reset Wormholes configuration and saved data |
 
 `deleteeverything` preserves world files and refuses to run while a pocket is occupied, being entered,
-or undergoing a size or material change.
+or undergoing a size or material change. In singleplayer it resets `wormholes.toml` in the game folder
+and the open world's Wormholes data. With `shared-singleplayer-store = true` it also clears the shared
+portal data that every singleplayer world uses; other worlds keep their doors and pockets.
 
 ## Native backups and imports
 
 These commands require `wormholes.admin.backup`. Backups are stored under
-`config/wormholes/backups`; scheduled backups use the `[ops.backup]` settings.
+`config/wormholes/backups` on a server and under `wormholes/backups` in the save folder in singleplayer
+(`config/wormholes/backups` in the game folder with `shared-singleplayer-store = true`, where bundles
+hold the shared portal data and leave out the world's doors). Scheduled backups use the `[ops.backup]` settings.
 
 | Command | Purpose |
 |---|---|
