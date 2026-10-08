@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-08T18:47:35.450Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,6 +128,8 @@ Wormholes rejects non-coplanar sets without consuming them. If a later construct
 Any built frame can carry an aperture shape set afterwards. The shape outlines the opening inside the built rectangle: cells outside it neither show the destination nor admit travel, while the cells you built stay stored unchanged, so resetting the shape to `full` restores the whole opening. Set it from the portal's Settings menu or with `/wormholes admin portals shape`; see [Aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape).
 
 ## Surface skin
+
+Block skins cover the full selected opening, including its outer cell edges. Non-fluid skins form a thin surface centered on the portal plane.
 
 Applying or clearing a surface skin requires `wormholes.admin`. While looking at a portal, apply a skin as follows:
 

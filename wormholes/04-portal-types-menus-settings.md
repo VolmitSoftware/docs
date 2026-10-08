@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-08T18:00:00.000Z
+date: 2026-10-08T18:47:35.450Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -129,6 +129,8 @@ To connect two framed portals, build both openings first. You must be able to ma
 2. At Garden Arch, open **Destination** and left-click **Sun Court**. Garden Arch now points to Sun Court.
 3. Reopen Garden Arch's **Destination** menu and choose **Link and return**. Sun Court now points back to Garden Arch, creating a reciprocal pair.
 4. Close the menu and look through Garden Arch. With **Projection** set to `ON` and the surface clear, the opening shows the scene at Sun Court. Walk through the opening, turn around at the destination, and walk back through its portal to return.
+
+A reciprocal pair supports travel from either face of each opening unless its travel settings restrict entry. Selecting the same destination again preserves the return link, including across dimensions.
 
 The recordings show a deepslate frame in a garden connected to a sandstone frame in a courtyard elsewhere in the same world. The **No client mod** view uses standard projection; the **Client mod** view uses [ClientView](/wormholes/05-projection-modes-settings#clientview).
 

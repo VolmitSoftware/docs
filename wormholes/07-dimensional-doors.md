@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-08T18:00:00.000Z
+date: 2026-10-08T20:57:33.580Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -92,7 +92,7 @@ Each placed endpoint stores an OpenState. New placements default to `OPEN`.
   block stands open. Contact pads never swing open for arrivals and never
   consume an open cycle.
 - Destination behavior: a hinged door with OpenState `OPEN` may be auto-opened
-  by the server for an arriving living traveler. The server later closes it
+  by the server for an arriving living traveler. An open source door can be entered while its linked mate is closed; the mate opens on arrival. The server later closes it
   only if the server opened it. For seamless arrivals with the client mod,
   automatic closing waits until the traveler clears the doorway. A player-opened door is left alone. Trapdoor
   destinations are not auto-swung for arrival. OpenState `CLOSED` destinations
@@ -169,7 +169,7 @@ Travelers are either `LIVING` (players, mobs, and vehicles) or `OBJECT` (project
 | `PUBLIC` | Yes | No | Yes |
 | `RETURN` | Yes | No | No |
 
-On Fabric, Forge, and NeoForge servers and in singleplayer, players with the client mod cross doors seamlessly, with no teleport, respawn, or loading screen, under the same access, OpenState, and transit rules as any other door crossing. Every door crossing, seamless or not, starts a one-second wait before the traveler can cross another door. On Paper, Purpur, and Folia every door crossing uses the normal transition. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod). Normal player arrivals land at rest.
+On Fabric, Forge, and NeoForge servers and in singleplayer, players with the client mod cross open-state doors seamlessly, with no teleport, respawn, or loading screen, under the same access and transit rules as any other door crossing. Routes involving a `CLOSED` contact pad use the normal transition and leave the pad shut. Every door crossing, seamless or not, starts a one-second wait before the traveler can cross another door. On Paper, Purpur, and Folia every door crossing uses the normal transition. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod). Normal player arrivals land at rest.
 
 Pair and Public support object travel. Personal and Return stay player-only. Your view turns with the doorway so forward movement continues away from the arrival side; looking off-center keeps the same angle within the doorway. Entering a Personal or Public pocket faces into its room from either entrance side. Trapdoor routes also turn pitch when the destination aperture is vertical or horizontal.
 Pair loads unloaded destination chunks before transit. Same-server

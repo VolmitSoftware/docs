@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-08T18:00:00.000Z
+date: 2026-10-08T20:57:33.580Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,7 +30,7 @@ Fabric, Forge, and NeoForge servers store the same settings, portal records, doo
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases using protocol 7 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases using protocol 8 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia every player crosses with the ordinary teleport. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
