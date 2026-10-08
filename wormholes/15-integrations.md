@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin support and metrics"
 published: true
-date: 2026-09-30T20:00:00.000Z
+date: 2026-10-08T18:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ These plugin integrations apply to the Bukkit distribution. PlaceholderAPI, Iris
 
 ## Wormholes client mod
 
-The Fabric, Forge, and NeoForge jars also act as a client mod for [ClientView](/wormholes/05-projection-modes-settings#clientview). A Paper, Purpur, or Folia server with the Bukkit plugin talks to the client mod over the `wormholes:v1` plugin channel, so a modded client receives ClientView there as it does on a Fabric, Forge, or NeoForge server. The server needs no extra plugin for this. Installation: [Client mod](/wormholes/01-installation-configuration#client-mod).
+The Fabric, Forge, and NeoForge jars also act as a client mod for [ClientView](/wormholes/05-projection-modes-settings#clientview). A Paper, Purpur, or Folia server with the Bukkit plugin talks to the client mod over the `wormholes:v8` plugin channel, so a modded client receives ClientView there as it does on a Fabric, Forge, or NeoForge server. The server needs no extra plugin for this. Installation: [Client mod](/wormholes/01-installation-configuration#client-mod).
 
 The client mod adds no rendering hooks. It has been tested with Sodium, Lithium, and C2ME.
 
