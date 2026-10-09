@@ -11,238 +11,283 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Overview",
-            "href": "/iris/00-overview"
-          },
-          {
-            "title": "Installation & Platforms",
-            "href": "/iris/01-installation-platforms"
-          },
-          {
-            "title": "Getting Started",
-            "href": "/iris/02-getting-started"
-          },
-          {
-            "title": "Configuration",
-            "href": "/iris/03-configuration"
-          },
-          {
-            "title": "Commands & Permissions",
-            "href": "/iris/04-commands-permissions"
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/iris/00-overview"
+              },
+              {
+                "title": "Installation & Platforms",
+                "href": "/iris/01-installation-platforms"
+              },
+              {
+                "title": "Getting Started",
+                "href": "/iris/02-getting-started"
+              },
+              {
+                "title": "Configuration",
+                "href": "/iris/03-configuration"
+              },
+              {
+                "title": "Commands & Permissions",
+                "href": "/iris/04-commands-permissions"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Concepts and worlds",
-        "links": [
+        "groups": [
           {
-            "title": "Concepts & Pack Layout",
-            "href": "/iris/05-concepts-pack-layout"
-          },
-          {
-            "title": "Worlds & Lifecycle",
-            "href": "/iris/06-worlds-lifecycle"
-          },
-          {
-            "title": "Pregeneration",
-            "href": "/iris/07-pregeneration"
-          },
-          {
-            "title": "Localization",
-            "href": "/iris/08-localization"
-          },
-          {
-            "title": "PlaceholderAPI",
-            "href": "/iris/09-placeholderapi"
-          },
-          {
-            "title": "Studio & VSCode Schemas",
-            "href": "/iris/10-studio-vscode-schemas"
+            "title": "",
+            "links": [
+              {
+                "title": "Concepts & Pack Layout",
+                "href": "/iris/05-concepts-pack-layout"
+              },
+              {
+                "title": "Worlds & Lifecycle",
+                "href": "/iris/06-worlds-lifecycle"
+              },
+              {
+                "title": "Pregeneration",
+                "href": "/iris/07-pregeneration"
+              },
+              {
+                "title": "Localization",
+                "href": "/iris/08-localization"
+              },
+              {
+                "title": "PlaceholderAPI",
+                "href": "/iris/09-placeholderapi"
+              },
+              {
+                "title": "Studio & VSCode Schemas",
+                "href": "/iris/10-studio-vscode-schemas"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Authoring a pack",
-        "links": [
+        "groups": [
           {
-            "title": "Dimensions",
-            "href": "/iris/11-dimensions"
+            "title": "Pack structure",
+            "links": [
+              {
+                "title": "Dimensions",
+                "href": "/iris/11-dimensions"
+              },
+              {
+                "title": "Regions",
+                "href": "/iris/12-regions"
+              },
+              {
+                "title": "Biomes",
+                "href": "/iris/13-biomes"
+              },
+              {
+                "title": "Biome Catalog",
+                "href": "/iris/44-biome-catalog"
+              },
+              {
+                "title": "Snippets",
+                "href": "/iris/24-pack-mods-snippets"
+              },
+              {
+                "title": "Pack Management",
+                "href": "/iris/25-pack-management"
+              }
+            ]
           },
           {
-            "title": "Regions",
-            "href": "/iris/12-regions"
+            "title": "Terrain",
+            "links": [
+              {
+                "title": "Volumetric Terrain",
+                "href": "/iris/47-volumetric-terrain"
+              },
+              {
+                "title": "Generators, Noise & Expressions",
+                "href": "/iris/14-generators-noise"
+              },
+              {
+                "title": "Noise Atlas",
+                "href": "/iris/45-noise-atlas"
+              },
+              {
+                "title": "Caves & Carving",
+                "href": "/iris/15-caves-carving"
+              },
+              {
+                "title": "Authored Subterrain Features",
+                "href": "/iris/15b-subterrain-features"
+              },
+              {
+                "title": "Sulfur Galleries & Hollows",
+                "href": "/iris/biomes/carving/sulfur"
+              },
+              {
+                "title": "Rivers & Hydrology",
+                "href": "/iris/36-rivers"
+              },
+              {
+                "title": "River Policy",
+                "href": "/iris/36b-river-policy"
+              },
+              {
+                "title": "River Inspection",
+                "href": "/iris/36c-river-inspection"
+              }
+            ]
           },
           {
-            "title": "Biomes",
-            "href": "/iris/13-biomes"
+            "title": "Image maps",
+            "links": [
+              {
+                "title": "Image Maps",
+                "href": "/iris/37-image-maps"
+              },
+              {
+                "title": "Image Map Encodings",
+                "href": "/iris/38-image-map-encodings"
+              },
+              {
+                "title": "Image Map Configuration & Coordinates",
+                "href": "/iris/43-image-map-config-coordinates"
+              }
+            ]
           },
           {
-            "title": "Biome Catalog",
-            "href": "/iris/44-biome-catalog"
+            "title": "Structures and objects",
+            "links": [
+              {
+                "title": "Structures Overview",
+                "href": "/iris/18-structures-overview"
+              },
+              {
+                "title": "Jigsaw Structures",
+                "href": "/iris/21-jigsaw-structures"
+              },
+              {
+                "title": "Jigsaw Resources",
+                "href": "/iris/21b-jigsaw-resources"
+              },
+              {
+                "title": "Native Structures & Datapacks",
+                "href": "/iris/22-native-structures-datapacks"
+              },
+              {
+                "title": "Objects",
+                "href": "/iris/19-objects"
+              },
+              {
+                "title": "Object Placement",
+                "href": "/iris/20-object-placement"
+              },
+              {
+                "title": "Vanilla Passthrough",
+                "href": "/iris/35-vanilla-passthrough"
+              }
+            ]
           },
           {
-            "title": "Snippets",
-            "href": "/iris/24-pack-mods-snippets"
-          },
-          {
-            "title": "Pack Management",
-            "href": "/iris/25-pack-management"
-          },
-          {
-            "title": "Volumetric Terrain",
-            "href": "/iris/47-volumetric-terrain"
-          },
-          {
-            "title": "Generators, Noise & Expressions",
-            "href": "/iris/14-generators-noise"
-          },
-          {
-            "title": "Noise Atlas",
-            "href": "/iris/45-noise-atlas"
-          },
-          {
-            "title": "Caves & Carving",
-            "href": "/iris/15-caves-carving"
-          },
-          {
-            "title": "Authored Subterrain Features",
-            "href": "/iris/15b-subterrain-features"
-          },
-          {
-            "title": "Sulfur Galleries & Hollows",
-            "href": "/iris/biomes/carving/sulfur"
-          },
-          {
-            "title": "Rivers & Hydrology",
-            "href": "/iris/36-rivers"
-          },
-          {
-            "title": "River Policy",
-            "href": "/iris/36b-river-policy"
-          },
-          {
-            "title": "River Inspection",
-            "href": "/iris/36c-river-inspection"
-          },
-          {
-            "title": "Image Maps",
-            "href": "/iris/37-image-maps"
-          },
-          {
-            "title": "Image Map Encodings",
-            "href": "/iris/38-image-map-encodings"
-          },
-          {
-            "title": "Image Map Configuration & Coordinates",
-            "href": "/iris/43-image-map-config-coordinates"
-          },
-          {
-            "title": "Structures Overview",
-            "href": "/iris/18-structures-overview"
-          },
-          {
-            "title": "Jigsaw Structures",
-            "href": "/iris/21-jigsaw-structures"
-          },
-          {
-            "title": "Jigsaw Resources",
-            "href": "/iris/21b-jigsaw-resources"
-          },
-          {
-            "title": "Native Structures & Datapacks",
-            "href": "/iris/22-native-structures-datapacks"
-          },
-          {
-            "title": "Objects",
-            "href": "/iris/19-objects"
-          },
-          {
-            "title": "Object Placement",
-            "href": "/iris/20-object-placement"
-          },
-          {
-            "title": "Vanilla Passthrough",
-            "href": "/iris/35-vanilla-passthrough"
-          },
-          {
-            "title": "Surfaces, Decorators & Deposits",
-            "href": "/iris/16-surfaces-decorators-deposits"
-          },
-          {
-            "title": "Procedural Objects",
-            "href": "/iris/17-procedural-objects"
-          },
-          {
-            "title": "Procedural Trees",
-            "href": "/iris/17b-procedural-trees"
-          },
-          {
-            "title": "Loot",
-            "href": "/iris/23-loot"
-          },
-          {
-            "title": "Entities & Spawners",
-            "href": "/iris/23b-entities-spawners"
-          },
-          {
-            "title": "Markers",
-            "href": "/iris/23c-markers"
+            "title": "Surfaces and loot",
+            "links": [
+              {
+                "title": "Surfaces, Decorators & Deposits",
+                "href": "/iris/16-surfaces-decorators-deposits"
+              },
+              {
+                "title": "Procedural Objects",
+                "href": "/iris/17-procedural-objects"
+              },
+              {
+                "title": "Procedural Trees",
+                "href": "/iris/17b-procedural-trees"
+              },
+              {
+                "title": "Loot",
+                "href": "/iris/23-loot"
+              },
+              {
+                "title": "Entities & Spawners",
+                "href": "/iris/23b-entities-spawners"
+              },
+              {
+                "title": "Markers",
+                "href": "/iris/23c-markers"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Examples and operations",
-        "links": [
+        "groups": [
           {
-            "title": "Example - Minimal Dimension",
-            "href": "/iris/26-example-minimal-dimension"
-          },
-          {
-            "title": "Example - Configuring Overworld",
-            "href": "/iris/27-example-configuring-overworld"
-          },
-          {
-            "title": "Integrations",
-            "href": "/iris/28-integrations"
-          },
-          {
-            "title": "Client HUD & Maps",
-            "href": "/iris/29-client-hud-protocol"
-          },
-          {
-            "title": "Platform Differences",
-            "href": "/iris/30-platform-differences"
-          },
-          {
-            "title": "Multiverse",
-            "href": "/iris/34-multiverse"
+            "title": "",
+            "links": [
+              {
+                "title": "Example - Minimal Dimension",
+                "href": "/iris/26-example-minimal-dimension"
+              },
+              {
+                "title": "Example - Configuring Overworld",
+                "href": "/iris/27-example-configuring-overworld"
+              },
+              {
+                "title": "Integrations",
+                "href": "/iris/28-integrations"
+              },
+              {
+                "title": "Client HUD & Maps",
+                "href": "/iris/29-client-hud-protocol"
+              },
+              {
+                "title": "Platform Differences",
+                "href": "/iris/30-platform-differences"
+              },
+              {
+                "title": "Multiverse",
+                "href": "/iris/34-multiverse"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Developer API",
-        "links": [
+        "groups": [
           {
-            "title": "API - Getting Started",
-            "href": "/iris/90-api-getting-started"
-          },
-          {
-            "title": "API - Terrain",
-            "href": "/iris/91-api-terrain"
-          },
-          {
-            "title": "API - World Events",
-            "href": "/iris/92-api-world-events"
-          },
-          {
-            "title": "API - Tree Feller",
-            "href": "/iris/93-api-tree-feller"
-          },
-          {
-            "title": "API - Modded",
-            "href": "/iris/94-api-modded"
+            "title": "",
+            "links": [
+              {
+                "title": "API - Getting Started",
+                "href": "/iris/90-api-getting-started"
+              },
+              {
+                "title": "API - Terrain",
+                "href": "/iris/91-api-terrain"
+              },
+              {
+                "title": "API - World Events",
+                "href": "/iris/92-api-world-events"
+              },
+              {
+                "title": "API - Tree Feller",
+                "href": "/iris/93-api-tree-feller"
+              },
+              {
+                "title": "API - Modded",
+                "href": "/iris/94-api-modded"
+              }
+            ]
           }
         ]
       }
@@ -260,76 +305,91 @@
     "sections": [
       {
         "title": "Configure",
-        "links": [
+        "groups": [
           {
-            "title": "Installation and configuration",
-            "href": "/adapt/01-installation-configuration"
-          },
-          {
-            "title": "Progression",
-            "href": "/adapt/02-concepts"
-          },
-          {
-            "title": "Progression math",
-            "href": "/adapt/05-configuration-math"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/adapt/04-commands-permissions"
-          },
-          {
-            "title": "GUI",
-            "href": "/adapt/06-gui-customization"
-          },
-          {
-            "title": "Protection and regions",
-            "href": "/adapt/08-protection-region-policy"
-          },
-          {
-            "title": "Integrations",
-            "href": "/adapt/09-integrations"
-          },
-          {
-            "title": "Items",
-            "href": "/adapt/36-items-orbs-bound-objects"
-          },
-          {
-            "title": "Recipes, brewing, and value",
-            "href": "/adapt/37-recipes-brewing-value"
-          },
-          {
-            "title": "Cross-server storage",
-            "href": "/adapt/39-velocity-cross-server"
-          },
-          {
-            "title": "Updates",
-            "href": "/adapt/40-operator-runbooks"
+            "title": "",
+            "links": [
+              {
+                "title": "Installation and configuration",
+                "href": "/adapt/01-installation-configuration"
+              },
+              {
+                "title": "Progression",
+                "href": "/adapt/02-concepts"
+              },
+              {
+                "title": "Progression math",
+                "href": "/adapt/05-configuration-math"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/adapt/04-commands-permissions"
+              },
+              {
+                "title": "GUI",
+                "href": "/adapt/06-gui-customization"
+              },
+              {
+                "title": "Protection and regions",
+                "href": "/adapt/08-protection-region-policy"
+              },
+              {
+                "title": "Integrations",
+                "href": "/adapt/09-integrations"
+              },
+              {
+                "title": "Items",
+                "href": "/adapt/36-items-orbs-bound-objects"
+              },
+              {
+                "title": "Recipes, brewing, and value",
+                "href": "/adapt/37-recipes-brewing-value"
+              },
+              {
+                "title": "Cross-server storage",
+                "href": "/adapt/39-velocity-cross-server"
+              },
+              {
+                "title": "Updates",
+                "href": "/adapt/40-operator-runbooks"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Skills",
-        "links": [
+        "groups": [
           {
-            "title": "Skills catalog",
-            "href": "/adapt/10-skills-catalog"
-          },
-          {
-            "title": "Player menu",
-            "href": "/adapt/03-player-usage"
-          },
-          {
-            "title": "Localization",
-            "href": "/adapt/07-localization"
+            "title": "",
+            "links": [
+              {
+                "title": "Skills catalog",
+                "href": "/adapt/10-skills-catalog"
+              },
+              {
+                "title": "Player menu",
+                "href": "/adapt/03-player-usage"
+              },
+              {
+                "title": "Localization",
+                "href": "/adapt/07-localization"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Developer API",
-        "links": [
+        "groups": [
           {
-            "title": "API",
-            "href": "/adapt/41-api-getting-started"
+            "title": "",
+            "links": [
+              {
+                "title": "API",
+                "href": "/adapt/41-api-getting-started"
+              }
+            ]
           }
         ]
       }
@@ -347,101 +407,121 @@
     "sections": [
       {
         "title": "Getting started",
-        "links": [
+        "groups": [
           {
-            "title": "Overview",
-            "href": "/react/00-overview"
-          },
-          {
-            "title": "Installation & Configuration",
-            "href": "/react/01-installation-configuration"
-          },
-          {
-            "title": "Commands & Permissions",
-            "href": "/react/02-commands-permissions"
-          },
-          {
-            "title": "Concepts",
-            "href": "/react/03-concepts"
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/react/00-overview"
+              },
+              {
+                "title": "Installation & Configuration",
+                "href": "/react/01-installation-configuration"
+              },
+              {
+                "title": "Commands & Permissions",
+                "href": "/react/02-commands-permissions"
+              },
+              {
+                "title": "Concepts",
+                "href": "/react/03-concepts"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Features",
-        "links": [
+        "groups": [
           {
-            "title": "Features - Entity Systems",
-            "href": "/react/04-features-entity-systems"
-          },
-          {
-            "title": "Features - Maps & Overlays",
-            "href": "/react/05-features-maps-overlays"
-          },
-          {
-            "title": "Features - Governors & Mechanics",
-            "href": "/react/06-features-governors-mechanics"
-          },
-          {
-            "title": "Features - Iris Adapt & Integrations",
-            "href": "/react/07-features-iris-adapt-integrations"
-          },
-          {
-            "title": "Tweaks Catalog",
-            "href": "/react/08-tweaks-catalog"
-          },
-          {
-            "title": "Actions Catalog",
-            "href": "/react/09-actions-catalog"
+            "title": "",
+            "links": [
+              {
+                "title": "Features - Entity Systems",
+                "href": "/react/04-features-entity-systems"
+              },
+              {
+                "title": "Features - Maps & Overlays",
+                "href": "/react/05-features-maps-overlays"
+              },
+              {
+                "title": "Features - Governors & Mechanics",
+                "href": "/react/06-features-governors-mechanics"
+              },
+              {
+                "title": "Features - Iris Adapt & Integrations",
+                "href": "/react/07-features-iris-adapt-integrations"
+              },
+              {
+                "title": "Tweaks Catalog",
+                "href": "/react/08-tweaks-catalog"
+              },
+              {
+                "title": "Actions Catalog",
+                "href": "/react/09-actions-catalog"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Monitoring and operations",
-        "links": [
+        "groups": [
           {
-            "title": "Samplers & Metrics",
-            "href": "/react/10-samplers-metrics"
-          },
-          {
-            "title": "Monitors Maps & In-Game GUI",
-            "href": "/react/11-monitors-maps-in-game-gui"
-          },
-          {
-            "title": "Incident Mode & Playbooks",
-            "href": "/react/12-incident-mode-playbooks"
-          },
-          {
-            "title": "Localization",
-            "href": "/react/13-localization"
-          },
-          {
-            "title": "NMS Bridges & Platform Notes",
-            "href": "/react/14-nms-bridges-platform-notes"
+            "title": "",
+            "links": [
+              {
+                "title": "Samplers & Metrics",
+                "href": "/react/10-samplers-metrics"
+              },
+              {
+                "title": "Monitors Maps & In-Game GUI",
+                "href": "/react/11-monitors-maps-in-game-gui"
+              },
+              {
+                "title": "Incident Mode & Playbooks",
+                "href": "/react/12-incident-mode-playbooks"
+              },
+              {
+                "title": "Localization",
+                "href": "/react/13-localization"
+              },
+              {
+                "title": "NMS Bridges & Platform Notes",
+                "href": "/react/14-nms-bridges-platform-notes"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Developer API",
-        "links": [
+        "groups": [
           {
-            "title": "API - Getting Started",
-            "href": "/react/16-api-getting-started"
-          },
-          {
-            "title": "API - Entity Protection",
-            "href": "/react/17-api-entity-protection"
-          },
-          {
-            "title": "API - Metric Publishing",
-            "href": "/react/18-api-metric-publishing"
-          },
-          {
-            "title": "API - PlaceholderAPI",
-            "href": "/react/19-api-placeholderapi"
-          },
-          {
-            "title": "API - Plugin API Packs",
-            "href": "/react/20-api-plugin-api-packs"
+            "title": "",
+            "links": [
+              {
+                "title": "API - Getting Started",
+                "href": "/react/16-api-getting-started"
+              },
+              {
+                "title": "API - Entity Protection",
+                "href": "/react/17-api-entity-protection"
+              },
+              {
+                "title": "API - Metric Publishing",
+                "href": "/react/18-api-metric-publishing"
+              },
+              {
+                "title": "API - PlaceholderAPI",
+                "href": "/react/19-api-placeholderapi"
+              },
+              {
+                "title": "API - Plugin API Packs",
+                "href": "/react/20-api-plugin-api-packs"
+              }
+            ]
           }
         ]
       }
@@ -459,72 +539,87 @@
     "sections": [
       {
         "title": "Documentation",
-        "links": [
+        "groups": [
           {
-            "title": "ClientView",
-            "href": "/wormholes/05-projection-modes-settings"
+            "title": "",
+            "links": [
+              {
+                "title": "ClientView",
+                "href": "/wormholes/05-projection-modes-settings"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Configure",
-        "links": [
+        "groups": [
           {
-            "title": "Installation and configuration",
-            "href": "/wormholes/01-installation-configuration"
-          },
-          {
-            "title": "Concepts",
-            "href": "/wormholes/02-concepts"
-          },
-          {
-            "title": "Building portals",
-            "href": "/wormholes/03-building-portals"
-          },
-          {
-            "title": "Menus and settings",
-            "href": "/wormholes/04-portal-types-menus-settings"
-          },
-          {
-            "title": "Random teleport",
-            "href": "/wormholes/06-random-teleport-portals"
-          },
-          {
-            "title": "Dimensional Doors",
-            "href": "/wormholes/07-dimensional-doors"
-          },
-          {
-            "title": "Pocket dimensions",
-            "href": "/wormholes/08-pocket-dimensions"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/wormholes/09-commands-permissions"
-          },
-          {
-            "title": "Cross-server networking",
-            "href": "/wormholes/10-cross-server-networking"
-          },
-          {
-            "title": "Localization",
-            "href": "/wormholes/11-localization"
-          },
-          {
-            "title": "PlaceholderAPI",
-            "href": "/wormholes/12-placeholderapi"
-          },
-          {
-            "title": "Integrations",
-            "href": "/wormholes/15-integrations"
+            "title": "",
+            "links": [
+              {
+                "title": "Installation and configuration",
+                "href": "/wormholes/01-installation-configuration"
+              },
+              {
+                "title": "Concepts",
+                "href": "/wormholes/02-concepts"
+              },
+              {
+                "title": "Building portals",
+                "href": "/wormholes/03-building-portals"
+              },
+              {
+                "title": "Menus and settings",
+                "href": "/wormholes/04-portal-types-menus-settings"
+              },
+              {
+                "title": "Random teleport",
+                "href": "/wormholes/06-random-teleport-portals"
+              },
+              {
+                "title": "Dimensional Doors",
+                "href": "/wormholes/07-dimensional-doors"
+              },
+              {
+                "title": "Pocket dimensions",
+                "href": "/wormholes/08-pocket-dimensions"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/wormholes/09-commands-permissions"
+              },
+              {
+                "title": "Cross-server networking",
+                "href": "/wormholes/10-cross-server-networking"
+              },
+              {
+                "title": "Localization",
+                "href": "/wormholes/11-localization"
+              },
+              {
+                "title": "PlaceholderAPI",
+                "href": "/wormholes/12-placeholderapi"
+              },
+              {
+                "title": "Integrations",
+                "href": "/wormholes/15-integrations"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Developer API",
-        "links": [
+        "groups": [
           {
-            "title": "API",
-            "href": "/wormholes/20-api-getting-started"
+            "title": "",
+            "links": [
+              {
+                "title": "API",
+                "href": "/wormholes/20-api-getting-started"
+              }
+            ]
           }
         ]
       }
@@ -542,171 +637,201 @@
     "sections": [
       {
         "title": "At a glance",
-        "links": [
+        "groups": [
           {
-            "title": "Getting Started",
-            "href": "/gloss/01-getting-started"
+            "title": "",
+            "links": [
+              {
+                "title": "Getting Started",
+                "href": "/gloss/01-getting-started"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Velocity Proxy",
-            "href": "/gloss/27-velocity"
-          },
-          {
-            "title": "Configuration",
-            "href": "/gloss/02-configuration"
-          },
-          {
-            "title": "Commands & Permissions",
-            "href": "/gloss/17-commands-permissions"
+            "title": "",
+            "links": [
+              {
+                "title": "Velocity Proxy",
+                "href": "/gloss/27-velocity"
+              },
+              {
+                "title": "Configuration",
+                "href": "/gloss/02-configuration"
+              },
+              {
+                "title": "Commands & Permissions",
+                "href": "/gloss/17-commands-permissions"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Display and server text",
-        "links": [
+        "groups": [
           {
-            "title": "Holograms",
-            "href": "/gloss/04-holograms"
-          },
-          {
-            "title": "Scoreboards & Groups",
-            "href": "/gloss/05-scoreboards-groups"
-          },
-          {
-            "title": "Tablist",
-            "href": "/gloss/06-tablist"
-          },
-          {
-            "title": "Server List MOTD",
-            "href": "/gloss/06b-server-list-motd"
-          },
-          {
-            "title": "Screen Surfaces",
-            "href": "/gloss/06c-screen-surfaces"
-          },
-          {
-            "title": "Connection Messages",
-            "href": "/gloss/26-connection-messages"
-          },
-          {
-            "title": "Emoji, Text & Animations",
-            "href": "/gloss/07-emoji-text-animations"
-          },
-          {
-            "title": "Chat Bubbles",
-            "href": "/gloss/08-chat-bubbles"
-          },
-          {
-            "title": "Damage Indicators",
-            "href": "/gloss/08b-damage-indicators"
-          },
-          {
-            "title": "Drop Labels",
-            "href": "/gloss/08c-drop-labels"
-          },
-          {
-            "title": "Entity Overlays",
-            "href": "/gloss/20-entity-overlays"
+            "title": "",
+            "links": [
+              {
+                "title": "Holograms",
+                "href": "/gloss/04-holograms"
+              },
+              {
+                "title": "Scoreboards & Groups",
+                "href": "/gloss/05-scoreboards-groups"
+              },
+              {
+                "title": "Tablist",
+                "href": "/gloss/06-tablist"
+              },
+              {
+                "title": "Server List MOTD",
+                "href": "/gloss/06b-server-list-motd"
+              },
+              {
+                "title": "Screen Surfaces",
+                "href": "/gloss/06c-screen-surfaces"
+              },
+              {
+                "title": "Connection Messages",
+                "href": "/gloss/26-connection-messages"
+              },
+              {
+                "title": "Emoji, Text & Animations",
+                "href": "/gloss/07-emoji-text-animations"
+              },
+              {
+                "title": "Chat Bubbles",
+                "href": "/gloss/08-chat-bubbles"
+              },
+              {
+                "title": "Damage Indicators",
+                "href": "/gloss/08b-damage-indicators"
+              },
+              {
+                "title": "Drop Labels",
+                "href": "/gloss/08c-drop-labels"
+              },
+              {
+                "title": "Entity Overlays",
+                "href": "/gloss/20-entity-overlays"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Menus and previews",
-        "links": [
+        "groups": [
           {
-            "title": "Hologram Menus",
-            "href": "/gloss/09-menus"
-          },
-          {
-            "title": "Inventory Menus",
-            "href": "/gloss/09b-inventory-menus"
-          },
-          {
-            "title": "Components & Hitboxes",
-            "href": "/gloss/10-components-hitboxes"
-          },
-          {
-            "title": "Icons",
-            "href": "/gloss/11-icons"
-          },
-          {
-            "title": "Actions",
-            "href": "/gloss/12-actions"
-          },
-          {
-            "title": "Expressions & Placeholders",
-            "href": "/gloss/13-expressions-placeholders"
-          },
-          {
-            "title": "Custom Items & Item Providers",
-            "href": "/gloss/14-custom-items"
-          },
-          {
-            "title": "Container Previews",
-            "href": "/gloss/15-container-previews"
-          },
-          {
-            "title": "Panels",
-            "href": "/gloss/16-panels"
+            "title": "",
+            "links": [
+              {
+                "title": "Hologram Menus",
+                "href": "/gloss/09-menus"
+              },
+              {
+                "title": "Inventory Menus",
+                "href": "/gloss/09b-inventory-menus"
+              },
+              {
+                "title": "Components & Hitboxes",
+                "href": "/gloss/10-components-hitboxes"
+              },
+              {
+                "title": "Icons",
+                "href": "/gloss/11-icons"
+              },
+              {
+                "title": "Actions",
+                "href": "/gloss/12-actions"
+              },
+              {
+                "title": "Expressions & Placeholders",
+                "href": "/gloss/13-expressions-placeholders"
+              },
+              {
+                "title": "Custom Items & Item Providers",
+                "href": "/gloss/14-custom-items"
+              },
+              {
+                "title": "Container Previews",
+                "href": "/gloss/15-container-previews"
+              },
+              {
+                "title": "Panels",
+                "href": "/gloss/16-panels"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Server administration",
-        "links": [
+        "groups": [
           {
-            "title": "Data Files & Hot Reload",
-            "href": "/gloss/03-data-files"
-          },
-          {
-            "title": "Web Editor & Sync",
-            "href": "/gloss/18-web-editor"
-          },
-          {
-            "title": "Web editor tutorial",
-            "href": "/gloss/18-web-editor-tutorial"
-          },
-          {
-            "title": "Localization",
-            "href": "/gloss/19-localization"
-          },
-          {
-            "title": "Behaviors and State",
-            "href": "/gloss/19b-behaviors"
-          },
-          {
-            "title": "Particle Layers",
-            "href": "/gloss/25-particle-layers"
-          },
-          {
-            "title": "Resource Packs & Glyph Fonts",
-            "href": "/gloss/28-resource-packs"
+            "title": "",
+            "links": [
+              {
+                "title": "Data Files & Hot Reload",
+                "href": "/gloss/03-data-files"
+              },
+              {
+                "title": "Web Editor & Sync",
+                "href": "/gloss/18-web-editor"
+              },
+              {
+                "title": "Web editor tutorial",
+                "href": "/gloss/18-web-editor-tutorial"
+              },
+              {
+                "title": "Localization",
+                "href": "/gloss/19-localization"
+              },
+              {
+                "title": "Behaviors and State",
+                "href": "/gloss/19b-behaviors"
+              },
+              {
+                "title": "Particle Layers",
+                "href": "/gloss/25-particle-layers"
+              },
+              {
+                "title": "Resource Packs & Glyph Fonts",
+                "href": "/gloss/28-resource-packs"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Developer API",
-        "links": [
+        "groups": [
           {
-            "title": "API: Getting Started",
-            "href": "/gloss/21-api-getting-started"
-          },
-          {
-            "title": "API: Menus",
-            "href": "/gloss/22-api-menus"
-          },
-          {
-            "title": "API: Placeholders",
-            "href": "/gloss/23-api-placeholders"
-          },
-          {
-            "title": "API: Previews",
-            "href": "/gloss/24-api-previews"
+            "title": "",
+            "links": [
+              {
+                "title": "API: Getting Started",
+                "href": "/gloss/21-api-getting-started"
+              },
+              {
+                "title": "API: Menus",
+                "href": "/gloss/22-api-menus"
+              },
+              {
+                "title": "API: Placeholders",
+                "href": "/gloss/23-api-placeholders"
+              },
+              {
+                "title": "API: Previews",
+                "href": "/gloss/24-api-previews"
+              }
+            ]
           }
         ]
       }
@@ -723,39 +848,49 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Overview",
-            "href": "/foundation/00-overview"
-          },
-          {
-            "title": "Installation and configuration",
-            "href": "/foundation/01-installation-configuration"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/foundation/02-commands-permissions"
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/foundation/00-overview"
+              },
+              {
+                "title": "Installation and configuration",
+                "href": "/foundation/01-installation-configuration"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/foundation/02-commands-permissions"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Reference",
-        "links": [
+        "groups": [
           {
-            "title": "Modules and behavior",
-            "href": "/foundation/03-modules-features"
-          },
-          {
-            "title": "Operations, storage, and recovery",
-            "href": "/foundation/04-operations-safety"
-          },
-          {
-            "title": "Integrations and service APIs",
-            "href": "/foundation/05-integrations-api"
-          },
-          {
-            "title": "Languages",
-            "href": "/languages"
+            "title": "",
+            "links": [
+              {
+                "title": "Modules and behavior",
+                "href": "/foundation/03-modules-features"
+              },
+              {
+                "title": "Operations, storage, and recovery",
+                "href": "/foundation/04-operations-safety"
+              },
+              {
+                "title": "Integrations and service APIs",
+                "href": "/foundation/05-integrations-api"
+              },
+              {
+                "title": "Languages",
+                "href": "/languages"
+              }
+            ]
           }
         ]
       }
@@ -772,43 +907,53 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Installation",
-            "href": "/hiddenore/installation"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/hiddenore/commands"
-          },
-          {
-            "title": "Configuration",
-            "href": "/hiddenore/configuration"
-          },
-          {
-            "title": "Languages",
-            "href": "/languages"
+            "title": "",
+            "links": [
+              {
+                "title": "Installation",
+                "href": "/hiddenore/installation"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/hiddenore/commands"
+              },
+              {
+                "title": "Configuration",
+                "href": "/hiddenore/configuration"
+              },
+              {
+                "title": "Languages",
+                "href": "/languages"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Developer API",
-        "links": [
+        "groups": [
           {
-            "title": "API overview",
-            "href": "/hiddenore/api"
-          },
-          {
-            "title": "Events",
-            "href": "/hiddenore/api/events"
-          },
-          {
-            "title": "Service",
-            "href": "/hiddenore/api/service"
-          },
-          {
-            "title": "Placeholders",
-            "href": "/hiddenore/api/placeholders"
+            "title": "",
+            "links": [
+              {
+                "title": "API overview",
+                "href": "/hiddenore/api"
+              },
+              {
+                "title": "Events",
+                "href": "/hiddenore/api/events"
+              },
+              {
+                "title": "Service",
+                "href": "/hiddenore/api/service"
+              },
+              {
+                "title": "Placeholders",
+                "href": "/hiddenore/api/placeholders"
+              }
+            ]
           }
         ]
       }
@@ -825,35 +970,57 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Overview",
-            "href": "/rift/00-overview"
-          },
-          {
-            "title": "Installation and compatibility",
-            "href": "/rift/01-installation-compatibility"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/rift/02-commands-permissions"
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/rift/00-overview"
+              },
+              {
+                "title": "Installation and compatibility",
+                "href": "/rift/01-installation-compatibility"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/rift/02-commands-permissions"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Reference",
-        "links": [
+        "groups": [
           {
-            "title": "Storage and operations",
-            "href": "/rift/03-storage-operations"
-          },
-          {
-            "title": "Configuration and localization",
-            "href": "/rift/04-configuration-localization"
-          },
-          {
-            "title": "Languages",
-            "href": "/languages"
+            "title": "",
+            "links": [
+              {
+                "title": "Storage and operations",
+                "href": "/rift/03-storage-operations"
+              },
+              {
+                "title": "Configuration and localization",
+                "href": "/rift/04-configuration-localization"
+              },
+              {
+                "title": "World policies",
+                "href": "/rift/05-world-policies"
+              },
+              {
+                "title": "Destinations and anchors",
+                "href": "/rift/06-destinations"
+              },
+              {
+                "title": "Integration API",
+                "href": "/rift/99-integration-api"
+              },
+              {
+                "title": "Languages",
+                "href": "/languages"
+              }
+            ]
           }
         ]
       }
@@ -870,35 +1037,45 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Getting started",
-            "href": "/shapedportals/00-overview"
-          },
-          {
-            "title": "Installation and configuration",
-            "href": "/shapedportals/01-installation-configuration"
-          },
-          {
-            "title": "Portal behavior",
-            "href": "/shapedportals/02-portal-behavior-events"
+            "title": "",
+            "links": [
+              {
+                "title": "Getting started",
+                "href": "/shapedportals/00-overview"
+              },
+              {
+                "title": "Installation and configuration",
+                "href": "/shapedportals/01-installation-configuration"
+              },
+              {
+                "title": "Portal behavior",
+                "href": "/shapedportals/02-portal-behavior-events"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Reference",
-        "links": [
+        "groups": [
           {
-            "title": "Compatibility and operations",
-            "href": "/shapedportals/03-compatibility-operations"
-          },
-          {
-            "title": "Developer reference",
-            "href": "/shapedportals/04-architecture-limits"
-          },
-          {
-            "title": "Languages",
-            "href": "/languages"
+            "title": "",
+            "links": [
+              {
+                "title": "Compatibility and operations",
+                "href": "/shapedportals/03-compatibility-operations"
+              },
+              {
+                "title": "Developer reference",
+                "href": "/shapedportals/04-architecture-limits"
+              },
+              {
+                "title": "Languages",
+                "href": "/languages"
+              }
+            ]
           }
         ]
       }
@@ -915,39 +1092,49 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Installation and configuration",
-            "href": "/skyprime/01-installation-configuration"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/skyprime/02-commands-permissions"
-          },
-          {
-            "title": "Islands and progression",
-            "href": "/skyprime/03-islands-progression"
+            "title": "",
+            "links": [
+              {
+                "title": "Installation and configuration",
+                "href": "/skyprime/01-installation-configuration"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/skyprime/02-commands-permissions"
+              },
+              {
+                "title": "Islands and progression",
+                "href": "/skyprime/03-islands-progression"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Reference",
-        "links": [
+        "groups": [
           {
-            "title": "Starter templates",
-            "href": "/skyprime/06-starter-templates"
-          },
-          {
-            "title": "Operations and recovery",
-            "href": "/skyprime/04-operations-recovery"
-          },
-          {
-            "title": "Placeholders and API",
-            "href": "/skyprime/90-placeholders-api"
-          },
-          {
-            "title": "Languages",
-            "href": "/languages"
+            "title": "",
+            "links": [
+              {
+                "title": "Starter templates",
+                "href": "/skyprime/06-starter-templates"
+              },
+              {
+                "title": "Operations and recovery",
+                "href": "/skyprime/04-operations-recovery"
+              },
+              {
+                "title": "Placeholders and API",
+                "href": "/skyprime/90-placeholders-api"
+              },
+              {
+                "title": "Languages",
+                "href": "/languages"
+              }
+            ]
           }
         ]
       }
@@ -964,35 +1151,45 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Installation and configuration",
-            "href": "/static/01-installation-configuration"
-          },
-          {
-            "title": "Commands and languages",
-            "href": "/static/02-commands-languages"
-          },
-          {
-            "title": "Statistics",
-            "href": "/static/03-statistics"
+            "title": "",
+            "links": [
+              {
+                "title": "Installation and configuration",
+                "href": "/static/01-installation-configuration"
+              },
+              {
+                "title": "Commands and languages",
+                "href": "/static/02-commands-languages"
+              },
+              {
+                "title": "Statistics",
+                "href": "/static/03-statistics"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Reference",
-        "links": [
+        "groups": [
           {
-            "title": "Compatibility and operations",
-            "href": "/static/04-compatibility-operations"
-          },
-          {
-            "title": "API and placeholders",
-            "href": "/static/90-api-placeholders"
-          },
-          {
-            "title": "Languages",
-            "href": "/languages"
+            "title": "",
+            "links": [
+              {
+                "title": "Compatibility and operations",
+                "href": "/static/04-compatibility-operations"
+              },
+              {
+                "title": "API and placeholders",
+                "href": "/static/90-api-placeholders"
+              },
+              {
+                "title": "Languages",
+                "href": "/languages"
+              }
+            ]
           }
         ]
       }
@@ -1009,22 +1206,27 @@
     "sections": [
       {
         "title": "Start here",
-        "links": [
+        "groups": [
           {
-            "title": "Installation and configuration",
-            "href": "/gamemodeswitcher/01-installation-configuration"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/gamemodeswitcher/02-commands-permissions"
-          },
-          {
-            "title": "Gestures and operations",
-            "href": "/gamemodeswitcher/03-gestures-operations"
-          },
-          {
-            "title": "Languages",
-            "href": "/languages"
+            "title": "",
+            "links": [
+              {
+                "title": "Installation and configuration",
+                "href": "/gamemodeswitcher/01-installation-configuration"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/gamemodeswitcher/02-commands-permissions"
+              },
+              {
+                "title": "Gestures and operations",
+                "href": "/gamemodeswitcher/03-gestures-operations"
+              },
+              {
+                "title": "Languages",
+                "href": "/languages"
+              }
+            ]
           }
         ]
       }
@@ -1041,34 +1243,39 @@
     "sections": [
       {
         "title": "Documentation",
-        "links": [
+        "groups": [
           {
-            "title": "Installation",
-            "href": "/biletools/installation"
-          },
-          {
-            "title": "Commands and permissions",
-            "href": "/biletools/commands"
-          },
-          {
-            "title": "Configuration",
-            "href": "/biletools/configuration"
-          },
-          {
-            "title": "Hot reload behavior",
-            "href": "/biletools/hot-reload"
-          },
-          {
-            "title": "Velocity proxy",
-            "href": "/biletools/velocity"
-          },
-          {
-            "title": "Remote deploy",
-            "href": "/biletools/remote-deploy"
-          },
-          {
-            "title": "Plugin integration API",
-            "href": "/biletools/api"
+            "title": "",
+            "links": [
+              {
+                "title": "Installation",
+                "href": "/biletools/installation"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/biletools/commands"
+              },
+              {
+                "title": "Configuration",
+                "href": "/biletools/configuration"
+              },
+              {
+                "title": "Hot reload behavior",
+                "href": "/biletools/hot-reload"
+              },
+              {
+                "title": "Velocity proxy",
+                "href": "/biletools/velocity"
+              },
+              {
+                "title": "Remote deploy",
+                "href": "/biletools/remote-deploy"
+              },
+              {
+                "title": "Plugin integration API",
+                "href": "/biletools/api"
+              }
+            ]
           }
         ]
       }
@@ -1085,62 +1292,67 @@
     "sections": [
       {
         "title": "Documentation",
-        "links": [
+        "groups": [
           {
-            "title": "API overview",
-            "href": "/volmlib/api"
-          },
-          {
-            "title": "Noise and procedural streams",
-            "href": "/volmlib/api/noise"
-          },
-          {
-            "title": "Hunks and coordinate math",
-            "href": "/volmlib/api/hunks"
-          },
-          {
-            "title": "Director commands",
-            "href": "/volmlib/api/director"
-          },
-          {
-            "title": "Workspace builds",
-            "href": "/volmlib/api/building"
-          },
-          {
-            "title": "Placeholders",
-            "href": "/volmlib/api/placeholders"
-          },
-          {
-            "title": "Shared localization",
-            "href": "/volmlib/api/localization"
-          },
-          {
-            "title": "Shared diagnostic reports",
-            "href": "/volmlib/api/diagnostics"
-          },
-          {
-            "title": "GitHub release checks",
-            "href": "/volmlib/api/github-releases"
-          },
-          {
-            "title": "Cooperative plugin reload",
-            "href": "/volmlib/api/reloading"
-          },
-          {
-            "title": "Inventory-view access",
-            "href": "/volmlib/api/inventory-views"
-          },
-          {
-            "title": "Shared action bars and titles",
-            "href": "/volmlib/api/hud"
-          },
-          {
-            "title": "Native server access",
-            "href": "/volmlib/api/native-access"
-          },
-          {
-            "title": "Native spawn protection",
-            "href": "/volmlib/api/spawn-protection"
+            "title": "",
+            "links": [
+              {
+                "title": "API overview",
+                "href": "/volmlib/api"
+              },
+              {
+                "title": "Noise and procedural streams",
+                "href": "/volmlib/api/noise"
+              },
+              {
+                "title": "Hunks and coordinate math",
+                "href": "/volmlib/api/hunks"
+              },
+              {
+                "title": "Director commands",
+                "href": "/volmlib/api/director"
+              },
+              {
+                "title": "Workspace builds",
+                "href": "/volmlib/api/building"
+              },
+              {
+                "title": "Placeholders",
+                "href": "/volmlib/api/placeholders"
+              },
+              {
+                "title": "Shared localization",
+                "href": "/volmlib/api/localization"
+              },
+              {
+                "title": "Shared diagnostic reports",
+                "href": "/volmlib/api/diagnostics"
+              },
+              {
+                "title": "GitHub release checks",
+                "href": "/volmlib/api/github-releases"
+              },
+              {
+                "title": "Cooperative plugin reload",
+                "href": "/volmlib/api/reloading"
+              },
+              {
+                "title": "Inventory-view access",
+                "href": "/volmlib/api/inventory-views"
+              },
+              {
+                "title": "Shared action bars and titles",
+                "href": "/volmlib/api/hud"
+              },
+              {
+                "title": "Native server access",
+                "href": "/volmlib/api/native-access"
+              },
+              {
+                "title": "Native spawn protection",
+                "href": "/volmlib/api/spawn-protection"
+              }
+            ]
           }
         ]
       }
@@ -1156,26 +1368,31 @@
     "sections": [
       {
         "title": "Documentation",
-        "links": [
+        "groups": [
           {
-            "title": "Overview",
-            "href": "/optics/00-overview"
-          },
-          {
-            "title": "Frames and transforms",
-            "href": "/optics/01-frames-and-transforms"
-          },
-          {
-            "title": "Shapes",
-            "href": "/optics/02-shapes"
-          },
-          {
-            "title": "Animation",
-            "href": "/optics/03-animation"
-          },
-          {
-            "title": "Portals",
-            "href": "/optics/04-portals"
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/optics/00-overview"
+              },
+              {
+                "title": "Frames and transforms",
+                "href": "/optics/01-frames-and-transforms"
+              },
+              {
+                "title": "Shapes",
+                "href": "/optics/02-shapes"
+              },
+              {
+                "title": "Animation",
+                "href": "/optics/03-animation"
+              },
+              {
+                "title": "Portals",
+                "href": "/optics/04-portals"
+              }
+            ]
           }
         ]
       }
@@ -1192,63 +1409,73 @@
     "sections": [
       {
         "title": "Server management",
-        "links": [
+        "groups": [
           {
-            "title": "00 - Visual guide",
-            "href": "/servermultiplexor/00-visual-guide"
-          },
-          {
-            "title": "01 - Installation and updates",
-            "href": "/servermultiplexor/01-installation-and-updates"
-          },
-          {
-            "title": "02 - Dashboard and wizard",
-            "href": "/servermultiplexor/02-dashboard"
-          },
-          {
-            "title": "03 - Local servers",
-            "href": "/servermultiplexor/03-local-servers"
-          },
-          {
-            "title": "04 - Builds and content",
-            "href": "/servermultiplexor/04-builds-and-content"
-          },
-          {
-            "title": "05 - Remote servers",
-            "href": "/servermultiplexor/05-remote-servers"
-          },
-          {
-            "title": "06 - Remote profiling",
-            "href": "/servermultiplexor/06-remote-profiling"
-          },
-          {
-            "title": "09 - Proxy networks",
-            "href": "/servermultiplexor/09-proxy-networks"
+            "title": "",
+            "links": [
+              {
+                "title": "00 - Visual guide",
+                "href": "/servermultiplexor/00-visual-guide"
+              },
+              {
+                "title": "01 - Installation and updates",
+                "href": "/servermultiplexor/01-installation-and-updates"
+              },
+              {
+                "title": "02 - Dashboard and wizard",
+                "href": "/servermultiplexor/02-dashboard"
+              },
+              {
+                "title": "03 - Local servers",
+                "href": "/servermultiplexor/03-local-servers"
+              },
+              {
+                "title": "04 - Builds and content",
+                "href": "/servermultiplexor/04-builds-and-content"
+              },
+              {
+                "title": "05 - Remote servers",
+                "href": "/servermultiplexor/05-remote-servers"
+              },
+              {
+                "title": "06 - Remote profiling",
+                "href": "/servermultiplexor/06-remote-profiling"
+              },
+              {
+                "title": "09 - Proxy networks",
+                "href": "/servermultiplexor/09-proxy-networks"
+              }
+            ]
           }
         ]
       },
       {
         "title": "Gameplay and development",
-        "links": [
+        "groups": [
           {
-            "title": "07 - Gameplay checks",
-            "href": "/servermultiplexor/07-gameplay-checks"
-          },
-          {
-            "title": "08 - Swarms and sessions",
-            "href": "/servermultiplexor/08-swarms-and-sessions"
-          },
-          {
-            "title": "10 - Workspace and source",
-            "href": "/servermultiplexor/10-workspace-and-source"
-          },
-          {
-            "title": "11 - Scenario suites",
-            "href": "/servermultiplexor/11-scenario-suites"
-          },
-          {
-            "title": "12 - Session observer",
-            "href": "/servermultiplexor/12-session-observer"
+            "title": "",
+            "links": [
+              {
+                "title": "07 - Gameplay checks",
+                "href": "/servermultiplexor/07-gameplay-checks"
+              },
+              {
+                "title": "08 - Swarms and sessions",
+                "href": "/servermultiplexor/08-swarms-and-sessions"
+              },
+              {
+                "title": "10 - Workspace and source",
+                "href": "/servermultiplexor/10-workspace-and-source"
+              },
+              {
+                "title": "11 - Scenario suites",
+                "href": "/servermultiplexor/11-scenario-suites"
+              },
+              {
+                "title": "12 - Session observer",
+                "href": "/servermultiplexor/12-session-observer"
+              }
+            ]
           }
         ]
       }

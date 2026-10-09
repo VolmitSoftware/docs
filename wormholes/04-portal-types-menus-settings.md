@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-08T18:47:35.450Z
+date: 2026-10-09T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -256,7 +256,7 @@ The aperture shape is the outline of the opening inside the built frame. A new p
 
 The **Aperture shape** control in the Settings menu cycles the presets `full`, `circle`, `rounded`, `polygon` (a hexagon), `star`, `flower`, `heart`, `feather`, and `ring` on left-click, rotates the current shape by 45° on right-click, and resets to `full` on shift-right-click. Its lore shows the current shape text and the number of open cells. Any shape the text grammar can express, including custom polygons, splines, paths, and boolean combinations, is set with `/wormholes admin portals shape`; see [Aperture shape text](/wormholes/09-commands-permissions#aperture-shape-text) and the [shape grammar](/optics/02-shapes#text-grammar). The stored text is canonical, for example `circle(radius=1)`.
 
-Travel is judged against the exact shape on every platform, not the cell approximation: a wall portal tests the traveller's eye position, a floor or ceiling portal tests the crossing point. Players with the client mod see the destination clipped to the shape with a smooth edge; standard projection and vanilla clients see the open cells. See [Shaped apertures](/wormholes/05-projection-modes-settings#shaped-apertures). The `OUTLINE` ambient style traces the shape. The shape is stored per portal, turns with the frame when the frame is rotated or flipped, and is never copied to linked portals by Settings sync. It is distinct from the [Shaped Portals](/shapedportals) integration, which supplies irregular built openings for vanilla Nether portals; an aperture shape masks a Wormholes frame however it was built.
+Travel is judged against the exact shape on every platform, not the cell approximation: a wall portal tests the traveller's eye position, a floor or ceiling portal tests the crossing point. Players with the client mod see the destination clipped to the shape with a smooth edge; standard projection and vanilla clients see the open cells. See [Shaped apertures](/wormholes/05-projection-modes-settings#shaped-apertures). The `OUTLINE` ambient style traces the shape. The shape is stored per portal, turns with the frame when the frame is rotated or flipped, and is never copied to linked portals by Settings sync. Shape edits update the live view and crossing boundary while the portal remains linked. It is distinct from the [Shaped Portals](/shapedportals) integration, which supplies irregular built openings for vanilla Nether portals; an aperture shape masks a Wormholes frame however it was built.
 
 ## Fidelity menu
 
@@ -382,7 +382,7 @@ Vanilla-item and Vault charges commit only after successful travel. Failed trave
 | Rotate CCW | Separate button. Rotates the frame counter-clockwise |
 | Rotate CW | Separate button. Rotates the frame clockwise |
 
-These controls affect which way travelers face and how projection maps space.
+These controls affect which way travelers face and how projection maps space. With the client mod, changes to either linked frame update the live destination view and crossing geometry together. New horizontal portals start with a downward normal and northward screen-up direction, independent of the builder's heading. An unrotated floor/ceiling pair keeps the traveler's look direction with `frame` arrival orientation; `look` preserves absolute direction even when the pair has been rotated.
 Mirror image rotation is on the type-menu Mirror control (right / shift-right),
 not these buttons.
 

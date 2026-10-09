@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -87,7 +87,7 @@ Run `/sp portals`, then click a portal entry to visit it. You need the list perm
 
 You can also supply its full UUID or a unique prefix of at least eight characters:
 
-```text
+```none
 /sp teleport <portal UUID>
 ```
 

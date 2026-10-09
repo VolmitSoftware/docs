@@ -2,7 +2,7 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-10-06T18:48:43.443Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ The only hard requirement is at least one `.json` file directly inside `dimensio
 
 ## Pack example
 
-```text
+```none
 packs/myworld/
   dimensions/
     myworld.json        -> key "myworld"
@@ -60,7 +60,7 @@ Use exact filenames, including for nested resources. At the type-folder root, a 
 
 The dimension selected during world creation connects the pack resources:
 
-```text
+```none
 dimension  ->  regions  ->  biomes  ->  generators   (terrain height/noise)
                                     ->  objects      (.iob models)
                                     ->  decorators   (surface clutter)

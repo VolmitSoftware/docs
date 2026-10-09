@@ -2,14 +2,14 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-10-07T13:26:04.074Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Pregeneration creates chunks before players explore them. Each job covers a square around a center coordinate, with the radius measured in blocks. Iris runs one pregeneration job at a time per server.
 
-Iris limits concurrent chunk requests and retained generation data according to the Java heap. When memory is under pressure, it pauses new requests while active work finishes and saved data is released. A larger requested area increases the work and disk space needed, rather than reserving memory for the whole area.
+Iris limits concurrent chunk requests and retained generation data according to the Java heap and any visible Linux container memory limit. Container budgets reserve 25% of the limit for memory outside the heap. When memory is under pressure, it pauses new requests while active work finishes and saved data is released. On Docker and other Linux containers, new requests also pause at 90% container working-memory usage and resume after it falls to 80%. Clean inactive file cache does not count toward that pressure. A larger requested area increases the work and disk space needed, rather than reserving memory for the whole area.
 
 Asynchronous jobs can start chunks in the next MCA region while requests from the previous region are still finishing. Chunk concurrency and memory limits apply to the whole job across these regions.
 
@@ -17,7 +17,7 @@ Asynchronous jobs can start chunks in the next MCA region while requests from th
 
 On Bukkit, Paper, Purpur, Leaf, or Folia:
 
-```text
+```none
 /iris pregen start radius=2000 world=myworld center=0,0 gui=false
 ```
 
@@ -37,7 +37,7 @@ The command root also accepts `/iris pregenerate`.
 
 ## Check progress
 
-```text
+```none
 /iris pregen status
 ```
 
@@ -51,7 +51,7 @@ A chunk generation error on a Paper-family server halts the server's chunk syste
 
 ## Pause, resume, or stop
 
-```text
+```none
 /iris pregen pause
 /iris pregen resume
 /iris pregen stop
@@ -67,7 +67,7 @@ In the desktop window, use **Pause** or **Resume**, or press **P**. Tab to the b
 
 Use the dimension identifier after the radius:
 
-```text
+```none
 /iris pregen start 2000 irisworldgen:myworld at 0 0
 ```
 

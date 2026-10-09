@@ -2,7 +2,7 @@
 title: "Procedural Trees"
 description: "Iris documentation: Procedural Trees"
 published: true
-date: 2026-10-02T16:35:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -204,7 +204,7 @@ The paired biomes share terrain, selection settings, object shapes, tree seeds, 
 
 Find a biome in an updated Iris world:
 
-```text
+```none
 /iris find biome temperate/golden-poplar-grove
 /iris what biome
 ```

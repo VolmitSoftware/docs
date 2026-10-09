@@ -113,23 +113,37 @@ async function readPage(href) {
 }
 
 function navigation(source, projectHref) {
-  const candidates = sections(source).map((section) => ({
-    title: section.title,
-    links: links(section.body).filter((link) => link.href !== projectHref)
-  }));
+  const candidates = sections(source).map((section) => {
+    const groups = [];
+    const headings = [...section.body.matchAll(/^###\s+(.+)$/gm)];
+    let start = 0;
+    let title = "";
+    for (const heading of headings) {
+      groups.push({ title, links: links(section.body.slice(start, heading.index)).filter((link) => link.href !== projectHref) });
+      title = plainText(heading[1]);
+      start = heading.index + heading[0].length;
+    }
+    groups.push({ title, links: links(section.body.slice(start)).filter((link) => link.href !== projectHref) });
+    return { title: section.title, groups };
+  });
   const preferred = new Map();
   for (const section of candidates) {
-    for (const link of section.links) {
-      if (!preferred.has(link.href) || preferred.get(link.href).priority < link.priority) {
-        preferred.set(link.href, link);
+    for (const group of section.groups) {
+      for (const link of group.links) {
+        if (!preferred.has(link.href) || preferred.get(link.href).priority < link.priority) {
+          preferred.set(link.href, link);
+        }
       }
     }
   }
   return candidates.map((section) => ({
     title: section.title,
-    links: section.links.filter((link) => preferred.get(link.href) === link)
-      .map(({ title, href }) => ({ title, href }))
-  })).filter((section) => section.links.length > 0);
+    groups: section.groups.map((group) => ({
+      title: group.title,
+      links: group.links.filter((link) => preferred.get(link.href) === link)
+        .map(({ title, href }) => ({ title, href }))
+    })).filter((group) => group.links.length > 0)
+  })).filter((section) => section.groups.length > 0);
 }
 
 async function buildCatalog() {
@@ -152,8 +166,10 @@ async function buildCatalog() {
       }
       const projectSections = navigation(landing.body, link.href);
       for (const projectSection of projectSections) {
-        for (const entry of projectSection.links) {
-          await readPage(entry.href);
+        for (const group of projectSection.groups) {
+          for (const entry of group.links) {
+            await readPage(entry.href);
+          }
         }
       }
       const meta = projectMeta.get(link.href.slice(1));

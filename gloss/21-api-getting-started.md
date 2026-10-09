@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-10-07T15:57:31Z
+date: 2026-10-09T16:58:33.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -13,7 +13,7 @@ Use `art.arcane.gloss.api.GlossAPI` to manage holograms, scoreboards, tablist te
 
 Compile against the API jar that matches the installed Gloss version. Do not include Gloss API classes in your own jar.
 
-```gradle
+```groovy
 dependencies {
     compileOnly(files("libs/Gloss-3.2.0-26.2-api.jar"))
 }

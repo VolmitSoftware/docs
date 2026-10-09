@@ -2,7 +2,7 @@
 title: "Sulfur Galleries — Cave Biome"
 description: "Sulfur Galleries and Sulfur Hollows, with sulfur pools, banded spires, short mineral drips and native cube ecology"
 published: true
-date: 2026-10-05T15:44:42.596587+00:00
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas, cave, sulfur"
 editor: markdown
 dateCreated: 2026-09-03T00:00:00.000Z
@@ -67,7 +67,7 @@ Both cave variants inherit the native sulfur-cave spawn table, including sulfur 
 
 `entities/standard/passive/sulfur-cube.json` defines a reusable unmodified `minecraft:sulfur_cube`. Pack objects, markers and spawners may reference this entity key where explicit placement is desired. On Bukkit, a player can check the template with:
 
-```text
+```none
 /iris studio spawn standard/passive/sulfur-cube
 ```
 
@@ -83,7 +83,7 @@ The derivative is `minecraft:basalt_deltas`, retaining native Nether ecology inc
 
 Use these commands on a Minecraft 26.2 server:
 
-```text
+```none
 /iris find biome carving/sulfur
 /iris find subterrain sulfur-colonnades radius=8192 teleport=false
 /iris what biome

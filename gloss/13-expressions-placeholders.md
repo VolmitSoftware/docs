@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-08T14:17:00Z
+date: 2026-10-09T16:52:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -292,7 +292,7 @@ use (default 60 seconds). Snapshot providers may need a further provider collect
 Write an expression between `{{` and `}}` anywhere the text pipeline runs. A malformed expression
 stays visible as written and logs once, so a typo does not silently erase the line.
 
-```text
+```none
 {{ hex(mix(#FF55FF, #55FFFF, (sin(time.seconds * 2) + 1) / 2)) }}&lLIVE
 &7Player &f{{ player.name }}
 &7Health &a{{ bar(player.health, 20, 10, '■', '□') }}

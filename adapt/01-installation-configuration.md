@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, and settings"
 published: true
-date: 2026-10-08T01:00:00Z
+date: 2026-10-09T16:52:52.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -55,7 +55,7 @@ Details: [Protection and region policy](/adapt/08-protection-region-policy) and 
 
 ### Data folder layout
 
-```text
+```none
 plugins/Adapt/
   adapt.toml
   models.toml

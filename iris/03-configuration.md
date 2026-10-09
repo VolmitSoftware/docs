@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-06T20:00:37.423Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -52,7 +52,7 @@ Iris writes generation-history and saved-biome records immediately and forces th
 
 Native Billow noise is enabled by default when your Iris artifact contains a compatible native library. On Java 25, add this JVM option before `-jar` to permit native access:
 
-```text
+```none
 --enable-native-access=ALL-UNNAMED
 ```
 
@@ -187,10 +187,10 @@ Changes apply to the next pregeneration job. See [07 - Pregeneration](/iris/07-p
 | `chunkLoadTimeoutSeconds` | `15` | Both | Bukkit slow-request warning threshold, clamped to 5–120 seconds; slow requests continue waiting. Mod loaders use a 120-second timeout |
 | `timeoutWarnIntervalMs` | `500` | Bukkit | Minimum interval between slow-request and failed-release warnings. Minimum: 250 ms |
 | `saveIntervalMs` | `30000` | Both | Progress-save interval, clamped to 5000–900000 ms |
-| `maxResidentTectonicPlates` | `96` | Both | Requested target for resident generation regions. Minimum: 16. Iris scales the target with world height and Java heap, reserving memory for active generation and server chunks. Regions still in use can temporarily exceed this target |
+| `maxResidentTectonicPlates` | `96` | Both | Requested target for resident generation regions. Minimum: 16. Iris scales the target with world height, Java heap and visible Linux container memory limits, reserving memory for active generation and server chunks. Regions still in use can temporarily exceed this target |
 | `mantleBackpressureWaitMs` | `25` | Both | How often pregeneration checks whether it can resume after reaching its region limit. Range: 5–1000 ms |
-| `mantleBackpressureTimeoutMs` | `60000` | Both | Warning interval while waiting for the region target or heap headroom. Range: 5000–600000 ms. Pinned regions may exceed the target to finish their work; high heap usage continues to block new requests until memory is available |
-| `moddedPregenInFlight` | `0` | Modded | Concurrent chunk limit. Positive values are capped at 512; nonpositive values choose automatically. Ignored on Bukkit |
+| `mantleBackpressureTimeoutMs` | `60000` | Both | Warning interval while waiting for the region target or memory headroom. Range: 5000–600000 ms. Pinned regions may exceed the target to finish their work; high heap or container memory usage continues to block new requests until memory is available |
+| `moddedPregenInFlight` | `0` | Modded | Concurrent chunk limit. Positive values are capped at 512; nonpositive values choose automatically. The effective limit also allows at most one request per 256 MiB of the memory budget, with a minimum of one request. Ignored on Bukkit |
 
 ## `treeFeller`
 
@@ -208,6 +208,7 @@ See [04 - Commands & Permissions](/iris/04-commands-permissions) and [28 - Integ
 | Key | Default | Use |
 |-----|---------|-----|
 | `openVSCode` | `true` | Allows `/iris studio vscode` to launch the editor after writing its workspace file. Set false on a headless host |
+| `blendChanges` | `true` | Blends accepted Studio pack edits beside existing chunks on Bukkit. Set false to generate sharp terrain cutoffs. Applies to the next accepted pack edit after settings reload or hotload; existing transitions keep their recorded behavior. Production-world updates are unaffected. Modded Studio generates direct cutoffs |
 | `entitySpawning` | `true` | Allows mobs in Studio worlds. Natural spawning still requires an eligible player outside spectator mode |
 | `disableTimeAndWeather` | `true` | Freezes the day cycle at noon and disables weather when Studio opens |
 | `autoStartDefaultStudio` | `false` | Opens the default pack's Studio world automatically at startup |

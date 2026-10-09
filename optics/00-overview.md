@@ -2,7 +2,7 @@
 title: "Optics Overview"
 description: "Optics documentation: packages, build, and the rules a consumer can rely on"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-08T22:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -47,6 +47,8 @@ Build from the repository root with `./gradlew build`. `./gradlew test` runs the
 | `spi` | `OpticsScheduler`, `OpticsMetrics` and `ScaleAccess`, the hooks a host implements |
 
 Packages under `internal` are implementation detail and are not API.
+
+For streamed entity frames, implement `EntityScenes.isObserver(observer, visual)` to identify the observer's snapshot. `EntityScenes.observerVisible(observer, portal)` defaults to `false`; return `true` for a view that should include that snapshot even when its target requests observer suppression. Keep identity checks independent of the view's visibility policy so other entity filtering remains consistent.
 
 ## Rules a consumer can rely on
 

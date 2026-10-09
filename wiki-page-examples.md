@@ -2,7 +2,7 @@
 title: "Wiki.js Page Examples"
 description: "Short examples for writing consistent Volmit Wiki.js pages"
 published: true
-date: 2026-09-04T00:00:00.000Z
+date: 2026-10-09T16:58:33.000Z
 tags: "meta, wikijs, style-guide, examples"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -116,9 +116,9 @@ Use a language on fenced code blocks:
 maximumInteriorBlocks = 256
 ~~~
 
-Use `text` for paths or console output:
+Use `none` for paths or console output:
 
-~~~text
+~~~none
 plugins/ShapedPortals/
 ~~~
 
@@ -127,7 +127,7 @@ plugins/ShapedPortals/
 Store wiki assets under a stable public path and write useful alternative text:
 
 ~~~markdown
-![Shaped Portals configuration menu](/shapedportals-assets/config-menu.png)
+![Gloss menu editor](/gloss-assets/10-preview-menu.png)
 ~~~
 
 Size and alignment helpers are available when the image renderer is enabled:

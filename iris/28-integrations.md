@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-10-08T01:00:00Z
+date: 2026-10-09T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,6 +25,16 @@ Install the integration and its dependencies, load its content, then restart the
 | After import | Hold the new Iris wand to edit, preview, or save its selection. Later WorldEdit selection changes do not change the copied corners |
 
 Enabling WorldEdit after Iris works without a restart. WorldEdit is not required to import `.schem` files. See [19 - Objects](/iris/19-objects).
+
+## Rift
+
+Install Rift to manage Iris world policies, access, and administration. Iris registers loaded `iris:*` worlds with their actual UUID and directory. Registration does not request a generator or load missing storage.
+
+Use `/iris create` or explicit Rift creation with `Iris:<pack>` to create an Iris world. Rift delegates existing-world loading and unloading to Iris. Loading requires the saved pack and world registration. Unloading waits for the Iris engine to close before storage operations proceed.
+
+Iris remains responsible for packs and generation. Rift retains the complete profile and policies. With both plugins installed before a server restart, secondary `iris:*` worlds start unloaded unless Rift's global and per-world automatic loading are enabled. A world left loaded at shutdown does not bypass that choice. Explicit loading uses its saved seed, pack, and terrain. Missing storage never becomes a creation request.
+
+When Rift is active, Iris uses Rift for world registration and removal. Without Rift, Iris retains its supported Multiverse integration. See [Rift commands](/rift/02-commands-permissions) and [Rift integration API](/rift/99-integration-api).
 
 ## Multiverse-Core
 

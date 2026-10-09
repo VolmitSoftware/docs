@@ -40,6 +40,207 @@
   }, { threshold: [0, 0.1] });
 
 
+  // Lucide 0.468.0, ISC; see lucide-LICENSE.txt.
+  const lucideIcons = {
+    'key-round': [["path",{"d":"M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"}],["circle",{"cx":"16.5","cy":"7.5","r":".5","fill":"currentColor"}]],
+    'loader-circle': [["path",{"d":"M21 12a9 9 0 1 1-6.219-8.56"}]],
+    'square-check': [["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"m9 12 2 2 4-4"}]],
+    'square': [["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}]],
+    'square-minus': [["rect",{"width":"18","height":"18","x":"3","y":"3","rx":"2"}],["path",{"d":"M8 12h8"}]],
+    'circle-dot': [["circle",{"cx":"12","cy":"12","r":"10"}],["circle",{"cx":"12","cy":"12","r":"1"}]],
+    'circle': [["circle",{"cx":"12","cy":"12","r":"10"}]],
+    'list': [["path",{"d":"M3 12h.01"}],["path",{"d":"M3 18h.01"}],["path",{"d":"M3 6h.01"}],["path",{"d":"M8 12h13"}],["path",{"d":"M8 18h13"}],["path",{"d":"M8 6h13"}]],
+    'list-tree': [["path",{"d":"M21 12h-8"}],["path",{"d":"M21 6H8"}],["path",{"d":"M21 18h-8"}],["path",{"d":"M3 6v4c0 1.1.9 2 2 2h3"}],["path",{"d":"M3 10v6c0 1.1.9 2 2 2h3"}]],
+    'file-text': [["path",{"d":"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{"d":"M14 2v4a2 2 0 0 0 2 2h4"}],["path",{"d":"M10 9H8"}],["path",{"d":"M16 13H8"}],["path",{"d":"M16 17H8"}]],
+    'search': [["circle",{"cx":"11","cy":"11","r":"8"}],["path",{"d":"m21 21-4.3-4.3"}]],
+    'user': [["path",{"d":"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"}],["circle",{"cx":"12","cy":"7","r":"4"}]],
+    'tags': [["path",{"d":"m15 5 6.3 6.3a2.4 2.4 0 0 1 0 3.4L17 19"}],["path",{"d":"M9.586 5.586A2 2 0 0 0 8.172 5H3a1 1 0 0 0-1 1v5.172a2 2 0 0 0 .586 1.414L8.29 18.29a2.426 2.426 0 0 0 3.42 0l3.58-3.58a2.426 2.426 0 0 0 0-3.42z"}],["circle",{"cx":"6.5","cy":"9.5","r":".5","fill":"currentColor"}]],
+    'tag': [["path",{"d":"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"}],["circle",{"cx":"7.5","cy":"7.5","r":".5","fill":"currentColor"}]],
+    'house': [["path",{"d":"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"}],["path",{"d":"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"}]],
+    'pencil': [["path",{"d":"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"}],["path",{"d":"m15 5 4 4"}]],
+    'github': [["path",{"d":"M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"}],["path",{"d":"M9 18c-4.51 2-5-2-7-2"}]],
+    'share-2': [["circle",{"cx":"18","cy":"5","r":"3"}],["circle",{"cx":"6","cy":"12","r":"3"}],["circle",{"cx":"18","cy":"19","r":"3"}],["line",{"x1":"8.59","x2":"15.42","y1":"13.51","y2":"17.49"}],["line",{"x1":"15.41","x2":"8.59","y1":"6.51","y2":"10.49"}]],
+    'printer': [["path",{"d":"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}],["path",{"d":"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"}],["rect",{"x":"6","y":"14","width":"12","height":"8","rx":"1"}]],
+    'refresh-cw': [["path",{"d":"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"}],["path",{"d":"M21 3v5h-5"}],["path",{"d":"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"}],["path",{"d":"M8 16H3v5"}]],
+    'arrow-up': [["path",{"d":"m5 12 7-7 7 7"}],["path",{"d":"M12 19V5"}]],
+    'history': [["path",{"d":"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}],["path",{"d":"M3 3v5h5"}],["path",{"d":"M12 7v5l4 2"}]],
+    'code-xml': [["path",{"d":"m18 16 4-4-4-4"}],["path",{"d":"m6 8-4 4 4 4"}],["path",{"d":"m14.5 4-5 16"}]],
+    'zap': [["path",{"d":"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"}]],
+    'copy': [["rect",{"width":"14","height":"14","x":"8","y":"8","rx":"2","ry":"2"}],["path",{"d":"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"}]],
+    'corner-up-right': [["polyline",{"points":"15 14 20 9 15 4"}],["path",{"d":"M4 20v-7a4 4 0 0 1 4-4h12"}]],
+    'trash-2': [["path",{"d":"M3 6h18"}],["path",{"d":"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"}],["path",{"d":"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"}],["line",{"x1":"10","x2":"10","y1":"11","y2":"17"}],["line",{"x1":"14","x2":"14","y1":"11","y2":"17"}]],
+    'chevron-right': [["path",{"d":"m9 18 6-6-6-6"}]],
+    'chevron-left': [["path",{"d":"m15 18-6-6 6-6"}]],
+    'chevron-down': [["path",{"d":"m6 9 6 6 6-6"}]],
+    'chevron-up': [["path",{"d":"m18 15-6-6-6 6"}]],
+    'x': [["path",{"d":"M18 6 6 18"}],["path",{"d":"m6 6 12 12"}]],
+    'menu': [["line",{"x1":"4","x2":"20","y1":"12","y2":"12"}],["line",{"x1":"4","x2":"20","y1":"6","y2":"6"}],["line",{"x1":"4","x2":"20","y1":"18","y2":"18"}]],
+    'check': [["path",{"d":"M20 6 9 17l-5-5"}]],
+    'circle-check': [["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"m9 12 2 2 4-4"}]],
+    'info': [["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 16v-4"}],["path",{"d":"M12 8h.01"}]],
+    'triangle-alert': [["path",{"d":"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"}],["path",{"d":"M12 9v4"}],["path",{"d":"M12 17h.01"}]],
+    'circle-alert': [["circle",{"cx":"12","cy":"12","r":"10"}],["line",{"x1":"12","x2":"12","y1":"8","y2":"12"}],["line",{"x1":"12","x2":"12.01","y1":"16","y2":"16"}]],
+    'circle-help': [["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"}],["path",{"d":"M12 17h.01"}]],
+    'external-link': [["path",{"d":"M15 3h6v6"}],["path",{"d":"M10 14 21 3"}],["path",{"d":"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"}]],
+    'link': [["path",{"d":"M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"}],["path",{"d":"M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"}]],
+    'log-in': [["path",{"d":"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"}],["polyline",{"points":"10 17 15 12 10 7"}],["line",{"x1":"15","x2":"3","y1":"12","y2":"12"}]],
+    'log-out': [["path",{"d":"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"}],["polyline",{"points":"16 17 21 12 16 7"}],["line",{"x1":"21","x2":"9","y1":"12","y2":"12"}]],
+    'settings': [["path",{"d":"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"}],["circle",{"cx":"12","cy":"12","r":"3"}]],
+    'ellipsis-vertical': [["circle",{"cx":"12","cy":"12","r":"1"}],["circle",{"cx":"12","cy":"5","r":"1"}],["circle",{"cx":"12","cy":"19","r":"1"}]],
+    'ellipsis': [["circle",{"cx":"12","cy":"12","r":"1"}],["circle",{"cx":"19","cy":"12","r":"1"}],["circle",{"cx":"5","cy":"12","r":"1"}]],
+    'file': [["path",{"d":"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"}],["path",{"d":"M14 2v4a2 2 0 0 0 2 2h4"}]],
+    'folder': [["path",{"d":"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"}]],
+    'folder-open': [["path",{"d":"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"}]],
+    'lock': [["rect",{"width":"18","height":"11","x":"3","y":"11","rx":"2","ry":"2"}],["path",{"d":"M7 11V7a5 5 0 0 1 10 0v4"}]],
+    'globe': [["circle",{"cx":"12","cy":"12","r":"10"}],["path",{"d":"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{"d":"M2 12h20"}]],
+    'book-open': [["path",{"d":"M12 7v14"}],["path",{"d":"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"}]],
+    'download': [["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["polyline",{"points":"7 10 12 15 17 10"}],["line",{"x1":"12","x2":"12","y1":"15","y2":"3"}]],
+    'upload': [["path",{"d":"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}],["polyline",{"points":"17 8 12 3 7 8"}],["line",{"x1":"12","x2":"12","y1":"3","y2":"15"}]],
+    'play': [["polygon",{"points":"6 3 20 12 6 21 6 3"}]],
+    'pause': [["rect",{"x":"14","y":"4","width":"4","height":"16","rx":"1"}],["rect",{"x":"6","y":"4","width":"4","height":"16","rx":"1"}]],
+    'maximize': [["path",{"d":"M8 3H5a2 2 0 0 0-2 2v3"}],["path",{"d":"M21 8V5a2 2 0 0 0-2-2h-3"}],["path",{"d":"M3 16v3a2 2 0 0 0 2 2h3"}],["path",{"d":"M16 21h3a2 2 0 0 0 2-2v-3"}]],
+    'minimize': [["path",{"d":"M8 3v3a2 2 0 0 1-2 2H3"}],["path",{"d":"M21 8h-3a2 2 0 0 1-2-2V3"}],["path",{"d":"M3 16h3a2 2 0 0 1 2 2v3"}],["path",{"d":"M16 21v-3a2 2 0 0 1 2-2h3"}]],
+    'volume-2': [["path",{"d":"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"}],["path",{"d":"M16 9a5 5 0 0 1 0 6"}],["path",{"d":"M19.364 18.364a9 9 0 0 0 0-12.728"}]],
+    'volume-x': [["path",{"d":"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"}],["line",{"x1":"22","x2":"16","y1":"9","y2":"15"}],["line",{"x1":"16","x2":"22","y1":"9","y2":"15"}]],
+    'sun': [["circle",{"cx":"12","cy":"12","r":"4"}],["path",{"d":"M12 2v2"}],["path",{"d":"M12 20v2"}],["path",{"d":"m4.93 4.93 1.41 1.41"}],["path",{"d":"m17.66 17.66 1.41 1.41"}],["path",{"d":"M2 12h2"}],["path",{"d":"M20 12h2"}],["path",{"d":"m6.34 17.66-1.41 1.41"}],["path",{"d":"m19.07 4.93-1.41 1.41"}]],
+    'moon': [["path",{"d":"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"}]],
+    'save': [["path",{"d":"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"}],["path",{"d":"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"}],["path",{"d":"M7 3v4a1 1 0 0 0 1 1h7"}]],
+    'eye': [["path",{"d":"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"}],["circle",{"cx":"12","cy":"12","r":"3"}]],
+    'eye-off': [["path",{"d":"M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"}],["path",{"d":"M14.084 14.158a3 3 0 0 1-4.242-4.242"}],["path",{"d":"M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"}],["path",{"d":"m2 2 20 20"}]],
+    'clock': [["circle",{"cx":"12","cy":"12","r":"10"}],["polyline",{"points":"12 6 12 12 16 14"}]],
+    'mail': [["rect",{"width":"20","height":"16","x":"2","y":"4","rx":"2"}],["path",{"d":"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"}]],
+    'shield-check': [["path",{"d":"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"}],["path",{"d":"m9 12 2 2 4-4"}]],
+  };
+
+  const wikiIconNames = {
+    'arrow_upward': 'arrow-up', 'keyboard_arrow_down': 'chevron-down', 'keyboard_arrow_up': 'chevron-up',
+    'keyboard_arrow_left': 'chevron-left', 'keyboard_arrow_right': 'chevron-right',
+    'more_vert': 'ellipsis-vertical', 'more_horiz': 'ellipsis', 'account_circle': 'user',
+    'clipboard-account': 'user', 'form-textbox-password': 'key-round', 'loading': 'loader-circle',
+    'checkbox-marked': 'square-check', 'checkbox-blank-outline': 'square', 'minus-box': 'square-minus',
+    'radiobox-marked': 'circle-dot', 'radiobox-blank': 'circle', 'format-list-bulleted': 'list',
+    'file-tree': 'list-tree', 'text-box-outline': 'file-text', 'menu-open': 'menu',
+    'magnify': 'search', 'account': 'user', 'account-circle': 'user', 'account-outline': 'user',
+    'tag-multiple': 'tags', 'tag-multiple-outline': 'tags', 'tag': 'tag', 'tag-outline': 'tag',
+    'home': 'house', 'home-outline': 'house', 'pencil': 'pencil', 'pencil-outline': 'pencil',
+    'github': 'github', 'share-variant': 'share-2', 'printer': 'printer', 'cached': 'refresh-cw',
+    'refresh': 'refresh-cw', 'arrow-up': 'arrow-up', 'arrow-up-bold': 'arrow-up',
+    'arrow-up-bold-circle': 'arrow-up', 'chevron-up': 'chevron-up', 'chevron-down': 'chevron-down',
+    'chevron-left': 'chevron-left', 'chevron-right': 'chevron-right', 'menu-down': 'chevron-down',
+    'menu-right': 'chevron-right', 'menu': 'menu', 'close': 'x', 'close-circle': 'x',
+    'close-circle-outline': 'x', 'history': 'history', 'code-tags': 'code-xml',
+    'lightning-bolt': 'zap', 'lightning-bolt-outline': 'zap', 'content-duplicate': 'copy',
+    'content-copy': 'copy', 'content-save-move-outline': 'corner-up-right', 'content-save': 'save',
+    'trash-can': 'trash-2', 'trash-can-outline': 'trash-2', 'delete': 'trash-2',
+    'check': 'check', 'check-circle': 'circle-check', 'check-circle-outline': 'circle-check',
+    'information': 'info', 'information-outline': 'info', 'alert': 'triangle-alert',
+    'alert-circle': 'circle-alert', 'alert-circle-outline': 'circle-alert',
+    'help-circle': 'circle-help', 'help-circle-outline': 'circle-help',
+    'open-in-new': 'external-link', 'link': 'link', 'link-variant': 'link',
+    'login': 'log-in', 'logout': 'log-out', 'cog': 'settings', 'cog-outline': 'settings',
+    'dots-vertical': 'ellipsis-vertical', 'dots-horizontal': 'ellipsis',
+    'file': 'file', 'file-document': 'file', 'file-document-outline': 'file',
+    'folder': 'folder', 'folder-outline': 'folder', 'folder-open': 'folder-open',
+    'lock': 'lock', 'lock-outline': 'lock', 'earth': 'globe', 'web': 'globe',
+    'book-open': 'book-open', 'book-open-variant': 'book-open', 'download': 'download',
+    'upload': 'upload', 'play': 'play', 'pause': 'pause', 'fullscreen': 'maximize',
+    'fullscreen-exit': 'minimize', 'volume-high': 'volume-2', 'volume-off': 'volume-x',
+    'white-balance-sunny': 'sun', 'weather-night': 'moon', 'eye': 'eye', 'eye-off': 'eye-off',
+    'clock-outline': 'clock', 'email': 'mail', 'email-outline': 'mail', 'shield-check': 'shield-check'
+  };
+
+  function lucideIcon(name) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const attributes = {
+      class: 'volmit-lucide volmit-lucide-icon', viewBox: '0 0 24 24', width: '24', height: '24',
+      fill: 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round',
+      'stroke-linejoin': 'round', 'aria-hidden': 'true', focusable: 'false', 'data-lucide': name
+    };
+    for (const [key, value] of Object.entries(attributes)) {
+      svg.setAttribute(key, value);
+    }
+    for (const [tag, properties] of lucideIcons[name]) {
+      const child = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const [key, value] of Object.entries(properties)) {
+        child.setAttribute(key, value);
+      }
+      svg.append(child);
+    }
+    return svg;
+  }
+
+  function mountAuthFields(app) {
+    for (const input of app.querySelectorAll('.login input[placeholder], .register input[placeholder]')) {
+      if (!input.hasAttribute('aria-label') && !input.hasAttribute('aria-labelledby') && !input.labels?.length) {
+        const label = input.placeholder.trim();
+        if (label) {
+          input.setAttribute('aria-label', label);
+        }
+      }
+    }
+  }
+
+  function mountWikiIcons(app) {
+    for (const icon of app.querySelectorAll('.v-icon')) {
+      const glyphs = [...icon.classList].filter((name) => name.startsWith('mdi-') && !/^mdi-(?:spin|rotate-\d+|flip-[hv]|\d+px)$/.test(name));
+      const mdi = glyphs.find((name) => Object.prototype.hasOwnProperty.call(wikiIconNames, name.slice(4))) || glyphs[0];
+      const key = mdi?.slice(4) || icon.textContent.trim().replace(/^mdi-/, '') || icon.dataset.volmitWikiIcon || '';
+      icon.dataset.volmitWikiIcon = key;
+      const control = icon.closest('button, a, [role="button"]') || (icon.classList.contains('v-icon--link') ? icon : null);
+      const mapped = Object.prototype.hasOwnProperty.call(wikiIconNames, key) ? wikiIconNames[key]
+        : Object.prototype.hasOwnProperty.call(lucideIcons, key) ? key : null;
+      const name = mapped || (control ? 'circle-help' : null);
+      icon.classList.add('volmit-lucide-icon');
+      if (!name) {
+        icon.replaceChildren();
+        icon.dataset.volmitIconHidden = 'true';
+        icon.hidden = true;
+        continue;
+      }
+      if (icon.dataset.volmitIconHidden === 'true') {
+        icon.hidden = false;
+        delete icon.dataset.volmitIconHidden;
+      }
+      if (control && (name === 'eye' || name === 'eye-off') && control.closest('.v-input')?.querySelector('input')
+        && /^(?:append|prepend) icon$/i.test(control.getAttribute('aria-label') || '') && !control.hasAttribute('aria-labelledby')) {
+        control.setAttribute('aria-label', 'Toggle password visibility');
+      }
+      if (control && !control.hasAttribute('aria-label') && !control.hasAttribute('aria-labelledby')) {
+        const text = control.cloneNode(true);
+        for (const child of text.querySelectorAll('.v-icon, svg')) {
+          child.remove();
+        }
+        if (control === icon || !text.textContent.trim()) {
+          const label = { x: 'Close', house: 'Home', user: 'Account', 'circle-help': 'More options', 'arrow-up': 'Return to top' }[name];
+          const password = (name === 'eye' || name === 'eye-off') && control.closest('.v-input')?.querySelector('input');
+          control.setAttribute('aria-label', control.getAttribute('title') || (password ? 'Toggle password visibility' : label || name.replace(/-/g, ' ')));
+        }
+      }
+      if (control === icon) {
+        icon.removeAttribute('aria-hidden');
+      } else if (!icon.hasAttribute('aria-label')) {
+        icon.setAttribute('aria-hidden', 'true');
+      }
+      if (icon.querySelector(':scope > svg')?.dataset.lucide !== name) {
+        icon.replaceChildren(lucideIcon(name));
+      }
+    }
+    for (const anchor of app.querySelectorAll('.contents a.is-external-link')) {
+      if (!anchor.querySelector(':scope > svg.volmit-lucide')) {
+        anchor.append(lucideIcon('external-link'));
+      }
+    }
+    for (const anchor of app.querySelectorAll('.contents .toc-anchor, .contents .header-anchor')) {
+      const heading = anchor.closest('h1,h2,h3,h4,h5,h6');
+      if (!anchor.hasAttribute('aria-label')) {
+        anchor.setAttribute('aria-label', 'Link to ' + headingLabel(heading));
+      }
+      if (!anchor.querySelector(':scope > svg.volmit-lucide')) {
+        anchor.replaceChildren(lucideIcon('link'));
+      }
+    }
+  }
+
   function element(tag, className, text) {
     const node = document.createElement(tag);
     if (className) {
@@ -83,21 +284,35 @@
   }
 
   function mountHeader(app) {
+    const title = app.querySelector('.page-header-headings .headline');
+    title?.setAttribute('role', 'heading');
+    title?.setAttribute('aria-level', '1');
     const searchButton = app.querySelector('.nav-header .mdi-magnify')?.closest('button');
     searchButton?.setAttribute('aria-label', 'Search documentation');
     const lockup = document.querySelector('.nav-header-inner .v-toolbar__content');
-    if (lockup && !lockup.classList.contains('volmit-home-link')) {
-      lockup.classList.add('volmit-home-link');
-      lockup.setAttribute('role', 'link');
-      lockup.setAttribute('tabindex', '0');
-      lockup.setAttribute('aria-label', 'Volmit Software documentation home');
-      lockup.addEventListener('click', () => window.location.assign('/'));
-      lockup.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          window.location.assign('/');
+    if (lockup && !lockup.querySelector(':scope > .volmit-home-link')) {
+      const home = link('', '/', 'volmit-home-link');
+      home.setAttribute('aria-label', 'Volmit Software documentation home');
+      home.append(...lockup.childNodes);
+      lockup.append(home);
+    }
+    const main = app.querySelector('.v-main');
+    if (main && !app.querySelector('.volmit-skip-link')) {
+      const skip = link('Skip to content', '#volmit-main-content', 'volmit-skip-link');
+      skip.addEventListener('click', (event) => {
+        event.preventDefault();
+        const current = app.querySelector('.home-directory h1') || app.querySelector('.page-header-headings .headline');
+        const target = current || app.querySelector('.contents');
+        if (target) {
+          target.tabIndex = -1;
+          target.focus({ preventScroll: true });
+          target.scrollIntoView({ block: 'start', behavior: 'instant' });
         }
       });
+      app.prepend(skip);
+    }
+    if (main && main.id !== 'volmit-main-content') {
+      main.id = 'volmit-main-content';
     }
   }
 
@@ -110,7 +325,7 @@
   }
 
   function pageCount(project) {
-    return project.sections.reduce((total, section) => total + section.links.length, 0);
+    return project.sections.reduce((total, section) => total + section.groups.reduce((count, group) => count + group.links.length, 0), 0);
   }
 
   function applyProjectChrome(project) {
@@ -172,6 +387,106 @@
     }
   }
 
+  function rowDestination(row) {
+    const anchors = [...row.querySelectorAll('a')];
+    if (anchors.length !== 1) {
+      return null;
+    }
+    const anchor = anchors[0];
+    const href = anchor.getAttribute('href')?.trim();
+    if (!href || href === '#' || /^(?:javascript|data):/i.test(href)) {
+      return null;
+    }
+    const controls = row.querySelectorAll('button,input,textarea,select,details,summary,iframe,video,audio,img,form,[contenteditable]:not([contenteditable="false"]),[tabindex],[role]');
+    if ([...controls].some((node) => node !== anchor)) {
+      return null;
+    }
+    return anchor;
+  }
+
+  function linkIsFirst(anchor, container, allowDescription) {
+    const before = document.createRange();
+    before.selectNodeContents(container);
+    before.setEndBefore(anchor);
+    if (before.toString().trim()) {
+      return false;
+    }
+    const after = document.createRange();
+    after.selectNodeContents(container);
+    after.setStartAfter(anchor);
+    const suffix = after.toString().trim();
+    return !suffix || (allowDescription && /^(?:[:\u2013\u2014]|-\s)/.test(suffix));
+  }
+
+  function mountLinkRows(content) {
+    for (const table of content.querySelectorAll('table')) {
+      const rows = [...table.querySelectorAll(':scope > tbody > tr')];
+      const links = rows.map((row) => {
+        const cells = [...row.children];
+        const anchor = rowDestination(row);
+        if (!anchor || cells.some((cell) => cell.tagName !== 'TD' || cell.colSpan !== 1 || cell.rowSpan !== 1) ||
+            !cells[0]?.contains(anchor) || cells[0].querySelector('ul,ol,pre,blockquote,div,h1,h2,h3,h4,h5,h6') ||
+            !linkIsFirst(anchor, cells[0], false)) {
+          return null;
+        }
+        return anchor;
+      });
+      const eligible = !table.matches('.spec-strip') && !table.parentElement.closest('table') &&
+        !table.querySelector('table') && rows.length >= 2 && links.every(Boolean);
+      table.classList.toggle('volmit-link-table', eligible);
+      const headers = [...(table.tHead?.rows[table.tHead.rows.length - 1]?.cells || [])];
+      if (eligible && headers.every((cell) => cell.tagName === 'TH' && cell.colSpan === 1 && cell.rowSpan === 1)) {
+        for (const header of headers) {
+          if (!header.hasAttribute('scope')) {
+            header.scope = 'col';
+          }
+        }
+      }
+      for (const row of rows) {
+        for (const [index, cell] of [...row.cells].entries()) {
+          let label = cell.querySelector(':scope > .volmit-cell-label');
+          const text = headers.length === row.cells.length ? headers[index]?.textContent.trim() : '';
+          if (!eligible || index === 0 || !text) {
+            label?.remove();
+            continue;
+          }
+          if (!label) {
+            label = element('span', 'volmit-cell-label');
+            label.setAttribute('aria-hidden', 'true');
+            cell.prepend(label);
+          }
+          if (label.textContent !== text) {
+            label.textContent = text;
+          }
+        }
+        row.classList.toggle('volmit-link-row', eligible);
+        for (const anchor of row.querySelectorAll('a')) {
+          anchor.classList.toggle('volmit-row-link', eligible);
+        }
+      }
+    }
+    for (const list of content.querySelectorAll('ul:not(.links-list):not(.grid-list)')) {
+      const rows = [...list.children];
+      const links = rows.map((row) => {
+        const anchor = rowDestination(row);
+        if (row.tagName !== 'LI' || !anchor || row.querySelector('ul,ol,table,pre,blockquote,div,h1,h2,h3,h4,h5,h6,hr') ||
+            row.querySelectorAll('p').length > 1 || !linkIsFirst(anchor, row, true)) {
+          return null;
+        }
+        return anchor;
+      });
+      const eligible = !list.parentElement.closest('li') && rows.length >= 2 && links.every(Boolean);
+      list.classList.toggle('volmit-link-list', eligible);
+      for (const row of rows) {
+        row.classList.toggle('volmit-link-item', eligible);
+        for (const anchor of row.querySelectorAll('a')) {
+          anchor.classList.toggle('volmit-row-link', eligible);
+          anchor.classList.toggle('volmit-list-link', eligible);
+        }
+      }
+    }
+  }
+
   function mountSpecStrip(content) {
     const table = Array.from(content.querySelectorAll('table')).find((node) => !node.closest('.landing-group'));
     if (!table) {
@@ -196,27 +511,49 @@
 
   let stopTocWatch = null;
   let stopTocAlign = null;
+  let tocAlignment = null;
+  let tocHeadingNodes = [];
+
+  function tocHeaderBottom(app) {
+    const bottom = app.querySelector('.nav-header')?.getBoundingClientRect().bottom || 0;
+    return bottom || Number.parseFloat(window.getComputedStyle(app).getPropertyValue('--volmit-header-height')) || 72;
+  }
+
+  function closePageToc(app, restoreFocus) {
+    const open = app.classList.contains('show-page-toc');
+    app.classList.remove('show-page-toc');
+    const toggle = app.querySelector('.page-toc-toggle');
+    toggle?.setAttribute('aria-expanded', 'false');
+    if (open && restoreFocus) {
+      toggle?.focus();
+    }
+  }
 
   function alignReferenceToc(main) {
-    stopTocAlign?.();
-    stopTocAlign = null;
-    const toc = main.querySelector('.page-col-sd');
+    const toc = main.querySelector('.volmit-page-toc');
     const title = main.querySelector('.page-header-headings .headline');
-    if (!main.classList.contains('volmit-reference-page') || !toc || !title) {
-      toc?.style.removeProperty('margin-top');
+    const header = title?.closest('.page-header-section') || title;
+    if (main.classList.contains('volmit-reference-page') && tocAlignment?.main === main && tocAlignment.toc === toc
+      && tocAlignment.title === title && tocAlignment.header === header && toc?.isConnected && title?.isConnected) {
+      tocAlignment.apply();
       return;
     }
-    const header = title.closest('.page-header-section') || title;
-    const row = toc.parentElement;
+    stopTocAlign?.();
+    stopTocAlign = null;
+    if (!main.classList.contains('volmit-reference-page') || !toc || !title) {
+      main.style.removeProperty('--volmit-toc-top');
+      return;
+    }
+    const app = main.closest('.v-application');
     const apply = () => {
-      if (!toc.isConnected || !row || toc.offsetParent === null) {
-        toc.style.removeProperty('margin-top');
+      if (!toc.isConnected || !app) {
+        main.style.removeProperty('--volmit-toc-top');
         return;
       }
-      const next = Math.round(title.getBoundingClientRect().top - row.getBoundingClientRect().top);
-      const applied = Number.parseFloat(toc.style.marginTop) || 0;
+      const next = Math.round(Math.max(tocHeaderBottom(app) + 24, title.getBoundingClientRect().top));
+      const applied = Number.parseFloat(main.style.getPropertyValue('--volmit-toc-top')) || 0;
       if (Math.abs(next - applied) > 1) {
-        toc.style.marginTop = next + 'px';
+        main.style.setProperty('--volmit-toc-top', next + 'px');
       }
     };
     apply();
@@ -231,10 +568,15 @@
     }
     window.addEventListener('resize', apply);
     cleanups.push(() => window.removeEventListener('resize', apply));
+    main.addEventListener('scroll', apply, { passive: true });
+    document.addEventListener('scroll', apply, { passive: true });
+    cleanups.push(() => main.removeEventListener('scroll', apply), () => document.removeEventListener('scroll', apply));
+    tocAlignment = { main, toc, title, header, apply };
     stopTocAlign = () => {
       for (const cleanup of cleanups) {
         cleanup();
       }
+      tocAlignment = null;
     };
   }
 
@@ -249,22 +591,50 @@
     return copy.textContent.replace(/¶/g, '').replace(/\s+/g, ' ').trim();
   }
 
+  function mountCalloutLabels(content) {
+    const labels = [
+      ['is-danger', 'Caution'], ['is-warning', 'Warning'],
+      ['is-info', 'Note'], ['is-success', 'Success']
+    ];
+    for (const blockquote of content.querySelectorAll('blockquote:is(.is-danger, .is-warning, .is-info, .is-success)')) {
+      const severity = labels.find(([name]) => blockquote.classList.contains(name));
+      let paragraph = blockquote.querySelector(':scope > p');
+      if (!paragraph) {
+        paragraph = element('p');
+        blockquote.prepend(paragraph);
+      }
+      let label = paragraph.querySelector(':scope > .callout-label');
+      if (!label) {
+        label = element('span', 'callout-label');
+        paragraph.prepend(label, document.createTextNode(' '));
+      }
+      label.textContent = severity[1] + ':';
+    }
+  }
+
   function mountPageToc(app, main, content) {
     const header = main.querySelector('.page-header-section');
-    if (!header) {
+    const headings = [...content.querySelectorAll('h2[id], h3[id]')].filter((heading) => !heading.closest('.volmit-headliner'));
+    main.querySelector('.page-toc-card')?.remove();
+    if (!header || !main.classList.contains('volmit-reference-page') || !headings.length) {
       stopTocWatch?.();
       stopTocWatch = null;
+      closePageToc(app, false);
+      main.classList.remove('has-page-toc');
       main.querySelector('.page-toc-toggle')?.remove();
       main.querySelector('.volmit-page-toc')?.remove();
+      tocHeadingNodes = [];
       return;
     }
-    const headings = [...content.querySelectorAll('h2[id], h3[id]')].filter((heading) => !heading.closest('.volmit-headliner'));
+    main.classList.add('has-page-toc');
     const signature = headings.map((heading) => heading.tagName + '\n' + heading.id + '\n' + headingLabel(heading)).join('\n');
-    if (main.querySelector('.volmit-page-toc')?.dataset.signature === signature && header.querySelector('.page-toc-toggle')) {
+    if (main.querySelector('.volmit-page-toc')?.dataset.signature === signature && header.querySelector('.page-toc-toggle')
+      && headings.length === tocHeadingNodes.length && headings.every((heading, index) => heading === tocHeadingNodes[index])) {
       return;
     }
     stopTocWatch?.();
     stopTocWatch = null;
+    tocHeadingNodes = headings;
     let panel = main.querySelector('.volmit-page-toc');
     if (!panel) {
       panel = element('nav', 'volmit-page-toc');
@@ -274,14 +644,29 @@
     }
     panel.dataset.signature = signature;
     panel.replaceChildren();
+    const panelHeader = element('div', 'page-toc-header');
+    const close = element('button', 'page-toc-close', 'Close');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Close table of contents');
+    close.addEventListener('click', () => closePageToc(app, true));
+    panelHeader.append(element('div', 'page-toc-title', 'On this page'), close);
+    const links = element('div', 'page-toc-links');
+    panel.append(panelHeader, links);
     let button = header.querySelector('.page-toc-toggle');
     if (!button) {
       button = element('button', 'page-toc-toggle', 'On this page');
       button.type = 'button';
       button.setAttribute('aria-controls', panel.id);
       button.addEventListener('click', () => {
-        const open = app.classList.toggle('show-page-toc');
-        button.setAttribute('aria-expanded', String(open));
+        if (app.classList.contains('show-page-toc')) {
+          closePageToc(app, true);
+          return;
+        }
+        closeSectionMenu(app, false);
+        positionPopup();
+        app.classList.add('show-page-toc');
+        button.setAttribute('aria-expanded', 'true');
+        (panel.querySelector('[aria-current="location"]') || panel.querySelector('a'))?.focus();
       });
       const mobile = header.querySelector('.mobile-section-toggle');
       if (mobile) {
@@ -291,29 +676,35 @@
       }
     }
     button.setAttribute('aria-expanded', String(app.classList.contains('show-page-toc')));
-    button.hidden = headings.length === 0;
-    for (const heading of headings) {
-      const item = link(headingLabel(heading), '#' + heading.id, heading.tagName === 'H3' ? 'is-sub' : '');
-      item.addEventListener('click', () => {
-        app.classList.remove('show-page-toc');
-        button.setAttribute('aria-expanded', 'false');
-      });
-      panel.append(item);
+    function positionPopup() {
+      const minimum = tocHeaderBottom(app) + 12;
+      const desired = Math.max(minimum, button.getBoundingClientRect().bottom + 8);
+      const top = Math.min(desired, Math.max(minimum, window.innerHeight - 160));
+      main.style.setProperty('--volmit-toc-popup-top', Math.round(top) + 'px');
     }
-    const toc = main.querySelector('.page-toc-card');
-    const items = toc ? [...toc.querySelectorAll('.v-list-item')] : [];
+    const entries = [];
+    for (const heading of headings) {
+      const item = link(headingLabel(heading), '#' + encodeURIComponent(heading.id), heading.tagName === 'H3' ? 'is-sub' : '');
+      item.addEventListener('click', () => {
+        closePageToc(app, false);
+        if (!heading.hasAttribute('tabindex')) {
+          heading.tabIndex = -1;
+        }
+        heading.focus({ preventScroll: true });
+      });
+      entries.push({ heading, item });
+      links.append(item);
+    }
     function mark() {
-      const marker = 140;
+      const marker = (Number.parseFloat(window.getComputedStyle(headings[0]).scrollMarginTop) || tocHeaderBottom(app) + 100) + 1;
       let current = headings[0] ?? null;
       for (const heading of headings) {
         if (heading.getBoundingClientRect().top <= marker) {
           current = heading;
         }
       }
-      const currentLabel = headingLabel(current);
-      for (const item of [...items, ...panel.querySelectorAll('a')]) {
-        const title = item.matches('a') ? headingLabel(item) : headingLabel(item.querySelector('.v-list-item__title'));
-        const on = currentLabel !== '' && title === currentLabel;
+      for (const { heading, item } of entries) {
+        const on = heading === current;
         item.classList.toggle('is-current', on);
         if (on) {
           item.setAttribute('aria-current', 'location');
@@ -323,11 +714,43 @@
       }
     }
     const scroller = main;
+    const onKey = (event) => {
+      if (event.key === 'Escape' && app.classList.contains('show-page-toc')) {
+        event.preventDefault();
+        closePageToc(app, true);
+      }
+    };
+    const onOutside = (event) => {
+      if (app.classList.contains('show-page-toc') && !panel.contains(event.target) && !button.contains(event.target)) {
+        closePageToc(app, panel.contains(document.activeElement));
+      }
+    };
+    const onFocus = (event) => {
+      if (app.classList.contains('show-page-toc') && !panel.contains(event.target) && event.target !== button) {
+        closePageToc(app, false);
+      }
+    };
+    const onResize = () => {
+      if (window.innerWidth >= 1264) {
+        closePageToc(app, false);
+      } else if (app.classList.contains('show-page-toc')) {
+        positionPopup();
+      }
+      mark();
+    };
     scroller.addEventListener('scroll', mark, { passive: true });
     document.addEventListener('scroll', mark, { passive: true });
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onOutside);
+    document.addEventListener('focusin', onFocus);
+    window.addEventListener('resize', onResize);
     stopTocWatch = () => {
       scroller.removeEventListener('scroll', mark);
       document.removeEventListener('scroll', mark);
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onOutside);
+      document.removeEventListener('focusin', onFocus);
+      window.removeEventListener('resize', onResize);
     };
     mark();
   }
@@ -339,20 +762,23 @@
       hits.push({ title: project.name, href: project.href, description: 'Overview' });
     }
     for (const section of project.sections) {
-      for (const page of section.links) {
-        if (page.title.toLowerCase().includes(needle)) {
-          hits.push({ title: page.title, href: page.href, description: section.title });
+      for (const group of section.groups) {
+        for (const page of group.links) {
+          if (page.title.toLowerCase().includes(needle)) {
+            hits.push({ title: page.title, href: page.href, description: group.title ? section.title + ' · ' + group.title : section.title });
+          }
         }
       }
     }
     return hits;
   }
 
-  async function fetchPageHits(query) {
+  async function fetchPageHits(query, signal) {
     const response = await fetch('/graphql', {
       method: 'POST',
       headers: { 'content-type': 'application/json', accept: 'application/json' },
       credentials: 'same-origin',
+      signal,
       body: JSON.stringify({
         query: 'query ($query: String!) { pages { search(query: $query) { results { title path description } } } }',
         variables: { query }
@@ -371,9 +797,9 @@
       }));
   }
 
-  async function remotePluginHits(project, query) {
+  async function remotePluginHits(project, query, signal) {
     const prefix = project.path + '/';
-    return (await fetchPageHits(query)).filter((hit) => {
+    return (await fetchPageHits(query, signal)).filter((hit) => {
       const path = hit.href.replace(/^\/+/, '');
       return path === project.path || path.startsWith(prefix);
     });
@@ -406,9 +832,37 @@
     input.dataset.volmitBound = 'true';
     let requestId = 0;
     let timer = 0;
+    let requestTimeout = 0;
+    let controller = null;
     let active = -1;
+    let replacingResults = false;
+    function stopRequests() {
+      requestId += 1;
+      window.clearTimeout(timer);
+      window.clearTimeout(requestTimeout);
+      controller?.abort();
+      controller = null;
+      requestTimeout = 0;
+    }
+    function dismiss() {
+      stopRequests();
+      active = -1;
+      for (const option of results.querySelectorAll('.plugin-search-hit')) {
+        option.classList.remove('is-active');
+        option.setAttribute('aria-selected', 'false');
+      }
+      results.hidden = true;
+      input.setAttribute('aria-expanded', 'false');
+    }
+    input.__volmitSearch = { cancel: dismiss };
     function paint(hits, query) {
-      results.replaceChildren();
+      const focused = results.contains(document.activeElement) ? document.activeElement.getAttribute('href') : null;
+      replacingResults = true;
+      try {
+        results.replaceChildren();
+      } finally {
+        replacingResults = false;
+      }
       active = -1;
       if (query.trim().length < 2) {
         results.hidden = true;
@@ -421,21 +875,27 @@
         results.append(element('p', 'plugin-search-empty', emptyText()));
         return;
       }
-      for (const hit of hits.slice(0, 8)) {
+      for (const [index, hit] of hits.slice(0, 8).entries()) {
         const option = element('a', 'plugin-search-hit');
         option.href = hit.href;
         option.setAttribute('role', 'option');
+        option.setAttribute('aria-selected', String(hit.href === focused));
         option.append(element('strong', null, hit.title));
         if (hit.description) {
           option.append(element('small', null, hit.description));
         }
         results.append(option);
+        if (hit.href === focused) {
+          active = index;
+          option.classList.add('is-active');
+          option.focus();
+        }
       }
     }
     function schedule() {
       const query = input.value.trim();
-      const id = ++requestId;
-      window.clearTimeout(timer);
+      stopRequests();
+      const id = requestId;
       if (query.length < 2) {
         paint([], query);
         return;
@@ -443,38 +903,57 @@
       const local = localHits(query);
       paint(local, query);
       timer = window.setTimeout(async () => {
+        const requestController = new AbortController();
+        controller = requestController;
+        const deadline = window.setTimeout(() => requestController.abort(), 5000);
+        requestTimeout = deadline;
         try {
-          const remote = await remoteHits(query);
-          if (id === requestId) {
+          const remote = await remoteHits(query, requestController.signal);
+          if (id === requestId && scope.isConnected && input.value.trim() === query) {
             paint(mergeHits(local, remote), query);
           }
         } catch {
-          if (id === requestId) {
+          if (id === requestId && scope.isConnected && input.value.trim() === query) {
             paint(local, query);
+          }
+        } finally {
+          window.clearTimeout(deadline);
+          if (controller === requestController) {
+            controller = null;
+            requestTimeout = 0;
           }
         }
       }, 160);
     }
     input.addEventListener('input', schedule);
+    scope.addEventListener('focusout', (event) => {
+      if (!replacingResults && !scope.contains(event.relatedTarget)) {
+        dismiss();
+      }
+    });
     scope.addEventListener('keydown', (event) => {
       const options = [...results.querySelectorAll('.plugin-search-hit')];
       if (event.key === 'Escape') {
-        results.hidden = true;
-        input.setAttribute('aria-expanded', 'false');
+        dismiss();
         input.focus();
         return;
       }
-      if (!options.length || event.target !== input) {
+      if (results.hidden || !options.length || (event.target !== input && !results.contains(event.target))) {
         return;
       }
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault();
-        active = event.key === 'ArrowDown' ? (active + 1) % options.length : (active - 1 + options.length) % options.length;
+        const focused = options.indexOf(document.activeElement);
+        if (focused >= 0) {
+          active = focused;
+        }
+        active = event.key === 'ArrowDown' ? (active + 1) % options.length : active < 0 ? options.length - 1 : (active - 1 + options.length) % options.length;
         for (const [index, option] of options.entries()) {
           option.classList.toggle('is-active', index === active);
+          option.setAttribute('aria-selected', String(index === active));
         }
         options[active].focus();
-      } else if (event.key === 'Enter' && active >= 0) {
+      } else if (event.key === 'Enter' && event.target === input && active >= 0) {
         event.preventDefault();
         options[active].click();
       }
@@ -515,6 +994,7 @@
     const field = app.querySelector('.nav-header .v-text-field');
     if (!field || !project) {
       pluginSearchGeneration += 1;
+      app.querySelector('.volmit-plugin-search input')?.__volmitSearch?.cancel();
       app.querySelector('.volmit-plugin-search')?.remove();
       unwrapPluginSearch(field);
       app.classList.remove('has-plugin-search');
@@ -528,6 +1008,7 @@
       if (existing.dataset.project !== project.path) {
         existing.dataset.project = project.path;
         const current = existing.querySelector('input');
+        current.__volmitSearch?.cancel();
         labelPluginSearch(current, project);
         current.value = '';
         const list = existing.querySelector('.plugin-search-results');
@@ -574,7 +1055,7 @@
       input,
       results,
       (query) => localPluginHits(searchProject(search, project), query),
-      (query) => remotePluginHits(searchProject(search, project), query),
+      (query, signal) => remotePluginHits(searchProject(search, project), query, signal),
       () => 'No pages in ' + searchProject(search, project).name
     );
   }
@@ -608,7 +1089,8 @@
     const title = element('h2', null, 'Switch project');
     title.id = 'volmit-project-dialog-title';
     copy.append(title, element('p', null, 'Choose a project to open its documentation.'));
-    const close = element('button', 'picker-close', '×');
+    const close = element('button', 'picker-close');
+    close.append(lucideIcon('x'));
     close.type = 'button';
     close.setAttribute('aria-label', 'Close project picker');
     close.addEventListener('click', () => dialog.close());
@@ -698,8 +1180,9 @@
     button.setAttribute('aria-expanded', 'false');
     button.setAttribute('aria-label', 'Switch project, current project ' + project.name);
     const copy = element('span', 'project-switch-copy');
-    copy.append(element('strong', null, project.name), element('small', null, 'Project documentation'));
-    const chevron = element('span', 'switch-chevron', '⌄');
+    copy.append(element('strong', null, project.name));
+    const chevron = element('span', 'switch-chevron');
+    chevron.append(lucideIcon('chevron-down'));
     chevron.setAttribute('aria-hidden', 'true');
     button.append(projectIcon(project, 'project-switch-icon'), copy, chevron);
     button.addEventListener('click', () => {
@@ -710,7 +1193,30 @@
     return button;
   }
 
+  let sectionInertNodes = [];
+
+  function isolateSectionMenu(app, menu) {
+    for (const [node, inert] of sectionInertNodes) {
+      node.inert = inert;
+    }
+    sectionInertNodes = [];
+    let branch = menu;
+    while (branch && branch !== app) {
+      for (const sibling of branch.parentElement?.children || []) {
+        if (sibling !== branch && !sibling.matches('.section-menu-backdrop, .project-dialog, script, style')) {
+          sectionInertNodes.push([sibling, sibling.inert]);
+          sibling.inert = true;
+        }
+      }
+      branch = branch.parentElement;
+    }
+  }
+
   function closeSectionMenu(app, restoreFocus) {
+    for (const [node, inert] of sectionInertNodes) {
+      node.inert = inert;
+    }
+    sectionInertNodes = [];
     app.classList.remove('show-section-menu');
     const menu = app.querySelector('#volmit-page-navigation');
     menu?.removeAttribute('aria-modal');
@@ -732,8 +1238,10 @@
       const expanded = app.classList.toggle('show-section-menu');
       toggle.setAttribute('aria-expanded', String(expanded));
       if (expanded) {
+        closePageToc(app, false);
         menu.setAttribute('role', 'dialog');
         menu.setAttribute('aria-modal', 'true');
+        isolateSectionMenu(app, menu);
         menu.querySelector('.mobile-nav-close')?.focus();
         const active = menu.querySelector('[aria-current="page"]');
         const scroller = menu.closest('.volmit-section-sidebar') || menu;
@@ -741,8 +1249,7 @@
           scroller.scrollTop = Math.max(0, active.offsetTop - scroller.clientHeight / 2);
         }
       } else {
-        menu.removeAttribute('aria-modal');
-        menu.removeAttribute('role');
+        closeSectionMenu(app, false);
       }
     });
     const close = element('button', 'mobile-nav-close', 'Close');
@@ -796,7 +1303,7 @@
     handle.setAttribute('aria-orientation', 'vertical');
     handle.setAttribute('aria-valuemin', String(sidebarWidthMin));
     handle.setAttribute('aria-valuemax', String(sidebarWidthMax));
-    let stored = 320;
+    let stored = 288;
     try {
       const raw = window.localStorage.getItem(sidebarWidthKey);
       const value = Number(raw);
@@ -804,7 +1311,7 @@
         stored = value;
       }
     } catch {
-      stored = 320;
+      stored = 288;
     }
     handle.setAttribute('aria-valuenow', String(applySidebarWidth(app, stored, false)));
     handle.addEventListener('keydown', (event) => {
@@ -845,8 +1352,46 @@
     sidebar.append(handle);
   }
 
+  const sidebarStateKey = 'volmit-sidebar-state';
+  let sidebarState = readSidebarState();
+
+  function readSidebarState() {
+    try {
+      const saved = JSON.parse(window.sessionStorage.getItem(sidebarStateKey));
+      if (saved && typeof saved.project === 'string' && Array.isArray(saved.expanded)
+        && saved.expanded.every((key) => typeof key === 'string') && Number.isFinite(saved.scrollTop) && saved.scrollTop >= 0) {
+        return { project: saved.project, expanded: new Set(saved.expanded), scrollTop: saved.scrollTop };
+      }
+    } catch {}
+    return null;
+  }
+
+  function rememberSidebar(main) {
+    const sidebar = main?.querySelector('.volmit-section-sidebar');
+    if (!sidebar) {
+      return;
+    }
+    sidebarState = {
+      project: sidebar.dataset.project,
+      expanded: new Set([...sidebar.querySelectorAll('.reference-section-toggle[aria-expanded="true"]')].map((toggle) => toggle.dataset.section)),
+      scrollTop: sidebar.scrollTop
+    };
+    try {
+      window.sessionStorage.setItem(sidebarStateKey, JSON.stringify({ ...sidebarState, expanded: [...sidebarState.expanded] }));
+    } catch {}
+  }
+
+  window.addEventListener('pagehide', () => rememberSidebar(document.querySelector('.v-main')));
+
   function mountProjectNavigation(app, main, content, project, path) {
     const overview = path === project.path;
+    const previous = sidebarState?.project === project.path ? sidebarState : null;
+    if (sidebarState?.project !== project.path) {
+      sidebarState = null;
+      try {
+        window.sessionStorage.removeItem(sidebarStateKey);
+      } catch {}
+    }
     main.classList.add(overview ? 'volmit-project-overview' : 'volmit-reference-page');
     if (overview) {
       const bar = element('aside', 'volmit-project-bar');
@@ -870,33 +1415,50 @@
       return;
     }
     const sidebar = element('aside', 'volmit-section-sidebar');
+    sidebar.dataset.project = project.path;
     sidebar.setAttribute('aria-label', project.name + ' documentation');
     const nav = element('nav', 'reference-nav');
     nav.setAttribute('aria-label', project.name + ' documentation');
     nav.append(link('All projects', '/', 'parent'), projectButton(project));
     const current = '/' + path;
     let anyOpen = false;
-    for (const section of project.sections) {
-      const open = section.links.some((page) => page.href === current) || (path === project.path && section.title === 'Start here');
+    for (const [index, section] of project.sections.entries()) {
+      const key = String(index);
+      const open = section.groups.some((group) => group.links.some((page) => page.href === current)) || previous?.expanded.has(key) === true;
       anyOpen = anyOpen || open;
       const block = element('div', 'reference-section');
       const toggle = element('button', 'reference-section-toggle', section.title);
+      toggle.prepend(lucideIcon('chevron-right'));
       toggle.type = 'button';
+      toggle.dataset.section = key;
       toggle.setAttribute('aria-expanded', String(open));
       const links = element('div', 'reference-section-links');
+      links.id = 'volmit-reference-section-' + index;
+      toggle.setAttribute('aria-controls', links.id);
       links.hidden = !open;
-      for (const page of section.links) {
-        const anchor = link(page.title, page.href);
-        if (page.href === current) {
-          anchor.classList.add('active');
-          anchor.setAttribute('aria-current', 'page');
+      for (const group of section.groups) {
+        const subgroup = element('div', 'reference-subgroup');
+        if (group.title) {
+          subgroup.append(element('h4', 'reference-subgroup-heading', group.title));
         }
-        links.append(anchor);
+        const pages = element('div', 'reference-subgroup-links');
+        for (const page of group.links) {
+          const anchor = link(page.title, page.href);
+          anchor.addEventListener('click', () => rememberSidebar(main));
+          if (page.href === current) {
+            anchor.classList.add('active');
+            anchor.setAttribute('aria-current', 'page');
+          }
+          pages.append(anchor);
+        }
+        subgroup.append(pages);
+        links.append(subgroup);
       }
       toggle.addEventListener('click', () => {
         const expanded = toggle.getAttribute('aria-expanded') !== 'true';
         toggle.setAttribute('aria-expanded', String(expanded));
         links.hidden = !expanded;
+        rememberSidebar(main);
       });
       block.append(toggle, links);
       nav.append(block);
@@ -917,9 +1479,25 @@
     main.prepend(sidebar);
     mobileControls(app, main, nav);
     window.requestAnimationFrame(() => {
+      if (!sidebar.isConnected || window.innerWidth < 960) {
+        return;
+      }
+      if (previous) {
+        sidebar.scrollTop = previous.scrollTop;
+      }
       const active = nav.querySelector('[aria-current="page"]');
-      if (active && window.innerWidth >= 960) {
-        sidebar.scrollTop = Math.max(0, active.offsetTop - sidebar.clientHeight / 2);
+      if (active) {
+        if (!previous) {
+          sidebar.scrollTop = Math.max(0, active.offsetTop - sidebar.clientHeight / 2);
+        } else {
+          const frame = sidebar.getBoundingClientRect();
+          const item = active.getBoundingClientRect();
+          if (item.top < frame.top) {
+            sidebar.scrollTop += item.top - frame.top;
+          } else if (item.bottom > frame.bottom) {
+            sidebar.scrollTop += item.bottom - frame.bottom;
+          }
+        }
       }
     });
   }
@@ -941,8 +1519,7 @@
     toolTitle.id = 'projects-title';
     toolHeading.append(toolTitle, element('p', null, 'Choose a project to open its documentation.'));
     const label = element('label', 'directory-search');
-    const searchIcon = element('i', 'v-icon notranslate mdi mdi-magnify');
-    searchIcon.setAttribute('aria-hidden', 'true');
+    const searchIcon = lucideIcon('search');
     const input = element('input');
     input.type = 'search';
     input.placeholder = 'Filter by name';
@@ -1032,13 +1609,19 @@
   }
 
   function clearPageShell(main, app) {
+    stopTocWatch?.();
+    stopTocWatch = null;
+    tocHeadingNodes = [];
+    closePageToc(app, false);
+    rememberSidebar(main);
     for (const node of main.querySelectorAll('.volmit-project-bar,.volmit-section-sidebar,.home-directory,.mobile-section-toggle,.section-menu-backdrop,.page-toc-toggle,.volmit-page-toc')) {
       node.remove();
     }
     stopTocAlign?.();
     stopTocAlign = null;
-    main.classList.remove('volmit-home-page', 'volmit-project-overview', 'volmit-reference-page');
-    app.classList.remove('show-page-toc');
+    main.style.removeProperty('--volmit-toc-top');
+    main.style.removeProperty('--volmit-toc-popup-top');
+    main.classList.remove('volmit-home-page', 'volmit-project-overview', 'volmit-reference-page', 'has-page-toc');
     closeSectionMenu(app, false);
   }
 
@@ -1115,7 +1698,7 @@
     if (third) {
       choices.push(['third-person', 'Third person', third]);
     }
-    const player = { views: new Map(), visible: false, playing: true };
+    const player = { views: new Map(), visible: false, playing: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches };
     demoPlayers.set(container, player);
     const header = element('div', 'demo-header');
     const tabs = element('div', 'demo-tabs');
@@ -1298,7 +1881,7 @@
       }
       variants.set(client, { panel, videos: new Map([['first-person', first], ...(third ? [['third-person', third]] : [])]), views: new Map() });
     }
-    const player = { variants, client: 'standard', visible: false, playing: true, camera: element('select') };
+    const player = { variants, client: 'standard', visible: false, playing: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, camera: element('select') };
     const id = 'wormholes-demo-' + ++demoSequence;
     const header = element('div', 'demo-header');
     const tabs = element('div', 'demo-tabs');
@@ -1647,9 +2230,15 @@
       return;
     }
     if (!pageObserver) {
-      pageObserver = new MutationObserver(scheduleMount);
+      pageObserver = new MutationObserver((records) => {
+        if (records.some((record) => record.type === 'childList'
+          ? !record.target.closest?.('.plugin-search-results,.picker-results,.picker-meta,.featured-grid,.directory-grid,.directory-result-count,.directory-empty')
+          : record.target.matches?.('.v-icon'))) {
+          scheduleMount();
+        }
+      });
     }
-    pageObserver.observe(document.documentElement, { childList: true, subtree: true });
+    pageObserver.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
     pageWatching = true;
   }
 
@@ -1667,6 +2256,10 @@
       return;
     }
     const lostApp = document.querySelector('.v-application');
+    if (lostApp) {
+      mountAuthFields(lostApp);
+      mountWikiIcons(lostApp);
+    }
     if (lostApp && mountLostPage(lostApp)) {
       return;
     }
@@ -1684,6 +2277,7 @@
       theme.dark = true;
     }
     mountHeader(app);
+    mountCalloutLabels(content);
     mountDemos(content);
     if (!catalogSettled) {
       return;
@@ -1716,6 +2310,7 @@
         hideGeneratedCaption(main, project);
       }
     } finally {
+      mountLinkRows(content);
       finishLoading();
       if (project) {
         mountPageToc(app, main, content);
@@ -1729,7 +2324,7 @@
       return;
     }
     scheduled = true;
-    window.queueMicrotask(() => {
+    window.requestAnimationFrame(() => {
       scheduled = false;
       mount();
     });
@@ -1745,11 +2340,15 @@
       && validLink({ title: project.name, href: project.href })
       && typeof project.description === 'string' && Array.isArray(project.sections)
       && project.sections.every((section) => section && typeof section.title === 'string'
-        && Array.isArray(section.links) && section.links.every(validLink));
+        && Array.isArray(section.groups) && section.groups.every((group) => group && typeof group.title === 'string'
+          && Array.isArray(group.links) && group.links.every(validLink)));
   }
 
   async function start() {
     if (reservedPaths.has(normalizedPath().split('/')[0])) {
+      resumePageObserver();
+      document.addEventListener('DOMContentLoaded', scheduleMount, { once: true });
+      scheduleMount();
       return;
     }
     const root = document.documentElement;
@@ -1773,11 +2372,17 @@
     const controller = new AbortController();
     loadingTimeout = window.setTimeout(() => {
       finishLoading();
-      controller.abort();
     }, 2500);
+    const catalogTimeout = window.setTimeout(() => controller.abort(), 2500);
     resumePageObserver();
     document.addEventListener('DOMContentLoaded', scheduleMount, { once: true });
     window.addEventListener('popstate', scheduleMount);
+    window.addEventListener('resize', () => {
+      const app = document.querySelector('.v-application.show-section-menu');
+      if (app && window.innerWidth >= 960) {
+        closeSectionMenu(app, false);
+      }
+    });
     document.addEventListener('visibilitychange', () => {
       for (const player of demoPlayers.values()) {
         updateDemoPlayback(player);
@@ -1830,6 +2435,7 @@
     } catch (error) {
       console.error('Unable to load the documentation navigation.', error);
     } finally {
+      window.clearTimeout(catalogTimeout);
       catalogSettled = true;
       mount();
     }

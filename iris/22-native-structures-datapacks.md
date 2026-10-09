@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-04T19:22:20.966Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -673,7 +673,7 @@ No import command is needed for that case.
 
 `general.autoImportDatapackStructures` (default **false**) converts each ingested datapack's structures into pack resources on ingest. Those bundles carry `MANAGED_DATAPACK` provenance: ingest refresh owns them, and removing the source URL may clean them. Jigsaw Studio therefore shows their variants as read-only and refuses an in-place ownership claim. Inspect and apply a private clone before editing:
 
-```text
+```none
 /iris jigsaw adopt inspect <dimension> <managed-iris-key> target=<editable-key> strategy=clone
 /iris jigsaw adopt apply <plan-uuid>
 ```

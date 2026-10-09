@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-09-28T00:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -12,7 +12,7 @@ Run `./start.sh` or `./start.sh runtime watch` to open the dashboard. `Tab` swit
 
 Downloaded builds use `./multiplexor` or `.\multiplexor.exe` with the same arguments. See the [visual guide](/servermultiplexor/00-visual-guide) for the first-server walkthrough.
 
-```text
+```none
 +-- Plugins ---------------------------------- [+ New] --+
 | Server                    State       Port    Primary  |
 | paper-dev                 running     25565     [x]    |

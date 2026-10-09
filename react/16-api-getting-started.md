@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "React documentation: API - Getting Started"
 published: true
-date: 2026-09-26T07:50:33.878Z
+date: 2026-10-09T16:58:33.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,7 +20,7 @@ React exposes APIs for protecting entities and publishing metrics.
 
 Compile against the React jar without bundling it:
 
-```gradle
+```groovy
 dependencies {
     compileOnly files('libs/React-2.0.6-26.2.jar')
 }

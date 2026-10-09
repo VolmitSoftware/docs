@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-05T16:28:23.269830+00:00
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -76,7 +76,7 @@ This distinction matters when editing a pack. An authored biome can validate yet
 
 On Bukkit-family servers:
 
-```text
+```none
 /iris find biome <load-key>
 /iris find underground-biome <load-key> radius=8192 teleport=false
 /iris what biome

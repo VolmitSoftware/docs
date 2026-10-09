@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-10-06T22:00:00.000Z
+date: 2026-10-09T16:48:42.787Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,6 +63,7 @@ Studio settings live in `iris.json` under `studio`:
 | Key | Default | Meaning |
 |-----|---------|---------|
 | `openVSCode` | `true` | Allows `open`/`vscode` to launch the editor on the server machine. Set false on remote or headless hosts |
+| `blendChanges` | `true` | Blends accepted pack edits beside existing Bukkit Studio chunks. Set false to see sharp terrain cutoffs; it applies to the next accepted pack edit after settings reload or hotload. Existing transitions retain their recorded behavior, and production worlds are unaffected. Modded Studio generates direct cutoffs |
 | `entitySpawning` | `true` | Enables Iris ambient spawning in Studio. Does not change production-world spawning settings |
 | `disableTimeAndWeather` | `true` | Freezes weather and the day cycle in studio worlds and sets noon where the runtime clock allows. Set false to let them run while authoring. Night and storm Iris spawners do not fire here until this is false or you test in a production world |
 | `autoStartDefaultStudio` | `false` | Opens a Studio world for the default pack automatically at startup |
@@ -73,10 +74,14 @@ Studio settings live in `iris.json` under `studio`:
 - Edit the active server's authoring folder under `plugins/Iris/packs/<pack>` on Bukkit. A separate checkout or another server's pack copy is not watched. Normal editor saves, file replacements, and FTP uploads are detected; temporary files and `.iris` output are ignored.
 - Invalid edits leave the current pack active and are reported in the console. Fix the first error and save again.
 - Height, environment, dimension key, generated dimension type, and coordinate scale cannot hotload. Close and reopen Studio after changing them. New or changed required registry definitions can require a server restart. See [11 - Dimensions](/iris/11-dimensions).
-- Existing chunks keep their terrain. Changes blend across `generator.generationTransitionWidthBlocks`; inspect new chunks beyond that transition to see the edited pack.
+- Existing chunks keep their terrain. On Bukkit, changes blend across `generator.generationTransitionWidthBlocks` when `studio.blendChanges` is true; inspect new chunks beyond that transition to see the edited pack. To inspect sharp cutoffs, set `studio.blendChanges` to false in `iris.json`, reload the settings or wait for settings hotload, then save a pack edit and enter adjacent new chunks. Fabric, Forge and NeoForge Studio generate direct cutoffs.
 - Dimension `allObjectScaleFactor` edits do hotload. New object placements use the accepted factor; existing objects keep their blocks, explicit placement scales still override it, and jigsaw pieces are excluded.
 
 Previously generated chunks keep their original biome names, spawns and effects. Close and reopen Studio to start a fresh temporary world from the latest pack.
+
+To regenerate nearby chunks in place, use `/iris developer regen radius=5` on Bukkit or `/iris regen 5` on modded servers. The radius is in chunks. Zero selects only the player’s current chunk. Regeneration replaces blocks and biomes and removes non-player entities in the selected chunks. Use it only where those contents can be discarded.
+
+Regeneration retains generation-history ownership. Reopen Studio for a fresh world entirely from the latest pack.
 
 ## Commands (Bukkit)
 

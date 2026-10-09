@@ -2,7 +2,7 @@
 title: "Rift: Configuration and Localization"
 description: "TOML settings, automatic hot reload, in-game editing, and language files"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-09T23:55:00.000Z
 tags: "rift, configuration, hot-reload, localization, gui"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -17,8 +17,10 @@ Rift writes `config.toml` on first start and reloads valid external edits automa
 | `language` | `en_US` | Safe locale identifier selecting the server-default `languages/<locale>.toml` |
 | `hotReloadPollMillis` | `1000` | Clamped to 250–10,000 ms |
 | `hotReloadCooldownMillis` | `1500` | Clamped to 250–30,000 ms |
-| `autoLoadManagedWorlds` | `true` | Load profiles whose `autoLoad` field is true during startup; missing-profile reconciliation still runs when disabled |
-| `evacuationWorld` | empty | Named loaded destination; empty selects the primary world |
+| `autoLoadManagedWorlds` | `false` | Load profiles whose `autoLoad` field is true during startup; missing-profile reconciliation still runs when disabled |
+| `evacuationWorld` | empty | Managed command name or full key of a loaded destination; empty selects the primary world |
+| `firstJoinDestination` | empty | Loaded destination on a player's first join; empty keeps normal joining behavior |
+| `loginDestination` | empty | Loaded destination on later logins; empty keeps the saved location |
 | `allowWorldDeletion` | `true` | Permit confirmed quarantine operations |
 | `deleteConfirmationSeconds` | `30` | Clamped to 10–300 seconds |
 | `splashScreen` | `true` | Print the two-tone Rift startup banner; the separate ready-duration line always prints after successful startup |
@@ -44,9 +46,35 @@ Saving config, the active locale, a world profile, or a quarantine manifest trig
 
 Rift does not overwrite HUD or title feedback from Adapt, React, or other supported Volmit plugins.
 
+## Global policies
+
+The `[globalPolicy]` table controls world-wide rules shared by Rift and the Multiverse configuration API. Values are validated before the configuration becomes active.
+
+| Setting | Default | Effect |
+|---|---:|---|
+| `enforceAccess` | `true` | Check managed-world access permissions. Lifecycle-owner availability is always required |
+| `enforceGameMode` | `true` | Apply and enforce each world's explicit game mode |
+| `enforceFlight` | `true` | Apply and enforce each world's explicit flight rule |
+| `gamemodeAndFlightEnforceDelay` | `0` | Delay player policy application by 0–1,200 ticks |
+| `applyEntitySpawnRate` | `true` | Apply configured world spawn intervals |
+| `applyEntitySpawnLimit` | `true` | Apply configured world spawn limits |
+| `firstSpawnOverride` | `true` | Enable the global first-join destination |
+| `firstSpawnLocation` | empty | Override `firstJoinDestination` with a loaded world selector |
+| `enableJoinDestination` | `true` | Enable the global login destination |
+| `joinDestination` | empty | Override `loginDestination` with a loaded world selector |
+| `useFinerTeleportPermissions` | `true` | Require destination-specific teleport permissions when checking teleport permission |
+| `safeLocationHorizontalSearchRadius` | `2` | Nearby safe-location search radius, 0–8 blocks |
+| `safeLocationVerticalSearchRadius` | `8` | Nearby safe-location vertical range, 0–32 blocks |
+| `teleportCooldownMillis` | `1000` | Cooldown used by the Multiverse 4 player-session API, 0–300,000 milliseconds |
+| `messageCooldownMillis` | `5000` | Cooldown used by the Multiverse messaging API, 0–300,000 milliseconds |
+
+Per-world first-join and login destinations take precedence over global destinations. Disabling a global destination also disables its top-level fallback setting.
+
+The integration API reports which additional global policy families have runtime support. Setters for unavailable families return failures and leave canonical settings unchanged. Automatic world import and generator discovery are disabled; integration calls cannot enable startup scans.
+
 ## In-game editor
 
-`/rift config` opens the settings dashboard. Click booleans to toggle them, use left or right click for numbers, shift-click for larger changes, or press Q to enter an exact value. Text settings use a private chat prompt. Valid changes save and apply immediately.
+`/rift config` opens the settings dashboard. General → Global World Policies opens the supported world-enforcement, spawn-application, and join-destination controls. Click booleans to toggle them, use left or right click for numbers, shift-click for larger changes, or press Q to enter an exact value. Text settings use a private chat prompt. Valid changes save and apply immediately.
 
 Changing `bstatsEnabled` takes effect immediately and still honors `plugins/bStats/config.yml`. Rift does not register custom charts.
 

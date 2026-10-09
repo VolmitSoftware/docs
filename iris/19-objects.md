@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-10-06T19:12:27.334Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ Custom blocks from a content provider keep their qualified provider IDs when sav
 
 Prerequisites: a writable pack, operator access on a Bukkit-family server, and something built to capture. A Studio world is the shortest path because it hotloads pack edits; ordinary Studio starts in spectator, while Object Studio remains creative for block editing.
 
-```text
+```none
 /iris studio open <pack> seed=1337
 /iris object wand
 ```

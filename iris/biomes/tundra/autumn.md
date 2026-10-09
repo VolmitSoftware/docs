@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tundra Autumn"
 description: "Iris biome atlas entry for tundra/autumn in Overworld and Underworld"
 published: true
-date: 2026-09-28T07:30:06.759Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -109,7 +109,7 @@ Both files contain their object placements, procedural trees, and decorators dir
 
 Living-tree settings total `3.7` nominal attempts per chunk before biome coverage, terrain support, and placement rejection. Both packs use the same settings. Roots, support checks, and quarter-turn rotations apply to tree placement. Stilt settings exclude wart canopies and accents.
 
-```text
+```none
 /iris find biome tundra/amber-poplar-forest
 ```
 
@@ -121,7 +121,7 @@ No floating child biomes are declared.
 
 Run these in an Iris world and inspect freshly generated terrain:
 
-```text
+```none
 /iris find biome tundra/autumn
 /iris what biome
 /iris what region

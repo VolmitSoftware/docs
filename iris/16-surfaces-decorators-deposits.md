@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-06T20:30:00.449Z
+date: 2026-10-09T16:48:42.787Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -204,6 +204,8 @@ Files under `blocks/<key>.json` use the same shape and act as reusable aliases. 
 ## Decorators
 
 Snippet key: `decorator`. Biome field: `decorators`. The dimension must have `decorate: true` (the default).
+
+Terrain transition bands use the current biome’s decorators on the blended surfaces. Grass, flowers, and other small plants follow the resulting land and water levels. Volumetric ledges use their blended floors and ceilings. Configured chance, palette, support, slope, and water requirements still apply.
 
 For the same world seed, pack, and Iris build, `style`, `variance`, and `heightVariance` produce the same patterns at the same coordinates. Chunk exploration order, parallel generation, and startup cache warming do not choose a different pattern. Floating islands use the same seeded decorator fields as other surfaces.
 

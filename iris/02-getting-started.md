@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ Full command trees and permissions: [04 - Commands & Permissions](/iris/04-comma
 
 On Bukkit, use `key=value` for optional and contextual parameters. Required parameters also accept their bare positional form. Extra positional values fail.
 
-```text
+```none
 /iris create name=myworld type=overworld seed=1337
 ```
 
@@ -44,7 +44,7 @@ Use the full command and parameter names in scripts.
 
 ### Plugin
 
-```text
+```none
 /iris create name=<name> [type=…] [seed=…]
 ```
 
@@ -64,7 +64,7 @@ Choose an unused world name. Use `/iris replace` to replace an existing world on
 
 The managed `iris:*` world is built immediately on every Bukkit-family server, including Folia and Spigot. Progress appears as a labeled action-bar meter for players and a text bar in the console.
 
-```text
+```none
 /iris create name=myworld type=overworld seed=1337
 ```
 
@@ -74,7 +74,7 @@ Now run `/iris worlds` (alias `accesslist`). It prints two lists: Iris worlds an
 
 #### Replace an existing Bukkit world
 
-```text
+```none
 /iris replace target=<target> [type=…] [seed=<signed-64-bit-integer>]
 ```
 
@@ -86,14 +86,14 @@ Stage each replacement, then restart once to apply them. Replacing `minecraft:ov
 
 On a Paper-family server with early plugin bootstrap, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. Plain Spigot cannot use this exact-slot path. The current built-in pair declares no external datapacks:
 
-```text
+```none
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
 Wait for each download to finish before starting the next. Restart, then stage both replacements:
 
-```text
+```none
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
@@ -102,7 +102,7 @@ Restart once more after both report staged. The target directories must already 
 
 ### Mod
 
-```text
+```none
 /iris create <name> [pack] [seed]
 ```
 
@@ -118,7 +118,7 @@ The `pack:dimension` form has to be **quoted** (for example, `"custom_pack:dimen
 
 If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Modded `/iris datapack ingest` is only a stub, so place any external datapacks declared by a custom pack in this save's `datapacks/` directory yourself. Restart with the Iris pack and all of its declared imports present, then run create. The built-in Overworld and Underworld need no external archives.
 
-```text
+```none
 /iris create myworld overworld 1337
 ```
 
@@ -128,7 +128,7 @@ Confirm with `/iris world status`, which lists each loaded Iris level with its p
 
 ## 2. Load a world (plugin only)
 
-```text
+```none
 /iris load <world>
 ```
 
@@ -142,13 +142,13 @@ Modded worlds created with `/iris create` or `/iris world enable` are already in
 
 ### Plugin
 
-```text
+```none
 /iris teleport <world> [player=…]
 ```
 
 Alias `tp`. The world is positional. The player is optional and therefore keyed: `/iris tp myworld player=Notch`. Left out, it targets whoever ran the command, so console needs to name a player explicitly or it reports that the player does not exist.
 
-```text
+```none
 /iris tp myworld
 ```
 
@@ -156,14 +156,14 @@ The command takes you to the world spawn.
 
 ### Mod
 
-```text
+```none
 /iris teleport <dimension> [player]
 /iris tp <dimension> [player]
 ```
 
 Dimension is a loaded-level argument and tab-completes Iris dimensions. A non-Iris dimension is rejected. Console must name a player. You land at the surface near X/Z 8.5, 8.5 in that dimension.
 
-```text
+```none
 /iris tp irisworldgen:myworld
 ```
 
@@ -177,7 +177,7 @@ A 352-block radius at `0,0` covers chunks -22 through 22 on both axes: **45 × 4
 
 ### Plugin
 
-```text
+```none
 /iris pregen start radius=<radius> [world=…] [center=x,z|me] [gui=true|false] [serial=true|false]
 ```
 
@@ -189,7 +189,7 @@ A 352-block radius at `0,0` covers chunks -22 through 22 on both axes: **45 × 4
 | `gui` | — | `true` | Open the pregen progress window. Set false on a headless server |
 | `serial` | — | `false` | Generate one chunk at a time. Requires a Paper-compatible server |
 
-```text
+```none
 /iris pregen start radius=352 world=myworld center=0,0 gui=false
 ```
 
@@ -199,7 +199,7 @@ Control it with `/iris pregen stop` (alias `x`), `/iris pregen pause`, and `/iri
 
 ### Mod
 
-```text
+```none
 /iris pregen start <radius> [dimension] [at <x> <z>] [gui] [sync] [nocache]
 ```
 
@@ -214,7 +214,7 @@ Control it with `/iris pregen stop` (alias `x`), `/iris pregen pause`, and `/iri
 
 The three flags are combinable in any order and each may appear once, but **`at <x> <z>` must come before any flag.** `/iris pregen start 100 gui at 0 0` is a syntax error. `/iris pregen start 100 at 0 0 gui` is fine.
 
-```text
+```none
 /iris pregen start 352 irisworldgen:myworld at 0 0 sync
 ```
 
@@ -226,7 +226,7 @@ Studio worlds are transient: they are discarded when you close them and any left
 
 ### Plugin
 
-```text
+```none
 /iris studio create [name=…] [template=…]
 /iris studio open <dimension> [seed=…]
 /iris studio vscode [dimension=…]
@@ -242,14 +242,14 @@ Studio worlds are transient: they are discarded when you close them and any left
 
 The studio group itself has aliases `std` and `s`. Default create name is `studio`. If a project by that name already exists, Iris picks the next free name rather than failing.
 
-```text
+```none
 /iris studio open overworld seed=1337
 /iris studio vscode dimension=overworld
 ```
 
 ### Mod
 
-```text
+```none
 /iris studio create [name] [template]
 /iris studio open <pack> [seed]
 /iris studio vscode [pack]
@@ -267,7 +267,7 @@ The studio group itself has aliases `std` and `s`. Default create name is `studi
 
 Group aliases are `std` and `s`.
 
-```text
+```none
 /iris studio open overworld 1337
 /iris studio vscode overworld
 ```
@@ -280,7 +280,7 @@ Edit the pack files under `packs/overworld/`. Save a valid change and enter new 
 
 **Plugin**
 
-```text
+```none
 /iris create name=myworld type=overworld seed=1337
 /iris tp myworld
 /iris pregen start radius=352 world=myworld center=0,0 gui=false
@@ -291,7 +291,7 @@ Edit the pack files under `packs/overworld/`. Save a valid change and enter new 
 
 **Mod**
 
-```text
+```none
 /iris create myworld overworld 1337
 /iris tp irisworldgen:myworld
 /iris pregen start 352 irisworldgen:myworld at 0 0

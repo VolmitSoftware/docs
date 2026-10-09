@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-06T20:30:00.449Z
+date: 2026-10-09T17:00:00.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -77,6 +77,8 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `monitor.NativeMonitor` | Install native tick hooks and read native metrics |
 | `environment.WorldEnvironmentAccess` | Sample world sky, fog, lighting, clouds, weather, and dimension properties |
 | `monitor.NativeWorldAccess` | Access hopper, navigation, and fluid-tick operations |
+| `storage.NativeWorldStorageConverter` | Convert a staged legacy CraftBukkit world through Paper's native file converter |
+| `storage.NativeWorldStorageFork` | Flush a Paper world and replace the UUID in a staged dimension copy |
 | `protection.SpawnProtectionAccess` | Create native spawn-protection checks |
 | `proxy.ProxyForwardingAccess` | Read the active Velocity forwarding key |
 
@@ -99,6 +101,18 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 Call `snapshot` on the player’s owning thread. After loading the surrounding destination chunks, call `validate(policy)` on the personal destination’s owning region; its optional location preserves vanilla orientation and does not consume respawn-anchor charges. For shared spawn, initiate `findSharedSpawn(policy.shared())` on the shared point’s owning region and compose its returned future before applying the result on the player’s owning thread. These methods do not schedule player mutations; the caller owns chunk loading and scheduling.
 
 See [Native spawn protection](/volmlib/api/spawn-protection) for the protection decision contract.
+
+## World storage conversion
+
+`NativeWorldStorageConverter` supports Paper 26.2 and 26.3. Its `convert(server, request)` method converts a staged legacy CraftBukkit folder into current Paper dimension storage. It does not create or load a Bukkit world or request a generator.
+
+`Conversion` contains the staged source directory, staging container, target namespaced key, environment, and expected UUID. Copy the complete source before calling it. The source copy must be a direct child of the staging container. Paper consumes that copy during conversion.
+
+The converter uses Paper's data fixers to retain saved world settings and persistent data. It refuses existing output, unsupported custom dimension stems, and a changed UUID. The returned path remains inside the staging container.
+
+Run conversion on an IO executor. The caller owns source backups, chunk verification, publication, and staging cleanup. Keep original source files outside the staging container.
+
+`NativeWorldStorageFork` supports Paper 26.2 and 26.3. Call `flush(world)` on the Paper server thread to save the world and flush pending storage writes. `fork(new Fork(stagedDimension, expectedUuid, replacementUuid))` validates the copied dimension's current UUID and atomically replaces it with a distinct UUID while retaining other metadata. Call `fork` on an IO executor, and pass a staged copy rather than live world storage. The caller owns the complete dimension copy, chunk verification, publication, and cleanup.
 
 ## Terrain and world generation
 

@@ -2,7 +2,7 @@
 title: Static - Installation and configuration
 description: Runtime files, editable settings, and tracking filters
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: static, configuration
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -20,7 +20,7 @@ Put `Static.jar` in `plugins/` and restart.
 
 The plugin directory contains:
 
-```text
+```none
 Static/
   config.toml
   data/players.json

@@ -23,9 +23,9 @@
   --volmit-radius-control: 6px;
   --volmit-radius-panel: 8px;
   --volmit-header-height: 72px;
-  --volmit-edge: 32px;
-  --volmit-sidebar-width: 320px;
-  --volmit-sidebar-gap: 48px;
+  --volmit-edge: clamp(16px, 2.22vw, 32px);
+  --volmit-sidebar-width: 288px;
+  --volmit-sidebar-gap: 24px;
   --volmit-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --volmit-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color-scheme: dark;
@@ -63,7 +63,7 @@
   -webkit-backdrop-filter: blur(18px) saturate(1.5);
   border-bottom: 1px solid var(--volmit-line);
 }
-#root .v-application:has(.contents) .nav-header > .v-toolbar__content { padding-inline: 10% !important; }
+#root .v-application:has(.contents) .nav-header > .v-toolbar__content { padding-inline: var(--volmit-edge) !important; }
 #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; width: 100%; gap: 24px; align-items: center; margin: 0 !important; }
 #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content { padding-left: 0 !important; padding-right: var(--volmit-edge) !important; }
 #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content > .layout.row { grid-template-columns: var(--volmit-sidebar-width) minmax(0, 1fr) auto; gap: 0 var(--volmit-sidebar-gap); }
@@ -84,30 +84,33 @@
 #root .v-application:has(.contents) .nav-header input { color: var(--volmit-ink) !important; }
 #root .v-application:has(.contents) .nav-header .v-input__slot:focus-within { outline: 2px solid var(--volmit-focus); outline-offset: 2px; }
 #root .v-application:has(.contents) .nav-header input:focus-visible { outline: none; }
-#root .v-application:has(.contents) .volmit-home-link { cursor: pointer; border-radius: var(--volmit-radius-control); }
+#root .v-application:has(.contents) .volmit-home-link { display: flex; align-items: center; color: var(--volmit-ink); text-decoration: none; border-radius: var(--volmit-radius-control); }
+#root .v-application:has(.contents) .volmit-skip-link { position: fixed; z-index: 100; top: 12px; left: var(--volmit-edge); padding: 10px 16px; transform: translateY(calc(-100% - 20px)); border: 1px solid var(--volmit-focus); border-radius: var(--volmit-radius-control); background: var(--volmit-surface); color: var(--volmit-ink); font-size: 14px; text-decoration: none; }
+#root .v-application:has(.contents) .volmit-skip-link:focus { transform: none; }
+#root .v-application:has(.contents) :where(.page-header-headings .headline, .home-directory h1) { scroll-margin-top: calc(var(--volmit-header-height) + 100px); }
+#root .v-application:has(.contents) .volmit-reference-page .page-header-headings .headline { scroll-margin-top: calc(var(--volmit-header-height) + 32px); }
 #root .v-application:has(.contents) .v-ripple__container { display: none !important; }
+#root .v-application:has(.contents) .v-icon::before,
+#root .v-application:has(.contents) .v-icon::after { content: none !important; display: none !important; }
+#root .v-application .v-icon.volmit-lucide-icon::before,
+#root .v-application .v-icon.volmit-lucide-icon::after { content: none !important; display: none !important; }
+#root .v-application .v-icon.volmit-lucide-icon { font-family: inherit !important; }
+#root .v-application :where(svg.volmit-lucide, svg.volmit-lucide-icon, .v-icon > svg) { display: block; width: 1em; height: 1em; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 #root .v-application:has(.contents) .nav-header .v-btn--icon { width: 36px; height: 36px; border-radius: var(--volmit-radius-control) !important; }
 #root .v-application:has(.contents) .nav-header .v-btn--icon:hover { background-color: var(--volmit-selected) !important; }
-#root .v-application:has(.contents) .nav-header .v-btn:is(:has(.mdi-account-circle), :has(.mdi-account)) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='3'/%3E%3Cpath d='M5.5 19.25c.7-3.1 3.3-5 6.5-5s5.8 1.9 6.5 5'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: center !important; background-size: 18px 18px !important; }
-#root .v-application:has(.contents) .nav-header .v-btn :is(.mdi-account-circle, .mdi-account) { opacity: 0; }
+#root .v-application:has(.contents) .nav-header .v-btn :is(.mdi-account-circle, .mdi-account) { color: var(--volmit-muted) !important; font-size: 18px; }
 #root .v-application:has(.contents) .nav-header .v-btn .v-avatar:is(:has(.mdi-account), :has(.mdi-account-circle)) { border-radius: var(--volmit-radius-control) !important; background-color: transparent !important; }
-#root .v-application:has(.contents) .v-btn[aria-label="Return to top"] { right: 24px !important; bottom: 24px !important; left: auto !important; width: 40px !important; height: 40px !important; min-width: 40px !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background-color: var(--volmit-surface) !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23fafafa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 13V3M3.5 7.5 8 3l4.5 4.5'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: center !important; background-size: 16px 16px !important; box-shadow: none !important; }
+#root .v-application:has(.contents) .v-btn[aria-label="Return to top"] { right: 24px !important; bottom: 24px !important; left: auto !important; width: 40px !important; height: 40px !important; min-width: 40px !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background-color: var(--volmit-surface) !important; box-shadow: none !important; color: var(--volmit-ink) !important; }
 #root .v-application:has(.contents) .v-btn[aria-label="Return to top"]::before { display: none !important; }
-#root .v-application:has(.contents) .v-btn[aria-label="Return to top"] .v-icon { opacity: 0; }
+#root .v-application:has(.contents) .v-btn[aria-label="Return to top"] .v-icon { font-size: 18px; }
 #root .v-application:has(.contents) .v-btn[aria-label="Return to top"]:hover { background-color: var(--volmit-surface-raised) !important; }
 #root .v-application:has(.contents) .v-speed-dial.v-speed-dial--fixed { right: 24px !important; bottom: 24px !important; z-index: 7; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn { width: 40px !important; height: 40px !important; min-width: 40px !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background-color: var(--volmit-surface) !important; background-repeat: no-repeat !important; background-position: center !important; background-size: 16px 16px !important; box-shadow: none !important; color: var(--volmit-ink) !important; }
+#root .v-application:has(.contents) .v-speed-dial .v-btn { width: 40px !important; height: 40px !important; min-width: 40px !important; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-control) !important; background-color: var(--volmit-surface) !important; box-shadow: none !important; color: var(--volmit-ink) !important; }
 #root .v-application:has(.contents) .v-speed-dial .v-btn::before { display: none !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn .v-icon { opacity: 0; }
+#root .v-application:has(.contents) .v-speed-dial .v-btn .v-icon { font-size: 18px; }
 #root .v-application:has(.contents) .v-speed-dial .v-btn:hover { background-color: var(--volmit-surface-raised) !important; }
 #root .v-application:has(.contents) .v-speed-dial__list .v-btn { margin: 6px 0 !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-pencil) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23fafafa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.2 11.4 1.7 14.3l2.9-.5 8.6-8.6a1.5 1.5 0 0 0-2.1-2.1L2.2 11.4z'/%3E%3Cpath d='m10.2 4 1.8 1.8'/%3E%3C/svg%3E") !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-history) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23fafafa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='8' r='5.25'/%3E%3Cpath d='M8 5.2V8l2 1.4'/%3E%3C/svg%3E") !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-code-tags) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23fafafa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 5 3.5 8 6 11'/%3E%3Cpath d='m10 5 2.5 3L10 11'/%3E%3C/svg%3E") !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-lightning-bolt) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='%23fafafa'%3E%3Cpath d='M9 1.6 4 8.4h3.3L6.4 14.4 12 7H8.6L9 1.6z'/%3E%3C/svg%3E") !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-content-duplicate) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23fafafa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='6' width='7.2' height='7.2' rx='1'/%3E%3Cpath d='M10 6V3.8a1 1 0 0 0-1-1H3.8a1 1 0 0 0-1 1V9a1 1 0 0 0 1 1H6'/%3E%3C/svg%3E") !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-content-save-move-outline) { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23fafafa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 8h11'/%3E%3Cpath d='M9.5 4.2 13.5 8 9.5 11.8'/%3E%3C/svg%3E") !important; }
-#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-trash-can-outline) { border-color: var(--volmit-accent) !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='%23fb7185' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.2 4.8h9.6'/%3E%3Cpath d='M6.2 4.8V3.2h3.6v1.6'/%3E%3Cpath d='m4.6 4.8.6 8.2h5.6l.6-8.2'/%3E%3C/svg%3E") !important; }
+#root .v-application:has(.contents) .v-speed-dial .v-btn:has(.mdi-trash-can-outline) { border-color: var(--volmit-accent) !important; color: var(--volmit-accent) !important; }
 #root .v-application:has(.contents):has(.v-speed-dial) .v-btn[aria-label="Return to top"] { right: 76px !important; }
 #root .v-application:has(.contents) .v-chip { height: 26px; border: 1px solid var(--volmit-line) !important; border-radius: var(--volmit-radius-control) !important; background: var(--volmit-surface-raised) !important; color: var(--volmit-ink) !important; box-shadow: none !important; }
 #root .v-application:has(.contents) .v-snack__wrapper { border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-panel) !important; background: var(--volmit-surface) !important; color: var(--volmit-ink) !important; box-shadow: none !important; }
@@ -126,7 +129,7 @@
 #root .v-application:has(.contents) .search-results .v-pagination__item--active { border-color: var(--volmit-line-strong) !important; background: var(--volmit-selected) !important; }
 #root .v-application:has(.contents) .search-results .v-pagination .v-icon { color: var(--volmit-ink) !important; }
 
-#root .v-application:has(.contents) .volmit-project-bar { position: sticky; top: var(--volmit-header-height); z-index: 6; display: flex; align-items: center; gap: 32px; min-height: 76px; flex: 0 0 auto; width: 100%; padding: 10px 10%; border-bottom: 1px solid var(--volmit-line); background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); }
+#root .v-application:has(.contents) .volmit-project-bar { position: sticky; top: var(--volmit-header-height); z-index: 6; display: flex; align-items: center; gap: 32px; min-height: 76px; flex: 0 0 auto; width: 100%; padding: 10px var(--volmit-edge); border-bottom: 1px solid var(--volmit-line); background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5); }
 #root .v-application:has(.contents) .volmit-project-bar .project-switch { width: 236px; flex: 0 0 236px; padding: 8px 12px; }
 #root .v-application:has(.contents) .project-switch { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-control); background: var(--volmit-surface); color: var(--volmit-ink); text-align: left; cursor: pointer; line-height: 1.5; }
 #root .v-application:has(.contents) .project-switch:hover { border-color: var(--volmit-line-strong); background: var(--volmit-surface-raised); }
@@ -134,39 +137,41 @@
 #root .v-application:has(.contents) .project-switch-icon img { width: 32px; height: 32px; object-fit: contain; }
 #root .v-application:has(.contents) .project-switch > span:nth-child(2) { flex: 1; min-width: 0; }
 #root .v-application:has(.contents) .project-switch strong { display: block; font-size: 15px; font-weight: 600; }
-#root .v-application:has(.contents) .project-switch small { display: block; font-size: 11px; color: var(--volmit-muted); }
 #root .v-application:has(.contents) .switch-chevron { color: var(--volmit-muted); font-size: 19px; }
 #root .v-application:has(.contents) .project-tabs { display: flex; align-items: center; flex: 1; flex-wrap: nowrap; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
 #root .v-application:has(.contents) .project-tabs a { padding: 10px 12px; border-radius: var(--volmit-radius-control); color: var(--volmit-muted); font-size: 13px; text-decoration: none; white-space: nowrap; }
 #root .v-application:has(.contents) .project-tabs a:is(:hover, [aria-current]) { color: var(--volmit-ink); background: var(--volmit-selected); }
 #root .v-application:has(.contents) .all-projects { color: var(--volmit-muted); font-size: 12px; text-decoration: none; white-space: nowrap; }
 #root .v-application:has(.contents) .all-projects:hover { color: var(--volmit-ink); text-decoration: underline; }
-#root .v-application:has(.contents) .volmit-section-sidebar { position: fixed; z-index: 6; left: 0; top: var(--volmit-header-height); bottom: 0; width: var(--volmit-sidebar-width); padding: 24px 20px 24px 24px; overflow-y: auto; overscroll-behavior: contain; border-right: 1px solid var(--volmit-line); background: var(--volmit-surface); scrollbar-color: var(--volmit-line-strong) transparent; }
+#root .v-application:has(.contents) .volmit-section-sidebar { position: fixed; z-index: 6; left: 0; top: var(--volmit-header-height); bottom: 0; width: var(--volmit-sidebar-width); padding: 20px; overflow-y: auto; overscroll-behavior: contain; border-right: 1px solid var(--volmit-line); background: var(--volmit-surface); scrollbar-color: var(--volmit-line-strong) transparent; }
 #root .v-application:has(.contents) .sidebar-resize { position: absolute; z-index: 2; top: 0; right: 0; bottom: 0; width: 12px; padding: 0; border: 0; background: transparent; cursor: col-resize; touch-action: none; }
 #root .v-application:has(.contents) .sidebar-resize:hover,
 #root .v-application:has(.contents) .sidebar-resize:focus-visible { background: var(--volmit-line-strong); }
-#root .v-application:has(.contents) .volmit-section-sidebar .project-switch { margin-bottom: 24px; }
-#root .v-application:has(.contents) .reference-nav h3,
-#root .v-application:has(.contents) .reference-section-toggle { display: flex; align-items: center; width: 100%; margin: 24px 0 8px; padding: 0 10px; border: 0; background: transparent; color: var(--volmit-muted); font: 600 12px/1.5 var(--volmit-font); text-align: left; cursor: pointer; }
-#root .v-application:has(.contents) .reference-section-toggle::before { content: "▸"; display: inline-block; width: 12px; margin-right: 4px; }
-#root .v-application:has(.contents) .reference-section-toggle[aria-expanded="true"]::before { content: "▾"; }
-#root .v-application:has(.contents) .reference-nav a { display: block; padding: 10px 12px; margin: 2px 0; border-radius: var(--volmit-radius-control); color: var(--volmit-muted); font-size: 13px; line-height: 1.45; text-decoration: none; overflow-wrap: anywhere; }
+#root .v-application:has(.contents) .volmit-section-sidebar .project-switch { margin: 8px 0 20px; padding: 10px; border-color: transparent; background: transparent; }
+#root .v-application:has(.contents) .volmit-section-sidebar .project-switch:hover { background: var(--volmit-surface-raised); }
+#root .v-application:has(.contents) .reference-section-toggle { display: flex; align-items: center; width: 100%; min-height: 32px; margin: 16px 0 4px; padding: 6px 10px; border: 0; border-radius: var(--volmit-radius-control); background: transparent; color: var(--volmit-muted); font: 600 12px/1.5 var(--volmit-font); text-align: left; cursor: pointer; }
+#root .v-application:has(.contents) .reference-section-toggle:hover { color: var(--volmit-ink); background: var(--volmit-surface-raised); }
+#root .v-application:has(.contents) .reference-section-toggle > svg { width: 12px; height: 12px; margin-right: 6px; transform: rotate(0deg); }
+#root .v-application:has(.contents) .reference-section-toggle[aria-expanded="true"] > svg { transform: rotate(90deg); }
+#root .v-application:has(.contents) .reference-nav a { display: block; padding: 8px 10px; margin: 2px 0; border-radius: var(--volmit-radius-control); color: var(--volmit-muted); font-size: 13px; line-height: 1.45; text-decoration: none; overflow-wrap: anywhere; }
 #root .v-application:has(.contents) .reference-nav a:is(:hover, .active, [aria-current]) { color: var(--volmit-ink); background: var(--volmit-selected); }
 #root .v-application:has(.contents) .reference-nav a:is(.active, [aria-current]) { color: var(--volmit-ink); font-weight: 600; }
 #root .v-application:has(.contents) .reference-nav .parent { color: var(--volmit-muted); }
+#root .v-application:has(.contents) .reference-subgroup-heading { margin: 16px 10px 6px; color: var(--volmit-muted); font: 500 11px/1.5 var(--volmit-font); }
+#root .v-application:has(.contents) .reference-subgroup:has(.reference-subgroup-heading) .reference-subgroup-links { padding-left: 12px; }
 #root .v-application:has(.contents) .sidebar-footer { border-top: 1px solid var(--volmit-line); margin-top: 24px; padding-top: 12px; }
 #root .v-application:has(.contents) .sidebar-footer a { display: block; padding: 10px; color: var(--volmit-muted); font-size: 12px; text-decoration: none; }
 #root .v-application:has(.contents) :where(.mobile-section-toggle, .mobile-nav-close, .page-toc-toggle) { display: none; min-height: 44px; padding: 9px 12px; border: 1px solid var(--volmit-line-strong); border-radius: var(--volmit-radius-control); color: var(--volmit-ink); background: var(--volmit-surface-raised); font-size: 13px; cursor: pointer; }
-#root .v-application:has(.contents) .page-header-section > :where(.mobile-section-toggle, .page-toc-toggle) { margin-right: 8px; }
+#root .v-application:has(.contents) .page-header-section > :where(.mobile-section-toggle, .page-toc-toggle) { margin: 0 8px 20px 0; vertical-align: top; }
 #root .v-application:has(.contents) .section-menu-backdrop { display: none; }
 
-#root .v-application:has(.contents) .page-header-section { height: auto !important; padding: 40px 0 28px !important; background: var(--volmit-paper) !important; box-shadow: none !important; border: 0; }
+#root .v-application:has(.contents) .page-header-section { height: auto !important; padding: 32px 0 24px !important; background: var(--volmit-paper) !important; box-shadow: none !important; border: 0; }
 #root .v-application:has(.contents) .page-header-headings { padding: 0 !important; }
-#root .v-application:has(.contents) .page-header-headings .headline { color: var(--volmit-ink) !important; font: 600 40px/1.2 var(--volmit-font) !important; letter-spacing: -1.3px !important; overflow-wrap: anywhere; }
-#root .v-application:has(.contents) .page-header-headings .caption { margin-top: 12px; color: var(--volmit-muted) !important; font: 400 15px/1.65 var(--volmit-font) !important; max-width: 78ch; }
+#root .v-application:has(.contents) .page-header-headings .headline { color: var(--volmit-ink) !important; font: 600 36px/1.2 var(--volmit-font) !important; letter-spacing: -1px !important; overflow-wrap: anywhere; }
+#root .v-application:has(.contents) .page-header-headings .caption { margin-top: 12px; color: var(--volmit-muted) !important; font: 400 15px/1.65 var(--volmit-font) !important; letter-spacing: 0 !important; max-width: none; }
 #root .v-application:has(.contents) .page-col-content.is-page-header { padding: 0 !important; flex: 1 !important; max-width: none !important; }
 #root .v-application:has(.contents) .page-header-section,
-#root .v-application:has(.contents) .v-main .container.grid-list-xl { width: 80%; max-width: none; margin-left: auto; margin-right: auto; }
+#root .v-application:has(.contents) .v-main .container.grid-list-xl { width: calc(100% - 2 * var(--volmit-edge)); max-width: none; margin-left: auto; margin-right: auto; }
 #root .v-application:has(.contents) .v-main .container.grid-list-xl { padding: 0 0 64px !important; }
 #root .v-application:has(.contents) .container.grid-list-xl > .layout.row { margin: 0 !important; gap: 32px; flex-wrap: nowrap; }
 #root .v-application:has(.contents) .page-col-content:not(.is-page-header) { padding: 0 !important; flex: 1 1 0% !important; max-width: none !important; min-width: 0; }
@@ -174,42 +179,56 @@
 #root .v-application:has(.contents) .page-col-sd > .page-toc-card { position: static; margin: 0 !important; }
 #root .v-application:has(.contents) :where(.page-tags-card, .page-author-card, .page-shortcuts-card, .page-edit-shortcuts) { display: none !important; }
 #root .v-application:has(.contents) .page-toc-card { background: transparent !important; border: 0; box-shadow: none !important; }
-#root .v-application:has(.contents) .page-toc-card .overline { background: transparent !important; color: var(--volmit-ink) !important; font: 600 12px/1.5 var(--volmit-font) !important; letter-spacing: 0 !important; text-transform: none; padding: 0 0 12px !important; text-align: right; }
+#root .v-application:has(.contents) .page-toc-card .overline { background: transparent !important; color: var(--volmit-ink) !important; font: 600 12px/1.5 var(--volmit-font) !important; letter-spacing: 0 !important; text-transform: none; padding: 0 0 12px !important; text-align: left; }
 #root .v-application:has(.contents) .page-toc-card .v-list { padding: 0; background: transparent !important; }
-#root .v-application:has(.contents) .page-toc-card .v-list-item { min-height: 34px; justify-content: flex-end; padding: 6px 0; }
+#root .v-application:has(.contents) .page-toc-card .v-list-item { min-height: 34px; justify-content: flex-start; padding: 6px 0; }
 #root .v-application:has(.contents) .page-toc-card .v-list-item .v-icon { display: none; }
-#root .v-application:has(.contents) .page-toc-card .v-list-item__title { color: var(--volmit-muted); font: 400 13px/1.5 var(--volmit-font); white-space: normal; text-align: right; padding: 0 !important; }
+#root .v-application:has(.contents) .page-toc-card .v-list-item__title { color: var(--volmit-muted); font: 400 13px/1.5 var(--volmit-font); white-space: normal; text-align: left; padding: 0 !important; }
 #root .v-application:has(.contents) .page-toc-card .v-list-item:hover .v-list-item__title { color: var(--volmit-ink); }
-#root .v-application:has(.contents) .page-toc-card .v-list-item:has(.v-list-item__title.caption) { padding-right: 14px; }
-#root .v-application:has(.contents) .page-toc-card .v-list-item.is-current { background: transparent; }
-#root .v-application:has(.contents) .page-toc-card .v-list-item.is-current .v-list-item__title { color: var(--volmit-ink); font-weight: 600; }
+#root .v-application:has(.contents) .page-toc-card .v-list-item:has(.v-list-item__title.caption) { padding-left: 14px; }
 #root .v-application:has(.contents) .volmit-page-toc { display: none; }
-#root .v-application:has(.contents) .volmit-page-toc a { display: block; padding: 6px 0; color: var(--volmit-muted); font-size: 13px; line-height: 1.45; text-align: right; text-decoration: none; }
-#root .v-application:has(.contents) .volmit-page-toc a.is-sub { padding-right: 14px; }
-#root .v-application:has(.contents) .volmit-page-toc a.is-current { color: var(--volmit-ink); font-weight: 600; }
+#root .v-application:has(.contents) .page-toc-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+#root .v-application:has(.contents) .page-toc-header .page-toc-title { margin-bottom: 0; }
+#root .v-application:has(.contents) .page-toc-close { display: none; }
+#root .v-application:has(.contents) .page-toc-title { margin: 0 8px 10px; color: var(--volmit-ink); font: 600 12px/1.5 var(--volmit-font); }
+#root .v-application:has(.contents) .page-toc-links { display: flex; flex-direction: column; gap: 2px; }
+#root .v-application:has(.contents) .volmit-page-toc a { display: block; padding: 7px 8px; border-radius: var(--volmit-radius-control); color: var(--volmit-muted); font-size: 13px; line-height: 1.45; text-align: left; text-decoration: none; overflow-wrap: anywhere; }
+#root .v-application:has(.contents) .volmit-page-toc a.is-sub { padding-left: 22px; font-size: 12px; }
+#root .v-application:has(.contents) .volmit-page-toc a:is(:hover, .is-current) { color: var(--volmit-ink); background: var(--volmit-surface-raised); }
+#root .v-application:has(.contents) .volmit-page-toc a.is-current { font-weight: 600; }
 #root .v-application:has(.contents) .page-col-sd .v-card { background: var(--volmit-surface) !important; color: var(--volmit-muted); box-shadow: none; border-radius: var(--volmit-radius-panel); }
 #root .v-application:has(.contents) .page-col-sd .page-toc-card { background: transparent !important; }
-#root .v-application:has(.contents) .volmit-project-overview .page-header-headings .headline { font-size: 48px !important; letter-spacing: -1.4px !important; }
+#root .v-application:has(.contents) .volmit-project-overview .page-header-headings .headline { font-size: 44px !important; letter-spacing: -1.2px !important; }
+#root .v-application:has(.contents) :where(.volmit-project-overview, .volmit-reference-page) .page-col-sd { display: none !important; }
 #root .v-application:has(.contents) .volmit-reference-page { padding-left: calc(var(--volmit-sidebar-width) + var(--volmit-sidebar-gap)) !important; }
 #root .v-application:has(.contents) .volmit-reference-page .page-header-section,
 #root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl { width: calc(100% - var(--volmit-edge)); max-width: none; margin-left: 0; margin-right: 0; }
 #root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl > .layout.row { gap: var(--volmit-sidebar-gap); }
-#root .v-application:has(.contents) .volmit-reference-page .page-col-sd { top: var(--volmit-header-height); z-index: 2; }
-#root .v-application:has(.contents) .volmit-reference-page .page-header-headings { max-width: calc(100% - 220px - var(--volmit-sidebar-gap)); }
+#root .v-application:has(.contents) .volmit-reference-page .page-header-headings { max-width: 100%; }
 
-#root .v-application:has(.contents) .contents { padding: 0 !important; background: transparent; color: var(--volmit-ink); font: 400 15px/1.8 var(--volmit-font); overflow-wrap: anywhere; }
-#root .v-application:has(.contents) .contents > div > p:first-child { color: var(--volmit-muted); font-size: 16px; max-width: 72ch; margin: 0 0 28px; }
-#root .v-application:has(.contents) .contents :where(p, ul:not(.links-list):not(.grid-list), ol:not(.links-list), blockquote) { max-width: 72ch; }
+@media (min-width: 1264px) {
+  #root .v-application:has(.contents) .v-main.volmit-reference-page.has-page-toc .page-header-section,
+  #root .v-application:has(.contents) .v-main.volmit-reference-page.has-page-toc .container.grid-list-xl { padding-right: calc(220px + var(--volmit-sidebar-gap)) !important; }
+  #root .v-application:has(.contents) .volmit-reference-page.has-page-toc .volmit-page-toc { display: block; position: fixed; z-index: 2; top: var(--volmit-toc-top, calc(var(--volmit-header-height) + 40px)); right: var(--volmit-edge); width: 220px; max-height: calc(100dvh - var(--volmit-toc-top, calc(var(--volmit-header-height) + 40px)) - 24px); padding: 6px; overflow-y: auto; overscroll-behavior: contain; scrollbar-color: var(--volmit-line-strong) transparent; }
+}
+
+#root .v-application:has(.contents) .contents { padding: 0 !important; background: transparent; color: var(--volmit-ink); font: 400 15px/1.75 var(--volmit-font); overflow-wrap: anywhere; }
+#root .v-application:has(.contents) .contents > div > p:first-child { color: var(--volmit-muted); font-size: 16px; max-width: none; margin: 0 0 20px; }
+#root .v-application:has(.contents) .contents :where(p, ul:not(.links-list):not(.grid-list), ol:not(.links-list), blockquote) { max-width: none; }
 #root .v-application:has(.contents) .contents :where(h1, h2, h3, h4, h5, h6) { color: var(--volmit-ink); font-family: var(--volmit-font); font-weight: 600; line-height: 1.4; border: 0; padding: 0; scroll-margin-top: calc(var(--volmit-header-height) + 100px); }
 #root .v-application:has(.contents) .contents h1 { font-size: 32px; letter-spacing: -.7px; }
-#root .v-application:has(.contents) .contents h2 { margin: 36px 0 16px; font-size: 24px; letter-spacing: -.5px; }
-#root .v-application:has(.contents) .contents h3 { margin: 28px 0 12px; font-size: 19px; letter-spacing: -.2px; }
+#root .v-application:has(.contents) .contents h2 { margin: 32px 0 12px; font-size: 24px; letter-spacing: -.5px; }
+#root .v-application:has(.contents) .contents h3 { margin: 24px 0 10px; font-size: 19px; letter-spacing: -.2px; }
 #root .v-application:has(.contents) .contents :where(h4, h5, h6) { font-size: 16px; margin: 24px 0 12px; }
 #root .v-application:has(.contents) .contents h2::after { display: none; }
-#root .v-application:has(.contents) .contents p { margin-bottom: 18px; }
+#root .v-application:has(.contents) .contents p { margin-bottom: 16px; }
 #root .v-application:has(.contents) .contents a { color: var(--volmit-accent); text-underline-offset: 4px; }
 #root .v-application:has(.contents) .contents a:hover { text-decoration: underline; }
+#root .v-application:has(.contents) .contents a.is-external-link::after { content: none !important; display: none !important; }
+#root .v-application:has(.contents) .contents a.is-external-link > svg { display: inline-block; width: 14px; height: 14px; margin-left: 4px; vertical-align: middle; }
 #root .v-application:has(.contents) .contents :where(ul, ol) { padding-left: 24px; }
+#root .v-application:has(.contents) .contents ul:not(.links-list):not(.grid-list) > li { list-style-type: disc; }
+#root .v-application:has(.contents) .contents ul:not(.links-list):not(.grid-list) > li::before { content: none !important; display: none !important; }
 #root .v-application:has(.contents) .contents li { margin: 5px 0; }
 #root .v-application:has(.contents) .contents hr { border: 0; border-top: 1px solid var(--volmit-line); margin: 32px 0; }
 #root .v-application:has(.contents) .contents :where(img, video, iframe) { max-width: 100%; }
@@ -235,20 +254,17 @@
 #root .v-application:has(.contents) .contents .token.comment { color: var(--volmit-muted); }
 #root .v-application:has(.contents) .contents .token:is(.keyword, .tag, .important) { color: var(--volmit-accent); }
 #root .v-application:has(.contents) .contents .token:is(.string, .number, .boolean, .attr-value) { color: var(--volmit-focus); }
-#root .v-application:has(.contents) .contents :where(blockquote, .v-alert) { padding: 18px 20px; border: 1px solid var(--volmit-line-strong) !important; border-radius: var(--volmit-radius-panel); background: var(--volmit-surface) !important; color: var(--volmit-ink) !important; box-shadow: none; }
+#root .v-application:has(.contents) .contents :where(blockquote, .v-alert) { margin: 20px 0; padding: 0; border: 0 !important; border-radius: 0; background: transparent !important; color: var(--volmit-ink) !important; box-shadow: none; }
 #root .v-application:has(.contents) .contents blockquote > :last-child { margin-bottom: 0; }
-#root .v-application:has(.contents) .contents blockquote.is-danger { border-color: var(--volmit-accent) !important; }
+#root .v-application:has(.contents) .contents blockquote::before,
+#root .v-application:has(.contents) .contents blockquote::after { content: none !important; display: none !important; }
+#root .v-application:has(.contents) .contents .callout-label { font-weight: 600; }
+#root .v-application:has(.contents) .contents .is-danger .callout-label { color: var(--volmit-accent); }
+#root .v-application:has(.contents) .contents .is-warning .callout-label { color: var(--volmit-warning); }
+#root .v-application:has(.contents) .contents .is-info .callout-label { color: var(--volmit-info); }
+#root .v-application:has(.contents) .contents .is-success .callout-label { color: var(--volmit-success); }
 #root .v-application:has(.contents) .contents .v-alert__border { display: none; }
-
-#root .v-application:has(.contents) .contents blockquote::after { display: none; }
-#root .v-application:has(.contents) .contents blockquote.is-info { border-color: var(--volmit-info) !important; }
-#root .v-application:has(.contents) .contents blockquote.is-success { border-color: var(--volmit-success) !important; }
-#root .v-application:has(.contents) .contents blockquote.is-warning { border-color: var(--volmit-warning) !important; }
 #root .v-application:has(.contents) .contents .v-alert :where(.v-alert__icon, .v-alert__content) { color: inherit !important; }
-#root .v-application:has(.contents) .contents .v-alert.info { border-color: var(--volmit-info) !important; }
-#root .v-application:has(.contents) .contents .v-alert.success { border-color: var(--volmit-success) !important; }
-#root .v-application:has(.contents) .contents .v-alert.warning { border-color: var(--volmit-warning) !important; }
-#root .v-application:has(.contents) .contents .v-alert.error { border-color: var(--volmit-accent) !important; }
 #root .v-application:has(.contents) .contents .prismjs .line-numbers-rows { border-color: var(--volmit-line); background: transparent; }
 #root .v-application:has(.contents) .contents pre.line-numbers { padding-left: 3.8em; }
 #root .v-application:has(.contents) .contents .code-toolbar { margin: 22px 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
@@ -261,27 +277,57 @@
 #root .v-application:has(.contents) .contents :where(ul.links-list, ol.links-list) li + li { margin-top: 10px; }
 #root .v-application:has(.contents) .landing-group { margin: 28px 0 8px; }
 #root .v-application:has(.contents) .landing-group h2 { margin-top: 0; }
-#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-width: none; margin-top: 12px; }
-#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) li + li { margin-top: 0; }
+#root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-width: none; margin-top: 12px; }
+#root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) li + li { margin-top: 0; }
 #root .v-application:has(.contents) .volmit-project-overview table.spec-strip { display: block; width: 100%; max-width: none; background: transparent; }
-#root .v-application:has(.contents) .volmit-project-overview .table-container:has(table.spec-strip) { border: 0; background: transparent; overflow: visible; }
+#root .v-application:has(.contents) .volmit-project-overview .table-container:has(table.spec-strip) { max-width: none; border: 1px solid var(--volmit-line); background: var(--volmit-surface); overflow: hidden; }
 #root .v-application:has(.contents) .volmit-project-overview table.spec-strip-plain thead { display: none; }
-#root .v-application:has(.contents) .volmit-project-overview table.spec-strip tbody { display: grid; gap: 8px; }
-#root .v-application:has(.contents) .volmit-project-overview table.spec-strip tr { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-surface); }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip tbody { display: block; }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip tr { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px 14px; border: 0; border-radius: 0; background: transparent; }
+#root .v-application:has(.contents) .volmit-project-overview table.spec-strip tr + tr { border-top: 1px solid var(--volmit-line); }
 #root .v-application:has(.contents) .volmit-project-overview table.spec-strip :where(th, td) { border: 0; padding: 0; background: transparent; }
 #root .v-application:has(.contents) .volmit-project-overview table.spec-strip :where(th, td):first-child { color: var(--volmit-muted); font-weight: 600; }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a { display: block; margin: 0; padding: 14px 16px; min-height: 54px; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); background: var(--volmit-surface); color: var(--volmit-ink); font-size: 14px; font-weight: 600; line-height: 1.6; text-decoration: none; box-shadow: none; }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a:hover { background: var(--volmit-surface-raised); border-color: var(--volmit-line-strong); }
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a::before,
 #root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) li > a::after { display: none; }
-#root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) :where(em, .text--secondary) { display: block; margin-top: 6px; color: var(--volmit-muted) !important; font-size: 13px; font-style: normal; font-weight: 400; line-height: 1.6; }
+#root .v-application:has(.contents) .contents :where(ul.grid-list, ul.links-list, ol.links-list) :where(em, .text--secondary) { display: block; margin-top: 6px; padding-left: 0; border: 0; color: var(--volmit-muted) !important; font-size: 13px; font-style: normal; font-weight: 400; line-height: 1.6; }
 #root .v-application:has(.contents) .contents .links-list .title { font-family: var(--volmit-font) !important; font-size: 16px !important; font-weight: 600; color: var(--volmit-ink); }
-#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) { align-items: stretch; }
-#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) > li { display: flex; }
-#root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) > li > a { flex: 1 1 auto; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+#root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) { align-items: stretch; }
+#root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) > li { display: flex; }
+#root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) > li > a { flex: 1 1 auto; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; min-height: 44px; padding: 10px 12px; border-color: transparent; border-radius: var(--volmit-radius-control); background: transparent; font-weight: 500; }
+#root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) > li > a:hover { background: var(--volmit-surface); border-color: transparent; }
+#root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) em { margin-top: 3px; }
+#root .v-application:has(.contents) .contents :where(ul.links-list, ol.links-list, ul.grid-list) li > a.is-external-link { position: relative; padding-right: 36px; }
+#root .v-application:has(.contents) .contents :where(ul.links-list, ol.links-list, ul.grid-list) li > a.is-external-link > svg { position: absolute; top: 12px; right: 12px; margin: 0; }
+#root .v-application:has(.contents) .volmit-reference-page .contents :where(h1, h2, h3, h4, h5, h6) { scroll-margin-top: calc(var(--volmit-header-height) + 32px); }
+#root .v-application:has(.contents) .contents .volmit-cell-label { display: none; }
+#root .v-application:has(.contents) .contents .volmit-link-table :where(th, td) { padding: 10px 16px; font-size: 13px; line-height: 1.65; vertical-align: top; }
+#root .v-application:has(.contents) .contents .volmit-link-table th { color: var(--volmit-muted); font-size: 12px; font-weight: 600; }
+#root .v-application:has(.contents) .contents .volmit-link-table td:not(:first-child) { color: var(--volmit-muted); }
+#root .v-application:has(.contents) .contents .volmit-link-table .volmit-row-link { color: var(--volmit-ink); font-size: 14px; font-weight: 600; text-decoration: none; }
+#root .v-application:has(.contents) .contents .volmit-link-row,
+#root .v-application:has(.contents) .contents .volmit-link-item { position: relative; }
+#root .v-application:has(.contents) .contents .volmit-link-table .volmit-link-row > td { position: static !important; height: 44px; }
+#root .v-application:has(.contents) .contents .volmit-row-link { position: static; }
+#root .v-application:has(.contents) .contents :is(.volmit-link-row, .volmit-link-item) .volmit-row-link::after { content: "" !important; display: block !important; position: absolute; inset: 0; z-index: 1; width: auto; height: auto; margin: 0; padding: 0; border: 0; background: transparent; }
+#root .v-application:has(.contents) .contents .volmit-row-link:focus-visible { outline: none; }
+#root .v-application:has(.contents) .contents .volmit-link-table .volmit-link-row:is(:hover, :focus-within) > td { background: var(--volmit-surface-raised); }
+#root .v-application:has(.contents) .contents :is(.volmit-link-row, .volmit-link-item):has(.volmit-row-link:focus-visible) { outline: 2px solid var(--volmit-focus); outline-offset: -2px; }
+#root .v-application:has(.contents) .contents ul.volmit-link-list { margin: 16px 0 24px; padding: 0; list-style: none; }
+#root .v-application:has(.contents) .contents ul.volmit-link-list > .volmit-link-item { min-height: 44px; margin: 2px 0; padding: 10px 12px; border-radius: var(--volmit-radius-control); color: var(--volmit-muted); list-style: none; }
+#root .v-application:has(.contents) .contents .volmit-link-item:is(:hover, :focus-within) { background: var(--volmit-surface); }
+#root .v-application:has(.contents) .contents .volmit-link-item > p { margin: 0; }
+#root .v-application:has(.contents) .contents .volmit-list-link { color: var(--volmit-ink); font-weight: 500; text-decoration: none; }
+
+#root .v-application:has(.contents) .volmit-headliner { max-width: none; margin: 28px 0; }
+#root .v-application:has(.contents) .volmit-headliner__kicker { margin: 0 0 8px; color: var(--volmit-muted); font-size: 12px; }
+#root .v-application:has(.contents) .volmit-headliner h2 { margin: 0 0 12px; }
+#root .v-application:has(.contents) .volmit-headliner__actions { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+#root .v-application:has(.contents) .volmit-headliner__actions a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; }
 
 #root .v-application:has(.contents) .volmit-home-page .v-main__wrap > :not(.home-directory) { display: none !important; }
-#root .v-application:has(.contents) .home-directory { width: 80%; max-width: none; margin: 0 auto; padding: 48px 0 36px; }
+#root .v-application:has(.contents) .home-directory { width: calc(100% - 2 * var(--volmit-edge)); max-width: none; margin: 0 auto; padding: 48px 0 36px; }
 #root .v-application:has(.contents) .directory-intro { display: flex; justify-content: space-between; align-items: flex-start; gap: 32px; margin-bottom: 40px; }
 #root .v-application:has(.contents) .directory-eyebrow { margin: 0 0 12px; color: var(--volmit-accent); font-size: 12px; }
 #root .v-application:has(.contents) .home-directory h1 { margin: 0 0 16px; color: var(--volmit-ink); font: 600 48px/1.15 var(--volmit-font); letter-spacing: -1.8px; }
@@ -309,7 +355,7 @@
 #root .v-application:has(.contents) .directory-card { position: relative; display: flex; align-items: flex-start; gap: 16px; min-width: 0; border: 1px solid var(--volmit-line); border-radius: var(--volmit-radius-panel); color: var(--volmit-ink); text-decoration: none; }
 #root .v-application:has(.contents) .featured-card { min-height: 148px; padding: 22px 18px; background: var(--volmit-surface); }
 #root .v-application:has(.contents) .directory-card { padding: 22px 20px; min-height: 110px; background: var(--volmit-surface); }
-#root .v-application:has(.contents) .featured-card small { display: block; margin-top: 10px; color: var(--volmit-muted); font-size: 12px; }
+#root .v-application:has(.contents) .featured-card small { display: block; margin-top: auto; padding-top: 12px; color: var(--volmit-muted); font-size: 12px; }
 #root .v-application:has(.contents) .directory-card:hover { border-color: var(--volmit-line-strong); background: var(--volmit-surface-raised); }
 #root .v-application:has(.contents) .featured-card:hover { border-color: var(--volmit-line-strong); }
 #root .v-application:has(.contents) .directory-icon,
@@ -324,6 +370,7 @@
 #root .v-application:has(.contents) .directory-card-copy { min-width: 0; flex: 1; }
 #root .v-application:has(.contents) :where(.directory-card, .featured-card) h3 { margin: 0 0 5px; color: var(--volmit-ink); font: 600 15px/1.5 var(--volmit-font); letter-spacing: -.15px; overflow-wrap: anywhere; }
 #root .v-application:has(.contents) .featured-card h3 { font-size: 18px; }
+#root .v-application:has(.contents) .featured-card .directory-card-copy { display: flex; flex-direction: column; align-self: stretch; }
 #root .v-application:has(.contents) :where(.directory-card, .featured-card) p { margin: 0; max-width: 35ch; color: var(--volmit-muted); font-size: 12px; line-height: 1.65; }
 #root .v-application:has(.contents) .directory-type { position: absolute; top: 9px; right: 12px; color: var(--volmit-muted); font-size: 10px; line-height: 1.4; }
 #root .v-application:has(.contents) .directory-card:has(.directory-type) h3 { padding-right: 24px; }
@@ -402,7 +449,6 @@
 }
 
 @media (max-width: 1150px) {
-  #root .v-application:has(.contents) .volmit-reference-page .page-col-sd { display: none; }
   #root .v-application:has(.contents) .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row { grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; }
   #root .v-application:has(.contents) .volmit-project-bar { gap: 12px; }
@@ -413,8 +459,8 @@
 @media (max-width: 959px) {
   #root .v-application:has(.contents) .volmit-reference-page { padding-left: 0 !important; }
   #root .v-application:has(.contents) .volmit-reference-page .page-header-section,
-  #root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl { width: 80%; margin-left: auto; margin-right: auto; }
-  #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content { padding-inline: 10% !important; }
+  #root .v-application:has(.contents) .volmit-reference-page .container.grid-list-xl { width: calc(100% - 2 * var(--volmit-edge)); margin-left: auto; margin-right: auto; }
+  #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content { padding-inline: var(--volmit-edge) !important; }
   #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content > .layout.row { grid-template-columns: auto minmax(0, 1fr) auto; gap: 24px; }
   #root .v-application:has(.contents):has(.volmit-reference-page) .nav-header > .v-toolbar__content > .layout.row > .flex:first-child { padding-left: 0; }
   #root .v-application:has(.contents) .sidebar-resize { display: none; }
@@ -424,6 +470,7 @@
   #root .v-application:has(.contents) .mobile-section-toggle { display: inline-flex; align-items: center; gap: 8px; }
   #root .v-application:has(.contents) .page-header-section > .mobile-section-toggle { margin-bottom: 24px; scroll-margin-top: calc(var(--volmit-header-height) + 24px); }
   #root .v-application:has(.contents) .mobile-nav-close { display: block; margin-bottom: 16px; }
+  #root .v-application:has(.contents) .volmit-section-sidebar .mobile-nav-close { position: sticky; z-index: 2; top: 0; background: var(--volmit-surface); }
   #root .v-application:has(.contents) .volmit-project-bar .project-tabs { display: none; }
   #root .v-application:has(.contents) .volmit-project-bar .all-projects { margin-left: auto; }
   #root .v-application:has(.contents).show-section-menu .volmit-project-bar { flex-wrap: wrap; align-items: stretch; }
@@ -455,7 +502,7 @@
   #root .v-application:has(.contents) .nav-header > .v-toolbar__content > .layout.row > .flex:last-child { grid-column: 2; grid-row: 1; }
   #root .v-application:has(.contents) .nav-header .nav-header-inner,
   #root .v-application:has(.contents) .nav-header .nav-header-inner .v-toolbar__content { height: 64px !important; padding-inline: 0 !important; }
-  #root .v-application:has(.contents) .nav-header > .v-toolbar__content { padding-inline: 10% !important; }
+  #root .v-application:has(.contents) .nav-header > .v-toolbar__content { padding-inline: var(--volmit-edge) !important; }
   #root .v-application:has(.contents) .nav-header :where(.v-toolbar__title, .subheading) { font-size: 16px; }
   #root .v-application:has(.contents) .nav-header .navHeaderLoading:has([style*="display: none"]) { display: none; }
   #root .v-application:has(.contents):has(.nav-header > .v-toolbar__extension) { --volmit-header-height: 112px; }
@@ -470,22 +517,30 @@
   #root .v-application:has(.contents) .nav-header input { font-size: 16px; }
   #root .v-application:has(.contents) .nav-header .v-text-field__details { display: none; }
   #root .v-application:has(.contents) .nav-header .v-btn { margin-inline: 0; }
-  #root .v-application:has(.contents) .volmit-project-bar { gap: 8px; padding: 10px 10%; }
+  #root .v-application:has(.contents) .volmit-project-bar { gap: 8px; padding: 10px var(--volmit-edge); }
   #root .v-application:has(.contents) .volmit-project-bar .project-switch { flex: 1; width: auto; min-width: 0; max-width: 270px; }
   #root .v-application:has(.contents) .volmit-project-bar .all-projects { display: none; }
   #root .v-application:has(.contents) .page-header-headings .headline,
-  #root .v-application:has(.contents) .volmit-project-overview .page-header-headings .headline { font-size: 36px !important; letter-spacing: -1px !important; }
+  #root .v-application:has(.contents) .volmit-project-overview .page-header-headings .headline { font-size: 32px !important; letter-spacing: -.8px !important; }
   #root .v-application:has(.contents) .page-header-headings .caption { font-size: 14px !important; }
   #root .v-application:has(.contents) .contents { font-size: 14px; }
   #root .v-application:has(.contents) .contents > div > p:first-child { font-size: 15px; }
   #root .v-application:has(.contents) .contents h2 { font-size: 22px; }
   #root .v-application:has(.contents) .contents ul.grid-list,
-  #root .v-application:has(.contents) .landing-group :where(ul.links-list, ol.links-list) { grid-template-columns: 1fr; }
+  #root .v-application:has(.contents) .volmit-project-overview .contents :where(ul.links-list, ol.links-list) { grid-template-columns: 1fr; }
   #root .v-application:has(.contents) .volmit-project-overview table.spec-strip tr { grid-template-columns: 1fr; }
   #root .v-application:has(.contents) .featured-grid { grid-template-columns: 1fr; }
   #root .v-application:has(.contents) .volmit-plugin-search input { font-size: 16px; }
   #root .v-application:has(.contents) .contents :where(th, td) { padding: 10px 12px; }
   #root .v-application:has(.contents) .contents .table-container:not(:has(.spec-strip)) table { width: max-content; min-width: 100%; }
+  #root .v-application:has(.contents) .contents .table-container table.volmit-link-table { display: block; width: 100% !important; min-width: 0 !important; }
+  #root .v-application:has(.contents) .contents .volmit-link-table thead { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  #root .v-application:has(.contents) .contents .volmit-link-table tbody { display: block; }
+  #root .v-application:has(.contents) .contents .volmit-link-table .volmit-link-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--volmit-line); }
+  #root .v-application:has(.contents) .contents .volmit-link-table .volmit-link-row:last-child { border-bottom: 0; }
+  #root .v-application:has(.contents) .contents .volmit-link-table .volmit-link-row > td { display: block; width: auto; height: auto; padding: 0; border: 0; background: transparent; }
+  #root .v-application:has(.contents) .contents .volmit-link-table .volmit-link-row:is(:hover, :focus-within) { background: var(--volmit-surface-raised); }
+  #root .v-application:has(.contents) .contents .volmit-link-table .volmit-cell-label { display: block; margin-bottom: 2px; color: var(--volmit-muted); font-size: 11px; font-weight: 600; line-height: 1.5; }
   #root .v-application:has(.contents) .home-directory { margin-inline: auto; padding: 30px 0; }
   #root .v-application:has(.contents) .directory-intro { display: block; margin-bottom: 30px; }
   #root .v-application:has(.contents) .community-link { display: inline-block; margin-top: 20px; }
@@ -521,16 +576,19 @@
 
 @media (max-width: 1263px) {
   #root .v-application:has(.contents) .page-toc-toggle { display: inline-flex; align-items: center; }
+  #root .v-application:has(.contents) .page-toc-close { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--volmit-line-strong); border-radius: var(--volmit-radius-control); background: var(--volmit-surface-raised); color: var(--volmit-ink); font-size: 13px; cursor: pointer; }
+  #root .v-application:has(.contents) .volmit-reference-page .page-header-headings { max-width: 100%; }
+  #root .v-application:has(.contents) .volmit-page-toc a { display: flex; align-items: center; min-height: 44px; }
   #root .v-application.show-page-toc:has(.contents) .volmit-page-toc {
     display: block;
     position: fixed;
     z-index: 12;
-    top: calc(var(--volmit-header-height) + 12px);
+    top: var(--volmit-toc-popup-top, calc(var(--volmit-header-height) + 12px));
     right: 16px;
     left: auto;
     width: min(320px, calc(100vw - 32px));
     max-width: min(320px, calc(100vw - 32px));
-    max-height: min(70dvh, 560px);
+    max-height: min(560px, calc(100dvh - var(--volmit-toc-popup-top, calc(var(--volmit-header-height) + 12px)) - 16px));
     margin: 0;
     padding: 12px 14px;
     overflow: auto;
@@ -678,4 +736,122 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .volmit-lost-copy { animation: none; }
+}
+
+#root .v-application:has(.login, .register) {
+  --volmit-paper: #000;
+  --volmit-surface: #0a0a0b;
+  --volmit-surface-raised: #141416;
+  --volmit-ink: #fafafa;
+  --volmit-muted: #a1a1aa;
+  --volmit-line: rgba(255, 255, 255, 0.08);
+  --volmit-line-strong: rgba(255, 255, 255, 0.16);
+  --volmit-focus: #e4e4e7;
+  --volmit-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: dark;
+  background: var(--volmit-paper) !important;
+  color: var(--volmit-ink) !important;
+  font-family: var(--volmit-font);
+}
+#root .v-application:has(.login, .register) .v-application--wrap { background: var(--volmit-paper); }
+#root .v-application :is(.login, .register) {
+  background: var(--volmit-paper) !important;
+  color: var(--volmit-ink);
+  animation: none;
+}
+#root .v-application .register::before { display: none; }
+#root .v-application :is(.login, .register) :where(.text-h6, .text-subtitle-1, .display-1, .subheading, .body-2, .caption, .v-input, .v-btn, input) {
+  font-family: var(--volmit-font) !important;
+  letter-spacing: normal !important;
+}
+#root .v-application :is(.login, .register) :where(.grey--text, .indigo--text, .blue--text, .v-icon, .v-card__text) { color: var(--volmit-ink) !important; }
+#root .v-application .login-sd {
+  background: var(--volmit-surface) !important;
+  border: 1px solid var(--volmit-line-strong);
+  box-shadow: none !important;
+  backdrop-filter: none;
+}
+#root .v-application .login-logo { background: transparent; }
+#root .v-application .login-title .text-h6 { font-size: 20px !important; font-weight: 600; }
+#root .v-application .login-subtitle {
+  padding: 24px 24px 12px;
+  background: none;
+  border: 0;
+  color: var(--volmit-ink);
+}
+#root .v-application .login-form { padding: 12px 24px 24px; border: 0; }
+#root .v-application .login-info { padding: 0 24px 12px; border: 0; background: transparent; color: var(--volmit-muted); line-height: 1.6; }
+#root .v-application .register .v-card {
+  border: 1px solid var(--volmit-line-strong);
+  border-radius: 8px !important;
+  background: var(--volmit-surface) !important;
+  box-shadow: none !important;
+}
+#root .v-application .register .v-card :is(.v-toolbar, .v-toolbar__content, .v-card__actions) { background: transparent !important; }
+#root .v-application .register .v-toolbar { border-radius: 8px 8px 0 0; }
+#root .v-application .register .v-card__text { padding: 20px 24px; }
+#root .v-application .register h1.display-1 { font-size: 26px !important; line-height: 1.3 !important; font-weight: 600; }
+#root .v-application .register .v-card__text > .body-2 { color: var(--volmit-muted); }
+#root .v-application .register .v-divider { border-color: var(--volmit-line); }
+#root .v-application .register .v-card__actions:last-child { border-radius: 0 0 8px 8px; }
+#root .v-application :is(.login, .register) .v-input__control { min-width: 0; }
+#root .v-application :is(.login, .register) .v-input__slot {
+  min-height: 48px;
+  padding-inline: 12px;
+  border: 1px solid var(--volmit-line-strong);
+  border-color: var(--volmit-line-strong) !important;
+  border-radius: 6px !important;
+  background: var(--volmit-surface-raised) !important;
+  box-shadow: none !important;
+}
+#root .v-application :is(.login, .register) .v-input__slot:focus-within { outline: 2px solid var(--volmit-focus); outline-offset: 2px; }
+#root .v-application :is(.login, .register) .v-input__slot::before,
+#root .v-application :is(.login, .register) .v-input__slot::after { display: none; }
+#root .v-application :is(.login, .register) input { min-width: 0; color: var(--volmit-ink) !important; caret-color: var(--volmit-ink); font-size: 16px; }
+#root .v-application :is(.login, .register) input::placeholder { color: var(--volmit-muted) !important; opacity: 1; }
+#root .v-application :is(.login, .register) input:focus { outline: none; }
+#root .v-application :is(.login, .register) input:-webkit-autofill { -webkit-text-fill-color: var(--volmit-ink); box-shadow: inset 0 0 0 1000px var(--volmit-surface-raised); }
+#root .v-application :is(.login, .register) .v-input__append-inner { padding: 0; margin: 0; align-self: center; }
+#root .v-application :is(.login, .register) .v-input__icon:has(button) { width: 44px; height: 44px; }
+#root .v-application :is(.login, .register) button.v-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  color: var(--volmit-muted) !important;
+}
+#root .v-application :is(.login, .register) button.v-icon svg { width: 20px; height: 20px; }
+#root .v-application :is(.login, .register) button.v-icon:hover { background: rgba(255, 255, 255, 0.06); color: var(--volmit-ink) !important; }
+#root .v-application :is(.login, .register) .v-btn {
+  min-height: 44px;
+  border: 1px solid var(--volmit-line-strong);
+  border-color: var(--volmit-line-strong) !important;
+  border-radius: 6px !important;
+  background: var(--volmit-surface-raised) !important;
+  color: var(--volmit-ink) !important;
+  box-shadow: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: none;
+}
+#root .v-application :is(.login, .register) .v-btn:hover { background: #1c1c1f !important; }
+#root .v-application :is(.login, .register) .v-btn::before { display: none; }
+#root .v-application :is(.login, .register) .v-btn--text { border-color: transparent !important; background: transparent !important; }
+#root .v-application :is(.login, .register) :where(a, button):focus-visible { outline: 2px solid var(--volmit-focus) !important; outline-offset: 3px; }
+#root .v-application :is(.login, .register) a:not(.v-btn) { color: var(--volmit-ink); text-decoration: underline; text-underline-offset: 3px; }
+#root .v-application :is(.login, .register) :where(.v-counter, .v-messages, .password-strength .caption) { color: var(--volmit-muted) !important; }
+#root .v-application :is(.login, .register) .v-input.error--text .v-input__slot { border-color: #fb7185 !important; }
+#root .v-application :is(.login, .register) .error--text .v-messages { color: #fda4af !important; }
+#root .v-application :is(.login, .register) .v-alert {
+  margin-inline: 24px;
+  border: 1px solid rgba(251, 113, 133, 0.4);
+  border-color: rgba(251, 113, 133, 0.4) !important;
+  border-radius: 6px !important;
+  background: rgba(251, 113, 133, 0.06) !important;
+  color: #fda4af;
+}
+#root .v-application:has(.register) .v-footer { background: var(--volmit-paper) !important; color: var(--volmit-muted); }
+@media (max-width: 600px) {
+  #root .v-application .login-sd { border: 0; background: var(--volmit-paper) !important; }
+  #root .v-application .register .container.grid-list-lg { padding-block: 24px; }
+  #root .v-application .register .v-card__text { padding: 20px 16px; }
 }

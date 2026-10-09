@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-04T17:24:27.355412+00:00
+date: 2026-10-09T16:48:42.787Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -158,6 +158,8 @@ Use the Bukkit command names shown below.
 | `what` | | Both | see What | Inspect context |
 | `edit` | | Both | see Edit | Open pack JSON in the desktop editor |
 | `pregen` | `pregenerate` | Both | see Pregen | Pregeneration control |
+| `developer regen` | `dev regen`, `developer rg` | **Bukkit** | `[radius=5]`, nonnegative chunk radius | Regenerate nearby chunks in place around the player |
+| `regen` | | **Modded** | `[radius=0]`, chunk radius `0..64` | Regenerate nearby chunks in place around the player |
 | `object` | `o` | Both | see Object | Object tools |
 | `studio` | `std`, `s` | Both | see Studio | Studio / pack authoring |
 | `jigsaw` | `jig`, `jgs` | **Bukkit** | see Jigsaw | Planar and spatial Jigsaw Studio |

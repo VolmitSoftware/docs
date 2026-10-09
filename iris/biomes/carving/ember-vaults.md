@@ -2,7 +2,7 @@
 title: "Ember Vaults - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/ember-vaults"
 published: true
-date: 2026-10-05T16:28:23.269830+00:00
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -63,7 +63,7 @@ The `carving/ember-vaults` CAVE pool selects skeletons and bats in Overworld, or
 
 On Bukkit-family servers:
 
-```text
+```none
 /iris find subterrain ember-vaults radius=8192 teleport=false
 /iris find underground-biome carving/ember-vaults radius=8192 teleport=false
 /iris what biome

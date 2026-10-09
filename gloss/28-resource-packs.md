@@ -2,7 +2,7 @@
 title: "Resource Packs & Glyph Fonts"
 description: "Author bitmap glyphs, build named fonts, and deliver the Gloss resource pack"
 published: true
-date: 2026-10-08T13:00:00Z
+date: 2026-10-09T16:52:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T00:00:00.000Z
@@ -99,7 +99,7 @@ The space provider accepts a `[minimum, maximum]` range within `-256`–`256`. T
 
 Use these expressions in rendered Gloss text, including scoreboard titles and rows and inventory item names and lore. Inventory tooltips retain the rendered name and lore, including each glyph's declared font. Text can combine glyphs from different fonts on the same line:
 
-```text
+```none
 {{ glyph('coin') }} Balance
 {{ shift(8) }}Indented
 {{ at(32, 'Label') }}

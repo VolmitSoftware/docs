@@ -2,7 +2,7 @@
 title: SkyPrime - Installation and configuration
 description: Runtime requirements, world provisioning and SkyPrime's TOML files
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: skyprime, installation, configuration, folia
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -36,7 +36,7 @@ World names, enabled dimensions, grid spacing and base height are structural set
 
 ## Files
 
-```text
+```none
 plugins/SkyPrime/
   config.toml
   config/

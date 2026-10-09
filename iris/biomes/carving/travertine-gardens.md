@@ -2,7 +2,7 @@
 title: "Travertine Gardens - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/travertine-gardens"
 published: true
-date: 2026-10-05T16:28:23.269830+00:00
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -66,7 +66,7 @@ The `carving/travertine-gardens` CAVE spawner caps each chunk at three entities 
 
 On Bukkit-family servers:
 
-```text
+```none
 /iris goto biome biome=carving/travertine-gardens
 /iris find subterrain travertine-gardens radius=8192 teleport=false
 /iris find underground-biome carving/travertine-gardens radius=8192 teleport=false

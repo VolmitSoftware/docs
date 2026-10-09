@@ -16,8 +16,8 @@ function project(name, projectPath, extra = {}) {
     ...(extra.featured ? { featured: true } : {}),
     group: extra.group || 'Plugins',
     sections: extra.sections || [
-      { title: 'Start here', links: [{ title: 'Installation', href: `/${projectPath}/01-installation` }] },
-      { title: 'Authoring', links: [{ title: 'Dimensions', href: `/${projectPath}/11-dimensions` }] }
+      { title: 'Start here', groups: [{ title: '', links: [{ title: 'Installation', href: `/${projectPath}/01-installation` }] }] },
+      { title: 'Authoring', groups: [{ title: 'Pack structure', links: [{ title: 'Dimensions', href: `/${projectPath}/11-dimensions` }] }] }
     ]
   };
 }
@@ -252,12 +252,12 @@ test('reference sidebar width follows the keyboard and is remembered', async () 
     assert.equal(handle.getAttribute('role'), 'separator');
     assert.equal(handle.getAttribute('aria-orientation'), 'vertical');
     const before = Number.parseInt(app.style.getPropertyValue('--volmit-sidebar-width'), 10);
-    assert.equal(before, 320);
+    assert.equal(before, 288);
     assert.equal(window.localStorage.getItem('volmit-sidebar-width'), null);
     handle.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight' }));
     const after = Number.parseInt(app.style.getPropertyValue('--volmit-sidebar-width'), 10);
-    assert.equal(after, 336);
-    assert.equal(window.localStorage.getItem('volmit-sidebar-width'), '336');
+    assert.equal(after, 304);
+    assert.equal(window.localStorage.getItem('volmit-sidebar-width'), '304');
   } finally {
     close();
   }
@@ -273,7 +273,7 @@ test('a narrow reference page keeps the desktop sidebar width', async () => {
   );
   try {
     const app = window.document.querySelector('.v-application');
-    assert.equal(app.style.getPropertyValue('--volmit-sidebar-width'), '320px');
+    assert.equal(app.style.getPropertyValue('--volmit-sidebar-width'), '288px');
     assert.equal(window.localStorage.getItem('volmit-sidebar-width'), null);
   } finally {
     close();
@@ -282,14 +282,14 @@ test('a narrow reference page keeps the desktop sidebar width', async () => {
 
 test('page frame, toc, and header share one spacing system', () => {
   const css = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.css'), 'utf8');
-  assert.match(css, /\.nav-header > \.v-toolbar__content \{[^}]*padding-inline: 10% !important;/);
+  assert.match(css, /\.nav-header > \.v-toolbar__content \{[^}]*padding-inline: var\(--volmit-edge\) !important;/);
   assert.match(css, /grid-template-columns: auto minmax\(0, 1fr\) auto;/);
-  assert.match(css, /\.page-toc-card \.v-list-item__title \{[^}]*text-align: right;/);
+  assert.match(css, /\.volmit-page-toc a \{[^}]*text-align: left;/);
   assert.match(css, /\.volmit-reference-page \.container\.grid-list-xl \{[^}]*width: calc\(100% - var\(--volmit-edge\)\);/);
-  assert.match(css, /--volmit-sidebar-gap: 48px;/);
+  assert.match(css, /--volmit-sidebar-gap: 24px;/);
   assert.match(css, /\.volmit-reference-page \{[^}]*padding-left: calc\(var\(--volmit-sidebar-width\) \+ var\(--volmit-sidebar-gap\)\) !important;/);
   assert.match(css, /grid-template-columns: var\(--volmit-sidebar-width\) minmax\(0, 1fr\) auto; gap: 0 var\(--volmit-sidebar-gap\);/);
-  assert.match(css, /\.volmit-reference-page \.page-col-sd \{[^}]*top: var\(--volmit-header-height\);/);
+  assert.match(css, /\.page-col-sd \{[^}]*display: none !important;/);
   assert.match(css, /\.sidebar-resize \{[^}]*cursor: col-resize;/);
 });
 
@@ -328,7 +328,8 @@ test('project pages settle instead of rebuilding forever', async () => {
     await new Promise((resolve) => setTimeout(resolve, 50));
     assert.equal(window.document.documentElement.classList.contains('volmit-loading'), false);
     assert.equal(window.document.querySelectorAll('.volmit-project-bar').length, 1);
-    assert.equal(window.document.querySelectorAll('.volmit-page-toc a').length, 1);
+    assert.equal(window.document.querySelector('.volmit-page-toc'), null);
+    assert.equal(window.document.querySelectorAll('.project-tabs a[href="#start"]').length, 1);
     assert.ok(observerCalls() < 30);
   } finally {
     close();
@@ -341,7 +342,7 @@ test('landing rows share a height and pages crossfade', () => {
   assert.match(css, /@view-transition\s*\{\s*navigation:\s*auto;\s*\}/);
   assert.match(css, /volmit-page-in 150ms ease-out both/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*@view-transition\s*\{\s*navigation:\s*none;\s*\}/);
-  assert.match(css, /\.landing-group :where\(ul\.links-list, ol\.links-list\) > li > a \{[^}]*justify-content: center;/);
+  assert.match(css, /\.volmit-project-overview \.contents :where\(ul\.links-list, ol\.links-list\) > li > a \{[^}]*justify-content: flex-start;/);
 });
 
 test('phone search stacks and the section menu stays in flow', () => {
@@ -359,8 +360,6 @@ test('admin edit dial is a flat control', () => {
   const css = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.css'), 'utf8');
   assert.match(css, /\.v-speed-dial \.v-btn \{[^}]*border-radius: var\(--volmit-radius-control\) !important;/);
   assert.match(css, /\.v-speed-dial \.v-btn \{[^}]*box-shadow: none !important;/);
-  assert.match(css, /\.v-speed-dial \.v-btn:has\(\.mdi-pencil\) \{[^}]*background-image:/);
-  assert.match(css, /\.v-speed-dial \.v-btn \.v-icon \{[^}]*opacity: 0;/);
   assert.match(css, /:has\(\.v-speed-dial\) \.v-btn\[aria-label="Return to top"\] \{[^}]*right: 76px !important;/);
 });
 
@@ -374,6 +373,41 @@ test('a real page description stays visible', async () => {
   try {
     assert.equal(window.document.querySelector('.page-header-headings .caption').hidden, false);
     assert.equal(window.document.querySelector('.volmit-plugin-search input').getAttribute('aria-label'), 'Search Adapt');
+  } finally {
+    close();
+  }
+});
+
+test('mobile page navigation isolates the background and restores it on dismissal and resize', async () => {
+  const { window, close } = await boot(
+    '/iris/01-installation',
+    '<h2 id="requirements">Requirements</h2><p>Install the jar.</p>',
+    'Installation',
+    'Iris documentation: Installation',
+    { innerWidth: 390 }
+  );
+  try {
+    const toggle = window.document.querySelector('.mobile-section-toggle');
+    const menu = window.document.querySelector('#volmit-page-navigation');
+    const header = window.document.querySelector('.nav-header');
+    const article = window.document.querySelector('.v-main__wrap');
+    toggle.click();
+    assert.equal(menu.getAttribute('aria-modal'), 'true');
+    assert.equal(header.inert, true);
+    assert.equal(article.inert, true);
+    assert.equal(window.document.activeElement, menu.querySelector('.mobile-nav-close'));
+    menu.querySelector('.mobile-nav-close').click();
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(Boolean(header.inert), false);
+    assert.equal(Boolean(article.inert), false);
+    assert.equal(window.document.activeElement, toggle);
+    toggle.click();
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1440 });
+    window.dispatchEvent(new window.Event('resize'));
+    assert.equal(toggle.getAttribute('aria-expanded'), 'false');
+    assert.equal(menu.hasAttribute('aria-modal'), false);
+    assert.equal(Boolean(header.inert), false);
+    assert.equal(Boolean(article.inert), false);
   } finally {
     close();
   }

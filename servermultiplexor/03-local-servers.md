@@ -2,7 +2,7 @@
 title: "Local servers"
 description: "Consumers, instances, runtime settings, backups, and workspace checks"
 published: true
-date: 2026-09-28T00:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "servermultiplexor"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -121,7 +121,7 @@ Paper/Spigot/Purpur `/restart` is wired to a per-instance `multiplexor-restart.s
 
 `runtime metrics` prints one tab-separated row per instance, with these ordered columns:
 
-```text
+```none
 name, state, port, locked, players, max, version, tps, isolated,
 uptimeSeconds, cpuPercent, rssBytes, logPath, latencyMs, diskBytes,
 networkRxBytes, networkTxBytes, memoryLimitBytes, diskLimitBytes,

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-08T20:57:33.580Z
+date: 2026-10-09T17:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,9 +36,11 @@ On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod
 
 The F3 debug screen shows `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wormholes: Disconnected`. The Wormholes label is gold; connected is green, mismatch is yellow, and disconnected is red. Mismatch means the ClientView protocol or Minecraft version is incompatible. Connection status appears on F3 without a chat notification.
 
-Native portal views use Minecraft models, textures, and destination lighting. On Fabric, Forge, and NeoForge servers and in singleplayer, portals and doors the player can travel through are drawn from the destination world itself by the game's renderer, Sodium, and Iris Shaders; other views are streamed from the server. See [ClientView](/wormholes/05-projection-modes-settings#clientview). With Iris Shaders, the client creates the shader pipeline of every dimension while the world loads, so approaching a portal never compiles shaders.
+Native portal views use Minecraft models, textures, and destination lighting. On Fabric, Forge, and NeoForge servers and in singleplayer, traversable portals and doors show the destination world through Minecraft, Sodium, and Iris Shaders. Other views stream from the server. See [ClientView](/wormholes/05-projection-modes-settings#clientview).
 
-For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for Minecraft 26.3. Iris Shaders is separate from the Iris world-generation plugin and mod. When using [Distant Horizons](https://modrinth.com/mod/distanthorizons), select a shader pack with explicit Distant Horizons support. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
+With Iris Shaders, the client prepares each dimension's main shader pipeline while the world loads. Portal views and mirrors require separate pipelines for their camera histories. Dimension warmup does not prepare these additional pipelines. Before drawing visible views, the client prepares their shader pipelines; this can pause the frame when a view first appears, after shader reload, or after cache expiry. A visible cross-dimension portal also prepares its crossing and return cameras when the cache has room. A matching arrival portal continues the prepared return camera's history. Moving the camera or briefly closing and reopening the same view reuses its pipeline and history. The cache holds up to 12 view pipelines and releases them after 60 seconds without use; capacity pressure can release an unused view sooner.
+
+For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for Minecraft 26.3. Iris Shaders is separate from the Iris world-generation plugin and mod. For distant terrain on Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
 
 ### `config/wormholes-client.toml`
 
@@ -50,7 +52,7 @@ The client creates this file in its `config/` folder on first launch and reads i
 | `max-plate-memory-mb` | `256` | Shared memory budget in MiB for received portal sections, 16–4096. Retained destination history uses at most one third of this budget, capped at 128 MiB. Locally visited sections have a separate 64 MiB cache. Visible sections arrive progressively; evicted contents are reacquired with the native renderer |
 | `resident-level-memory-mb` | `512` | Memory budget in MiB for destination worlds kept loaded behind portals on servers with seamless crossing, 64–8192. Closed destinations beyond it are released, oldest first |
 | `show-debug-overlay` | `false` | Show detailed ClientView metrics on F3 alongside the connection status |
-| `atmosphere-dominance-blocks` | `2.5` | Distance in blocks from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky; the destination sky inside native portal views is independent of this setting |
+| `atmosphere-dominance-blocks` | `2.5` | With `renderer = "block-packets"`, distance from a portal plane within which the destination's time and weather replace the local sky, 0–16. `0` keeps the local sky. Native world and streamed mesh views keep local time and weather and draw destination atmosphere inside the opening |
 | `client-mirror` | `true` | Draw mirror portals from this client's own loaded chunks when the server allows it |
 | `client-recursion` | `true` | Show nested mirrors and portals through their own destinations, in world views and in streamed views the server sends them for |
 | `self-reflection` | `true` | Show your own reflection in mirror views |

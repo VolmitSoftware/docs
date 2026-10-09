@@ -2,7 +2,7 @@
 title: "Rift: Overview"
 description: "World states, lifecycle behavior, and the Rift safety model"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-09T00:00:00.000Z
 tags: "rift, world-management, lifecycle, safety"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -23,7 +23,11 @@ Use `/rift list [page]` to browse known worlds and `/rift info <name>` to inspec
 
 ## Managed worlds
 
-`/rift create` makes a managed world. `/rift import` adds a profile to an existing world. `/rift load` can open a world without making it managed.
+`/rift create` explicitly creates a managed world. `/rift import` registers existing storage or adopts an already loaded world without loading or generating it. `/rift load` opens validated storage for a managed world.
+
+Each profile records the exact namespaced key, UUID, directory, and lifecycle owner separately from its command and display names. Use a command name or the full namespaced key to select a managed world.
+
+Automatic loading is disabled by default. Enable both `autoLoadManagedWorlds` and the individual profile's `autoLoad` flag to opt in. Rift does not probe generator plugins during discovery or adoption. An explicit load attaches the configured generator for new chunks and refuses unavailable generators or lifecycle owners.
 
 The built-in `void` generator creates an empty world with a small bedrock spawn platform.
 

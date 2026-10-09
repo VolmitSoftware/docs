@@ -2,7 +2,7 @@
 title: "Adapt CSS Page Example"
 description: "A compact Wiki.js landing page example using Adapt content"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-10-09T16:58:33.000Z
 tags: "meta, wikijs, css, layouts, adapt, examples"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -99,7 +99,7 @@ when the final hit leaves the player alive at four hearts or less.
 
 TragOul's skill file is:
 
-~~~text
+~~~none
 plugins/Adapt/skills/tragoul.toml
 ~~~
 

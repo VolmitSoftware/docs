@@ -2,7 +2,7 @@
 title: "API: Placeholders"
 description: "Read Gloss state through PlaceholderAPI"
 published: true
-date: 2026-10-07T00:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -22,7 +22,7 @@ Gloss also resolves normal PlaceholderAPI placeholders inside holograms, scorebo
 
 To expose your own values, register a normal PlaceholderAPI expansion. Gloss will resolve it from configured text:
 
-```text
+```none
 <green>Mana: %myplugin_mana%
 ```
 

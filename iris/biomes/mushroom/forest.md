@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mushroom Forest"
 description: "Iris biome atlas entry for mushroom/forest in Overworld and Underworld"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -69,7 +69,7 @@ No floating child biomes are declared.
 
 Run these in an Iris world and inspect freshly generated terrain:
 
-```text
+```none
 /iris find biome mushroom/forest
 /iris what biome
 /iris what region

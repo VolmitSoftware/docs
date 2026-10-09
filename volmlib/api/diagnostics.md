@@ -2,7 +2,7 @@
 title: "Shared diagnostic reports"
 description: "Debug dump commands, permissions, report contents, and the Bukkit diagnostics API"
 published: true
-date: 2026-09-11T16:41:06.000Z
+date: 2026-10-09T16:58:33.000Z
 tags: "volmlib, api, diagnostics"
 editor: markdown
 dateCreated: 2026-09-03T04:58:11.006Z
@@ -31,7 +31,7 @@ For commands exposing an `upload` argument, append `upload=false` to keep the re
 
 These commands use the Bukkit service; Iris's mod-loader command trees do not expose this service. Existing gameplay debug toggles and debug subcommands remain separate from report generation.
 
-`/gilt debug` always saves a local report and has no upload argument. A shared request for Gilt can upload only when its `debugUpload` setting is enabled; that setting defaults to false. See [Gilt diagnostics](/gilt/04-compatibility-operations#diagnostic-reports).
+`/gilt debug` always saves a local report and has no upload argument. A shared request for Gilt can upload only when its `debugUpload` setting is enabled; that setting defaults to false.
 
 `/volmit plugins debug` lists the available report providers. Use `/volmit plugins debug <plugin> [upload=true|false]` for one plugin or `/volmit plugins debug all [upload=true|false]` for every provider you may access. One failed provider does not stop the others. Results include local paths and any upload links.
 
@@ -88,3 +88,20 @@ The text resolver runs with the requesting player's language context. Component-
 `DebugDumpContributor.capture()` runs on the global scheduler and returns a `DebugDumpContributor.Report`. `Report.render()` runs on the asynchronous worker. Capture immutable values or copies of safely readable plugin state, then format those captured values in `render()`. Do not access live region-owned world or entity state from the global capture or asynchronous render callback.
 
 The shared service captures Bukkit state on the global scheduler, performs formatting, hashing, file writes, and network upload off gameplay threads, and delivers player feedback through the player's entity scheduler. Contributor failures retain the common report with a failure marker and emit the full exception to the console. Call `close()` during shutdown to cancel queued capture and writer work, interrupt an active upload, complete aggregate callers, prevent new work, and suppress later command feedback.
+
+## Container memory
+
+Use `art.arcane.volmlib.util.diagnostics.ContainerMemory.snapshot()` to read the process's visible Linux cgroup memory limits and usage. The API supports cgroup v1 and v2, including container namespaces and visible ancestor limits. Snapshots can be up to 200 milliseconds old.
+
+| Snapshot method | Contract |
+|---|---|
+| `supported()` | Return `true` when a finite memory limit is available |
+| `limitBytes()` | Return the smallest visible finite limit |
+| `usedBytes()` | Return raw memory usage for the scope with that limit |
+| `workingSetBytes()` | Return usage for that scope after subtracting clean inactive file cache |
+| `pressureFraction()` | Return the highest working-set-to-limit ratio across visible finite scopes |
+| `headroomBytes()` | Return the smallest remaining working-set headroom across visible finite scopes, with a minimum of zero |
+
+Dirty pages and pages under writeback remain in the working set. If cache statistics are unavailable or invalid, the working set includes all charged usage. A read failure retains the last available limit and usage. A new finite limit without readable usage reports full pressure.
+
+Check `supported()` before applying a container limit. When no finite limit is available, `limitBytes()` and `headroomBytes()` return `Long.MAX_VALUE`, while usage and pressure return zero. Pressure can exceed `1.0` when usage exceeds a limit. Ancestor pressure and headroom use each ancestor's own usage, which can include other processes under that ancestor.

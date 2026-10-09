@@ -2,7 +2,7 @@
 title: "Shorelines"
 description: "Paired atlas reference for 17 direct shoreline roots and two unselected shoreline assets"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas, shore"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -124,7 +124,7 @@ None of the 19 shoreline assets declares `children` or `floatingChildBiomes`. Se
 
 Use any key from the table:
 
-```text
+```none
 /iris find biome tropical/beach-charred
 /iris what biome
 /iris edit biome tropical/beach-charred

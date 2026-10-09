@@ -2,7 +2,7 @@
 title: "Structures Overview"
 description: "Iris documentation: Structures Overview"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -56,7 +56,7 @@ Separately from the mode, a structure declares a compatibility contract. `IRIS_E
 
 Example: create a planar project and place the finished structure from a region:
 
-```text
+```none
 /iris jigsaw create dimension=<pack> key=forts/border mode=planar width=15 height=15 depth=15
 ```
 

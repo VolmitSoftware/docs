@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-10-06T22:44:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -259,7 +259,7 @@ Create the project with `compatibility=vanilla`, then keep the graph inside the 
 
 Export reads the committed graph, not pending workcell blocks. Wait for autosave to finish and confirm the automatic evaluation is no longer `PENDING`, `STALE`, or `INVALID`:
 
-```text
+```none
 /iris jigsaw export namespace=demo output=village-demo format=zip replace=false
 ```
 

@@ -12,7 +12,7 @@ function demonstration(id, views = ['pov', 'observer']) {
       `<video src="/wormholes-assets/demos/${id}-${client}-${view}.webm" controls></video>`).join('') + '</div>').join('')}</div>`;
 }
 
-async function page(t, perspective, single = false) {
+async function page(t, perspective, single = false, reducedMotion = false) {
   const dom = new JSDOM('<div id="root"><div class="v-application"><main class="v-main"><div class="contents">'
     + ['wand-creation', 'rune-creation', 'portal-linking'].map(id => demonstration(id, single && id !== 'portal-linking' ? ['pov'] : ['pov', 'observer'])).join('')
     + '<div class="adapt-demo"><video src="/adapt-assets/demo-pov.webm"></video><video src="/adapt-assets/demo-observer.webm"></video></div>'
@@ -21,6 +21,7 @@ async function page(t, perspective, single = false) {
     + '</div></main></div></div>', { url: 'https://example.test/wormholes/03-building-portals', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
+  window.matchMedia = (query) => ({ matches: reducedMotion && query === '(prefers-reduced-motion: reduce)', media: query });
   if (perspective) window.localStorage.setItem('adapt-demo-perspective', perspective);
   const observers = [];
   window.IntersectionObserver = class {
@@ -28,7 +29,9 @@ async function page(t, perspective, single = false) {
     observe() {}
     unobserve() {}
   };
-  window.MutationObserver = class { observe() {} };
+  window.MutationObserver = class { observe() {} disconnect() {} };
+  window.requestAnimationFrame = callback => window.setTimeout(callback, 0);
+  window.cancelAnimationFrame = id => window.clearTimeout(id);
   window.fetch = () => new Promise(() => {});
   Object.defineProperty(window.document, 'readyState', { value: 'complete' });
   Object.defineProperty(window.document, 'hidden', { value: false, configurable: true });
@@ -39,7 +42,7 @@ async function page(t, perspective, single = false) {
     video.pause = () => { paused = true; video.dispatchEvent(new window.Event('pause')); };
   }
   window.eval(source);
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise(resolve => setTimeout(resolve, 20));
   return {
     window,
     demos: [...window.document.querySelectorAll('.wormholes-demo')],
@@ -68,7 +71,7 @@ test('each demonstration mounts independent client tabs and paired perspectives'
   assert.equal(demos[0].querySelector('[data-client="clientview"]').hidden, false);
   assert.equal(demos[1].querySelector('[data-client="clientview"]').hidden, true);
   window.dispatchEvent(new window.PopStateEvent('popstate'));
-  await new Promise(resolve => setImmediate(resolve));
+  await new Promise(resolve => setTimeout(resolve, 20));
   assert.equal(demos[0].querySelectorAll(':scope > .demo-header').length, 1);
   assert.equal(window.document.querySelectorAll('.adapt-demo .demo-tab').length, 2);
 });
@@ -180,4 +183,42 @@ test('first-person-only demonstrations play with a saved observer preference and
   camera.value = 'third-person';
   camera.dispatchEvent(new window.Event('change', { bubbles: true }));
   assert.equal(demos[0].querySelector('video[src$="clientview-pov.webm"]').parentElement.hidden, false);
+});
+
+test('reduced motion prevents initial playback across client, camera, and single-view demonstrations', async t => {
+  const { window, demos, visible } = await page(t, 'third-person', false, true);
+  const clips = [...window.document.querySelectorAll('.adapt-demo, .gloss-demo')];
+  for (const container of [...demos, ...clips]) visible(container, true);
+  assert.ok([...window.document.querySelectorAll('video')].every(video => video.paused));
+  demos[0].querySelectorAll(':scope > .demo-header button')[1].click();
+  const camera = demos[0].querySelector('select');
+  camera.value = 'first-person';
+  camera.dispatchEvent(new window.Event('change', { bubbles: true }));
+  clips[0].querySelectorAll('.demo-tab')[1].click();
+  for (const container of [...demos, ...clips]) {
+    visible(container, false);
+    visible(container, true);
+  }
+  assert.ok([...window.document.querySelectorAll('video')].every(video => video.paused));
+});
+
+test('reduced motion allows intentional playback and preserves a manual pause', async t => {
+  const { window, demos, visible } = await page(t, undefined, false, true);
+  const containers = [demos[0], window.document.querySelector('.adapt-demo'), ...window.document.querySelectorAll('.gloss-demo')];
+  for (const container of containers) {
+    visible(container, true);
+    const video = container.querySelector('video');
+    assert.equal(video.paused, true);
+    await video.play();
+    assert.equal(video.paused, false);
+    visible(container, false);
+    assert.equal(video.paused, true);
+    visible(container, true);
+    assert.equal(video.paused, false);
+    video.pause();
+    visible(container, false);
+    visible(container, true);
+    assert.equal(video.paused, true);
+    assert.ok([...container.querySelectorAll('video')].every(clip => clip.paused));
+  }
 });

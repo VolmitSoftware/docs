@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mountain Cliffs"
 description: "Iris biome atlas entry for mountain/cliffs in Overworld and Underworld"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -76,7 +76,7 @@ No floating child biomes are declared.
 
 Run these in an Iris world and inspect freshly generated terrain:
 
-```text
+```none
 /iris find biome mountain/cliffs
 /iris what biome
 /iris what region

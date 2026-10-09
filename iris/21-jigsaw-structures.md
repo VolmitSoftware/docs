@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,7 +32,7 @@ Inside an active Jigsaw Studio world, non-owner block edits and recognized mutat
 
 ### Step 1 — Create the project
 
-```text
+```none
 /iris jigsaw create overworld village/demo
 ```
 
@@ -44,7 +44,7 @@ Creation is add-only. Iris refuses any occupied or conflicting target rather tha
 
 **What lands on disk:**
 
-```text
+```none
 structures/village/demo.json
 jigsaw-pools/village/demo/start.json
 jigsaw-pools/village/demo/pieces.json
@@ -62,7 +62,7 @@ In an Iris-compatible project every piece belongs to theme `variant-1`, End Cap 
 
 ### Step 2 — Look around the Studio
 
-```text
+```none
 /iris jigsaw status
 /iris jigsaw particles true
 ```
@@ -145,7 +145,7 @@ Mojang's jigsaw UI has no field for the Iris `channel`. Let autosave capture the
 
 Change one block, then wait two seconds without another workcell update. Almost anything you change in a workcell is captured, including container and tile activity. `status` reports whether an autosave is pending; `/iris jigsaw save` and the GUI's **Flush Autosave Now** request an immediate flush, but neither is needed in the normal loop. Fresh untouched workcells report **Autosaved**, not pending. Every successful save plays one short bell for the owner.
 
-```text
+```none
 /iris jigsaw status
 /iris jigsaw save
 ```
@@ -164,7 +164,7 @@ Iris renders the assembled blocks on the negative-X side of the workcells and up
 
 For a one-off diagnostic at another seed:
 
-```text
+```none
 /iris jigsaw preview assemble seed=4242
 ```
 
@@ -174,7 +174,7 @@ That command places no blocks. It draws bounded purple particle boxes for 10 sec
 
 The three generated pools cover a basic village. Add more before you target them from new markers:
 
-```text
+```none
 /iris jigsaw pool create village/demo/rooms
 /iris jigsaw pool create village/demo/end fallbackPoolKey=none
 /iris jigsaw rules fallback village/demo/rooms village/demo/end
@@ -214,7 +214,7 @@ Use the **Toolbox** page when you want an action available without reopening the
 
 ### Step 11 — Set expansion limits
 
-```text
+```none
 /iris jigsaw rules limits 12 8
 ```
 
@@ -226,7 +226,7 @@ Attach the structure to a dimension, region, or biome with a `structures[]` plac
 
 ### Step 13 — Close Studio
 
-```text
+```none
 /iris jigsaw close
 ```
 
@@ -246,7 +246,7 @@ Jigsaw edits that change required datapack registry content need a restart befor
 
 Do not run `create` again; creation is add-only. Reopen a Studio-owned graph by its original dimension and structure key:
 
-```text
+```none
 /iris jigsaw open overworld village/demo
 ```
 
@@ -258,7 +258,7 @@ Do not run `create` again; creation is add-only. Reopen a Studio-owned graph by 
 
 An existing Iris graph with no ownership manifest must be inspected and claimed before Studio will edit it:
 
-```text
+```none
 /iris jigsaw adopt inspect overworld legacy/village target=auto strategy=auto
 /iris jigsaw adopt apply <plan-uuid>
 ```
@@ -272,7 +272,7 @@ Plans belong to the inspecting player, live in memory for 15 minutes, and are co
 
 Automatic datapack imports carry `MANAGED_DATAPACK` ownership because refreshing the source may replace them. Iris forbids in-place adoption of those and plans a private clone while leaving the managed graph untouched:
 
-```text
+```none
 /iris jigsaw adopt inspect overworld imported/key target=my-edits/key strategy=clone
 /iris jigsaw adopt apply <plan-uuid>
 ```
@@ -281,13 +281,13 @@ Automatic datapack imports carry `MANAGED_DATAPACK` ownership because refreshing
 
 Raw registered structures are not Iris graph files, so they cannot go through `adopt`. Convert one into a new add-only owned Iris graph, which then opens automatically:
 
-```text
+```none
 /iris jigsaw convert overworld minecraft:village_plains target=village/plains seed=1337
 ```
 
 The source must be a live namespaced registry key and a jigsaw structure. With `target=auto`, `minecraft:village_plains` becomes `minecraft_village_plains`. Use a fresh target when the automatic name is occupied:
 
-```text
+```none
 /iris jigsaw convert overworld minecraft:ancient_city target=minecraft_ancient_city_edit seed=1337
 ```
 
@@ -299,7 +299,7 @@ Conversion follows the registered start pool and reachable template pools, templ
 
 Spatial projects use the same lifecycle without the planar cell constraints:
 
-```text
+```none
 /iris jigsaw create overworld stronghold/demo mode=spatial width=32 height=24 depth=32
 ```
 
@@ -313,7 +313,7 @@ Studio sizes the shared capacity to contain every reachable object and the horiz
 
 Create additional owned pools before targeting them from new spatial markers:
 
-```text
+```none
 /iris jigsaw pool create stronghold/demo/rooms
 /iris jigsaw pool create stronghold/demo/end fallbackPoolKey=none
 /iris jigsaw rules fallback stronghold/demo/rooms stronghold/demo/end

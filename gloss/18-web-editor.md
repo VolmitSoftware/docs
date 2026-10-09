@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-08T00:06:43.153Z
+date: 2026-10-09T16:52:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -18,7 +18,7 @@ Use the Gloss web editor to edit menus, holograms, boards, chat surfaces and the
 | `/gloss web edit <kind> <id>` | Edit one document |
 | `/gloss web workspace` | Edit all supported documents and images |
 
-```text
+```none
 /gloss web edit menu shop
 /gloss web edit hologram spawn
 /gloss web edit scoreboard default

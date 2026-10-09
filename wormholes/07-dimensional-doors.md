@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-08T20:57:33.580Z
+date: 2026-10-09T16:52:52.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -197,7 +197,7 @@ door supply is gated on rune supply unless the recipes are reconfigured to drop
 that ingredient. Shift-crafting identity products is blocked so one craft cannot
 mint bulk identities.
 
-```text
+```none
 Entangled pair       Personal door       Public dimension door
 E D E                 _ R _               R D R
 O R O                 C D E               _ E _
@@ -318,7 +318,7 @@ retarget them to Pale Oak.
 Requires player sender and `wormholes.admin.items` (or full admin). Feature
 must be enabled and the door manager running.
 
-```text
+```none
 /wormholes door type=<pair|personal|public|pair_trapdoor|personal_trapdoor|public_trapdoor>
 ```
 

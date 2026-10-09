@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Wand, runes, construction, skins, and vanilla portal replace"
 published: true
-date: 2026-10-08T18:47:35.450Z
+date: 2026-10-08T23:30:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -76,6 +76,10 @@ For a framed 3×3 opening:
 5. Switch away from the wand and remove the two glass markers. Ordinary selection blocks remain until you break them; leave the surrounding frame intact.
 
 The portal can show its destination after you [link it to another portal](/wormholes/04-portal-types-menus-settings#destination-menu). `PORTAL` and `WORMHOLE` both support projection.
+
+For a floor/ceiling falling loop, select a horizontal opening at each end and choose **Link and return**. New horizontal portals use the same downward normal and northward screen-up direction regardless of your heading during construction, so an unrotated pair preserves vertical momentum, yaw, and pitch. The Orientation menu can rotate or flip either frame; an existing pair with opposing normals needs one frame flipped to preserve the falling direction. For a previously rotated pair, select `look` in each portal's Transit Orientation setting to keep your absolute look direction.
+
+With the client mod on Fabric, Forge, NeoForge, or singleplayer, a horizontal portal can sit in a solid floor or ceiling. Once its seamless route is ready, a player can pass through the selected cells and supporting blocks behind the opening without removing them. Blocks around the opening remain solid, and solid obstacles at the destination still stop movement. On Paper, Purpur, Folia, or without the client mod, clear the physical opening for ordinary travel.
 
 Changing world, dropping the wand, or leaving it off the hotbar clears the selection.
 

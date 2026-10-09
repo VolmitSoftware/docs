@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-10-08T12:00:00Z
+date: 2026-10-09T16:52:52.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -22,7 +22,7 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `util.bukkit.papi` | PlaceholderAPI expansions and snapshot stores |
 | `util.director` | Commands, help, and completion |
 | `util.localization` | Message catalogs, on-demand translations, and player language preferences |
-| `util.diagnostics` | Shared Bukkit diagnostic reports, plugin snapshots, and uploads |
+| `util.diagnostics` | Shared Bukkit diagnostic reports, plugin snapshots, uploads, and container memory snapshots |
 | `util.plugin` | Rich text, messages, titles, and logging |
 | `util.board` | Scoreboard sidebars |
 | `nativelib` | Versioned native capabilities from the optional native modules |
@@ -94,7 +94,7 @@ Plugins that disable VolmLib's transitive dependencies must include `net.kyori:a
 
 Director accepts keyed values such as `player=Alex`. Use brackets for spaces:
 
-```text
+```none
 /example announce text=[Server restarts in five minutes]
 ```
 
@@ -203,3 +203,5 @@ For PlaceholderAPI, see [Placeholders](/volmlib/api/placeholders).
 For downloads, jar packaging, server defaults, player preferences, and the per-language inventory editor, see [Shared localization](/volmlib/api/localization).
 
 For the `debugdump` command, report contents, permissions, and plugin contributors, see [Shared diagnostic reports](/volmlib/api/diagnostics).
+
+For Linux container memory limits, usage, pressure, and remaining headroom, see [Container memory](/volmlib/api/diagnostics#container-memory).

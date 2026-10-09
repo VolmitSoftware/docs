@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-10-08T01:01:30Z
+date: 2026-10-09T16:52:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -132,7 +132,7 @@ Panel files also reload automatically after stable edits, additions, or deletion
 
 Preview third-party hologram imports with:
 
-```text
+```none
 /gloss import preview <source>
 ```
 
@@ -155,7 +155,7 @@ The YAML overlay transfers supported feature switches and refresh settings, tab 
 
 A `.glosspack` is a ZIP archive containing `manifest.json`, documents under `documents/<kind>/<id>.json`, and optional files under `images/`. Put a local archive beneath `plugins/Gloss/`, or use an HTTPS source. Installation previews changes by default:
 
-```text
+```none
 /gloss pack install source=packs/shop.glosspack
 /gloss pack install source=packs/shop.glosspack dry=false
 /gloss pack list
@@ -206,7 +206,7 @@ Copy `shop.glosspack` beneath `plugins/Gloss/packs/`, preview installation, then
 
 With history enabled, Gloss keeps saved document versions. List a document's versions and restore one of the returned version identifiers:
 
-```text
+```none
 /gloss history list kind=holograms id=shop
 /gloss restore document kind=holograms id=shop version=<version-from-history>
 ```
@@ -219,7 +219,7 @@ Editor publications, imports, pack installations, and restores retain their repl
 
 Check authored documents before opening them, or export selected documents for editing elsewhere:
 
-```text
+```none
 /gloss check workspace kind=menus id=shop
 /gloss export documents kind=menus id=shop dir=exports
 /gloss export bundle dir=exports

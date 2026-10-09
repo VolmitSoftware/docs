@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-10-08T01:00:00Z
+date: 2026-10-09T16:52:52.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -109,7 +109,7 @@ For internet access, use a firewall and HTTPS reverse proxy, or enable the relay
 
 Create a pairing code with:
 
-```text
+```none
 /react web pair <label> [role=viewer]
 ```
 

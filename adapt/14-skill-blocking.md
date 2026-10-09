@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -299,7 +299,7 @@ Level 1 adds a shaped crafting-table recipe for an ordinary shield. Level 2 upgr
 
 Level 1 field shield (`W` = white wool, `P` = oak planks, `I` = iron ingot):
 
-```text
+```none
 WWW
 PIP
 .P.
@@ -307,7 +307,7 @@ PIP
 
 Level 2 reinforced shield (`N` = netherite ingot, `S` = any shield):
 
-```text
+```none
 .N.
 NSN
 .N.

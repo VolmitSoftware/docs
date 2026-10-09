@@ -2,7 +2,7 @@
 title: "Image Map Configuration & Coordinates"
 description: "Complete Iris image-map, binding, coordinate, sampling, and world-boundary reference"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -152,7 +152,7 @@ A dimension may declare multiple `MASK` and `CUSTOM` bindings, but at most one b
 
 Iris uses these directions:
 
-```text
+```none
 source +X  ─────────────► Minecraft +X (east)
 source +Y / JSON +Z      Minecraft +Z (south)
 ```

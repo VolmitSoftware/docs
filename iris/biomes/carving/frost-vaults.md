@@ -2,7 +2,7 @@
 title: "Frost Vaults - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/frost-vaults"
 published: true
-date: 2026-10-05T16:28:23.269830+00:00
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -64,7 +64,7 @@ The `carving/frost-vaults` CAVE pool selects strays and bats in Overworld, or sk
 
 On Bukkit-family servers:
 
-```text
+```none
 /iris find subterrain frost-vaults radius=8192 teleport=false
 /iris find underground-biome carving/frost-vaults radius=8192 teleport=false
 /iris what biome

@@ -2,7 +2,7 @@
 title: "Ochre Hollows - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/lava-lamp"
 published: true
-date: 2026-10-05T16:28:23.269830+00:00
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -66,7 +66,7 @@ The room-specific `carving/lava-lamp` CAVE pool selects bats and zombies in Over
 
 On Bukkit-family servers:
 
-```text
+```none
 /iris find subterrain lava-lamp-tubes radius=8192 teleport=false
 /iris find underground-biome carving/lava-lamp radius=8192 teleport=false
 /iris what biome

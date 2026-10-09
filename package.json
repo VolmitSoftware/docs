@@ -1,0 +1,16 @@
+{
+  "name": "volmit-docs",
+  "private": true,
+  "scripts": {
+    "test": "node --test tools/tests/*.cjs",
+    "check": "node --check theme/minimal-brutalism.js && node --check tools/build-theme-data.mjs && node --check tools/theme-preview.mjs && node tools/check-doc-links.mjs && node tools/build-theme-data.mjs --check && npm test",
+    "catalog": "node tools/build-theme-data.mjs",
+    "preview": "node tools/theme-preview.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "jsdom": "24.1.3"
+  }
+}

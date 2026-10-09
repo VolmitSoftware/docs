@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-10-07T16:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -125,7 +125,7 @@ There is no listing lookup, repository-name lookup, branch selector, or implicit
 
 Close Studio before replacing its authoring pack.
 
-```text
+```none
 /iris download pack=overworld overwrite=true
 /iris download pack=underworld overwrite=true
 /iris download link=https://packs.example.test/custom.zip overwrite=true
@@ -139,7 +139,7 @@ After the download completes, validate with `/iris pack validate pack=<key>` on 
 
 Startup checks installed `overworld` and `underworld` packs against their latest stable GitHub releases:
 
-```text
+```none
 [Iris]: Custom Dimensions: 2
 [Iris]:   overworld v4010 -> v4011 available
 [Iris]:   underworld v1012
@@ -156,14 +156,14 @@ Modded checks run when a local or dedicated server starts, not when a client mer
 
 The built-in Overworld and Underworld declare no external datapack imports. On the Paper family (plain Spigot supports managed `/iris create` but not exact-slot `/iris replace`):
 
-```text
+```none
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
 Restart after downloading the packs, then:
 
-```text
+```none
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```

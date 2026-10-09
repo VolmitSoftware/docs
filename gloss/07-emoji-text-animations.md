@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-10-03T13:21:49.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -214,7 +214,7 @@ Each helper takes an explicit step, elapsed time or progress value and returns t
 
 This timeline scrolls a welcome message, flashes a boost notice, then replaces it with an event message:
 
-```text
+```none
 {{ timeline([
   ['&b' + marquee('WELCOME', 10, floor(time.seconds * 4)), 4],
   [flash('&a&lBOOSTED', '&7BOOSTED', floor(time.seconds * 4)), 4],

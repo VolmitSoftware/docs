@@ -2,7 +2,7 @@
 title: "Biome Atlas — Birch Forest"
 description: "Iris biome atlas entry for temperate/birch-forest in Overworld and Underworld"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -100,7 +100,7 @@ Both files contain their object placements, procedural trees, and decorators dir
 
 Living-tree settings total `2.25` nominal attempts per chunk before biome coverage, terrain support, and placement rejection. Both packs use the same settings. Roots, support checks, and quarter-turn rotations apply to tree placement. Stilt settings exclude wart canopies and accents.
 
-```text
+```none
 /iris find biome temperate/golden-poplar-grove
 ```
 
@@ -112,7 +112,7 @@ No floating child biomes are declared.
 
 Run these in an Iris world and inspect freshly generated terrain:
 
-```text
+```none
 /iris find biome temperate/birch-forest
 /iris what biome
 /iris what region

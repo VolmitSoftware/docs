@@ -2,7 +2,7 @@
 title: "Image Maps"
 description: "Drive Iris generation from PNG data: the resource model, accepted source images, and the Image Map Studio workflow"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -17,7 +17,7 @@ Image maps let a pack author supply spatial generation data as pixels. Set the m
 
 An image-driven pack has three separate layers:
 
-```text
+```none
 images/<source>.png
         ↓ source
 image-maps/<map>.json
@@ -64,7 +64,7 @@ Each binding names the image-map resource in `map`; the binding `key` is the sta
 
 PNG is the only canonical source format. Place files under the pack's `images/` folder and reference them without `.png`:
 
-```text
+```none
 packs/example/images/maps/height.png
 ```
 
@@ -160,7 +160,7 @@ A **preset** saves reusable type, transform, decoding, legend, alpha, sampling, 
 
 ### Exported pack shape
 
-```text
+```none
 images/maps/terrain.png
 image-maps/terrain.json
 dimensions/example.json

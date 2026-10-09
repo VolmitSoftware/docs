@@ -2,7 +2,7 @@
 title: "Prismatic Caves"
 description: "Paired atlas entry for the 16 direct prismatic cave roots"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -59,7 +59,7 @@ Each root owns one matching `-child` key. Those 16 child-only patches inherit th
 
 Substitute any key from the table:
 
-```text
+```none
 /iris find biome carving/prismatic-blue
 /iris what biome
 /iris edit biome carving/prismatic-blue

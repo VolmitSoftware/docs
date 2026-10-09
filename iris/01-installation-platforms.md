@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-07T13:43:14.820Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,7 +48,7 @@ Install the `-packed.jar` as the only Iris plugin jar. Each build automatically 
 
 Validate installed packs from the server console:
 
-```text
+```none
 /iris pack validate pack=overworld
 /iris pack validate pack=underworld
 ```
@@ -122,7 +122,7 @@ Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do
 
 Validate the installed packs:
 
-```text
+```none
 /iris pack validate overworld
 /iris pack validate underworld
 ```
@@ -216,7 +216,7 @@ A server can start without installed packs. Download one explicitly before creat
 
 On Bukkit, use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris download link=<http(s)-zip-url>`. To replace an installed pack with a backup of its current files, add `overwrite=true`. For example:
 
-```text
+```none
 /iris download pack=overworld overwrite=true
 ```
 

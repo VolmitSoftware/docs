@@ -2,7 +2,7 @@
 title: "Authored Subterrain Features"
 description: "Configure bounded faults, cenotes, lava tubes and travertine terraces with underground biomes and retained fluids"
 published: true
-date: 2026-10-05T16:32:02.924733+00:00
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-04T12:39:17.121Z
@@ -290,7 +290,7 @@ The cenote example enables both custom native glow-squid spawning and an Iris gl
 
 On Bukkit-family servers:
 
-```text
+```none
 /iris goto biome biome=subterrain/cenote
 /iris find subterrain calcite-cenote radius=8192 teleport=false
 /iris find subterrain lava_tube radius=8192 teleport=false

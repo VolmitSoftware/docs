@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,13 +28,13 @@ React provides read-only `%react_...%` placeholders. Install PlaceholderAPI befo
 
 Use any React sampler with:
 
-```text
+```none
 %react_sampler.<sampler-id>%
 ```
 
 Examples:
 
-```text
+```none
 %react_sampler.tick-time%
 %react_sampler.chunks%
 %react_sampler.guardianpets-pets-live%

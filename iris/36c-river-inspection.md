@@ -2,7 +2,7 @@
 title: "River Inspection"
 description: "Find river features, inspect them in Vision, and validate hydrology settings"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -39,7 +39,7 @@ Rejected candidates use visibly separate `projected source`, `projected outlet`,
 
 Locate accepted features from an Iris world. On Bukkit, `goto` is an alias of `find`; `/iris goto river type=surface` searches and teleports, while `teleport=false` only reports coordinates. Changing worlds during the search cancels the pending teleport.
 
-```text
+```none
 # Bukkit
 /iris find river type=surface teleport=false
 /iris find river type=waterfall
@@ -65,7 +65,7 @@ Searches cover at most 8,192 blocks or fifteen routing tiles, whichever is small
 
 Run the shared pack validator after every hydrology or policy edit:
 
-```text
+```none
 # Bukkit
 /iris pack validate pack=<pack-key>
 

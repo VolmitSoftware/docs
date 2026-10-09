@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-10-01T18:00:00.000Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,7 +60,7 @@ public interface ModdedDataProvider {
 
 Register the provider during mod setup with `IrisModdedAPI.registerProvider(provider)`, or list it for `ServiceLoader` under:
 
-```text
+```none
 META-INF/services/art.arcane.iris.modded.api.ModdedDataProvider
 ```
 

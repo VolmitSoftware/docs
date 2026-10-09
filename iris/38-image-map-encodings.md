@@ -2,7 +2,7 @@
 title: "Image Map Encodings"
 description: "How each Iris image-map type decodes its pixels: grayscale height, RGB height, color legends, and masks"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -32,7 +32,7 @@ Save `images/maps/terrain.png`, then create `image-maps/terrain.json`:
 
 For a source bit depth `b`, Iris reads the unsigned grayscale sample without color correction:
 
-```text
+```none
 maximumSample = 2^b - 1
 normalized = sample / maximumSample
 height = minimumHeight + normalized × (maximumHeight - minimumHeight)
@@ -89,7 +89,7 @@ An 8-bit map spanning 384 blocks has steps of about 1.506 blocks before interpol
 
 An RGB heightmap stores one unsigned 24-bit elevation across three 8-bit channels, using one fixed red-green-blue formula.
 
-```text
+```none
 encoded = (red << 16) | (green << 8) | blue
 normalized = encoded / 16777215
 height = minimumHeight + normalized × (maximumHeight - minimumHeight)
@@ -164,7 +164,7 @@ Legend keys are six-digit `#RRGGBB` raw sRGB values. The target namespace is int
 
 `colorTolerance` is a radius in raw 8-bit sRGB channel space, from 0 through approximately 441.672956 — the distance between black and white. For a source color `(r, g, b)` and legend color `(R, G, B)`:
 
-```text
+```none
 distance = sqrt((r - R)^2 + (g - G)^2 + (b - B)^2)
 ```
 

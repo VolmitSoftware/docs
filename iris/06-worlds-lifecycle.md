@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-06T20:00:37.422Z
+date: 2026-10-09T16:52:52.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ Use Iris commands to create, load, unload, update, and remove worlds. Back up th
 
 Install and validate the pack, then choose a world name and seed:
 
-```text
+```none
 /iris pack validate pack=overworld
 /iris create name=myworld type=overworld seed=1337
 /iris worlds
@@ -34,7 +34,7 @@ A player who creates a world is teleported into it. Use `/iris tp <world>` to en
 
 You can preview a pack before creating a permanent world:
 
-```text
+```none
 /iris studio open overworld seed=1337
 /iris studio close
 ```
@@ -45,7 +45,7 @@ Studio worlds are temporary. Keep your edits in the pack folder. See [Studio & V
 
 Install the pack and restart before creating its dimension. For custom packs with external datapacks, follow [Native Structures & Datapacks](/iris/22-native-structures-datapacks) first.
 
-```text
+```none
 /iris pack validate overworld
 /iris world enable irisworldgen:myworld overworld 1337
 /iris world status
@@ -70,6 +70,8 @@ Teleports require dry, non-hazardous footing and enough unobstructed space for t
 | `/iris remove <name> delete=false` | Unload and unregister the world; keep its files |
 | `/iris remove <name>` | Unregister the world and delete its files |
 
+With Rift installed before restart, secondary `iris:*` worlds follow Rift's loading settings and remain unloaded by default, including worlds left loaded at shutdown. Iris retains generation ownership and registers explicitly loaded worlds with Rift. Rift applies policies and requests existing-world loads or unloads through Iris. See [Integrations](/iris/28-integrations#rift).
+
 Loading requires the world's saved pack and registration data. Restore complete world backups, including these files. Wait for an unload to finish before starting another operation on that world. If creation cannot close its partial generator, Iris retains the files for startup cleanup instead of deleting storage still in use.
 
 > `/iris remove` deletes world data by default. Back up first, and wait for unload or removal to finish before moving or deleting any world directory. If Iris requests a restart, complete it before retrying.
@@ -79,7 +81,7 @@ Removal reports `UNREGISTERED` when files are kept and `DELETED` when they are d
 
 ### Fabric, Forge, and NeoForge
 
-```text
+```none
 /iris world disable irisworldgen:myworld
 /iris world delete irisworldgen:myworld
 ```
@@ -90,13 +92,13 @@ Removal reports `UNREGISTERED` when files are kept and `DELETED` when they are d
 
 Validate and preview the edited pack, then back up the complete world. On Bukkit:
 
-```text
+```none
 /iris pack update-world world=myworld pack=overworld confirm=true
 ```
 
 On Fabric, Forge, or NeoForge:
 
-```text
+```none
 /iris world update irisworldgen:myworld overworld
 ```
 
@@ -141,7 +143,7 @@ Saved biome definitions are re-rendered for the running Minecraft version on eve
 
 On Paper, Purpur, Leaf, or Folia, use `/iris replace` to replace an existing Iris world or a vanilla dimension:
 
-```text
+```none
 /iris replace minecraft:overworld type=overworld seed=123456789
 ```
 
@@ -162,14 +164,14 @@ The pack's environment must match the target. Keep `allow-nether` or `allow-end`
 
 Start with both vanilla world folders already created and `allow-nether=true`. Download each pack and wait for it to finish before starting the next:
 
-```text
+```none
 /iris download pack=overworld
 /iris download pack=underworld
 ```
 
 Restart after both downloads finish. Then stage each replacement, waiting for its success message before issuing the next:
 
-```text
+```none
 /iris replace minecraft:overworld type=overworld seed=123456789
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
@@ -185,7 +187,7 @@ After an Overworld replacement, players whose old positions are unsafe or unavai
 
 Install the pack and restart to load it, then run:
 
-```text
+```none
 /iris world mainworld overworld 1337
 ```
 
