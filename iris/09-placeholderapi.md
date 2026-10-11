@@ -2,7 +2,7 @@
 title: "PlaceholderAPI"
 description: "Iris documentation: PlaceholderAPI"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-10T20:21:47.396Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ Plugins that need the same data with real types and no string parsing should use
 
 ## Put an Iris value on a scoreboard
 
-Install PlaceholderAPI before starting Iris, then restart the server. World placeholders need an online player in a loaded Iris world.
+Install PlaceholderAPI and Iris, then restart the server. Iris registers its expansion when PlaceholderAPI enables, regardless of which plugin enables first. World placeholders need an online player in a loaded Iris world.
 
 Add a placeholder such as `%iris_world.biome%` to your scoreboard plugin's format and reload that plugin. Use `%iris_world.available%` as a display condition when supported.
 
@@ -29,7 +29,7 @@ To inspect a value directly, run `/papi parse me %iris_world.biome%`. `/papi inf
 | Required plugin | `Iris` |
 | `/papi reload` | The expansion remains registered |
 
-Install both plugins before starting the server. Installing PlaceholderAPI alone does not enable Iris integration until Iris starts.
+Iris attaches when both plugins are enabled and releases its expansion and cached values when PlaceholderAPI disables. Use a server restart when adding or replacing either plugin.
 
 ## Value grammar
 

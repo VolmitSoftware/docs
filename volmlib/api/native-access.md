@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-09T17:00:00.000Z
+date: 2026-10-11T00:11:00.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -72,6 +72,8 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `entity.VirtualPlayerAccess` | Create and control virtual player entities |
 | `player.PlayerClientAccess` | Access client block tags and player motion |
 | `player.PlayerRespawnAccess` | Snapshot player respawn policy, validate personal spawns without consuming anchors, and resolve shared spawn positions |
+| `player.NativePlayerEffects` | Prepare and apply complete player effect chains through normal Paper effect events |
+| `player.NativePlayerAdvancements` | Flush current player advancement changes without completion toasts |
 | `advancement.AdvancementAccess` | Create advancement wrappers |
 | `scoreboard.ScoreboardPackets` | Create and send scoreboard updates through opaque handles |
 | `monitor.NativeMonitor` | Install native tick hooks and read native metrics |
@@ -79,6 +81,7 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `monitor.NativeWorldAccess` | Access hopper, navigation, and fluid-tick operations |
 | `storage.NativeWorldStorageConverter` | Convert a staged legacy CraftBukkit world through Paper's native file converter |
 | `storage.NativeWorldStorageFork` | Flush a Paper world and replace the UUID in a staged dimension copy |
+| `storage.NativeSavedWorldGeneration` | Read authenticated saved generation settings without loading a world |
 | `protection.SpawnProtectionAccess` | Create native spawn-protection checks |
 | `proxy.ProxyForwardingAccess` | Read the active Velocity forwarding key |
 
@@ -94,13 +97,31 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 
 `EntityMetadataAccess.fingerprint(entity)` is available on 26.2 and 26.3. Call it on the entity’s owning thread to read an opaque fingerprint of its current synchronized metadata without serialization or world and chunk loading. Unchanged data keeps the same fingerprint after vanilla sends its dirty fields; the value is not monotonic and must not be persisted as an entity revision.
 
-`WorldEnvironmentAccess.sample(world, position)` returns an immutable `WorldEnvironment` snapshot at the supplied position. The 26.3 provider includes biome-dependent environment attributes, the eye medium (`NONE`, `WATER`, `LAVA`, or `POWDER_SNOW`), and dimension settings including `logicalHeight`, `hasCeiling`, `ambientLight`, and `hasFixedTime`; sky angles are in degrees. Call it in the owning world context with the sample chunk loaded. Consumers own chunk retention, scheduling, and handling unavailable capabilities.
+`WorldEnvironmentAccess.sample(world, position)` returns an immutable `WorldEnvironment` snapshot at the supplied position. The 26.1.2, 26.2, and 26.3 providers include biome-dependent environment attributes, the eye medium (`NONE`, `WATER`, `LAVA`, or `POWDER_SNOW`), and dimension settings including `logicalHeight`, `hasCeiling`, `ambientLight`, and `hasFixedTime`; sky angles are in degrees. Call it in the owning world context with the sample chunk loaded. Consumers own chunk retention, scheduling, and handling unavailable capabilities.
 
 `PlayerRespawnAccess` is available on 26.2 and 26.3. `snapshot(player)` returns an immutable `RespawnPolicy` containing a nullable personal `RespawnPoint`, the forced-spawn flag, and a required shared point. Each point stores its world, block coordinates, yaw, and pitch; `location()` returns a fresh Bukkit location. A null personal point means no configured personal destination is available in a loaded world.
 
 Call `snapshot` on the player’s owning thread. After loading the surrounding destination chunks, call `validate(policy)` on the personal destination’s owning region; its optional location preserves vanilla orientation and does not consume respawn-anchor charges. For shared spawn, initiate `findSharedSpawn(policy.shared())` on the shared point’s owning region and compose its returned future before applying the result on the player’s owning thread. These methods do not schedule player mutations; the caller owns chunk loading and scheduling.
 
+`NativePlayerAdvancements` supports Paper 26.1.2, 26.2, and 26.3. Capture a `Context` on the current Paper server thread and call `flushWithoutToast(player)` after changing awarded criteria through Bukkit. The context requires the same server, registry resources, owning thread, and online player session. Use `validateCurrent()` to check the captured owner. `sameEntry(expected, actual)` verifies that two Bukkit advancement wrappers refer to the same current registry entry. It refuses Folia and changed owners; it does not award criteria or change chat messages.
+
+`NativePlayerEffects` supports Paper 26.1.2, 26.2, and 26.3. Capture a `Context` on the current Paper server thread, then call `prepare(player, effects)` to decode up to 256 distinct active effects before mutation. Each immutable `Effect` retains its key, duration, amplifier, ambient, particle and icon flags, and a hidden chain with at most 32 total nodes. Unknown keys, mismatched hidden keys, unsupported numeric values, Folia, stale registries, and unavailable player identities refuse preparation.
+
+Call `context.apply(player, prepared)` on the same owner thread with the same registered player and world identity. The private receipt is single-use; clearing and adding use normal `PLUGIN` effect events, and cancellation reports failure. Consumers own restoration after a partial application and should prepare their source-effect receipt before changing the player.
+
 See [Native spawn protection](/volmlib/api/spawn-protection) for the protection decision contract.
+
+## Saved world generation
+
+`NativeSavedWorldGeneration` supports Paper 26.1.2, 26.2, and 26.3. Call `capture(server, CaptureOptions.standard())` on the Paper server thread to obtain an immutable `InspectionContext`. Folia capture is unavailable. Call `context.inspect(request)` on an IO executor; it reads saved files without loading worlds, requesting generators, creating session locks, or changing source bytes.
+
+A `Request` supplies the exact directory, namespaced world key, expected UUID, storage format, stem selection, and an optional expected seed. `PAPER_DIMENSION` reads `data/paper/metadata.dat` and `data/minecraft/world_gen_settings.dat`. Declared-environment requests require the matching `dimensions/<namespace>/<key>` directory. A context-issued loaded-world receipt also permits that world's exact native storage root, including the primary overworld directory. `LEGACY_LEVEL_DATA` reads `uid.dat` and `level.dat`. Canonical files accept the selected native release's DataVersion and the verified 4903 format; legacy files accept DataVersions 3465, 4189, and 4671. Supported older data is upgraded in memory. Unknown and future formats fail with `IOException`.
+
+Select a vanilla stem with `DeclaredEnvironment(NORMAL)`, `DeclaredEnvironment(NETHER)`, or `DeclaredEnvironment(THE_END)`. A saved file can contain all three stems, so the world key alone does not select one. For a currently loaded world, call `context.capture(world)` on the Paper server thread and use `CapturedStem(receipt)`. The receipt authenticates that context, registered world UUID, key, directory, and native stem. `contextId()` identifies the capture and is included in every snapshot. Call `context.validateCurrent()` on the Paper server thread before using a result for publication; it rejects a replaced native registry access or resource-reload holder. Generator-provider reload epochs require separate provider evidence.
+
+`Snapshot` includes the selected stem, selection evidence, seed, structure and bonus-chest flags, dimension and generator identifiers, raw selected-stem SNBT, and SHA-256 fingerprints with DataVersions for the files read. Its terrain is `VanillaNoise` for known normal, amplified, or large-biome presets, `Flat` for validated codec-canonical flat settings, or `Unrepresentable` with a reason. Flat settings retain layers, biome, features, lakes, and structure overrides. Unknown generators, inline noise settings, and additional generation fields remain unrepresentable; callers must retain the raw plan or refuse an operation that cannot reproduce it.
+
+`fixedBiome` is present only for an explicitly saved fixed biome source. A flat world's biome does not imply a Bukkit biome-provider override. `context.normalizeFlatSettings(json)` returns `Flat` using the same native codec and registry context as saved flat settings. Valid omitted fields receive codec defaults; blank input, duplicate properties, unknown fields, invalid references, and malformed or excessive JSON fail with `IOException`. Equivalent settings produce the same canonical JSON. Generator-plugin and biome-provider overrides outside saved vanilla settings require independent provider evidence. The default limits bound compressed bytes, inflated bytes, NBT depth, collection sizes, and strings; `CaptureOptions` accepts validated custom `Limits`. Symbolic links, mismatched identities, malformed data, and files that change during inspection fail with `IOException`.
 
 ## World storage conversion
 
@@ -131,6 +152,8 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 `NativeGenerationRegistry.canonicalDefinition(...)` creates a typed registry definition from its registry key, entry key, and JSON. Resolve the registry through `NativeAdapters.require(NativeGenerationRegistry.class)`.
 
 `NativeWorldGeneration.inject(world, context)` installs the selected version’s generator using your `NativeBukkitGeneratorContext`. The context supplies terrain, biome, structure, spawn, and generation-history policy through typed contracts. Native structure stages respect the world’s Generate Structures setting: disabled worlds skip starts, references, placement, native locate predictions, and structure-volume prediction while terrain and feature stages continue. `lifecycle(policy)` creates its lifecycle controller; retain the controller and close its hooks during shutdown. Use `completeBootstrap(world)` after initial generation and `abandonBootstrap(world)` when creation fails.
+
+`NativeTerrainSnapshots.capture(request, policy)` captures a saved terrain column, and `flush(world, policy)` checkpoints pending terrain writes. Await these futures outside the tick thread and keep the world loaded until they finish. Snapshot requests use their chunk's owning context, can complete during synchronous chunk waits, and expire after 30 seconds.
 
 `NativeWorldRuntime` inspects runtime world-loading capabilities, creates worlds from `WorldRuntimeOptions`, and unloads worlds asynchronously. Check `available()` before runtime creation. Supply a `WorldRuntimeExecution` implementation for global-thread scheduling, background work, and failure reporting. Dimension keys, the Bukkit generator identifier, persistence, seed selection, and storage paths are explicit options. Leave `dimensionTypeKey` null to use the configured overworld generation settings.
 

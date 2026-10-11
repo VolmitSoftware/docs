@@ -2,7 +2,7 @@
 title: "Frames and Transforms"
 description: "Optics documentation: Frame, AxisPermutation, OpticTransform, Similarity, Affine, Quaternion, EulerAngles and LookTransfer"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-11T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -38,7 +38,7 @@ A portal is a plane with a frame, and travel or projection maps the space in fro
 | `rotateClockwise()`, `rotateCounterClockwise()` | Turn up onto right, or onto -right, around the normal |
 | `withNormal(face)` | Keeps up when it is still perpendicular, otherwise uses the old normal as up, otherwise canonical |
 
-`QuarterTurn` holds `DEGREES_0`, `DEGREES_90`, `DEGREES_180` and `DEGREES_270`. Only frames with a vertical normal support all four: `coherentFor(frame)` folds 90 and 270 onto 0 and 180 for wall frames, and `clockwiseFor(frame)` and `counterClockwiseFor(frame)` step within the turns a frame supports.
+`QuarterTurn` holds `DEGREES_0`, `DEGREES_90`, `DEGREES_180` and `DEGREES_270`. Only frames with a vertical normal support all four. For wall frames, `coherentFor(frame)` folds 90 and 270 onto 0 and 180. `clockwiseFor(frame)` and `counterClockwiseFor(frame)` step within supported turns.
 
 ## AxisPermutation
 
@@ -110,9 +110,13 @@ A portal is a plane with a frame, and travel or projection maps the space in fro
 
 ## LookTransfer
 
-`LookTransfer.of(look, permutation)`, `of(look, opticTransform)` and `of(look, similarity)` carry a yaw and pitch through a portal map and return `yaw`, `pitch` and `roll`. Both the forward direction and the camera's screen-up are mapped. When the forward lands exactly vertical, the pitch snaps to `90` or `-90` and the yaw comes from the mapped screen-up, so a look straight down into a floor portal whose exit faces up arrives looking straight up with a stable heading. `roll` is the tilt left over when the mapped screen-up is not the natural up of the mapped forward; `hasRoll(toleranceDegrees)` tests it. `LookTransfer.of(forward, up)` resolves raw vectors, `cameraUp(yaw, pitch)` gives the screen-up of a look, and `look()` drops the roll.
+`LookTransfer.of(look, permutation)`, `of(look, opticTransform)` and `of(look, similarity)` return mapped yaw, pitch and roll. The map carries both forward direction and camera screen-up.
 
-`ArrivalOrientation` and `PoseTransform` in `crossing` apply this to a whole `Pose`: position, previous and old positions, velocity, yaw, pitch, body yaw and head yaw with their previous-tick values, under an `OrientationRule` (`FRAME`, `LOOK`, `SNAP`, `MIRROR`) and an optional upright flip for exits that point up or down. The flip turns forward and screen-up together, so the camera basis stays consistent.
+When forward becomes vertical, pitch snaps to `90` or `-90`. Yaw comes from mapped screen-up, which preserves heading through floor and ceiling transitions. Roll describes the remaining tilt relative to the mapped forward direction's natural up.
+
+`hasRoll(toleranceDegrees)` tests that tilt. `of(forward, up)` resolves raw vectors, `cameraUp(yaw, pitch)` supplies screen-up, and `look()` returns yaw/pitch without roll.
+
+`ArrivalOrientation` and `PoseTransform` apply orientation rules to a complete pose, including position history, velocity and head/body angle history. The optional upright flip carries forward and screen-up together. See [05 - Apertures and Crossing](/optics/05-apertures-and-crossing#arrival-rules).
 
 ## Which one to use
 
@@ -125,3 +129,19 @@ A portal is a plane with a frame, and travel or projection maps the space in fro
 | Describe or interpolate a rotation | `Quaternion`; `EulerAngles` to read or write it as angles |
 | Snap a free rotation back to block axes | `Quaternion.permutation(tolerance)` or `Affine.rigid(tolerance)` |
 | Carry a view direction through a portal | `LookTransfer`, or `PoseTransform.arrive` for the full pose |
+
+## ViewWindow and transform direction
+
+`ViewWindow` stores a display transform with its local and remote origins, frames, side, mirror flag and depth. `between(...)` maps remote content into local display space. `toward()` returns its inverse, from local space toward the destination. `mirror(...)` creates a reflected window, and `withDepth(value)` changes the depth.
+
+This direction differs from a travel map created by `PortalDefinition.toward`. Use the display map for drawing destination content. Use the travel map for crossing or sampling destination coordinates.
+
+## Free render geometry and block-aligned definitions
+
+`Affine` supports arbitrary-angle rotation, independent axis scale and shear. It does not update a portal's definition, aperture cells, registry or crossing tests. The host must apply it to render geometry or sampled scene content.
+
+`Affine.scale` can produce a singular matrix, including a zero scale. Such a matrix can map points and supports degenerate decomposition, but `inverse()` rejects it. `normal()` uses cofactors and returns zero when the transformed normal collapses. Use positive scale when the host needs an inverse.
+
+Quaternion interpolation follows the shorter rotation arc. `normalize` and `isNormalized(tolerance)` let a consumer check a rotation before reuse. `angle()` uses radians. `permutation(tolerance)` and `rigid(tolerance)` recognize cardinal transforms within a numerical tolerance.
+
+`LookTransfer.onBranchOf(reference)` selects an equivalent camera-angle branch near a reference. `PoseTransform` uses this to preserve continuity across current and previous pose angles. `PoseTransform.arrivalRoll(...)` reports the arrival camera roll separately from the yaw/pitch pose.

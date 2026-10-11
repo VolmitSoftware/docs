@@ -6,15 +6,16 @@ const { JSDOM } = require('jsdom');
 
 const source = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.js'), 'utf8');
 
-function demonstration(id, views = ['pov', 'observer']) {
-  return `<div class="wormholes-demo" data-demo="${id}">${['standard', 'clientview'].map(client =>
+function demonstration(id, views = ['pov', 'observer'], rendererLabels = false) {
+  const labels = rendererLabels ? ' data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration"' : '';
+  return `<div class="wormholes-demo" data-demo="${id}"${labels}>${['standard', 'clientview'].map(client =>
     `<div class="wormholes-demo-variant" data-client="${client}"><p>${client}</p>` + views.map(view =>
       `<video src="/wormholes-assets/demos/${id}-${client}-${view}.webm" controls></video>`).join('') + '</div>').join('')}</div>`;
 }
 
-async function page(t, perspective, single = false, reducedMotion = false) {
+async function page(t, perspective, single = false, reducedMotion = false, rendererLabels = false) {
   const dom = new JSDOM('<div id="root"><div class="v-application"><main class="v-main"><div class="contents">'
-    + ['wand-creation', 'rune-creation', 'portal-linking'].map(id => demonstration(id, single && id !== 'portal-linking' ? ['pov'] : ['pov', 'observer'])).join('')
+    + ['wand-creation', 'rune-creation', 'portal-linking'].map(id => demonstration(id, single && id !== 'portal-linking' ? ['pov'] : ['pov', 'observer'], rendererLabels)).join('')
     + '<div class="adapt-demo"><video src="/adapt-assets/demo-pov.webm"></video><video src="/adapt-assets/demo-observer.webm"></video></div>'
     + '<div class="gloss-demo"><p>Inventory menus. Minecraft client. Silent capture.</p><video src="/gloss-assets/demos/inventory-menus-pov.webm" aria-label="Inventory menus in Minecraft"></video></div>'
     + '<div class="gloss-demo"><p>Menu authoring. Browser editor. Silent capture.</p><video src="/gloss-assets/demos/menu-editor.webm" aria-label="Menu authoring in the browser editor"></video></div>'
@@ -74,6 +75,21 @@ test('each demonstration mounts independent client tabs and paired perspectives'
   await new Promise(resolve => setTimeout(resolve, 20));
   assert.equal(demos[0].querySelectorAll(':scope > .demo-header').length, 1);
   assert.equal(window.document.querySelectorAll('.adapt-demo .demo-tab').length, 2);
+});
+
+test('renderer comparisons keep their labels and first-person-only view', async t => {
+  const { demos, visible } = await page(t, 'third-person', true, false, true);
+  const demo = demos[0];
+  const tabs = [...demo.querySelectorAll('[role="tab"]')];
+  assert.deepEqual(tabs.map(tab => tab.textContent), ['No client mod', 'Crisp client mod']);
+  assert.equal(demo.querySelector('[role="tablist"]').getAttribute('aria-label'), 'Renderer for this demonstration');
+  assert.equal(demo.querySelector('select'), null);
+  visible(demo, true);
+  assert.equal(demo.querySelector('[data-client="standard"] video').paused, false);
+  tabs[1].click();
+  assert.equal(demo.querySelector('[data-client="standard"] video').paused, true);
+  assert.equal(demo.querySelector('[data-client="clientview"] video').paused, false);
+  assert.equal(demo.querySelector('[data-client="clientview"] video').getAttribute('aria-label'), 'Crisp client mod, first person demonstration');
 });
 
 test('single-view Gloss clips preserve labels and play independently of saved perspective', async t => {

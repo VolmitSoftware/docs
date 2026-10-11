@@ -1373,24 +1373,56 @@
             "title": "",
             "links": [
               {
-                "title": "Overview",
+                "title": "00 - Overview",
                 "href": "/optics/00-overview"
               },
               {
-                "title": "Frames and transforms",
+                "title": "01 - Frames and Transforms",
                 "href": "/optics/01-frames-and-transforms"
               },
               {
-                "title": "Shapes",
+                "title": "02 - Shapes",
                 "href": "/optics/02-shapes"
               },
               {
-                "title": "Animation",
+                "title": "03 - Animation",
                 "href": "/optics/03-animation"
               },
               {
-                "title": "Portals",
+                "title": "04 - Portals",
                 "href": "/optics/04-portals"
+              },
+              {
+                "title": "05 - Apertures and Crossing",
+                "href": "/optics/05-apertures-and-crossing"
+              },
+              {
+                "title": "06 - Projection and Visibility",
+                "href": "/optics/06-projection-and-visibility"
+              },
+              {
+                "title": "07 - World Views and Plates",
+                "href": "/optics/07-world-views-and-plates"
+              },
+              {
+                "title": "08 - Entity Projection",
+                "href": "/optics/08-entity-projection"
+              },
+              {
+                "title": "09 - Fidelity and Block States",
+                "href": "/optics/09-fidelity-and-block-states"
+              },
+              {
+                "title": "10 - ClientView and Client Geometry",
+                "href": "/optics/10-clientview-and-client-geometry"
+              },
+              {
+                "title": "11 - Math and Host Interfaces",
+                "href": "/optics/11-math-and-host-interfaces"
+              },
+              {
+                "title": "12 - Demonstrations",
+                "href": "/optics/12-demonstrations"
               }
             ]
           }

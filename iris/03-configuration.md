@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-09T19:43:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -91,7 +91,7 @@ Missing groups use their defaults.
 | `language` | `"en_US"` | Live | Server language. Non-English catalogs download when selected |
 | `metrics` | `true` | **Restart** | **Bukkit only.** Enables bStats reporting |
 | `commandSounds` | `true` | Live | **Bukkit only.** Plays sounds for command completion and command results |
-| `debug` | `false` | Live | Enables detailed console logging and chunk error dumps under `debug/chunk-errors/`. Leave off during normal operation |
+| `debug` | `false` | Live | Enables detailed console logging, Studio update wait and phase durations, and chunk error dumps under `debug/chunk-errors/`. Leave off during normal operation |
 | `dumpMantleOnError` | `false` | Live | Saves a region dump under `dump/` when stored generation data cannot be read correctly |
 | `disableNMS` | `false` | **Restart** | **Bukkit only.** Disables native server integration and prevents Iris world creation. Leave false for normal use |
 | `eagerRuntimeInjection` | `false` | **Restart** | **Bukkit only.** Prepares and checks native server integration during startup instead of when the first Iris world loads |

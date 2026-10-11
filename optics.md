@@ -1,28 +1,35 @@
 ---
 title: "Optics"
-description: "Portal geometry, shape masks, animation and projection math library"
+description: "Java reference for portal geometry, masks, animation, projection and ClientView"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-11T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
 ---
 
-Optics is a Java library, not a server plugin. There is no jar to install: Wormholes ships its own copy inside every distribution, and other projects build against the Maven coordinates below.
+Optics is a Java 25 library for portal geometry, animation and projection. Wormholes includes it in every distribution. Other applications depend on `art.arcane:optics` and supply their own world access, output and rendering.
 
-These pages are for developers building against it.
+These pages describe the library API. Library support for an effect does not imply that Wormholes exposes that effect as a setting or command.
 
-| | |
+| Item | Reference |
 |---|---|
-| What it is | A pure Java 25 library with no Minecraft, Bukkit or mod-loader types |
-| Install | Nothing to install for Wormholes. Other projects depend on `art.arcane:optics` |
-| Version | `opticsVersion` in the repository's `gradle.properties` |
-| Provides | Portal frames and rigid transforms, affine and quaternion math, aperture shape masks, a sampled animation model, a portal definition and registry API, and the scan, plate, occlusion, entity and view-stream machinery behind Wormholes projection |
-| Source | [github.com/VolmitSoftware/Optics](https://github.com/VolmitSoftware/Optics) |
+| Dependency | `art.arcane:optics:<opticsVersion>` |
+| Version | `opticsVersion` in the source repository's `gradle.properties` |
+| Platform | Pure Java, with Fastutil and no Minecraft or mod-loader types |
+| Source | [VolmitSoftware/Optics](https://github.com/VolmitSoftware/Optics) |
 
-- [Overview *Packages, build, and the rules a consumer can rely on*](/optics/00-overview)
-- [Frames and transforms *Frame, OpticTransform, Similarity, Affine, Quaternion, LookTransfer*](/optics/01-frames-and-transforms)
-- [Shapes *Unit space, fit modes, presets, text grammar, raster, mesh and outline outputs*](/optics/02-shapes)
-- [Animation *Easing, clips, tracks, timelines and the animator*](/optics/03-animation)
-- [Portals *Definitions, links, registry and crossing queries*](/optics/04-portals)
+- [00 - Overview *Dependencies, packages and integration boundaries*](/optics/00-overview)
+- [01 - Frames and Transforms *Rigid maps, scale, free rotation, affine transforms and camera orientation*](/optics/01-frames-and-transforms)
+- [02 - Shapes *Presets, boolean masks, paths, fit, raster, mesh and boundary outputs*](/optics/02-shapes)
+- [03 - Animation *Lerp, easing, keyframes, timelines, motion and grow-and-vanish effects*](/optics/03-animation)
+- [04 - Portals *Definitions, block-aligned size and rotation, links and registry queries*](/optics/04-portals)
+- [05 - Apertures and Crossing *Geometry descriptors, crossing, arrival rules and traveller scale*](/optics/05-apertures-and-crossing)
+- [06 - Projection and Visibility *Sampling, view volumes, occlusion, nested views and cadence*](/optics/06-projection-and-visibility)
+- [07 - World Views and Plates *World access, section captures, shared plates and overlapping claims*](/optics/07-world-views-and-plates)
+- [08 - Entity Projection *Snapshots, movement, metadata, maps, names and relationships*](/optics/08-entity-projection)
+- [09 - Fidelity and Block States *Light, biomes, weather, sound, block entities and orientation rules*](/optics/09-fidelity-and-block-states)
+- [10 - ClientView and Client Geometry *Handshake, messages, capabilities, streaming and client helpers*](/optics/10-clientview-and-client-geometry)
+- [11 - Math and Host Interfaces *Vectors, colors, bounds, packed keys, scheduling and scale access*](/optics/11-math-and-host-interfaces)
+- [12 - Demonstrations *Standalone scene plugin and first-person renderer comparisons*](/optics/12-demonstrations)
 {.links-list}

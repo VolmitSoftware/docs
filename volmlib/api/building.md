@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-04T16:29:12.907453+00:00
+date: 2026-10-11T20:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -161,7 +161,7 @@ Compilation omits local-variable debug tables while retaining source locations a
 
 Every final non-modded plugin distribution must fit the Spigot upload cap of 7,600,000 bytes. A non-modded profile cannot declare `max_bytes` above that cap; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive, so plugins with tighter budgets keep them. Intermediate archives receive size warnings and retain all content checks. Modded profiles keep their own larger budgets. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent staging tasks.
 
-Canonical budgets, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Review a size increase before changing its budget.
+Canonical budgets, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Use `authoritativeShrinkLibraries.from(...)` when a separately shipped library contains patched definitions that replace inherited compile-classpath definitions. These jars resolve first; unrelated inherited types remain available. Missing authority, overlap with program classes, or competing authoritative definitions fails the build. An authority generated inside the archive task must be registered as that task’s output and produced before shrinking. Review a size increase before changing its budget.
 
 Reports under `build/reports/packaging/` record before/after sizes, removed classes, package sizes, resource bytes, and archive overhead; `<artifact>.json` identifies the jar in its `artifact` field by file name rather than by absolute path, so a report restored from the build cache in another checkout still names the archive sitting beside it. `<artifact>.json` carries a `shrink` block with the applied state or skip reason, bytes before and after, the removed class count, the restored advice classes, and the tolerated warnings. `<artifact>-shrink-rules.txt`, `-seeds.txt`, `-usage.txt`, `-configuration.txt`, and `-warnings.txt` hold the generated rules, the ProGuard seeds, everything ProGuard removed, the effective configuration, and the classified warnings. Reports are local build output.
 

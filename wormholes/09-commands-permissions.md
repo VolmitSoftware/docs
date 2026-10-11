@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-08T12:10:00.000Z
+date: 2026-10-10T04:51:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -185,6 +185,8 @@ Quote the comma-separated candidate argument: `/wh network policy gateway "alpha
 
 ## Native operations
 
+On native loaders, `/wormholes`, `/wh`, and `/wormhole` are available while the Wormholes runtime is running. These commands become unavailable when the world closes.
+
 Fabric, Forge, and NeoForge accept the following positional command arguments. Names and file paths
 containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address the same commands.
 
@@ -192,6 +194,8 @@ containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address t
 |---|---|---|
 | `/wh help` or `/wh info` | none | Show command usage or portal-building instructions |
 | `/wh version` | none | Show the installed version |
+| `/wh status` | none | Show whether the native Wormholes runtime is running |
+| `/wh reload` | `wormholes.admin` | Reload configuration, networking, recipes, and language files |
 | `/wh stats [now]` | `wormholes.admin` | Show the stats path; `true` writes a fresh snapshot |
 | `/wh admin freeze [seconds=30]` | `wormholes.admin.projection` | Pause projection updates for 5–300 seconds; `seconds=0` resumes |
 | `/wh admin flush` | `wormholes.admin.projection` | Clear active projections and rebuild them |
@@ -208,6 +212,8 @@ containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address t
 | `/wh scale reset [self\|player <name>\|all <radius>]` | `wormholes.admin.scale` | Restore the default size of yourself, a named player, or every entity within the radius (1–256); reports how many were restored |
 | `/wh admin deleteallportals` | `wormholes.admin.reset` | Immediately remove local portals |
 | `/wh admin deleteeverything` | `wormholes.admin.reset` | Immediately reset Wormholes configuration and saved data |
+
+`reload` immediately reports that the configuration reload started. It reports completion or failure after the files load. RCON receives the initial acknowledgement.
 
 `deleteeverything` preserves world files and refuses to run while a pocket is occupied, being entered,
 or undergoing a size or material change. In singleplayer it resets `wormholes.toml` in the game folder

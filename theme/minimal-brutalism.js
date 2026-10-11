@@ -1886,7 +1886,7 @@
     const header = element('div', 'demo-header');
     const tabs = element('div', 'demo-tabs');
     tabs.setAttribute('role', 'tablist');
-    tabs.setAttribute('aria-label', 'Wormholes client for this demonstration');
+    tabs.setAttribute('aria-label', container.dataset.tabLabel || 'Wormholes client for this demonstration');
     const cameraLabel = element('label', 'demo-camera');
     cameraLabel.append(element('span', null, 'Camera'), player.camera);
     player.camera.setAttribute('aria-label', 'Camera view for all demonstrations');
@@ -1905,7 +1905,9 @@
     }
     container.prepend(header);
     for (const [client, variant] of variants) {
-      const label = client === 'clientview' ? 'Client mod' : 'No client mod';
+      const label = client === 'clientview'
+        ? container.dataset.clientviewLabel || 'Client mod'
+        : container.dataset.standardLabel || 'No client mod';
       variant.panel.querySelector(':scope > p')?.remove();
       variant.tab = demoTab(tabs, variant.panel, id + '-' + client, label);
       variant.tab.addEventListener('click', () => {

@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-11T14:27:21.074Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -69,8 +69,6 @@ Teleports require dry, non-hazardous footing and enough unobstructed space for t
 | `/iris unload <world>` | Unload the world and evacuate its players; keep its files |
 | `/iris remove <name> delete=false` | Unload and unregister the world; keep its files |
 | `/iris remove <name>` | Unregister the world and delete its files |
-
-With Rift installed before restart, secondary `iris:*` worlds follow Rift's loading settings and remain unloaded by default, including worlds left loaded at shutdown. Iris retains generation ownership and registers explicitly loaded worlds with Rift. Rift applies policies and requests existing-world loads or unloads through Iris. See [Integrations](/iris/28-integrations#rift).
 
 Loading requires the world's saved pack and registration data. Restore complete world backups, including these files. Wait for an unload to finish before starting another operation on that world. If creation cannot close its partial generator, Iris retains the files for startup cleanup instead of deleting storage still in use.
 

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-09T17:00:00.000Z
+date: 2026-10-11T15:03:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,8 +15,8 @@ Install the artifact for your server platform: the CraftBukkit jar goes in `plug
 | | |
 |---|---|
 | Bukkit server | Paper, Purpur, or Folia. Minecraft 26.1.2, 26.2, and 26.3 |
-| Native server | Minecraft 26.3: Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta |
-| Client mod | Optional. Minecraft 26.3 with Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta. See [Client mod](#client-mod) |
+| Native server | Minecraft 26.2: Fabric Loader 0.19.5, Forge 65.1.3, or NeoForge 26.2.0.89. Minecraft 26.3: Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta |
+| Client mod | Optional. Use the jar for the client’s Minecraft version and loader from the native server row. See [Client mod](#client-mod) |
 | Java | 25 |
 | Distribution | `Wormholes v<version> [CraftBukkit] 26.1.2-26.3.jar`, or the jar bearing your native loader name and version. The `-api.jar` is a Bukkit compile dependency |
 | JVM | `--enable-native-access=ALL-UNNAMED` lets zstd-jni load without a restricted-access warning |
@@ -28,9 +28,9 @@ Fabric, Forge, and NeoForge servers store the same settings, portal records, doo
 
 ## Client mod
 
-The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
+The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's Minecraft version and loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases using protocol 8 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. The client mod is built for Minecraft 26.3, so the server must also run 26.3. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases using protocol 8 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.2 and 26.3. A 26.2 client requires a 26.2 server, and a 26.3 client requires a 26.3 server. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia every player crosses with the ordinary teleport. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
@@ -38,9 +38,15 @@ The F3 debug screen shows `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wor
 
 Native portal views use Minecraft models, textures, and destination lighting. On Fabric, Forge, and NeoForge servers and in singleplayer, traversable portals and doors show the destination world through Minecraft, Sodium, and Iris Shaders. Other views stream from the server. See [ClientView](/wormholes/05-projection-modes-settings#clientview).
 
-With Iris Shaders, the client prepares each dimension's main shader pipeline while the world loads. Portal views and mirrors require separate pipelines for their camera histories. Dimension warmup does not prepare these additional pipelines. Before drawing visible views, the client prepares their shader pipelines; this can pause the frame when a view first appears, after shader reload, or after cache expiry. A visible cross-dimension portal also prepares its crossing and return cameras when the cache has room. A matching arrival portal continues the prepared return camera's history. Moving the camera or briefly closing and reopening the same view reuses its pipeline and history. The cache holds up to 12 view pipelines and releases them after 60 seconds without use; capacity pressure can release an unused view sooner.
+Native clients prepare the fixed vanilla portal terrain and composition shaders during game resource loading, including reflected and RGSS variants. Crossing, revisiting, scene resets, and texture-filtering changes retain these programs. A successful resource reload replaces them. Content-dependent reflected shaders can still compile on first use.
 
-For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for Minecraft 26.3. Iris Shaders is separate from the Iris world-generation plugin and mod. For distant terrain on Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
+With Iris Shaders, the client prepares each dimension's main shader pipeline while the world loads. Each portal view, mirror, and nested camera requires a separate pipeline and history. Dimension warmup does not prepare these additional pipelines. Returning from a nested view or mirror restores the enclosing camera, including the main view.
+
+Before drawing visible views, the client prepares their shader pipelines. Shader compilation remains synchronous and can pause the frame on first use, after shader reload, or after cache expiry. ClientView retains its session during preparation. A visible cross-dimension portal also prepares its crossing and return cameras when the cache has room. A matching arrival portal continues the prepared return camera's history.
+
+Moving the camera or briefly closing and reopening the same view reuses its pipeline and history. The cache holds up to 12 view pipelines and releases them after 60 seconds without use. Capacity pressure can release an unused view sooner. Leaving the world or reloading shaders releases the cached portal pipelines.
+
+For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for your Minecraft version. Iris Shaders is separate from the Iris world-generation plugin and mod. For distant terrain on Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
 
 ### `config/wormholes-client.toml`
 
@@ -62,9 +68,23 @@ The client creates this file in its `config/` folder on first launch and reads i
 
 ## Build distributions
 
-Build with Java 25 from the repository root. The build has the Gradle modules `core` (shared plugin logic), `optics` (projection math and the ClientView stream protocol, pure Java with no Wormholes dependency), the Bukkit root project, and the `adapters/fabric`, `adapters/forge`, and `adapters/neoforge` builds; every distribution includes `optics`. `./gradlew buildAllToOut` creates the four distributions in the sibling `PluginOuts/` directory. Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Each export replaces older Wormholes jars for that platform. NeoForge filenames omit the loader’s trailing `-beta` suffix, for example `Wormholes v2.2.0 [NeoForge] 26.3+26.3.0.33.jar`.
+Build with Java 25 from the repository root. `./gradlew buildAllToOut` exports the Bukkit jar and every supported Minecraft version for Fabric, Forge, and NeoForge to the sibling `PluginOuts/` directory. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Minecraft versions declared under `gradle/minecraft-versions/` join this build automatically. Game versions and loaders build serially.
+
+Repeated builds reuse unchanged verified targets. Changes to sources, test fixtures, dependencies, build settings, or the Java toolchain rebuild the affected targets and run their checks. Use `--rerun-tasks` to force every requested gate to run again.
+
+`buildAll`, `buildPsychoLT`, and the workspace `build-psycho-lt.sh` also compile and export every supported game version. Consumer dropins receive the selected Minecraft version's jar, which defaults to 26.3. Use `-PminecraftVersion=26.2` to select 26.2 for those dropins.
+
+Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Native single-platform builds use the selected Minecraft version, for example `./gradlew buildFabric -PminecraftVersion=26.2`. `./gradlew buildModdedVersionsToOut` exports all native game versions without building Bukkit or deploying jars. Each native export replaces older Wormholes jars for that loader and game version while retaining other game versions. NeoForge filenames omit the loader's trailing `-beta` suffix, for example `Wormholes v2.2.0 [NeoForge] 26.3+26.3.0.33.jar`.
 
 `./gradlew apiJar` creates the Bukkit compile dependency. Native integrations compile against their loader distribution; see [API](/wormholes/20-api-getting-started).
+
+Bukkit builds prepare the patched FAWE compile dependency automatically in the Gradle cache. To install [FAWE projection support](/wormholes/15-integrations#fastasyncworldedit), build its runtime distribution separately:
+
+```sh
+sh compat/fastasyncworldedit/build-patched.sh /tmp/fawe-wormholes :worldedit-core:test :worldedit-bukkit:shadowJar :worldedit-bukkit:reobfShadowJar
+```
+
+Install the `2.16.1-wormholes-1` runtime jar from that source directory's `worldedit-bukkit/build/libs/`. Use `FastAsyncWorldEdit-Paper-2.16.1-wormholes-1.jar` on Paper or `FastAsyncWorldEdit-Bukkit-2.16.1-wormholes-1.jar` on Spigot. Do not install the plain API, sources, or Javadoc jars.
 
 ## Data folder layout
 

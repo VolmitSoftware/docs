@@ -2,13 +2,13 @@
 title: "Portals"
 description: "Optics documentation: PortalDefinition, PortalBuilder, PortalLink, PortalRegistry and crossing queries"
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-11T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
 ---
 
-The `portal` package is the gateway API: a `PortalDefinition` describes one portal, a `PortalLink` connects it to another or makes it a mirror, and a `PortalRegistry` holds the portals of any number of worlds and answers geometric queries. It depends on nothing outside Optics, so the same objects drive a server, a client or a test.
+`PortalDefinition` describes one portal. `PortalLink` connects it to another or makes it a mirror. `PortalRegistry` stores portals across worlds and answers geometric queries. These objects have no platform dependencies.
 
 ## PortalDefinition
 
@@ -24,9 +24,19 @@ A definition is immutable and keeps its `UUID` through every change.
 | `link()` | A `PortalLink`, or `null` for an unlinked portal |
 | `metadata()` | An immutable string map for the host's own keys |
 
-Derived views: `origin()` and `center()` are the centre of the rectangle on the plane, `area()` is the cell `Box`, `width()` and `height()` are the counts as doubles, `planeShape()` is the fitted [shape](/optics/02-shapes), `aperture()` is the `ApertureCells` holding the open cells, `affine()` maps the unit square -1..1 onto the portal plane, `source(frontSide, depthBlocks)` is the `ApertureDescriptor.Source` the projection packages read, `sizeRatio(destination)` compares two portals, and `toward(destination, frontSide)` is the `Similarity` that carries space in front of this portal behind the destination, including the link's travel scale.
+| Derived view | Meaning |
+|---|---|
+| `origin()`, `center()` | Center of the rectangle on the crossing plane |
+| `area()` | Cell bounds as a `Box` |
+| `width()`, `height()` | Column and row counts as doubles |
+| `planeShape()` | Fitted shape |
+| `aperture()` | Open-cell `ApertureCells` |
+| `affine()` | Map from the -1..1 unit square onto the portal plane |
+| `source(frontSide, depthBlocks)` | Projection descriptor source |
+| `sizeRatio(destination)` | Destination/source size ratio |
+| `toward(destination, frontSide)` | Travel `Similarity`, including link scale |
 
-A portal needs 1 to 65535 cells per edge and at most 1048576 cells in total, and its shape must leave at least one cell open; the constructor throws `IllegalArgumentException` otherwise.
+A portal needs 1..65535 cells per edge and at most 1048576 cells total. Its shape must leave at least one raster cell open. The constructor rejects invalid size, offset, self-link or empty aperture with `IllegalArgumentException`.
 
 ### Building one
 
@@ -73,7 +83,14 @@ Every operation returns a new definition with the same id, or the same instance 
 
 ### Queries
 
-`containsCell(x, y, z)` tests a whole cell against the raster, `containsPoint(point, planeTolerance)` tests a point against the exact shape, `cellCoordinates(x, y, z, out2)` gives the column and row of a point, and `crossing(start, end, velocity, look)` returns a `PortalCrossing` when the segment passes through an open part of the plane, or `null`. The crossing carries the `PlaneCrossing` (frame view, hit point, motion, look and which side was entered), the `column` and `row` of the hit, the `fraction` along the segment and `point()`.
+| Query | Result |
+|---|---|
+| `containsCell(x, y, z)` | Whole-cell raster membership |
+| `containsPoint(point, planeTolerance)` | Open raster cell and exact shape containment within plane tolerance |
+| `cellCoordinates(x, y, z, out2)` | Point column and row |
+| `crossing(start, end, velocity, look)` | Open-plane segment crossing or `null` |
+
+`PortalCrossing` carries the intersection column, row, fraction and `point()`. Its `PlaneCrossing` carries the viewed frame, segment endpoint, velocity, look and entered side. Null velocity uses segment displacement. Null look uses that motion.
 
 ## PortalLink
 
@@ -83,7 +100,7 @@ PortalLink mirror = PortalLink.mirror(QuarterTurn.DEGREES_90);
 PortalLink scaled = to.withScale(ScaleRule.ratio(0.25, 4.0));
 ```
 
-A link names a `target` id or is a `mirror` with `mirrorTurns`, and carries the travel rules: `orientation` (`OrientationRule.FRAME` by default), `momentum` (preserve by default) and `scale` (`ScaleRule.OFF` by default). `ScaleRule.motion()` maps position and velocity by the size ratio; `ScaleRule.ratio(min, max)` also changes the traveller's size, clamped to the bounds, which themselves lie within 0.0625..16. `SizeRatio.between(frameA, columnsA, rowsA, frameB, columnsB, rowsB)` divides the destination's cells by the source's along each axis of the map and keeps the smaller ratio, with `exact()` true when both agree.
+A link names a `target` id or is a `mirror` with `mirrorTurns`, and carries the travel rules: `orientation` (`OrientationRule.FRAME` by default), `momentum` (preserve by default) and `scale` (`ScaleRule.OFF` by default). `ScaleRule.motion()` maps position and velocity by the size ratio. `ScaleRule.ratio(min, max)` also changes the traveller's size, clamped to the bounds, which themselves lie within 0.0625..16. `SizeRatio.between(frameA, columnsA, rowsA, frameB, columnsB, rowsB)` divides the destination's cells by the source's along each axis of the map and keeps the smaller ratio, with `exact()` true when both agree.
 
 ## PortalRegistry
 
@@ -126,4 +143,22 @@ Queries that take an `out` list append to it and return how many entries they ad
 
 ## From a definition to a projection
 
-`portal.source(frontSide, depthBlocks)` feeds `ApertureDescriptor.fromPortal(...)`, the geometry record every scan, plate and ClientView stream starts from, and `portals.directory()` lets `RecursiveEndpoints`, `CellScan` and the plate pipeline resolve destinations and nested views. `portal.toward(destination, frontSide)` is the map a traveller or a camera follows: `PoseTransform.apply(pose, similarity)` moves a full pose through it, and `PoseTransform.arrive(...)` applies the link's orientation, momentum and scale rules on top. `Affine.of(similarity)` lifts the same map into the matrix form the [animation tracks](/optics/03-animation) work with.
+`portal.source(frontSide, depthBlocks)` feeds `ApertureDescriptor.fromPortal`. `portals.directory()` supplies endpoint lookup for scanning, recursion and plate capture.
+
+`portal.toward(destination, frontSide)` supplies a travel map. `PoseTransform.apply` maps a complete pose. `PoseTransform.arrive` also applies orientation and momentum policies. Apply an entity scale factor separately through the host.
+
+`Affine.of(similarity)` converts the map for render or animation use. See [05 - Apertures and Crossing](/optics/05-apertures-and-crossing) and [06 - Projection and Visibility](/optics/06-projection-and-visibility).
+
+## Size, rotation and motion limits
+
+Definitions use whole cell counts and cardinal `Frame` axes. `rotated` and `rotatedAbout` accept `QuarterTurn`, not an arbitrary angle. `centeredAt` and `transformed` snap placement to integer origin cells. A requested center can therefore differ from `center()`.
+
+`scaled(factorU, factorV)` scales the frame's right and up dimensions. It rounds each dimension to the nearest cell and retains at least one cell. `resized` rejects a zero dimension. `stretched` retains at least one cell and grows toward the frame's right and up.
+
+`shapeRotated(degrees)` supports arbitrary mask rotation inside the block-aligned rectangle. It does not rotate the crossing plane. `shapeScaled` changes the mask rather than the rectangle, and the result must retain an open raster cell.
+
+To move a definition, call a change method and publish the result through `PortalRegistry.update`. The registry stores the new definition and advances its revisions. These calls do not move blocks, entities or a rendered image in a host application.
+
+For fractional size and continuous movement, animate a separate [Affine render transform](/optics/03-animation#grow-from-small-to-big-then-vanish). Hide or remove the host's render object when the effect ends. Do not represent disappearance with a zero-sized definition or an empty aperture mask.
+
+A direct link cannot target the definition's own id. Use `PortalLink.mirror` for a self-reflection. Construct a `PortalLink` record to set orientation or momentum rules, and use `withScale` to replace its scale policy.

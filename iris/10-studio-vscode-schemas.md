@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-10-09T16:48:42.787Z
+date: 2026-10-09T19:58:01.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,6 +29,7 @@ Prerequisites: a writable packs directory, operator access on Bukkit or gamemast
 6. **Verify in fresh terrain.** Enter ungenerated chunks beyond the transition band and run `/iris what biome`.
 7. **Validate.** `/iris pack validate pack=tutorial`: no blocking errors.
 8. **Close.** `/iris studio close`
+   Closing stops new pack updates and waits for any active update before unloading and removing the temporary world.
 
 ### Fabric / Forge / NeoForge
 
@@ -55,7 +56,7 @@ Changes to height or dimension type require closing and reopening Studio, and ma
 |---------|----------|
 | Pack workspace | Packs live under the platform data directory in the folder named `packs` |
 | Studio world | Temporary world opened from the selected pack and seed |
-| Hotload | Accepted JSON, IOB and PNG edits apply to new terrain |
+| Hotload | Available as soon as Studio finishes opening. Accepted JSON, IOB and PNG edits apply to new terrain when the update finishes; existing chunks retain their terrain |
 | Non-studio worlds | Pack edits require the production world-update workflow in [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
 
 Studio settings live in `iris.json` under `studio`:
@@ -73,6 +74,7 @@ Studio settings live in `iris.json` under `studio`:
 - Automatic pack hotload is available in ordinary Studio. Close and reopen Jigsaw Studio to apply external pack edits.
 - Edit the active server's authoring folder under `plugins/Iris/packs/<pack>` on Bukkit. A separate checkout or another server's pack copy is not watched. Normal editor saves, file replacements, and FTP uploads are detected; temporary files and `.iris` output are ignored.
 - Invalid edits leave the current pack active and are reported in the console. Fix the first error and save again.
+- If terrain capture rejects an update before activation, the current generation remains available. Retry the same edit after the reported operation finishes.
 - Height, environment, dimension key, generated dimension type, and coordinate scale cannot hotload. Close and reopen Studio after changing them. New or changed required registry definitions can require a server restart. See [11 - Dimensions](/iris/11-dimensions).
 - Existing chunks keep their terrain. On Bukkit, changes blend across `generator.generationTransitionWidthBlocks` when `studio.blendChanges` is true; inspect new chunks beyond that transition to see the edited pack. To inspect sharp cutoffs, set `studio.blendChanges` to false in `iris.json`, reload the settings or wait for settings hotload, then save a pack edit and enter adjacent new chunks. Fabric, Forge and NeoForge Studio generate direct cutoffs.
 - Dimension `allObjectScaleFactor` edits do hotload. New object placements use the accepted factor; existing objects keep their blocks, explicit placement scales still override it, and jigsaw pieces are excluded.
