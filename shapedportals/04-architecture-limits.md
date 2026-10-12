@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry constraints, the portal registry, the Wormholes handoff, and building from source"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T23:36:43.102Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -64,7 +64,7 @@ Build the sibling Wormholes API first with `./gradlew apiJar` from `WormholesPlu
 ./gradlew build
 ```
 
-The shaded artifact lands in `build/libs/ShapedPortals-<version>.jar`, and the build also exports the React pack to `build/distributions/react-api-packs/`.
+The shaded artifact lands in `build/libs/ShapedPortals-<version>.jar`, and the build also exports the React pack to `build/distributions/react-api-packs/`. Run `./gradlew buildPsychoLT` to export the selected distribution to `PluginOuts/ShapedPortals v<version> [CraftBukkit] 26.1-26.3.jar` and stage it in the managed test-server dropins.
 
 `./gradlew publishToMavenLocal` publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building).
 
