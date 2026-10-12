@@ -2,7 +2,7 @@
 title: "Loot"
 description: "Iris documentation: Loot"
 published: true
-date: 2026-10-03T11:32:06.308185+00:00
+date: 2026-10-11T20:54:47.480326+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -197,7 +197,7 @@ Dimensions, regions, and biomes accept `blockDrops[]`. When a player breaks a bl
 }
 ```
 
-This runs on Bukkit and on Fabric, Forge, and NeoForge. If the saved biome record for that position is still loading, Iris cancels the break attempt without changing the block or its drops — try again shortly. Blocks no drop rule could match are never delayed.
+This runs on Bukkit and on Fabric, Forge, and NeoForge. Rules use the saved biome, region, dimension, and pack definitions belonging to the broken block. On Bukkit, blocks break immediately while saved biome information loads; matching loot is delivered after that lookup completes. If saved information cannot be read, the normal block loot is preserved. Protection cancellations remain effective.
 
 ## Content unavailable on this Minecraft version
 

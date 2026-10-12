@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-12T01:16:38.165Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -50,8 +50,6 @@ overworld/
   biomes/<folder>/*.json         # temperate/, hot/, carving/, vanilla/, ...
   generators/*.json              # plain, mountain, ocean, flat, ...
   loot/...                       # global-clutter, temperate/food, ...
-  entities/standard/...
-  spawners/<climate>/...
   objects/...                    # .iob schematics
   structures/, jigsaw-*, ...
   snippet/decorator/, snippet/style/
@@ -226,7 +224,7 @@ Reuse `snippet/decorator/*` and `snippet/style/*` by string reference as in [24 
 
 ### Entities and spawners
 
-The pack includes `entities/standard/**` and `spawners/**`. Ambient Iris spawning requires listing spawner keys on `entitySpawners` at dimension, region or biome scope. Marker-based spawning needs markers plus a `markers` array on an object placement. See [23b - Entities & Spawners](/iris/23b-entities-spawners) and [23c - Markers](/iris/23c-markers).
+Ordinary mobs follow the native biome spawn tables. Native structures supply their configured inhabitants. To add custom encounters, create `entities/<key>.json` and `spawners/<key>.json`, then attach spawner keys to a dimension, region, biome, or object marker. See [23b - Entities & Spawners](/iris/23b-entities-spawners) and [23c - Markers](/iris/23c-markers).
 
 ## Pushing changes into an existing world
 

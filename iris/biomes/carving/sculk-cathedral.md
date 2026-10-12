@@ -2,7 +2,7 @@
 title: "Sculk Cathedral - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/sculk-cathedral"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -57,7 +57,9 @@ Procedural `chance` is a per-chunk placement roll; `density` is the number of at
 
 ## Ecology
 
-The `carving/sculk-cathedral` CAVE pool selects bats and occasional cave spiders in Overworld, or endermen and occasional skeletons in Underworld. It caps each chunk at three entities and allows one attempt per chunk every 45 seconds at light levels `0..12`. Dimension and region spawner scopes also apply.
+Overworld inherits the native `minecraft:deep_dark` spawn table. Minecraft controls population limits, light, placement, and spawning conditions.
+
+Underworld uses the `carving/sculk-cathedral` CAVE pool for endermen and occasional skeletons. It caps each chunk at three entities and allows one attempt per chunk every 45 seconds at light levels `0..12`. Underworld dimension and region spawner scopes also apply.
 
 ## Find the room
 

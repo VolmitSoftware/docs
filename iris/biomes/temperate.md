@@ -2,7 +2,7 @@
 title: "Temperate Biomes"
 description: "Navigation for the built-in temperate biomes across Overworld and Underworld"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biomes, overworld, underworld, temperate"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -13,7 +13,7 @@ This family has **12 child-only reachable variants**. Those variants are documen
 
 ## Ecology
 
-Overworld regions that use `temperate/water` add glow squid and salmon in water. This table is shared by Temperate, Forests, Estranged, Magnetics, Terralost, and Prismatics. Swamp frogs and tadpoles use the Swamp region’s separate ecology.
+Overworld land and water biomes inherit native spawn tables from their configured Minecraft derivatives. Minecraft controls population limits, light, placement, and spawning conditions for these mobs.
 
 ## Direct roots
 

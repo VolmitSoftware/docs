@@ -2,7 +2,7 @@
 title: "Swamp Biomes"
 description: "Navigation for the built-in swamp biomes across Overworld and Underworld"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biomes, overworld, underworld, swamp"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -13,7 +13,7 @@ This family has **7 child-only reachable variants**. Those variants are document
 
 ## Ecology
 
-Overworld `swamp/passive` includes land frogs at rarity 30, in batches of one or two during Minecraft hours 6–18 and clear weather. `swamp/water` contains tadpoles in water, in batches of one or two at rarity 7. Both tables set `maxEntitiesPerChunk` to 2.
+Overworld swamp wildlife and hostile mobs follow each biome's configured Minecraft derivative. Frogs retain Minecraft's native breeding and tadpole development behavior.
 
 ## Direct roots
 

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-10T04:51:00.000Z
+date: 2026-10-12T01:06:17.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -209,6 +209,8 @@ containing spaces must be quoted. `/wormholes`, `/wh`, and `/wormhole` address t
 | `/wh admin portals rename-server <old> <new> [confirm]` | `wormholes.admin.portals` | Rewrite matching remote destinations when confirmation is `true` |
 | `/wh portals shape <uuid> [shape]` | operator level 3 | Show or set the portal's aperture shape from [shape text](#aperture-shape-text); completion offers the preset names |
 | `/wh portals scale <uuid> [mode] [min] [max]` | operator level 3 | Show or set the portal's traveller scale rule |
+| `/wormholes portals gravity <uuid> [true\|false]` | operator | Show or set the native portal's Directional gravity control |
+| `/wormholes gravity reset [player name]` | operator | Restore world-down gravity for yourself or a named player. Console must supply a player name |
 | `/wh scale reset [self\|player <name>\|all <radius>]` | `wormholes.admin.scale` | Restore the default size of yourself, a named player, or every entity within the radius (1–256); reports how many were restored |
 | `/wh admin deleteallportals` | `wormholes.admin.reset` | Immediately remove local portals |
 | `/wh admin deleteeverything` | `wormholes.admin.reset` | Immediately reset Wormholes configuration and saved data |

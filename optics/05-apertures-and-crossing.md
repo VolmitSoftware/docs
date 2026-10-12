@@ -2,7 +2,7 @@
 title: "Apertures and Crossing"
 description: "Optics cell apertures, geometry descriptors, crossing queries and arrival policies"
 published: true
-date: 2026-10-11T16:00:00.000Z
+date: 2026-10-12T01:06:17.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -89,6 +89,7 @@ Blackout policies are off, shell, or shell plus buried cells. Air policy either 
 | `Pose` | Position, previous and old positions, velocity, yaw/pitch and body/head angle history |
 | `Pose.moved`, `withVelocity` | Return a modified pose |
 | `PoseTransform.apply` | Transfer a complete pose through a rigid or similarity map |
+| `PoseTransform.orient` | Rotate pose angle history while retaining world positions and velocity |
 | `PoseTransform.arrive`, `arrivalRoll` | Apply arrival policies and report camera roll |
 
 The host must perform collision checks, choose a destination and apply the resulting pose. These helpers do not teleport a player or enforce travel permission.
@@ -122,15 +123,45 @@ A positive rule maximum overrides the default ceiling. A non-positive ceiling di
 
 `SizeRatio.between` compares source and destination dimensions in their frames. It uses the smaller mapped-axis ratio. `exact()` reports whether both ratios agree within `1e-6`. `inverse()` reverses it, and `isUnit()` tests a unit ratio.
 
+The ratio is destination size divided by source size. `percentage()` expresses that ratio as a percentage: `0.5` is `50%`, and `2` is `200%`. `SizeRatio.fromPercentage(50)` constructs an exact ratio of `0.5`. Its inverse is `200%`. Percentages describe the resulting size relative to entry size, rather than a fraction of the resizing effect.
+
 | ScaleRule | Travel and entity behavior |
 |---|---|
 | `OFF` | Unit travel scale and unchanged entity factor |
 | `motion()` | Size-ratio position and velocity mapping, unchanged entity factor |
 | `ratio(min, max)` | Size-ratio mapping and a multiplied, clamped entity factor |
 
-Scale bounds clamp to 0.0625..16 and must remain ordered. `entityFactor(currentFactor, ratio)` computes the new factor. `changesEntity()` identifies ratio mode. Use the host's `ScaleAccess` to read, apply or reset actual entity scale.
+Scale bounds clamp to 0.0625..16 and must remain ordered. `entityFactor(currentFactor, ratio)` requires a finite positive current factor in every mode. Ratio mode multiplies the current factor on each crossing, then applies the bounds. `changesEntity()` identifies ratio mode. Use the host's `ScaleAccess` to read, apply or reset actual entity scale.
 
 `PoseTransform.arrive` maps a pose, but does not apply an entity scale attribute. A host must perform that separate action.
+
+## Directional gravity and traveller state
+
+`GravityFrame` stores a proper `AxisPermutation`. Its 24 orientations support all six cardinal down directions and quarter turns around them. Reflections, affine shear and arbitrary-angle gravity are outside this contract. `WORLD` uses ordinary world-down gravity. `transformed(portalRotation)` composes a portal's proper rotation with the current frame.
+
+| GravityFrame method | Use |
+|---|---|
+| `down()`, `up()` | Read cardinal gravity and support directions |
+| `toWorld`, `toLocal`, and their `Into` forms | Convert vectors between gravity-local and world coordinates |
+| `projectMovement(worldVector)` | Remove the component perpendicular to the locomotion plane |
+| `acceleration(magnitude)`, `jump(speed)` | Produce world-space downward acceleration and upward jump velocity |
+| `look(yaw, pitch)` | Convert local view angles into a world camera basis |
+| `eyePosition(feet, height)`, `bounds(feet, width, height)` | Place the eye and collision box along the frame's up direction |
+| `modelRotation(bodyYaw)` | Rotate a local model by its body yaw and gravity orientation |
+
+`TravellerState(pose, scale, gravity)` keeps positions, position history and velocity in world coordinates. All pose view, body and head angles use the gravity-local basis. Scale must be finite and positive. `scalePercentage()` reads the factor as a percentage, and `withScalePercentage(percentage)` returns a state with that scale.
+
+`TravellerTransform.apply(state, toward, rule)` maps world positions and velocity through the supplied `Similarity`, rotates gravity, and applies the rule's entity factor. It preserves local angle history, so a traveller remains upright relative to the new floor. Construct `toward` with `rule.travelScale(sizeRatio)` to select scaled or rigid travel.
+
+```java
+SizeRatio ratio = SizeRatio.between(sourceFrame, 4, 6, destinationFrame, 2, 3);
+ScaleRule rule = ScaleRule.ratio(0.25D, 4.0D);
+Similarity toward = Similarity.between(sourceFrame, sourceOrigin, destinationFrame, destinationOrigin, rule.travelScale(ratio));
+TravellerState departure = new TravellerState(pose, 1.0D, GravityFrame.WORLD);
+TravellerState arrival = TravellerTransform.apply(departure, toward, rule);
+```
+
+This pair produces a `50%` scale from the entry state. The host applies the arrival pose and scale, changes actual gravity, and synchronizes the camera and character model. `camera()`, `eyePosition`, `bounds` and `modelTransform()` provide the corresponding geometry. See [Entity Projection](/optics/08-entity-projection#traveller-model-orientation) and [Gravity access](/optics/11-math-and-host-interfaces#gravity-access).
 
 ## Straddling geometry
 

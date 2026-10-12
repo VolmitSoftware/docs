@@ -2,7 +2,7 @@
 title: "Optics Overview"
 description: "Optics documentation: packages, build, and the rules a consumer can rely on"
 published: true
-date: 2026-10-11T17:27:43.914Z
+date: 2026-10-12T02:03:27.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -33,18 +33,18 @@ Build from the repository root with `./gradlew build`. `./gradlew test` runs the
 | `animation` | `Easing`, `Clip`, `Tween`, `Track`, `Sequence`, `Loop`, `Timeline`, `Animator`, `TimeSource`, `Interpolators` |
 | `portal` | `PortalDefinition`, `PortalBuilder`, `PortalLink`, `PortalRegistry`, `PortalDirectory`, `PortalCrossing`, `PortalTracks` |
 | `aperture` | Cell apertures, `ApertureDescriptor`, `AperturePolygon`, `SizeRatio`, `Endpoint`, `EndpointDirectory`, observer geometry and boundary samples |
-| `crossing` | `PlaneCrossing`, `Pose`, `PoseTransform`, `ArrivalOrientation`, `LookTransfer`, `OrientationRule`, `MomentumRule`, `ScaleRule` |
+| `crossing` | `PlaneCrossing`, `Pose`, `PoseTransform`, `ArrivalOrientation`, `LookTransfer`, `OrientationRule`, `MomentumRule`, `ScaleRule`, `GravityFrame`, `TravellerState`, `TravellerTransform` |
 | `claim` | Block claims, claim sets, blackout shells and the world output they write to |
 | `scan`, `volume` | Cell scans, frustums, view volumes, level of detail, gaze scheduling and resample cadence |
 | `plate` | Shared destination view plates, capture jobs, chunk leases and worker pools |
 | `occlusion`, `recursion` | View and entity occlusion, nested portal view planning |
-| `entity` | Projected entity snapshots, deltas, spoofed identities, names, metadata and map relays |
+| `entity` | Projected entity snapshots, deltas, `EntityVisualMetadata` gravity/scale headers, spoofed identities, names, metadata and map relays |
 | `fidelity`, `light` | Atmosphere, acoustics, weather and block-entity relays, client profiles, light overlays and sky math |
 | `state` | Block-state orientation rules and rewrite caches for rotated and reflected views |
 | `view` | Block and section views, section caches, world change tracking and `AffineProjection` for host-sampled aperture transforms |
 | `stream` | The ClientView stream protocol: handshake, sessions, codecs, plates, bricks, entity frames and environment state |
 | `client` | Client-side cell rules, sweeps, mesh plans and light sampling |
-| `spi` | `OpticsScheduler`, `OpticsMetrics` and `ScaleAccess`, the hooks a host implements |
+| `spi` | `OpticsScheduler`, `OpticsMetrics`, `ScaleAccess` and `GravityAccess`, the hooks a host implements |
 
 Packages under `internal` are implementation detail and are not API.
 
@@ -70,6 +70,8 @@ The Wormholes build scans the library source on every change and rejects platfor
 `Affine`, `Quaternion` and animation clips support free render transforms, fractional size, shear and continuous motion. A host must sample and apply these values. `PortalTracks` defines keys and helper clips, but Wormholes does not bind these tracks to its runtime portals.
 
 An unmodified Minecraft client does not implement the ClientView protocol. A server host can send ordinary blocks, entities or display geometry through its own adapter. A compatible client can negotiate the stream capabilities described in [10 - ClientView and Client Geometry](/optics/10-clientview-and-client-geometry).
+
+`TravellerState` combines pose, percentage-readable scale and a cardinal gravity frame. `TravellerTransform` carries that state through a portal similarity. Gravity frames support 24 proper orientations, with six possible down directions and exact 90-degree turns. The host applies physics, camera, model orientation and synchronized state through its platform adapter. See [05 - Apertures and Crossing](/optics/05-apertures-and-crossing#directional-gravity-and-traveller-state).
 
 A host can draw sampled shapes and transforms as a virtual scene. This does not establish support for arbitrary live-world portal rendering, continuous travel, shaders or every client renderer.
 

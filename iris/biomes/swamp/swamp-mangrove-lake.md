@@ -2,7 +2,7 @@
 title: "Swamp Mangrove Forest — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for swamp/swamp-mangrove-lake"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -27,7 +27,7 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 
 ## Overworld treatment
 
-Overworld `swamp/water` adds tadpoles in water. See [Swamp ecology](/iris/biomes/swamp#ecology).
+Overworld aquatic mobs follow this biome's native derivative spawn table. See [Swamp ecology](/iris/biomes/swamp#ecology).
 
 Derivative `minecraft:swamp`; vanilla derivative `minecraft:swamp`. Primary sea palette: `minecraft:mud`, `minecraft:coarse_dirt`, `minecraft:dirt`, `minecraft:stone`. Object set: `trees/mangrove/mangrove1`, `trees/mangrove/mangrove2`, `trees/mangrove/mangrove3`, `trees/mangrove/mangrove4`, `trees/mangrove/mangrove5`, `trees/mangrove/mangrove6`, `trees/mangrove/mangrove7`, `trees/mangrove/mangrove8`, and 12 more. Custom registered biome id: `k530mangroveswamp`.
 

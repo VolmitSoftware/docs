@@ -1,14 +1,14 @@
 ---
 title: "Math and Host Interfaces"
-description: "Optics vectors, colors, bounds, packed cells and platform scheduling, metrics and scale hooks"
+description: "Optics vectors, colors, bounds, packed cells and platform scheduling, metrics, scale and gravity hooks"
 published: true
-date: 2026-10-11T16:00:00.000Z
+date: 2026-10-12T01:06:17.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
 ---
 
-Math helpers define positions, colors, bounds and coordinate keys without platform types. Host interfaces connect Optics to scheduling, metrics and entity scale. Implement these contracts with the ownership rules of the target platform.
+Math helpers define positions, colors, bounds and coordinate keys without platform types. Host interfaces connect Optics to scheduling, metrics, entity scale and gravity. Implement these contracts with the ownership rules of the target platform.
 
 ## Vectors
 
@@ -99,3 +99,16 @@ Optics does not select a global scheduler or load one through services. The host
 Use this interface with [ScaleRule](/optics/05-apertures-and-crossing#size-ratio-and-traveller-scale). The scale rule computes a factor. The adapter applies the platform attribute or equivalent state on the owning thread.
 
 A platform can reject scale changes. Preserve that result in the host's travel policy instead of treating a computed factor as proof of an applied change.
+
+## Gravity access
+
+`GravityAccess<E>` connects a host entity to its [GravityFrame](/optics/05-apertures-and-crossing#directional-gravity-and-traveller-state).
+
+| Method | Contract |
+|---|---|
+| `supported(entity)` | Report whether the host can apply directional gravity to this entity |
+| `gravity(entity)` | Read the current proper cardinal frame |
+| `gravity(entity, frame)` | Apply the frame and report whether the host accepted it |
+| `reset(entity)` | Restore world-down gravity and report acceptance |
+
+Apply mutations on the entity's owning thread. The adapter must align gravity acceleration, movement, jumping, collision bounds, eye position and fall handling with the frame. It must also synchronize the frame with clients and orient the camera, body, head and held equipment. Optics supplies mathematical state and transforms. The host owns the physical and visual behavior.

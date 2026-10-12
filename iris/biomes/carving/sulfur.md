@@ -2,7 +2,7 @@
 title: "Sulfur Galleries — Cave Biome"
 description: "Sulfur Galleries and Sulfur Hollows, with sulfur pools, banded spires, short mineral drips and native cube ecology"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:41:01.112Z
 tags: "iris, biome-atlas, cave, sulfur"
 editor: markdown
 dateCreated: 2026-09-03T00:00:00.000Z
@@ -65,19 +65,13 @@ The ordinary bowls store potent sulfur in its native `wet` state. The magma-back
 
 Both cave variants inherit the native sulfur-cave spawn table, including sulfur cubes and cave spiders. Natural spawning still obeys Minecraft's mob caps, difficulty, light and placement rules.
 
-`entities/standard/passive/sulfur-cube.json` defines a reusable unmodified `minecraft:sulfur_cube`. Pack objects, markers and spawners may reference this entity key where explicit placement is desired. On Bukkit, a player can check the template with:
-
-```none
-/iris studio spawn standard/passive/sulfur-cube
-```
-
 Feeding, block absorption, shearing, buckets, splitting and physics are the native Minecraft behaviors.
 
 ## Underworld treatment
 
 The same cave geometry and spike distributions use sulfur, cinnabar, blackstone and smooth basalt, sparse shroomlights, and sealed source-lava pools. The object keys are `underworld/carving/sulfur/pool-1` through `pool-3`; their dimensions and occupied coordinates match the Overworld objects, with lava replacing every water cell. Potent sulfur becomes magma, so this half has lava hazards rather than water geysers.
 
-The derivative is `minecraft:basalt_deltas`, retaining native Nether ecology including magma cubes. Custom ids are `underworld:underworld_sulfur_galleries` and `underworld:underworld_sulfur_hollows`, with warm brown fog. The Overworld sulfur cube template is not copied into this lava habitat.
+The derivative is `minecraft:basalt_deltas`, retaining native Nether ecology including magma cubes. Custom ids are `underworld:underworld_sulfur_galleries` and `underworld:underworld_sulfur_hollows`, with warm brown fog.
 
 ## Inspect in game
 

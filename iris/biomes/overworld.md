@@ -2,7 +2,7 @@
 title: "Overworld"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -44,7 +44,7 @@ The global Deep Dark band is different from an ordinary regional cave. Between Y
 
 ## Regional ecology
 
-Ambient land, water, shore, and cave spawns use the tables attached to the selected region. Frogs occur in the Swamp passive table and tadpoles in its water table; Temperate waters add glow squid and salmon, and Tropical waters add tropical fish. Tropical beach turtles use the shore table, with three successful batches per seven minutes during Minecraft hours 4–18. Mushroom uses separate passive, surface-hostile, and cave tables.
+Ordinary wildlife and hostile mobs follow the native spawn tables of the selected biome's `vanillaDerivative`, or `derivative` when unset. Minecraft controls population limits, light, placement, and spawning conditions. Native structures supply their configured inhabitants. Each biome retains its authored plants, objects, and decoration.
 
 ## Relationship to Underworld
 

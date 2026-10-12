@@ -2,7 +2,7 @@
 title: "Shorelines"
 description: "Paired atlas reference for 17 direct shoreline roots and two unselected shoreline assets"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, shore"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -12,7 +12,7 @@ Overworld and Underworld each expose 17 direct shore roots. This consolidated re
 
 The Frozen Beach large-formation entries use organic supports with a 96-block scan. Overworld uses packed ice supports, and Underworld retains its Nether materials.
 
-Tropical Overworld shores use `tropical/beach` for turtles during Minecraft hours 4–18, with three successful batches per seven minutes and two per chunk per two Minecraft hours. See [Tropical ecology](/iris/biomes/tropical#ecology).
+Overworld shoreline wildlife follows each biome's native derivative spawn table. See [Tropical ecology](/iris/biomes/tropical#ecology).
 
 ## Shoreline selection
 

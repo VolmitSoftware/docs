@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -55,7 +55,7 @@ The [Carving family](/iris/biomes/carving#authored-room-selection) includes ochr
 
 Overworld [Tundra Autumn and its extended variant](/iris/biomes/tundra/autumn) scatter red shrubs on grass blocks, coarse dirt, and podzol, alongside the red shrub ground cover in the four poplar biomes. These plants require Minecraft 26.3.
 
-Overworld ambient frog and tadpole tables belong to [Swamp ecology](/iris/biomes/swamp#ecology). [Temperate waters](/iris/biomes/temperate#ecology) add glow squid and salmon, while [Tropical waters and shores](/iris/biomes/tropical#ecology) add tropical fish and beach turtles. [Mushroom ecology](/iris/biomes/mushroom#ecology) uses its passive, surface-hostile, and cave tables.
+Overworld wildlife and hostile mobs follow each biome's native derivative spawn table and Minecraft's spawning rules. The [Swamp](/iris/biomes/swamp#ecology), [Temperate](/iris/biomes/temperate#ecology), [Tropical](/iris/biomes/tropical#ecology), and [Mushroom](/iris/biomes/mushroom#ecology) entries describe these native biome identities.
 
 ## Read the atlas
 

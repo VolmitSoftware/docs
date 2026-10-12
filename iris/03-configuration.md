@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-09T19:43:21.000Z
+date: 2026-10-12T00:44:20.753996+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -136,12 +136,12 @@ These windows open on the machine running the server. Set `useServerLaunchedGuis
 
 ## `autoConfiguration`
 
-These settings apply only to Bukkit servers. Disable them if you manage the corresponding server timeout settings yourself.
+These settings apply only to Bukkit servers. Iris saves changes at startup to the configuration files selected by the server launch options. Restart the server to apply the saved values. Disable these settings if you manage the corresponding server timeouts yourself.
 
 | Key | Default | Takes effect | Use |
 |-----|---------|--------------|-----|
-| `configureSpigotTimeoutTime` | `true` | **Restart** | Raises `timeout-time` in `spigot.yml` to allow longer generation tasks |
-| `configurePaperWatchdogDelay` | `true` | **Restart** | Raises Paper's watchdog warning and timeout limits |
+| `configureSpigotTimeoutTime` | `true` | **Restart** | Raises `settings.timeout-time` to at least `300` seconds in the Spigot configuration selected by `--spigot-settings` (default `spigot.yml`) |
+| `configurePaperWatchdogDelay` | `true` | **Restart** | Raises `watchdog.early-warning-delay` to at least `180000` milliseconds in `paper-global.yml` under `--paper-settings-directory` (default `config/`). The warning interval is unchanged |
 
 ## `generator`
 

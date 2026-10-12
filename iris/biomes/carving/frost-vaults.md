@@ -2,7 +2,7 @@
 title: "Frost Vaults - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/frost-vaults"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -58,7 +58,9 @@ Procedural `chance` is a per-chunk placement roll; `density` is the number of at
 
 ## Ecology
 
-The `carving/frost-vaults` CAVE pool selects strays and bats in Overworld, or skeletons and endermen in Underworld. It caps each chunk at three entities and permits one attempt per chunk every 40 seconds, within light levels `0..7`. The registered biome declares an empty native spawn table.
+Overworld inherits the native `minecraft:frozen_peaks` spawn table. Minecraft controls population limits, light, placement, and spawning conditions.
+
+Underworld uses the `carving/frost-vaults` CAVE pool for skeletons and endermen. It caps each chunk at three entities and permits one attempt per chunk every 40 seconds, within light levels `0..7`. The Underworld registered biome declares an empty native spawn table.
 
 ## Find the room
 

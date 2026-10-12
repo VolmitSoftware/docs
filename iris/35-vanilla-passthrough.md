@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-10-04T12:28:04.588Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -101,6 +101,8 @@ These three sources can spawn mobs together. Configuring one does not disable th
 | Vanilla natural spawning | **On** | Spawn tables of `vanillaDerivative`, else `derivative` |
 | `customDerivitives.spawns` | Empty | **Merged** with vanilla when both lists are nonempty. An empty custom list leaves vanilla in charge |
 | `entitySpawners` | Empty unless listed | Additional pack spawns; requires `world.ambientEntitySpawningSystem` (default true) |
+
+The bundled Overworld pack uses native biome tables for ordinary wildlife and hostile mobs. Its native structures supply their configured inhabitants. Custom colors, fog, terrain, and decoration retain their own biome settings.
 
 There is no `importedStructures.disabled` equivalent for mobs.
 

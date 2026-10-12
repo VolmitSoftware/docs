@@ -2,7 +2,7 @@
 title: "Lantern Grotto - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/lantern-grotto"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -57,7 +57,9 @@ Procedural `chance` is a per-chunk placement roll; `density` is the number of at
 
 ## Ecology
 
-The `subterrain/lantern-grotto` CAVE spawner supplies glow squid and bats in Overworld, or striders and endermen in Underworld. It caps each chunk at four entities and allows one attempt per chunk every 45 seconds at light levels `0..15`. Aquatic templates require the corresponding water or lava; bats and endermen use land placements.
+Overworld inherits the native `minecraft:lush_caves` spawn table. Minecraft controls population limits, light, placement, and spawning conditions.
+
+Underworld uses the `subterrain/lantern-grotto` CAVE spawner for striders and endermen. It caps each chunk at four entities and allows one attempt per chunk every 45 seconds at light levels `0..15`. Striders require lava, and endermen use land placements.
 
 ## Find the room
 

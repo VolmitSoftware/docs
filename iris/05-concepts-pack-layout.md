@@ -2,7 +2,7 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:16:38.165Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -185,7 +185,7 @@ For orientation when reading `packs/overworld/`:
 | `objects/**` | `.iob` trees, structures, clutter, and vanilla imports |
 | `structures/*.json` | Structure graphs, including `minecraft_*` bridges |
 | `jigsaw-pieces/**`, `jigsaw-pools/**` | Jigsaw assembly data |
-| `entities/standard/**`, `spawners/**`, `loot/**` | Mob and loot content |
+| `loot/**` | Container loot tables |
 | `images/*.png` | Noise and map images |
 | `snippet/decorator/**`, `snippet/style/**` | Shared fragments referenced across biomes |
 

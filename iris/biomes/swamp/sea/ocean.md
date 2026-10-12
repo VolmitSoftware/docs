@@ -2,7 +2,7 @@
 title: "Swamp Ocean — Sea Biome"
 description: "Paired Overworld and Underworld atlas entry for swamp/sea/ocean"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, sea"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -27,7 +27,7 @@ The terrain generators use `surfaceDetail: 0.5` to smooth small surface variatio
 
 ## Overworld treatment
 
-Overworld `swamp/water` adds tadpoles in water. See [Swamp ecology](/iris/biomes/swamp#ecology).
+Overworld aquatic mobs follow this biome's native derivative spawn table. See [Swamp ecology](/iris/biomes/swamp#ecology).
 
 Derivative `minecraft:swamp`; vanilla derivative `minecraft:ocean`. Primary sea palette: `minecraft:sand`, `minecraft:dirt`, `minecraft:gravel`, `minecraft:clay`, `minecraft:coarse_dirt`, `minecraft:smooth_sandstone`, `minecraft:sandstone_slab`, `minecraft:smooth_sandstone_slab`, and 1 more. Decorator blocks: `minecraft:lily_pad`, `minecraft:seagrass`, `minecraft:soul_sand`, `minecraft:magma_block`, `minecraft:kelp_plant`, `minecraft:sea_pickle`. Object set: `clutter/lilly`.
 

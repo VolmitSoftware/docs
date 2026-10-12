@@ -2,7 +2,7 @@
 title: "Travertine Gardens - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/travertine-gardens"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -60,7 +60,9 @@ Procedural `chance` is a per-chunk placement roll; `density` is the number of at
 
 ## Ecology
 
-The `carving/travertine-gardens` CAVE spawner caps each chunk at three entities and permits one attempt every 40 seconds within light levels `0..12`. Overworld selects glow squid in water and bats on land; Underworld selects striders in lava and endermen on land. The registered biome declares an empty native spawn table.
+Overworld inherits the native `minecraft:lush_caves` spawn table. Minecraft controls population limits, light, placement, and spawning conditions.
+
+Underworld uses the `carving/travertine-gardens` CAVE spawner for striders in lava and endermen on land. It caps each chunk at three entities and permits one attempt every 40 seconds within light levels `0..12`. The Underworld registered biome declares an empty native spawn table.
 
 ## Find the room
 

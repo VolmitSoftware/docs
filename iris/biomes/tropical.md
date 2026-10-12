@@ -2,7 +2,7 @@
 title: "Tropical Biomes"
 description: "Navigation for the built-in tropical biomes across Overworld and Underworld"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biomes, overworld, underworld, tropical"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -13,7 +13,7 @@ This family has **7 child-only reachable variants**. Those variants are document
 
 ## Ecology
 
-Overworld `tropical/water` adds tropical fish in water. Turtles use `tropical/beach` on tropical shores between Minecraft hours 4 and 18, with a regional rate of three successful batches per seven minutes and a per-chunk rate of two batches per two Minecraft hours.
+Overworld tropical land, water, and shore biomes inherit their configured Minecraft derivative spawn tables. Minecraft controls the population and placement of their wildlife and hostile mobs.
 
 ## Direct roots
 

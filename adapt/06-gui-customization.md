@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-10-08T00:00:00.000Z
+date: 2026-10-12T01:16:47.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -154,7 +154,7 @@ Click a preference to update its item in the current window. Left-click advances
 
 Accepted changes and resets play a quiet click for the viewing player. Locked or unavailable choices play a low note, and preference-page navigation plays a page-turn sound. These sounds honor the player's effects toggle, the skill or adaptation's `showSounds`, and global `effects.soundsEnabled`. Controls continue to work when sounds are disabled. After a skill registry reload, reopen its menu before changing preferences. Controls retained from the previous registry ignore clicks.
 
-Server policy lives in the corresponding skill or adaptation configuration under `playerPreferences`; see [configuration](/adapt/01-installation-configuration#player-preferences). Blink's controls and unlocks are listed in [Rift](/adapt/27-skill-rift#rift-blink-rift-blink).
+Set `playerSettingsEnabled = false` in `adapt.toml` to hide all skill/adaptation settings rows, including enable switches and reset buttons, and force their server defaults. Learning and unlearning controls remain available. Individual control policies live in the corresponding skill or adaptation configuration under `playerPreferences`; see [configuration](/adapt/01-installation-configuration#player-preferences). Blink's controls and unlocks are listed in [Rift](/adapt/27-skill-rift#rift-blink-rift-blink).
 
 ## Language editor
 

@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-09T12:00:00.000Z
+date: 2026-10-12T02:01:59.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,7 @@ Each frame portal has menus for type, orientation, destination, settings, cost, 
 | `surfaceSkin` | empty | No skin |
 | `apertureShape` | `full` | Settings menu **Aperture shape**. Never copied by Settings sync |
 | Traveller scale | `off`, range `0.25`–`4` | Transit menu. Never copied by Settings sync |
+| `transit.gravityRotation` | `false` | Native loaders only. Transit menu **Directional gravity** |
 | `publicLookLabel` | `false` | Off keeps look subtitles portal-tool only |
 | `travelCost` | free (`null`) | Free / vanilla item / Vault |
 | `settingsSyncEnabled` | `true` | Broadcast settings to linked/remote when applicable |
@@ -330,7 +331,13 @@ Open **Settings → More settings → Transit** to control movement through this
 | `snap` | Faces straight out of the exit. |
 | `mirror` | Reflects the frame-transformed look across the exit plane, facing back toward the portal. |
 
-All four modes apply on teleport and seamless crossings. With `[transit] gravity-flip-enabled = true` (default `false`), `frame`, `snap`, and `mirror` arrivals through an exit that points up or down are turned upright, forward and screen-up together; `look` ignores the flip. A pair whose frames are twisted relative to each other leaves a camera tilt on arrival, which the client mod eases back to level over `camera-roll-ease-seconds` (default `0.35`). See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
+All four modes apply on teleport and seamless crossings. With `[transit] gravity-flip-enabled = true` (default `false`), `frame`, `snap`, and `mirror` arrivals from a wall portal through a floor or ceiling turn upright. Forward and screen-up turn together. Floor-to-ceiling crossings retain the mapped look, including looking straight up or down during repeated falls. `look` ignores the flip. With world-down gravity, a twisted portal pair can leave a camera tilt, which the client mod eases upright over `camera-roll-ease-seconds` (default `0.35`). Rapid crossings retain any tilt that is still easing. Directional gravity keeps the camera aligned with its persistent gravity frame. See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
+
+**Directional gravity** applies on Fabric, Forge, NeoForge and singleplayer with matching server and client mods. Click the native Transit control to toggle it. The saved per-portal setting is `transit.gravityRotation`, default `false`. It applies when a traveller enters that portal. Enable both ends when both directions should rotate gravity.
+
+The portal pair rotates the traveler's complete cardinal gravity frame in exact 90-degree increments. A wall can become the floor. Movement, jumping, collision bounds, eye position, the camera and character model follow the resulting frame. There are six down directions and four possible turns around each direction. Arbitrary-angle gravity is unsupported.
+
+With `frame` orientation, local view, body and head angles stay relative to the new floor. Other orientation policies first select the world look, then express it in the new gravity frame. Directional gravity ignores `gravity-flip-enabled`. Paper, Purpur and Folia do not apply this feature. Native servers refuse entry through gravity-enabled portals for clients without the matching mod. Use `/wormholes portals gravity <uuid> [true|false]` to read or set it. `/wormholes gravity reset [player name]` restores world-down gravity.
 
 **Traveller scale** maps travel between portals of different sizes. The rule of the portal a traveller enters applies, so set it on both ends of a pair that should work in both directions; Settings sync never copies it. Left-click cycles the mode, right-click opens a chat prompt for the minimum size factor, and shift-right-click one for the maximum (defaults `0.25` and `4`, kept within `0.0625`–`16`).
 
@@ -338,9 +345,15 @@ All four modes apply on teleport and seamless crossings. With `[transit] gravity
 |------|-------------------|
 | `off` | 1:1. Position and velocity carry over unscaled. Default. |
 | `motion` | Position and velocity are multiplied by the pair's size ratio: a 3×3 portal into a 9×9 is ×3, and the way back is ×1/3. The traveller's size is unchanged. |
-| `ratio` | As `motion`, and the traveller's size is multiplied by the ratio as well, through a `wormholes:portal_scale` modifier on the scale attribute, clamped to the minimum and maximum. Crossing back through a pair that uses `ratio` at both ends restores the original size. |
+| `ratio` | As `motion`, and the traveller's size is multiplied by the ratio as well, through a `wormholes:portal_scale` modifier on the scale attribute, clamped to the minimum and maximum. Crossing back restores the original size when neither crossing reached a clamp. |
 
-Random teleport portals and cross-server gateways, including Nexus members on other servers, never scale. A `ratio` rule on a fall loop between two portals compounds on every pass until it reaches the clamp; use `off` or `motion` for loops. Players with the client mod see a scaled pair's destination at the matching scale, while standard projection stays a 1:1 window. `/wormholes admin portals scale` sets the rule by command and `/wormholes admin scale reset` restores entities that kept a portal scale; see [Commands & Permissions](/wormholes/09-commands-permissions).
+The ratio is exit size divided by entry size. A `50%` ratio halves the current size, and `200%` doubles it. Ratio mode compounds the current scale, then applies its bounds. Crossing back restores the original size when neither crossing reached a clamp.
+
+The client mod draws destination terrain and character models at the inverse ratio in `motion` and `ratio` modes. A 4×4 entrance into a 2×2 exit shows the destination at twice its size. The reverse direction shows it at half size.
+
+The opening clips the view to its own outline. Different aspect ratios use the smaller mapped width or height ratio for one uniform scale. Entity-size limits do not change the view ratio. `off` keeps a 1:1 view.
+
+Random teleport portals and cross-server gateways, including Nexus members on other servers, never scale. A `ratio` rule on a fall loop compounds on every pass until it reaches the clamp. Use `off` or `motion` for loops. Standard projection stays a 1:1 window. `/wormholes admin portals scale` sets the rule by command and `/wormholes admin scale reset` restores entities that kept a portal scale. See [Commands & Permissions](/wormholes/09-commands-permissions).
 
 **Membrane** permits entry from the front and pushes travelers away from the back. **Bounce** pushes travelers back instead of transporting them, from either side. Left-click either control to toggle it.
 

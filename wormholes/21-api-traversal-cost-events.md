@@ -2,7 +2,7 @@
 title: "API - Traversal Cost & Events"
 description: "Price or veto travel, settle receipts, and consume traversal events safely"
 published: true
-date: 2026-09-28T14:01:18.380Z
+date: 2026-10-12T01:02:35.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -53,8 +53,22 @@ All provider and event calls run on the traveler's owning thread. Keep them fast
 
 ## Native traversal providers
 
-On Fabric, Forge, and NeoForge, obtain `MinecraftTravelCosts.forServer(MinecraftServer)` after server startup. Register a `MinecraftTraversalCostProvider` through `register(new MinecraftTravelCosts.Registration(provider, providerId, ownerName, priority, enabled))`; close the returned registration when the integration stops. Register and close cost, currency, and listener registrations on the logical server thread.
+On Fabric, Forge, and NeoForge, get `MinecraftTravelCosts.forServer(MinecraftServer)` after server startup. Register a `MinecraftTraversalCostProvider` through `register(new MinecraftTravelCosts.Registration(provider, providerId, ownerName, priority, enabled))`. Close the returned registration when the integration stops. Register and close cost, currency, and listener registrations on the logical server thread.
 
-The provider receives `MinecraftTraversalContext` in `quote(context)` and `reserve(context, quote)`, and the shared `TraversalReceipt` in `commit(receipt)` and `refund(receipt, reason)`. The context carries the real `ServerPlayer`, traversal kind, source portal, source location, and optional destination. Quotes, reservations, receipts, and refund reasons use the same shared transaction contract as Bukkit providers. Avoid blocking callbacks; reserve only after a successful quote and make settlements idempotent.
+The provider receives `MinecraftTraversalContext` in `quote(context)` and `reserve(context, quote)`, and the shared `TraversalReceipt` in `commit(receipt)` and `refund(receipt, reason)`. The context carries the real `ServerPlayer`, traversal kind, source portal, source location, and optional destination. Quotes, reservations, receipts, and refund reasons use the same shared transaction contract as Bukkit providers. Avoid blocking callbacks. Reserve only after a successful quote and make settlements idempotent.
 
-`listen(MinecraftTravelCosts.Listener)` supports `before(context)`, which returns null to continue or a refusal message to deny, and `committed(completion)`. `currency(MinecraftRuleCostSubject.Currency)` installs one native currency provider for rule costs. Item costs use native inventories. [Getting Started](/wormholes/20-api-getting-started) covers portal, peer, and handoff lifecycle listeners.
+Register `MinecraftTravelCosts.Listener` through `MinecraftWormholesApi.listenTraversal(listener)` or `MinecraftTravelCosts.listen(listener)`. Both return an `AutoCloseable` subscription. Close the subscription on the logical server thread when your integration stops.
+
+`before(context)` returns null to continue or a refusal message to deny travel before pricing. `completed(MinecraftTraversalCompletion)` reports the admission outcome and final settlement. A callback exception logs its full stack trace. Other listeners continue.
+
+| Completion status | Meaning |
+|---|---|
+| `COMMITTED` | Travel committed its settlement, including free travel |
+| `DENIED` | A listener or provider denied admission |
+| `REFUNDED` | An admitted attempt failed or expired and requested a refund |
+
+The completion carries the traversal context, status, admission outcome, immutable charged provider IDs, and an optional refund reason. Charged provider IDs describe committed provider charges. Denied and refunded completions have no committed provider IDs. Only `REFUNDED` has a refund reason, such as `TELEPORT_FAILED`, `DESTINATION_UNAVAILABLE`, `EXPIRED`, or `SERVER_SHUTDOWN`. Each admission settles once. A failed built-in portal price refunds external provider reservations with `CHARGE_ROLLBACK`.
+
+For cross-server travel, `COMMITTED` reports source dispatch after destination admission. It does not confirm that the destination received the player. A later connection failure does not refund a committed charge.
+
+`currency(MinecraftRuleCostSubject.Currency)` installs one native currency provider for rule costs. Item costs use native inventories. [Getting Started](/wormholes/20-api-getting-started) covers portal, peer, projection, and handoff lifecycle listeners.

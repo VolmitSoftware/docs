@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mushroom Warped Forest"
 description: "Iris biome atlas entry for mushroom/warped-forest in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,7 +43,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 ## Overworld treatment
 
-Regional ambient spawns use `mushroom/passive`, `mushroom/hostile`, and `mushroom/cave`. See [Mushroom ecology](/iris/biomes/mushroom#ecology).
+Overworld mobs follow this biome's native derivative spawn table. See [Mushroom ecology](/iris/biomes/mushroom#ecology).
 
 - **Minecraft identity:** derivative `minecraft:warped_forest`; native-structure derivative `minecraft:mushroom_fields`; custom identities `mushroom_warped_forest`.
 - **Surface:** 1 block(s): `minecraft:warped_nylium`; 8-9 block(s): `minecraft:dirt`, `minecraft:coarse_dirt`; 45-65 block(s): `minecraft:blackstone`. Wall palette: `minecraft:warped_hyphae`.

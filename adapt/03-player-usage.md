@@ -2,7 +2,7 @@
 title: "Player Usage"
 description: "Open the Adapt menu and learn or remove adaptations"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-12T01:16:47.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,7 +20,7 @@ Passive adaptations run after purchase. Active adaptations use the trigger on th
 
 The main menu shows skill level, knowledge, master level, and used power. Owned levels show an enchantment glint. Right-click Previous or Next jumps five pages. `guiBackButton` shows Back.
 
-Every adaptation has an enable switch and any additional personal controls along the bottom of its level screen. Each skill screen also has a master switch that suppresses your adaptations in that skill while preserving their individual choices. The skill pages list input modes, filters, personal limits, and other supported controls.
+When the server permits personal settings, every adaptation has an enable switch and any additional personal controls along the bottom of its level screen. Each skill screen also has a master switch that suppresses your adaptations in that skill while preserving their individual choices. The skill pages list input modes, filters, personal limits, and other supported controls. When `playerSettingsEnabled` is `false`, these controls and resets are hidden and server defaults apply. You can still learn and unlearn under the normal rules.
 
 Left-click a control to cycle forward and right-click to cycle backward. Glass panes show On in lime and Off in red; mode items show the current choice in their lore. Controls update in the same open inventory. Changes, resets, locked choices, and control-page navigation have distinct quiet sound feedback for you, subject to your effects setting and server sound settings.
 

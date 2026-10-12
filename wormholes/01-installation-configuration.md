@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-11T15:03:00.000Z
+date: 2026-10-12T07:17:54.972Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,21 +30,25 @@ Fabric, Forge, and NeoForge servers store the same settings, portal records, doo
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's Minecraft version and loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases using protocol 8 and the same Minecraft version. A client mod built for an earlier protocol shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.2 and 26.3. A 26.2 client requires a 26.2 server, and a 26.3 client requires a 26.3 server. Servers offer ClientView by default; `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases on channel `wormholes:v10` and the same Minecraft version. Optics stream messages use wire version 8 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.2 and 26.3. A 26.2 client requires a 26.2 server, and a 26.3 client requires a 26.3 server. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia every player crosses with the ordinary teleport. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
 The F3 debug screen shows `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wormholes: Disconnected`. The Wormholes label is gold; connected is green, mismatch is yellow, and disconnected is red. Mismatch means the ClientView protocol or Minecraft version is incompatible. Connection status appears on F3 without a chat notification.
 
-Native portal views use Minecraft models, textures, and destination lighting. On Fabric, Forge, and NeoForge servers and in singleplayer, traversable portals and doors show the destination world through Minecraft, Sodium, and Iris Shaders. Other views stream from the server. See [ClientView](/wormholes/05-projection-modes-settings#clientview).
+Native portal views use Minecraft models, textures, and destination lighting. On Fabric, Forge, and NeoForge servers and in singleplayer, traversable portals and doors show the resident destination world through the Minecraft renderer. Fabric and NeoForge also support the matching Sodium and Iris Shaders releases. Other views stream from the server. See [ClientView](/wormholes/05-projection-modes-settings#clientview).
+
+Native server and client mods also support [Directional gravity](/wormholes/04-portal-types-menus-settings#transit-menu). Enable it separately on each local portal that should rotate the traveler's floor, movement plane, camera and character model. Paper, Purpur and Folia do not provide directional gravity.
 
 Native clients prepare the fixed vanilla portal terrain and composition shaders during game resource loading, including reflected and RGSS variants. Crossing, revisiting, scene resets, and texture-filtering changes retain these programs. A successful resource reload replaces them. Content-dependent reflected shaders can still compile on first use.
 
 With Iris Shaders, the client prepares each dimension's main shader pipeline while the world loads. Each portal view, mirror, and nested camera requires a separate pipeline and history. Dimension warmup does not prepare these additional pipelines. Returning from a nested view or mirror restores the enclosing camera, including the main view.
 
-Before drawing visible views, the client prepares their shader pipelines. Shader compilation remains synchronous and can pause the frame on first use, after shader reload, or after cache expiry. ClientView retains its session during preparation. A visible cross-dimension portal also prepares its crossing and return cameras when the cache has room. A matching arrival portal continues the prepared return camera's history.
+Before drawing visible views, the client prepares their shader pipelines, including visible nested cameras. Shader preparation remains synchronous and can pause the frame on first use, after shader reload, or after cache expiry. ClientView retains its session during preparation. A visible cross-dimension portal also prepares its crossing and return cameras when the cache has room. Nearby native cameras can also prepare before they become visible, keeping their own histories ready for return travel. Prepared travel cameras remain available while a nearby return route is usable. Matching native cameras continue their histories during outbound and return travel.
 
-Moving the camera or briefly closing and reopening the same view reuses its pipeline and history. The cache holds up to 12 view pipelines and releases them after 60 seconds without use. Capacity pressure can release an unused view sooner. Leaving the world or reloading shaders releases the cached portal pipelines.
+Moving the camera or briefly closing and reopening the same view reuses its pipeline and history. Native mirrors keep their separate histories as nested views arrive or projections reopen. Identical compiled shader stages can serve separate camera pipelines, but each pipeline still links its own programs and owns its render targets and history.
+
+Native and streamed cameras share a cache of up to 12 view pipelines, with release after 60 seconds without use. Preparation for possible travel uses available cache space without evicting cached views. A new visible camera can release an unused view sooner when the cache is full. Leaving the world releases cached portal pipelines. Shader reload also releases retained shader stages.
 
 For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for your Minecraft version. Iris Shaders is separate from the Iris world-generation plugin and mod. For distant terrain on Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
 
@@ -459,7 +463,7 @@ Portal physics, convoy traversal, and traversal cues. Changes hot-reload. A port
 | `momentum-default` | `preserve` | Momentum policy for portals that set none of their own: `preserve`, `scale`, `clamp`, `zero`, or `impulse` |
 | `momentum-max-speed` | `4.0` | Speed ceiling in blocks per tick for the `clamp` and `scale` policies |
 | `orientation-default` | `frame` | Arrival orientation for portals that set none of their own: `frame`, `look`, `snap`, or `mirror` |
-| `gravity-flip-enabled` | `false` | Arrive upright through exits that point up or down instead of carrying the look rigidly through the pair. The flip turns the whole camera basis and does not apply to the `look` policy. Existing files keep the value they already hold |
+| `gravity-flip-enabled` | `false` | Turn the whole camera basis upright when entering a wall portal and leaving through a floor or ceiling. Floor-to-ceiling crossings retain the mapped look, including looking straight up or down. The flip does not apply to the `look` policy or native portals with Directional gravity enabled. Existing files keep the value they already hold |
 | `object-transit-continuous` | `true` | Projectiles and dropped items keep their velocity through local tunnels without a re-entry cooldown. On Fabric, Forge, and NeoForge this also covers traveling groups without a player |
 | `convoy-enabled` | `true` | Move vehicles, passengers, and leashed mobs through a portal as one rig, or refuse the whole rig |
 | `convoy-max-entities` | `16` | Largest rig moved as a unit |

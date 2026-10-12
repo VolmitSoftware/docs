@@ -2,7 +2,7 @@
 title: "Mushroom Biomes"
 description: "Navigation for the built-in mushroom biomes across Overworld and Underworld"
 published: true
-date: 2026-10-02T20:07:19.178Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biomes, overworld, underworld, mushroom"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -13,7 +13,7 @@ This family has **2 child-only reachable variants**. Those variants are document
 
 ## Ecology
 
-Overworld uses `mushroom/passive`, `mushroom/hostile`, and `mushroom/cave` for regional ecology. The surface hostile table contains zombies, skeletons, spiders, creepers, and endermen; the cave table contains zombies, skeletons, cave spiders, creepers, and bats.
+Overworld mushroom biomes inherit their configured Minecraft derivative spawn tables. The `minecraft:mushroom_fields` derivative supplies mushroom-island spawning rules, including its restrictions on ordinary hostile mobs.
 
 ## Direct roots
 

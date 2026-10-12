@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, and settings"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:16:47.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,6 +81,7 @@ plugins/Adapt/
 | Key | Default | What it does |
 |---|---:|---|
 | `debug` | `false` | Prints Adapt's developer debug lines to the console |
+| `playerSettingsEnabled` | `true` | Allows personal skill/adaptation settings and enable toggles. `false` forces their server defaults and hides the controls; learning, unlearning, personal effects, and language remain available. Hot-reloadable |
 | `verbose` | `false` | Prints gated profile, permission, XP, and per-action diagnostics. `/adapt debug verbose` flips the in-memory value without writing the file |
 | `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
 | `splashScreen` | `true` | Prints the startup banner |
@@ -209,11 +210,15 @@ Conflict pairs are symmetric. Listing `agility-air-dash` under `rift-blink` bloc
 
 ### Player preferences
 
+Set `playerSettingsEnabled = false` at the top level of `adapt.toml` to disable all personal skill and adaptation configuration. Players use each control's server `defaultValue`, including enable switches, trigger modes, block filters, limits, and reserves. Settings controls and resets are hidden, and players cannot change them. Learned levels and normal learning/unlearning rules still apply. Personal effects and language remain configurable.
+
+Saved personal choices are retained but ignored while this switch is off. Setting it back to `true` restores eligible saved choices. A valid config save applies the policy to online players and refreshes open menus.
+
 Every adaptation has a personal `enabled` control. Its server policy lives in `adaptations/<adaptation-id>.toml` under `[playerPreferences.<control-id>]`. Skill-wide enable policies use the same shape in `skills/<skill-id>.toml`. Setting a skill off suppresses its adaptations without overwriting their individual choices or stopping ordinary skill XP. Player edits save to player data; they do not edit the server file or hotload a skill.
 
 | Field | Meaning |
 |---|---|
-| `playerEditable` | `true` lets the player choose an unlocked allowed value; `false` forces `defaultValue`. |
+| `playerEditable` | `true` lets the player choose an unlocked allowed value when `playerSettingsEnabled` is also `true`; `false` forces `defaultValue`. |
 | `defaultValue` | Registered uppercase value used when locked or no saved permitted choice applies. Must appear in `allowedValues`. |
 | `allowedValues` | Nonempty list of registered values that the server permits. Level requirements still apply. |
 

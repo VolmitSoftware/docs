@@ -2,7 +2,7 @@
 title: "Entity Projection"
 description: "Optics entity snapshots, projected identities, movement, metadata, maps and relationships"
 published: true
-date: 2026-10-11T16:00:00.000Z
+date: 2026-10-12T02:24:00.764Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -24,7 +24,7 @@ The output adapter also provides entity type queries, host positions, local hide
 
 ## EntitySnapshot and deltas
 
-`EntitySnapshot` carries identity, type, position, height, look vector, yaw/pitch, velocity, ground state, player profile, vehicle/leash ids and payload bytes. Metadata, equipment and map data use host-supplied encodings.
+`EntitySnapshot` carries identity, type, position, height, look vector, yaw/pitch, velocity, ground state, player profile, vehicle/leash ids and payload bytes. Metadata, equipment and map data use host-supplied encodings. `EntityVisualMetadata` adds a typed gravity and scale header around opaque entity metadata.
 
 `EntitySnapshot.full(...)` normalizes absent profile strings and payload arrays. `isPlayer`, `hasTextures` and `isFull` describe the snapshot. `write` and `read` serialize its fields through data streams.
 
@@ -43,6 +43,24 @@ Use the `quantize`/`dequantize`, unit, velocity, height and angle helpers when i
 
 `EntityRelationship` stores an entity id, vehicle id, passenger list and leash-holder id. `EntityAnimation.animation` and `hurt` create transient animation events separately from persistent state.
 
+## Visual metadata header
+
+`EntityVisualMetadata(gravity, effectiveScale, data)` carries the source entity's cardinal gravity frame, effective scale and opaque host metadata bytes. `encode()` writes the header followed by those bytes. `decode(encoded)` reads the same format. The constructor and `data()` copy payload arrays. Equality compares payload contents.
+
+| Offset | Encoding | Value |
+|---|---|---|
+| 0 | Unsigned byte | Proper `AxisPermutation` orientation index |
+| 1 | Big-endian double | Finite positive effective scale |
+| 9 | Remaining bytes | Host entity metadata |
+
+The header occupies `HEADER_BYTES`, currently 9 bytes. The frame must be a proper rotation. The payload may be empty while the header still supplies visual state. An empty outer `EntitySnapshot.metadata()` means absence of metadata. Hosts handle that absence before calling `decode`.
+
+Wormholes Bukkit and native hosts use this header for streamed native-client entities. Bukkit captures `GravityFrame.WORLD` and the living entity's complete scale attribute value. Native hosts capture the current gravity frame and effective scale. The native consumer removes the header before reading the host metadata, then applies gravity and scale to its model. Source metadata changes, gravity changes and effective scale changes must invalidate capture reuse.
+
+Native model snapshots keep body yaw and pitch local to the captured gravity frame. Their look vector remains in world coordinates. Convert that vector into the local frame when selecting the head angle.
+
+Use `withData(updatedData)` when patching item-frame rotation, upside-down appearance or other host metadata fields. It retains gravity and effective scale. The header stays inside the existing metadata payload, so `EntitySnapshot` fields and the outer stream message shape do not change.
+
 ## Geometry projection
 
 `EntityProjection.project` maps a snapshot through an `OpticTransform`, an `EntityPath` or a `ViewWindow`. Bounds and frustum overloads apply visibility checks. Its sampled fields expose projected position, velocity, yaw/pitch and metadata transform.
@@ -50,6 +68,12 @@ Use the `quantize`/`dequantize`, unit, velocity, height and angle helpers when i
 `project(..., window, ..., secret, naming)` returns a `Projected` snapshot with projected identity and player naming. `nativeModel` supplies a projected snapshot for host-native model rendering. `opaque(secret, id)` derives a projected id, and `feetInto` maps an entity's feet while accounting for height.
 
 Projected identity is a view identity. It does not grant access to the source entity or move that entity in the destination world.
+
+## Traveller model orientation
+
+Use `TravellerState.modelTransform()` for a traveller whose gravity frame differs from world-down. It returns an `Affine` from model-local coordinates to the world, anchored at the traveller's feet. Model-local `+Y` is up and `+Z` is forward. The transform combines body yaw, the proper gravity rotation and uniform traveller scale.
+
+Pose body and head angles are local to gravity. Keep their independent animation and angle history when drawing the model and its equipment. `TravellerState.camera()` supplies world look and screen-up, while `eyePosition(height)` includes scale along gravity-up. The host must carry gravity state alongside entity snapshots and apply it to its renderer. `EntitySnapshot` does not assign physical gravity to an entity.
 
 ## SnapshotProjector
 

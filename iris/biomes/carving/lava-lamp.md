@@ -2,7 +2,7 @@
 title: "Ochre Hollows - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/lava-lamp"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -60,7 +60,9 @@ Procedural `chance` is a per-chunk placement roll; `density` is the number of at
 
 ## Ecology
 
-The room-specific `carving/lava-lamp` CAVE pool selects bats and zombies in Overworld, or magma cubes and skeletons in Underworld. Its chunk cap is three entities, with one spawn attempt per three minutes per chunk and light levels `0..12`.
+Overworld inherits the native `minecraft:dripstone_caves` spawn table. Minecraft controls population limits, light, placement, and spawning conditions.
+
+Underworld uses the room-specific `carving/lava-lamp` CAVE pool for magma cubes and skeletons. Its chunk cap is three entities, with one spawn attempt per three minutes per chunk and light levels `0..12`.
 
 ## Find the room
 

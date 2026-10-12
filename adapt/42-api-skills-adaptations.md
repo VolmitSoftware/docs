@@ -2,7 +2,7 @@
 title: "API - Skills & Adaptations"
 description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-12T01:16:47.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,6 +48,8 @@ For a runtime choice, call `Adaptation.preference(player, preference)` or `Playe
 On the player's owning scheduler, use `PlayerPreferences.set(adaptation, adaptPlayer, preference, value)` to validate and save a choice, or `PlayerPreferences.reset(adaptation, adaptPlayer)` to restore defaults. A rejected write returns `false`. Writes require the current registry instances; reacquire the skill and adaptation after a registry reload. Accepted writes use the existing debounced player-data save path and invoke `onPlayerPreferencesChanged(AdaptPlayer)` on the owner thread. Implement this hook to reconcile owned continuous effects, without discarding pending costs or cooldowns. Policy reloads also invoke the hook for online learners. Do not write server config or mutate learned levels for a preference change.
 
 `PlayerData.getPreferences()` holds saved overrides independently of learned adaptation records. Use the validated `PlayerPreferences` operations for live changes. A temporary level reduction or server restriction leaves a saved choice dormant; its effective value is always resolved against current policy and level.
+
+When `AdaptConfig.get().isPlayerSettingsEnabled()` is `false`, preference resolution forces each control's server default and all adaptation/skill setters and resets return `false`. Saved overrides remain intact. Changing the global flag invokes preference reconciliation for online players on their owning scheduler; unrelated core config reloads do not invoke it. `PlayerPreferences.reconcileOnline()` requests that reconciliation for every online player when an integration changes effective preference policy.
 
 `SkillConfig.playerPreferences` holds skill policies. Use `PlayerPreferences.resolve(skill, playerData, CommonPreferences.SKILL_ENABLED)`, `setSkillEnabled(skill, adaptPlayer, Toggle)`, and `resetSkill(skill, adaptPlayer)` for the skill-wide switch. Skill changes reconcile each child adaptation.
 

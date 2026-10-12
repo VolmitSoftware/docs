@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-10-04T13:00:54.342Z
+date: 2026-10-11T20:57:52.962169+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,6 +68,10 @@ Saved columns resolve their biome, region, and custom registry mappings from the
 Use `sampleColumns(world, query, sink)` for rectangular scans. Respect `maxSampleColumns()` and `maxSampleChunks()`. The sink receives each requested field without allocating a result list.
 
 Terrain reads are thread-safe and return inline. Empty optionals mean the world is not active in Iris, the requested value does not exist, or saved biome data is still loading. Pending saved reads return the method's unavailable result without logging a fault; retry on a later refresh. A batch that encounters pending data returns `false` and may have already delivered earlier columns. Actual read failures still use the rate-limited error logger.
+
+## Asynchronous biome environments
+
+`IrisEngine.getBiomeEnvironmentAsync(x, internalY, z)` returns a `CompletableFuture<BiomeEnvironment>` with the biome, region, dimension, and pack data for that position. Convert an absolute world Y to `internalY` by subtracting `engine.getWorld().minHeight()`. Saved records load asynchronously; unrecoverable data errors complete the future exceptionally. Schedule Bukkit world, entity, inventory, and item operations on their owning thread after completion.
 
 ## River fields
 

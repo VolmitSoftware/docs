@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-06T20:00:37.422Z
+date: 2026-10-12T01:16:38.165Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -559,7 +559,7 @@ These are dimension-wide fallbacks. Regions and biomes layer on top of them.
 ```json
 {
   "loot": { "mode": "FALLBACK", "tables": ["global-clutter"] },
-  "entitySpawners": ["swamp/passive"],
+  "entitySpawners": ["tutorial/night-patrol"],
   "blockDrops": []
 }
 ```
@@ -567,7 +567,7 @@ These are dimension-wide fallbacks. Regions and biomes layer on top of them.
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
 | `loot` | `IrisLootReference` | empty, mode `ADD`, multiplier `1` | Loot tables applied to containers generated anywhere in the dimension. `ADD` stacks this scope tables onto the parent list. `CLEAR` and `REPLACE` both drop the parent tables first. `FALLBACK` supplies tables only when the object itself declared none. `multiplier` scales item counts 0 to 16. Use dimension scope for global clutter. Use region scope for climate flavor |
-| `entitySpawners` | string[] | empty | `IrisSpawner` load keys that continually replenish mobs like vanilla does. Dimension scope means "everywhere in this world" |
+| `entitySpawners` | string[] | empty | `IrisSpawner` load keys for additional mob groups. Dimension scope applies across the world. See the `tutorial/night-patrol` example in [Entities & Spawners](/iris/23b-entities-spawners) |
 | `blockDrops` | `IrisBlockDrops[]` | empty | Custom drop overrides for specific blocks in this dimension |
 
 ## Image maps

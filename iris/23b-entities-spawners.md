@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-10-04T12:28:04.588Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -24,7 +24,7 @@ Vanilla natural spawning is a separate pipeline. It stays on via the biome `vani
 
 Keys are the pack-relative path without `.json`. Dimensions, regions, and biomes list spawner keys in `entitySpawners`; ambient spawning needs `world.ambientEntitySpawningSystem` true.
 
-The bundled Overworld pack wires its spawners at region scope. Frogs belong to the swamp passive pool, tadpoles to swamp water, and turtles to tropical beaches. Temperate and tropical water pools contain aquatic mobs. It also includes `standard/passive/sulfur-cube`, a native 26.2 sulfur cube entity template; [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) inherit the vanilla sulfur-cave spawn table instead of an Iris ambient spawner.
+The bundled Overworld pack uses native biome spawning for ordinary wildlife and hostile mobs. Each biome inherits its `vanillaDerivative` spawn table, or `derivative` when unset. Native structures supply their configured inhabitants. [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) inherit the native sulfur-cave spawn table.
 
 ## Walkthrough: make a custom mob spawn in one biome
 
@@ -94,7 +94,7 @@ Folder: `entities/`. A minimal entity is one field:
 { "type": "ZOMBIE" }
 ```
 
-`entities/standard/hostile/zombie.json` is referenced as `standard/hostile/zombie`.
+Use `tutorial/zombie` to reference `entities/tutorial/zombie.json`.
 
 For a MythicMobs entity, keep the required base type explicit and route the custom key through the provider:
 
@@ -277,19 +277,23 @@ Dry cave spawns accept ordinary air and cave air. Aquatic and lava entities requ
 
 Rarity is applied exactly once, as pool weighting, on both platforms.
 
-Real Overworld spawner, `spawners/temperate/hostile.json`:
+Example spawner, `spawners/tutorial/night-patrol.json`:
+
+Use `tutorial/zombie` from the walkthrough. Create `entities/tutorial/skeleton.json` with `{"type":"minecraft:skeleton"}` and `entities/tutorial/enderman.json` with `{"type":"minecraft:enderman"}`.
 
 ```json
 {
   "group": "NORMAL",
-  "maximumRate": { "amount": 8, "per": { "seconds": 15 } },
+  "maximumRate": { "amount": 2, "per": { "seconds": 30 } },
+  "maximumRatePerChunk": { "amount": 1, "per": { "seconds": 60 } },
   "timeBlock": { "startHour": 20, "endHour": 3 },
   "maxEntitiesPerChunk": 2,
   "weather": "ANY",
+  "allowedLightLevels": { "min": 0, "max": 0 },
   "spawns": [
-    { "entity": "standard/hostile/zombie", "rarity": 5, "maxSpawns": 4, "minSpawns": 2 },
-    { "entity": "standard/hostile/skeleton", "rarity": 30, "maxSpawns": 2, "minSpawns": 1 },
-    { "entity": "standard/neutral/enderman", "rarity": 60, "maxSpawns": 2, "minSpawns": 1 }
+    { "entity": "tutorial/zombie", "rarity": 5, "maxSpawns": 2, "minSpawns": 1 },
+    { "entity": "tutorial/skeleton", "rarity": 30, "maxSpawns": 2, "minSpawns": 1 },
+    { "entity": "tutorial/enderman", "rarity": 60, "maxSpawns": 1, "minSpawns": 1 }
   ]
 }
 ```
@@ -298,7 +302,7 @@ Attach it on a dimension, region, or biome:
 
 ```json
 {
-  "entitySpawners": ["temperate/hostile", "temperate/passive"]
+  "entitySpawners": ["tutorial/night-patrol"]
 }
 ```
 

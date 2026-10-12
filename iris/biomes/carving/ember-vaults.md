@@ -2,7 +2,7 @@
 title: "Ember Vaults - Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/ember-vaults"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T01:13:58.426Z
 tags: "iris, biome-atlas, cave, subterrain"
 editor: markdown
 dateCreated: 2026-10-04T12:29:38.588Z
@@ -57,7 +57,9 @@ Procedural `chance` is a per-chunk placement roll; `density` is the number of at
 
 ## Ecology
 
-The `carving/ember-vaults` CAVE pool selects skeletons and bats in Overworld, or skeletons and magma cubes in Underworld. It caps each chunk at three entities and permits one attempt per three minutes per chunk. Its light range is `0..7` in Overworld and `0..12` in Underworld.
+Overworld inherits the native `minecraft:dripstone_caves` spawn table. Minecraft controls population limits, light, placement, and spawning conditions.
+
+Underworld uses the `carving/ember-vaults` CAVE pool for skeletons and magma cubes. It caps each chunk at three entities and permits one attempt per three minutes per chunk. Its light range is `0..12`.
 
 ## Find the room
 

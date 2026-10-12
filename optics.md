@@ -2,7 +2,7 @@
 title: "Optics"
 description: "Java reference for portal geometry, masks, animation, projection and ClientView"
 published: true
-date: 2026-10-11T16:00:00.000Z
+date: 2026-10-12T01:06:17.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -24,12 +24,12 @@ These pages describe the library API. Library support for an effect does not imp
 - [02 - Shapes *Presets, boolean masks, paths, fit, raster, mesh and boundary outputs*](/optics/02-shapes)
 - [03 - Animation *Lerp, easing, keyframes, timelines, motion and grow-and-vanish effects*](/optics/03-animation)
 - [04 - Portals *Definitions, block-aligned size and rotation, links and registry queries*](/optics/04-portals)
-- [05 - Apertures and Crossing *Geometry descriptors, crossing, arrival rules and traveller scale*](/optics/05-apertures-and-crossing)
+- [05 - Apertures and Crossing *Geometry descriptors, crossing, arrival rules, percentage scale and directional gravity*](/optics/05-apertures-and-crossing)
 - [06 - Projection and Visibility *Sampling, view volumes, occlusion, nested views and cadence*](/optics/06-projection-and-visibility)
 - [07 - World Views and Plates *World access, section captures, shared plates and overlapping claims*](/optics/07-world-views-and-plates)
 - [08 - Entity Projection *Snapshots, movement, metadata, maps, names and relationships*](/optics/08-entity-projection)
 - [09 - Fidelity and Block States *Light, biomes, weather, sound, block entities and orientation rules*](/optics/09-fidelity-and-block-states)
 - [10 - ClientView and Client Geometry *Handshake, messages, capabilities, streaming and client helpers*](/optics/10-clientview-and-client-geometry)
-- [11 - Math and Host Interfaces *Vectors, colors, bounds, packed keys, scheduling and scale access*](/optics/11-math-and-host-interfaces)
+- [11 - Math and Host Interfaces *Vectors, colors, bounds, packed keys, scheduling, scale and gravity access*](/optics/11-math-and-host-interfaces)
 - [12 - Demonstrations *Standalone scene plugin and first-person renderer comparisons*](/optics/12-demonstrations)
 {.links-list}

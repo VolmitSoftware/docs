@@ -2,13 +2,15 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-10-02T09:30:45.000Z
+date: 2026-10-11T22:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 An RTP portal chooses a destination from its world, radius, height, biome, safety, and rotation settings. Set the type to `RTP` with `wormholes.portals.portal`, then open Random Destination. The editor groups are Destination, Landing, Routing, and Effects. Changes apply immediately. A manual reroll, a private-pool rebuild, and Reset defaults ask for confirmation.
+
+On Fabric, Forge, and NeoForge, a successful RTP trip restores world-down gravity and uses that upright body for landing safety. A refused or failed trip keeps the current gravity frame.
 
 ## Default RtpSettings
 
