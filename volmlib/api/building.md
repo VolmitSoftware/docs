@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-11T22:44:00.000Z
+date: 2026-10-12T18:09:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -18,7 +18,17 @@ Run from the VolmitSoftware workspace:
 ./build-psycho-lt.sh
 ```
 
-The script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes. Each plugin runs its tests and `buildPsychoLT`; Iris runs `build buildAll buildAllToOut`. Wormholes also produces its compile-time API jar with `apiJar`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
+By default, the script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes. Iris runs `build buildAll buildAllToOut`; Wormholes runs `apiJar build buildAll buildAllToOut`, including its compile-time API jar. Other plugins run `test buildPsychoLT`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
+
+Repeat `--project <name>` to build selected plugins. Names are case-sensitive and use the names listed above; use `Wormholes` for the `WormholesPlugin/` checkout. VolmLib is always included. Selecting Adapt also includes Iris and HiddenOre; selecting ShapedPortals also includes Wormholes. Repeated selections build each project once, and all included projects retain their normal tasks and tests.
+
+To build these seven plugins serially:
+
+```bash
+./build-psycho-lt.sh --jobs 1 --project Adapt --project Iris --project Wormholes --project React --project HiddenOre --project Gloss --project BileTools
+```
+
+This selection excludes Rift and ShapedPortals. Add `--tests-only` to run only the selected projects' tests and their required dependencies.
 
 VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. ShapedPortals starts after Wormholes finishes so it can compile against the current Wormholes API jar. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
 
@@ -121,7 +131,7 @@ From the Iris checkout, its Gradle test tasks use the same automatic test JVM li
 Iris's `moddedTest` is part of `check`, not `test`, so `--tests-only` does not run the `adapters/modded-common` suite. Run `./gradlew moddedTest` or `./gradlew build` from `Iris/` for that.
 
 
-This runs `test` in VolmLib and every plugin. It does not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run, including the Wormholes API jar consumed by ShapedPortals. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
+This runs `test` in VolmLib and every selected plugin, or all plugins when `--project` is omitted. It does not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run, including the Wormholes API jar consumed by ShapedPortals. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
 
 Add `--rerun` to execute the tests again even when their previous results are up to date, without forcing all compilation tasks to rerun.
 
