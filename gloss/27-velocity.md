@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-10-07T00:00:00.000Z
+date: 2026-10-12T23:28:26.473Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -16,7 +16,7 @@ Gloss on Velocity provides network tablists, scoreboard sidebars, server-list MO
 |---|---|
 | Proxy | Velocity 3.4 or newer |
 | Java | 25 |
-| Jar | `Gloss-<version>-packed.jar` in the proxy `plugins/` folder |
+| Jar | `Gloss v<version> [CraftBukkit] 26.1.2-26.3.jar` in the proxy `plugins/` folder |
 | Files | `plugins/gloss/` |
 | Clients | Scoreboards need 1.20.3 or newer. Pause-menu server links need 1.21 or newer |
 

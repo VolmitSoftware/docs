@@ -2,13 +2,13 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-10-08T01:00:00Z
+date: 2026-10-12T23:25:13.822Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
 ---
 
-For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
+The same distribution jar also runs on Velocity. For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
 
 Settings are `plugins/Gloss/gloss.toml`. Display content is JSON under `plugins/Gloss/`. A valid save reloads. Invalid files keep the current settings. A BileTools jar reload disconnects players while the packet library initializes. Config and document reloads do not.
 
@@ -16,9 +16,9 @@ Settings are `plugins/Gloss/gloss.toml`. Display content is JSON under `plugins/
 
 | Item | Value |
 |---|---|
-| Server | Paper or Spigot API-compatible servers, including Folia. Use a Gloss release built for your Minecraft version |
+| Server | Paper or Spigot API-compatible servers, including Folia. Minecraft 26.1.2 through 26.3 |
 | Java | 25 |
-| Jar | `Gloss-<version>-packed.jar` |
+| Jar | `Gloss v<version> [CraftBukkit] 26.1.2-26.3.jar` |
 | Optional | PlaceholderAPI, Vault, and supported item plugins |
 
 Paper-derived forks use their advertised Paper API compatibility. Features requiring a client protocol or a Paper-only API are available only when that capability exists; see [Velocity](/gloss/27-velocity) and [Bedrock viewers](/gloss/02-configuration#bedrock-viewers).

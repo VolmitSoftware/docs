@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-09-26T06:29:51.520Z
+date: 2026-10-12T23:25:13.822Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,9 +30,9 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Install
 
-Install the `-packed.jar` as the only BileTools jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/BileTools/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
+Install the selected distribution jar as the only BileTools jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/BileTools/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
-1. Copy `BileTools-x.x.x-packed.jar` into `plugins/`.
+1. Copy `BileTools v<version> [CraftBukkit] 1.20.1-26.3.jar` into `plugins/`.
 2. Restart the server. BileTools writes `plugins/BileTools/biletools.yml` and
    `languages/en_US.toml` on first run.
 3. Build a plugin into `plugins/`.

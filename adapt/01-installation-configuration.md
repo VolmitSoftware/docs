@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, and settings"
 published: true
-date: 2026-10-12T01:16:47.000Z
+date: 2026-10-12T23:25:13.822Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,9 +14,9 @@ Startup fills missing player-preference policies and writes adaptation settings 
 
 | | |
 |---|---|
-| Server | Paper, Purpur, or Folia. Minecraft 26.1 through 26.2, and Paper 26.3. Folia 26.3 waits on a published server build |
+| Server | Paper, Purpur, or Folia. Minecraft 26.1.2 through 26.2, and Paper 26.3. Folia 26.3 waits on a published server build |
 | Java | 25 |
-| Jar | `Adapt-<version>-packed.jar` in each backend `plugins/` folder |
+| Jar | `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` in each backend `plugins/` folder |
 | Command | `/adapt`, behind `adapt.main`. `adapt.use.*` defaults to true and still needs that root node |
 
 An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That directory must be writable. A non-English `language` is downloaded to `languages/<locale>.toml` only when that file is missing.

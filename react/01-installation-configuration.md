@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-12T23:25:13.822Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,9 +14,9 @@ The same jar includes Minecraft 26.1.2, 26.2, and 26.3 support. Paper 26.3 curre
 
 ## Install
 
-Install the `-packed.jar` as the only React jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/React/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
+Install the selected distribution jar as the only React jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/React/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
-1. Put the React jar in `plugins/`.
+1. Put `React v<version> [CraftBukkit] 26.1.2-26.3.jar` in `plugins/`.
 2. Start the server once. React initializes its command system and creates the default configuration files.
 3. Grant operators `react.use` or `react.*`.
 4. Open `https://react.volmitsoftware.com` or edit the TOML files under `plugins/React/`.

@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-12T18:09:00.000Z
+date: 2026-10-12T23:25:13.822Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -72,7 +72,7 @@ Each build compares the complete ordinary package with its XZ package and writes
 
 When XZ wins, startup verifies and extracts the bundled runtime into the plugin's writable `cache/runtime/` directory. Later starts verify and reuse that cache. The ordinary format loads directly without extraction. Required external libraries retain their normal download and cache behavior.
 
-`assemble` and `build` also produce the selected artifact. Existing plugin export tasks copy it under their usual filenames. Maven and API artifacts remain ordinary jars for compile-time use. Test fixtures and Iris mod jars retain their existing format. Install only one artifact for each plugin.
+`assemble` and `build` also produce the selected artifact. Exports for Adapt, BileTools, Gloss, HiddenOre, Iris, React, and Wormholes use `<Name> v<version> [CraftBukkit] <supported Minecraft range>.jar`. The plugin version is separate from the supported game range. BileTools and Gloss use the same exported jar on Velocity; the game range describes their server edition. Iris and Wormholes mod exports name their specific game and loader versions. Maven and API artifacts remain ordinary jars for compile-time use. Test fixtures and Iris mod jars retain their existing format. Install only one artifact for each plugin.
 
 Enable automatic package selection on the final runtime artifact in the shared packaging configuration:
 
@@ -190,7 +190,7 @@ Release compression compares Zopfli with level-9 DEFLATE for each entry and keep
 To inspect an existing jar without building or modifying it, run from the workspace:
 
 ```bash
-python3 gradle/jar_audit.py PluginOuts/Gloss-3.0.4-26.2.jar \
+python3 gradle/jar_audit.py "PluginOuts/Gloss v3.2.2 [CraftBukkit] 26.1.2-26.3.jar" \
   --report .buildlogs/jar-audit-gloss.json
 ```
 

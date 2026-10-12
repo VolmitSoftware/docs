@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-12T14:25:19.953Z
+date: 2026-10-12T23:25:13.822Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 Before you replace an existing installation:
 
 1. Run `java -version` **on the server**. Confirm it reports 25. Java 25 on the box is not the same as the server process using it.
-2. Match the jar label to the platform and Minecraft version you run.
+2. Match the jar label to the platform and Minecraft version you run. For example, `Iris v4.3.3 [CraftBukkit] 26.1.2-26.3.jar` supports the three listed plugin versions; the mod jars each name their target game and loader version.
 3. Stop the server cleanly.
 4. Back up the Iris jar/mod, the Iris data directory, and every Iris world you intend to keep.
 
@@ -40,7 +40,7 @@ For a local source build, run `./gradlew buildPsychoLT` from the Iris repository
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 
-Install the `-packed.jar` as the only Iris plugin jar. Each build automatically selects the smaller ordinary or XZ package, with the native adapters included in either format. With XZ, startup verifies and extracts the bundled runtime into `plugins/Iris/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Other required libraries and packs can still need network access.
+Install the selected CraftBukkit distribution jar as the only Iris plugin jar. Each build automatically selects the smaller ordinary or XZ package, with the native adapters included in either format. With XZ, startup verifies and extracts the bundled runtime into `plugins/Iris/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Other required libraries and packs can still need network access.
 
 1. Put the Iris plugin jar in `plugins/`.
 2. Start the server once.

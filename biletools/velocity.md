@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Hot reload for proxy plugins on Velocity"
 published: true
-date: 2026-10-07T13:43:24.328Z
+date: 2026-10-12T23:28:26.473Z
 tags: "biletools, velocity"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -16,7 +16,7 @@ The same BileTools jar runs on Bukkit servers and on Velocity proxies. On the pr
 |---|---|
 | Proxy | Velocity 3.4 or newer, including 4.x |
 | Proxy JVM | Whatever the proxy build requires (Velocity 4.x runs on Java 25); the plugin is built for Java 17 and newer |
-| Jar | The same `BileTools-x.x.x-packed.jar` used on Bukkit servers |
+| Jar | The same `BileTools v<version> [CraftBukkit] 1.20.1-26.3.jar` used on Bukkit servers |
 
 ## Install
 
@@ -24,7 +24,7 @@ The same BileTools jar runs on Bukkit servers and on Velocity proxies. On the pr
 2. Start the proxy. BileTools writes `plugins/biletools/biletools.json` on first run.
 3. Build a proxy plugin into the same `plugins/` directory, or use `/bile reload <id>`.
 
-Install the `-packed.jar` as the only BileTools jar. Each build automatically selects the smaller ordinary or XZ package. With XZ, startup verifies and extracts the bundled runtime into the writable `plugins/BileTools/cache/runtime/` directory. This cache is separate from the lowercase proxy settings folder. Later starts reuse the verified cache.
+Install the selected distribution jar as the only BileTools jar. Each build automatically selects the smaller ordinary or XZ package. With XZ, startup verifies and extracts the bundled runtime into the writable `plugins/BileTools/cache/runtime/` directory. This cache is separate from the lowercase proxy settings folder. Later starts reuse the verified cache.
 
 Backend servers need nothing. A backend BileTools installation keeps its own separate settings, described in [Installation](/biletools/installation).
 
