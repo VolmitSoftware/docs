@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-12T14:48:44.000Z
+date: 2026-10-12T15:47:22.638Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -65,7 +65,7 @@ as `CUSTOM` on load.
 
 ### Settings sync
 
-Settings Sync copies supported changes to linked local portals and gateways. When disabled, edits stay local. `publicLookLabel` and the aperture shape are never copied. Traveller scale mode and bounds are copied when Settings sync is enabled at both ends of a linked local pair, including changes back to `off`.
+Settings Sync copies supported changes to linked local portals and gateways. When disabled, edits stay local. `publicLookLabel` and the aperture shape are never copied. Traveller scale mode and bounds are copied when Settings sync is enabled at both ends of a linked local pair, including changes back to `off`. On Fabric, Forge and NeoForge, enabling directional gravity or a traveller scale mode other than `off` automatically enables Settings sync at both linked ends. Sync stays enabled while either end uses either feature; turn both features off before disabling sync. Endpoint frame directions and rotations remain independent.
 
 ## Per-portal permission node
 
@@ -351,13 +351,13 @@ Open **Settings → More settings → Transit** to control movement through this
 
 All four modes apply on teleport and seamless crossings. With `[transit] gravity-flip-enabled = true` (default `false`), `frame`, `snap`, and `mirror` arrivals from a wall portal through a floor or ceiling turn upright. Forward and screen-up turn together. Floor-to-ceiling crossings retain the mapped look, including looking straight up or down during repeated falls. `look` ignores the flip. With world-down gravity, a twisted portal pair can leave a camera tilt, which the client mod eases upright over `camera-roll-ease-seconds` (default `0.35`). Rapid crossings retain any tilt that is still easing. Directional gravity keeps the camera aligned with its persistent gravity frame. See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
 
-**Directional gravity** applies on Fabric, Forge, NeoForge and singleplayer with matching server and client mods. Click the native Transit control to toggle it. The saved per-portal setting is `transit.gravityRotation`, default `false`. It applies when a traveller enters that portal. Enable both ends when both directions should rotate gravity. Directional gravity requires active native ClientView. Turning ClientView off restores world-down gravity and keeps the current world-facing look.
+**Directional gravity** applies on Fabric, Forge, NeoForge and singleplayer with matching server and client mods. Click the native Transit control to toggle it. The saved per-portal setting is `transit.gravityRotation`, default `false`. It applies when a traveller enters that portal. Enabling it turns on Settings sync at both linked ends and copies the gravity setting to the counterpart. Disabling it also copies to the counterpart. Directional gravity requires active native ClientView. Turning ClientView off restores world-down gravity and keeps the current world-facing look.
 
 The portal pair rotates the traveler's complete cardinal gravity frame in exact 90-degree increments. A wall can become the floor. Movement, jumping, collision bounds, eye position, the camera and character model follow the resulting frame. Creative flight uses the same controls and movement as world-down gravity: jump ascends, sneak descends, released input settles into hover, and forward, strafe and sprint follow the new floor. Double-tapping jump toggles flight, and landing turns it off. There are six down directions and four possible turns around each direction. Arbitrary-angle gravity is unsupported.
 
 With `frame` orientation, local view, body and head angles stay relative to the new floor. Other orientation policies first select the world look, then express it in the new gravity frame. Directional gravity ignores `gravity-flip-enabled`. Paper, Purpur and Folia do not apply this feature. Native servers refuse entry through gravity-enabled portals for clients without the matching mod. Use `/wormholes portals gravity <uuid> [true|false]` to read or set it. `/wormholes gravity reset [player name]` restores world-down gravity.
 
-**Traveller scale** maps travel between portals of different sizes. The rule of the portal a traveller enters applies. With Settings sync enabled at both ends of a linked local pair, changing the mode or bounds updates the counterpart too. With sync disabled, set both ends of a pair that should scale in both directions. Left-click cycles the mode, right-click opens a chat prompt for the minimum size factor, and shift-right-click one for the maximum (defaults `0.25` and `4`, kept within `0.0625`–`16`).
+**Traveller scale** maps travel between portals of different sizes. The rule of the portal a traveller enters applies. With Settings sync enabled at both ends of a linked local pair, changing the mode or bounds updates the counterpart too. Fabric, Forge and NeoForge enable sync at both linked ends when selecting `motion` or `ratio`. On Paper, Purpur and Folia, sync can be disabled; set both ends separately when using that option. Left-click cycles the mode, right-click opens a chat prompt for the minimum size factor, and shift-right-click one for the maximum (defaults `0.25` and `4`, kept within `0.0625`–`16`).
 
 | Mode | Effect on arrival |
 |------|-------------------|
