@@ -6,16 +6,17 @@ const { JSDOM } = require('jsdom');
 
 const source = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.js'), 'utf8');
 
-function demonstration(id, views = ['pov', 'observer'], rendererLabels = false) {
+function demonstration(id, views = ['pov', 'observer'], rendererLabels = false, clients = ['standard', 'clientview']) {
   const labels = rendererLabels ? ' data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration"' : '';
-  return `<div class="wormholes-demo" data-demo="${id}"${labels}>${['standard', 'clientview'].map(client =>
+  return `<div class="wormholes-demo" data-demo="${id}"${labels}>${clients.map(client =>
     `<div class="wormholes-demo-variant" data-client="${client}"><p>${client}</p>` + views.map(view =>
       `<video src="/wormholes-assets/demos/${id}-${client}-${view}.webm" controls></video>`).join('') + '</div>').join('')}</div>`;
 }
 
-async function page(t, perspective, single = false, reducedMotion = false, rendererLabels = false) {
+async function page(t, perspective, single = false, reducedMotion = false, rendererLabels = false, nativeOnly = false) {
   const dom = new JSDOM('<div id="root"><div class="v-application"><main class="v-main"><div class="contents">'
     + ['wand-creation', 'rune-creation', 'portal-linking'].map(id => demonstration(id, single && id !== 'portal-linking' ? ['pov'] : ['pov', 'observer'], rendererLabels)).join('')
+    + (nativeOnly ? demonstration('gravity', ['pov', 'observer'], false, ['clientview']) : '')
     + '<div class="adapt-demo"><video src="/adapt-assets/demo-pov.webm"></video><video src="/adapt-assets/demo-observer.webm"></video></div>'
     + '<div class="gloss-demo"><p>Inventory menus. Minecraft client. Silent capture.</p><video src="/gloss-assets/demos/inventory-menus-pov.webm" aria-label="Inventory menus in Minecraft"></video></div>'
     + '<div class="gloss-demo"><p>Menu authoring. Browser editor. Silent capture.</p><video src="/gloss-assets/demos/menu-editor.webm" aria-label="Menu authoring in the browser editor"></video></div>'
@@ -236,5 +237,32 @@ test('reduced motion allows intentional playback and preserves a manual pause', 
     visible(container, true);
     assert.equal(video.paused, true);
     assert.ok([...container.querySelectorAll('video')].every(clip => clip.paused));
+  }
+});
+
+
+test('native-only demonstrations expose the client heading and camera without fabricated client tabs', async t => {
+  const { window, demos, visible } = await page(t, 'third-person', false, false, false, true);
+  const demo = demos.find(container => container.dataset.demo === 'gravity');
+  assert.equal(demo.classList.contains('demo-ready'), true);
+  assert.equal(demo.querySelectorAll('[role="tablist"]').length, 0);
+  assert.equal(demo.querySelectorAll('[role="tab"]').length, 0);
+  assert.equal(demo.querySelector('[data-client="standard"]'), null);
+  assert.equal(demo.querySelector('.demo-header > span').textContent, 'Client mod');
+  const camera = demo.querySelector('select');
+  assert.equal(camera.value, 'third-person');
+  visible(demo, true);
+  const first = demo.querySelector('video[src$="-pov.webm"]');
+  const third = demo.querySelector('video[src$="-observer.webm"]');
+  assert.equal(first.paused, true);
+  assert.equal(third.paused, false);
+  camera.value = 'first-person';
+  camera.dispatchEvent(new window.Event('change', { bubbles: true }));
+  assert.equal(first.paused, false);
+  assert.equal(third.paused, true);
+  assert.equal(window.localStorage.getItem('adapt-demo-perspective'), 'first-person');
+  for (const paired of demos.filter(container => container !== demo)) {
+    assert.equal(paired.querySelectorAll('[role="tab"]').length, 2);
+    assert.equal(paired.querySelector('select').value, 'first-person');
   }
 });

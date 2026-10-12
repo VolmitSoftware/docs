@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-12T09:04:54Z
+date: 2026-10-12T14:12:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -404,7 +404,7 @@ Terrain on the near side of the destination aperture is clipped with shaders on 
 
 A portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape) is drawn clipped to the shape itself, with a smooth edge. The mesh also covers edge cells the shape only touches, so a sliver narrower than half a cell still shows the destination although it admits no crossing. `portal-shape-subdivisions` in the client file (default `8`, 1–16) sets how finely the edge is subdivided per block; very large shaped portals use fewer subdivisions so the mesh stays within its budget, and the client log notes the reduction. `portal-edge-feather` (default `0`, up to `2`) tints a band of that width inside the edge of a streamed view with the destination's fog colour; world views keep a sharp edge. Standard projection and players without the mod see the opening stepped to whole cells, where a cell is open when at least half of it lies inside the shape. Crossing is judged against the exact shape on every platform.
 
-With a [Traveller scale](/wormholes/04-portal-types-menus-settings#transit-menu) rule of `motion` or `ratio`, the client mod draws the destination at the inverse size ratio. A 3×3 entrance into a 9×9 exit shows terrain and character models at one third of their size. The reverse direction shows them at three times their size. The view scales around the portal center, and the source opening clips it to its outline. Nested views use the same scale for their camera and destination environment. Standard projection keeps a 1:1 window onto the destination.
+With a [Traveller scale](/wormholes/04-portal-types-menus-settings#transit-menu) rule of `motion` or `ratio`, the client mod draws the destination at the inverse size ratio. A 3×3 entrance into a 9×9 exit shows terrain and character models at one third of their size. The reverse direction shows them at three times their size. The view scales around the portal center, and the source opening clips it to its outline. Walking bob follows the same camera transform for the opening and destination contents, including while approaching a larger or smaller exit. Nested views use the same scale for their camera and destination environment. Standard projection keeps a 1:1 window onto the destination.
 
 Players and other living entities that span a scaled or quarter-turn opening appear on both sides of the plane. Their models and equipment retain their size and gravity orientation. The model portion drawn across a scaled opening or a change of floor plane omits its terrain shadow.
 

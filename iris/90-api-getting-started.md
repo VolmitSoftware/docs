@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-09-24T00:44:50.000Z
+date: 2026-10-12T15:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -44,6 +44,8 @@ JitPack serves Iris under `com.github.VolmitSoftware:Iris:<tag-or-commit>`. Sele
 Set `iris.revision` to the selected tag or commit. Use the API jar only for compilation. Install the full Bukkit jar on the server.
 
 For a local source build, run `./gradlew publishToMavenLocal`. This installs `art.arcane:iris:<irisVersion>` into local Maven. Use those coordinates with `provided` when building against your own checkout. They do not identify the JitPack artifact.
+
+Source builds use a local VolmLib checkout when available and support parallel Gradle execution. Use `-PlocalVolmLibDirectory=<path>` to select a checkout or `-PuseLocalVolmLib=false` to resolve published dependencies.
 
 You can also compile against the full plugin jar:
 

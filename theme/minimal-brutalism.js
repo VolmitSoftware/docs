@@ -1851,8 +1851,10 @@
     for (const [client, variant] of player.variants) {
       const selected = client === player.client;
       variant.panel.hidden = !selected;
-      variant.tab.setAttribute('aria-selected', String(selected));
-      variant.tab.tabIndex = selected ? 0 : -1;
+      if (variant.tab) {
+        variant.tab.setAttribute('aria-selected', String(selected));
+        variant.tab.tabIndex = selected ? 0 : -1;
+      }
       for (const [perspective, view] of variant.views) {
         const active = perspective === player.camera.value;
         view.panel.hidden = !active;
@@ -1876,12 +1878,18 @@
       const panel = container.querySelector('.wormholes-demo-variant[data-client="' + client + '"]');
       const first = panel?.querySelector('video[src$="-pov.webm"]');
       const third = panel?.querySelector('video[src$="-observer.webm"]');
-      if (!panel || !first) {
+      if (!panel) {
+        continue;
+      }
+      if (!first) {
         return;
       }
       variants.set(client, { panel, videos: new Map([['first-person', first], ...(third ? [['third-person', third]] : [])]), views: new Map() });
     }
-    const player = { variants, client: 'standard', visible: false, playing: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, camera: element('select') };
+    if (!variants.size) {
+      return;
+    }
+    const player = { variants, client: variants.keys().next().value, visible: false, playing: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, camera: element('select') };
     const id = 'wormholes-demo-' + ++demoSequence;
     const header = element('div', 'demo-header');
     const tabs = element('div', 'demo-tabs');
@@ -1899,7 +1907,9 @@
       player.camera.append(option);
     }
     player.camera.addEventListener('change', () => selectDemoPerspective(player.camera.value));
-    header.append(tabs);
+    if (variants.size > 1) {
+      header.append(tabs);
+    }
     if (player.camera.options.length > 1) {
       header.append(cameraLabel);
     }
@@ -1909,11 +1919,15 @@
         ? container.dataset.clientviewLabel || 'Client mod'
         : container.dataset.standardLabel || 'No client mod';
       variant.panel.querySelector(':scope > p')?.remove();
-      variant.tab = demoTab(tabs, variant.panel, id + '-' + client, label);
-      variant.tab.addEventListener('click', () => {
-        player.client = client;
-        updateWormholePlayback(player);
-      });
+      if (variants.size > 1) {
+        variant.tab = demoTab(tabs, variant.panel, id + '-' + client, label);
+        variant.tab.addEventListener('click', () => {
+          player.client = client;
+          updateWormholePlayback(player);
+        });
+      } else {
+        header.prepend(element('span', null, label));
+      }
       for (const [perspective, name] of perspectives) {
         const video = variant.videos.get(perspective);
         if (!video) {
@@ -1947,10 +1961,12 @@
         });
       }
     }
-    demoKeyboard(tabs, variants, () => player.client, (client) => {
-      player.client = client;
-      updateWormholePlayback(player);
-    });
+    if (variants.size > 1) {
+      demoKeyboard(tabs, variants, () => player.client, (client) => {
+        player.client = client;
+        updateWormholePlayback(player);
+      });
+    }
     wormholePlayers.set(container, player);
     container.classList.add('demo-ready');
     updateWormholePlayback(player);
