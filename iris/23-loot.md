@@ -2,7 +2,7 @@
 title: "Loot"
 description: "Iris documentation: Loot"
 published: true
-date: 2026-10-11T20:54:47.480326+00:00
+date: 2026-10-13T20:40:06.552377+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -80,9 +80,11 @@ The goal is a chest inside one placed object that rolls your table and ignores t
 
 ## Container loot selection
 
-Generated storage chests use `STORAGE` entries. Enable `world.postLoadBlockUpdates` in `iris.json` to fill them. Objects placed directly in Studio fill their chests immediately.
+Generated storage chests use `STORAGE` entries. These include normal and trapped chests, barrels, shulker boxes, dispensers, droppers, hoppers, and all copper chest variants supported by the server. Enable `world.postLoadBlockUpdates` in `iris.json` to fill them. Objects placed directly in Studio fill their chests immediately.
 
-An object placement selects at most one table. Matching `exact` block-state filters take priority over material filters, followed by entries without filters. `weight` selects among matches at the same priority. Placement `loot` and `vanillaLoot` compete together.
+If a loot roll or inventory write fails, the container keeps its previous contents. Generated containers remain pending so Iris can retry the update.
+
+An object placement selects at most one table. Matching `exact` block-state filters take priority over material filters, followed by entries without filters. `weight` selects among matches at the same priority. Placement `loot` and `vanillaLoot` compete together. Each `vanillaLoot` roll uses the current Minecraft loot table, including changes applied by a datapack reload.
 
 With `overrideGlobalLoot: true`, a selected placement table excludes the other sources. Otherwise, dimension, region, surface biome, and cave biome tables contribute in that order. `ADD` appends, `REPLACE` replaces, `CLEAR` removes, and `FALLBACK` contributes only when no table is selected.
 
