@@ -2,7 +2,7 @@
 title: "Noise and procedural streams"
 description: "Seeded noise, composition, interpolation, and procedural fields shared by Volmit plugins."
 published: true
-date: 2026-10-06T21:10:00.000Z
+date: 2026-10-13T18:50:50.298Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -62,11 +62,19 @@ try (BillowBatch batch = new BillowBatch(options)) {
 
 Supply `coordinates` as packed `(x, y, z)` triples; sampling uses `x` and `z`. Supply the same seed as the `FractalBillowSimplexNoise` constructor. `count` must fit both arrays and the configured capacity, which cannot exceed 1,048,576 samples. Eight- and nine-octave requests can select GPU at 65,536 samples or exact Rust at 256 samples. Smaller requests, unsupported octave counts, and unavailable native capabilities use Java. GPU results are approximate; use the exact CPU path when bit equality is required.
 
-Create, fill, inspect, and close each context on its owning thread. Repeated close is safe. `selection()` reports the last backend decision; `statistics()` reports batch counts and fallback reasons independently of the scalar backend's `nativeSampleCount()`. Batch options do not enable Iris terrain batching; Iris generation continues to use its scalar noise path.
+Create, fill, inspect, and close each context on its owning thread. Repeated close is safe. `selection()` reports the last backend decision; `statistics()` reports batch counts and fallback reasons independently of the scalar backend's `nativeSampleCount()`. This optional native batch context is separate from Iris's Java terrain batches.
 
 ## World column caches
 
 `WorldCache2D` stores bounded 16×16 column caches. Each thread reuses its last chunk. Repeated reads across several chunks update access order periodically to reduce contention, while each such read still checks the shared cache for an existing entry. The recent-key table retains no additional chunks, and an evicted entry is recomputed when requested through the shared cache. `setMaximumChunks(int)` changes the retained chunk limit in place and requires a positive capacity. Eviction changes retention only; resolved values keep their existing contract.
+
+### Batch double samples
+
+Use `WorldCache2DDouble.getBatch(coordinates, count, target, resolver)` to read up to 4,096 cached column values in request order. Pack each coordinate with `CacheKey.key(x, z)`. Both arrays must have at least `count` elements.
+
+The batch resolver receives only unique missing coordinates. It must write every requested result into its output array and evaluate the same pure field as the cache's scalar resolver. Configure the field before sharing the cache between workers.
+
+Repeated coordinates share one result within the batch. Existing cached values remain available after a resolver failure, and failed batch results are not published. Concurrent callers can evaluate the same missing column without waiting for each other.
 
 ## Iris bindings
 
