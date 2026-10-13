@@ -416,7 +416,7 @@ Sampler and ticker diagnostics refresh once per second. Rates divide counter cha
 | `react-ticker-max-queue-ms` | ms | Largest recorded ticker queue wait |
 | `react-ticker-active` | count | Ticker executions active at capture time |
 
-`react-sampler-oldest-age-ms` includes retained timestamps from unavailable readings. `react-sampler-stale` counts only available readings with a declared refresh interval. A sampler's live `diagnostics` object exposes its refresh attempts, successes, failures, cache hits, in-flight skips, latest and maximum execution duration, latest and maximum queue wait, last successful refresh time, and cumulative execution and queue time. Durations in this object use nanoseconds; the last-success timestamp uses epoch milliseconds.
+`react-sampler-oldest-age-ms` includes retained timestamps from unavailable readings. `react-sampler-stale` counts only available readings with a declared refresh interval. Samplers with local refresh instrumentation expose a live `diagnostics` object with refresh attempts, successes, failures, cache hits, in-flight skips, latest and maximum execution duration, latest and maximum queue wait, last successful refresh time, and cumulative execution and queue time. Durations in this object use nanoseconds; the last-success timestamp uses epoch milliseconds. Host and native samplers omit this object. Supported zero counters remain present.
 
 ### regional and pathfinding
 
