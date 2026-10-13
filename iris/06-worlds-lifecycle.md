@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-11T14:27:21.074Z
+date: 2026-10-13T15:40:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -120,7 +120,7 @@ Back up the complete dimension directory, including `iris/generation`. Do not ed
 | Bukkit world registration | `<level-root>/iris/worlds.json` and the `worlds` section of `bukkit.yml` |
 | Modded world registration | `<world-root>/iris/iris-dimensions.json` |
 
-`level-name` in `server.properties` selects the save root. Include the registration files when backing up your server, and stop the server before restoring world files.
+`level-name` in `server.properties` selects the save root. Include the registration files when backing up your server. Use the server's normal stop command and wait for the Java process to exit before copying, restoring, or removing world files. Pending chunk generation and Iris world data finish saving during shutdown.
 
 ## When an Iris world cannot load
 

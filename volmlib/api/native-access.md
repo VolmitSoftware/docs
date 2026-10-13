@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-13T02:07:00.000Z
+date: 2026-10-13T15:46:50.258Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -155,6 +155,8 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 `NativeGenerationRegistry.canonicalDefinition(...)` creates a typed registry definition from its registry key, entry key, and JSON. Resolve the registry through `NativeAdapters.require(NativeGenerationRegistry.class)`.
 
 `NativeWorldGeneration.inject(world, context)` installs the selected version’s generator using your `NativeBukkitGeneratorContext`. The context supplies terrain, biome, structure, spawn, and generation-history policy through typed contracts. Native structure stages respect the world’s Generate Structures setting: disabled worlds skip starts, references, placement, native locate predictions, and structure-volume prediction while terrain and feature stages continue. `lifecycle(policy)` creates its lifecycle controller; retain the controller and close its hooks during shutdown. Use `completeBootstrap(world)` after initial generation and `abandonBootstrap(world)` when creation fails.
+
+`NativeWorldLifecycleFactory.Controller.createServerShutdownBoundary()` captures the server's completed world-shutdown signal. Call `ServerShutdownBoundary.await(timeout, unit)` from a background thread before releasing resources needed by native chunk workers. A terminated server thread alone does not satisfy this boundary. A `false` result means dependent resources must remain available.
 
 `NativeTerrainSnapshots.capture(request, policy)` captures a saved terrain column, and `flush(world, policy)` checkpoints pending terrain writes. Await these futures outside the tick thread and keep the world loaded until they finish. Snapshot requests use their chunk's owning context, can complete during synchronous chunk waits, and expire after 30 seconds.
 
