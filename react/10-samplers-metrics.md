@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-10-13T16:40:22.329Z
+date: 2026-10-13T16:46:23.315Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -449,7 +449,7 @@ JFR telemetry is disabled by default. Enable it in [runtime telemetry settings](
 
 Summaries use the events delivered during each roughly one-second interval. Delivery can lag the underlying work. Slow JVM events include only observations meeting `jfrSlowThresholdMs`; they do not describe the complete latency distribution. Chunk generation counts stages, not complete chunks. Storage event counts and bytes do not measure disk or save latency. Protocol totals do not measure physical network traffic. Duration metrics are unavailable when the interval contains no matching observation; a supported event count can be zero. Event loss makes affected summaries unavailable for that interval.
 
-`GET /api/v1/metrics/runtime` supplies the regional coverage snapshot and JFR capabilities, threshold, actual window, completeness, and bounded per-level/category summaries. It uses the configured read authentication. No file paths, peer addresses, or stack traces are included. Grouped summaries retain at most 64 series per interval; excess groups contribute to an `other` group. Level labels come from the server event and can identify a dimension rather than a unique Bukkit world. Generation categories identify stages; storage categories identify storage types.
+`GET /api/v1/metrics/runtime` supplies the regional coverage snapshot and JFR capabilities, threshold, actual window, completeness, and bounded per-level/category summaries. It uses the configured read authentication. No file paths, peer addresses, or stack traces are included. Grouped summaries retain at most 64 series per interval; excess groups contribute to an `other` group. Level labels come from the server event and can identify a dimension rather than a unique Bukkit world. Generation categories identify stages; storage categories identify storage types. Missing event labels appear as `unknown` and mark the interval incomplete. Its aggregate counts and timings remain valid unless events were lost.
 
 ### tick
 
