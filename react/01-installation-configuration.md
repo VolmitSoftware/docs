@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "React documentation: Installation & Configuration"
 published: true
-date: 2026-10-12T23:25:13.822Z
+date: 2026-10-13T16:16:06.562Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -76,6 +76,21 @@ If React reports that a task or ticker did not stop during a reload, restart the
 | `maxQueryPoints` | `4096` | Points allowed per metric |
 
 Set a retention value to `0` or lower to keep that tier indefinitely. One-hour history is always retained.
+
+Each one-second history point aggregates every available live capture in that second, including its minimum and maximum. Sources can refresh more slowly than live capture. Source timestamps show when the underlying reading changed.
+
+## Runtime telemetry
+
+`core/runtime-telemetry.toml` controls Folia regional readings and selective JFR event summaries. Changes apply automatically.
+
+| Key | Default | Purpose |
+|---|---:|---|
+| `regionalEnabled` | `true` | Sample Folia region TPS at cached player locations |
+| `playerAnchorsPerRefresh` | `64` | Player locations sampled each second; clamped to 1–512. Observations expire after five seconds |
+| `jfrEnabled` | `false` | Enable bounded JFR event summaries |
+| `jfrSlowThresholdMs` | `10` | Minimum JVM file IO, monitor entry, monitor wait, and thread park duration; clamped to 1–1000 ms. Generation stages have no duration threshold |
+
+The JFR recording uses 30-second and 64-MiB retention limits. It records selected event types without stack traces. Published summaries contain no file paths or peer addresses. Reducing the slow-event threshold produces more events. Unsupported event types remain unavailable. See [Samplers & Metrics](/react/10-samplers-metrics#jfr-event-summaries) for units and coverage.
 
 ## Event instrumentation
 

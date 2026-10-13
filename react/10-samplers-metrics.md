@@ -2,17 +2,27 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-13T16:16:06.562Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Samplers are React's measurement units. They feed monitors, map renderers, and PlaceholderAPI. Every sampler also implements the React map-renderer contract. The complete meaning and unit table for every operator-facing built-in id is in [19 - API - PlaceholderAPI](/react/19-api-placeholderapi).
+Samplers are React's measurement units. They feed monitors, map renderers, and PlaceholderAPI. Every sampler also implements the React map-renderer contract. Use any registered sampler through [PlaceholderAPI](/react/19-api-placeholderapi).
 
 ## Observation model
 
-- Every sampler is evaluated once per 500 ms. That one reading feeds the HUD, the web UI, graphs,
-  and stored history, so a faster web refresh does not cost extra sampling.
+- Live capture runs every 500 ms by default and reads each source at its own refresh interval.
+  Sampler caches feed the HUD, web clients, graphs, and stored history. A capture can reuse
+  the same source reading; its source timestamp does not advance until the source refreshes.
+- Live metrics include `sampledAtMs`, `intervalMs`, `windowMs`, `quality`, `unit`, and
+  `unavailableReason`. Quality is `MEASURED`, `ESTIMATED`, or `UNKNOWN`. `intervalMs` and
+  `windowMs` describe the declared refresh interval and aggregation window. A zero value means
+  that interval or window is unspecified. Source detail endpoints can also report the actual
+  elapsed window when it differs from the declared window.
+  `unit` describes the numeric value, independently of a display suffix such as MiB or percent.
+- One-second history retains the first, minimum, maximum, sum, last, and count of all available
+  captures in that second, including intervening half-second spikes. History points retain the
+  first and last source timestamps. Repeated cached readings remain separate captures.
 - History is kept on disk under `plugins/React/history/`. Retention per tier is in
   [01 - Installation & Configuration](/react/01-installation-configuration#metric-history).
 - A sampler that cannot measure reports unavailable rather than a healthy-looking zero. Samplers
@@ -40,7 +50,7 @@ Samplers are React's measurement units. They feed monitors, map renderers, and P
 
 ## Built-in samplers
 
-About 195 samplers ship built in, listed below by group. One internal `unknown` fallback is not
+Built-in samplers are listed below by group. One internal `unknown` fallback is not
 listed: it backs unresolved monitor configuration, always reports unavailable, and renders `---`.
 
 ### adapt
@@ -212,62 +222,107 @@ batched explosions.
 
 ### host
 
-| Sampler id |
-|---|
-| `disk-read-rate` |
-| `disk-usable` |
-| `disk-write-rate` |
-| `network-receive-drops` |
-| `network-receive-errors` |
-| `network-receive-rate` |
-| `network-send-errors` |
-| `network-send-rate` |
-| `physical-memory-free` |
-| `physical-memory-used` |
+| Sampler id | Unit | Meaning |
+|---|---|---|
+| `physical-memory-used` | bytes | Physical Memory Used |
+| `physical-memory-free` | bytes | Physical Memory Available |
+| `disk-usable` | bytes | Disk Usable |
+| `disk-read-rate` | bytes/s | Disk Read Rate |
+| `disk-write-rate` | bytes/s | Disk Write Rate |
+| `disk-read-operations-rate` | operations/s | Disk Read Operations |
+| `disk-write-operations-rate` | operations/s | Disk Write Operations |
+| `disk-queue-length` | operations | Disk Queue Length |
+| `disk-transfer-time-rate` | ms/s | Disk Transfer Time Rate |
+| `network-receive-rate` | bytes/s | Network Receive Rate |
+| `network-send-rate` | bytes/s | Network Send Rate |
+| `network-receive-drops` | drops | Network Receive Drops |
+| `network-receive-errors` | errors | Network Receive Errors |
+| `network-send-errors` | errors | Network Send Errors |
+| `network-receive-packets-rate` | packets/s | Network Receive Packets |
+| `network-send-packets-rate` | packets/s | Network Send Packets |
+| `network-collisions` | collisions | Network Collisions |
+| `process-resident-memory` | bytes | Process Resident Memory |
+| `process-io-read-rate` | bytes/s | Process I/O Read Rate |
+| `process-io-write-rate` | bytes/s | Process I/O Write Rate |
+| `process-minor-faults-rate` | faults/s | Process Minor Fault Rate |
+| `process-major-faults-rate` | faults/s | Process Major Fault Rate |
+| `process-page-faults-rate` | faults/s | Process Page Fault Rate |
+| `process-open-files` | files | Process Open Files |
+| `process-file-limit` | files | Process File Limit |
+| `process-file-headroom` | files | Process File Headroom |
+| `process-file-utilization` | % | Process File Utilization |
+| `swap-total` | bytes | Swap Total |
+| `swap-used` | bytes | Swap Used |
+| `swap-pages-in-rate` | pages/s | Swap Pages In |
+| `swap-pages-out-rate` | pages/s | Swap Pages Out |
 
-React reads disk counters and mount space every 30 seconds and network counters every 10 seconds. `disk-read-rate` and `disk-write-rate` are averages over the last 30 seconds, and `network-receive-rate` and `network-send-rate` are averages over the last 10 seconds. A newly attached disk, mount, or network interface appears within 30 seconds. `disk-usable` refreshes on every host sample.
+Disk counters, mount space, and file descriptor counts refresh every 30 seconds. Network counters refresh every 10 seconds. Physical memory, swap, and process counters refresh every five seconds. Rates divide counter differences by the actual elapsed time. A new source or a reset counter requires a new baseline before its rate becomes available. Each source retains its own timestamp. A periodic reading becomes unavailable after three missed refresh intervals. GC event readings remain available until replaced by another collection.
+
+Disk and network values cover the host devices that the operating system exposes. Network drop, error, and collision readings are cumulative counters. Disk transfer time reports cumulative transfer milliseconds per elapsed second, summed across devices. It can exceed 1000 ms/s and does not measure request latency. Disk queue length is unavailable on macOS. Network collisions are unavailable on Windows.
+
+Process I/O and page faults cover the server process. Their accounting depends on the operating system. Resident memory is an operating-system estimate. Windows exposes a total page-fault rate without separate minor and major rates. Solaris exposes combined process I/O through the read counter and has no separate write rate. File headroom is the current soft file limit minus the open count, floored at zero. Limits, headroom, and utilization are unavailable when the operating system cannot supply a positive limit. Swap page rates count pages. Unsupported counters report unavailable.
 
 ### jvm
 
-| Sampler id |
-|---|
-| `jvm-direct-buffer-bytes` |
-| `jvm-direct-buffer-count` |
-| `jvm-gc-collections-rate` |
-| `jvm-heap-committed` |
-| `jvm-heap-max` |
-| `jvm-heap-utilization` |
-| `jvm-loaded-classes` |
-| `jvm-nonheap-used` |
-| `jvm-process-uptime` |
-| `jvm-threads` |
+| Sampler id | Unit | Meaning |
+|---|---|---|
+| `jvm-heap-max` | bytes | JVM Heap Max |
+| `jvm-heap-committed` | bytes | JVM Heap Committed |
+| `jvm-heap-utilization` | % | JVM Heap Utilization |
+| `jvm-nonheap-used` | bytes | JVM Non-Heap Used |
+| `jvm-direct-buffer-bytes` | bytes | JVM Direct Buffer Memory |
+| `jvm-direct-buffer-count` | buffers | JVM Direct Buffer Count |
+| `jvm-gc-collections-rate` | collections/min | JVM GC Collections |
+| `jvm-loaded-classes` | classes | JVM Loaded Classes |
+| `jvm-process-uptime` | ms | JVM Process Uptime |
+| `jvm-threads` | threads | JVM Platform Threads |
+| `jvm-threads-daemon` | threads | JVM Daemon Threads |
+| `jvm-threads-peak` | threads | JVM Peak Threads |
+| `jvm-thread-start-rate` | threads/s | JVM Thread Starts |
+| `jvm-threads-runnable` | threads | JVM Runnable Threads |
+| `jvm-threads-blocked` | threads | JVM Blocked Threads |
+| `jvm-threads-waiting` | threads | JVM Waiting Threads |
+| `jvm-virtual-parallelism` | threads | Virtual Thread Parallelism |
+| `jvm-virtual-carriers` | threads | Virtual Thread Carriers |
+| `jvm-virtual-mounted` | threads | Mounted Virtual Threads |
+| `jvm-virtual-queued` | threads | Queued Virtual Threads |
 
-`jvm-gc-collections-rate` is the number of garbage collections per minute over the last 60 seconds. During the first minute after React starts, the window reaches back to JVM start, so the reading is the lifetime average until 60 seconds of samples exist.
+Heap, buffer, class, uptime, and GC-rate metrics refresh once per second. Direct-buffer memory is the JVM's estimate of memory used by that pool. `jvm-gc-collections-rate` is collections per minute over the last 60 seconds. During the first minute, it uses the elapsed JVM lifetime until a complete 60-second window exists. Concurrent-cycle collector beans are excluded.
+
+Thread metrics refresh every five seconds. The `jvm-threads` family counts platform threads, and waiting includes timed waiting. `jvm-virtual-parallelism` is the virtual-thread scheduler's target parallelism. `jvm-virtual-carriers` counts platform threads in its pool. Mounted and queued virtual-thread counts are estimates and may overestimate the current count. A scheduler counter that the JVM cannot supply is unavailable.
 
 ### memory
 
-| Sampler id |
-|---|
-| `memory-free` |
-| `memory-garbage` |
-| `memory-pressure` |
-| `memory-used` |
-| `memory-used-after-gc` |
+| Sampler id | Unit | Meaning |
+|---|---|---|
+| `memory-free` | bytes | Remaining heap headroom |
+| `memory-garbage` | bytes | Heap growth above the latest completed-GC heap reading, floored at zero |
+| `memory-pressure` | bytes/s | Estimated JVM allocation rate from the JVM's cumulative allocation counter |
+| `memory-used` | bytes | Current used heap |
+| `memory-used-after-gc` | bytes | Memory Used After GC |
+| `gc-reclaimed-bytes` | bytes | Latest GC Reclaimed Heap |
+| `gc-pause-latest` | ms | Latest GC Pause |
+| `gc-pause-max` | ms | Maximum GC Pause |
 
-`memory-pressure` is the heap allocation rate in bytes per second, measured between consecutive
-readings over the real elapsed time and averaged over the last 20 readings. The first reading after
-the sampler resumes from idle re-baselines and reports zero, and a heap drop caused by garbage
-collection reads as zero.
+`memory-pressure` samples once per second and divides the allocation-counter increase by actual elapsed time. Collection does not erase allocations from this counter. It is unavailable during warm-up, after a counter reset, or when allocation measurement is unsupported or disabled. React does not enable allocation measurement when the JVM has it disabled. `memory-garbage` does not measure unreachable objects and remains unavailable until the first completed-GC heap reading.
+
+Completed-GC metrics use collector notifications. `memory-used-after-gc` is the sum of heap-pool usage after the latest completed collection. `gc-reclaimed-bytes` is its before-minus-after difference, floored at zero. `gc-pause-latest` is the latest completed pause notification's duration. Concurrent collector cycle beans contribute heap readings but are excluded from pause values. These readings remain unavailable until their first event. Their timestamps remain the event time until another event occurs.
+
+`gc-pause-max` is the largest pause within the last five minutes, limited to the latest 4096 pause notifications. It refreshes once per second and reports zero when that window contains no pauses. It is unavailable if the JVM exposes no pause notification source.
 
 ### processor
 
-| Sampler id |
-|---|
-| `processor-outside` |
-| `processor-process-load` |
-| `processor-system-load` |
+| Sampler id | Unit | Meaning |
+|---|---|---|
+| `processor-system-load` | ratio | System CPU Load |
+| `processor-process-load` | ratio | Process CPU Load |
+| `processor-io-wait` | % | CPU I/O Wait |
+| `processor-steal` | % | CPU Steal |
+| `jvm-available-processors` | processors | JVM Available Processors |
+| `processor-effective-load` | % | Process CPU Capacity Load |
+| `processor-outside` | ratio | CPU use outside the server process |
 
-All three processor samplers are fractions of total host CPU, formatted as percentages, measured over the same interval of at least one second. `processor-system-load` is host-wide CPU use from the operating system's CPU counters. `processor-process-load` is the server process's CPU time as a share of all logical processors. `processor-outside` is system load minus process load: CPU used by everything outside the server process. They report unavailable until the first full interval after React starts.
+Processor sources refresh once per second. `processor-system-load`, `processor-process-load`, and `processor-outside` are fractions of total host CPU, formatted as percentages. `processor-outside` estimates system load minus process load, floored at zero. `processor-effective-load` divides process CPU use by the JVM's current available processor count and uses percent units. That denominator reflects the JVM's reported capacity, including any configured processor override. `processor-io-wait` and `processor-steal` are host CPU counter percentages. I/O wait is available on Linux, AIX, and Solaris. Steal is available on Linux and AIX. Unsupported counters and the first rate interval report unavailable.
 
 ### player-activity
 
@@ -313,6 +368,88 @@ tick, including idle ticks. `react-async-tick-time` is the summed execution time
 completed during each 50 ms tick loop, added across all `react-tick-N` threads, so it can exceed
 50 ms per loop on a busy server. See
 [14 - NMS Bridges & Platform Notes](/react/14-nms-bridges-platform-notes#thread-names).
+
+Observation counters refresh once per second. Duration rates sum elapsed work across all contributing threads, so they can exceed 1000 ms/s. Nearby candidates count entities returned by native neighborhood queries before the selection quota; samples count entities selected by consumers. Reusing a query can produce several selections from the same candidates.
+
+| Sampler id | Unit | Meaning |
+|---|---|---|
+| `react-nearby-queries` | /s | Nearby Entity Queries |
+| `react-nearby-candidates` | /s | Nearby Entity Candidates |
+| `react-nearby-samples` | /s | Nearby Entity Samples |
+| `react-nearby-cache-hits` | /s | Nearby Entity Cache Hits |
+| `react-nearby-query-ms` | ms/s | Nearby Entity Query Time |
+| `react-heatmap-scans` | /s | Heatmap Scans |
+| `react-heatmap-cache-hits` | /s | Heatmap Cache Hits |
+| `react-heatmap-cells` | /s | Heatmap Chunks Inspected |
+| `react-heatmap-scan-ms` | ms/s | Heatmap Scan Time |
+| `react-map-renders` | /s | Map Renders |
+| `react-map-render-ms` | ms/s | Map Render Time |
+| `react-map-flush-ms` | ms/s | Map Flush Time |
+| `react-map-throttle-skips` | /s | Map Throttle Skips |
+| `react-map-busy-skips` | /s | Map Busy Skips |
+| `react-map-failures` | /s | Map Render Failures |
+| `react-entity-scan-skips` | /s | Entity Scan Busy Skips |
+| `react-entity-scan-completed` | /s | Entity Scan Anchors Completed |
+
+Sampler and ticker diagnostics refresh once per second. Rates divide counter changes by the actual elapsed interval. Duration rates sum work across contributing threads and can exceed 1000 ms/s. Maximum-duration metrics report the largest value recorded by the current sampler or ticker instances. Diagnostic readings are unavailable during their initial measurement interval and expire after five seconds without a refresh.
+
+| Sampler id | Unit | Meaning |
+|---|---|---|
+| `react-sampler-refreshes` | /s | Refresh attempts across registered samplers |
+| `react-sampler-refresh-failures` | /s | Failed sampler refreshes |
+| `react-sampler-cache-hits` | /s | Reads served from an unexpired sampler cache |
+| `react-sampler-refresh-skips` | /s | Refresh requests skipped while another refresh is in flight |
+| `react-sampler-refresh-ms` | ms/s | Total sampler refresh execution time |
+| `react-sampler-queue-ms` | ms/s | Total wait before queued sampler refreshes start |
+| `react-sampler-max-refresh-ms` | ms | Largest recorded refresh duration among registered samplers |
+| `react-sampler-max-queue-ms` | ms | Largest recorded queue wait among registered samplers |
+| `react-sampler-oldest-age-ms` | ms | Age of the oldest retained source timestamp in the live snapshot |
+| `react-sampler-stale` | count | Available readings older than three seconds or three declared refresh intervals, whichever is longer |
+| `react-ticker-submitted` | /s | Ticker tasks accepted by its executor |
+| `react-ticker-executed` | /s | Ticker callbacks that started, including failed callbacks |
+| `react-ticker-failed` | /s | Ticker callbacks that threw an error |
+| `react-ticker-skipped` | /s | Due ticker work skipped because that task is already in flight |
+| `react-ticker-rejected` | /s | Ticker submissions rejected by its executor |
+| `react-ticker-backoff` | /s | Accepted tasks deferred by thread-ownership backoff |
+| `react-ticker-runtime-ms` | ms/s | Total callback execution time, including failed callbacks |
+| `react-ticker-queue-ms` | ms/s | Total wait before accepted ticker tasks start |
+| `react-ticker-max-queue-ms` | ms | Largest recorded ticker queue wait |
+| `react-ticker-active` | count | Ticker executions active at capture time |
+
+`react-sampler-oldest-age-ms` includes retained timestamps from unavailable readings. `react-sampler-stale` counts only available readings with a declared refresh interval. A sampler's live `diagnostics` object exposes its refresh attempts, successes, failures, cache hits, in-flight skips, latest and maximum execution duration, latest and maximum queue wait, last successful refresh time, and cumulative execution and queue time. Durations in this object use nanoseconds; the last-success timestamp uses epoch milliseconds.
+
+### regional and pathfinding
+
+| Sampler id | Unit | Meaning |
+|---|---|---|
+| `region-tps-lowest` | TPS | Lowest five-second TPS among recently observed player locations |
+| `region-players-below-18-tps` | players | Observed players at locations below 18 TPS |
+| `region-players-below-15-tps` | players | Observed players at locations below 15 TPS |
+| `region-player-coverage` | % | Online players with an observation no older than five seconds |
+| `pathfinding-decisions-rate` | /s | Paper pathfinding decisions observed per second |
+| `pathfinding-cancelled-rate` | /s | Pathfinding decisions marked cancelled when observed at monitor priority |
+
+Folia regional telemetry samples a rotating set of cached player locations each second without loading chunks. It counts players and player locations, not distinct regions or the entire server. TPS uses Folia's five-second region window. A player who changes chunk or world, or disconnects, loses the old observation; the remaining observations expire after five seconds. Regional readings are unavailable when disabled or when the server lacks the public region TPS API. TPS is unavailable without a valid observation. Coverage is zero when online players have no observations, and 100% when nobody is online. With nobody online, both affected-player counts are zero. Pathfinding rates count decisions, not path computation time or successful routes.
+
+### JFR event summaries
+
+JFR telemetry is disabled by default. Enable it in [runtime telemetry settings](/react/01-installation-configuration#runtime-telemetry). Available event schemas depend on the server and JVM. An unsupported or disabled source reports unavailable.
+
+| Sampler id or family | Meaning |
+|---|---|
+| `jfr-chunk-generation-rate`, `jfr-chunk-generation-mean-ms`, `jfr-chunk-generation-max-ms` | Completed generation stages per second and their mean/maximum elapsed duration |
+| `jfr-region-read-rate`, `jfr-region-write-rate` | Observed chunk storage operations per second |
+| `jfr-region-read-bytes-rate`, `jfr-region-write-bytes-rate` | Observed chunk storage bytes per second |
+| `jfr-network-sent-rate`, `jfr-network-received-packets-rate` | Observed Minecraft protocol packets per second |
+| `jfr-network-sent-bytes-rate`, `jfr-network-received-bytes-rate` | Observed Minecraft protocol bytes per second |
+| `jfr-slow-file-read-*`, `jfr-slow-file-write-*` | File events meeting the threshold: `rate`, `mean-ms`, `max-ms`, and `bytes-rate` |
+| `jfr-slow-monitor-enter-*`, `jfr-slow-monitor-wait-*`, `jfr-slow-thread-park-*` | Wait events meeting the threshold: `rate`, `mean-ms`, and `max-ms` |
+| `jfr-data-loss-rate`, `jfr-data-loss-bytes-rate` | JFR-reported event-loss occurrences and bytes per second |
+| `jfr-delivery-delay-ms` | Largest delay between event completion and delivery in the published interval |
+
+Summaries use the events delivered during each roughly one-second interval. Delivery can lag the underlying work. Slow JVM events include only observations meeting `jfrSlowThresholdMs`; they do not describe the complete latency distribution. Chunk generation counts stages, not complete chunks. Storage event counts and bytes do not measure disk or save latency. Protocol totals do not measure physical network traffic. Duration metrics are unavailable when the interval contains no matching observation; a supported event count can be zero. Event loss makes affected summaries unavailable for that interval.
+
+`GET /api/v1/metrics/runtime` supplies the regional coverage snapshot and JFR capabilities, threshold, actual window, completeness, and bounded per-level/category summaries. It uses the configured read authentication. No file paths, peer addresses, or stack traces are included. Grouped summaries retain at most 64 series per interval; excess groups contribute to an `other` group. Level labels come from the server event and can identify a dimension rather than a unique Bukkit world. Generation categories identify stages; storage categories identify storage types.
 
 ### tick
 
