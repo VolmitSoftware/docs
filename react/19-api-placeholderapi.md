@@ -2,7 +2,7 @@
 title: "API - PlaceholderAPI"
 description: "React documentation: API - PlaceholderAPI"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T16:16:06.562Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,9 +37,10 @@ Examples:
 ```none
 %react_sampler.tick-time%
 %react_sampler.chunks%
-%react_sampler.guardianpets-pets-live%
+%react_sampler.memory-pressure%
+%react_sampler.region-tps-lowest%
 ```
 
-Values use plain numbers without units. Add units in your format, such as `%react_mspt% ms`.
+Values use plain numbers without units. Add units in your format, such as `%react_mspt% ms`. Use the canonical numeric units in [Samplers & Metrics](/react/10-samplers-metrics); for example, `memory-pressure` uses bytes per second, and `region-tps-lowest` uses TPS.
 
 `---` means the key is known but currently unavailable, for example a key whose sampler reports unavailable, such as `event-time` while event instrumentation is not installed or a processor sampler during its first interval after startup. A literal placeholder means the key is unknown or the expansion is not registered. Use `/react sampler list` to find active sampler IDs.
