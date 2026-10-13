@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-10-01T17:16:15.008Z
+date: 2026-10-13T01:43:27.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -31,8 +31,8 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 ### Deconstruction (`crafting-deconstruction`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-deconstruction-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-deconstruction-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-deconstruction-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-deconstruction-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 8 knowledge
@@ -42,8 +42,8 @@ Sneak-right-click a pickup-allowed dropped item with shears in the main hand to 
 ### Crafting XP (`crafting-xp`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-xp-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-xp-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-xp-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-xp-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 3 knowledge, then 2 per level
@@ -60,8 +60,8 @@ Taking a committed craft whose result fits the player's storage can spawn one va
 ### Craftable Leather (`crafting-leather`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-leather-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-leather-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-leather-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-leather-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 2 knowledge
@@ -71,8 +71,8 @@ Right-click a campfire with rotten flesh to cook it into leather (`crafting-leat
 ### Craftable Skulls (`crafting-skulls`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-skulls-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-skulls-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-skulls-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-skulls-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 2 knowledge
@@ -82,8 +82,8 @@ Five shaped recipes place eight of a ring material around one `BONE_BLOCK`: `cra
 ### Backpacks (`crafting-backpacks`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-backpacks-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-backpacks-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-backpacks-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-backpacks-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 2 knowledge
@@ -101,8 +101,8 @@ Right-click a backpack crafted from `LEATHER` and `CHEST` to open its inventory.
 ### Portable Tables (`crafting-stations`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-stations-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-stations-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-stations-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-stations-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 2 knowledge
@@ -117,8 +117,8 @@ Right-click air, left-click air, or left-click a block with the station in the m
 ### Ore Reconstruction (`crafting-reconstruction`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-reconstruction-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-reconstruction-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-reconstruction-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-reconstruction-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 2 knowledge
@@ -128,13 +128,13 @@ Nineteen shapeless recipes turn eight drops plus one host into one ore: `STONE` 
 ### Bulk Artisan (`crafting-bulk-artisan`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-bulk-artisan-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-bulk-artisan-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-bulk-artisan-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-bulk-artisan-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
 
-Shift-clicking a crafting result pulls matching ingredients from the inventory and crafts extra items up to the batch cap.
+A completed shift-click craft pulls matching ingredients from the inventory and crafts extra items up to the batch cap. Custom recipes retain their exact ingredient requirements, including item metadata.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -146,8 +146,8 @@ Shift-clicking a crafting result pulls matching ingredients from the inventory a
 ### Thrifty Hands (`crafting-thrifty-hands`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-thrifty-hands-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-thrifty-hands-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-thrifty-hands-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-thrifty-hands-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -163,8 +163,8 @@ Taking a crafted result from a recipe using at least three different material ty
 ### Masterwork (`crafting-masterwork`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-masterwork-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-masterwork-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-masterwork-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-masterwork-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 4 per level
@@ -187,8 +187,8 @@ Each crafted tool or armor output rolls independently, including every item in a
 ### Compactor (`crafting-compactor`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-compactor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-compactor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-compactor-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-compactor-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 4 knowledge
@@ -198,8 +198,8 @@ Sneak and press swap-hands while looking at a `CRAFTING_TABLE` within 5 blocks, 
 ### Tinkerer (`crafting-tinkerer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-tinkerer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-tinkerer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-tinkerer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-tinkerer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 4 per level
@@ -214,13 +214,13 @@ Combining two damaged tools of the same type writes the higher level of each enc
 ### Provisioner (`crafting-provisioner`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/crafting/crafting-provisioner-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/crafting/crafting-provisioner-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/crafting/crafting-provisioner-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/crafting/crafting-provisioner-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
 
-Crafting food, or smelting food, can add extra portions to the normal output.
+Completing a food craft, or smelting food, can add extra portions to the normal output. Craft clicks that cannot take the result grant no portions.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T18:39:24.000Z
+date: 2026-10-13T03:07:32.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,8 +35,8 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 ### Experimental Unity (`discovery-unity`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-unity-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-unity-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-unity-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-unity-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 3 knowledge, then 2 per level
@@ -50,8 +50,8 @@ Picking up an experience orb grants 5 Discovery XP, then grants one existing ski
 ### World Armor (`discovery-world-armor`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-world-armor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-world-armor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-world-armor-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-world-armor-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 3 knowledge, then 2 per level
@@ -65,8 +65,8 @@ Bonus armor scales with the hardness of the surrounding blocks, including stone 
 ### Experimental Resistance (`discovery-xp-resist`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-xp-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-xp-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-xp-resist-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-xp-resist-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 5 per level
@@ -85,8 +85,8 @@ A hit that would fall below `triggerHealthThreshold` after armor, or kill, spend
 ### Villager Attraction (`discovery-villager-att`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-villager-att-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-villager-att-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-villager-att-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-villager-att-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 1 per level
@@ -104,8 +104,8 @@ Right-clicking a villager with the main hand can apply a temporary Hero of the V
 ### Better Mending (`discovery-better-mending`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-better-mending-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-better-mending-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-better-mending-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-better-mending-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -125,8 +125,8 @@ Sneak-left-click air or a block with a damaged Mending item in the main hand to 
 ### Archaeologist (`discovery-archaeologist`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-archaeologist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-archaeologist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-archaeologist-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-archaeologist-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -189,8 +189,8 @@ With [Gloss entity overlays](/gloss/20-entity-overlays) enabled, look directly a
 ### Trailblazer (`discovery-trailblazer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-trailblazer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-trailblazer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-trailblazer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-trailblazer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level
@@ -209,8 +209,8 @@ The first visit to each biome or structure type grants skill XP at that moment a
 ### Field Notes (`discovery-field-notes`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-field-notes-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-field-notes-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-field-notes-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-field-notes-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -246,8 +246,8 @@ Each skill line at or above the threshold adds a bonus to all XP gain, up to the
 ### Relic Appraiser (`discovery-relic-appraiser`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-relic-appraiser-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-relic-appraiser-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-relic-appraiser-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-relic-appraiser-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level
@@ -274,20 +274,20 @@ Sneak-right-click a head, skull, music disc, armor trim template, or pottery she
 
 5 levels · 3 knowledge, then 2 per level
 
-The action-bar center shows `{symbol} {structure} {direction} {distance}m` (N, NE, E, SE, S, SW, W, or NW) for the nearest supported generated structure, with XP text on the left, notices on the right, and no boss bar; a nearer target adds a short private direction line, the cue clears inside a supported structure, and the experience bar fills visually without changing stored XP. With the default structure selection, each pulse cycles through one of 16 structure families for that player, visited or not; selecting a specific category searches that category each pulse. The search never generates or loads chunks, and `JIGSAW` includes villages, pillager outposts, and other jigsaw structures. Walk toward the target to see its direction, distance, and proximity bar update.
+The action-bar center shows `{symbol} {structure} {direction} {distance}m` (N, NE, E, SE, S, SW, W, or NW) for the nearest supported generated structure, with XP text on the left, notices on the right, and no boss bar. New targets can add a short private direction line and sound, limited by the selected cue frequency. The cue clears inside a supported structure, and the experience bar fills visually without changing stored XP. The default selection searches all 16 supported structure families; a specific category limits the search to that category. Searches cover already-generated terrain within the detection radius and may load existing chunks, but never generate unexplored terrain. Results arrive progressively while the search runs. `JIGSAW` includes villages, pillager outposts, and other jigsaw structures. Walk toward the target to see its direction, distance, and proximity bar update.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `detectionRangeBase` | `48` | Structure detection radius in blocks at level 0. |
 | `detectionRangeFactor` | `452` | Additional detection radius in blocks across the level range, reaching 500 at max level with the default ceiling. |
 | `maxDetectionRange` | `500` | Configured ceiling for the search and HUD radius. Runtime hard-capped at 500 blocks. |
-| `pulseIntervalMillis` | `4000` | Milliseconds between structure searches for one player. Runtime-clamped to 2000-60000. Cached HUD guidance refreshes on the 2000 ms adaptation tick between searches. |
+| `pulseIntervalMillis` | `4000` | Minimum milliseconds between structure searches for one player. Runtime-clamped to 2000-60000. A new search waits for the previous search to finish. Cached HUD guidance refreshes every 2000 ms. |
 
 ### Keen Eye (`discovery-keen-eye`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/discovery/discovery-keen-eye-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/discovery/discovery-keen-eye-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/discovery/discovery-keen-eye-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/discovery/discovery-keen-eye-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level

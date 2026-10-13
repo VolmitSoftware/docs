@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-11T00:11:00.000Z
+date: 2026-10-13T02:07:00.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -63,6 +63,7 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | --- | --- |
 | `block.BlockEntityAccess` | Capture block-entity NBT and evaluate native container locks |
 | `chunk.ChunkPacketAccess` | Send loaded chunks, capture native chunk packets, and read world metadata |
+| `chunk.GeneratedChunkStructures` | Read a loaded chunk's structure starts and referenced start-chunk positions |
 | `chunk.ChunkSendRateAccessor` | Read and change server chunk send and load rates |
 | `item.ItemStackAccess` | Encode and decode complete vanilla item data |
 | `map.MapPixelsAccess` | Capture vanilla map pixels and metadata |
@@ -88,6 +89,8 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 `ChunkPacketAccess.snapshotSupported()` checks whether the binding can encode native chunk snapshots. On supported 26.2 and 26.3 bindings, `snapshot(world, new ChunkPosition(x, z))` returns an optional `ChunkPacketSnapshot` for an already-loaded column, including its block, biome, block-entity, and light data. The snapshot copies its bytes on construction and access, with a 2 MiB limit. `context(world)` returns an optional immutable `ChunkWorldContext` with separate world and dimension-type keys, the normal client spawn seed, dimension bounds, and time and weather values. Call both methods in the destination region's owning context; they do not load chunks or send packets. Consumers own registry and Minecraft-version matching when decoding the snapshot.
 
 `ChunkSendRateAccessor` reads and writes live server limits. Consumers own rate validation and change policy. A missing field returns an empty read or a failed write.
+
+`GeneratedChunkStructures` supports Paper and Folia 26.1.2, 26.2, and 26.3. Call `read(chunk)` on the chunk's owning region to obtain a `Snapshot` containing valid structure-start `Entry` values and referenced `ChunkPosition` values. Each entry has `NamespacedKey` structure and type keys plus immutable `Bounds` coordinates; the snapshot copies both lists. An unloaded chunk returns empty lists. Reading never loads or generates chunks and does not read the referenced chunks. Consumers own scheduling and loading any referenced start chunks before inspecting them.
 
 `ProxyForwardingAccess.velocityKey()` returns the active forwarding key, or null when forwarding is unavailable or disabled. Keep the returned key private.
 

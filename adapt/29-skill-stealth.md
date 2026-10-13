@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T16:35:58.000Z
+date: 2026-10-13T02:15:22.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,8 +17,8 @@ Every adaptation has an Enabled control at the bottom of its level screen. Perso
 ### Stealth (`stealth-silent-step`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-silent-step-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-silent-step-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-silent-step-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-silent-step-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 2 levels · 1 knowledge, then 2 per level
@@ -55,8 +55,8 @@ Personal controls: Private threat outlines (on/off); Private detection status (o
 ### Sneak Speed (`stealth-speed`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-speed-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-speed-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 5 knowledge, then 4 per level
@@ -98,8 +98,8 @@ Personal controls: Automatic step up (on/off); Automatic step down (on/off); Sou
 ### Item Snatch (`stealth-snatch`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-snatch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-snatch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-snatch-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-snatch-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 12 knowledge, then 4 per level
@@ -116,8 +116,8 @@ Personal controls: Collection control (While sneaking/Automatic collection); Col
 ### Ghost's Armor (`stealth-ghost-armor`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-ghost-armor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-ghost-armor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-ghost-armor-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-ghost-armor-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 1 knowledge, then 3 per level
@@ -134,8 +134,8 @@ While you are alive and not being hit, a bonus armor buffer refills; the next hi
 ### Stealth Vision (`stealth-vision`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-vision-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-vision-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-vision-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-vision-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 5 knowledge
@@ -147,8 +147,8 @@ Personal controls: Night vision (on/off); Prevent blindness (on/off); Invisible 
 ### Enderveil (`stealth-enderveil`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-enderveil-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-enderveil-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-enderveil-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-enderveil-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 2 levels · 4 knowledge, then 6 per level
@@ -158,8 +158,8 @@ Endermen cannot target you while you sneak at level 1, and cannot target you at 
 ### Shadow Decoy (`stealth-shadow-decoy`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-shadow-decoy-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-shadow-decoy-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-shadow-decoy-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-shadow-decoy-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -202,8 +202,8 @@ Personal controls: Decoy gesture (Release sneak/Double sneak/Empty-hand right-cl
 ### Shadowmeld (`stealth-shadowmeld`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-shadowmeld-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-shadowmeld-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-shadowmeld-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-shadowmeld-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge, then 5 per level
@@ -221,8 +221,8 @@ Personal controls: Meld activation (Eligible sneaking/Double sneak to arm). Doub
 ### Smoke Pellet (`stealth-smoke-pellet`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-smoke-pellet-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-smoke-pellet-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-smoke-pellet-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-smoke-pellet-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 4 knowledge
@@ -245,8 +245,8 @@ Personal controls: Gunpowder hand (Either hand/Main hand/Off hand); Smoke gestur
 ### Cutpurse (`stealth-cutpurse`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-cutpurse-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-cutpurse-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-cutpurse-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-cutpurse-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge
@@ -269,8 +269,8 @@ Personal controls: Eligible targets (All eligible mobs/Illagers/Piglins).
 ### Trap Sense (`stealth-trap-sense`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-trap-sense-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-trap-sense-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-trap-sense-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-trap-sense-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 3 knowledge
@@ -289,13 +289,13 @@ Personal controls: Private trap outlines (on/off); Trapped chests (on/off); Trip
 ### Assassinate (`stealth-assassinate`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-assassinate-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-assassinate-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-assassinate-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-assassinate-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 6 knowledge
 
-An undetected melee hit on a mob whose max health is within the cap deals exactly that mob's current health, so it dies with no overkill. Players, wardens, and mobs that implement the boss interface are excluded.
+An undetected melee hit on a mob whose max health is within the cap deals enough damage to execute it after armor, resistance, and absorption. Players, wardens, and mobs that implement the boss interface are excluded.
 
 Personal controls: Require sneaking (on/off); Eligible targets (All eligible mobs/Hostile monsters/Animals).
 
@@ -310,8 +310,8 @@ Personal controls: Require sneaking (on/off); Eligible targets (All eligible mob
 ### Decoy Swap (`stealth-decoy-swap`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-decoy-swap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-decoy-swap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-decoy-swap-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-decoy-swap-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 4 knowledge
@@ -332,8 +332,8 @@ Personal controls: Swap gesture (Double sneak/Sneak and swap hands). The alterna
 ### Umbral Recovery (`stealth-umbral-recovery`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/stealth/stealth-umbral-recovery-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/stealth/stealth-umbral-recovery-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/stealth/stealth-umbral-recovery-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/stealth/stealth-umbral-recovery-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 3 knowledge, then 4 per level

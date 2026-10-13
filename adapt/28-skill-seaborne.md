@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:26:23.000Z
+date: 2026-10-13T02:19:58.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,8 +16,8 @@ Every adaptation has an Enabled control at the bottom of its level screen. Perso
 ### Organic Oxygen Tank (`seaborne-oxygen`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-oxygen-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-oxygen-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-oxygen-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-oxygen-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 3 per level
@@ -31,8 +31,8 @@ Passive oxygen bonus is `level * airPerLevelTics / 75`, clamped to 1, and 1 is a
 ### Dolphin's Grace (`seaborne-speed`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-speed-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-speed-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 2 knowledge, then 3 per level
@@ -42,8 +42,8 @@ Water movement efficiency is `level / maxLevel`, capped at 1, and sprint-swimmin
 ### Fisher's Fantasy (`seaborne-fishers-fantasy`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-fishers-fantasy-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-fishers-fantasy-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-fishers-fantasy-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-fishers-fantasy-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 2 knowledge, then 5 per level
@@ -63,8 +63,8 @@ Each committed fish catch makes one roll, with chance interpolated from `bonusCh
 ### Turtle's Vision (`seaborne-turtles-vision`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-turtles-vision-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-turtles-vision-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-vision-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-vision-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -80,8 +80,8 @@ Night Vision stays on while the player is in water and is removed on surfacing o
 ### Turtle Miner (`seaborne-turtles-mining-speed`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-turtles-mining-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-turtles-mining-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-mining-speed-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-turtles-mining-speed-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -101,8 +101,8 @@ Personal controls: Compensate floating penalty (on/off).
 ### Tidecaller (`seaborne-tidecaller`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-tidecaller-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-tidecaller-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-tidecaller-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-tidecaller-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -143,8 +143,8 @@ Personal controls: Sneak trigger (on/off); Attack trigger (on/off); Sneak requir
 ### Pressure Diver (`seaborne-pressure-diver`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-pressure-diver-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-pressure-diver-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-pressure-diver-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-pressure-diver-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge
@@ -174,8 +174,8 @@ Depth is sea level minus eye height. Crossing the depth threshold grants Resista
 ### Coral Gardener (`seaborne-coral-gardener`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-coral-gardener-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-coral-gardener-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-coral-gardener-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-coral-gardener-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level
@@ -196,8 +196,8 @@ Personal controls: Preserve placed coral (on/off); Bonemeal coral growth (on/off
 ### Deep Salvager (`seaborne-deep-salvager`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-deep-salvager-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-deep-salvager-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-deep-salvager-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-deep-salvager-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge
@@ -219,8 +219,8 @@ Personal controls: Container outlines (on/off); Outlined containers (All treasur
 ### Ink Veil (`seaborne-ink-veil`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-ink-veil-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-ink-veil-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-ink-veil-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-ink-veil-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -246,13 +246,13 @@ Personal controls: Own ink density (full/half/quarter). Own ink density changes 
 ### Trident Mastery (`seaborne-trident-mastery`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-trident-mastery-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-trident-mastery-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-trident-mastery-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-trident-mastery-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 5 per level
 
-A thrown trident stores the thrower's adaptation level under `seaborne_trident_mastery_level` and keeps that damage bonus after a gear change; a melee hit uses the current level and requires a trident in the main hand. Recall gives up after 120 ticks and stops within 1.6 blocks, and a trident stuck in a block is freed first.
+A thrown trident stores the thrower's adaptation level under `seaborne_trident_mastery_level` and keeps that damage bonus after a gear change; a melee hit uses the current level and requires a trident in the main hand. Recall pauses during Time Bomb or Stasis Field freezes. It gives up after 120 active recall ticks and stops within 1.6 blocks, and a trident stuck in a block is freed first.
 
 Personal controls: Trident recall (on/off).
 
@@ -270,8 +270,8 @@ Personal controls: Trident recall (on/off).
 ### Fish Whisperer (`seaborne-fish-whisperer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-fish-whisperer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-fish-whisperer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-fish-whisperer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-fish-whisperer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level
@@ -293,8 +293,8 @@ Personal controls: Attract fish (on/off); Animal combat assistance (on/off); Fis
 ### Hydro Jet (`seaborne-hydro-jet`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-hydro-jet-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-hydro-jet-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-hydro-jet-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-hydro-jet-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level
@@ -316,8 +316,8 @@ Personal controls: Jet gesture (Single sneak/Double sneak); Food reserve (No res
 ### Brine Skin (`seaborne-brine-skin`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/seaborne/seaborne-brine-skin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/seaborne/seaborne-brine-skin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-brine-skin-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/seaborne/seaborne-brine-skin-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge

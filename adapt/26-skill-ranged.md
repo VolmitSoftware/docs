@@ -2,7 +2,7 @@
 title: "Skill - Ranged"
 description: "Ranged XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T09:06:18.722Z
+date: 2026-10-13T01:56:43.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,7 +71,7 @@ Arrows gain pierce levels equal to the adaptation level, applied once at launch,
 
 8 levels · 5 knowledge
 
-An arrow fired from a bow without Infinity, on hitting a living target, can return an arrow to the inventory, or to the feet if the inventory is full.
+An arrow fired from a bow without Infinity, on hitting a living target, can return an arrow to the inventory, or to the feet if the inventory is full. A refunded arrow cannot also be picked up from the world, including when Piercing keeps it flying. If the shooter disconnects before receiving the refund, a surviving arrow remains available for normal pickup.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -210,7 +210,7 @@ A hit can apply a hardcoded movement-speed modifier of `-min(1.0, 0.15 * (amplif
 
 5 levels · 4 knowledge
 
-A block hit bounces the projectile and adds speed and flat damage on the next hit. XP per bounce is `xpPerRicochet + (count * xpPerRicochetStep)`.
+A block hit bounces the projectile and adds speed and flat damage on the next hit. Bounces preserve Mirror Block’s reflection flag and damage scaling. XP per bounce is `xpPerRicochet + (count * xpPerRicochetStep)`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

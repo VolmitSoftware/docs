@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T11:01:57.000Z
+date: 2026-10-13T01:20:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -131,7 +131,7 @@ Breaking a block while holding an item whose name ends in `_SHOVEL` or `_PICKAXE
 
 5 levels · 5 knowledge
 
-Sneaking with a shovel, breaking a shovel-friendly block also breaks up to `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` of the eight surrounding cells one tick later, on a horizontal plane when pitch is 50 degrees or steeper and otherwise on a vertical plane perpendicular to yaw. The sweep stops if the shovel would break, a denied block is skipped at no cost, and shovel-friendly blocks are clay, dirt, coarse dirt, rooted dirt, farmland, grass block, dirt path, gravel, mycelium, podzol, sand, red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
+Sneaking with a shovel, breaking a shovel-friendly block also breaks up to `max(1, min(8, floor(levelPercent * bonusBlocksMax)))` of the eight surrounding cells one tick later, on a horizontal plane when pitch is 50 degrees or steeper and otherwise on a vertical plane perpendicular to yaw. Bonus blocks can activate Grave Digger and drop-handling adaptations. The sweep uses the shovel’s actual durability limit, stops if the shovel would break, and skips denied blocks at no cost; and shovel-friendly blocks are clay, dirt, coarse dirt, rooted dirt, farmland, grass block, dirt path, gravel, mycelium, podzol, sand, red sand, soul sand, soul soil, snow, snow block, mud, and muddy mangrove roots.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

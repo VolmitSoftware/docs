@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T17:21:00.345Z
+date: 2026-10-13T01:53:02.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,8 +36,8 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 ### Quick-Click Enchant (`enchanting-quick-enchant`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-quick-enchant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-quick-enchant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-quick-enchant-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-quick-enchant-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 8 knowledge, then 6 per level
@@ -52,8 +52,8 @@ Left-click one enchanted book from the cursor onto one non-book item in a contai
 ### Lapis Return (`enchanting-lapis-return`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-lapis-return-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-lapis-return-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-lapis-return-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-lapis-return-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 2 knowledge, then 5 per level
@@ -69,8 +69,8 @@ Successful paid table enchants have a chance to return up to your adaptation lev
 ### XP Return (`enchanting-xp-return`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-xp-return-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-xp-return-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-xp-return-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-xp-return-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 2 knowledge, then 1 per level
@@ -87,8 +87,8 @@ Each committed enchant can return one vanilla XP orb of `min(maximumXpPerEnchant
 ### Anvil Savant (`enchanting-anvil-savant`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-anvil-savant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-anvil-savant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-anvil-savant-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-anvil-savant-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 5 knowledge
@@ -105,8 +105,8 @@ Anvil combine, repair, and rename costs become `max(minimumCost, ceil(oldCost * 
 ### Offer Reroll (`enchanting-offer-reroll`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-offer-reroll-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-offer-reroll-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-offer-reroll-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-offer-reroll-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge
@@ -125,8 +125,8 @@ Sneak-right-click an enchanting table with the main hand, or sneak-right-click a
 ### Bookshelf Attunement (`enchanting-bookshelf-attunement`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-bookshelf-attunement-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-bookshelf-attunement-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-bookshelf-attunement-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-bookshelf-attunement-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 3 knowledge, then 4 per level
@@ -141,13 +141,13 @@ Offers gain `max(1, round(powerBase + levelPercent * powerFactor))` virtual book
 ### Grindstone Recovery (`enchanting-grindstone-recovery`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-grindstone-recovery-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-grindstone-recovery-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-grindstone-recovery-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-grindstone-recovery-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
 
-Disenchanting can return one random enchantment from an enchanted input as a book, plus `round(min(maximumBonusXp, bonusXpBase + levelPercent * bonusXpFactor))` vanilla XP on top of the usual grindstone payout, then starts a `GRINDSTONE` cooldown of `max(minimumCooldownTicks, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks at chance `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Sneaking lets Curse Cleansing take the click instead, and the book level is clamped to the enchantment maximum.
+Taking a completed grindstone result can return one random enchantment from an enchanted input as a book, plus `round(min(maximumBonusXp, bonusXpBase + levelPercent * bonusXpFactor))` vanilla XP on top of the usual grindstone payout, then starts a `GRINDSTONE` cooldown of `max(minimumCooldownTicks, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks at chance `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Sneaking lets Curse Cleansing take the click instead, and the book level is clamped to the enchantment maximum.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -165,8 +165,8 @@ Disenchanting can return one random enchantment from an enchanted input as a boo
 ### Curse Cleansing (`enchanting-curse-cleansing`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-curse-cleansing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-curse-cleansing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-curse-cleansing-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-curse-cleansing-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 5 knowledge
@@ -180,8 +180,8 @@ Sneak-click a grindstone result, with the other input empty or not, to consume o
 ### Tome Rebinding (`enchanting-tome-rebinding`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-tome-rebinding-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-tome-rebinding-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-tome-rebinding-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-tome-rebinding-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 5 per level
@@ -200,8 +200,8 @@ Dropping exactly one book that stores two or more enchantments, while looking at
 ### Soul Link (`enchanting-soul-link`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-soul-link-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-soul-link-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-soul-link-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-soul-link-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge
@@ -221,8 +221,8 @@ Sneak-right-click an anvil block while holding an enchanted item or book in the 
 ### Arcane Siphon (`enchanting-arcane-siphon`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-arcane-siphon-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-arcane-siphon-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-arcane-siphon-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-arcane-siphon-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -240,8 +240,8 @@ A credited kill of a living entity wearing or holding enchanted gear, not a `/ki
 ### Rune Sight (`enchanting-rune-sight`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-rune-sight-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-rune-sight-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-rune-sight-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-rune-sight-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 3 knowledge
@@ -256,8 +256,8 @@ Hidden enchanting-table offers are shown on the action bar as name, level, and c
 ### Infusion Transfer (`enchanting-infusion-transfer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-infusion-transfer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-infusion-transfer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-infusion-transfer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-infusion-transfer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge
@@ -277,8 +277,8 @@ With an empty cursor and without sneaking, right-click the left anvil slot, whic
 ### Echo of Knowledge (`enchanting-echo-of-knowledge`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/enchanting/enchanting-echo-of-knowledge-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/enchanting/enchanting-echo-of-knowledge-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-echo-of-knowledge-pov.webm" muted loop playsinline controls preload="none"></video>
+<video src="/adapt-assets/demos/enchanting/enchanting-echo-of-knowledge-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
