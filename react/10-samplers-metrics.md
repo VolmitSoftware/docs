@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "React documentation: Samplers & Metrics"
 published: true
-date: 2026-10-13T16:16:06.562Z
+date: 2026-10-13T16:40:22.329Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
