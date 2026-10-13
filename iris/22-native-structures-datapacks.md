@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T20:40:06.551484+00:00
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -619,6 +619,10 @@ Example: ancient cities replaced by Iris-positioned native starts:
 | Disabled, not placed | `[disabled]` | "disabled by this dimension's importedStructures settings" |
 
 A key that is both disabled and placed reports as Iris-placed.
+
+Treasure maps from native loot tables use positions inside verified structures. Buried-treasure maps mark the chest position. When a search reaches its limit without a verified destination, the chest opens and its remaining loot generates. The loot table determines whether to retain or discard a map with no destination.
+
+On Paper, Iris structure searches honor `StructuresLocateEvent`. Plugins can cancel a search, supply its result, or change its targets, radius, and unexplored-only setting.
 
 ## 4. Minecraft structure-block system
 
