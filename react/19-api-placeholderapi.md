@@ -1,6 +1,6 @@
 ---
 title: "API - PlaceholderAPI"
-description: "React documentation: API - PlaceholderAPI"
+description: "Read React measurements through PlaceholderAPI and handle unavailable values"
 published: true
 date: 2026-10-13T16:16:06.562Z
 tags: "react"

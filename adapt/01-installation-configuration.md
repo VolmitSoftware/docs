@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, and settings"
 published: true
-date: 2026-10-12T23:25:13.822Z
+date: 2026-10-13T16:39:54.436Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,6 +11,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Edit the TOML files under `plugins/Adapt/`. A valid save refreshes open menus. Invalid TOML is rejected and the current settings stay. SQL, Redis, metrics, update checks, and optional-plugin detection apply on restart.
 
 Startup fills missing player-preference policies and writes adaptation settings in a stable order. Existing canonical files remain untouched when their settings and generated comments are unchanged.
+
+## Requirements
 
 | | |
 |---|---|
@@ -21,18 +23,32 @@ Startup fills missing player-preference policies and writes adaptation settings 
 
 An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That directory must be writable. A non-English `language` is downloaded to `languages/<locale>.toml` only when that file is missing.
 
+## World and mob restrictions
+
 `blacklistedWorlds` takes namespaced world keys, such as `minecraft:the_nether`. The two generated entries match nothing.
 
-`ignorePassiveMobs` in an adaptation file excludes passive and neutral mobs from that adaptation's area, reflected, or chain damage. Add the key at the top level of that file when it is absent. Default `false`. Provoked neutral mobs stay excluded. Direct attacks are unchanged. It applies to `axe-cleave`, `axe-ground-smash`, `axe-throwing-axe`, `sword-crimson-cyclone`, `excavation-earth-mover`, `ranged-heartseeker`, `nether-skull-toss`, `tragoul-thorns`, `tragoul-globe`, `tragoul-lance`, `tragoul-corpse-explosion`, and `tragoul-plague-bearer`. Skeletal servants, Shadow Decoys, and the attacker's tamed pets are excluded from those attacks either way. Grave Digger's unearthed enemies stay valid targets.
+Set `ignorePassiveMobs = true` to exclude passive and neutral mobs from an adaptation's area, reflected, or chain damage. Add the key at the top level of the adaptation file when it is absent. The default is `false`. Provoked neutral mobs stay excluded when the setting is enabled. Direct attacks are unchanged.
 
-SQL is authoritative when `sql.enabled` is true. Create the schema and grant `SELECT`, `INSERT`, `UPDATE`, `DELETE`, and `CREATE TABLE`. Adapt creates `ADAPT_DATA` and `ADAPT_DATA_FENCE` in that schema and refuses SQL until both are InnoDB. Credentials go in the JDBC URL. Adapt has no TLS switch of its own. Redis handoff runs only when `redis.enabled` is also true. A fenced write that exhausts its retries is kept as `data/players/<uuid>.json.pending-sql`. See [Cross-server SQL and Redis](/adapt/39-velocity-cross-server).
+This setting applies to `axe-cleave`, `axe-ground-smash`, `axe-throwing-axe`, `sword-crimson-cyclone`, `excavation-earth-mover`, `ranged-heartseeker`, `nether-skull-toss`, `tragoul-thorns`, `tragoul-globe`, `tragoul-lance`, `tragoul-corpse-explosion`, and `tragoul-plague-bearer`.
+
+Skeletal servants, Shadow Decoys, and the attacker's tamed pets are excluded from those attacks regardless of this setting. Grave Digger's unearthed enemies stay valid targets.
+
+## SQL and Redis
+
+SQL is authoritative when `sql.enabled` is true. Create the schema and grant `SELECT`, `INSERT`, `UPDATE`, `DELETE`, and `CREATE TABLE`. Adapt creates `ADAPT_DATA` and `ADAPT_DATA_FENCE` in that schema. Both tables must use InnoDB before Adapt can use SQL storage:
 
 ```sql
 ALTER TABLE ADAPT_DATA ENGINE=InnoDB;
 ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;
 ```
 
+Credentials go in the JDBC URL. Adapt has no TLS switch of its own. Redis handoff runs only when `redis.enabled` is also true. A fenced write that exhausts its retries is kept as `data/players/<uuid>.json.pending-sql`. See [Cross-server SQL and Redis](/adapt/39-velocity-cross-server).
+
+## Learning costs
+
 Vault charges `knowledge cost * learningEconomy.moneyPerKnowledge` when `learningEconomy.enabled` is true and an economy provider is present. Otherwise learning stays knowledge-only. A failed withdrawal rejects the purchase. A failed refund is stored on the skill line and settled on the next learn or unlearn. `hardcoreNoRefunds` returns neither knowledge nor currency.
+
+## Restore defaults
 
 `/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` regenerate that file. `/adapt default all` is described in [Updates](/adapt/40-operator-runbooks). All three need `adapt.configurator`.
 
@@ -251,6 +267,8 @@ allowedValues = ["MANUAL", "REACTIVE"]
 Reactive activation and its direction choice require Blink level 2. A forced Reactive mode cannot grant that level; a lower-level player cannot trigger it. Setting `allowPhasing = false` prohibits phasing regardless of the saved mode. AUTO favors mantling when aiming upward and phasing when aiming level or downward. Landing follows the server snap depth, caps it at two blocks, or disables snapping; momentum keeps the server exit impulse, halves it, or stops it. Skill/adaptation enable flags, use permissions, world restrictions, protection, costs, and cooldowns remain authoritative.
 
 A saved choice that becomes unavailable is retained but does not apply. When the player regains its required level or the server allows it again, it can apply again. Reset to server defaults removes that adaptation's saved choices. Turning an adaptation or skill off preserves learned levels, spent knowledge/power, permanent status, and learning conflicts. New adaptation effects, usage XP, and recipe use stop; committed costs, damage debt, and cooldowns still settle. Existing backpacks, stored tools, and other item-owned contents are retained. Existing progression resets preserve preferences; deleting or replacing the entire player record clears them.
+
+Last Rites, Hourglass Guard, and Void Skin accept `[playerPreferences.death-save-priority]` with values `FIRST`, `NORMAL`, and `LAST`, defaulting to `NORMAL`. Use `playerEditable = false` to enforce a server priority. Equal priorities use Last Rites, then Hourglass Guard, then Void Skin; only one eligible save pays its cooldown or cost for each hit. Changing these policies does not reset an active cooldown.
 
 Other controls are listed on each skill page. Percentage presets cap a personal effect at Full, Half, or Quarter of its earned server limit. Reserve settings refuse an action if paying its complete cost would cross the selected reserve. Confirmation settings require the same action with unchanged items to be repeated within five seconds before payment. Material, projectile, and target filters restrict the listed categories; they cannot broaden server eligibility.
 

@@ -41,11 +41,11 @@ async function page(t, cached, response) {
 
 test('a cached navigation shell does not cancel the pending catalog request deadline', async (t) => {
   const state = await page(t, catalog);
-  assert.ok(state.window.document.querySelector('.volmit-project-bar'));
+  assert.ok(state.window.document.querySelector('.volmit-section-sidebar'));
   assert.equal(state.signal().aborted, false);
   await new Promise((resolve) => setTimeout(resolve, 55));
   assert.equal(state.signal().aborted, true);
-  assert.ok(state.window.document.querySelector('.volmit-project-bar'));
+  assert.ok(state.window.document.querySelector('.volmit-section-sidebar'));
   assert.equal(state.window.document.documentElement.classList.contains('volmit-loading'), false);
 });
 
@@ -61,7 +61,7 @@ test('failed, invalid, and timed-out navigation loads leave the original article
       const { document } = state.window;
       assert.equal(document.querySelector('.contents p').textContent, 'Skill reference');
       assert.equal(document.querySelector('.contents a').getAttribute('href'), '/adapt/10-skills-catalog');
-      assert.equal(document.querySelector('.volmit-project-bar'), null);
+      assert.equal(document.querySelector('.volmit-section-sidebar'), null);
       assert.equal(document.documentElement.classList.contains('volmit-loading'), false);
       assert.equal(document.documentElement.classList.contains('volmit-ready'), true);
       assert.equal(state.errors.length, 1);

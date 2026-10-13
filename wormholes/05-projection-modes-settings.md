@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-12T14:12:00.000Z
+date: 2026-10-13T16:43:09.081Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,11 +29,11 @@ Players running the Wormholes client mod can receive [ClientView](#clientview) i
 <p><strong>Projection on and off</strong> Toggle standard projection; native client views remain active.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/projection-toggle-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/projection-toggle-standard-pov.webm" aria-label="Projection controls, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/projection-toggle-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/projection-toggle-clientview-pov.webm" aria-label="Projection controls, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -50,13 +50,13 @@ Toggle this from the portal home menu.
 <p><strong>PanOptic: full volume</strong> Standard projection is frozen for the rear comparison. ClientView remains clipped to the aperture and does not expose the block volume.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/render-panoptic-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-panoptic-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-panoptic-standard-pov.webm" aria-label="Panoptic projection, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-panoptic-standard-observer.webm" aria-label="Panoptic projection, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/render-panoptic-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-panoptic-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-panoptic-clientview-pov.webm" aria-label="Panoptic projection, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-panoptic-clientview-observer.webm" aria-label="Panoptic projection, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -64,13 +64,13 @@ Toggle this from the portal home menu.
 <p><strong>Venticular: culled surfaces</strong> Standard projection is frozen for the rear comparison. ClientView remains clipped to the aperture and does not expose the block volume.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/render-venticular-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-venticular-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-venticular-standard-pov.webm" aria-label="Venticular projection, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-venticular-standard-observer.webm" aria-label="Venticular projection, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/render-venticular-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-venticular-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-venticular-clientview-pov.webm" aria-label="Venticular projection, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/render-venticular-clientview-observer.webm" aria-label="Venticular projection, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -247,11 +247,11 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 <p><strong>Destination atmosphere</strong> Compare atmosphere modes with different destination colors, lighting, and weather.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/atmosphere-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/atmosphere-standard-pov.webm" aria-label="Destination atmosphere, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/atmosphere-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/atmosphere-clientview-pov.webm" aria-label="Destination atmosphere, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -286,13 +286,13 @@ Dropping below 8 clears back to global (`0`).
 <p><strong>Nested portal views</strong> Look through a second portal at the destination, then cross both portals.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/nested-views-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/nested-views-standard-observer.webm" aria-label="No client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/nested-views-standard-pov.webm" aria-label="Nested portal views, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/nested-views-standard-observer.webm" aria-label="Nested portal views, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/nested-views-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/nested-views-clientview-observer.webm" aria-label="Client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/nested-views-clientview-pov.webm" aria-label="Nested portal views, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/nested-views-clientview-observer.webm" aria-label="Nested portal views, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -337,13 +337,13 @@ Remote subscriptions, heartbeat, grace, and compression are in
 <p><strong>Live destination views</strong> A player at the destination lures a sheep with wheat while the other watches through the portal.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/live-views-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/live-views-standard-observer.webm" aria-label="No client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/live-views-standard-pov.webm" aria-label="Live destination views, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/live-views-standard-observer.webm" aria-label="Live destination views, no client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/live-views-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/live-views-clientview-observer.webm" aria-label="Client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/live-views-clientview-pov.webm" aria-label="Live destination views, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/live-views-clientview-observer.webm" aria-label="Live destination views, client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -382,9 +382,13 @@ With `show-debug-overlay = true` in the client file, the F3 metrics line ends wi
 
 The fixed vanilla portal terrain and composition shaders prepare during game resource loading. Reflections and both RGSS filtering states use prepared variants. Moving, crossing, revisiting, and scene resets retain these programs. A successful resource reload replaces them. Content-dependent reflected shaders can still compile on first use.
 
-With an Iris shader pack enabled, world views use the destination dimension's sky, lighting, and postprocessing. Each portal, mirror, and nested camera keeps a separate shader pipeline and temporal history for TAA and motion blur. This includes multiple mirrors or portals in the same dimension. Returning from a nested view restores the enclosing camera's shader state, and returning to the main view restores its own state and history.
+With an Iris shader pack enabled, world views use the destination dimension's sky, lighting, and postprocessing. Streamed views select the destination's shader programs, including views nested inside a different dimension. Shader-pack dimension mappings also apply to streamed destinations. Each portal, mirror, and nested camera keeps a separate shader pipeline and temporal history for TAA and motion blur. This includes multiple mirrors or portals in the same dimension. Returning from a nested view restores the enclosing camera's shader state, and returning to the main view restores its own state and history.
 
-Dimension warmup prepares the main shader pipelines while the world loads. Visible world views and their nested cameras prepare additional pipelines before portal drawing and require additional graphics memory. Preparation follows the cameras selected for drawing within the shared view budget. Shader preparation remains synchronous and can pause the frame on first use, after shader reload, or after cache expiry. Identical compiled shader stages can serve separate camera pipelines. Each camera still links separate programs and owns separate render targets and history. Visible cross-dimension portals also prepare crossing and return cameras within the 12-view cache budget. Nearby native cameras can prepare before they become visible, keeping separate histories ready for return travel. Prepared travel cameras remain available while a nearby return route is usable. Matching native cameras retain their histories during outbound and return travel, including nested views while the return route arrives. ClientView retains its session during preparation.
+Dimension warmup prepares the main shader pipelines while the world loads. Preparing another dimension preserves the active camera’s lighting and shader state. Visible world views and their nested cameras prepare additional pipelines before portal drawing and require additional graphics memory. Preparation follows the cameras selected for drawing within the shared view budget. Shader preparation remains synchronous and can pause the frame on first use, after shader reload, or after cache expiry.
+
+Identical compiled shader stages can serve separate camera pipelines. Each camera still links separate programs and owns separate render targets and history.
+
+Visible cross-dimension portals also prepare crossing and return cameras within the 12-view cache budget. Nearby native cameras can prepare before they become visible, keeping separate histories ready for return travel. Prepared travel cameras remain available while a nearby return route is usable. Matching native cameras retain their histories during outbound and return travel, including nested views while the return route arrives. ClientView retains its session during preparation.
 
 Camera movement and brief revisits reuse these pipelines. Native mirrors retain their own shader and distant-terrain histories as nested views arrive or projections reopen. Closing a view retains its pipeline until 60 seconds without use or earlier capacity eviction for a new visible camera. Preparation for possible travel uses available cache space without evicting cached views. Leaving the world or reloading shaders releases all cached view pipelines. Overlapping portals respect the nearer aperture and opaque scenery in front of it. Geometry in front of the destination aperture is clipped from every view.
 
@@ -402,7 +406,13 @@ Terrain on the near side of the destination aperture is clipped with shaders on 
 
 ### Shaped apertures
 
-A portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape) is drawn clipped to the shape itself, with a smooth edge. The mesh also covers edge cells the shape only touches, so a sliver narrower than half a cell still shows the destination although it admits no crossing. `portal-shape-subdivisions` in the client file (default `8`, 1–16) sets how finely the edge is subdivided per block; very large shaped portals use fewer subdivisions so the mesh stays within its budget, and the client log notes the reduction. `portal-edge-feather` (default `0`, up to `2`) tints a band of that width inside the edge of a streamed view with the destination's fog colour; world views keep a sharp edge. Standard projection and players without the mod see the opening stepped to whole cells, where a cell is open when at least half of it lies inside the shape. Crossing is judged against the exact shape on every platform.
+A portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape) is drawn clipped to the shape itself, with a smooth edge. The mesh also covers edge cells the shape only touches, so a sliver narrower than half a cell still shows the destination although it admits no crossing.
+
+`portal-shape-subdivisions` in the client file (default `8`, 1–16) sets how finely the edge is subdivided per block; very large shaped portals use fewer subdivisions so the mesh stays within its budget, and the client log notes the reduction.
+
+`portal-edge-feather` (default `0`, up to `2`) tints a band of that width inside the edge of a streamed view with the destination's fog colour; world views keep a sharp edge.
+
+Standard projection and players without the mod see the opening stepped to whole cells, where a cell is open when at least half of it lies inside the shape. Crossing is judged against the exact shape on every platform.
 
 With a [Traveller scale](/wormholes/04-portal-types-menus-settings#transit-menu) rule of `motion` or `ratio`, the client mod draws the destination at the inverse size ratio. A 3×3 entrance into a 9×9 exit shows terrain and character models at one third of their size. The reverse direction shows them at three times their size. The view scales around the portal center, and the source opening clips it to its outline. Walking bob follows the same camera transform for the opening and destination contents, including while approaching a larger or smaller exit. Nested views use the same scale for their camera and destination environment. Standard projection keeps a 1:1 window onto the destination.
 
@@ -410,13 +420,27 @@ Players and other living entities that span a scaled or quarter-turn opening app
 
 ### Travel with the client mod
 
-On Fabric, Forge, and NeoForge servers and in singleplayer, a player with the client mod crosses frame portals and open-state dimensional doors without a teleport, respawn, or loading screen. Door routes involving a `CLOSED` contact pad use the ordinary transition. While the player is near an open portal, the server keeps a route to its destination armed and streams the destination's terrain and entities to the client, and the client keeps that destination loaded beside the current world within `resident-level-memory-mb` and shows it as a [world view](#clientview). The streamed area around the destination portal follows the player's render distance, limited by the server's view distance and 16 chunks, while the player is within 5 blocks of the source portal; it shrinks to two thirds of that within 15 blocks and to one third farther away. Same-world and cross-dimension destinations both cross this way. The client predicts the crossing as the player passes through the opening. Movement, view direction, and momentum continue through the linked frames, and the view back through the portal is already present on arrival. The full look carries through, yaw, pitch, and body and head facing, including through floor and ceiling exits, following the portal's [Orientation](/wormholes/04-portal-types-menus-settings#transit-menu) rule. A pair whose frames are twisted relative to each other leaves a camera tilt that eases back to level over `camera-roll-ease-seconds` in the [client file](/wormholes/01-installation-configuration#client-mod). Routes stay armed across crossings, so immediate return crossings and repeated loops, such as falling between a floor portal and a ceiling portal, cross the same way. When the server detects a crossing before the client reports it, the server swaps the client into the destination without a respawn.
+On Fabric, Forge, and NeoForge servers and in singleplayer, a player with the client mod crosses frame portals and open-state dimensional doors without a teleport, respawn, or loading screen. Door routes involving a `CLOSED` contact pad use the ordinary transition.
+
+While the player is near an open portal, the server keeps a route to its destination armed and streams the destination's terrain and entities to the client, and the client keeps that destination loaded beside the current world within `resident-level-memory-mb` and shows it as a [world view](#clientview). The streamed area around the destination portal follows the player's render distance, limited by the server's view distance and 16 chunks, while the player is within 5 blocks of the source portal; it shrinks to two thirds of that within 15 blocks and to one third farther away. Same-world and cross-dimension destinations both cross this way.
+
+The client predicts the crossing as the player passes through the opening. Movement, view direction, and momentum continue through the linked frames, and the view back through the portal is already present on arrival. The full look carries through, yaw, pitch, and body and head facing, including through floor and ceiling exits, following the portal's [Orientation](/wormholes/04-portal-types-menus-settings#transit-menu) rule. A pair whose frames are twisted relative to each other leaves a camera tilt that eases back to level over `camera-roll-ease-seconds` in the [client file](/wormholes/01-installation-configuration#client-mod). Routes stay armed across crossings, so immediate return crossings and repeated loops, such as falling between a floor portal and a ceiling portal, cross the same way. When the server detects a crossing before the client reports it, the server swaps the client into the destination without a respawn.
 
 The server checks each crossing against the portal: the player must pass through the opening from the front, close to their position on the server. Travel direction, access, costs, rules, and the destination chosen by Nexus routing or the traversal API apply as for any other crossing; a rejected crossing returns the player to the source side. If the arrival area has not reached the client when the player enters the opening, the player stays on the near side, without being pulled back, until it arrives. A seamless crossing through a frame portal starts no teleport cooldown and leaves the arrival portal open for an immediate return. A dimensional door crossing, seamless or not, starts a one-second wait before the player can cross another door. Players riding or carrying a passenger, random teleport portals, and gateways to other servers use the ordinary transition. `[client-view] seamless-travel = false` turns seamless crossing off: players cross with the ordinary teleport and see streamed views. `remote-view-routes` limits how many destinations in other worlds or beyond the player's view distance stream ahead for each player; same-world destinations already within the player's view distance do not count against it. `remote-view-chunks-per-tick` and `remote-view-bytes-per-tick` limit how fast destinations stream. See [`[client-view]`](/wormholes/01-installation-configuration#client-view).
 
-Every world the client keeps loaded has its own world renderer, light map, fog, sky, and retained terrain, so a crossing switches the client into that destination and the world left behind stays available for return travel. Portal views retain each world's directional lighting across nested views and return crossings. With Minecraft's vanilla renderer, portal views prepare available nearby terrain before drawing. Terrain still depends on destination chunks reaching the client. Inventory lighting stays independent of these views. With Sodium, each loaded world keeps its own renderer. Nearby armed destinations prepare terrain before travel, including the surrounding arrival area beyond the portal opening. Crossing reuses completed terrain; unfinished sections complete before the first destination frame, without fading in, including behind a player who walks through backwards. New destination chunks or terrain changes can still require preparation. With Iris Shaders, each dimension keeps the main view's shader pipeline, while portal views keep separate temporal histories. View bobbing fades out within a block of the actual plane of an armed opening or the arrival portal, stays damped during immediate return crossings, and returns over the next block. Scaled and rotated openings use the same world-space distances. A camera that passes through the opening before the player does shows the destination side. In third person, a camera that ends up behind the portal the player just walked out of, or one the player is about to enter, shows the world on the other side, with the player visible through the far portal. The portal the player came out of keeps showing the world they left while they stay within 16 blocks of it. Sounds keep playing through the crossing.
+Every world the client keeps loaded has its own world renderer, light map, fog, sky, and retained terrain, so a crossing switches the client into that destination and the world left behind stays available for return travel. Portal views retain each world's directional lighting across nested views and return crossings. With Minecraft's vanilla renderer, portal views prepare available nearby terrain before drawing. Terrain still depends on destination chunks reaching the client. Inventory lighting stays independent of these views.
 
-On these servers, players with the client mod also see other entities cross. When a mob, dropped item, armor stand, or other entity crosses a frame portal within the same world, it passes through the opening with its motion intact for every player with the client mod who sees it, directly or through a portal view. Entities that cross into another dimension or through a dimensional door use the ordinary transition. A traveling group that contains no player, such as a mob, a dropped item, or a minecart with its passengers, starts no teleport cooldown after a frame-portal crossing while `[transit] object-transit-continuous = true` (the default), in any dimension; it still cannot re-enter the portal it arrived at until it has left that portal's area. A group that contains a player, and a player whose crossing was not seamless, waits `[main] teleport-cooldown-millis` (default `1000`) before crossing another portal and cannot re-enter the arrival portal until leaving it. On Paper, Purpur, and Folia, `object-transit-continuous` exempts only projectiles and dropped items from the cooldown.
+With Sodium, each loaded world keeps its own renderer. Nearby armed destinations prepare terrain before travel, including the surrounding arrival area beyond the portal opening. Crossing reuses completed terrain; unfinished sections complete before the first destination frame, without fading in, including behind a player who walks through backwards. New destination chunks or terrain changes can still require preparation.
+
+With Iris Shaders, each dimension keeps the main view's shader pipeline, while portal views keep separate temporal histories.
+
+View bobbing fades out within a block of the actual plane of an armed opening or the arrival portal, stays damped during immediate return crossings, and returns over the next block. Scaled and rotated openings use the same world-space distances.
+
+A camera that passes through the opening before the player does shows the destination side. In third person, a camera that ends up behind the portal the player just walked out of, or one the player is about to enter, shows the world on the other side, with the player visible through the far portal. The portal the player came out of keeps showing the world they left while they stay within 16 blocks of it. Sounds keep playing through the crossing.
+
+On these servers, players with the client mod also see other entities cross. When a mob, dropped item, armor stand, or other entity crosses a frame portal within the same world, it passes through the opening with its motion intact for every player with the client mod who sees it, directly or through a portal view. Entities that cross into another dimension or through a dimensional door use the ordinary transition.
+
+A traveling group that contains no player, such as a mob, a dropped item, or a minecart with its passengers, starts no teleport cooldown after a frame-portal crossing while `[transit] object-transit-continuous = true` (the default), in any dimension; it still cannot re-enter the portal it arrived at until it has left that portal's area. A group that contains a player, and a player whose crossing was not seamless, waits `[main] teleport-cooldown-millis` (default `1000`) before crossing another portal and cannot re-enter the arrival portal until leaving it. On Paper, Purpur, and Folia, `object-transit-continuous` exempts only projectiles and dropped items from the cooldown.
 
 With `[main] replace-nether-and-end-portals = true`, lighting a Nether portal converts it into a managed Wormholes portal pair, as described in [Vanilla nether and end portals](/wormholes/03-building-portals#vanilla-nether-and-end-portals), and crossings through it are seamless once the conversion finishes. Conversion requires the player who lit the portal to hold `wormholes.portals.portal`, be within their portal ownership limit, and be allowed to place blocks at the portal and its counterpart. Using an item on the portal's obsidian frame retries the conversion for that player. Until the conversion finishes, or when it is refused, the portal keeps the vanilla Nether transition.
 
@@ -447,9 +471,13 @@ Singleplayer worlds use ClientView by default and read `[client-view]` from `con
 
 ### Mirrors
 
-A mirror the client draws itself, with `client-mirror` on in both the client file and the server's `[client-view]` settings, is a world view of the current world. It reflects the blocks, lighting, block entities, and entities exactly as the client shows them, and the player unless `self-reflection = false`, with the same render distance and shaders as the main view, and changes with every local update. Blackout has no effect on mirrors. Reflections do not intercept local clicks or block breaking and do not physically collide with players or other entities. Mirrors leave water and other terrain outside the opening unchanged while chunks load or update. Mirrors, linked portals, and active dimensional doors visible in a mirror show their own destinations up to each portal's recursion depth while `client-recursion` is on in the client file.
+A mirror the client draws itself, with `client-mirror` on in both the client file and the server's `[client-view]` settings, is a world view of the current world. It reflects the blocks, lighting, block entities, and entities exactly as the client shows them, and the player unless `self-reflection = false`, with the same render distance and shaders as the main view, and changes with every local update.
 
-Otherwise mirrors are streamed views built from the current client world. Unavailable contents arrive from the server; matching native peers avoid resending contents supplied locally. Local block, lighting, and block-entity updates refresh the reflection, and placed and removed blocks take priority over neighboring section refreshes. Directional block models, including mushroom cap and stem faces, follow the mirror rotation; sloped water surfaces retain their reflected shading with shaders enabled. Entities and the player's own reflection follow the mirror's full rotation, and the player sees their own reflection unless `self-reflection = false`. With `client-recursion` enabled at both ends, mirrors, linked portals, and active dimensional doors visible inside a streamed view show their own destinations across worlds, including repeated reflections. Each nested aperture retains its own viewpoint and recursion depth. A streamed mirror chain stops after four reflections, including the first mirror. Linked portals follow each portal's recursion depth up to three nested steps. Each primary view has at most 16 nested views.
+Blackout has no effect on mirrors. Reflections do not intercept local clicks or block breaking and do not physically collide with players or other entities. Mirrors leave water and other terrain outside the opening unchanged while chunks load or update. Mirrors, linked portals, and active dimensional doors visible in a mirror show their own destinations up to each portal's recursion depth while `client-recursion` is on in the client file.
+
+Otherwise mirrors are streamed views built from the current client world. Unavailable contents arrive from the server; matching native peers avoid resending contents supplied locally. Local block, lighting, and block-entity updates refresh the reflection, and placed and removed blocks take priority over neighboring section refreshes. Directional block models, including mushroom cap and stem faces, follow the mirror rotation; sloped water surfaces retain their reflected shading with shaders enabled. Entities and the player's own reflection follow the mirror's full rotation, and the player sees their own reflection unless `self-reflection = false`.
+
+With `client-recursion` enabled at both ends, mirrors, linked portals, and active dimensional doors visible inside a streamed view show their own destinations across worlds, including repeated reflections. Each nested aperture retains its own viewpoint and recursion depth. A streamed mirror chain stops after four reflections, including the first mirror. Linked portals follow each portal's recursion depth up to three nested steps. Each primary view has at most 16 nested views.
 
 ### Streamed views
 

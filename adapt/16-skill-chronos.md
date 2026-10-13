@@ -2,12 +2,12 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T02:16:02.000Z
+date: 2026-10-13T16:39:54.431Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Chronos gains XP from movement, sleep, ender pearls, Speed effects, and survival time; a carried clock raises payouts, most from the off hand, low movement cuts XP, and varied recent actions add a bonus. Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks.
+Chronos gains XP from movement, sleep, ender pearls, Speed effects, and survival time. Carrying a clock raises payouts, with the largest bonus in the off hand. Low movement reduces XP, while varied recent actions add a bonus. Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks.
 
 ## Player controls
 
@@ -17,7 +17,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 |---|---|
 | Aberrant Touch (`chronos-aberrant-touch`) | `clock-sounds`: Clock sounds; `passive-targets`: Passive targets; `player-targets`: Player targets; `food-reserve`: Keep at least eight food points |
 | Accelerate (`chronos-accelerate`) | `crops`: Crop acceleration; `furnaces`: Furnace acceleration; `brewing`: Brewing acceleration; `radius`: Acceleration radius |
-| Hourglass Guard (`chronos-hourglass-guard`) | `clock-sounds`: Clock sounds |
+| Hourglass Guard (`chronos-hourglass-guard`) | `clock-sounds`: Clock sounds; `death-save-priority`: First, Normal, or Last |
 | Instant Recall (`chronos-instant-recall`) | `clock-click`: Clock-click trigger; `sprint-click`: Sprint-click trigger; `sneak-trigger`: Sneak trigger; `double-jump`: Double-jump trigger; `left-click`: Left clicks; `right-click`: Right clicks; `air-clicks`: Air clicks; `block-clicks`: Block clicks; `clock-sounds`: Clock sounds; `sneak-sprint`: Sneak also requires sprint; `sneak-clock`: Sneak also requires held clock; `jump-sprint`: Double-jump also requires sprint; `jump-clock`: Double-jump also requires held clock |
 | Overtime (`chronos-overtime`) | `shorten-harmful`: Shorten harmful effects; `speed`: Speed; `jump-boost`: Jump Boost; `regeneration`: Regeneration; `resistance`: Resistance; `fire-resistance`: Fire Resistance; `water-breathing`: Water Breathing; `invisibility`: Invisibility; `night-vision`: Night Vision; `health-boost`: Health Boost; `absorption`: Absorption; `saturation`: Saturation; `luck`: Luck; `slow-falling`: Slow Falling; `dolphins-grace`: Dolphins Grace; `hero-of-the-village`: Hero Of The Village; `haste`: Haste; `strength`: Strength |
 | Pocket Watch (`chronos-pocket-watch`) | `require-sneak`: Hold sneak while falling |
@@ -36,8 +36,8 @@ Toggle defaults preserve existing behavior. Size and rate presets default to Ful
 ### Time In A Bottle (`chronos-time-bottle`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-time-bottle-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-time-bottle-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Time In A Bottle" src="/adapt-assets/demos/chronos/chronos-time-bottle-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Time In A Bottle" src="/adapt-assets/demos/chronos/chronos-time-bottle-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge
@@ -118,8 +118,8 @@ The stored-second price of one growth step is `naturalSeconds / steps`, times th
 ### Aberrant Touch (`chronos-aberrant-touch`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-aberrant-touch-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-aberrant-touch-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Aberrant Touch" src="/adapt-assets/demos/chronos/chronos-aberrant-touch-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Aberrant Touch" src="/adapt-assets/demos/chronos/chronos-aberrant-touch-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge, then 7 per level
@@ -149,8 +149,8 @@ Melee hits apply stacking slowness, and the stack threshold roots the target.
 ### Instant Recall (`chronos-instant-recall`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-instant-recall-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-instant-recall-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Instant Recall" src="/adapt-assets/demos/chronos/chronos-instant-recall-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Instant Recall" src="/adapt-assets/demos/chronos/chronos-instant-recall-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -209,8 +209,8 @@ A clock click rewinds position, health, and hunger. Inventory is not restored. R
 ### Time Bomb (`chronos-time-bomb`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-time-bomb-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-time-bomb-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Time Bomb" src="/adapt-assets/demos/chronos/chronos-time-bomb-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Time Bomb" src="/adapt-assets/demos/chronos/chronos-time-bomb-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 7 knowledge, then 8 per level
@@ -264,8 +264,8 @@ Shapeless recipe `chronos-time-bomb` is `SNOWBALL` + `CLOCK` + `DIAMOND` + `SAND
 ### Temporal Echo (`chronos-temporal-echo`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-temporal-echo-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-temporal-echo-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Temporal Echo" src="/adapt-assets/demos/chronos/chronos-temporal-echo-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Temporal Echo" src="/adapt-assets/demos/chronos/chronos-temporal-echo-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -286,8 +286,8 @@ A fired projectile is replayed after a delay at a reduced velocity.
 ### Stasis Field (`chronos-stasis-field`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-stasis-field-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-stasis-field-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Stasis Field" src="/adapt-assets/demos/chronos/chronos-stasis-field-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Stasis Field" src="/adapt-assets/demos/chronos/chronos-stasis-field-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge, then 7 per level
@@ -317,8 +317,8 @@ Hold an amethyst shard and sneak-right-click air or a permitted block. The bubbl
 ### Rewind (`chronos-rewind`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-rewind-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-rewind-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Rewind" src="/adapt-assets/demos/chronos/chronos-rewind-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Rewind" src="/adapt-assets/demos/chronos/chronos-rewind-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 6 per level
@@ -339,13 +339,13 @@ Sneak and press swap-hands (F by default) to mark position, health, and hunger. 
 ### Borrowed Time (`chronos-borrowed-time`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-borrowed-time-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-borrowed-time-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Borrowed Time" src="/adapt-assets/demos/chronos/chronos-borrowed-time-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Borrowed Time" src="/adapt-assets/demos/chronos/chronos-borrowed-time-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 6 per level
 
-A fraction of each hit is deferred and repaid one pulse per second. Damage that is already deferred is not deferred again. A repayment waits while post-hit damage immunity is active, and the unpaid damage stays queued.
+A fraction of each accepted hit is deferred and repaid one pulse per second. Deferral runs after Adapt’s other damage modifiers and before death saves. Debt equals the health damage actually postponed after armor, resistance, and absorption; a cancelled hit creates no debt or deferred-damage credit. Damage that is already deferred is not deferred again. A repayment waits while post-hit damage immunity is active, and unpaid damage survives reconnects.
 
 Repaying deferred damage does not knock you back.
 
@@ -360,8 +360,8 @@ Repaying deferred damage does not knock you back.
 ### Overtime (`chronos-overtime`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-overtime-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-overtime-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Overtime" src="/adapt-assets/demos/chronos/chronos-overtime-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Overtime" src="/adapt-assets/demos/chronos/chronos-overtime-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 5 per level
@@ -384,8 +384,8 @@ Beneficial potion effects applied to the player gain extra duration. At max leve
 ### Accelerate (`chronos-accelerate`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-accelerate-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-accelerate-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Accelerate" src="/adapt-assets/demos/chronos/chronos-accelerate-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Accelerate" src="/adapt-assets/demos/chronos/chronos-accelerate-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 5 per level
@@ -411,13 +411,15 @@ An unaimed aura samples nearby blocks and advances crop growth or remaining cook
 ### Hourglass Guard (`chronos-hourglass-guard`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-hourglass-guard-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-hourglass-guard-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Hourglass Guard" src="/adapt-assets/demos/chronos/chronos-hourglass-guard-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Hourglass Guard" src="/adapt-assets/demos/chronos/chronos-hourglass-guard-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 8 knowledge, then 9 per level
 
-A hit that would kill the player instead leaves them at the configured health, applies a short invulnerability window, and slows nearby enemies.
+A hit that would kill the player instead leaves them at the configured health, applies a short invulnerability window, and slows nearby enemies. Its cooldown continues across reconnects, server restarts, configuration reloads, unlearning, and personal-setting changes.
+
+Personal controls include Death-save priority: First, Normal, or Last. Only one eligible death save activates per hit; see [death-save selection](/adapt/03-player-usage#personal-settings).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -436,8 +438,8 @@ A hit that would kill the player instead leaves them at the configured health, a
 ### Pocket Watch (`chronos-pocket-watch`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-pocket-watch-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-pocket-watch-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Pocket Watch" src="/adapt-assets/demos/chronos/chronos-pocket-watch-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Pocket Watch" src="/adapt-assets/demos/chronos/chronos-pocket-watch-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level
@@ -457,8 +459,8 @@ Sneak while falling spends a per-airtime slow-falling budget. Each successful pu
 ### Deja Vu (`chronos-deja-vu`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/chronos/chronos-deja-vu-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/chronos/chronos-deja-vu-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Deja Vu" src="/adapt-assets/demos/chronos/chronos-deja-vu-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Deja Vu" src="/adapt-assets/demos/chronos/chronos-deja-vu-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level

@@ -2,15 +2,14 @@
 title: "Languages"
 description: "Choose a language, edit messages, and translate any Volmit plugin"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-13T14:42:49.250Z
 tags: "languages, localization"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
 
-Every Volmit plugin uses the same language service. Each has a server default, each player can pick
-their own, and every message can be edited in game or in a file. This page covers all of it; a
-plugin's own localization page lists only what differs.
+Volmit plugins share language controls for server defaults, personal choices, and message editing.
+This page describes the shared behavior. Each plugin's localization reference documents its file paths and exceptions.
 
 ## Pick a language
 
@@ -30,7 +29,7 @@ Your personal choice affects only you. Console output and players who have not c
 default. Choices are stored by UUID and survive restarts.
 
 The server default is also a config key, so you can set it before first start. Most plugins call it
-`language`; Iris, ShapedPortals, GamemodeSwitcher, and Static call it `general.language`. Each
+`language`; Iris, ShapedPortals, GamemodeSwitcher, SkyPrime, and Static use `general.language`. Each
 plugin's own localization page names its file.
 
 ## Permissions
@@ -56,9 +55,9 @@ lt_LT  nl_NL  pl_PL  pt_PT  ru_RU  tr_TR  vi_VI  zh_CN  zh_TW
 `ja-JP` uses a hyphen where every other id uses an underscore. That is the literal identifier, so
 write `language = "ja-JP"`.
 
-English is built in. Selecting any other language downloads it once into
-`plugins/<Plugin>/languages/<locale>.toml`, after which it works offline. An existing file is never
-replaced, so local edits survive.
+English is built in. Most plugins download another language when you first select it, then use the local
+`plugins/<Plugin>/languages/<locale>.toml` file offline. Existing files keep local edits.
+[SkyPrime](/skyprime/01-installation-configuration#languages) bundles all 18 catalogs and needs no language download.
 
 ## When something is missing
 
@@ -104,6 +103,6 @@ Wormholes is the exception: there `{prefix}` is the start of a portal import cod
 
 ## Translating
 
-The non-English catalogs live in each plugin's repository and are not shipped inside the jar. To
-contribute a translation, edit the file there rather than only on your server. See
+The translation sources live in each plugin's repository. To contribute a translation, edit its source
+file and submit the change. Editing only your server's copy does not update the shared catalog. See
 [Contributing](/contributing).

@@ -2,26 +2,12 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-06T20:00:37.423Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 A biome supplies terrain height, materials, decoration, placement and entity spawning. Files live at `biomes/<loadKey>.json`. Regions list root biomes. Roots can nest children, swap themselves out under carvings, and publish custom datapack biomes for colors, tags and mob spawns.
-
-Related:
-
-- [12 - Regions](/iris/12-regions)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [15 - Caves & Carving](/iris/15-caves-carving)
-- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [17 - Procedural Objects](/iris/17-procedural-objects)
-- [19 - Objects](/iris/19-objects)
-- [20 - Object Placement](/iris/20-object-placement)
-- [23 - Loot](/iris/23-loot)
-- [23b - Entities & Spawners](/iris/23b-entities-spawners)
-- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
-- [44 - Biome Catalog](/iris/44-biome-catalog)
 
 ## Biome selection and content
 
@@ -133,7 +119,7 @@ To stack a rare feature on top of a base shape, use two links with different gen
 }
 ```
 
-Observable result: rolling dunes 5-12 above water, with occasional hills adding up to another 40. The bands add, so the biome full range is 5 to 52. How the two shapes combine depends on their generators interpolators. See [14 - Generators & Noise](/iris/14-generators-noise).
+Observable result: rolling dunes 5-12 above water, with occasional hills adding up to another 40. The bands add, so the biome's full range is 5 to 52. How the two shapes combine depends on their generators' interpolators. See [14 - Generators & Noise](/iris/14-generators-noise).
 
 ## Volumetric biome terrain
 
@@ -194,7 +180,7 @@ Raise the child `rarity` to shrink its share. Raise `childShrinkFactor` to break
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|
-| `name` | string | `"Subterranean Land"` | Display name in tooling and `/iris what biome`. Required, minimum 2 characters. It is mixed into the biome own noise seed. If you rename it, scatter and custom-biome selection patterns shift. |
+| `name` | string | `"Subterranean Land"` | Display name in tooling and `/iris what biome`. Required, minimum 2 characters. It is mixed into the biome's own noise seed. If you rename it, scatter and custom-biome selection patterns shift. |
 | `rarity` | int 1-512 | `1` | Divides this biome share of its region list. `4` gives a quarter the area of a `1`. Also used, on a different scale, when this biome competes with its own children (see "Children"). |
 | `color` | string | `null` | Hex color for the studio map. Set it when debugging biome distribution visually. |
 
@@ -248,7 +234,7 @@ Type: `IrisBiomeGeneratorLink`, available as the `generator-layer` snippet.
 | `min` | int -2032..2032 | `0` | Bottom of this link height band, in blocks relative to `fluidHeight`. Required. |
 | `max` | int -2032..2032 | `0` | Top of the band. Required. |
 
-Each link clamps its generator output to 0..1 and maps it into `min`..`max`. Multiple links add, so a biome total band is the sum of its links bands. The final column height is clamped to the dimension usable range.
+Each link clamps its generator output to 0..1 and maps it into `min`..`max`. Multiple links add, so a biome's total band is the sum of its links' bands. The final column height is clamped to the dimension's usable range.
 
 The generator raw 0..1 shape and the band are combined through the generator interpolator. That interpolator is also what blends this biome heights into its neighbors. Generators that share an interpolator are averaged together. Generators with distinct interpolators add as independent layers. That behavior and its tuning live in [14 - Generators & Noise](/iris/14-generators-noise).
 
@@ -421,7 +407,7 @@ A floating target does not need to be listed in a region. Iris registers every b
 | `edgeTaperExponent` | `1.0` (0.25-4) | Curve of that transition. Below 1 fills the rim out. Above 1 keeps it thin. |
 | `edgeTaperVariationStyle` | `SIMPLEX` at zoom `0.18` | Varies the taper width coherently without moving the outline. |
 | `edgeTaperVariationAmplitude` | `0` (0-8) | How much local widening or narrowing that style applies. `0` disables it. The runtime keeps the resulting width inside 2-32 so rims stay connected. |
-| `topShapeMode` | `BIOME` | `BIOME` runs the target biome own generators, so a mountains target grows real peaks. `NOISE` uses `topShapeStyle` as a heightmap. `FLAT` is a constant slab. |
+| `topShapeMode` | `BIOME` | `BIOME` runs the target biome's own generators, so a mountains target grows real peaks. `NOISE` uses `topShapeStyle` as a heightmap. `FLAT` is a constant slab. |
 | `maxTopHeight` | `40` (0-512) | Ceiling on how far the top rises above the base. |
 | `topShapeStyle` | `SIMPLEX` | Heightmap used when the mode is `NOISE`. |
 | `topShapeAmp` | `1` (0-1) | Scales that noise-driven profile down. |
@@ -553,3 +539,17 @@ Needs `generators/flat.json` to exist. Everything else in the file has a working
 8. For variants, create the child file and list it in the parent `children`. Never list it in a region.
 9. For colors, tags or mob spawns, add `customDerivitives` with a unique `id` and `category`. Then reopen the world so the datapack installs.
 10. Remove `focus`. Confirm the biome still appears through ordinary region selection.
+
+Related:
+
+- [12 - Regions](/iris/12-regions)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [15 - Caves & Carving](/iris/15-caves-carving)
+- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
+- [17 - Procedural Objects](/iris/17-procedural-objects)
+- [19 - Objects](/iris/19-objects)
+- [20 - Object Placement](/iris/20-object-placement)
+- [23 - Loot](/iris/23-loot)
+- [23b - Entities & Spawners](/iris/23b-entities-spawners)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [44 - Biome Catalog](/iris/44-biome-catalog)

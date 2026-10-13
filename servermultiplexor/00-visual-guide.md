@@ -2,7 +2,7 @@
 title: "Multiplexor: Visual guide"
 description: "Download Multiplexor, create a server, connect a panel, and keep the app updated"
 published: true
-date: 2026-09-28T00:00:00.000Z
+date: 2026-10-13T14:42:49.255Z
 tags: servermultiplexor, getting-started
 editor: markdown
 dateCreated: 2026-09-22T00:00:00.000Z
@@ -12,11 +12,19 @@ Multiplexor opens as a terminal dashboard. These screenshots show the actual app
 
 ## 1. Download and open
 
-Open the [latest release](https://github.com/VolmitSoftware/ServerMultiplexor/releases/latest) and expand **Assets**. Choose `macos-arm64` for an Apple Silicon Mac, `macos-x64` for an Intel Mac, or `windows-x64` for Windows on Intel/AMD.
+Open the [latest release](https://github.com/VolmitSoftware/ServerMultiplexor/releases/latest) and expand **Assets**. Choose the archive for your system:
+
+| System | Archive label |
+|---|---|
+| Apple Silicon Mac | `macos-arm64` |
+| Intel Mac | `macos-x64` |
+| Windows on Intel/AMD | `windows-x64` |
+| Linux on Intel/AMD | `linux-x64` |
+| Linux on ARM64 | `linux-arm64` |
 
 ![GitHub release assets showing the Apple Silicon, Intel Mac, and Windows downloads](/servermultiplexor-assets/downloads.png)
 
-Extract the archive into a writable workspace folder. In a terminal opened there, run `./multiplexor` on macOS or `.\multiplexor.exe` in Windows PowerShell. Compiled downloads do not need Dart. See [installation steps](/servermultiplexor/01-installation-and-updates#download-and-first-launch) for commands, requirements, and Linux source builds.
+Extract the archive into a writable workspace folder. In a terminal opened there, run `./multiplexor` on macOS/Linux or `.\multiplexor.exe` in Windows PowerShell. Compiled downloads do not need Dart. See [installation steps](/servermultiplexor/01-installation-and-updates#download-and-first-launch) for commands, Linux requirements, and source builds.
 
 ## 2. Read the dashboard
 

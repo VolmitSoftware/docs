@@ -1,6 +1,6 @@
 ---
 title: "Installation & Configuration"
-description: "React documentation: Installation & Configuration"
+description: "Install React, configure automatic reloads, and connect React Web"
 published: true
 date: 2026-10-13T16:16:06.562Z
 tags: "react"
@@ -19,7 +19,7 @@ Install the selected distribution jar as the only React jar. Each build automati
 1. Put `React v<version> [CraftBukkit] 26.1.2-26.3.jar` in `plugins/`.
 2. Start the server once. React initializes its command system and creates the default configuration files.
 3. Grant operators `react.use` or `react.*`.
-4. Open `https://react.volmitsoftware.com` or edit the TOML files under `plugins/React/`.
+4. Open [React Web](https://react.volmitsoftware.com/) or edit the TOML files under `plugins/React/`.
 
 PlaceholderAPI and the other Volmit plugins are optional.
 
@@ -103,7 +103,11 @@ The JFR recording uses 30-second and 64-MiB retention limits. It records selecte
 | `dutyCycleOnMS` | `5000` | Length of each periodic measurement window in `DUTY_CYCLE`; limited to the period |
 | `dutyCyclePeriodMS` | `60000` | Time between the starts of periodic measurement windows in `DUTY_CYCLE`; at least 1000 ms |
 
-Event data is read by monitors that display an event sampler, map graphs and plugin impact maps that are being viewed, PlaceholderAPI and Gloss placeholder lookups, connected React Web sessions, and the live snapshot endpoint. Stored metric history does not count as a reader. In `ON_DEMAND` the wrappers are installed at the next read and removed once `samplerActivityWindowMS` passes without one. Wrappers are always removed when React disables or reloads. `ON_DEMAND` has no event cost while nothing reads event data, so history records gaps for the event and plugin-cost samplers during that time. Set `instrumentation = "ALWAYS"` to keep plugin-cost history continuous, for example to see which plugin was expensive during a lag spike nobody was watching; this keeps a small per-handler timing cost on every event.
+Monitors that display an event sampler, visible map graphs, and visible plugin impact maps read event data. Other readers include PlaceholderAPI and Gloss placeholder lookups, connected React Web sessions, and the live snapshot endpoint. Stored metric history does not count as a reader.
+
+In `ON_DEMAND`, React installs wrappers at the next read and removes them after `samplerActivityWindowMS` passes without a read. React also removes wrappers when it disables or reloads. While nothing reads event data, `ON_DEMAND` adds no event cost. History records gaps for event and plugin-cost samplers during that time.
+
+Set `instrumentation = "ALWAYS"` to record continuous plugin-cost history, including lag spikes while nobody watches the metrics. This adds a small per-handler timing cost to every event.
 
 ## React Web
 

@@ -2,13 +2,13 @@
 title: "Web editor tutorial"
 description: "Open the Gloss web editor and export a document"
 published: true
-date: 2026-10-03T14:54:20.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-18T00:00:00.000Z
 ---
 
-This page walks through the hosted Gloss editor at [gloss.volmitsoftware.com](https://gloss.volmitsoftware.com/). Use it to author menus, holograms, boards, and the other Gloss documents, then drop the JSON onto the server.
+Use the [Gloss web editor](https://gloss.volmitsoftware.com/) to create menus, holograms, scoreboards, and other Gloss documents. This tutorial covers editing and previewing a document, then exporting its JSON for the server.
 
 Commands, session security, and per-surface field lists live in [Web Editor & Sync](/gloss/18-web-editor).
 

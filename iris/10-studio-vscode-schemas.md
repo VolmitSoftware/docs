@@ -2,14 +2,12 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-10-09T19:58:01.000Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Studio previews a pack in a temporary world with a chosen seed. Saved pack edits apply to new chunks; existing chunks keep their terrain.
-
-Related: [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), [36 - Rivers](/iris/36-rivers).
 
 ## The edit loop
 
@@ -247,3 +245,5 @@ The workflow, commands, and marker rules are in [21 - Jigsaw Structures](/iris/2
 Pack JSON is shared across platforms. Install any content the pack requires on the destination server.
 
 Edit `hydrology` and `riverPolicy` through the dimension, region and biome schemas. Refresh schemas, validate the pack, then inspect rivers in Vision's **River network** mode. See [36 - Rivers](/iris/36-rivers).
+
+Related: [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), [36 - Rivers](/iris/36-rivers).

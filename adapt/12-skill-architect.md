@@ -2,12 +2,12 @@
 title: "Skill - Architect"
 description: "Architect XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T01:56:43.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Architect gains XP from placing blocks, scaled by material value; breaks advance demolition challenges and pay no Architect XP. Adaptations cover glass drops, temporary floors, face fills, wireless redstone, elevators, rotation, scaffolds, hand refills, bridge protection, build guides, placement undo, and a portable stonecutter.
+Architect gains XP from placing blocks, scaled by material value. Breaking blocks advances demolition challenges but awards no Architect XP. Adaptations cover glass drops, temporary floors, face fills, wireless redstone, elevators, rotation, scaffolds, hand refills, bridge protection, build guides, placement undo, and a portable stonecutter.
 
 ## How you earn Architect XP
 
@@ -22,8 +22,8 @@ Placements and breaks re-check `adapt.use` on every block.
 ### Silk-Touch Glass (`architect-glass`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-glass-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-glass-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Silk-Touch Glass" src="/adapt-assets/demos/architect/architect-glass-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Silk-Touch Glass" src="/adapt-assets/demos/architect/architect-glass-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 0 knowledge
@@ -35,8 +35,8 @@ Personal controls: Glass selection (All eligible glass/Clear glass and panes/Sta
 ### Magic Foundation (`architect-foundation`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-foundation-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-foundation-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Magic Foundation" src="/adapt-assets/demos/architect/architect-foundation-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Magic Foundation" src="/adapt-assets/demos/architect/architect-foundation-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 1 knowledge, then 5 per level
@@ -55,8 +55,8 @@ Personal controls: Foundation control (Hold sneak/Tap sneak to start or stop); R
 ### Builders Wand (`architect-placement`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-placement-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-placement-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Builders Wand" src="/adapt-assets/demos/architect/architect-placement-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Builders Wand" src="/adapt-assets/demos/architect/architect-placement-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 4 knowledge
@@ -74,8 +74,8 @@ Personal controls: Building control (Sneak to build/All eligible placements); Pl
 ### Redstone Remote (`architect-wireless-redstone`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-wireless-redstone-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-wireless-redstone-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Redstone Remote" src="/adapt-assets/demos/architect/architect-wireless-redstone-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Redstone Remote" src="/adapt-assets/demos/architect/architect-wireless-redstone-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 0 knowledge
@@ -91,8 +91,8 @@ Personal controls: Require sneak to activate (on/off).
 ### Elevator (`architect-elevator`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-elevator-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-elevator-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Elevator" src="/adapt-assets/demos/architect/architect-elevator-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Elevator" src="/adapt-assets/demos/architect/architect-elevator-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 1 knowledge
@@ -109,8 +109,8 @@ Personal controls: Upward travel (on/off); Downward travel (on/off); Require sne
 ### Smart Shape (`architect-smart-shape`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-smart-shape-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-smart-shape-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Smart Shape" src="/adapt-assets/demos/architect/architect-smart-shape-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Smart Shape" src="/adapt-assets/demos/architect/architect-smart-shape-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -127,8 +127,8 @@ Personal controls: Block families (All eligible orientations/Facing blocks/Signs
 ### Scaffolder (`architect-scaffolder`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-scaffolder-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-scaffolder-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Scaffolder" src="/adapt-assets/demos/architect/architect-scaffolder-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Scaffolder" src="/adapt-assets/demos/architect/architect-scaffolder-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -149,8 +149,8 @@ Personal controls: Scaffold control (Sneak-place/All eligible placements); Block
 ### Supply Line (`architect-supply-line`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-supply-line-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-supply-line-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Supply Line" src="/adapt-assets/demos/architect/architect-supply-line-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Supply Line" src="/adapt-assets/demos/architect/architect-supply-line-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 5 per level
@@ -168,8 +168,8 @@ Personal controls: Loose inventory (on/off); Bundles (on/off); Shulker boxes (on
 ### Steady Hands (`architect-steady-hands`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-steady-hands-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-steady-hands-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Steady Hands" src="/adapt-assets/demos/architect/architect-steady-hands-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Steady Hands" src="/adapt-assets/demos/architect/architect-steady-hands-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -189,8 +189,8 @@ Personal controls: Knockback protection (on/off); Fall protection (on/off).
 ### Chalk Line (`architect-chalk-line`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-chalk-line-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-chalk-line-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Chalk Line" src="/adapt-assets/demos/architect/architect-chalk-line-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Chalk Line" src="/adapt-assets/demos/architect/architect-chalk-line-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 1 knowledge, then 3 per level
@@ -219,8 +219,8 @@ Personal controls: Guide color (Shape color/Aqua/Gold/Purple); Guide density (fu
 ### Mason's Eraser (`architect-demolition`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-demolition-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-demolition-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Mason&#x27;s Eraser" src="/adapt-assets/demos/architect/architect-demolition-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Mason&#x27;s Eraser" src="/adapt-assets/demos/architect/architect-demolition-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -239,8 +239,8 @@ Personal controls: Require sneaking (on/off); Block selection (All eligible bloc
 ### Stonecutter Savant (`architect-stonecutter-savant`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/architect/architect-stonecutter-savant-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/architect/architect-stonecutter-savant-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Stonecutter Savant" src="/adapt-assets/demos/architect/architect-stonecutter-savant-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Stonecutter Savant" src="/adapt-assets/demos/architect/architect-stonecutter-savant-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 2 knowledge

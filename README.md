@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-10-12T16:58:33.000Z
+date: 2026-10-13T17:30:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,13 +58,31 @@ node tools/build-theme-data.mjs --check
 In Wiki.js **Administration > Theme > Head HTML Injection**, include one stylesheet and one script reference. Update the version value when publishing theme changes. Browsers keep the previous URL for several hours, so a Git sync alone does not refresh a browser that already loaded the same `?v=` value.
 
 ```html
-<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261009-production">
-<script src="/theme/minimal-brutalism.js?v=graphite-20261012-production"></script>
+<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261013-production">
+<script src="/theme/minimal-brutalism.js?v=graphite-20261013-production"></script>
 ```
 
-Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and a local subset of Lucide 0.468.0 SVG icons; the license is in `theme/lucide-LICENSE.txt`. Wormholes demonstrations with both client modes have No client mod and Client mod tabs. Client-only demonstrations show a Client mod heading. Each demonstration has a Camera dropdown for its available perspectives. Camera selection stays synchronized with Adapt's perspective tabs and is remembered across documentation pages. Each Wormholes demonstration selects its client mode independently. Gloss demonstrations label Minecraft client footage and browser editor footage separately. Single-view clips use the same playback controls; paired client clips add First person and Third person tabs. Visible clips autoplay muted and loop. Reduced-motion users start clips with the playback controls. Hidden, offscreen, and background clips pause. The project picker is searchable. On a project page the header search splits: site search stays on the left, and the right field searches only that project. The homepage filters plugins and developer tools and leads with Iris, Adapt, Wormholes, Gloss, and React. Project landing pages use section tabs, and reference pages use the project’s documentation sidebar. The page background is black. Surfaces use a short zinc scale, the header and project bar are frosted glass, and the rules around the current project use that project’s color. Body links stay rose. Its stylesheet applies independently of the navigation catalog; if the catalog is unavailable, the original page content remains readable.
+Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and a local subset of Lucide 0.468.0 SVG icons. The license is in `theme/lucide-LICENSE.txt`.
 
-Pages use the available width with 16–32px outer gutters. Callouts use inline severity labels without bordered cards. Catalog tables and link-led lists with one destination per row use full-row link targets, including their descriptions. On phones, catalog details stack below each title with labels from the column headers. Reference pages share one outline between the desktop rail and the mobile **On this page** popup. The popup supports keyboard focus, Escape, and a close button. The first keyboard focus target skips to the current article. Sidebar sections and scroll position persist within the current project for the browser tab.
+### Navigation and layout
+
+The project picker is searchable. On project pages, the left header field searches the whole site and the right field searches the current project. The homepage filters plugins and developer tools and leads with Iris, Adapt, Wormholes, Gloss, and React. Project landing pages and reference pages share a documentation sidebar, which opens as a drawer on phones. Breadcrumbs show the current project and section. Reference pages end with previous and next links in catalog order.
+
+The theme derives background, surface, border, and text colors from the current project's catalog color. Dark mode uses deep surfaces and subdued accents; light mode uses faint tints with dark text. Pages without a project color use neutral gray. The header theme switch saves the reader's choice in the browser; new visitors use the wiki's configured mode. Project indexes use compact filled link targets. The Iris overview pairs its reference details with a terrain image linked to the biome catalog. The stylesheet works independently of the navigation catalog. If the catalog is unavailable, the original page content remains readable.
+
+Pages use the available width with 16–32px outer gutters and 16px body text. Project landing pages place section headings above compact, aligned link columns. Links stack on phones with larger tap targets. Callouts use inline severity labels without bordered cards. Catalog tables and link-led lists with one destination per row use full-row link targets, including their descriptions. On phones, catalog details stack below each title with labels from the column headers. Reference pages share one outline between the desktop rail and the mobile **On this page** popup. The popup supports keyboard focus, Escape, and a close button. The first keyboard focus target skips to the current article. Sidebar sections and scroll position persist within the current project for the browser tab.
+
+Reference table text wraps on phones. Wide tables scroll within the article, with every column moving together so the first column does not obscure the others.
+
+### Demonstrations
+
+Wormholes demonstrations with both client modes have **No client mod** and **Client mod** tabs. Client-only demonstrations show a **Client mod** heading. Each demonstration has a **Camera** dropdown for its available perspectives. Camera selection stays synchronized with Adapt's perspective tabs and is remembered across documentation pages. Each Wormholes demonstration selects its client mode independently.
+
+Gloss demonstrations label Minecraft client footage and browser editor footage separately. Single-view clips use the same playback controls. Paired client clips add **First person** and **Third person** tabs.
+
+Visible clips autoplay muted and loop. With reduced motion enabled, clips start only when the reader uses the playback controls. Hidden, offscreen, and background clips pause.
+
+### Local validation
 
 Use Node.js 20 or newer. Install the locked development dependencies and validate the theme, navigation catalog, and behavior tests:
 
@@ -75,10 +93,10 @@ npm run check
 
 Use `none` for plain-text code fences so Wiki.js does not request an unsupported syntax grammar.
 
-From this repository, run the local theme preview:
+From this repository, run the local documentation preview:
 
 ```sh
 node tools/theme-preview.mjs
 ```
 
-Open `http://127.0.0.1:4177`. Set `PORT` to use another port. The preview combines public wiki pages with the local theme and catalog. Add `?plain=1` to view the upstream styling.
+Open `http://127.0.0.1:4177`. Set `PORT` to use another port. Markdown, assets, the theme, and the navigation catalog come from this checkout; reload a page to see edits. The Wiki.js application shell and search use the hosted wiki, so the preview requires an internet connection and search results reflect published content. Add `?plain=1` to view local pages with the original Wiki.js styling.

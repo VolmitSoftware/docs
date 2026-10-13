@@ -1,8 +1,8 @@
 ---
-title: "Service"
+title: "HiddenOre: Service"
 description: "HiddenOreService read API"
 published: true
-date: 2026-09-10T03:05:07.654Z
+date: 2026-10-13T14:42:49.251Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

@@ -2,7 +2,7 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-10-07T13:32:12.955Z
+date: 2026-10-13T14:42:49.252Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,8 +49,8 @@ The root command is `/biletools`. On a Bukkit server the aliases are `bile`, `bi
 > filesystem operation.
 {.is-warning}
 
-Manual `/bile load|unload|reload` **always bypasses** the `watcher.ignore` and
-`watcher.only` filters. Those filters control only automatic watcher reloads.
+Manual `/bile load`, `/bile unload`, and `/bile reload` commands bypass the
+`watcher.ignore` and `watcher.only` filters. Those filters control only automatic watcher reloads.
 
 `/bile inspect` is read-only and uses the same `bile.use` permission as the lifecycle commands. A reported recovery copy or cooperative contract does not guarantee that a plugin can reverse its external side effects. See [Hot reload behavior](/biletools/hot-reload) for deadlines and recovery limits.
 
@@ -96,6 +96,6 @@ The receiver secret and password-bearing deployment target list are deliberately
 
 ## Language selection
 
-`/bile language` picks a language. Personal selection needs `biletools.language.self`; server
-selection needs `biletools.config` or `volmit.language.admin`. See [Languages](/languages).
+`/bile language` opens the language picker. Personal selection requires both `biletools.language.self`
+and `volmit.language.self`. Server selection requires `biletools.config` or `volmit.language.admin`. See [Languages](/languages).
 

@@ -1,8 +1,8 @@
 ---
 title: "Features - Maps & Overlays"
-description: "React documentation: Features - Maps & Overlays"
+description: "Configure heatmaps, pie maps, list maps, and pressure overlays"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

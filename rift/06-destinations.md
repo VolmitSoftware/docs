@@ -2,7 +2,7 @@
 title: "Rift: Destinations and Anchors"
 description: "World, coordinate, anchor, player, bed, cannon, and provider destinations"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "rift, destinations, anchors, teleportation, permissions"
 editor: markdown
 dateCreated: 2026-10-09T00:00:00.000Z
@@ -85,3 +85,5 @@ Load `RiftTeleportManager` from Bukkit's services manager after Rift enables. Pa
 `resolveNow` is an immediate snapshot query for `UNCHECKED` options. `teleportNow` performs a real synchronous teleport and reports the server's final result. Both require the correct entity and destination ownership context; synchronous teleporting uses loaded chunks only. Use the asynchronous API for travel across Folia regions.
 
 Use `findAnchor`, `anchors`, `setAnchor`, and `removeAnchor` for canonical anchor storage. Mutations complete after persistence. Register extension destinations with `registerDestinationProvider(plugin, provider)`. A provider supplies a unique namespaced key, a unique non-core prefix, and asynchronous resolution to an exact `WorldPosition`. Its registrations are removed when its plugin disables. See [Integration API](/rift/99-integration-api) for dependency and lifecycle registration.
+
+Next: [Integration API](/rift/99-integration-api)

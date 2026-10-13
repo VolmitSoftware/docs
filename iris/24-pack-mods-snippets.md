@@ -2,24 +2,12 @@
 title: "Snippets"
 description: "Reuse palettes, decorators, noise styles, and other JSON definitions across an Iris pack."
 published: true
-date: 2026-10-06T18:48:43.443Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Snippets let you reuse nested JSON values by referencing files under `snippet/<type>/`. Supported fields accept an inline object or a snippet path.
-
-Related:
-
-- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
-- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
-- [11 - Dimensions](/iris/11-dimensions)
-- [12 - Regions](/iris/12-regions)
-- [13 - Biomes](/iris/13-biomes)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [20 - Object Placement](/iris/20-object-placement)
-- [25 - Pack Management](/iris/25-pack-management)
-- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
 
 ## Reusing a definition
 
@@ -215,3 +203,15 @@ Whole-file resources (dimensions, regions, biomes, generators, loot tables, enti
 
 - Pack validation: `/iris pack validate`: see [25 - Pack Management](/iris/25-pack-management) and [04 - Commands & Permissions](/iris/04-commands-permissions).
 - Studio open, hotload, and VSCode schema generation: [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
+
+Related:
+
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [20 - Object Placement](/iris/20-object-placement)
+- [25 - Pack Management](/iris/25-pack-management)
+- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)

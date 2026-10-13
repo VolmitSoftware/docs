@@ -2,7 +2,7 @@
 title: "Rift: World Policies"
 description: "Per-world player rules, travel, respawn, login, spawning, weather, and metadata"
 published: true
-date: 2026-10-09T23:55:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "rift, world-policies, permissions, spawning, respawn"
 editor: markdown
 dateCreated: 2026-10-09T00:00:00.000Z
@@ -107,4 +107,4 @@ Administrative evacuation can move players out of a world despite its travel res
 
 Existing Multiverse permissions also work: `multiverse.core.modify` permits policy editing; `multiverse.access.<name>` and `rift.access.<name>` are equivalent entry permissions. `mv.bypass.gamemode.<name>`, `mv.bypass.playerlimit.<name>`, and `mv.bypass.joinlocation` retain their respective bypasses. Migrated worlds use their original Multiverse name for these world-specific nodes.
 
-Next: [Integration API](/rift/99-integration-api)
+Next: [Destinations and anchors](/rift/06-destinations)

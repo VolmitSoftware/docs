@@ -1,8 +1,8 @@
 ---
 title: "Features - Iris Adapt & Integrations"
-description: "React documentation: Features - Iris Adapt & Integrations"
+description: "Configure Iris and Adapt surge guards and coordinated incident responses"
 published: true
-date: 2026-10-07T13:18:48.708Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

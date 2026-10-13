@@ -1,8 +1,8 @@
 ---
-title: "Velocity Proxy"
+title: "BileTools: Velocity Proxy"
 description: "Hot reload for proxy plugins on Velocity"
 published: true
-date: 2026-10-12T23:28:26.473Z
+date: 2026-10-13T14:45:11.679Z
 tags: "biletools, velocity"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z

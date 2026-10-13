@@ -1,6 +1,6 @@
 ---
 title: "Samplers & Metrics"
-description: "React documentation: Samplers & Metrics"
+description: "Metric IDs, measurement units, availability, and history behavior"
 published: true
 date: 2026-10-13T16:46:23.315Z
 tags: "react"

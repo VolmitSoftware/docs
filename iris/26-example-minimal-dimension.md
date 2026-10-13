@@ -2,24 +2,12 @@
 title: "Example - Minimal Dimension"
 description: "Iris documentation: Example - Minimal Dimension"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Create a pack with one dimension, one region, one biome, and one generator. This example produces a flat grass world at Y 159.
-
-Related:
-
-- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
-- [02 - Getting Started](/iris/02-getting-started)
-- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
-- [11 - Dimensions](/iris/11-dimensions)
-- [12 - Regions](/iris/12-regions)
-- [13 - Biomes](/iris/13-biomes)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [25 - Pack Management](/iris/25-pack-management)
-- [04 - Commands & Permissions](/iris/04-commands-permissions)
 
 Prerequisites: Iris running with its data folders present, operator access on Bukkit or gamemaster on a mod loader, no existing pack or world using the keys `minimal` or `minimal-test`, and a console you can watch.
 
@@ -227,3 +215,15 @@ Inspect edits in new Studio chunks. Close and reopen Studio after changing heigh
 - Layers, decorators, children: [13 - Biomes](/iris/13-biomes)
 - Noise composites and interpolators: [14 - Generators & Noise](/iris/14-generators-noise)
 - Editing the full bundled overworld: [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)
+
+Related:
+
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [02 - Getting Started](/iris/02-getting-started)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [25 - Pack Management](/iris/25-pack-management)
+- [04 - Commands & Permissions](/iris/04-commands-permissions)

@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -86,7 +86,11 @@ The preset catalog editor selects one of the supported document collections, edi
 
 The Glyphs inspector edits the namespace and font, bitmap glyph metrics and fallbacks, overlays, space-provider range, and custom waypoint styles with ordered sprites. Image paths are relative to `images/`; add the PNG files through the image manager. The asset list shows declared paths and dimensions. Build and offer the resource pack on the server to verify client rendering. Waypoints accept a namespaced custom style plus a `default` or `bowtie` fallback for viewers without the loaded pack.
 
-HUD surface controls expose automatic selection, named bossbar groups, native bossbar flags, and queue delivery policies. Typed event subscriptions configure join, world-change, server-change and interval events with conditions, delays, ordering and undo. Backend world changes and Velocity server changes follow the selected platform; event-only surfaces remain quiet in the preview until delivered in game. Unknown subscription fields survive edits. Scoreboard rows preserve stable ids, conditions and score formatting during visual edits. Scoreboards expose reusable section lists, reference-preserving section rename, ordered conditional pages with title inheritance and durations, overflow policy, and independent title/text/value intervals for the default presentation and every variant. Native objective controls configure player-list and below-name slots, numeric expressions, formats, viewer/subject conditions, refresh intervals, and yield/override conflicts. The sidebar preview expands sections and rotates eligible pages; native slot appearance and conflicts require Minecraft.
+HUD surface controls expose automatic selection, named bossbar groups, native bossbar flags, and queue delivery policies. Typed event subscriptions configure join, world-change, server-change and interval events with conditions, delays, ordering and undo. Backend world changes and Velocity server changes follow the selected platform; event-only surfaces remain quiet in the preview until delivered in game. Unknown subscription fields survive edits.
+
+Scoreboard rows preserve stable ids, conditions and score formatting during visual edits. Scoreboards expose reusable section lists, reference-preserving section rename, ordered conditional pages with title inheritance and durations, overflow policy, and independent title/text/value intervals for the default presentation and every variant.
+
+Native objective controls configure player-list and below-name slots, numeric expressions, formats, viewer/subject conditions, refresh intervals, and yield/override conflicts. The sidebar preview expands sections and rotates eligible pages; native slot appearance and conflicts require Minecraft.
 
 Inventory controls include independent title, slot, condition, and list refresh rates. Action lists offer **Add dialog** for native dialog titles, kind, timeout, Escape behavior, body text, input definitions, and buttons. Nested definitions use editable JSON fields; Code completion describes each supported control. The browser preserves dialog branches and reports invalid input contracts, but does not simulate Minecraft's dialog screen. **Call named action** references a list in the menu or inventory's root `actions` object; edit the shared lists in Code or the root extra fields. Validation reports missing names and recursive calls.
 
@@ -117,13 +121,19 @@ waypoint client rendering remains a server/client concern.
 
 ### 3D previews
 
-The 3D previews draw the client's own block and item models and textures in WebGL2 over a rendered block world. The in-game frame uses a fixed player viewpoint; interactive authoring canvases retain their orbit, zoom, pan, and movement controls. Entities are textured rigs for the player, zombies, skeletons, creepers, pigs, cows and sheep, and a catalog sprite for every other mob. These seven rigs use measured dimensions; other entity sprites use approximate sizes. Mixed holograms preserve text, item, head, block and entity order, with box padding extending outside the row bands. Unresolved custom items use a barrier preview until their provider resolves them on the server. A browser without WebGL2 shows a rendered still instead of models.
+The 3D previews draw the client's own block and item models and textures in WebGL2 over a rendered block world. The in-game frame uses a fixed player viewpoint; interactive authoring canvases retain their orbit, zoom, pan, and movement controls.
+
+Entities are textured rigs for the player, zombies, skeletons, creepers, pigs, cows and sheep, and a catalog sprite for every other mob. These seven rigs use measured dimensions; other entity sprites use approximate sizes. Mixed holograms preserve text, item, head, block and entity order, with box padding extending outside the row bands. Unresolved custom items use a barrier preview until their provider resolves them on the server. A browser without WebGL2 shows a rendered still instead of models.
 
 ### Nametags, nameplates, and mentions
 
 Nametag and nameplate stages render the selected player presentation above a Minecraft player model. Edit the document's assignment permission and each variant's permission alongside their priority and conditions. Preview sample values describe the wearer as `subject` and the reader as `viewer`. Nameplate previews inherit the selected nametag from the same workspace, so `subject.name` shows the composed identity. Enter permission nodes in the preview controls to test document and variant eligibility; these sample grants affect the preview only.
 
-Use **Randomize document** on nametags or nameplates to generate an editable presentation, then adjust its permission assignments before exporting. Chat channels provide ordinary and mentioned-message previews, an enabled switch for mentions, and separate controls for the tagged token, complete highlighted message, and sound key. In-game sound and client rendering follow the saved channel document. Channel documents use schema 2. **Filter policy** exposes every input, output, expression, match, work, and elapsed limit, plus **Drop message** or **Keep completed** behavior. Each variant can inherit or replace the whole policy block. The browser runs RE2 filters with literal replacements before showing the sample message; unsupported expressions and limits appear as validation errors. Preview notices identify limit results or an unavailable filter engine. Elapsed results depend on the browser workload and do not predict server timing. Import older channels through the server importer before opening them here.
+Use **Randomize document** on nametags or nameplates to generate an editable presentation, then adjust its permission assignments before exporting.
+
+Chat channels provide ordinary and mentioned-message previews, an enabled switch for mentions, and separate controls for the tagged token, complete highlighted message, and sound key. In-game sound and client rendering follow the saved channel document. Channel documents use schema 2.
+
+**Filter policy** exposes every input, output, expression, match, work, and elapsed limit, plus **Drop message** or **Keep completed** behavior. Each variant can inherit or replace the whole policy block. The browser runs RE2 filters with literal replacements before showing the sample message; unsupported expressions and limits appear as validation errors. Preview notices identify limit results or an unavailable filter engine. Elapsed results depend on the browser workload and do not predict server timing. Import older channels through the server importer before opening them here.
 
 ## World panels and flow maps
 

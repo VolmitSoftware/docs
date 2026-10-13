@@ -122,3 +122,34 @@ test('sidebar renders subgroup context and keeps browsing state within a project
     window.close();
   }
 });
+
+test('visiting the project overview preserves reference browsing state', async () => {
+  const { dom, window, waitForSidebar } = await boot();
+  try {
+    const sidebar = window.document.querySelector('.volmit-section-sidebar');
+    const start = [...sidebar.querySelectorAll('.reference-section-toggle')].find((toggle) => toggle.textContent === 'Start here');
+    if (start.getAttribute('aria-expanded') !== 'true') {
+      start.click();
+    }
+    const expanded = [...sidebar.querySelectorAll('.reference-section-toggle[aria-expanded="true"]')].map((toggle) => toggle.textContent);
+    sidebar.scrollTop = 175;
+    for (const [href, title] of [['/iris', 'Iris'], ['/iris/11-dimensions', 'Dimensions']]) {
+      dom.reconfigure({ url: 'https://docs.test' + href });
+      window.document.querySelector('.headline').textContent = title;
+      const content = window.document.createElement('div');
+      content.className = 'contents';
+      content.textContent = title + ' content';
+      window.document.querySelector('.contents').replaceWith(content);
+      window.dispatchEvent(new window.PopStateEvent('popstate'));
+      await waitForSidebar(href);
+      const restored = window.document.querySelector('.volmit-section-sidebar');
+      assert.equal(restored.scrollTop, 175);
+      assert.deepEqual([...restored.querySelectorAll('.reference-section-toggle[aria-expanded="true"]')].map((toggle) => toggle.textContent), expanded);
+      assert.equal(restored.querySelectorAll('[aria-current="page"]').length, 1);
+      assert.equal(restored.querySelector('[aria-current="page"]').getAttribute('href'), href);
+      assert.equal(restored.querySelector('a[href="/iris"]').textContent, 'Project overview');
+    }
+  } finally {
+    window.close();
+  }
+});

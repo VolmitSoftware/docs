@@ -2,7 +2,7 @@
 title: "Entity Projection"
 description: "Optics entity snapshots, projected identities, movement, metadata, maps and relationships"
 published: true
-date: 2026-10-12T02:24:00.764Z
+date: 2026-10-13T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -30,6 +30,7 @@ The output adapter also provides entity type queries, host positions, local hide
 
 | Encoding property | Value |
 |---|---|
+| Position encoding | Signed 64-bit fixed point per absolute world coordinate |
 | Position quantum | 1/4096 block |
 | Look-vector scale | 32767 |
 | Velocity scale | 1024 |
@@ -37,7 +38,7 @@ The output adapter also provides entity type queries, host positions, local hide
 | Angle representation | One byte per angle |
 | Sequence representation | Low 16 bits |
 
-Use the `quantize`/`dequantize`, unit, velocity, height and angle helpers when implementing a matching consumer. Quantized snapshots do not preserve arbitrary floating-point precision.
+Use the `quantize(double)`/`dequantize(long)`, unit, velocity, height and angle helpers when implementing a matching consumer. Position encoding covers the full Minecraft world range. Quantized snapshots do not preserve arbitrary floating-point precision.
 
 `MODE_FULL`, `MODE_DELTA` and the `FIELD_*` bitmask describe present fields. `EntityDeltaCodec.computeMask` compares snapshots. `buildDelta` emits changed fields, and `applyDelta` merges incoming fields with known state. The host must manage snapshot sequence and availability.
 

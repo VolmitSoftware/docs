@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-10-12T23:25:13.822Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -100,7 +100,11 @@ Use `setLines` for authored MiniMessage, functions, animations, player expressio
 
 `bindRenderedFrames(LongFunction<List<String>>)` receives a wall-clock millisecond value on the animator's asynchronous packet loop. Its callback must be cheap, thread-safe, and free of Bukkit state reads; it can run more often than a server tick. Pass `null` to remove the frame binding and resume the stored lines. Publish corresponding particle text when a frame changes the geometry.
 
-`bindRenderedViewerText(Function<Player, TemporaryHologram.RenderedText>)` supplies section-formatted literal text and particle spans for each viewer, sampled on that player's scheduler at the temporary hologram update interval and when animated particle geometry refreshes. Construct `RenderedText` with the text, a list of `ParticleTextSpan` ranges, and an optional `LongFunction<String>` animation frame source. Use an empty list for no named spans and `null` for no animation. Frame sources run on the asynchronous packet loop and must be thread-safe, cheap, and free of Bukkit state reads. Use immutable snapshots for item or entity data owned by another region. This binding works independently of `perViewerPlaceholders`; Gloss sizes each viewer's box and particle geometry from their resolved text. A non-null viewer binding replaces a frame binding, and a non-null frame binding replaces a viewer binding. Pass `null` to clear the viewer binding and resume the stored lines.
+`bindRenderedViewerText(Function<Player, TemporaryHologram.RenderedText>)` supplies section-formatted literal text and particle spans for each viewer, sampled on that player's scheduler at the temporary hologram update interval and when animated particle geometry refreshes. Construct `RenderedText` with the text, a list of `ParticleTextSpan` ranges, and an optional `LongFunction<String>` animation frame source. Use an empty list for no named spans and `null` for no animation.
+
+Frame sources run on the asynchronous packet loop and must be thread-safe, cheap, and free of Bukkit state reads. Use immutable snapshots for item or entity data owned by another region.
+
+This binding works independently of `perViewerPlaceholders`; Gloss sizes each viewer's box and particle geometry from their resolved text. A non-null viewer binding replaces a frame binding, and a non-null frame binding replaces a viewer binding. Pass `null` to clear the viewer binding and resume the stored lines.
 
 `bindPosition` and `bindPresentation` sample on their declared entity owner's scheduler. The presentation contains XYZ scale, XYZ rotation in degrees, and opacity. Its scale multiplies `IconDisplayStyle` scale; its opacity multiplies style text opacity. Presentation scales clamp to `0`–`16`, opacity to `0`–`1`, and finite rotations wrap through 360 degrees. Text, boxes, and particle transforms follow the same presentation. A null binder removes that binding.
 

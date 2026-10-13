@@ -6,6 +6,10 @@
   const scriptUrl = new URL(document.currentScript?.src || '/theme/minimal-brutalism.js', window.location.href);
   const catalogUrl = new URL('/theme/projects.json', scriptUrl.origin);
   catalogUrl.search = scriptUrl.search;
+  const colorModeKey = 'volmit-color-mode';
+  let colorMode = initialColorMode();
+  let colorModeApp = null;
+  let colorModeTheme = null;
   const reservedPaths = new Set(['a', 'login', 'logout', 'register', 'forgot', 'verify']);
   let catalog = [];
   let catalogSettled = false;
@@ -283,7 +287,89 @@
     return icon;
   }
 
+  function initialColorMode() {
+    try {
+      const saved = window.localStorage.getItem(colorModeKey);
+      if (saved === 'light' || saved === 'dark') {
+        return saved;
+      }
+    } catch {}
+    return window.siteConfig?.darkMode === false ? 'light' : 'dark';
+  }
+
+  function updateThemeToggle(button) {
+    const label = colorMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    const icon = colorMode === 'dark' ? 'sun' : 'moon';
+    if (button.querySelector('svg')?.dataset.lucide !== icon) {
+      const content = element('span', 'v-btn__content');
+      content.append(lucideIcon(icon));
+      button.replaceChildren(content);
+    }
+  }
+
+  function setColorMode(mode, app, remember) {
+    colorMode = mode;
+    document.documentElement.dataset.volmitTheme = mode;
+    const dark = mode === 'dark';
+    if (window.siteConfig && window.siteConfig.darkMode !== dark) {
+      window.siteConfig.darkMode = dark;
+    }
+    const store = app?.__vue__?.$store;
+    if (typeof store?.state?.site?.dark === 'boolean' && store.state.site.dark !== dark && typeof store.commit === 'function') {
+      store.commit('site/SET_DARK', dark);
+    }
+    const theme = app?.__vue__?.$vuetify?.theme;
+    if (theme && theme.dark !== dark) {
+      theme.dark = dark;
+    }
+    if (app) {
+      if (!app.classList.contains('theme--' + mode)) {
+        app.classList.add('theme--' + mode);
+      }
+      app.classList.remove('theme--' + (dark ? 'light' : 'dark'));
+      const button = app.querySelector('.volmit-theme-toggle');
+      if (button) {
+        updateThemeToggle(button);
+      }
+    }
+    if (remember) {
+      try {
+        window.localStorage.setItem(colorModeKey, mode);
+      } catch {}
+    }
+  }
+
+  function syncColorMode(app) {
+    const theme = app.__vue__?.$vuetify?.theme;
+    const nativeDark = app.__vue__?.$store?.state?.site?.dark ?? theme?.dark;
+    const changed = app === colorModeApp && theme === colorModeTheme && typeof nativeDark === 'boolean'
+      && nativeDark !== (colorMode === 'dark');
+    setColorMode(changed ? (nativeDark ? 'dark' : 'light') : colorMode, app, changed);
+    colorModeApp = app;
+    colorModeTheme = theme;
+  }
+
+  function mountThemeToggle(app) {
+    const column = app.querySelector('.nav-header > .v-toolbar__content > .layout.row > .flex:last-child');
+    const actions = column?.querySelector('.v-toolbar__content') || column;
+    if (!actions) {
+      return;
+    }
+    let button = app.querySelector('.nav-header .volmit-theme-toggle');
+    if (!button) {
+      button = element('button', 'v-btn v-btn--flat v-btn--icon v-btn--round v-btn--text v-size--default volmit-theme-toggle');
+      button.type = 'button';
+      button.addEventListener('click', () => setColorMode(colorMode === 'dark' ? 'light' : 'dark', app, true));
+      const firstAction = [...actions.children].find((node) => node.matches('button,a,.v-menu,.v-tooltip,.v-btn') || node.querySelector('button,a'));
+      actions.insertBefore(button, firstAction || null);
+    }
+    updateThemeToggle(button);
+  }
+
   function mountHeader(app) {
+    mountThemeToggle(app);
     const title = app.querySelector('.page-header-headings .headline');
     title?.setAttribute('role', 'heading');
     title?.setAttribute('aria-level', '1');
@@ -376,15 +462,89 @@
       return;
     }
     let group = null;
+    let body = null;
     for (const node of Array.from(content.childNodes)) {
       if (node.nodeType === 1 && node.tagName === 'H2') {
         group = element('section', 'landing-group');
+        body = element('div', 'landing-group-body');
         node.before(group);
-        group.append(node);
+        group.append(node, body);
       } else if (group) {
-        group.append(node);
+        body.append(node);
       }
     }
+  }
+
+  function mountPageLocation(main, content, project, path) {
+    const header = main.querySelector('.page-header-headings');
+    if (!header) {
+      return;
+    }
+    const title = headingLabel(header.querySelector('.headline') || header);
+    const signature = path + '\n' + title;
+    if (header.querySelector('.volmit-breadcrumbs')?.dataset.signature === signature) {
+      return;
+    }
+    header.querySelector('.volmit-breadcrumbs')?.remove();
+    main.querySelector('.volmit-page-sequence')?.remove();
+    const breadcrumbs = element('nav', 'volmit-breadcrumbs');
+    breadcrumbs.setAttribute('aria-label', 'Breadcrumb');
+    breadcrumbs.dataset.signature = signature;
+    const list = element('ol');
+    const items = path === project.path
+      ? [link('All projects', '/'), element('span', null, project.name)]
+      : [link(project.name, project.href)];
+    let currentGroup = null;
+    const pages = [];
+    const seen = new Set();
+    for (const section of project.sections) {
+      for (const group of section.groups) {
+        for (const page of group.links) {
+          if (page.href === '/' + path) {
+            currentGroup = group.title || section.title;
+          }
+          if (!seen.has(page.href)) {
+            pages.push(page);
+            seen.add(page.href);
+          }
+        }
+      }
+    }
+    if (path !== project.path) {
+      if (currentGroup) {
+        items.push(element('span', 'breadcrumb-group', currentGroup));
+      }
+      items.push(element('span', null, title));
+    }
+    items[items.length - 1].setAttribute('aria-current', 'page');
+    for (const [index, item] of items.entries()) {
+      const entry = element('li');
+      if (index) {
+        const separator = element('span', 'breadcrumb-separator', '/');
+        separator.setAttribute('aria-hidden', 'true');
+        entry.append(separator);
+      }
+      entry.append(item);
+      list.append(entry);
+    }
+    breadcrumbs.append(list);
+    header.prepend(breadcrumbs);
+    const index = pages.findIndex((page) => page.href === '/' + path);
+    if (index < 0 || pages.length < 2) {
+      return;
+    }
+    const sequence = element('nav', 'volmit-page-sequence');
+    sequence.setAttribute('aria-label', 'Page sequence');
+    for (const [direction, page] of [['Previous', pages[index - 1]], ['Next', pages[index + 1]]]) {
+      if (!page) {
+        continue;
+      }
+      const anchor = link('', page.href, direction.toLowerCase());
+      anchor.rel = direction === 'Previous' ? 'prev' : 'next';
+      anchor.append(element('span', null, direction), element('strong', null, page.title));
+      sequence.append(anchor);
+    }
+    content.after(sequence);
   }
 
   function rowDestination(row) {
@@ -1392,34 +1552,20 @@
         window.sessionStorage.removeItem(sidebarStateKey);
       } catch {}
     }
-    main.classList.add(overview ? 'volmit-project-overview' : 'volmit-reference-page');
-    if (overview) {
-      const bar = element('aside', 'volmit-project-bar');
-      bar.setAttribute('aria-label', project.name + ' navigation');
-      bar.append(projectButton(project));
-      const nav = element('nav', 'project-tabs');
-      nav.setAttribute('aria-label', project.name + ' page sections');
-      const home = link('Overview', project.href);
-      home.setAttribute('aria-current', 'page');
-      nav.append(home);
-      for (const heading of Array.from(articleRoot(content).querySelectorAll(':scope > h2[id]'))) {
-        const copy = heading.cloneNode(true);
-        copy.querySelector('.toc-anchor')?.remove();
-        const anchor = link(copy.textContent.trim(), '#' + heading.id);
-        anchor.addEventListener('click', () => closeSectionMenu(app, false));
-        nav.append(anchor);
-      }
-      bar.append(nav, link('All projects', '/', 'all-projects'));
-      main.prepend(bar);
-      mobileControls(app, main, nav);
-      return;
-    }
+    main.classList.add('volmit-project-page', overview ? 'volmit-project-overview' : 'volmit-reference-page');
     const sidebar = element('aside', 'volmit-section-sidebar');
     sidebar.dataset.project = project.path;
     sidebar.setAttribute('aria-label', project.name + ' documentation');
     const nav = element('nav', 'reference-nav');
     nav.setAttribute('aria-label', project.name + ' documentation');
     nav.append(link('All projects', '/', 'parent'), projectButton(project));
+    const overviewLink = link('Project overview', project.href, 'project-overview-link');
+    if (overview) {
+      overviewLink.classList.add('active');
+      overviewLink.setAttribute('aria-current', 'page');
+    }
+    overviewLink.addEventListener('click', () => rememberSidebar(main));
+    nav.append(overviewLink);
     const current = '/' + path;
     let anyOpen = false;
     for (const [index, section] of project.sections.entries()) {
@@ -1614,14 +1760,14 @@
     tocHeadingNodes = [];
     closePageToc(app, false);
     rememberSidebar(main);
-    for (const node of main.querySelectorAll('.volmit-project-bar,.volmit-section-sidebar,.home-directory,.mobile-section-toggle,.section-menu-backdrop,.page-toc-toggle,.volmit-page-toc')) {
+    for (const node of main.querySelectorAll('.volmit-section-sidebar,.home-directory,.mobile-section-toggle,.section-menu-backdrop,.page-toc-toggle,.volmit-page-toc,.volmit-breadcrumbs,.volmit-page-sequence')) {
       node.remove();
     }
     stopTocAlign?.();
     stopTocAlign = null;
     main.style.removeProperty('--volmit-toc-top');
     main.style.removeProperty('--volmit-toc-popup-top');
-    main.classList.remove('volmit-home-page', 'volmit-project-overview', 'volmit-reference-page', 'has-page-toc');
+    main.classList.remove('volmit-home-page', 'volmit-project-page', 'volmit-project-overview', 'volmit-reference-page', 'has-page-toc');
     closeSectionMenu(app, false);
   }
 
@@ -2251,7 +2397,7 @@
       pageObserver = new MutationObserver((records) => {
         if (records.some((record) => record.type === 'childList'
           ? !record.target.closest?.('.plugin-search-results,.picker-results,.picker-meta,.featured-grid,.directory-grid,.directory-result-count,.directory-empty')
-          : record.target.matches?.('.v-icon'))) {
+          : record.target.matches?.('.v-icon,.v-application'))) {
           scheduleMount();
         }
       });
@@ -2275,6 +2421,7 @@
     }
     const lostApp = document.querySelector('.v-application');
     if (lostApp) {
+      syncColorMode(lostApp);
       mountAuthFields(lostApp);
       mountWikiIcons(lostApp);
     }
@@ -2289,10 +2436,6 @@
     const content = main?.querySelector('.contents');
     if (!app || !main || !content || reservedPaths.has(path.split('/')[0])) {
       return;
-    }
-    const theme = app.__vue__?.$vuetify?.theme;
-    if (theme && !theme.dark) {
-      theme.dark = true;
     }
     mountHeader(app);
     mountCalloutLabels(content);
@@ -2331,6 +2474,7 @@
       mountLinkRows(content);
       finishLoading();
       if (project) {
+        mountPageLocation(main, content, project, path);
         mountPageToc(app, main, content);
       }
       alignReferenceToc(main);
@@ -2363,6 +2507,7 @@
   }
 
   async function start() {
+    setColorMode(colorMode, null, false);
     if (reservedPaths.has(normalizedPath().split('/')[0])) {
       resumePageObserver();
       document.addEventListener('DOMContentLoaded', scheduleMount, { once: true });
@@ -2384,9 +2529,6 @@
     window.addEventListener('pagereveal', () => {
       mount();
     });
-    if (window.siteConfig) {
-      window.siteConfig.darkMode = true;
-    }
     const controller = new AbortController();
     loadingTimeout = window.setTimeout(() => {
       finishLoading();

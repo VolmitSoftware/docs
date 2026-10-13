@@ -2,7 +2,7 @@
 title: "World Views and Plates"
 description: "Optics world access, section caches, destination plates, chunk leases and claim output"
 published: true
-date: 2026-10-11T17:27:43.915Z
+date: 2026-10-13T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -96,7 +96,7 @@ For live worlds, capture data through `ChunkCapture<W, S>` before background com
 
 `ViewPlateCache.current(...)` returns current retained content and can queue a replacement through the supplied job factory. `peek` reads an existing plate. `isRefused` identifies a key/revision refused by the byte budget.
 
-`publish` installs a completed job result, while `buildFailed` clears a failed build. `invalidate`, `invalidatePortal` and `invalidateTarget` remove stale identities. `refreshDirt` applies world changes, and `recap` changes the byte cap.
+`publish` installs a completed job result, while `buildFailed` clears a failed build. `invalidate`, `invalidatePortal` and `invalidateTarget` remove stale identities. `invalidatePortal`, `invalidateTarget` and `clear` also retire matching builds. A retired job cannot publish over its replacement. `refreshDirt` applies world changes, and `recap` changes the byte cap.
 
 `PlatePipeline` supplies a cache and runs plate build jobs through `OpticsScheduler.compute()`. Call `tickCaptures(chunkBudget, urgentChunkBudget)` from the host's capture context. `queuedCaptures` reports pending captures, and `clear` aborts queued captures and releases cached results.
 

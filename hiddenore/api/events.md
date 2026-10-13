@@ -1,8 +1,8 @@
 ---
-title: "Events"
+title: "HiddenOre: Events"
 description: "HiddenOreBreakEvent and HiddenOreDropsEvent"
 published: true
-date: 2026-09-16T00:00:00.000Z
+date: 2026-10-13T14:42:49.250Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,7 @@ material. `setToInventory(true)` is ignored for those rewards, which always drop
 
 ## Explosions
 
-When [blast mining](/hiddenore/configuration) is on, both events also fire for blocks destroyed by
+When [blast mining](/hiddenore/configuration#blast-mining) is on, both events also fire for blocks destroyed by
 an explosion. `getCause()` tells the two apart:
 
 | `BreakCause` | `getPlayer()` | `getTool()` |
@@ -57,7 +57,7 @@ an explosion. `getCause()` tells the two apart:
 | `MINED` | the miner | the pickaxe used, as a copy |
 | `EXPLODED` | the credited player, or `null` | always `null` |
 
-A player is credited for the igniter of primed TNT and the shooter of a fireball. TNT minecarts,
+Primed TNT credits its igniter, and a fireball credits its shooter. TNT minecarts,
 creepers, beds, and redstone-fired charges credit nobody, so `getPlayer()` returns `null` there.
 
 `HiddenOreBreakEvent` fires for every managed block the explosion destroyed, up to the per-explosion
@@ -80,6 +80,6 @@ explosion rewards. Guard both before reading them.
 
 ## Threading
 
-Both events run synchronously on the thread that owns the broken block. Do not block or perform network or disk I/O in a listener. A single explosion fires `HiddenOreBreakEvent` once per managed block that passed the `yield` roll and `HiddenOreDropsEvent` once per block that actually paid, so keep explosion-path listeners cheap.
+Both events run synchronously on the thread that owns the broken block. Do not block or perform network or disk I/O in a listener. Within the per-explosion cap, `HiddenOreBreakEvent` fires before placement and `yield` checks. `HiddenOreDropsEvent` fires only when a block awards a reward. Keep these listeners short.
 
 For `MINED` the block has already been broken when either event fires. For `EXPLODED` both events fire while the block is still standing, because HiddenOre runs at `MONITOR` on the explode event before the server clears the blocks. Use `getBrokenType()` for the material either way.

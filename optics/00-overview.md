@@ -1,8 +1,8 @@
 ---
 title: "Optics Overview"
-description: "Optics documentation: packages, build, and the rules a consumer can rely on"
+description: "Build Optics and understand its packages, API guarantees, and integration boundaries"
 published: true
-date: 2026-10-12T02:03:27.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z

@@ -2,26 +2,12 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-10-05T16:32:02.924733+00:00
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Configure cave shape with `caveProfile` on a dimension, region or biome. Cave biomes provide floor, ceiling and wall materials, decorations and objects. Iris uses these settings instead of vanilla carvers; there are no separate `caves/` or `ravines/` resource folders.
-
-Related:
-
-- [11 - Dimensions](/iris/11-dimensions)
-- [12 - Regions](/iris/12-regions)
-- [13 - Biomes](/iris/13-biomes)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [17 - Procedural Objects](/iris/17-procedural-objects)
-- [20 - Object Placement](/iris/20-object-placement)
-- [21 - Jigsaw Structures](/iris/21-jigsaw-structures)
-- [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
-- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
-- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
 
 The current built-in pack sources include [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur), a 26.2 cave family derived from the dripstone profiles with sulfur spikes, banded mineral formations and contained pools. The paired Underworld uses the same shapes with lava and Nether ecology.
 
@@ -383,7 +369,7 @@ Editable Iris jigsaws can be placed on cave floors, ceilings or within open cave
 | Field | Default | Runtime behavior |
 |---|---|---|
 | `anchor` | `LEGACY` | `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, or `CAVE_ANY` search carved cells instead of terrain height |
-| `minHeight` / `maxHeight` | `-2032` / `2032` | Inclusive absolute world-Y scan band, clipped to one block inside the dimension usable height |
+| `minHeight` / `maxHeight` | `-2032` / `2032` | Inclusive absolute world-Y scan band, clipped to one block inside the dimension's usable height |
 | `caveBiomes` | empty | Allowlist rechecked against the cave biome at each candidate anchor. Keys are trimmed, case-normalized, and may include or omit the namespace |
 | `caveAnchorAttempts` | `8` | Number of locations checked inside the start chunk, clamped to `1..64` |
 | `caveAnchorScanStep` | `1` | Vertical scan increment, clamped to `1..16`. Above one it can skip valid single-block anchors |
@@ -411,3 +397,17 @@ Cave anchors place structures underground without surface burial adjustments or 
 ## Vanilla carvers never run
 
 **Vanilla and datapack carvers have no effect on Iris terrain.** Use `caveProfile` and cave biomes instead. See [30 - Platform Differences](/iris/30-platform-differences).
+
+Related:
+
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
+- [17 - Procedural Objects](/iris/17-procedural-objects)
+- [20 - Object Placement](/iris/20-object-placement)
+- [21 - Jigsaw Structures](/iris/21-jigsaw-structures)
+- [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)

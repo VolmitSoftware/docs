@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-10-07T21:46:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -100,11 +100,13 @@ Each `.json` file in `plugins/Gloss/previews/` defines one preview, and its id i
 without `.json`. Preview documents have no `schemaVersion` or `revision`, and subfolders are
 ignored. `scale` defaults to `0.65` (range `0.25`–`4`) and `viewDistance` to `10` blocks
 (range `1`–`24`). Discovery and retention use the matched document’s viewing distance.
+
 `contentRefreshTicks` controls live slot, label, color and visibility refreshes (default `4`);
 `accessCheckTicks` controls container-protection rechecks (default `10`). Both accept integers
 from `1` through `1200`, and neither can disable checking. An access recheck also refreshes content.
 Lower access intervals detect protection changes sooner; changed access closes the current preview.
 Valid document reloads rebuild open previews using the new intervals. The editor exposes both under Refresh.
+
 All top-level keys are optional:
 
 ```json

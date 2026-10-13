@@ -2,28 +2,21 @@
 title: "Rivers"
 description: "Surface rivers, shaped valleys, underground rivers, grottos, deep fluids, and standing pools: the physical configuration"
 published: true
-date: 2026-10-07T12:15:00.000Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
 ---
 Iris hydrology adds surface rivers in eroded valleys, underground rivers, coastal and inland grottos, and deep-fluid bodies. Enable rivers with `hydrology.rivers.enabled`; the default is `false`.
 
-Surface rivers shape their channels and banks around descending water levels. They cut high ground and can fill low banks within the configured terrain limits, then blend back into the surrounding terrain. `channel.sink` sets the water level below the shaped banks. Rivers never write ocean terrain or raise ocean water. Water flows downhill in one-block steps; where the land falls faster than the channel can follow the reach becomes rapids, and where a natural cliff is tall enough, a waterfall. It reaches the sea through a drowned inlet rather than stopping at the shoreline. Underground rivers, grottos and deep fluids are contained features validated against carved cave matter.
+Surface rivers cut high ground and can fill low banks within the configured terrain limits, then blend into the surrounding terrain. `channel.sink` sets the water level below the shaped banks. Rivers do not alter ocean terrain or raise ocean water.
 
-This page is the physical configuration the dimension owns. The other two:
+Water flows downhill in one-block steps. Faster descents create rapids, and sufficiently tall cliffs create waterfalls. Rivers reach the sea through drowned inlets. Underground rivers, grottos, and deep fluids must remain contained within the carved terrain.
+
+This page describes the dimension's physical river settings. Related river guides:
 
 - [36b - River Policy](/iris/36b-river-policy) — `riverPolicy`, which decides where rivers may start, transit, and end, and what content they carry.
 - [36c - River Inspection](/iris/36c-river-inspection): locate rivers, view them in Vision, and validate pack settings.
-
-Related:
-
-- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
-- [11 - Dimensions](/iris/11-dimensions)
-- [12 - Regions](/iris/12-regions)
-- [13 - Biomes](/iris/13-biomes)
-- [15 - Caves & Carving](/iris/15-caves-carving)
-- [25 - Pack Management](/iris/25-pack-management)
 
 The dimension owns the physical system under `hydrology` and supplies the default `riverPolicy`. Region and biome files may contain only their own `riverPolicy` overrides. A [complete worked example](#complete-hydrology-example) is at the end of this page.
 
@@ -57,7 +50,11 @@ Set `routing.tributaries` for surface tributaries and `underground.tributaries` 
 
 ## `hydrology.rivers.geometry`
 
-Geometry shapes what routing and the surface and underground sections have already sized. `meanders` decides how far a centerline wanders from its solved route; `surface`, `underground` and `grottos` carry the same cross-section fields with their own values, for a carved waterfall throat, a contained passage and a chamber respectively; `drops` shapes descending flow and the basin that receives it.
+Geometry shapes the routes and sizes selected by the routing, surface, and underground settings:
+
+- `meanders` controls how far a centerline wanders from its solved route.
+- `surface`, `underground`, and `grottos` share cross-section fields with separate values for waterfall throats, contained passages, and chambers.
+- `drops` shapes descending flow and the basin that receives it.
 
 ### `geometry.meanders`
 
@@ -731,3 +728,12 @@ The managed Overworld shape with every physical section written explicitly:
   }
 }
 ```
+
+Related:
+
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [15 - Caves & Carving](/iris/15-caves-carving)
+- [25 - Pack Management](/iris/25-pack-management)

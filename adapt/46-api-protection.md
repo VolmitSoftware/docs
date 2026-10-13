@@ -2,7 +2,7 @@
 title: "API - Protection"
 description: "Register protection and region policy services"
 published: true
-date: 2026-09-28T20:00:00.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -50,8 +50,6 @@ Before Adapt performs container or item work that vanilla would route through a 
 | Chronos crop acceleration, Compost Cascade, Builders Wand, Magic Foundation, Seed Sower, Coral Gardener | Marked `BlockBreakEvent` or `BlockPlaceEvent` authorization checks as applicable, before committing |
 | Deconstruction | The normal pickup-event sequence before it replaces a dropped item |
 
-Cancellation stops the transfer and leaves the entity or block drop in its normal world path.
-
 ## XP entry points and region policy
 
 | Entry point | Carries a location | Region policy applies |
@@ -60,4 +58,3 @@ Cancellation stops the transfer and leaves the entity or block drop in its norma
 | `Skill.xp(player, at, ...)` / `xpS(player, at, ...)` | yes, the given position | yes |
 | `Skill.xpSilent(player, xp)` | no | no |
 | `Skill.xp(at, xp, rad, duration)` spatial pulses | the pulse has one, the award does not use it | no |
-

@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-10-08T15:12:00Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -199,7 +199,11 @@ Ids may not contain `/`, `\` or `..`. Spaces are allowed but become part of the 
 
 ## Rendering
 
-Style, orientation and visibility edits apply to the existing display, and box geometry follows text, animation frames, orientation and scale. Ordinary text refreshes every document `refreshTicks` (default 10, range 1–200); clock expressions and named animations can refresh every tick. Optional `refresh.contentTicks` sets the interval for dynamic content, `refresh.visibilityTicks` sets condition and presentation selection intervals, and `refresh.motionTicks` sets object-line and box update intervals. Each accepts 1–1200 ticks. Omitted fields retain the normal cadence. Conditional lines may refresh sooner when needed for visibility. Particle emission and animation playback retain their own clocks; direct document edits apply without waiting for these intervals. Empty holograms and holograms in unloaded worlds do not render. Lines are rendered by the shared text pipeline described on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
+Style, orientation and visibility edits apply to the existing display, and box geometry follows text, animation frames, orientation and scale. Ordinary text refreshes every document `refreshTicks` (default 10, range 1–200); clock expressions and named animations can refresh every tick.
+
+Optional `refresh.contentTicks` sets the interval for dynamic content, `refresh.visibilityTicks` sets condition and presentation selection intervals, and `refresh.motionTicks` sets object-line and box update intervals. Each accepts 1–1200 ticks. Omitted fields retain the normal cadence. Conditional lines may refresh sooner when needed for visibility.
+
+Particle emission and animation playback retain their own clocks; direct document edits apply without waiting for these intervals. Empty holograms and holograms in unloaded worlds do not render. Lines are rendered by the shared text pipeline described on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
 
 `[features] holograms = false` despawns every hologram on the next driver tick. Documents still load, hot-reload and accept command edits. Nothing renders.
 

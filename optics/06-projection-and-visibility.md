@@ -2,7 +2,7 @@
 title: "Projection and Visibility"
 description: "Optics block sampling, scan lifecycle, view volumes, occlusion and nested views"
 published: true
-date: 2026-10-11T17:27:43.915Z
+date: 2026-10-13T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -112,6 +112,8 @@ Construct `CellScan` with its typed `Context`: endpoint, aperture, sampler, memo
 | `RecursionPath.push`, `contains`, `pop`, `clear` | Track visited endpoint ids |
 | `EntityPath` | Carry a root or child transform and remaining depth for entity visibility |
 | `ClientRecursionPlanner.plan` | Derive bounded nested cones from descriptor geometry |
+
+Nested planning checks aperture overlap with every ancestor view cone. A child can remain visible when its center and corners are outside. Exact point visibility still checks the complete ancestor chain.
 
 `EntityPath.visible`, `visibleBounds`, `fullyHidden` and `point` apply path geometry to entities or points. `ClientRecursionPlanner.NestedCone` exposes geometry, depth, transform, reflections, ancestors and the content-space eye.
 

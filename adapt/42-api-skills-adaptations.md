@@ -2,7 +2,7 @@
 title: "API - Skills & Adaptations"
 description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-10-12T01:16:47.000Z
+date: 2026-10-13T16:42:44.153Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,6 +42,8 @@ Everything else on these interfaces is first-party authoring code. That includes
 Override `isPlayerPreferenceVisible(AdaptPlayer, PlayerPreference<?>)` to hide a dependent control until its level and mode conditions hold. The menu reevaluates visibility when a preference changes and updates the settings row in place. Hiding a control does not clear its stored override or replace runtime eligibility checks.
 
 `Adaptation.getPlayerPreferences()` lists explicitly registered `PlayerPreference<E>` definitions. Each enum-backed definition has a stable ID, translated label, default value, and choices with an icon and minimum learned level. Register definitions only for behavior the adaptation actually consumes. `CommonPreferences.ENABLED` is included by default. Overrides must retain it and append their behavior-specific controls. `CommonPreferences.toggle` supplies ON/OFF choices, and `CommonPreferences.scale` supplies FULL/HALF/QUARTER caps through `Scale.multiplier()`.
+
+`CommonPreferences.DEATH_SAVE_PRIORITY` supplies `FIRST`, `NORMAL`, and `LAST`, with `NORMAL` as the default. Last Rites, Hourglass Guard, and Void Skin use it to select one eligible death save. Resolve it through the normal preference API so server defaults, allowed values, and locks apply.
 
 For a runtime choice, call `Adaptation.preference(player, preference)` or `PlayerPreferences.resolve(adaptation, playerData, learnedLevel, preference)`. `preferenceEnabled(player, toggle)` reads a registered ON/OFF control. This applies the server policy and player override without changing shared configuration. Runtime handlers must still enforce eligibility, the selected choice's unlock requirement, and any hard feature limits. A forced server choice may be visible below its unlock level without being usable. `getActiveLevel()` checks the effective adaptation and skill enabled settings before returning a cached level; it does not select or activate a personal mode. `isPlayerEnabled(Player)` checks those personal settings without awarding usage XP. Learned-level queries remain independent of personal choices.
 

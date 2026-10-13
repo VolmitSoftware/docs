@@ -2,27 +2,12 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-12T01:16:38.165Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 A dimension is the root object of a pack. It sets world height, sea level, the regions that supply biomes, and which generation features are enabled. The file lives at `dimensions/<loadKey>.json`, and every other pack resource hangs off it. Some fields form a permanent contract with the world folder; the rest can change on every save. This page splits those two groups.
-
-Related:
-
-- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
-- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
-- [12 - Regions](/iris/12-regions)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [15 - Caves & Carving](/iris/15-caves-carving)
-- [36 - Rivers](/iris/36-rivers)
-- [37 - Image Maps](/iris/37-image-maps)
-- [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
-- [18 - Structures Overview](/iris/18-structures-overview)
-- [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
-- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
-- [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension)
 
 ## Decide these before you create a world
 
@@ -320,7 +305,7 @@ Automatic biome and region objects reject support footprints that intersect acce
 
 ## Rock, fluid, and overlay noise
 
-`rockPalette` is the material the terrain column is filled with below the biome own surface layers. `fluidPalette` is what fills ocean columns and any cave aquifer that allows fluid. Both are full weighted palettes. "Stone" can be a blend of stone, andesite and tuff. "Water" can be lava, or a custom mod fluid.
+`rockPalette` is the material the terrain column is filled with below the biome's own surface layers. `fluidPalette` is what fills ocean columns and any cave aquifer that allows fluid. Both are full weighted palettes. "Stone" can be a blend of stone, andesite and tuff. "Water" can be lava, or a custom mod fluid.
 
 ```json
 {
@@ -704,3 +689,18 @@ Path: `packs/overworld/dimensions/overworld.json` under the platform data direct
 8. Tune land/sea and zoom. Then add subsystems one at a time: caves, then ores and deposits, then objects, then structures. Validate after each new resource edge so a broken key is attributable.
 9. Close and reopen Studio after you edit `dimensionHeight`, `logicalHeight`, `environment`, `dimensionOptions`, `fullbright`, or the dimension file name in a way that changes the effective contract. Hotload rejects those changes by design.
 10. Create the production world only after Studio is clean: `/iris create name=mypack-test type=mypack seed=1337`. Recreate the world rather than edit its height contract later.
+
+Related:
+
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [12 - Regions](/iris/12-regions)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [15 - Caves & Carving](/iris/15-caves-carving)
+- [36 - Rivers](/iris/36-rivers)
+- [37 - Image Maps](/iris/37-image-maps)
+- [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
+- [18 - Structures Overview](/iris/18-structures-overview)
+- [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension)

@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T18:39:24.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,8 +20,8 @@ Every adaptation has an Enabled control at the bottom of its level screen. Perso
 ### Wind Up (`agility-wind-up`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-wind-up-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-wind-up-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Wind Up" src="/adapt-assets/demos/agility/agility-wind-up-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Wind Up" src="/adapt-assets/demos/agility/agility-wind-up-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 8 knowledge, then 2 per level
@@ -44,8 +44,8 @@ Personal controls: Maximum speed (full/half/quarter).
 ### Wall Jump (`agility-wall-jump`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-wall-jump-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-wall-jump-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Wall Jump" src="/adapt-assets/demos/agility/agility-wall-jump-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Wall Jump" src="/adapt-assets/demos/agility/agility-wall-jump-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 8 knowledge, then 2 per level
@@ -67,8 +67,8 @@ Personal controls: Wall jump control (Hold then release sneak/Tap to latch and j
 ### Super Jump (`agility-super-jump`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-super-jump-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-super-jump-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Super Jump" src="/adapt-assets/demos/agility/agility-super-jump-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Super Jump" src="/adapt-assets/demos/agility/agility-super-jump-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 5 knowledge, then 2 per level
@@ -85,8 +85,8 @@ Personal controls: Jump control (Sneak and jump/Every jump); Jump height (full/h
 ### Armor-Up (`agility-armor-up`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-armor-up-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-armor-up-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Armor-Up" src="/adapt-assets/demos/agility/agility-armor-up-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Armor-Up" src="/adapt-assets/demos/agility/agility-armor-up-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 8 knowledge, then 2 per level
@@ -105,8 +105,8 @@ Sprinting builds temporary armor that drains after the sprint stops. Sneak, swim
 ### Ladder Slide (`agility-ladder-slide`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-ladder-slide-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-ladder-slide-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Ladder Slide" src="/adapt-assets/demos/agility/agility-ladder-slide-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Ladder Slide" src="/adapt-assets/demos/agility/agility-ladder-slide-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 1 knowledge
@@ -128,8 +128,8 @@ Personal controls: Upward assistance (on/off); Downward assistance (on/off); Ass
 ### Roll Landing (`agility-roll-landing`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-roll-landing-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-roll-landing-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Roll Landing" src="/adapt-assets/demos/agility/agility-roll-landing-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Roll Landing" src="/adapt-assets/demos/agility/agility-roll-landing-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -157,8 +157,8 @@ Personal controls: Food reserve (No reserve/Keep 4 food/Keep 8 food).
 ### Slipstream Slide (`agility-slipstream-slide`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-slipstream-slide-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-slipstream-slide-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Slipstream Slide" src="/adapt-assets/demos/agility/agility-slipstream-slide-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Slipstream Slide" src="/adapt-assets/demos/agility/agility-slipstream-slide-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge, then 3 per level
@@ -185,8 +185,8 @@ Personal controls: Slide control (Tap sneak/Hold sneak); Maximum slide duration 
 ### Air Dash (`agility-air-dash`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-air-dash-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-air-dash-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Air Dash" src="/adapt-assets/demos/agility/agility-air-dash-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Air Dash" src="/adapt-assets/demos/agility/agility-air-dash-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 5 knowledge, then 3 per level
@@ -208,8 +208,8 @@ Personal controls: Dash trigger (Left click/While sneaking/Empty hand); Dash spe
 ### Cat Reflexes (`agility-cat-reflexes`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-cat-reflexes-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-cat-reflexes-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Cat Reflexes" src="/adapt-assets/demos/agility/agility-cat-reflexes-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Cat Reflexes" src="/adapt-assets/demos/agility/agility-cat-reflexes-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -226,8 +226,8 @@ While sprinting, an incoming projectile can miss, cancelling the hit and applyin
 ### Featherfoot (`agility-featherfoot`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-featherfoot-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-featherfoot-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Featherfoot" src="/adapt-assets/demos/agility/agility-featherfoot-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Featherfoot" src="/adapt-assets/demos/agility/agility-featherfoot-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 1 knowledge
@@ -256,8 +256,8 @@ Personal controls: Farmland protection (on/off); Pressure plate protection (on/o
 ### Vault (`agility-vault`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-vault-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-vault-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Vault" src="/adapt-assets/demos/agility/agility-vault-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Vault" src="/adapt-assets/demos/agility/agility-vault-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 4 knowledge
@@ -274,8 +274,8 @@ Personal controls: Vault trigger (Any jump/While sprinting/While sneaking).
 ### Marathoner (`agility-marathoner`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-marathoner-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-marathoner-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Marathoner" src="/adapt-assets/demos/agility/agility-marathoner-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Marathoner" src="/adapt-assets/demos/agility/agility-marathoner-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level
@@ -292,8 +292,8 @@ Sprint and sprint-jump exhaustion is reduced. Walking, attacks, and swimming kee
 ### Kip-Up (`agility-kip-up`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/agility/agility-kip-up-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/agility/agility-kip-up-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Kip-Up" src="/adapt-assets/demos/agility/agility-kip-up-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Kip-Up" src="/adapt-assets/demos/agility/agility-kip-up-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge, then 3 per level

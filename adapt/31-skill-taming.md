@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T02:13:17.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,8 +43,8 @@ Pet presets are all supported pets, wolves, cats, or equines (horses, donkeys, m
 ### Tame Health (`tame-health`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-health-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-health-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Tame Health" src="/adapt-assets/demos/taming/tame-health-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Tame Health" src="/adapt-assets/demos/taming/tame-health-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 6 per level
@@ -60,8 +60,8 @@ While you are online, every animal you own gets the max-health scalar.
 ### Tame Damage (`tame-damage`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-damage-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-damage-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Tame Damage" src="/adapt-assets/demos/taming/tame-damage-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Tame Damage" src="/adapt-assets/demos/taming/tame-damage-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 6 per level
@@ -77,8 +77,8 @@ While you are online, every animal you own gets the attack-damage scalar.
 ### Tame Regeneration (`tame-health-regeneration`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-health-regeneration-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-health-regeneration-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Tame Regeneration" src="/adapt-assets/demos/taming/tame-health-regeneration-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Tame Regeneration" src="/adapt-assets/demos/taming/tame-health-regeneration-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 8 knowledge, then 7 per level
@@ -93,8 +93,8 @@ When one of your pets takes damage, it heals `regenBase` plus level percent squa
 ### Pack Leader Aura (`tame-pack-leader-aura`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-pack-leader-aura-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-pack-leader-aura-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Pack Leader Aura" src="/adapt-assets/demos/taming/tame-pack-leader-aura-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Pack Leader Aura" src="/adapt-assets/demos/taming/tame-pack-leader-aura-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -113,8 +113,8 @@ Pets inside the radius gain Speed and Regeneration for as long as they stay ther
 ### Beast Recall (`tame-beast-recall`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-beast-recall-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-beast-recall-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Beast Recall" src="/adapt-assets/demos/taming/tame-beast-recall-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Beast Recall" src="/adapt-assets/demos/taming/tame-beast-recall-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -136,8 +136,8 @@ Sneak-right-click with a lead in the main hand to teleport the nearest owned pet
 ### Shared Pain (`tame-shared-pain`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-shared-pain-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-shared-pain-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Shared Pain" src="/adapt-assets/demos/taming/tame-shared-pain-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Shared Pain" src="/adapt-assets/demos/taming/tame-shared-pain-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -159,8 +159,8 @@ A share of damage aimed at you is split across nearby pets and removed from your
 ### Mounted Tactics (`tame-mounted-tactics`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-mounted-tactics-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-mounted-tactics-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Mounted Tactics" src="/adapt-assets/demos/taming/tame-mounted-tactics-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Mounted Tactics" src="/adapt-assets/demos/taming/tame-mounted-tactics-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -195,8 +195,8 @@ While you ride a horse-type mount (horses, donkeys, mules, and llamas), a stride
 ### Fetch (`tame-fetch`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-fetch-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-fetch-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Fetch" src="/adapt-assets/demos/taming/tame-fetch-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Fetch" src="/adapt-assets/demos/taming/tame-fetch-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -222,8 +222,8 @@ Idle tamed wolves path to a drop, pick it up within 1.5 blocks, return to within
 ### Alpha's Command (`tame-alphas-command`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-alphas-command-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-alphas-command-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Alpha&#x27;s Command" src="/adapt-assets/demos/taming/tame-alphas-command-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Alpha&#x27;s Command" src="/adapt-assets/demos/taming/tame-alphas-command-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -244,8 +244,8 @@ With a bone in the main hand, sneak-left-click or sneak-melee to mark a target; 
 ### Guardian Instinct (`tame-guardian-instinct`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-guardian-instinct-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-guardian-instinct-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Guardian Instinct" src="/adapt-assets/demos/taming/tame-guardian-instinct-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Guardian Instinct" src="/adapt-assets/demos/taming/tame-guardian-instinct-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -269,8 +269,8 @@ A nearby pet can intercept an incoming projectile, lunge toward you, take the sh
 ### Stable Hand (`tame-stable-hand`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-stable-hand-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-stable-hand-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Stable Hand" src="/adapt-assets/demos/taming/tame-stable-hand-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Stable Hand" src="/adapt-assets/demos/taming/tame-stable-hand-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 5 per level
@@ -287,8 +287,8 @@ Taming or breeding an animal permanently applies the bias as a scalar on movemen
 ### Wild Empathy (`tame-wild-empathy`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-wild-empathy-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-wild-empathy-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Wild Empathy" src="/adapt-assets/demos/taming/tame-wild-empathy-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Wild Empathy" src="/adapt-assets/demos/taming/tame-wild-empathy-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level
@@ -308,8 +308,8 @@ Right-click an untamed animal with its taming food to roll an instant tame that 
 ### Battle Bond (`tame-battle-bond`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-battle-bond-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-battle-bond-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Battle Bond" src="/adapt-assets/demos/taming/tame-battle-bond-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Battle Bond" src="/adapt-assets/demos/taming/tame-battle-bond-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -329,8 +329,8 @@ When one of your pets lands a kill, you and nearby owned pets gain Speed, Regene
 ### Last Breath (`tame-last-breath`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/taming/tame-last-breath-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/taming/tame-last-breath-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Last Breath" src="/adapt-assets/demos/taming/tame-last-breath-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Last Breath" src="/adapt-assets/demos/taming/tame-last-breath-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge

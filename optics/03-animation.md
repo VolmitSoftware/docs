@@ -2,7 +2,7 @@
 title: "Animation"
 description: "Optics clips, lerp, easing, tracks, timelines and host-driven portal effects"
 published: true
-date: 2026-10-11T16:00:00.000Z
+date: 2026-10-13T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -184,7 +184,7 @@ Use shape and transform tracks together for a moving mask. The host must decide 
 | `play()` | Starts or resumes. Restarts a finished timeline |
 | `pause()` | Holds the current sampled time |
 | `stop()` | Returns to time zero and clears pass progress |
-| `seek(time)` | Clamps to the timeline range. A finished animator becomes paused |
+| `seek(time)` | Clamps to the timeline range and resets the clock anchor during playback. A finished animator becomes paused |
 | `speed(factor)` | Finite rate. Zero holds time. Negative rates play backwards |
 | `loop(cycles, pingPong)` | Negative count repeats forever. Zero or one plays once. Higher counts specify passes |
 | `advance(firedOut)` | Reads the clock, moves time and appends crossed markers |

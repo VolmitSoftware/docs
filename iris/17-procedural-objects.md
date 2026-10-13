@@ -2,7 +2,7 @@
 title: "Procedural Objects"
 description: "Iris documentation: Procedural Objects"
 published: true
-date: 2026-10-04T13:00:54.342Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,8 +10,6 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Procedural objects are structures Iris builds from JSON parameters instead of loading from `.iob` files. Six families exist, all under `proceduralObjects` on a biome or a region: trees, fungi, coral, crystals, formations, ruins.
 
 Trees have their own page: [17b - Procedural Trees](/iris/17b-procedural-trees). This page covers the shared model, the other five families, and sapling overrides.
-
-Related: [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [15 - Caves & Carving](/iris/15-caves-carving), [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits), [18 - Structures Overview](/iris/18-structures-overview), [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 ## Placement
 
@@ -254,3 +252,5 @@ Dimension `treeSettings` gates the whole feature:
 4. Add palettes, accents, and decorators once the shape holds up from several angles.
 5. Match `carvingSupport` to the environment. Cave props also want a stilt place mode, either on the entry or through the cave profile's `defaultObjectPlaceMode`.
 6. Drop `chance` to production values, remove the dimension `focus`, and verify the family stays inside the biomes and regions that declare it.
+
+Related: [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [15 - Caves & Carving](/iris/15-caves-carving), [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits), [18 - Structures Overview](/iris/18-structures-overview), [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).

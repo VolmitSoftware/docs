@@ -2,14 +2,12 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-10-12T01:13:58.426Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
 Entities describe a mob and its gear. Spawners decide when and where those entities appear. Ambient effects are the sounds, particles and potions a biome applies to players standing in it. Loot tables are [23 - Loot](/iris/23-loot). Pinning a spawner to a block inside a placed object is [23c - Markers](/iris/23c-markers).
-
-Related: [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [03 - Configuration](/iris/03-configuration), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 ## Entities and spawners
 
@@ -348,3 +346,5 @@ Existing explicit `forcePersistEntities: true` settings continue to retain new m
 3. Add spawner keys to `entitySpawners` on a dimension, region, or biome, or attach them through [markers](/iris/23c-markers) on an object placement.
 4. Validate the pack: the spawner-to-entity edge is a blocking check, so a typo is caught before you load a world.
 5. Open Studio and confirm in-world.
+
+Related: [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [03 - Configuration](/iris/03-configuration), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).

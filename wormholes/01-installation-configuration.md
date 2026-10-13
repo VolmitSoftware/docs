@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-12T07:17:54.972Z
+date: 2026-10-13T16:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,11 @@ Install the artifact for your server platform: the CraftBukkit jar goes in `plug
 | JVM | `--enable-native-access=ALL-UNNAMED` lets zstd-jni load without a restricted-access warning |
 | Optional | PlaceholderAPI, Iris, Vault, Citizens, WorldGuard |
 
-An XZ packed jar extracts `plugins/Wormholes/cache/runtime/` on first start. That directory must be writable. PacketEvents is bundled in the Bukkit jar; no separate PacketEvents installation or download is required. Other runtime libraries still need a network on first start if their cache is empty. `wormholes.toml` must contain `schema = 3`. A valid save applies on its own. Invalid TOML is rejected and the current settings stay. WorldGuard, when present, checks RTP destinations. Edits to `languages/*.toml` apply on save. Dimensional Door pack changes need a restart. See [Dimensional Doors](/wormholes/07-dimensional-doors).
+An XZ packed jar extracts `plugins/Wormholes/cache/runtime/` on first start. That directory must be writable. PacketEvents is bundled in the Bukkit jar; no separate PacketEvents installation or download is required. Other runtime libraries still need a network on first start if their cache is empty.
+
+`wormholes.toml` must contain `schema = 3`. A valid save applies on its own. Invalid TOML is rejected and the current settings stay.
+
+WorldGuard, when present, checks RTP destinations. Edits to `languages/*.toml` apply on save. Dimensional Door pack changes need a restart. See [Dimensional Doors](/wormholes/07-dimensional-doors).
 
 Fabric, Forge, and NeoForge servers store the same settings, portal records, door and pocket state, network identity, routes, trust, and language overrides under `config/wormholes/`. In singleplayer, each world keeps its own portals, doors, and pockets inside its save folder; see [Native loaders and singleplayer](#native-loaders-and-singleplayer). Reload native settings with `/wormholes reload`. Bukkit plugin integrations such as Vault and PlaceholderAPI require the Bukkit distribution. Native currency and permission integrations use the native registration APIs.
 
@@ -30,7 +34,7 @@ Fabric, Forge, and NeoForge servers store the same settings, portal records, doo
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's Minecraft version and loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases on channel `wormholes:v10` and the same Minecraft version. Optics stream messages use wire version 8 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.2 and 26.3. A 26.2 client requires a 26.2 server, and a 26.3 client requires a 26.3 server. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases on channel `wormholes:v11` and the same Minecraft version. Optics stream messages use wire version 9 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.2 and 26.3. A 26.2 client requires a 26.2 server, and a 26.3 client requires a 26.3 server. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia every player crosses with the ordinary teleport. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
@@ -50,7 +54,9 @@ Moving the camera or briefly closing and reopening the same view reuses its pipe
 
 Native and streamed cameras share a cache of up to 12 view pipelines, with release after 60 seconds without use. Preparation for possible travel uses available cache space without evicting cached views. A new visible camera can release an unused view sooner when the cache is full. Leaving the world releases cached portal pipelines. Shader reload also releases retained shader stages.
 
-For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for your Minecraft version. Iris Shaders is separate from the Iris world-generation plugin and mod. For distant terrain on Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
+For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for your Minecraft version. Iris Shaders is separate from the Iris world-generation plugin and mod.
+
+For distant terrain on Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
 
 ### `config/wormholes-client.toml`
 
@@ -72,13 +78,13 @@ The client creates this file in its `config/` folder on first launch and reads i
 
 ## Build distributions
 
-Build with Java 25 from the repository root. `./gradlew buildAllToOut` exports the Bukkit jar and every supported Minecraft version for Fabric, Forge, and NeoForge to the sibling `PluginOuts/` directory. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Minecraft versions declared under `gradle/minecraft-versions/` join this build automatically. Game versions and loaders build serially.
+Build with Java 25 from the repository root. `./gradlew buildAllToOut` exports the Bukkit jar and every supported Minecraft version for Fabric, Forge, and NeoForge to the sibling `PluginOuts/` directory. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Minecraft versions declared under `gradle/minecraft-versions/` join this build automatically. Fabric, Forge, and NeoForge build at the same time, and each loader builds its game versions one after another.
 
 Repeated builds reuse unchanged verified targets. Changes to sources, test fixtures, dependencies, build settings, or the Java toolchain rebuild the affected targets and run their checks. Use `--rerun-tasks` to force every requested gate to run again.
 
 `buildAll`, `buildPsychoLT`, and the workspace `build-psycho-lt.sh` also compile and export every supported game version. Consumer dropins receive the selected Minecraft version's jar, which defaults to 26.3. Use `-PminecraftVersion=26.2` to select 26.2 for those dropins.
 
-Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Native single-platform builds use the selected Minecraft version, for example `./gradlew buildFabric -PminecraftVersion=26.2`. `./gradlew buildModdedVersionsToOut` exports all native game versions without building Bukkit or deploying jars. Each native export replaces older Wormholes jars for that loader and game version while retaining other game versions. NeoForge filenames omit the loader's trailing `-beta` suffix, for example `Wormholes v2.2.0 [NeoForge] 26.3+26.3.0.33.jar`.
+Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Native single-platform builds use the selected Minecraft version, for example `./gradlew buildFabric -PminecraftVersion=26.2`. Every other declared version has its own task with the version appended, for example `./gradlew buildFabric26_2` while 26.3 is selected. `./gradlew buildModdedVersionsToOut` exports all native game versions without building Bukkit or deploying jars. Each native export replaces older Wormholes jars for that loader and game version while retaining other game versions. NeoForge filenames omit the loader's trailing `-beta` suffix, for example `Wormholes v2.2.0 [NeoForge] 26.3+26.3.0.33.jar`.
 
 `./gradlew apiJar` creates the Bukkit compile dependency. Native integrations compile against their loader distribution; see [API](/wormholes/20-api-getting-started).
 
@@ -122,7 +128,9 @@ In singleplayer, each world keeps its Wormholes data in a `wormholes/` folder in
 | Portals, atlas discoveries, Nexus networks, rule templates, backups, network identity, routes, and trust | `config/wormholes/` | `wormholes/` in the save folder | `config/wormholes/` in the game folder |
 | Dimensional doors, pockets, and pocket templates | `config/wormholes/` | `wormholes/` in the save folder | `wormholes/` in the save folder |
 
-With `[main] shared-singleplayer-store = true`, every singleplayer world reads and writes one shared set of portals, so a portal built in one world also appears at the same position in every other world, and crossing it leads to its destination position in the world that is open. Dimensional doors and pocket rooms are blocks in the world where they were placed, so their records stay in that world's save folder. Wormholes reads the setting when a world opens; `/wormholes reload` does not move the data of the open world.
+With `[main] shared-singleplayer-store = true`, every singleplayer world reads and writes one shared set of portals, so a portal built in one world also appears at the same position in every other world, and crossing it leads to its destination position in the world that is open.
+
+Dimensional doors and pocket rooms are blocks in the world where they were placed, so their records stay in that world's save folder. Wormholes reads the setting when a world opens; `/wormholes reload` does not move the data of the open world.
 
 ## Config path and schema
 

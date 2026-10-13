@@ -1,8 +1,8 @@
 ---
 title: "Incident Mode & Playbooks"
-description: "React documentation: Incident Mode & Playbooks"
+description: "Incident scoring, event-rate limits, and sequential mitigation actions"
 published: true
-date: 2026-10-07T13:18:48.707Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

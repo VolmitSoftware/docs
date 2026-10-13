@@ -2,25 +2,12 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-10-12T01:13:58.426Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
 ---
 Iris replaces the chunk generator, not every vanilla system. Native structures still generate unless you deny them, placed features stay off unless you opt in, carvers never run, and mob spawning, loot, saplings, and dimension-type gameplay each have their own default. Use these settings to select vanilla features, mobs, loot, sapling growth, and dimension gameplay.
-
-Related:
-
-- [11 - Dimensions](/iris/11-dimensions)
-- [13 - Biomes](/iris/13-biomes)
-- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [17 - Procedural Objects](/iris/17-procedural-objects)
-- [17b - Procedural Trees](/iris/17b-procedural-trees)
-- [18 - Structures Overview](/iris/18-structures-overview)
-- [20 - Object Placement](/iris/20-object-placement)
-- [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
-- [23 - Loot](/iris/23-loot)
-- [23b - Entities & Spawners](/iris/23b-entities-spawners)
 
 Generation changes apply to new chunks. For a production world, stage edits with `/iris developer update-world world=<w> pack=<dim> confirm=true`, then restart, or open a fresh world.
 
@@ -264,3 +251,16 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 ## Related reference
 
 See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Mod authors can find the `importedFeatures` API contract on [94 - API - Modded](/iris/94-api-modded).
+
+Related:
+
+- [11 - Dimensions](/iris/11-dimensions)
+- [13 - Biomes](/iris/13-biomes)
+- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
+- [17 - Procedural Objects](/iris/17-procedural-objects)
+- [17b - Procedural Trees](/iris/17b-procedural-trees)
+- [18 - Structures Overview](/iris/18-structures-overview)
+- [20 - Object Placement](/iris/20-object-placement)
+- [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
+- [23 - Loot](/iris/23-loot)
+- [23b - Entities & Spawners](/iris/23b-entities-spawners)

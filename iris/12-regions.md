@@ -2,22 +2,12 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-A region is the middle layer of a pack. The dimension picks a region for every column. The region then decides which biomes are allowed there. Files live at `regions/<loadKey>.json`. A region carries four biome lists: land, sea, shore, and cave. It also carries a zoom for each list and the shoreline band width. Attach any content you want scoped to that part of the world.
-
-Related:
-
-- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
-- [11 - Dimensions](/iris/11-dimensions)
-- [13 - Biomes](/iris/13-biomes)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [15 - Caves & Carving](/iris/15-caves-carving)
-- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [20 - Object Placement](/iris/20-object-placement)
+A region selects the biomes and content allowed in part of a dimension. Files live at `regions/<loadKey>.json`. Each region defines land, sea, shore, and cave biome lists, their zoom levels, and the shoreline band width.
 
 ## Region and biome selection
 
@@ -67,7 +57,7 @@ Start with a valid dimension and an existing root biome.
 }
 ```
 
-Replace `starter` with the exact load key of your existing biome. Use root parents only. Never list a biome that is already someone child.
+Replace `starter` with the exact load key of your existing biome. List only root biomes, never a biome that is already another biome's child.
 
 2. Add `"tutorial"` to the dimension `regions` array.
 3. Set `"focusRegion": "tutorial"` on the dimension. This selects that region for every column while you edit.
@@ -243,3 +233,13 @@ Region keys listed by the bundled overworld dimension: `frozen`, `hot`, `terralo
 Region objects obey each placement's `carvingSupport`; cave-only placements do not appear on the surface. Structure placements from the dimension, region, surface biome, and cave biome can all apply to a chunk. The region and biome choices use the chunk center; cave biomes contribute only structures with cave anchors.
 
 Region changes affect newly generated chunks. Use fresh terrain when comparing rarity, zoom, or content settings.
+
+Related:
+
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [11 - Dimensions](/iris/11-dimensions)
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [15 - Caves & Carving](/iris/15-caves-carving)
+- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
+- [20 - Object Placement](/iris/20-object-placement)

@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T14:43:35.541Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -27,7 +27,15 @@ Downloaded builds use `./multiplexor` or `.\multiplexor.exe` with the same argum
 
 ## Read the dashboard
 
-The header shows fleet availability, players, fleet TPS, and host CPU/memory. Local servers appear in four vertically stacked groups: **Plugins**, **Fabric**, **Forge**, and **NeoForge**. Empty groups shrink to a clickable **Create first server** strip. Populated groups stretch to share the remaining list space, keeping spare rows inside their borders. Each row has its configured port and a **Primary** checkbox on the right; each group keeps its own primary server. Additional columns show players, TPS, trend, memory, CPU, and uptime when space permits. All four groups remain visible at 80×24. Use ↑/↓ or the mouse wheel over the list to move through every server; overflowing groups scroll to keep the focused row visible and show the visible range in their header. The wheel moves the current selection, including when the pointer is over blank space inside an expanded group. Remote keeps its fleet table. The selected running server adds CPU/memory charts, facts, and RX/TX charts. A stopped server uses a compact single line. Server and workspace action bars sit below it.
+The header shows fleet availability, players, fleet TPS, and host CPU/memory.
+
+Local servers appear in four vertically stacked groups: **Plugins**, **Fabric**, **Forge**, and **NeoForge**. Empty groups shrink to a clickable **Create first server** strip. Populated groups stretch to share the remaining list space, keeping spare rows inside their borders.
+
+Each row has its configured port and a **Primary** checkbox on the right; each group keeps its own primary server. Additional columns show players, TPS, trend, memory, CPU, and uptime when space permits. All four groups remain visible at 80×24.
+
+Use the Up/Down arrows or the mouse wheel to move through the server list. Overflowing groups scroll to keep the focused row visible. Their headers show the visible range. The wheel moves the current selection, including when the pointer is over blank space inside an expanded group. Remote uses a fleet table.
+
+The selected running server adds CPU/memory charts, facts, and RX/TX charts. A stopped server uses a compact single line. Server and workspace action bars sit below it.
 
 Local metrics refresh every two seconds. macOS uses `nettop` for actual per-Java-process packets and bytes; other platforms leave network metrics unavailable when reliable per-process counters are absent. Remote uses Pterodactyl resource counters at intervals of at least twenty seconds, slowing for larger fleets. Local packet rates use `PPS`; Remote throughput uses `B/s` rather than estimated packets.
 
@@ -39,7 +47,9 @@ A failed Local group refresh retains that group’s previous servers and reading
 
 ![Selected server's action card with lifecycle, backup, runtime, and addon controls](/servermultiplexor-assets/server-actions.png)
 
-Click a Local server row to open its card, or use arrows to focus it and press Enter. Remote rows select on the first click and open on the second. **MORE** also opens the focused server card. Clicking the right-hand **Primary** checkbox makes that server the primary for its group without opening the card. Cards are modal: arrows and the wheel move button focus, Enter activates, and printed button letters act as shortcuts. Clicking outside a card or pressing Esc closes it; clicking empty space inside does nothing. Disabled actions cannot receive focus or run, and the underlying dashboard stays inactive.
+Click a Local server row to open its card, or use arrows to focus it and press Enter. Remote rows select on the first click and open on the second. **MORE** also opens the focused server card. Clicking the right-hand **Primary** checkbox makes that server the primary for its group without opening the card.
+
+Cards are modal: arrows and the wheel move button focus, Enter activates, and printed button letters act as shortcuts. Clicking outside a card or pressing Esc closes it. Clicking empty space inside does nothing. Disabled actions cannot receive focus or run, and the underlying dashboard stays inactive.
 
 Buttons activate on mouse release only if the pointer remains on the pressed button. Unavailable actions are dimmed. **START** runs in the background, leaving the dashboard open; use **CONSOLE** after startup. The selected panel's range badge cycles chart history.
 

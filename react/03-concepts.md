@@ -1,8 +1,8 @@
 ---
 title: "Concepts"
-description: "React documentation: Concepts"
+description: "How React features, tweaks, actions, and samplers use configuration and capabilities"
 published: true
-date: 2026-08-25T00:00:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

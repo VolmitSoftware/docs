@@ -2,20 +2,19 @@
 title: "Localization"
 description: "Iris documentation: Localization"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Iris's server default is the `language` key in `iris.json`. Overrides live in the platform data
-directory under `languages/`.
+Set Iris's server language with `general.language` in `iris.json`. Server message overrides use TOML files under `languages/` in the platform data directory.
 
 See [Languages](/languages) for the picker, permissions, the full locale list, fallback rules, and how to edit or translate messages.
 
 ## Client language assets
 
-The Minecraft client reads its own lang files from `assets/irisworldgen/lang/<mc_code>.json` inside the mod jar. The server `language` setting does not change these labels. They currently define only the keybind category and the three key names:
+The Minecraft client reads keybind labels from `assets/irisworldgen/lang/<mc_code>.json` inside the mod jar. The server's `general.language` setting does not change these labels. These files define the keybind category and three key names:
 
 | Key | English |
 |---|---|

@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-01T19:41:29.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -36,8 +36,8 @@ Extra broken blocks use the player's own break action. A denied claim does not b
 ### Axe Ground Smash (`axe-ground-smash`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-ground-smash-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-ground-smash-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Axe Ground Smash" src="/adapt-assets/demos/axes/axe-ground-smash-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Axe Ground Smash" src="/adapt-assets/demos/axes/axe-ground-smash-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 6 per level
@@ -58,8 +58,8 @@ With a main-hand axe, jump, hold sneak in the air, and land while still sneaking
 ### Axe Chop (`axe-chop`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-chop-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-chop-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Axe Chop" src="/adapt-assets/demos/axes/axe-chop-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Axe Chop" src="/adapt-assets/demos/axes/axe-chop-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 3 per level
@@ -77,8 +77,8 @@ Right-click a log with a main-hand axe to remove the top log of the column above
 ### Axe Drop-To-Inventory (`axe-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Axe Drop-To-Inventory" src="/adapt-assets/demos/axes/axe-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Axe Drop-To-Inventory" src="/adapt-assets/demos/axes/axe-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 3 knowledge
@@ -88,8 +88,8 @@ Logs and leaves broken with an axe go into the inventory. Drops blocked by prote
 ### Leaf-miner (`axe-leaf-veinminer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-leaf-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-leaf-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Leaf-miner" src="/adapt-assets/demos/axes/axe-leaf-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Leaf-miner" src="/adapt-assets/demos/axes/axe-leaf-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 1 knowledge, then 6 per level
@@ -104,8 +104,8 @@ Sneak-break a leaf with a main-hand axe to break connected leaves of the same ty
 ### Iris Feller (`axe-iris-feller`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-iris-feller-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/axes/axe-iris-feller-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Iris Feller" src="/adapt-assets/demos/axes/axe-iris-feller-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Iris Feller" src="/adapt-assets/demos/axes/axe-iris-feller-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 4 knowledge, then 3 per level
@@ -120,8 +120,8 @@ Registers only when Iris is installed. Sneak-break a naturally generated Iris tr
 ### Wood-miner (`axe-wood-veinminer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-wood-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-wood-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Wood-miner" src="/adapt-assets/demos/axes/axe-wood-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Wood-miner" src="/adapt-assets/demos/axes/axe-wood-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -136,8 +136,8 @@ Sneak-break a log or wood block with a main-hand axe to break matching blocks in
 ### Lucy's Log-Swapper (`axe-logswap`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-logswap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-logswap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Lucy&#x27;s Log-Swapper" src="/adapt-assets/demos/axes/axe-logswap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Lucy&#x27;s Log-Swapper" src="/adapt-assets/demos/axes/axe-logswap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 2 knowledge
@@ -147,8 +147,8 @@ Shapeless crafting turns eight logs of one type plus one sapling into eight logs
 ### Throwing Axe (`axe-throwing-axe`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-throwing-axe-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-throwing-axe-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Throwing Axe" src="/adapt-assets/demos/axes/axe-throwing-axe-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Throwing Axe" src="/adapt-assets/demos/axes/axe-throwing-axe-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 4 levels · 5 knowledge
@@ -172,8 +172,8 @@ Left-click air with a main-hand axe to throw it. The axe leaves the inventory, a
 ### Sunder (`axe-sunder`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-sunder-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-sunder-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Sunder" src="/adapt-assets/demos/axes/axe-sunder-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Sunder" src="/adapt-assets/demos/axes/axe-sunder-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -193,8 +193,8 @@ Each axe hit strips armor and a share of armor toughness, stacking up to the cap
 ### Cleave (`axe-cleave`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-cleave-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-cleave-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Cleave" src="/adapt-assets/demos/axes/axe-cleave-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Cleave" src="/adapt-assets/demos/axes/axe-cleave-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 6 knowledge, then 5 per level
@@ -218,8 +218,8 @@ An axe hit also damages other living entities in a forward cone. Armor stands ar
 ### Bark Hide (`axe-bark-hide`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-bark-hide-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-bark-hide-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Bark Hide" src="/adapt-assets/demos/axes/axe-bark-hide-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Bark Hide" src="/adapt-assets/demos/axes/axe-bark-hide-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -237,8 +237,8 @@ Each log broken with an axe adds one absorption stack. One stack is 4 absorption
 ### Shield Splitter (`axe-shield-splitter`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/axes/axe-shield-splitter-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/adapt-assets/demos/axes/axe-shield-splitter-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Shield Splitter" src="/adapt-assets/demos/axes/axe-shield-splitter-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Shield Splitter" src="/adapt-assets/demos/axes/axe-shield-splitter-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 4 levels · 4 knowledge

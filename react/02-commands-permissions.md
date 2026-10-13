@@ -1,8 +1,8 @@
 ---
 title: "Commands & Permissions"
-description: "React documentation: Commands & Permissions"
+description: "React command syntax, aliases, and permission requirements"
 published: true
-date: 2026-10-07T13:54:17.453Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

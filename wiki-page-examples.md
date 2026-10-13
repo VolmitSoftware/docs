@@ -2,7 +2,7 @@
 title: "Wiki.js Page Examples"
 description: "Short examples for writing consistent Volmit Wiki.js pages"
 published: true
-date: 2026-10-09T16:58:33.000Z
+date: 2026-10-13T14:42:49.255Z
 tags: "meta, wikijs, style-guide, examples"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -44,9 +44,8 @@ A useful page order is:
 
 1. One short summary
 2. The main task or answer
-3. Settings, commands, or edge cases
-4. Troubleshooting
-5. Related pages
+3. Settings, commands, or supported limits
+4. Related pages
 
 Use direct headings such as **Install the plugin**, **Commands**, and
 **Portal limits**. Avoid headings that only repeat the product name.
@@ -74,7 +73,7 @@ a description:
 ~~~markdown
 - [Getting started *Build Nether and End portals*](/shapedportals/00-overview)
 - [Configuration *Change frame materials and size limits*](/shapedportals/01-installation-configuration)
-- [Troubleshooting *Fix activation and travel problems*](/shapedportals/02-portal-behavior-events#troubleshooting)
+- [Portal behavior *Understand activation, protection, and repair*](/shapedportals/02-portal-behavior-events)
 {.links-list}
 ~~~
 
@@ -107,7 +106,8 @@ Tables work well for commands, permissions, and settings:
 {.dense}
 
 Put the command or key first so readers can scan the left column. Keep long
-explanations outside the table.
+explanations outside the table. Escape `|` as `\|` inside table cells,
+including inline command syntax, so it does not create an extra column.
 
 Use a language on fenced code blocks:
 

@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-10-12T23:28:26.473Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -78,7 +78,9 @@ Every switch defaults to on. `connections` gates the join, switch, and leave mes
 
 Tablist sorting uses native list order and requires Minecraft clients 1.21.2 or newer.
 
-Set `networkTablist` to `true` to include connected players across the proxy. With `false`, Gloss formats existing entries for players on the viewer's backend. `networkVisibility` is a proxy condition evaluated for every viewer/subject pair before adding remote entries or including players in a fixed grid; its default is `"true"`. Ordinary local entries remain controlled by the backend: use the backend vanish integration to hide those rows. For example, `"subject.server == viewer.server || hasPermission('viewer', 'network.roster')"` restricts remote listings to permitted viewers. A local entry absent from the backend list is never recreated, and entries removed or unlisted by another plugin stay hidden.
+Set `networkTablist` to `true` to include connected players across the proxy. With `false`, Gloss formats existing entries for players on the viewer's backend.
+
+`networkVisibility` is a proxy condition evaluated for every viewer/subject pair before adding remote entries or including players in a fixed grid; its default is `"true"`. Ordinary local entries remain controlled by the backend: use the backend vanish integration to hide those rows. For example, `"subject.server == viewer.server || hasPermission('viewer', 'network.roster')"` restricts remote listings to permitted viewers. A local entry absent from the backend list is never recreated, and entries removed or unlisted by another plugin stay hidden.
 
 ## Text and conditions
 

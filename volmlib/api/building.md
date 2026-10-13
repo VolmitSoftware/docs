@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-12T23:36:43.102Z
+date: 2026-10-13T14:45:11.677Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -128,12 +128,11 @@ From the Iris checkout, its Gradle test tasks use the same automatic test JVM li
 ./build-psycho-lt.sh --tests-only --rerun
 ```
 
-Iris's `moddedTest` is part of `check`, not `test`, so `--tests-only` does not run the `adapters/modded-common` suite. Run `./gradlew moddedTest` or `./gradlew build` from `Iris/` for that.
-
-
-This runs `test` in VolmLib and every selected plugin, or all plugins when `--project` is omitted. It does not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run, including the Wormholes API jar consumed by ShapedPortals. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
+These commands run `test` in VolmLib and every selected plugin, or all plugins when `--project` is omitted. They do not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run, including the Wormholes API jar consumed by ShapedPortals. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
 
 Add `--rerun` to execute the tests again even when their previous results are up to date, without forcing all compilation tasks to rerun.
+
+Iris's `moddedTest` is part of `check`, so `--tests-only` does not run the `adapters/modded-common` suite. Run `./gradlew moddedTest` or `./gradlew build` from `Iris/` to include it.
 
 ## Local dependencies and logs
 
@@ -155,11 +154,41 @@ Packaging runs three passes inside the archive task, in this order: a ProGuard s
 
 Director parameter handlers are retained as reflective command entry points, including nested handlers referenced by parameter annotations. Their nest membership remains intact, so packaged handlers can call private methods on their enclosing command class.
 
-Non-modded profiles pass the assembled archive through ProGuard 7.10 in shrink-only mode (`-dontobfuscate -dontoptimize`), so package, class, and member names never change. The pass removes classes and members that nothing reachable references. Reachability starts from generated keep rules: the `main`, `bootstrapper`, and `loader` classes of `plugin.yml` and `paper-plugin.yml`; every `keepPrefixes` entry and every `required_entries` class; every `META-INF/services` interface and provider; every class whose full name appears as a string constant in bytecode or inside a text resource; every annotation type; all constructors of retained classes; enum `values` and `valueOf`; members carrying Gson `SerializedName`/`Expose` or `ConfigDoc`/`ConfigDescription` annotations; the fields of classes named `*Config*` or `*Settings*`; record members; `EventHandler` and `Subscribe` methods; Java serialization and `ConfigurationSerializable` hooks; the shared reflective families matched by relocated-package wildcards (`**.slimjar.**`, `**.bstats.**`, `**.packetevents.**`, `**.bytebuddy.**`, `**.caffeine.**`, `**.director.**`, `**.matter.slices.**`, `**.papi.**`); classes and members annotated with any `**.director.annotations.Director` or `Param`; and the per-profile `shrink_keep` rule lines from `artifact-policies.json`. Iris Bukkit keeps its annotated pack models, NMS bindings, scanned services, command handlers, mantle components, SIMD kernels, and embedded agent. The artifact gate requires each command handler and mantle component discovered in the source packages.
+Non-modded profiles pass the assembled archive through ProGuard 7.10 in shrink-only mode (`-dontobfuscate -dontoptimize`), so package, class, and member names never change. The pass removes classes and members that nothing reachable references. Generated keep rules start from these entry points and reflective uses:
 
-The library classpath is the JDK of the Gradle JVM (exported once from the runtime image into `<gradle user home>/caches/volmit-packaging/`) plus the project's resolved `compileClasspath`. Library jars whose class entries overlap the archive, such as project-built modules already shaded in, are excluded automatically. A build can add more library jars with `shrinkLibraries.from(...)` inside its artifact block; projects whose NMS bindings live in a subproject add that subproject's compile classpath so preverification sees the server hierarchy. `shrinkRelocations` maps original packages to their relocated names so runtime-downloaded SlimJar libraries are analysed under the relocated hierarchy the jar actually references. Unresolved references fail the build unless the referenced or referencing class matches a shared default (`javax.annotation.**`, `org.jetbrains.annotations.**`, `org.checkerframework.**`, `edu.umd.cs.findbugs.annotations.**`, `com.google.errorprone.annotations.**`, `kotlin.**`, `android.**`, `dalvik.**`, `org.apache.logging.log4j.**`, `java.lang.invoke.**`, `me.clip.placeholderapi.**`, `lombok.**`) or a per-profile `shrink_dontwarn` pattern; every tolerated warning is listed in the JSON report. Classes that carry ByteBuddy `Advice` annotations are kept whole and their original bytes are written back over ProGuard's output, because the preverifier rewrites their stack-map frames in a form ByteBuddy refuses to inline; the report lists them as restored. The shrunk archive replaces the original only when ProGuard succeeded and the result is smaller.
+- The `main`, `bootstrapper`, and `loader` classes declared in `plugin.yml` and `paper-plugin.yml`.
+- Every `keepPrefixes` entry and `required_entries` class.
+- Every `META-INF/services` interface and provider.
+- Classes named by string constants in bytecode or text resources.
+- Annotation types, constructors of retained classes, enum `values` and `valueOf`, and record members.
+- Members with Gson `SerializedName`/`Expose` or `ConfigDoc`/`ConfigDescription` annotations, and fields in classes named `*Config*` or `*Settings*`.
+- `EventHandler` and `Subscribe` methods, Java serialization hooks, and `ConfigurationSerializable` hooks.
+- Shared reflective families matched by `**.slimjar.**`, `**.bstats.**`, `**.packetevents.**`, `**.bytebuddy.**`, `**.caffeine.**`, `**.director.**`, `**.matter.slices.**`, and `**.papi.**`.
+- Classes and members annotated with `**.director.annotations.Director` or `Param`.
+- Per-profile `shrink_keep` rules from `artifact-policies.json`.
 
-The shrink can be switched off four ways. `-PvolmitPackaging=dev`, or the environment variable `VOLMIT_PACKAGING=dev`, selects development packaging for every project in that build: the shrink is skipped and the size gate is downgraded to a warning, so a local jar that is over budget still builds. `-PvolmitShrink=false` or `VOLMIT_SHRINK=false` disables only the shrink and leaves the size gate enforcing. `shrink = false` inside an artifact block disables it for one artifact. `"modded": true` on a policy profile disables it for that profile; Iris Fabric, Forge, and NeoForge are modded profiles. The report records which of these applied. Development packaging is never the default, cannot be declared by a policy profile or an artifact block, and accepts only `dev` or `release`; any other value fails the build at plugin application. Every other audit check still fails the build in development packaging, including required entries, duplicate entries, CRC and size integrity, forbidden bundled packages, and the logging policy, and a non-modded profile still cannot declare a `max_bytes` above the cap. Each verified development jar prints a `DEVELOPMENT packaging` line naming the flag. Non-modded jars also report their advisory budget and any size overage. Modded jars have no size budget or size warnings. Reports record `"mode": "dev"` and the shrink skip reason in `shrink.reason`. Release builds record `"mode": "release"` and an empty `warnings` list.
+Iris Bukkit keeps its annotated pack models, NMS bindings, scanned services, command handlers, mantle components, SIMD kernels, and embedded agent. The artifact gate requires each command handler and mantle component discovered in the source packages.
+
+The library classpath is the JDK of the Gradle JVM (exported once from the runtime image into `<gradle user home>/caches/volmit-packaging/`) plus the project's resolved `compileClasspath`. Library jars whose class entries overlap the archive, such as project-built modules already shaded in, are excluded automatically.
+
+A build can add more library jars with `shrinkLibraries.from(...)` inside its artifact block; projects whose NMS bindings live in a subproject add that subproject's compile classpath so preverification sees the server hierarchy. `shrinkRelocations` maps original packages to their relocated names so runtime-downloaded SlimJar libraries are analysed under the relocated hierarchy the jar actually references.
+
+Unresolved references fail the build unless the referenced or referencing class matches a shared default (`javax.annotation.**`, `org.jetbrains.annotations.**`, `org.checkerframework.**`, `edu.umd.cs.findbugs.annotations.**`, `com.google.errorprone.annotations.**`, `kotlin.**`, `android.**`, `dalvik.**`, `org.apache.logging.log4j.**`, `java.lang.invoke.**`, `me.clip.placeholderapi.**`, `lombok.**`) or a per-profile `shrink_dontwarn` pattern; every tolerated warning is listed in the JSON report.
+
+Classes that carry ByteBuddy `Advice` annotations are kept whole and their original bytes are written back over ProGuard's output, because the preverifier rewrites their stack-map frames in a form ByteBuddy refuses to inline; the report lists them as restored. The shrunk archive replaces the original only when ProGuard succeeded and the result is smaller.
+
+Four controls can disable shrinking:
+
+| Control | Effect |
+|---|---|
+| `-PvolmitPackaging=dev` or `VOLMIT_PACKAGING=dev` | Select development packaging for the build. Skip shrinking and report size overages as warnings |
+| `-PvolmitShrink=false` or `VOLMIT_SHRINK=false` | Skip shrinking and continue enforcing the size gate |
+| `shrink = false` in an artifact block | Skip shrinking for that artifact |
+| `"modded": true` in a policy profile | Skip shrinking for that profile. Iris Fabric, Forge, and NeoForge use this setting |
+
+The report records which control applied. Development packaging is never the default, cannot be declared by a policy profile or an artifact block, and accepts only `dev` or `release`; any other value fails the build at plugin application.
+
+Every other audit check still fails the build in development packaging, including required entries, duplicate entries, CRC and size integrity, forbidden bundled packages, and the logging policy, and a non-modded profile still cannot declare a `max_bytes` above the cap. Each verified development jar prints a `DEVELOPMENT packaging` line naming the flag. Non-modded jars also report their advisory budget and any size overage. Modded jars have no size budget or size warnings. Reports record `"mode": "dev"` and the shrink skip reason in `shrink.reason`. Release builds record `"mode": "release"` and an empty `warnings` list.
 
 ### Dependency pruning and compaction
 

@@ -2,31 +2,12 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-10-12T01:16:38.165Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Copy the built-in `overworld` pack, add a meadow biome, and create a world from your edited pack.
-
-Related:
-
-- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
-- [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)
-- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
-- [11 - Dimensions](/iris/11-dimensions)
-- [12 - Regions](/iris/12-regions)
-- [13 - Biomes](/iris/13-biomes)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [23 - Loot](/iris/23-loot)
-- [23b - Entities & Spawners](/iris/23b-entities-spawners)
-- [23c - Markers](/iris/23c-markers)
-- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
-- [44 - Biome Catalog](/iris/44-biome-catalog)
-- [24 - Snippets](/iris/24-pack-mods-snippets)
-- [25 - Pack Management](/iris/25-pack-management)
-- [04 - Commands & Permissions](/iris/04-commands-permissions)
-- [02 - Getting Started](/iris/02-getting-started)
 
 Prerequisites: the `overworld` pack installed and validating, operator access on Bukkit or gamemaster on a mod loader, the keys `my-overworld`, `overworld-test` and `tutorial/meadow` unused, and the fork under source control or backed up.
 
@@ -262,3 +243,22 @@ An in-place update cannot change the seed, `dimensionHeight`, `logicalHeight`, `
 - Dimension field reference: [11 - Dimensions](/iris/11-dimensions)
 - Commands and permissions: [04 - Commands & Permissions](/iris/04-commands-permissions)
 - Download, validate, package: [25 - Pack Management](/iris/25-pack-management)
+
+Related:
+
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [23 - Loot](/iris/23-loot)
+- [23b - Entities & Spawners](/iris/23b-entities-spawners)
+- [23c - Markers](/iris/23c-markers)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [44 - Biome Catalog](/iris/44-biome-catalog)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
+- [25 - Pack Management](/iris/25-pack-management)
+- [04 - Commands & Permissions](/iris/04-commands-permissions)
+- [02 - Getting Started](/iris/02-getting-started)

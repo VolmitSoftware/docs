@@ -2,27 +2,16 @@
 title: "Volumetric Terrain"
 description: "Iris documentation: Volumetric Terrain"
 published: true
-date: 2026-10-06T19:12:27.335Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T12:00:00.000Z
 ---
-`terrain3D` is an optional per-biome profile that shapes solid volume around the height a biome's `generators` already produce. It is off unless a biome declares it. A column that would otherwise hold one solid run from the world floor to a single top can hold several solid spans separated by air, so a surface gains projecting rock, undercuts, covered ledges and narrow fissures. The height generators still decide the broad landform; the profile only displaces density around it.
-
-Related:
-
-- [13 - Biomes](/iris/13-biomes)
-- [14 - Generators, Noise & Expressions](/iris/14-generators-noise)
-- [15 - Caves & Carving](/iris/15-caves-carving)
-- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [24 - Snippets](/iris/24-pack-mods-snippets)
-- [25 - Pack Management](/iris/25-pack-management)
-- [36 - Rivers](/iris/36-rivers)
-- [Biome Terrain Shaping](/iris/biomes/terrain-shaping)
+`terrain3D` adds overhangs, undercuts, covered ledges, and fissures around the height produced by a biome's `generators`. This optional per-biome profile is off unless a biome declares it. Height generators still set the broad landform, while the profile shapes solid volume around it.
 
 ## What it does
 
-With no enabled profiles, the pack keeps its ordinary height-based terrain.
+With no enabled profiles, the pack keeps its ordinary height-based terrain. An enabled profile can divide one solid terrain column into several solid spans separated by air.
 
 Where a profile is active, a signed displacement field and a signed fissure field push the solid/air boundary around the generator height, so one column can carry several `ceiling..floor` pairs. Solid mass that never connects to the ground and totals 512 blocks or fewer is dropped, which is what stops isolated rock floating in the air. The highest solid block becomes the natural terrain height.
 
@@ -103,7 +92,7 @@ The modded `/iris studio package` export copies the entire `snippet/` tree so te
 
 **Terrain writing.** Blocks in the gaps are written as air and ores cannot claim those cells. Each exposed ledge floor restarts the layer stack with a fresh surface palette generated for that floor's own height. Under an overhang, the bottom two blocks of the covering span use the biome's `caveCeilingLayers`, falling back to dimension rock when the biome declares none. The top two blocks of a span always win, so a ledge two blocks thick keeps its surface layers rather than becoming a ceiling, and the lowest span in a column never takes ceiling layers.
 
-**Slope.** Surface slope is measured between neighbouring ledge floors rather than off the flat heightmap, so a steep upper cap does not force a flat ledge below it to use steep-slope materials. Layer slope clips and decorator `slopeCondition` both read that per-ledge slope.
+**Slope.** Surface slope is measured between neighboring ledge floors. A steep upper cap therefore does not force a flat ledge below it to use steep-slope materials. Layer slope clips and decorator `slopeCondition` both read that per-ledge slope.
 
 **Decorators.** Where a span floor is solid and has at least one block of headroom, the surface decorator runs on that floor with the headroom as its available space; where the span above is solid, the ceiling decorator runs on its underside. See [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits).
 
@@ -154,3 +143,14 @@ This biome uses a flat generator at Y 128. The profile adds ledges above that he
 ```
 
 `minimumSlope: 0` allows shaping on flat ground. `fluidClearance: 0` and `fluidFade: 1` remove the elevation fade. The smaller vertical scale creates several folds within the 64-block displacement band.
+
+Related:
+
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators, Noise & Expressions](/iris/14-generators-noise)
+- [15 - Caves & Carving](/iris/15-caves-carving)
+- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
+- [25 - Pack Management](/iris/25-pack-management)
+- [36 - Rivers](/iris/36-rivers)
+- [Biome Terrain Shaping](/iris/biomes/terrain-shaping)

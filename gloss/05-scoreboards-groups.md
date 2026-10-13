@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-10-08T14:17:00Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -17,7 +17,13 @@ For conditional action bars, boss bars, and titles, see [Screen Surfaces](/gloss
 `/gloss web edit scoreboard <id>` opens one board in a restricted live editor session;
 `/gloss web workspace` includes every board.
 
-In the editor, expand **Row settings** beneath a row to set its stable ID, visibility condition, score value, score format, or section reference. Editing the label preserves these settings. Use **Reusable sections** to add, rename, or remove named row lists; renaming updates references throughout that presentation. **Rotating pages** edits each page’s ID, condition, duration, title inheritance, rows, and rotation order. Removing a referenced section leaves a validation error until its references are updated. **Layout policy** selects truncation or overflow rejection and overrides title, text, and value intervals independently. These controls are available for the default presentation and every variant. **Native objectives** enables and configures player-list and below-name slots, including viewer and subject conditions, formats, refresh intervals, and conflict policies. Unknown properties survive editing, export, and undo. The sidebar preview expands sections and rotates eligible pages against the selected viewer context and the browser clock. Native player-list and below-name placement is controlled by Minecraft and is not rendered in the sidebar preview.
+In the editor, expand **Row settings** beneath a row to set its stable ID, visibility condition, score value, score format, or section reference. Editing the label preserves these settings.
+
+Use **Reusable sections** to add, rename, or remove named row lists; renaming updates references throughout that presentation. **Rotating pages** edits each page’s ID, condition, duration, title inheritance, rows, and rotation order. Removing a referenced section leaves a validation error until its references are updated.
+
+**Layout policy** selects truncation or overflow rejection and overrides title, text, and value intervals independently. These controls are available for the default presentation and every variant.
+
+**Native objectives** enables and configures player-list and below-name slots, including viewer and subject conditions, formats, refresh intervals, and conflict policies. Unknown properties survive editing, export, and undo. The sidebar preview expands sections and rotates eligible pages against the selected viewer context and the browser clock. Native player-list and below-name placement is controlled by Minecraft and is not rendered in the sidebar preview.
 
 ## The board document
 

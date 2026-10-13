@@ -1,8 +1,8 @@
 ---
 title: "API - Getting Started"
-description: "React documentation: API - Getting Started"
+description: "Add React as a dependency and use its protection and metric APIs"
 published: true
-date: 2026-10-12T23:25:13.822Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

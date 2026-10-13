@@ -1,8 +1,8 @@
 ---
 title: "Monitors Maps & In-Game GUI"
-description: "React documentation: Monitors Maps & In-Game GUI"
+description: "Use player HUDs, map displays, and in-game configuration editors"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

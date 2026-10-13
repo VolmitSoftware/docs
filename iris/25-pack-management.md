@@ -2,22 +2,12 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Download, validate, clean, package, or update an Iris pack.
-
-See also:
-
-- [03 - Configuration](/iris/03-configuration)
-- [04 - Commands & Permissions](/iris/04-commands-permissions)
-- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
-- [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)
-- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
-- [24 - Snippets](/iris/24-pack-mods-snippets)
-- [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)
 
 ## Pack copies
 
@@ -326,3 +316,13 @@ Ordinary Bukkit Studio applies compatible authoring edits while the world is ope
 | Strict content key enforcement | `settings.general.strictContentKeys` — [03 - Configuration](/iris/03-configuration) |
 | List content unavailable on this Minecraft version | `/iris pack compat` — [Version content compatibility](#version-content-compatibility) |
 | Datapack bootstrap and install | `/iris datapack` — [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+
+See also:
+
+- [03 - Configuration](/iris/03-configuration)
+- [04 - Commands & Permissions](/iris/04-commands-permissions)
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
+- [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)

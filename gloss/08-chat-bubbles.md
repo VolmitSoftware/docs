@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-10-08T00:27:49.396Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -301,7 +301,11 @@ The enabled switch affects both the highlighted token and the full highlighted m
 
 `format` is the ordinary message template. `card` contains up to 16 hover-text lines, inserted with `{{ card }}`. Up to 32 `variants`, each with `id`, `priority`, and `when`, can override `format`, `card`, `mentions`, `items`, `links`, `filters`, `filtering`, and `throttle`. The highest priority wins, with ID breaking ties. An omitted field inherits the base value; an explicit empty array clears that field. Nested objects replace their base object. Filters and throttle select in the sender’s scope; presentation fields select per reader. `mentions.messageFormat` controls the tagged recipient's message independently.
 
-`items` has `enabled`, `token` (default `[item]`), `permission` (default `gloss.chat.item`), and `render` (default `[{{ item.name }}]{{ item.countSuffix }}`). The render template accepts colors and `item.name`, `item.id`, `item.amount`, and `item.countSuffix` substitutions. The suffix is ` xN` for stacks above one, otherwise empty. Item names remain literal text. Item links show the sender's held stack when the message is sent, including replacements within the same hotbar slot. On Paper, item-link messages use per-recipient system messages; ordinary chat retains the server's signed chat delivery. `links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. Link labels accept authored colors and resets; only the label opens the URL. `filters` contains ordered RE2 `match` expressions and literal `replace` strings. Dollar signs and backslashes in replacements remain literal. Filtering applies before formatting; an empty result cancels the message. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
+`items` has `enabled`, `token` (default `[item]`), `permission` (default `gloss.chat.item`), and `render` (default `[{{ item.name }}]{{ item.countSuffix }}`). The render template accepts colors and `item.name`, `item.id`, `item.amount`, and `item.countSuffix` substitutions. The suffix is ` xN` for stacks above one, otherwise empty. Item names remain literal text. Item links show the sender's held stack when the message is sent, including replacements within the same hotbar slot. On Paper, item-link messages use per-recipient system messages; ordinary chat retains the server's signed chat delivery.
+
+`links` has `enabled` and `render`, with `link.host` and `link.url` substitutions. Link labels accept authored colors and resets; only the label opens the URL.
+
+`filters` contains ordered RE2 `match` expressions and literal `replace` strings. Dollar signs and backslashes in replacements remain literal. Filtering applies before formatting; an empty result cancels the message. `throttle` provides `repeatWindowTicks`, `maxRepeats`, and `minIntervalTicks`.
 
 Use `/ch list` and `/ch <channel>` to choose a channel, `/msg <player> <message>` for direct messages, and `/r <message>` to reply.
 

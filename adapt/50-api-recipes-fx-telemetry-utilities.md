@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-10-08T00:00:00.000Z
+date: 2026-10-13T16:39:54.436Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,7 +13,7 @@ The FX engine draws particle shapes and plays sounds with viewer snapshotting, p
 
 Other APIs include a recipe builder with an Adapt level gate, a recipe-book planner, projectile ownership claims, and a cached material value calculator.
 
-The last two sections list types that are Java-public because Adapt's own content needs them across packages. They are documented so nobody mistakes visibility for a compatibility promise. Several expose relocated or version-specific classes and will break on you.
+Some types listed here are Java-public for use across Adapt's own packages and are not supported integration points. The relevant sections identify these types. Several expose relocated or version-specific classes that can change between releases.
 
 ## Recipes and brewing
 
@@ -70,7 +70,9 @@ Their `record...`, `beginExecution`, `endExecution`, and `clear` methods are Ada
 
 When an adaptation launches or repurposes a projectile it stamps an ownership key on the projectile's persistent data container. Anything that clones, redirects, or replaces projectiles has to refuse ones carrying a foreign key. Otherwise it hijacks another system's arrow mid-flight.
 
-`ProjectileClaims.isUnclaimed(projectile, ownedKeys...)` is the check. Pass every `NamespacedKey` your plugin owns. A `true` result means the projectile carries no key you do not own. Nobody else has claimed it.
+Use `ProjectileClaims.isUnclaimed(projectile, ownedKeys...)` and pass every `NamespacedKey` your plugin owns. A `true` result means every stored key is either explicitly owned by the caller or registered as a cooperative modifier. Unrecognized keys still block replacement.
+
+Use `ProjectileClaims.registerCooperativeKeys(keys...)` only for metadata whose effect remains valid when a projectile is redirected or replaced. Fetch Shot, Floaters, and Pinning Shot register their modifier keys this way. `snapshotCooperativeData(container)` returns a detached container with only these registered keys, suitable for copying to a replacement projectile; exclusive payload and ownership keys are excluded.
 
 `ProjectileReplacementRegistry` transfers that ownership when one projectile entity is swapped for another. `register` installs a one-shot claim. `begin` removes it and hands back a `Ticket` that must be completed or cancelled exactly once.
 
@@ -144,7 +146,7 @@ Every read takes `now` in epoch milliseconds.
 
 | Type | Contract |
 |------|----------|
-| `ProjectileClaims` | `isUnclaimed(Projectile, NamespacedKey...)`, `isUnclaimedContainer(PersistentDataContainer, NamespacedKey...)`. `false` for a null container. `true` for an empty one |
+| `ProjectileClaims` | `isUnclaimed(Projectile, NamespacedKey...)`, `isUnclaimedContainer(PersistentDataContainer, NamespacedKey...)`. `false` for a null container. `true` for an empty one. `registerCooperativeKeys(NamespacedKey...)` registers nonexclusive metadata; `snapshotCooperativeData(PersistentDataContainer)` copies only that metadata |
 | `ProjectileReplacementRegistry` | `register(Projectile, Claim)`, `begin(Projectile)` returning a `Ticket`, `unregister(UUID)`. `Ticket.complete(replacement)` or `cancel()` exactly once. `clear()` is Adapt shutdown only |
 | `DataItem<T>` | Implement `getMaterial`, `getType`, `applyLore`, and `applyMeta`. Optionally implement `getCooldownGroup` and `acceptsMaterial`. Provided: `blank`, `withData`, `setData`, `getData`, `hasData`, `ensureCooldownGroup`. The persistent-data key comes from Adapt's namespace plus the payload class canonical name's hash |
 | `PotionItem` and its nested `Data` | The built-in potion-item base, not a registered public item type |

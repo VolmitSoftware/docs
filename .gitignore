@@ -1,2 +1,9 @@
 .codegraph/
 node_modules/
+.DS_Store
+.worktrees/
+.playwright-cli/
+playwright-report/
+test-results/
+blob-report/
+playwright/.auth/

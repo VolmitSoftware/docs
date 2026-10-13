@@ -2,26 +2,12 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-09T16:48:42.787Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Three systems dress the terrain once its shape exists. Biome `layers` decide what the top few blocks of each column are made of. The dimension `rockPalette` fills everything below. Decorators scatter a single block or stack on top of a surface: grass, flowers, cane, lily pads, cave vines. Deposits stamp shaped clumps of ore and stone into existing solid hosts.
-
-Related:
-
-- [11 - Dimensions](/iris/11-dimensions)
-- [12 - Regions](/iris/12-regions)
-- [13 - Biomes](/iris/13-biomes)
-- [14 - Generators & Noise](/iris/14-generators-noise)
-- [15 - Caves & Carving](/iris/15-caves-carving)
-- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
-- [17 - Procedural Objects](/iris/17-procedural-objects)
-- [19 - Objects](/iris/19-objects)
-- [20 - Object Placement](/iris/20-object-placement)
-- [24 - Snippets](/iris/24-pack-mods-snippets)
-- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 
 ## Material selection
 
@@ -425,3 +411,17 @@ Biome `slab` and `wall` palettes control surface smoothing. The dimension flags 
 - **Walls** are painted where a cardinal neighbor is three or more blocks lower, running down the exposed face until it hits air or water. This is the same `wall` palette the carve modifier uses for cave walls. A biome that wants different cliff and cave rock needs a dedicated cave biome.
 
 Both palettes default to empty, which disables the corresponding effect for that biome.
+
+Related:
+
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [14 - Generators & Noise](/iris/14-generators-noise)
+- [15 - Caves & Carving](/iris/15-caves-carving)
+- [47 - Volumetric Terrain](/iris/47-volumetric-terrain)
+- [17 - Procedural Objects](/iris/17-procedural-objects)
+- [19 - Objects](/iris/19-objects)
+- [20 - Object Placement](/iris/20-object-placement)
+- [24 - Snippets](/iris/24-pack-mods-snippets)
+- [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)

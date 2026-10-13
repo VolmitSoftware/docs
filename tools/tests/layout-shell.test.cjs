@@ -184,9 +184,11 @@ test('project overview groups every section and splits search', async () => {
     assert.equal(window.document.querySelectorAll('.landing-group').length, 5);
     assert.equal(window.document.querySelector('.volmit-headliner').closest('.landing-group'), null);
     assert.equal(window.document.querySelector('table').classList.contains('spec-strip-plain'), true);
-    const tabs = [...window.document.querySelectorAll('.project-tabs a')].map((node) => node.textContent);
-    assert.deepEqual(tabs, ['Overview', 'Start here', 'Concepts and worlds', 'Authoring a pack', 'Examples and operations', 'Developer API']);
-    assert.equal(window.document.querySelector('.volmit-section-sidebar'), null);
+    const sidebar = window.document.querySelector('.volmit-section-sidebar');
+    assert.ok(sidebar);
+    assert.equal(sidebar.querySelector('[aria-current="page"]').getAttribute('href'), '/iris');
+    assert.equal(sidebar.querySelector('[aria-current="page"]').textContent, 'Project overview');
+    assert.equal(window.document.querySelector('.volmit-page-toc'), null);
     const pluginInput = window.document.querySelector('.volmit-plugin-search input');
     assert.equal(pluginInput.getAttribute('aria-label'), 'Search Iris');
     assert.equal(pluginInput.placeholder, 'Search Iris');
@@ -212,7 +214,7 @@ test('reference pages collapse other sections and scope plugin search', async ()
       ['Start here', 'true'],
       ['Authoring', 'false']
     ]);
-    assert.equal(window.document.querySelector('.reference-nav a[href="/iris"]'), null);
+    assert.equal(window.document.querySelector('.reference-nav a[href="/iris"]').textContent, 'Project overview');
     assert.equal(window.document.querySelector('.page-header-headings .caption').hidden, true);
     assert.equal(window.document.querySelector('.landing-group'), null);
     const tocButton = window.document.querySelector('.page-toc-toggle');
@@ -285,9 +287,9 @@ test('page frame, toc, and header share one spacing system', () => {
   assert.match(css, /\.nav-header > \.v-toolbar__content \{[^}]*padding-inline: var\(--volmit-edge\) !important;/);
   assert.match(css, /grid-template-columns: auto minmax\(0, 1fr\) auto;/);
   assert.match(css, /\.volmit-page-toc a \{[^}]*text-align: left;/);
-  assert.match(css, /\.volmit-reference-page \.container\.grid-list-xl \{[^}]*width: calc\(100% - var\(--volmit-edge\)\);/);
+  assert.match(css, /\.volmit-project-page \.container\.grid-list-xl \{[^}]*width: calc\(100% - var\(--volmit-edge\)\);/);
   assert.match(css, /--volmit-sidebar-gap: 24px;/);
-  assert.match(css, /\.volmit-reference-page \{[^}]*padding-left: calc\(var\(--volmit-sidebar-width\) \+ var\(--volmit-sidebar-gap\)\) !important;/);
+  assert.match(css, /\.volmit-project-page \{[^}]*padding-left: calc\(var\(--volmit-sidebar-width\) \+ var\(--volmit-sidebar-gap\)\) !important;/);
   assert.match(css, /grid-template-columns: var\(--volmit-sidebar-width\) minmax\(0, 1fr\) auto; gap: 0 var\(--volmit-sidebar-gap\);/);
   assert.match(css, /\.page-col-sd \{[^}]*display: none !important;/);
   assert.match(css, /\.sidebar-resize \{[^}]*cursor: col-resize;/);
@@ -327,9 +329,9 @@ test('project pages settle instead of rebuilding forever', async () => {
   try {
     await new Promise((resolve) => setTimeout(resolve, 50));
     assert.equal(window.document.documentElement.classList.contains('volmit-loading'), false);
-    assert.equal(window.document.querySelectorAll('.volmit-project-bar').length, 1);
+    assert.equal(window.document.querySelectorAll('.volmit-section-sidebar').length, 1);
     assert.equal(window.document.querySelector('.volmit-page-toc'), null);
-    assert.equal(window.document.querySelectorAll('.project-tabs a[href="#start"]').length, 1);
+    assert.equal(window.document.querySelectorAll('.volmit-breadcrumbs').length, 1);
     assert.ok(observerCalls() < 30);
   } finally {
     close();
@@ -345,13 +347,13 @@ test('landing rows share a height and pages crossfade', () => {
   assert.match(css, /\.volmit-project-overview \.contents :where\(ul\.links-list, ol\.links-list\) > li > a \{[^}]*justify-content: flex-start;/);
 });
 
-test('phone search stacks and the section menu stays in flow', () => {
+test('phone search stacks and page navigation uses the shared drawer', () => {
   const css = fs.readFileSync(path.join(__dirname, '../../theme/minimal-brutalism.css'), 'utf8');
   const phone = css.slice(css.indexOf('@media (max-width: 700px)'));
   assert.match(phone, /\.volmit-search-host\.is-split \{[^}]*grid-template-columns: minmax\(0, 1fr\);/);
   assert.match(phone, /--volmit-header-height: 160px/);
-  assert.match(css, /\.show-section-menu \.project-tabs \{[^}]*position: static;/);
-  assert.match(phone, /\.table-container:not\(:has\(\.spec-strip\)\) table \{[^}]*width: max-content;/);
+  assert.match(css, /\.show-section-menu \.volmit-section-sidebar \{[^}]*display: block;/);
+  assert.match(phone, /\.table-container:not\(:has\(\.spec-strip\)\) table \{[^}]*width: 100%;[^}]*overflow-wrap: anywhere;/);
   assert.equal(css.includes('overflow: clip'), false);
   assert.match(css, /\.nav-header \.deep-purple \{[^}]*background-color: var\(--volmit-paper\) !important;/);
 });

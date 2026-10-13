@@ -2,7 +2,7 @@
 title: "ClientView and Client Geometry"
 description: "Optics wire protocol, sessions, capabilities, plates, mesh sections and client helpers"
 published: true
-date: 2026-10-11T18:24:30.836Z
+date: 2026-10-13T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -12,7 +12,7 @@ ClientView streams portal geometry and captured content to a compatible consumer
 
 ## Client and renderer requirements
 
-The current wire version is **8**, from `ViewStreamLimits.WIRE_VERSION`. The handshake requires matching wire and Minecraft data versions. A client brand identifies a handshake category, but does not establish renderer compatibility.
+The current wire version is **9**, from `ViewStreamLimits.WIRE_VERSION`. The handshake requires matching wire and Minecraft data versions. A client brand identifies a handshake category, but does not establish renderer compatibility.
 
 An unmodified Minecraft client does not decode ClientView messages. A host can use ordinary server output for blocks, entities or display geometry without this protocol. A compatible client must negotiate capabilities before the host sends their content.
 
@@ -127,9 +127,13 @@ A `ViewStreamSession` has a `ViewStreamSessionState`: `VANILLA`, `PENDING` or `C
 
 ## Animated affine views
 
-Negotiate `AFFINE_PORTALS` with `PLATES` and `MESH_RENDER` before sending `PortalAffine(int portalKey, long sampleRevision, Affine apertureToSource, Affine sourceToDestination, ShapeDescriptor shape)`. Publish the portal key before its sample. The constructor requires a positive key, a non-negative revision, non-null transforms/shape, finite matrix components and an absolute determinant of at least `1e-12` for each transform. Hosts assign increasing revisions. Consumers decide whether a sample is stale. The first matrix places the raw local shape plane in the observer's source world. The second maps source-world points into destination-world coordinates.
+Negotiate `AFFINE_PORTALS` with `PLATES` and `MESH_RENDER` before sending `PortalAffine(int portalKey, long sampleRevision, Affine apertureToSource, Affine sourceToDestination, ShapeDescriptor shape)`. Publish the portal key before its sample. The constructor requires a positive key, a non-negative revision, non-null transforms/shape, finite matrix components and an absolute determinant of at least `1e-12` for each transform. Hosts assign increasing revisions. Consumers decide whether a sample is stale.
 
-Implement `ViewStreamScene.affine(O observer, UUID endpoint, int key, long tick, boolean full)`. The default returns `null`, which emits no affine sample. Return the supplied key and resend current values when `full` requests a complete scene. Automatic affine capture applies to ordinary mesh slots. This interface has no nested-affine capture hook. The host samples its timelines and sends changed poses or masks. The client does not execute a timeline program. Keep the static portal descriptor and destination mesh generation stable during animation. Position, rotation, independent axis scale, shear and reflection then change the view while retaining its destination terrain. Shape changes update the aperture geometry. Drop a vanished portal instead of sending a singular visible pose.
+The first matrix places the raw local shape plane in the observer's source world. The second maps source-world points into destination-world coordinates.
+
+Implement `ViewStreamScene.affine(O observer, UUID endpoint, int key, long tick, boolean full)`. The default returns `null`, which emits no affine sample. Return the supplied key and resend current values when `full` requests a complete scene. Automatic affine capture applies to ordinary mesh slots. This interface has no nested-affine capture hook.
+
+The host samples its timelines and sends changed poses or masks. The client does not execute a timeline program. Keep the static portal descriptor and destination mesh generation stable during animation. Position, rotation, independent axis scale, shear and reflection then change the view while retaining its destination terrain. Shape changes update the aperture geometry. Drop a vanished portal instead of sending a singular visible pose.
 
 Affine samples require a consumer that implements the negotiated protocol and a host that supplies matching transport, destination content and rendering. For an unmodified client, the host must provide its own block/entity/display output or another supported fallback.
 
@@ -189,7 +193,7 @@ Serverbound headers use one byte. Clientbound headers use six bytes. `ViewStream
 
 Implement `isObserver(observer, visual)` to identify the observer's snapshot. `observerVisible(observer, portal)` defaults to false. Return true when the view should include the observer despite `EntityFrameTarget.hideObserver`.
 
-`EntityFrames` creates full/delta frames and tracks presence. `event` records a transient animation, while `events` returns portal-specific event messages. `forget(observer)` releases retained state. `EntityFrameTarget` supplies portal id/key and full/observer flags.
+`EntityFrames` creates full/delta frames and tracks presence. It rotates snapshot delivery across eligible entities when a frame reaches its limit, so continuously changing entities do not starve later entries. When a scene disappears, the next frame clears its previous presence, including on a full-frame request. `event` records a transient animation, while `events` returns portal-specific event messages. `forget(observer)` releases retained state. `EntityFrameTarget` supplies portal id/key and full/observer flags.
 
 `EnvironmentState` stores game time, sky, fog, lighting, clouds, display transform, dimension, world context and scale. `Sky` includes skybox, celestial angles, stars, sunrise, moon phase and weather. `Fog` includes land, sky, cloud and water distances/colors.
 

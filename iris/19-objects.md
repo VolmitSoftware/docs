@@ -2,12 +2,14 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-An Iris object is a saved build containing blocks and block-entity data. It is stored as a `.iob` file under a pack `objects/` folder. You build it in a world, select it with a wand, and save it into the pack. Nothing about the object itself says where it generates. Wiring it into generation is [20 - Object Placement](/iris/20-object-placement). Using objects as jigsaw pieces is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+An Iris object is a saved build containing blocks and block-entity data. It is stored as a `.iob` file under a pack's `objects/` folder. Build it in a world, select it with a wand, and save it into the pack.
+
+Configure where it generates in [20 - Object Placement](/iris/20-object-placement). To use it as part of a multi-piece structure, see [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 Custom blocks from a content provider keep their qualified provider IDs when saved. CraftEngine furniture entities are not captured by direct previews. See [28 - Integrations](/iris/28-integrations).
 

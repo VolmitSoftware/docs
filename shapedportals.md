@@ -2,7 +2,7 @@
 title: "Shaped Portals"
 description: "Build custom-shaped Nether and End portals and manage them in-game"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-13T14:42:49.254Z
 tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -13,7 +13,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
   <div>
     <p class="sp-kicker">Shaped Portals</p>
     <h2 id="sp-introduction">Build portals that fit the build.</h2>
-    <p>Make upright Nether portals and horizontal End portals with custom sizes and outlines. Travel still works through Minecraft's native portal system.</p>
+    <p>Make upright Nether portals and horizontal End portals with custom sizes and outlines. Minecraft handles travel unless Wormholes takes ownership of a Nether portal.</p>
     <nav class="sp-actions" aria-label="Get started">
       <a class="sp-primary" href="/shapedportals/00-overview#build-your-first-portal">Build your first portal</a>
       <a href="/shapedportals/01-installation-configuration">Install and configure</a>
@@ -35,7 +35,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
       <p>Build a closed ring of End Portal Frames, then insert an eye into every frame block.</p>
     </article>
   </div>
-  <p class="sp-note"><strong>Shape, not routing.</strong> The plugin changes which portal frames can activate and keeps managed surfaces intact. Minecraft still handles travel and destination selection.</p>
+  <p class="sp-note">Shaped Portals controls frame activation and repairs managed surfaces. Minecraft handles destination selection. With the Wormholes integration enabled, accepted Nether portals use Wormholes projections and linked travel.</p>
 </section>
 </div>
 
@@ -43,8 +43,8 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 | | |
 |---|---|
-| Server software | Spigot 1.20.1 or newer, including Paper and Folia |
-| Java | Whatever your server version needs: 17, 21, or 25 |
+| Server software | Bukkit-compatible Minecraft 26.1 through 26.3 servers, including Paper and Folia |
+| Java | 25 |
 | Main command | `/shapedportals` (`/shapedportal`, `/sp`) |
 | Config file | `plugins/ShapedPortals/config.toml` |
 | Portal records | `plugins/ShapedPortals/portals.json` |

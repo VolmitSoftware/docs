@@ -2,13 +2,13 @@
 title: "Overview"
 description: "Adapt skills, knowledge, adaptations, and ability power"
 published: true
-date: 2026-10-01T09:06:18.722Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt tracks 23 skills. Skill XP produces a level and knowledge for that skill. Knowledge buys adaptation levels in that skill only. Those levels spend account-wide ability power, which comes from master level.
+Adapt tracks 23 skills. Skill XP produces a level and knowledge for that skill. Knowledge buys adaptation levels in that skill only. Those levels spend ability power shared across your skills, which comes from master level.
 
 | System | Role |
 |---|---|
@@ -20,4 +20,4 @@ Adapt tracks 23 skills. Skill XP produces a level and knowledge for that skill. 
 
 Rules and formulas are in [Concepts](/adapt/02-concepts) and [Configuration math](/adapt/05-configuration-math). Files and keys are in [Installation and configuration](/adapt/01-installation-configuration). Every skill is listed in the [Skills catalog](/adapt/10-skills-catalog).
 
-Skill demonstrations start in **First person**. Select **Third person** above any demonstration to switch all demonstrations; your choice is remembered across skill pages. Hidden and offscreen clips pause, and video controls remain available.
+Skill demonstrations start in **First person**. Select **Third person** above any demonstration to switch all demonstrations. Your choice is remembered across skill pages. Hidden and offscreen clips pause, and video controls remain available.

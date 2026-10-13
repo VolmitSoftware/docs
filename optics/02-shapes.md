@@ -1,8 +1,8 @@
 ---
 title: "Shapes"
-description: "Optics documentation: aperture shape masks, fit modes, presets, the text grammar and the raster, mesh and outline outputs"
+description: "Define aperture masks with presets, fit modes, text grammar, and geometry outputs"
 published: true
-date: 2026-10-11T16:00:00.000Z
+date: 2026-10-13T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -12,7 +12,7 @@ A shape masks a portal's cell rectangle. Optics fits a unit-space shape and prod
 
 ## Unit space
 
-Shapes live on a `u`, `v` plane centerd on the origin. `Shapes.FULL` is the 2×2 rectangle covering -1..1 on both axes. Default presets fit inside it. A `circle` has radius 1, and a `star` reaches 1 at its points. `u` runs along the portal frame's right and `v` along its up, so a shape stays upright when the frame rotates.
+Shapes live on a `u`, `v` plane centered on the origin. `Shapes.FULL` is the 2×2 rectangle covering -1..1 on both axes. Default presets fit inside it. A `circle` has radius 1, and a `star` reaches 1 at its points. `u` runs along the portal frame's right and `v` along its up, so a shape stays upright when the frame rotates.
 
 `Shape` exposes `bounds()`, `contains(u, v)`, `signedDistance(u, v)` (negative inside, zero on the edge) and `outlines(tolerance)`. Every shape also has `union`, `intersect`, `subtract`, `transformed(planeTransform)`, `rotated(degrees)`, `scaled(factor)`, `scaled(u, v)`, `translated(du, dv)`, `flippedU()` and `flippedV()`, each returning a new shape.
 
@@ -45,8 +45,8 @@ Factories live on `Shapes`. The table lists grammar names, argument order and de
 
 | Mode | Unit square becomes |
 |---|---|
-| `CONTAIN` | The largest centerd square that fits, `min(columns, rows)` cells wide. Default for every shape except `full` |
-| `COVER` | A centerd square `max(columns, rows)` cells wide, so the shape overflows the shorter side |
+| `CONTAIN` | The largest centered square that fits, `min(columns, rows)` cells wide. Default for every shape except `full` |
+| `COVER` | A centered square `max(columns, rows)` cells wide, so the shape overflows the shorter side |
 | `STRETCH` | The whole rectangle, scaling each axis independently. Default for `full` |
 
 `ShapeDescriptor` pairs a shape with its fit. `ShapeDescriptor.of(shape, fit)`, `ShapeDescriptor.parse(text)`, `withFit(fit)` and `fitTo(columns, rows)` build and apply it. `ShapeDescriptor.FULL` is the full rectangle.
@@ -97,6 +97,8 @@ path(d=M -1:-1 L 1:-1 L 0:1 Z)
 | `ShapeMesh` | Triangles for drawing the sampled boundary: `positions()` in cell units, a signed `distances()` value per vertex, `indices()`, `outlines()` and `bounds()`. Subdivisions run 1..16 per cell. The mesh follows the signed distance by marching squares, so a curve stays smooth where the raster steps, and cells outside `cellMask` are left out |
 | `Outline` | A closed polyline. Presets, polygons, splines and paths emit outer boundaries counter-clockwise and holes clockwise. `size`, `u(i)`, `v(i)`, `signedArea`, `length`, `bounds`, `contains`, `distance`, `reversed`, `transformed` and `sample(spacing, out)` for evenly spaced points |
 | `ShapeRasterCache` | A bounded least-recently-used cache of plane shapes, rasters and meshes keyed by descriptor, size, orientation and detail; `hits()` and `misses()` count lookups |
+
+Containment tests preserve the exact boundary under nonuniform transforms and boolean combinations. Raster coverage can skip a point test only when its bounds prove the whole cell is inside or outside.
 
 A shape can describe a mask without usable aperture cells. A shape that leaves no cell open is invalid for a portal: `PortalDefinition` rejects it, and Wormholes refuses it in the menu and command.
 

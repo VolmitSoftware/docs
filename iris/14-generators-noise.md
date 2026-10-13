@@ -2,22 +2,12 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-10-06T20:56:47.000Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Generators are the shape of your terrain. A generator file composites one or more noise layers into a single 0..1 value per column. It can then quantise that value into cliffs and crack it into cells. It also declares how it blends across biome borders. Biomes reference generators by key and supply the height band the 0..1 value is mapped into. Styles, expressions and PNG image maps are the three things that can supply the raw noise.
-
-Related:
-
-- [11 - Dimensions](/iris/11-dimensions)
-- [12 - Regions](/iris/12-regions)
-- [13 - Biomes](/iris/13-biomes)
-- [15 - Caves & Carving](/iris/15-caves-carving)
-- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
-- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
-- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
+Generators combine noise layers into a value from 0 to 1 for each terrain column. Biomes reference generators by key and map their values into height ranges. A generator also controls cliffs, cell fractures, and blending across biome borders. Noise can come from styles, expressions, or PNG image maps.
 
 ## Where files live
 
@@ -42,14 +32,14 @@ Understand this mapping before changing any field. The named generator alone doe
 
 Each `composite` entry is sampled at the column, then combined:
 
-- **Additive** (default): sum the layers outputs, divide by the sum of their `opacity` values, multiply by the generator `opacity`.
+- **Additive** (default): sum the layer outputs, divide by the sum of their `opacity` values, then multiply by the generator `opacity`.
 - **Multiplicative** (`"multiplicitive": true`): start at 1, multiply each layer output, then multiply by the generator `opacity`.
 
 An empty `composite` produces flat terrain at the bottom of the biome band.
 
 Then two optional post-passes:
 
-- **Cliffs** run when `cliffHeightMax > 0`. The value is quantised to steps of a per-column cliff height drawn between `cliffHeightMin` and `cliffHeightMax`. That turns smooth slopes into terraces and mesa walls.
+- **Cliffs** run when `cliffHeightMax > 0`. The value is quantized to steps of a per-column cliff height drawn between `cliffHeightMin` and `cliffHeightMax`. That turns smooth slopes into terraces and mesa walls.
 - **Cell fracture** runs when `cellFractureHeight` is non-zero. A cell distance field is sampled. Outside the cell cores the value is multiplied by `cellFractureHeight`, cutting canyon-like veins between plateaus.
 
 Noise and expression fields are bound to the current world seed and generation context. Reusing a generator or expression in another world does not carry the first world's pattern into it; keep the seed, pack, and Iris build unchanged when reproducing a world.
@@ -60,11 +50,11 @@ Iris collects every generator referenced by every biome the dimension can reach.
 
 For each bucket, at each column:
 
-1. The interpolator samples the surrounding columns and blends their biomes height bands for that bucket. That gives a smoothed low and high.
+1. The interpolator samples the surrounding columns and blends their biome height bands for that bucket. That gives a smoothed low and high.
 2. When low and high differ, each generator is evaluated at the column and mapped into that range. Equal finite bounds give a constant height.
 3. The results are averaged.
 
-Bucket results are then added together to give the column height. `fluidHeight` plus any dimension `overlayNoise` is added on top before the final clamp to the dimension usable range.
+Bucket results are then added together to give the column height. `fluidHeight` plus any dimension `overlayNoise` is added on top before the final clamp to the dimension's usable range.
 
 Two practical consequences:
 
@@ -354,13 +344,13 @@ Operators bind in the following order, highest first. Operators in the same row 
 
 | Binding | Syntax | Result |
 |---|---|---|
-| Grouping / absolute value | `(a)`, `|a|` | Group a subexpression, or return its absolute value |
+| Grouping / absolute value | `(a)`, `\|a\|` | Group a subexpression, or return its absolute value |
 | Unary | `+a`, `-a` | Pass through or negate `a` |
 | Power | `a ^ b`, `a ** b` | Raise `a` to `b`; `^` is the conventional Iris spelling |
 | Product | `a * b`, `a / b`, `a % b` | Multiply, divide, or take the remainder |
 | Sum | `a + b`, `a - b` | Add `b`, or subtract `b` from `a` |
 | Comparison | `a < b`, `a <= b`, `a > b`, `a >= b`, `a = b`, `a != b` | Return 1 when true, otherwise 0 |
-| Logical | `a && b`, `a || b` | Numeric AND or OR; return 1 or 0 |
+| Logical | `a && b`, `a \|\| b` | Numeric AND or OR; return 1 or 0 |
 
 Zero is false. Every nonzero value, including a negative value, is true. `&&`, `||`, and `if` short-circuit, so an unused right side or branch is not evaluated.
 
@@ -388,7 +378,7 @@ Trigonometric inputs and inverse-function outputs are radians unless `rad` or `d
 | `asin(a)` / `acos(a)` / `atan(a)` | 1 | Inverse trigonometric functions |
 | `atan2(y,x)` | 2 | Signed angle from the positive X axis to `(x,y)` |
 | `rad(a)` / `deg(a)` | 1 | Degrees to radians / radians to degrees |
-| `abs(a)` | 1 | Absolute value; equivalent to `|a|` |
+| `abs(a)` | 1 | Absolute value; equivalent to `\|a\|` |
 | `log(a)` / `ln(a)` | 1 | Base-10 / natural logarithm |
 | `exp(a)` | 1 | `euler` raised to `a` |
 | `sign(a)` | 1 | -1 below zero, 0 at zero, 1 above zero |
@@ -511,7 +501,7 @@ Dimensions also use generator styles for content placement. Their behavior belon
 }
 ```
 
-`generators/cracked-cliffs.json`: inverted glob shape quantised into terraces between 35 and 80 units, with the step height chosen per cell:
+`generators/cracked-cliffs.json`: inverted glob shape quantized into terraces between 35 and 80 units, with the step height chosen per cell:
 
 ```json
 {
@@ -538,3 +528,13 @@ Dimensions also use generator styles for content placement. Their behavior belon
 ```
 
 The bundled overworld uses neither `expression` nor `imageMap` in any generator.
+
+Related:
+
+- [11 - Dimensions](/iris/11-dimensions)
+- [12 - Regions](/iris/12-regions)
+- [13 - Biomes](/iris/13-biomes)
+- [15 - Caves & Carving](/iris/15-caves-carving)
+- [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
+- [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout)
+- [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)

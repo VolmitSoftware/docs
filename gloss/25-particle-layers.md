@@ -1,8 +1,8 @@
 ---
 title: "Particle Layers"
-description: "Gloss documentation: particle geometry behind in-world displays"
+description: "Add particle layers to holograms, menus, panels, and other displays"
 published: true
-date: 2026-10-03T15:34:39.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-26T00:00:00.000Z

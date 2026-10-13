@@ -1,8 +1,8 @@
 ---
 title: "API - Metric Publishing"
-description: "React documentation: API - Metric Publishing"
+description: "Publish metrics for React monitors, maps, history, and integrations"
 published: true
-date: 2026-10-08T01:00:00Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

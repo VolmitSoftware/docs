@@ -1,8 +1,8 @@
 ---
 title: "Portals"
-description: "Optics documentation: PortalDefinition, PortalBuilder, PortalLink, PortalRegistry and crossing queries"
+description: "Create, link, update, and query portal definitions across worlds"
 published: true
-date: 2026-10-11T16:00:00.000Z
+date: 2026-10-13T16:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -72,14 +72,14 @@ Every operation returns a new definition with the same id, or the same instance 
 | `rotated(turns)` | Turn the frame clockwise about its normal around the centre; a non-square portal swaps its column and row counts as needed |
 | `rotatedAbout(axis, turns)` | Turn the whole portal, frame and position, around its centre |
 | `facing(normal)` | Point the front another way, keeping the centre |
-| `flipped()` | Swap front and back; the plane stays where it was |
+| `flipped()` | Swap front and back while preserving the aperture in world space |
 | `scaled(factor)`, `scaled(factorU, factorV)` | Multiply the cell counts (rounded, at least 1) around the centre |
 | `resized(columns, rows)`, `stretched(dColumns, dRows)` | Set the counts around the centre, or grow them along the frame's right and up |
 | `withShape(descriptor)`, `withShape(text)`, `shapeRotated(degrees)`, `shapeScaled(factor)`, `mirroredU()`, `mirroredV()` | Change the mask |
 | `withPlaneOffset(blocks)` | Move the crossing plane |
 | `linked(link)`, `unlinked()` | Change the link |
 | `withMetadata(key, value)`, `withoutMetadata(key)` | Change host data |
-| `transformed(opticTransform)` | Apply a rigid map to frame and position |
+| `transformed(opticTransform)` | Apply a rigid map to the frame, position and aperture shape, including reflections |
 
 ### Queries
 

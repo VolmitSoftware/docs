@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin support and metrics"
 published: true
-date: 2026-10-12T01:06:17.000Z
+date: 2026-10-13T16:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,7 +32,7 @@ FAWE settings reloads preserve the integration. A BileTools reload of Wormholes 
 
 ## Wormholes client mod
 
-The Fabric, Forge, and NeoForge jars also act as a client mod for [ClientView](/wormholes/05-projection-modes-settings#clientview). The Bukkit plugin uses the `wormholes:v10` channel to supply ClientView to a matching modded client on Paper, Purpur and Folia. The server needs no extra plugin for this. Installation: [Client mod](/wormholes/01-installation-configuration#client-mod).
+The Fabric, Forge, and NeoForge jars also act as a client mod for [ClientView](/wormholes/05-projection-modes-settings#clientview). The Bukkit plugin uses the `wormholes:v11` channel to supply ClientView to a matching modded client on Paper, Purpur and Folia. The server needs no extra plugin for this. Installation: [Client mod](/wormholes/01-installation-configuration#client-mod).
 
 The client mod integrates with Sodium and Iris Shaders for native portal views. See [ClientView](/wormholes/05-projection-modes-settings#clientview).
 

@@ -2,14 +2,12 @@
 title: "Loot"
 description: "Iris documentation: Loot"
 published: true
-date: 2026-10-11T20:54:47.480326+00:00
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
 Loot tables decide what appears inside generated chests, what custom mobs drop, and what a broken block gives up. Mobs and spawning are [23b - Entities & Spawners](/iris/23b-entities-spawners). Marker-driven spawns are [23c - Markers](/iris/23c-markers).
-
-Related: [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), [03 - Configuration](/iris/03-configuration), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
 ## Loot sources
 
@@ -214,3 +212,5 @@ Items, enchantments, and potion effects added in a newer Minecraft do not exist 
 2. Reference them from `loot.tables` on a dimension, region, or biome, or from `loot[].name` on an object placement.
 3. Confirm `world.postLoadBlockUpdates` is true in `iris.json` (see [03 - Configuration](/iris/03-configuration)).
 4. Open Studio and use `/iris studio loot` for chest previews on Bukkit.
+
+Related: [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [11 - Dimensions](/iris/11-dimensions), [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [19 - Objects](/iris/19-objects), [20 - Object Placement](/iris/20-object-placement), [03 - Configuration](/iris/03-configuration), [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).

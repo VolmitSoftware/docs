@@ -2,13 +2,13 @@
 title: "Rift World Manager"
 description: "World creation, loading, quarantine, restoration, and teleport management"
 published: true
-date: 2026-10-09T00:00:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "rift, world-management, bukkit, paper, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift creates, imports, loads, unloads, quarantines, restores, and teleports between server worlds. Deleting a world is a confirmed quarantine you can undo.
+Rift creates, imports, loads, unloads, quarantines, restores, and teleports between server worlds. The delete command moves a world into recoverable quarantine after confirmation.
 
 | | |
 |---|---|

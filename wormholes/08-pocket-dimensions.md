@@ -2,7 +2,7 @@
 title: "Pocket Dimensions"
 description: "Pocket world, layout, return door, and rescue"
 published: true
-date: 2026-10-08T12:10:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,13 +49,13 @@ appear in another. See
 <p><strong>Personal pockets</strong> Two players enter separate rooms and use their return doors.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/personal-pockets-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/personal-pockets-standard-observer.webm" aria-label="No client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/personal-pockets-standard-pov.webm" aria-label="Personal pockets, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/personal-pockets-standard-observer.webm" aria-label="Personal pockets, no client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/personal-pockets-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/personal-pockets-clientview-observer.webm" aria-label="Client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/personal-pockets-clientview-pov.webm" aria-label="Personal pockets, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/personal-pockets-clientview-observer.webm" aria-label="Personal pockets, client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -63,13 +63,13 @@ appear in another. See
 <p><strong>Public pockets</strong> Two players share one persistent room and its return door.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/public-pockets-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/public-pockets-standard-observer.webm" aria-label="No client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/public-pockets-standard-pov.webm" aria-label="Public pockets, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/public-pockets-standard-observer.webm" aria-label="Public pockets, no client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/public-pockets-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/public-pockets-clientview-observer.webm" aria-label="Client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/public-pockets-clientview-pov.webm" aria-label="Public pockets, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/public-pockets-clientview-observer.webm" aria-label="Public pockets, client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

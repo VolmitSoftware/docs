@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,7 +32,7 @@ Each enabled skill has one advancement tab.
 
 An adaptation id is kebab-case and starts with the skill name, such as `agility-air-dash`. Its file is `plugins/Adapt/adaptations/<id>.toml`. Level 0 is unlearned. The cap is `maxLevel`.
 
-One level costs `max(1, baseCost + baseCost * level * costFactor)` knowledge. Level 1 also costs `initialCost`. A multi-level purchase sums each step. A refund reverses those steps. `hardcoreNoRefunds` returns nothing. `permanent` blocks a player unlearn.
+One level costs `max(1, baseCost + baseCost * level * costFactor)` knowledge. Level 1 also costs `initialCost`. A multi-level purchase sums each step. A refund reverses those steps. `hardcoreNoRefunds` returns nothing. Players cannot unlearn a `permanent` adaptation.
 
 Holding level `L` costs `L` power. Region-granted levels cost none. A purchase that fails charges nothing.
 
@@ -57,7 +57,7 @@ maxPower  = max(0, floor(masterLevel * powerPerLevel) + regionPowerBonus)
 usedPower = sum of learned adaptation levels that are not region-granted
 ```
 
-A purchase that would pass `maxPower` fails. If max power drops below used power, the lowest learned adaptation levels are removed until it fits. Those levels are not refunded. Region grants are not removed.
+A purchase that would exceed `maxPower` fails. If max power drops below used power, Adapt removes the lowest learned adaptation levels until used power fits. Those levels are not refunded. Region grants are not removed.
 
 `regionPowerBonus` is the current WorldGuard `adapt-power-bonus`. It is not saved. See [Protection and region policy](/adapt/08-protection-region-policy).
 
@@ -67,6 +67,6 @@ On the one-second tick, XP past `experienceMaxLevel` grants 1 wisdom and sets th
 
 ## Storage
 
-One JSON file per player under `data/players/`, unless `sql.enabled`. SQL stores the profile in `ADAPT_DATA` and the ownership fence in `ADAPT_DATA_FENCE`. If a profile cannot be loaded, the player still joins and Adapt stays inactive for that player until the profile loads.
+Adapt stores one JSON file per player under `data/players/` unless `sql.enabled` is true. SQL stores the profile in `ADAPT_DATA` and the ownership fence in `ADAPT_DATA_FENCE`. If a profile cannot be loaded, the player still joins and Adapt stays inactive for that player until the profile loads.
 
 Curves, multipliers, and the key tables are in [Configuration math](/adapt/05-configuration-math).

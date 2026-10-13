@@ -2,29 +2,50 @@
 title: "Player Usage"
 description: "Open the Adapt menu and learn or remove adaptations"
 published: true
-date: 2026-10-12T01:16:47.000Z
+date: 2026-10-13T16:39:54.435Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-The menu opens on a side-click of `adaptActivatorBlock` (default bookshelf), or with `/adapt gui` and `adapt.gui`.
+Open the menu by clicking a side of the activator block, which is a bookshelf by default. You can also use `/adapt gui` with the `adapt.gui` permission.
 
-The click registers when the player is not sneaking, both hands are empty or hold non-block items, the face is a side unless `adaptActivatorAllowVerticalFaces` is true, and protectors allow the interaction. The menu still opens in a blacklisted world. XP and adaptations stay off there.
+## Open and navigate the menu
+
+The block click opens the menu when all of these conditions hold:
+
+- You are not sneaking.
+- Each hand is empty or holds a non-block item.
+- You click a side face, unless `adaptActivatorAllowVerticalFaces` also permits the top and bottom.
+- Protection plugins allow the interaction.
+
+The server selects the block with `adaptActivatorBlock`. The menu still opens in a blacklisted world, but XP and adaptations stay off there.
 
 A skill appears after the player has XP, knowledge, or a learned adaptation in it. `guiShowAllSkills` lists every enabled skill that player may use.
 
-Buying a level charges each step from the current level to the selected level: knowledge, one power per level, and Vault currency when `learningEconomy.enabled` is true. The first purchase of a `permanent` adaptation needs a second click within six seconds. Unlearn returns that knowledge and the configured Vault refund. `permanent` adaptations and `hardcoreNoRefunds` return nothing.
+The main menu shows skill level, knowledge, master level, and used power. Owned levels show an enchantment glint. Right-click **Previous** or **Next** to jump five pages. `guiBackButton` controls whether **Back** appears.
+
+## Learn and unlearn adaptations
+
+Buying levels charges knowledge and one power for each level between your current and selected levels. Vault currency also applies when `learningEconomy.enabled` is true. The first purchase of a `permanent` adaptation needs a second click within six seconds.
+
+Unlearning returns the knowledge and configured Vault refund. Permanent adaptations cannot be unlearned by players. With `hardcoreNoRefunds`, unlearning returns neither knowledge nor currency.
 
 Passive adaptations run after purchase. Active adaptations use the trigger on their skill page. Active level 0 does not run. The gates are in [Concepts](/adapt/02-concepts).
 
-The main menu shows skill level, knowledge, master level, and used power. Owned levels show an enchantment glint. Right-click Previous or Next jumps five pages. `guiBackButton` shows Back.
+## Personal settings
 
 When the server permits personal settings, every adaptation has an enable switch and any additional personal controls along the bottom of its level screen. Each skill screen also has a master switch that suppresses your adaptations in that skill while preserving their individual choices. The skill pages list input modes, filters, personal limits, and other supported controls. When `playerSettingsEnabled` is `false`, these controls and resets are hidden and server defaults apply. You can still learn and unlearn under the normal rules.
 
-Left-click a control to cycle forward and right-click to cycle backward. Glass panes show On in lime and Off in red; mode items show the current choice in their lore. Controls update in the same open inventory. Changes, resets, locked choices, and control-page navigation have distinct quiet sound feedback for you, subject to your effects setting and server sound settings.
+Left-click a control to cycle forward. Right-click to cycle backward. Glass panes show **On** in lime and **Off** in red. Mode items show the current choice in their lore. Controls update without closing the inventory.
 
-Gray controls are server-controlled or not yet unlocked. Lore shows level requirements and unavailable choices. Reset to server defaults clears the current adaptation's personal overrides; resetting a skill's master switch preserves its child settings. Turning an adaptation off preserves learned levels and spent knowledge or power. Your choices never change another player's settings. See [player preference policy](/adapt/01-installation-configuration#player-preferences).
+Changes, resets, locked choices, and control-page navigation have distinct quiet sounds. Your effects preference and the server sound settings control whether you hear them.
+
+Gray controls are server-controlled or not yet unlocked. Lore shows level requirements and unavailable choices.
+
+**Reset to server defaults** clears the current adaptation's personal overrides. Resetting a skill's master switch preserves its adaptation settings. Turning an adaptation off preserves learned levels and spent knowledge or power. Your choices affect only your player. See [player preference policy](/adapt/01-installation-configuration#player-preferences).
+
+Last Rites, Hourglass Guard, and Void Skin each offer a **Death-save priority** control: First, Normal, or Last. Adapt applies damage modifiers and Borrowed Time before checking whether a hit is lethal, then tries eligible saves in your chosen order. Equal priorities use Last Rites, then Hourglass Guard, then Void Skin. Only the winning save spends its cooldown or pearl; unavailable saves fall through to the next choice. Existing Hourglass protection or a pending Void Skin escape does not spend another save. Cooldowns keep counting while you are offline and survive reconnects, restarts, reloads, unlearning, and changes to these controls.
 
 `/adapt effects` with `adapt.effects` toggles that player's particles and sounds.
 

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-12T01:06:17.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -79,7 +79,11 @@ These commands manage [ClientView](/wormholes/05-projection-modes-settings#clien
 | `/wormholes clientview off` | Return every ClientView player to the standard projection and stop offering ClientView |
 | `/wormholes clientview reset <player>` | Restart one player's ClientView stream |
 
-`on` and `off` last until the next restart. Players receive ClientView only while it is on here and `[client-view] enabled = true`; `on` with `enabled = false` offers nothing. The `status` header shows both states (`runtime` for this command, `configured` for the file) and the session count. Each row shows the player, the session state (`VANILLA`, `PENDING`, or `CLIENT_VIEW`), the negotiated features, attended portals, frames and KiB sent, unacknowledged frame groups, acknowledgement round trip, and applied cells. With `[client-view] view-stats = true`, rows also show the client's plate memory and median sweep and apply times. `dropped` counts client messages the server rejected as protocol violations (oversized, malformed, unknown, or beyond the per-second limit); `stale` counts messages it ignored as expected, such as acknowledgements from before a session change or a repeated view report. `reset` reports when the player has no active ClientView session. Modded clients also show their ClientView connection status on F3 as `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wormholes: Disconnected`.
+`on` and `off` last until the next restart. Players receive ClientView only while it is on here and `[client-view] enabled = true`; `on` with `enabled = false` offers nothing. The `status` header shows both states (`runtime` for this command, `configured` for the file) and the session count.
+
+Each row shows the player, the session state (`VANILLA`, `PENDING`, or `CLIENT_VIEW`), the negotiated features, attended portals, frames and KiB sent, unacknowledged frame groups, acknowledgement round trip, and applied cells. With `[client-view] view-stats = true`, rows also show the client's plate memory and median sweep and apply times.
+
+`dropped` counts client messages the server rejected as protocol violations (oversized, malformed, unknown, or beyond the per-second limit); `stale` counts messages it ignored as expected, such as acknowledgements from before a session change or a repeated view report. `reset` reports when the player has no active ClientView session. Modded clients also show their ClientView connection status on F3 as `Wormholes: Connected`, `Wormholes: Mismatch`, or `Wormholes: Disconnected`.
 
 ## Aperture shape text
 

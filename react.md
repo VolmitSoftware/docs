@@ -2,7 +2,7 @@
 title: React
 description: React performance monitoring and optimization for Paper and Folia
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: react
 editor: markdown
 dateCreated: 2026-08-21T00:31:42.920Z
@@ -42,7 +42,7 @@ React measures where server time goes, then gives you tools to act on it.
 - [Features - Entity Systems *Stacking, sleep, trim, items, and more*](/react/04-features-entity-systems)
 - [Features - Maps & Overlays *Heatmaps, pie maps, and list maps*](/react/05-features-maps-overlays)
 - [Features - Governors & Mechanics *View range, hoppers, redstone, farms*](/react/06-features-governors-mechanics)
-- [Features - Iris Adapt & Integrations *Capability-gated surge guards*](/react/07-features-iris-adapt-integrations)
+- [Features - Iris, Adapt & Integrations *Capability-gated surge guards*](/react/07-features-iris-adapt-integrations)
 - [Tweaks Catalog *Event and NMS accelerations*](/react/08-tweaks-catalog)
 - [Actions Catalog *Operator one-shot jobs*](/react/09-actions-catalog)
 {.links-list}
@@ -50,7 +50,7 @@ React measures where server time goes, then gives you tools to act on it.
 ## Monitoring and operations
 
 - [Samplers & Metrics *Sampler ids and observation model*](/react/10-samplers-metrics)
-- [Monitors Maps & In-Game GUI *Action bar, maps, and config UI*](/react/11-monitors-maps-in-game-gui)
+- [Monitors, Maps & In-Game GUI *Action bar, maps, and config UI*](/react/11-monitors-maps-in-game-gui)
 - [Incident Mode & Playbooks *Incident score and response*](/react/12-incident-mode-playbooks)
 - [Localization *Locales and editable catalogs*](/react/13-localization)
 - [NMS Bridges & Platform Notes *Bridge availability and platform support*](/react/14-nms-bridges-platform-notes)

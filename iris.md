@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-10-04T12:28:04.588Z
+date: 2026-10-13T16:55:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,12 +11,23 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Iris replaces vanilla world generation. You write dimensions, regions, biomes, objects, and
 jigsaw structures as JSON data packs. Iris assembles them when it generates a chunk.
 
+<div class="project-summary">
+
 | | |
 |---|---|
 | Command | `/iris` (`ir`, `irs`) |
 | Folia | Supported |
 | Permissions | `iris.all` is the whole `/iris` tree. Grant it to administrators only |
 | Integrations | WorldEdit, Multiverse-Core, PlaceholderAPI, CraftEngine, Nexo, ItemsAdder, ExecutableItems, MMOItems, EcoItems, MythicMobs, MythicCrucible, KGenerators |
+
+<div class="project-preview">
+  <a href="/iris/44-biome-catalog">
+    <span class="project-preview-image"><img src="/iris-assets/forest-valley.png" alt="An Iris mountain valley with dense conifer forests and rocky peaks" width="2100" height="1098"></span>
+    <span class="project-preview-caption">Browse the biome catalog</span>
+  </a>
+</div>
+
+</div>
 
 Use Iris commands to create and remove worlds. For Multiverse commands and supported operations, see [Multiverse](/iris/34-multiverse).
 

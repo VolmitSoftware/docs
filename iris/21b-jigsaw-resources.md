@@ -2,12 +2,12 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
-The JSON behind a jigsaw graph: connectors, structure, pool and piece files, how the assembler picks pieces, how you place the structure in a world, and how a portable graph is exported as a vanilla datapack. The in-game authoring workflow is [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
+Jigsaw structures use JSON files to define pieces, pools, and connector rules. This page covers those files, piece selection, world placement, and vanilla datapack export. For the in-game authoring workflow, see [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
 A graph is three resource kinds plus objects:
 

@@ -2,13 +2,13 @@
 title: "Server List MOTD"
 description: "Configure server-list responses, request selectors, icons and server links"
 published: true
-date: 2026-10-08T00:06:43.153Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Server-list messages live in `plugins/Gloss/motd.json` and reload automatically. Behind a proxy, see [Velocity Proxy](/gloss/27-velocity) — the page below covers the server edition.
+Server-list messages live in `plugins/Gloss/motd.json` and reload automatically. This page covers the server edition. For proxy setup, see [Velocity Proxy](/gloss/27-velocity).
 
 `plugins/Gloss/motd.json`:
 

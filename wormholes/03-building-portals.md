@@ -1,8 +1,8 @@
 ---
 title: "Building Portals"
-description: "Wand, runes, construction, skins, and vanilla portal replace"
+description: "Build portals with a wand or runes, apply skins, and replace vanilla portals"
 published: true
-date: 2026-10-12T15:57:56.155Z
+date: 2026-10-13T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -57,11 +57,11 @@ To supply nine runes for a 3×3 opening in survival, an administrator can run `/
 <div class="wormholes-demo" data-demo="wand-creation">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="Portal creation with the wand, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="Portal creation with the wand, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -98,11 +98,11 @@ default and do not expose the linked destination.
 <div class="wormholes-demo" data-demo="rune-creation">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="No client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="Portal creation with runes, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="Client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="Portal creation with runes, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -168,7 +168,9 @@ click).
 Config: `[main] replace-nether-and-end-portals` in `wormholes.toml`
 (default `true`). Hot-reloads with other main gameplay settings.
 
-When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination and type. Native Nether pairs allow directional gravity and traveller scale through the Transit menu. Nether pairs work both ways. Generated Nether counterparts prefer nearby supported ground with clear headroom and avoid hazardous blocks and the roof. If no suitable ground is found within the search area, Wormholes builds a landing platform. End entry portals are one-way and deliver travelers near the center of the main End island. Their receiving area has no reverse travel route. Defeating the Ender Dragon activates the central return fountain as a separate one-way portal. Its view shows each player’s valid bed or respawn-anchor destination, or the world spawn when no valid personal destination exists. Entering the fountain keeps vanilla return routing, credits, and progression.
+When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination and type. Native Nether pairs allow directional gravity and traveller scale through the Transit menu. Nether pairs work both ways. Generated Nether counterparts prefer nearby supported ground with clear headroom and avoid hazardous blocks and the roof. If no suitable ground is found within the search area, Wormholes builds a landing platform.
+
+End entry portals are one-way and deliver travelers near the center of the main End island. Their receiving area has no reverse travel route. Defeating the Ender Dragon activates the central return fountain as a separate one-way portal. Its view shows each player’s valid bed or respawn-anchor destination, or the world spawn when no valid personal destination exists. Entering the fountain keeps vanilla return routing, credits, and progression.
 
 A converted vanilla portal keeps its original physical frame when its view direction, quarter-turn rotation or aperture shape changes. Keep the original obsidian border intact; breaking it removes the linked Nether pair. On native loaders, directional gravity and traveller scale are shared through Settings sync at both linked ends. See the [Transit menu](/wormholes/04-portal-types-menus-settings#transit-menu).
 

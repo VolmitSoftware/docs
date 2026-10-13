@@ -2,14 +2,12 @@
 title: "Concepts & Pack Layout"
 description: "Iris documentation: Concepts & Pack Layout"
 published: true
-date: 2026-10-12T01:16:38.165Z
+date: 2026-10-13T15:56:40.754Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 A pack is a folder of JSON files, binary objects, and images that describes one or more worlds. Edit the authoring folder in Studio, then stage a pack update to apply those changes to new chunks in a production world.
-
-See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).
 
 ## Pack files
 
@@ -190,3 +188,5 @@ For orientation when reading `packs/overworld/`:
 | `snippet/decorator/**`, `snippet/style/**` | Shared fragments referenced across biomes |
 
 Feature-level detail: [12 - Regions](/iris/12-regions), [13 - Biomes](/iris/13-biomes), [14 - Generators & Noise](/iris/14-generators-noise), [18 - Structures Overview](/iris/18-structures-overview), [19 - Objects](/iris/19-objects), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [23 - Loot](/iris/23-loot), [23b - Entities & Spawners](/iris/23b-entities-spawners).
+
+See also: [00 - Overview](/iris/00-overview), [01 - Installation & Platforms](/iris/01-installation-platforms), [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas), [11 - Dimensions](/iris/11-dimensions), [24 - Snippets](/iris/24-pack-mods-snippets), [25 - Pack Management](/iris/25-pack-management).

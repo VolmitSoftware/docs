@@ -2,7 +2,7 @@
 title: "Contributing"
 description: "How to contribute to this documentation"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-13T14:42:49.254Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,8 +29,8 @@ Multiplexor pages live at `servermultiplexor.md` and `servermultiplexor/NN-slug.
 When a plugin or Multiplexor change affects behavior, commands, permissions, configuration,
 schemas, or APIs, update the matching page here at the same time.
 
-Plugin guides cover installation, use, configuration, integrations, and
-troubleshooting. Keep smoke tests, regression plans, QA scripts, test results,
+Plugin guides cover installation, use, configuration, commands, permissions, and
+integrations. Keep smoke tests, regression plans, QA scripts, test results,
 and release sign-off out of these pages.
 
 ## Frontmatter
@@ -58,7 +58,9 @@ changes and preserve `dateCreated`.
   patterns.
 - Use absolute internal links such as `/shapedportals/00-overview`. Do not link
   to a `.md` path.
-- Write command syntax as `<required>` and `[optional]`.
+- Start content at `##`. Wiki.js renders the title from frontmatter.
+- Write command syntax as `<required>` and `[optional]`. In tables, escape
+  alternative separators as `\|` so they do not create extra columns.
 - Mark a destructive operation with `{.is-warning}` or `{.is-danger}`.
 - Wiki.js also supports `{.links-list}`, `{.grid-list}`, `{.tabset}`, `{.dense}`,
   and `{.is-info}` / `{.is-success}` / `{.is-warning}` / `{.is-danger}`.

@@ -2,12 +2,12 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T02:15:26.000Z
+date: 2026-10-13T17:14:26.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-TragOul gains XP from taking damage and awards extra XP for surviving at low health. Its 14 adaptations add reflected damage, healing, corpse attacks, skeleton servants, armor fueled by bones, debuffs, and lethal-hit protection; some abilities cost health, maximum health, or items, and `takeAwaySkillsOnDeath` removes TragOul XP and one level from each TragOul adaptation on death.
+TragOul gains XP from taking damage and awards extra XP for surviving at low health. Its 14 adaptations add reflected damage, healing, corpse attacks, skeleton servants, armor fueled by bones, debuffs, and lethal-hit protection. Some abilities cost health, maximum health, or items. `takeAwaySkillsOnDeath` removes TragOul XP and one level from each TragOul adaptation on death.
 
 ## How you earn TragOul XP
 
@@ -39,8 +39,8 @@ Blood Pact, Curse of Frailty, Last Rites, Soul Siphon, and Healing have the enab
 ### Thorns (`tragoul-thorns`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-thorns-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-thorns-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Thorns" src="/adapt-assets/demos/tragoul/tragoul-thorns-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Thorns" src="/adapt-assets/demos/tragoul/tragoul-thorns-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -55,8 +55,8 @@ A hit, including a projectile, reflects `damageMultiplierPerLevel` times the lea
 ### Globe of Pain (`tragoul-globe`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-globe-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-globe-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Globe of Pain" src="/adapt-assets/demos/tragoul/tragoul-globe-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Globe of Pain" src="/adapt-assets/demos/tragoul/tragoul-globe-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -74,8 +74,8 @@ A melee hit is split as `originalDamage / (sharedTargets + 1)` plus the per-leve
 ### Will of Pain (`tragoul-healing`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-healing-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-healing-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Will of Pain" src="/adapt-assets/demos/tragoul/tragoul-healing-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Will of Pain" src="/adapt-assets/demos/tragoul/tragoul-healing-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -90,8 +90,8 @@ A living attacker that damages you loses a fixed amount of health, and you are h
 ### Corpse Lances (`tragoul-lance`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-lance-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-lance-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Corpse Lances" src="/adapt-assets/demos/tragoul/tragoul-lance-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Corpse Lances" src="/adapt-assets/demos/tragoul/tragoul-lance-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -112,8 +112,8 @@ The health cost does not knock the affected player back.
 ### Blood Pact (`tragoul-blood-pact`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-blood-pact-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-blood-pact-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Blood Pact" src="/adapt-assets/demos/tragoul/tragoul-blood-pact-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Blood Pact" src="/adapt-assets/demos/tragoul/tragoul-blood-pact-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -139,8 +139,8 @@ A hit at or above the damage trigger can grant a random set of Speed, Regenerati
 ### Bone Harvest (`tragoul-bone-harvest`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-bone-harvest-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-bone-harvest-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Bone Harvest" src="/adapt-assets/demos/tragoul/tragoul-bone-harvest-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Bone Harvest" src="/adapt-assets/demos/tragoul/tragoul-bone-harvest-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -165,8 +165,8 @@ A kill can drop an owner-locked globe, chosen at random, tagged `adapt:tragoul-g
 ### Corpse Explosion (`tragoul-corpse-explosion`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-corpse-explosion-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-corpse-explosion-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Corpse Explosion" src="/adapt-assets/demos/tragoul/tragoul-corpse-explosion-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Corpse Explosion" src="/adapt-assets/demos/tragoul/tragoul-corpse-explosion-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -189,8 +189,8 @@ Every mob you or a servant kills damages nearby hostile mobs for a flat amount p
 ### Soul Siphon (`tragoul-soul-siphon`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-soul-siphon-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-soul-siphon-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Soul Siphon" src="/adapt-assets/demos/tragoul/tragoul-soul-siphon-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Soul Siphon" src="/adapt-assets/demos/tragoul/tragoul-soul-siphon-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -208,8 +208,8 @@ Damage you are credited for heals you, including melee, arrows, TNT you lit, lin
 ### Skeletal Servant (`tragoul-skeletal-servant`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-skeletal-servant-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-skeletal-servant-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Skeletal Servant" src="/adapt-assets/demos/tragoul/tragoul-skeletal-servant-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Skeletal Servant" src="/adapt-assets/demos/tragoul/tragoul-skeletal-servant-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -243,8 +243,8 @@ Sneak-right-click air or a block with bones in the main hand to raise a skeleton
 ### Marrow Armor (`tragoul-marrow-armor`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-marrow-armor-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-marrow-armor-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Marrow Armor" src="/adapt-assets/demos/tragoul/tragoul-marrow-armor-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Marrow Armor" src="/adapt-assets/demos/tragoul/tragoul-marrow-armor-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -264,8 +264,8 @@ A hit at or above the trigger consumes one bone from your inventory and removes 
 ### Curse of Frailty (`tragoul-curse-of-frailty`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-curse-of-frailty-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-curse-of-frailty-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Curse of Frailty" src="/adapt-assets/demos/tragoul/tragoul-curse-of-frailty-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Curse of Frailty" src="/adapt-assets/demos/tragoul/tragoul-curse-of-frailty-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -284,8 +284,8 @@ An attacker gains Weakness, and Slowness once it is unlocked; the Weakness ampli
 ### Death Sense (`tragoul-death-sense`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-death-sense-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-death-sense-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Death Sense" src="/adapt-assets/demos/tragoul/tragoul-death-sense-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Death Sense" src="/adapt-assets/demos/tragoul/tragoul-death-sense-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -306,8 +306,8 @@ Wounded damageable entities and players inside the radius glow through walls for
 ### Plague Bearer (`tragoul-plague-bearer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-plague-bearer-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-plague-bearer-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Plague Bearer" src="/adapt-assets/demos/tragoul/tragoul-plague-bearer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Plague Bearer" src="/adapt-assets/demos/tragoul/tragoul-plague-bearer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -330,13 +330,15 @@ Poison or Wither you applied, including a splash plus your own hit, jumps to nea
 ### Last Rites (`tragoul-last-rites`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/tragoul/tragoul-last-rites-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/tragoul/tragoul-last-rites-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Last Rites" src="/adapt-assets/demos/tragoul/tragoul-last-rites-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Last Rites" src="/adapt-assets/demos/tragoul/tragoul-last-rites-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge
 
-A hit that would kill you is refused: you are set to 1 HP and gain Invisibility plus Resistance, and hostile mobs in range that were targeting you lose that target.
+A hit that would kill you is refused: you are set to 1 HP and gain Invisibility plus Resistance, and hostile mobs in range that were targeting you lose that target. Its cooldown continues across reconnects, server restarts, configuration reloads, unlearning, and personal-setting changes.
+
+Personal controls include Death-save priority: First, Normal, or Last. Only one eligible death save activates per hit; see [death-save selection](/adapt/03-player-usage#personal-settings).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

@@ -2,7 +2,7 @@
 title: "Rift: Installation and Compatibility"
 description: "Server range, Java requirements, installation, and Folia limits"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "rift, installation, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -50,7 +50,7 @@ In the Volmit workspace, `./build-psycho-lt.sh` includes Rift and ShapedPortals.
 
 ## Folia
 
-On Folia, listing, information, teleport, configuration, diagnostics, auto-load and protection all work.
+On Folia, listing, information, teleport, configuration, and diagnostics remain available. You can also edit auto-load and protection settings.
 
 Dynamic create, load, unload, and quarantine are disabled on Folia. Registration of existing storage, adoption of loaded worlds, unmanage, and restoration of unloaded quarantined storage remain available.
 

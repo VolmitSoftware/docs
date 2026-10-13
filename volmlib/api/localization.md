@@ -2,13 +2,13 @@
 title: "Shared localization"
 description: "Language downloads, server defaults, player preferences, and the in-game picker"
 published: true
-date: 2026-09-20T22:20:00.000Z
+date: 2026-10-13T14:45:11.678Z
 tags: "volmlib, api, localization"
 editor: markdown
 dateCreated: 2026-09-02
 ---
 
-Volmit plugins share language downloads and player preferences through VolmLib. English message catalogs remain compiled into each plugin; bulk translation files stay in the source repository and download when requested. Each plugin retains its own message schema and validates translations before activation.
+VolmLib provides language downloads and player preferences for Volmit plugins. English message catalogs are compiled into each plugin. Plugins using remote catalogs download translations from their source repository when requested. Each plugin defines its message schema and validates translations before activation.
 
 On Paper and Spigot, client command suggestions reflect a shared `/volmit` owner change on the next server tick.
 
@@ -58,7 +58,7 @@ When a plugin overrides a shared message definition, the switcher and editor use
 
 The editor validates message shape, variables, and file format before saving. It rejects stale or invalid edits. Saving refreshes users of that locale without changing server or personal language choices. If Folia retires a player or rejects an editor continuation, VolmLib discards the associated prompt, pending work, and menu ownership instead of leaving a stale session. During plugin disable, open editor inventories are closed on their player owners before the owning plugin becomes unavailable; this does not depend on another Volmit plugin remaining enabled.
 
-Adapt, BileTools, Gloss, HiddenOre, React, Rift, ShapedPortals, and Wormholes edit `languages/<locale>.toml` directly. These plugins generate an editable `en_US.toml` file on startup when it is missing and preserve existing files. Repository catalogs, generated English, and editor saves use grouped TOML sections. Their translated headers follow the same order: file editing, prefix, formatting, and variable definitions. ShapedPortals also provides a Languages tile in its configuration GUI. Iris retains its JSON locale editor. English editing works offline. The inventory frontend applies to Bukkit-family servers; Iris mod loaders retain their native command interface.
+Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes edit `languages/<locale>.toml` directly. These plugins generate an editable `en_US.toml` file on startup when it is missing and preserve existing files. Repository catalogs, generated English, and editor saves use grouped TOML sections. Their translated headers follow the same order: file editing, prefix, formatting, and variable definitions. ShapedPortals also provides a Languages tile in its configuration GUI. English editing works offline. The inventory frontend applies to Bukkit-family servers; Iris mod loaders retain their native command interface.
 
 ## Shared plugin tools
 
@@ -78,7 +78,7 @@ Preference or server-default write failures remain errors. A rejected edit never
 
 ## Persistence and rendering
 
-The default preference store writes UUID choices to the path supplied by the plugin. Adapt, BileTools, Gloss, HiddenOre, React, Rift, ShapedPortals, and Wormholes use `languages/language-preferences.properties`. A plugin may supply another `LanguagePreferenceStore`, such as Foundation's JSON-backed store. A locale is prepared before the choice is written. Resetting removes the personal choice.
+The default preference store writes UUID choices to the path supplied by the plugin. Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes use `languages/language-preferences.properties`. A plugin may supply another `LanguagePreferenceStore`, such as Foundation's JSON-backed store. A locale is prepared before the choice is written. Resetting removes the personal choice.
 
 Rendering uses immutable snapshots. An uncached personal locale loads asynchronously, with the server language used until it is ready. Missing messages use English. Console and global output use the server default.
 
@@ -88,7 +88,7 @@ Rendering uses immutable snapshots. An uncached personal locale loads asynchrono
 
 `readOrInstall` installs a missing editable language file and validates an existing file without replacing it. This method blocks and belongs on a worker, never a gameplay thread. `requestInstallIfMissing` schedules asynchronous installation only when the destination is missing. Downloads have timeouts, size limits, strict UTF-8 decoding, validation before publication, atomic file publication, and a retry cooldown. Installed files work offline. Invalid downloaded content is rejected before publication; an interactive preparation failure selects validated built-in English for the requested scope.
 
-Translation completeness is separate from file validity. Adapt, BileTools, Gloss, HiddenOre, React, Rift, ShapedPortals, and Wormholes accept partial catalogs and retain valid translations when another entry has an invalid type, placeholder set, or message format. Missing or rejected entries resolve through English. Transport failures, invalid UTF-8, and unreadable document syntax remain file-level failures.
+Translation completeness is separate from file validity. Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes accept partial catalogs and retain valid translations when another entry has an invalid type, placeholder set, or message format. Missing or rejected entries resolve through English. Transport failures, invalid UTF-8, and unreadable document syntax remain file-level failures.
 
 The shared selection service accepts these partial snapshots without changing the selected locale to `en_US`. Server defaults and personal preferences retain the requested locale even when some messages resolve from English.
 

@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Pickaxes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T01:43:36.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,8 +35,8 @@ Deep Core, Obsidian Rush, Repair Rhythm, Stone Skin, and Gem Polish have the ena
 ### Ore Chisel (`pickaxe-chisel`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-chisel-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-chisel-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Ore Chisel" src="/adapt-assets/demos/pickaxe/pickaxe-chisel-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Ore Chisel" src="/adapt-assets/demos/pickaxe/pickaxe-chisel-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 5 knowledge, then 6 per level
@@ -55,8 +55,8 @@ A right-click on a vanilla ore with a main-hand pickaxe that has neither Silk To
 ### Veinminer (`pickaxe-veinminer`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-veinminer-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-veinminer-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Veinminer" src="/adapt-assets/demos/pickaxe/pickaxe-veinminer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Veinminer" src="/adapt-assets/demos/pickaxe/pickaxe-veinminer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 6 per level
@@ -71,8 +71,8 @@ Sneak-breaking ore, obsidian, or ancient debris with a pickaxe also breaks conne
 ### Autosmelt (`pickaxe-autosmelt`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-autosmelt-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-autosmelt-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Autosmelt" src="/adapt-assets/demos/pickaxe/pickaxe-autosmelt-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Autosmelt" src="/adapt-assets/demos/pickaxe/pickaxe-autosmelt-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge, then 6 per level
@@ -82,8 +82,8 @@ Iron, gold, and copper ore, including deepslate variants, drop ingots when the p
 ### Pickaxe Drop-To-Inventory (`pickaxe-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Pickaxe Drop-To-Inventory" src="/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Pickaxe Drop-To-Inventory" src="/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -93,8 +93,8 @@ Pickaxe breaks put drops into the inventory. Overflow falls at the player's feet
 ### Pickaxe Silk-Spawner (`pickaxe-silk-spawner`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-silk-spawner-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-silk-spawner-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Pickaxe Silk-Spawner" src="/adapt-assets/demos/pickaxe/pickaxe-silk-spawner-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Pickaxe Silk-Spawner" src="/adapt-assets/demos/pickaxe/pickaxe-silk-spawner-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 2 levels · 4 knowledge, then 6 per level
@@ -104,8 +104,8 @@ A spawner broken with the correct pickaxe drops a spawner item that keeps only t
 ### Quarry Sense (`pickaxe-quarry-sense`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-quarry-sense-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-quarry-sense-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Quarry Sense" src="/adapt-assets/demos/pickaxe/pickaxe-quarry-sense-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Quarry Sense" src="/adapt-assets/demos/pickaxe/pickaxe-quarry-sense-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -133,8 +133,8 @@ A sneak-right-click with an iron, diamond, or netherite pickaxe consumes the cli
 ### Tunnel Bore (`pickaxe-tunnel-bore`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-tunnel-bore-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-tunnel-bore-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Tunnel Bore" src="/adapt-assets/demos/pickaxe/pickaxe-tunnel-bore-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Tunnel Bore" src="/adapt-assets/demos/pickaxe/pickaxe-tunnel-bore-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 4 knowledge, then 5 per level
@@ -148,8 +148,8 @@ Sneaking and breaking `STONE`, `COBBLESTONE`, `MOSSY_COBBLESTONE`, `DEEPSLATE`, 
 ### Deep Core (`pickaxe-deep-core`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-deep-core-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-deep-core-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Deep Core" src="/adapt-assets/demos/pickaxe/pickaxe-deep-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Deep Core" src="/adapt-assets/demos/pickaxe/pickaxe-deep-core-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 3 knowledge, then 4 per level
@@ -165,8 +165,8 @@ Hitting `DEEPSLATE`, `COBBLED_DEEPSLATE`, `POLISHED_DEEPSLATE`, `DEEPSLATE_BRICK
 ### Obsidian Rush (`pickaxe-obsidian-rush`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-obsidian-rush-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-obsidian-rush-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Obsidian Rush" src="/adapt-assets/demos/pickaxe/pickaxe-obsidian-rush-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Obsidian Rush" src="/adapt-assets/demos/pickaxe/pickaxe-obsidian-rush-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 4 knowledge, then 5 per level
@@ -182,8 +182,8 @@ Hitting `OBSIDIAN` or `CRYING_OBSIDIAN` with a diamond or netherite pickaxe refr
 ### Unbreakable Pact (`pickaxe-unbreakable-pact`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-unbreakable-pact-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-unbreakable-pact-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Unbreakable Pact" src="/adapt-assets/demos/pickaxe/pickaxe-unbreakable-pact-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Unbreakable Pact" src="/adapt-assets/demos/pickaxe/pickaxe-unbreakable-pact-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 6 per level
@@ -198,8 +198,8 @@ A durability hit that would break the pickaxe stops at 1 remaining durability, i
 ### Repair Rhythm (`pickaxe-repair-rhythm`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-repair-rhythm-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-repair-rhythm-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Repair Rhythm" src="/adapt-assets/demos/pickaxe/pickaxe-repair-rhythm-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Repair Rhythm" src="/adapt-assets/demos/pickaxe/pickaxe-repair-rhythm-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 5 per level
@@ -217,8 +217,8 @@ Any block broken with a pickaxe, not only stone, can cancel that break's durabil
 ### Trophy Polish (`pickaxe-gem-polish`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-gem-polish-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-gem-polish-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Trophy Polish" src="/adapt-assets/demos/pickaxe/pickaxe-gem-polish-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Trophy Polish" src="/adapt-assets/demos/pickaxe/pickaxe-gem-polish-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 6 per level
@@ -237,8 +237,8 @@ Breaking a naturally generated skeleton, wither skeleton, zombie, player, creepe
 ### Stone Skin (`pickaxe-stone-skin`)
 
 <div class="adapt-demo">
-<video src="/adapt-assets/demos/pickaxe/pickaxe-stone-skin-pov.webm" muted loop playsinline controls preload="none"></video>
-<video src="/adapt-assets/demos/pickaxe/pickaxe-stone-skin-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Stone Skin" src="/adapt-assets/demos/pickaxe/pickaxe-stone-skin-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Stone Skin" src="/adapt-assets/demos/pickaxe/pickaxe-stone-skin-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge, then 5 per level

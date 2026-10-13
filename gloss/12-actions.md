@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-10-07T21:45:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -386,7 +386,9 @@ Declare a key through the [state API](/gloss/21-api-getting-started#persistent-s
 ]
 ```
 
-Release that sky purpose with `{ "type": "sky", "purpose": "shop-preview", "time": "reset" }`. Sky purposes compose time, weather, and border independently: releasing a time-only purpose preserves another purpose's weather. Updates are queued per viewer and save recovery state before changing the player; release or shutdown clears that state only after restoration succeeds. `[sky]` sets fade cadence and admission limits. Glow accepts `viewer`, `subject`, or an entity UUID as `target`, a named text `color`, and optional `purpose`, `priority`, and `ticks`. A glow lifetime of `0` persists until removed by its owner. Other plugins can create outlines and beams through the [public API](/gloss/21-api-getting-started).
+Release that sky purpose with `{ "type": "sky", "purpose": "shop-preview", "time": "reset" }`. Sky purposes compose time, weather, and border independently: releasing a time-only purpose preserves another purpose's weather. Updates are queued per viewer and save recovery state before changing the player; release or shutdown clears that state only after restoration succeeds. `[sky]` sets fade cadence and admission limits.
+
+Glow accepts `viewer`, `subject`, or an entity UUID as `target`, a named text `color`, and optional `purpose`, `priority`, and `ticks`. A glow lifetime of `0` persists until removed by its owner. Other plugins can create outlines and beams through the [public API](/gloss/21-api-getting-started).
 
 ## Execution order
 

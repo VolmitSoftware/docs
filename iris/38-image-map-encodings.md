@@ -2,12 +2,12 @@
 title: "Image Map Encodings"
 description: "How each Iris image-map type decodes its pixels: grayscale height, RGB height, color legends, and masks"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T14:45:24.665Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
 ---
-What each map type does with its pixels. The resource model and accepted PNG formats are on [37 - Image Maps](/iris/37-image-maps); every field and the coordinate contract are on [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
+Each image-map type converts pixels into heights, categories, or mask weights. This page explains that conversion. For accepted PNG formats, see [37 - Image Maps](/iris/37-image-maps). For fields and coordinate rules, see [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
 
 Iris reads raw sRGB channel numbers with no gamma, ICC, display, or perceptual conversion, so export your source with profile conversion, dithering, antialiasing, and palette quantization disabled. See [Raw sample rules](/iris/37-image-maps#raw-sample-rules).
 

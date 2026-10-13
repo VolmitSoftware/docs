@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -138,7 +138,13 @@ Preview third-party hologram imports with:
 
 Apply them with `/gloss import apply <source>`. Supported sources are `gholo`, `decent-holograms`, `holographic-displays`, and `fancy-holograms`.
 
-For HoloUi data, run `/gloss import holoui mode=preview`, then `/gloss import holoui mode=apply` after reviewing the report. The prepared plan belongs to the command sender and expires after `[imports] previewLifetimeSeconds` (ten minutes by default). `/gloss import holoui mode=preview overwrite=true` explicitly prepares replacement of conflicting destination content; apply always uses the same reviewed plan. Changed source or destination files require a new preview. For older Gloss data, run `/gloss import legacy mode=preview`, review the reported changes and conflicts, then run `/gloss import legacy mode=apply`. Both import commands apply the sender’s captured preview, reject changed files, and require a new preview after its configured lifetime. Omitting the mode previews the upgrade. The `[imports]` file, preview-byte and path limits apply to source files, affected destinations, and complete-project validation. HoloUi, FeatherBoard and AnimatedScoreboard source scans and complete-project scans also enforce visited-entry limits, count ignored entries, and do not follow symbolic links. Recursive HoloUi and project scans enforce the directory-depth limit; see [Configuration](/gloss/02-configuration). Preview requires `gloss.import`; applying requires `gloss.import.apply`.
+For HoloUi data, run `/gloss import holoui mode=preview`, then `/gloss import holoui mode=apply` after reviewing the report. The prepared plan belongs to the command sender and expires after `[imports] previewLifetimeSeconds` (ten minutes by default). `/gloss import holoui mode=preview overwrite=true` explicitly prepares replacement of conflicting destination content; apply always uses the same reviewed plan. Changed source or destination files require a new preview.
+
+For older Gloss data, run `/gloss import legacy mode=preview`, review the reported changes and conflicts, then run `/gloss import legacy mode=apply`.
+
+Both import commands apply the sender’s captured preview, reject changed files, and require a new preview after its configured lifetime. Omitting the mode previews the upgrade.
+
+The `[imports]` file, preview-byte and path limits apply to source files, affected destinations, and complete-project validation. HoloUi, FeatherBoard and AnimatedScoreboard source scans and complete-project scans also enforce visited-entry limits, count ignored entries, and do not follow symbolic links. Recursive HoloUi and project scans enforce the directory-depth limit; see [Configuration](/gloss/02-configuration). Preview requires `gloss.import`; applying requires `gloss.import.apply`.
 
 HoloUi imports preserve menu paths, panel IDs and UUIDs, menu references, and original source files. `boards/` becomes `panels/`. Preview language keys move from `holoui.preview.*` to `gloss.preview.*`, and historical `previewScale` and `previewLookDistance` settings become each imported preview's `scale` and `viewDistance`. Player scale preferences use the current UUID-to-number map. Editor credentials, sessions, transactions, backups, and regenerable custom-item exports are excluded.
 

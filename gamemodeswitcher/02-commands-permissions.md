@@ -2,13 +2,13 @@
 title: "GamemodeSwitcher: Commands and permissions"
 description: "Command syntax, player controls, and operator permissions"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-13T14:42:49.253Z
 tags: "gamemodeswitcher, commands, permissions"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
 ---
 
-`/gsw` aliases `/gamemodeswitcher`. The root command opens help. A mode change only ever affects the player who ran it.
+`/gsw` is an alias for `/gamemodeswitcher`. Run either command without arguments to open help. Mode changes affect only the player who runs the command.
 
 | Command | Behavior |
 | --- | --- |

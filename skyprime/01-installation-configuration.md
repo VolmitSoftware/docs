@@ -2,7 +2,7 @@
 title: SkyPrime - Installation and configuration
 description: Runtime requirements, world provisioning and SkyPrime's TOML files
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-13T14:43:35.542Z
 tags: skyprime, installation, configuration, folia
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -89,7 +89,19 @@ At least one tier must start at level zero, and minimum levels must be distinct.
 
 ## Editing and reload
 
-`/sky config` opens the in-game editor. Select a setting, type its new value in chat within 60 seconds, or type `cancel`. Saves validate the complete candidate before atomically replacing its file. The editor checks that the value has not changed since the prompt opened. Existing generator fields use names such as `generators.coal.minimumLevel` and `generators.coal.weights.COAL_ORE`. Mission scalar fields, all progression settings, material values and menu settings are also editable. For example, use `missions.daily_stone.reward`, `progression.upgrades.team.baseCost` or `progression.resets.maxResets`. Add/remove entries and edit prerequisite arrays in their TOML files. The main menu mission slot is `missions`.
+`/sky config` opens the in-game editor. Select a setting and type its new value in chat within 60 seconds. Type `cancel` to leave it unchanged. Saves validate the complete candidate before atomically replacing its file. The editor rejects a save if the value changed after the prompt opened.
+
+Editable settings include existing generator fields, mission scalar fields, progression settings, material values, and menu settings. For example:
+
+| Setting | Editor path |
+|---|---|
+| Coal generator minimum level | `generators.coal.minimumLevel` |
+| Coal ore weight | `generators.coal.weights.COAL_ORE` |
+| Daily stone mission reward | `missions.daily_stone.reward` |
+| Team upgrade base cost | `progression.upgrades.team.baseCost` |
+| Maximum island resets | `progression.resets.maxResets` |
+
+Add or remove entries and edit prerequisite arrays directly in their TOML files. The main menu mission slot is `missions`.
 
 Automatic reload watches configuration and installed language files. A malformed candidate retains the previous runtime settings and records the full failure in the console. `/sky reload` also validates and reloads custom starter files. Template files require this explicit reload; they are not part of automatic configuration polling. Geometry changes require a restart and may be incompatible with existing island data.
 

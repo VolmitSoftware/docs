@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-10-07T13:52:00.694Z
+date: 2026-10-13T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -160,7 +160,11 @@ This feature measures per-world tick share. Each world's share is its part of th
 
 ### `chunk-quarantine`
 
-This feature scores hot chunks from spawns, redstone, physics, and hoppers, and quarantines a chunk whose score reaches `scoreTrigger` within one `windowMS` window. For `quarantineMS`, a quarantined chunk has its tracked spawns, sampled physics updates (1 in `samplePhysicsEveryN`), and hopper moves cancelled and its redstone held, for each kind whose `track*` option is enabled. With `bypassNearPlayers` enabled, nothing is cancelled or held while a player is within `bypassPlayerRadius`. Tracked spawns are natural spawns when `trackNaturalSpawns` is enabled and spawner spawns when `trackSpawnerSpawns` is enabled. With `onlyDuringPressure` enabled, chunks are scored only while tick time or incident score is above the pressure thresholds, or while a quarantine is still running; at other times the feature does no per-event work.
+This feature scores hot chunks from spawns, redstone, physics, and hoppers, and quarantines a chunk whose score reaches `scoreTrigger` within one `windowMS` window. For `quarantineMS`, a quarantined chunk has its tracked spawns, sampled physics updates (1 in `samplePhysicsEveryN`), and hopper moves cancelled and its redstone held, for each kind whose `track*` option is enabled.
+
+With `bypassNearPlayers` enabled, nothing is cancelled or held while a player is within `bypassPlayerRadius`. Tracked spawns are natural spawns when `trackNaturalSpawns` is enabled and spawner spawns when `trackSpawnerSpawns` is enabled.
+
+With `onlyDuringPressure` enabled, chunks are scored only while tick time or incident score is above the pressure thresholds, or while a quarantine is still running; at other times the feature does no per-event work.
 
 The feature tracks at most `maxTrackedChunks` chunks. When the table is full, the chunk with the oldest activity is dropped to make room for a new one. A chunk entry is stale once it has had no activity for the longer of 8 × `windowMS` and 2 × `quarantineMS` and is not quarantined; each maintenance cycle removes stale entries oldest first, up to `maxExpiryRemovalsPerCycle`.
 
@@ -207,7 +211,7 @@ with the world, coordinate, event count and measured time.
 
 ### `hopper-chain-coalescing`
 
-Detects linear hopper chains and reports what skipping their intermediate ticks would save. Measurement-only by default; set `featureActMode` and supply an NMS hopper hook to actually skip them.
+Detects linear hopper chains and reports what skipping their intermediate ticks would save. It measures savings by default. To skip intermediate ticks, set `featureActMode` and supply an NMS hopper hook.
 
 Placing or breaking a hopper, comparator, repeater, or any inventory block (chests, copper chests, barrels, shulker boxes, furnaces, brewing stands, droppers, dispensers, crafters, lecterns, jukeboxes, decorated pots, chiseled bookshelves, and shelves) queues a chain repair for the surrounding chunks. While accounting is engaged, the `hopper-chain-coalescing` sampler reports HC/s: each second it adds the length minus one of every fast-path-eligible chain outside `bypassRadius`. The reported rate does not depend on `tickIntervalMS`.
 
@@ -264,7 +268,11 @@ This feature throttles high-frequency redstone clocks via `BlockRedstoneEvent` (
 
 ### `crop-fast-forward`
 
-This feature advances crop and sapling growth in chunks that players return to after a long absence. It **silences under high load**. That polarity is the opposite of most governors. A chunk counts as active while it is within the world's simulation distance of any player, because the server grows crops there itself; only the time a chunk spends outside that distance is fast-forwarded. Absences shorter than `minElapsedTicks` are ignored and the total is capped at `maxFastForwardTicks`. The pending growth is applied once a player comes within `activeRange` blocks of the chunk, at most 128 chunks per pass, each on its owning server or region thread. A chunk that unloads or reloads discards its pending growth. Chunk activity keeps being tracked while the feature is silenced.
+This feature advances crop and sapling growth in chunks that players return to after a long absence. It pauses its growth updates under high load.
+
+A chunk counts as active while it is within the world's simulation distance of any player, because the server grows crops there itself; only the time a chunk spends outside that distance is fast-forwarded. Absences shorter than `minElapsedTicks` are ignored and the total is capped at `maxFastForwardTicks`.
+
+The pending growth is applied once a player comes within `activeRange` blocks of the chunk, at most 128 chunks per pass, each on its owning server or region thread. A chunk that unloads or reloads discards its pending growth. React continues tracking chunk activity while its growth updates are paused.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-10-08T01:01:30Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -191,7 +191,13 @@ Legacy Gloss, HoloUi, FeatherBoard, AnimatedScoreboard and TAB header/footer pre
 | `maxPreparedPreviews` | `8` | 1 – 1024 | Maximum reviewed previews across all senders and supported document import formats |
 | `maxCachedBytes` | `268435456` | `maxPreviewBytes` – 1073741824 | Maximum retained source and staged bytes across reviewed previews |
 
-A preview that exceeds a limit cannot apply. Preparation checks its deadline between operations and streaming chunks; a blocked filesystem call cannot be interrupted, and publication or recovery is allowed to finish after preparation succeeds. Byte admission includes both replaced originals and staged replacements. Existing transaction backups use the separate `[history]` retention targets. HoloUi, FeatherBoard and AnimatedScoreboard source scans count ignored entries toward the scan budget before sorting or reading selected files. Recursive scans reject deeper directories even when empty, and staged menu or panel documents must fit the same depth limit. Files directly inside a collection are at directory depth 0; `menus/one/two/menu.json` has directory depth 2. Flat collections remain nonrecursive. Scans never follow symbolic links; a supported JSON document path must be a regular file. Singleton documents count toward `maxFiles`. All current project documents count toward whole-project validation, and staged replacements count separately from their original bytes. Converted documents use the resulting preset catalog regardless of staging order. When the reviewed-preview cache is full, a new preview is refused without evicting another sender’s reviewed content. Applying, expiry or shutdown releases its cached data; idle previews expire without another command.
+A preview that exceeds a limit cannot apply. Preparation checks its deadline between operations and streaming chunks; a blocked filesystem call cannot be interrupted, and publication or recovery is allowed to finish after preparation succeeds. Byte admission includes both replaced originals and staged replacements.
+
+Existing transaction backups use the separate `[history]` retention targets.
+
+HoloUi, FeatherBoard and AnimatedScoreboard source scans count ignored entries toward the scan budget before sorting or reading selected files. Recursive scans reject deeper directories even when empty, and staged menu or panel documents must fit the same depth limit. Files directly inside a collection are at directory depth 0; `menus/one/two/menu.json` has directory depth 2. Flat collections remain nonrecursive. Scans never follow symbolic links; a supported JSON document path must be a regular file. Singleton documents count toward `maxFiles`. All current project documents count toward whole-project validation, and staged replacements count separately from their original bytes. Converted documents use the resulting preset catalog regardless of staging order.
+
+When the reviewed-preview cache is full, a new preview is refused without evicting another sender’s reviewed content. Applying, expiry or shutdown releases its cached data; idle previews expire without another command.
 
 ## `[panels]`
 

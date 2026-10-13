@@ -2,7 +2,7 @@
 title: "Behaviors and State"
 description: "Run actions from player events, chat matches, timers, and named events"
 published: true
-date: 2026-10-08T04:00:00.000Z
+date: 2026-10-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T22:00:00.000Z
@@ -87,7 +87,9 @@ Delayed action continuations, including menu and scene actions, share three limi
 | `maxTimersGlobal` | `8192` | `1`–`1048576`; all pending continuations, including those without a player |
 | `maxTimersWithoutPlayer` | `256` | `1`–`65536`; pending continuations without a player, also counted against the global limit |
 
-A full applicable limit stops the delayed run before scheduling its continuation. A continuation releases its place when it resumes, cannot be scheduled, retires, or is successfully canceled. Lowering a limit on reload keeps accepted current-session timers and refuses new ones until capacity becomes available. Disconnecting resets the player's session and cancels its pending tasks; disabling the service cancels pending tasks across all sessions, including playerless runs. Global and playerless capacity remains reserved until cancellation succeeds or the pending callback drains, so repeated reconnects or service reloads cannot bypass those limits. Invalidated callbacks cannot execute their actions or release reservations belonging to a later session.
+A full applicable limit stops the delayed run before scheduling its continuation. A continuation releases its place when it resumes, cannot be scheduled, retires, or is successfully canceled. Lowering a limit on reload keeps accepted current-session timers and refuses new ones until capacity becomes available.
+
+Disconnecting resets the player's session and cancels its pending tasks; disabling the service cancels pending tasks across all sessions, including playerless runs. Global and playerless capacity remains reserved until cancellation succeeds or the pending callback drains, so repeated reconnects or service reloads cannot bypass those limits. Invalidated callbacks cannot execute their actions or release reservations belonging to a later session.
 
 ## Commands and editor
 
