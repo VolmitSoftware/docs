@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-13T16:00:00.000Z
+date: 2026-10-13T22:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ Install the artifact for your server platform: the CraftBukkit jar goes in `plug
 | | |
 |---|---|
 | Bukkit server | Paper, Purpur, or Folia. Minecraft 26.1.2, 26.2, and 26.3 |
-| Native server | Minecraft 26.2: Fabric Loader 0.19.5, Forge 65.1.3, or NeoForge 26.2.0.89. Minecraft 26.3: Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta |
+| Native server | Minecraft 26.1.2: Fabric Loader 0.19.5, Forge 64.1.4, or NeoForge 26.1.2.116. Minecraft 26.2: Fabric Loader 0.19.5, Forge 65.1.3, or NeoForge 26.2.0.89. Minecraft 26.3: Fabric Loader 0.19.5, Forge 66.0.8, or NeoForge 26.3.0.33-beta |
 | Client mod | Optional. Use the jar for the client’s Minecraft version and loader from the native server row. See [Client mod](#client-mod) |
 | Java | 25 |
 | Distribution | `Wormholes v<version> [CraftBukkit] 26.1.2-26.3.jar`, or the jar bearing your native loader name and version. The `-api.jar` is a Bukkit compile dependency |
@@ -34,7 +34,7 @@ Fabric, Forge, and NeoForge servers store the same settings, portal records, doo
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's Minecraft version and loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases on channel `wormholes:v11` and the same Minecraft version. Optics stream messages use wire version 9 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.2 and 26.3. A 26.2 client requires a 26.2 server, and a 26.3 client requires a 26.3 server. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases on channel `wormholes:v11` and the same Minecraft version. Optics stream messages use wire version 9 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.1.2, 26.2, and 26.3. A client requires a server on the same Minecraft version. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia every player crosses with the ordinary teleport. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
@@ -56,7 +56,7 @@ Native and streamed cameras share a cache of up to 12 view pipelines, with relea
 
 For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for your Minecraft version. Iris Shaders is separate from the Iris world-generation plugin and mod.
 
-For distant terrain on Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
+For distant terrain on Minecraft 26.1.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/QHxoccsN). On Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
 
 ### `config/wormholes-client.toml`
 
@@ -82,7 +82,7 @@ Build with Java 25 from the repository root. `./gradlew buildAllToOut` exports t
 
 Repeated builds reuse unchanged verified targets. Changes to sources, test fixtures, dependencies, build settings, or the Java toolchain rebuild the affected targets and run their checks. Use `--rerun-tasks` to force every requested gate to run again.
 
-`buildAll`, `buildPsychoLT`, and the workspace `build-psycho-lt.sh` also compile and export every supported game version. Consumer dropins receive the selected Minecraft version's jar, which defaults to 26.3. Use `-PminecraftVersion=26.2` to select 26.2 for those dropins.
+`buildAll`, `buildPsychoLT`, and the workspace `build-psycho-lt.sh` also compile and export every supported game version. Consumer dropins receive the selected Minecraft version's jar, which defaults to 26.3. Use `-PminecraftVersion=26.2` or `-PminecraftVersion=26.1.2` to select another version for those dropins.
 
 Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Native single-platform builds use the selected Minecraft version, for example `./gradlew buildFabric -PminecraftVersion=26.2`. Every other declared version has its own task with the version appended, for example `./gradlew buildFabric26_2` while 26.3 is selected. `./gradlew buildModdedVersionsToOut` exports all native game versions without building Bukkit or deploying jars. Each native export replaces older Wormholes jars for that loader and game version while retaining other game versions. NeoForge filenames omit the loader's trailing `-beta` suffix, for example `Wormholes v2.2.0 [NeoForge] 26.3+26.3.0.33.jar`.
 

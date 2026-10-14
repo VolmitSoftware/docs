@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-13T16:43:09.081Z
+date: 2026-10-13T22:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -394,9 +394,9 @@ Camera movement and brief revisits reuse these pipelines. Native mirrors retain 
 
 A streamed view uses the enclosing dimension's shader programs, block ids, and terrain lighting, without a shadow pass of its own. Each streamed camera keeps a separate pipeline, render targets, and temporal history. A streamed view inside a native portal restores the parent camera's shader state after drawing. Native and streamed cameras share the 12-view cache budget.
 
-With Distant Horizons installed on Fabric or NeoForge for Minecraft 26.2 or 26.3, world views render distant terrain from the destination world's camera. Distant source terrain preserves the composed portal opening. This applies across dimensions and through nested portals and mirrors. A camera that crosses before the player also renders distant terrain from the destination world. Each camera prepares its distant terrain from the data available to Distant Horizons. First views can take time to populate, and brief revisits reuse the prepared terrain.
+With Distant Horizons installed on Fabric or NeoForge for Minecraft 26.1.2, 26.2, or 26.3, world views render distant terrain from the destination world's camera. Distant source terrain preserves the composed portal opening. This applies across dimensions and through nested portals and mirrors. A camera that crosses before the player also renders distant terrain from the destination world. Each camera prepares its distant terrain from the data available to Distant Horizons. First views can take time to populate, and brief revisits reuse the prepared terrain.
 
-Distant Horizons native antialiasing uses separate histories on Minecraft 26.2 and 26.3. The main view and each portal, mirror, and nested camera keep their own history. Camera motion and brief revisits retain these histories. Nested views restore their enclosing camera's state and render targets. Returning to the main view restores its camera, world, and history.
+Distant Horizons native antialiasing uses separate histories on Minecraft 26.1.2, 26.2, and 26.3. The main view and each portal, mirror, and nested camera keep their own history. Camera motion and brief revisits retain these histories. Nested views restore their enclosing camera's state and render targets. Returning to the main view restores its camera, world, and history.
 
 Unused histories expire after 60 seconds or earlier capacity eviction. Leaving the world, closing a destination world, or reloading shaders releases the affected histories.
 

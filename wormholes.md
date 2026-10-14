@@ -2,7 +2,7 @@
 title: "Wormholes"
 description: "Live portals, random teleport, Dimensional Doors, and cross-server travel"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-13T22:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ Wormholes adds frame portals with a live destination view, random teleport porta
 
 | | |
 |---|---|
-| Server | Paper, Purpur, or Folia on Minecraft 26.1.2–26.3; Fabric, Forge, or NeoForge on Minecraft 26.3 |
+| Server | Paper, Purpur, or Folia on Minecraft 26.1.2–26.3; Fabric, Forge, or NeoForge on Minecraft 26.1.2–26.3 |
 | Java | 25 |
 | Command | `/wormholes`, `/wh`, `/wormhole` |
 | Config | `plugins/Wormholes/wormholes.toml` on Bukkit, or `config/wormholes/wormholes.toml` on native loaders; schema `3` |
