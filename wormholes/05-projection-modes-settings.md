@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-13T22:00:00.000Z
+date: 2026-10-14T18:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -382,13 +382,15 @@ With `show-debug-overlay = true` in the client file, the F3 metrics line ends wi
 
 The fixed vanilla portal terrain and composition shaders prepare during game resource loading. Reflections and both RGSS filtering states use prepared variants. Moving, crossing, revisiting, and scene resets retain these programs. A successful resource reload replaces them. Content-dependent reflected shaders can still compile on first use.
 
-With an Iris shader pack enabled, world views use the destination dimension's sky, lighting, and postprocessing. Streamed views select the destination's shader programs, including views nested inside a different dimension. Shader-pack dimension mappings also apply to streamed destinations. Each portal, mirror, and nested camera keeps a separate shader pipeline and temporal history for TAA and motion blur. This includes multiple mirrors or portals in the same dimension. Returning from a nested view restores the enclosing camera's shader state, and returning to the main view restores its own state and history.
+With an Iris shader pack enabled, world views use the destination dimension's sky, lighting, and postprocessing. Streamed views select the destination's shader programs, including views nested inside a different dimension. Shader-pack dimension mappings also apply to streamed destinations. Cameras drawn in the same frame keep separate shader pipelines and temporal histories for TAA and motion blur. This includes multiple mirrors or portals in the same dimension. Returning from a nested view restores the enclosing camera's shader state, and returning to the main view restores its own state and history.
 
-Dimension warmup prepares the main shader pipelines while the world loads. Preparing another dimension preserves the active camera’s lighting and shader state. Visible world views and their nested cameras prepare additional pipelines before portal drawing and require additional graphics memory. Preparation follows the cameras selected for drawing within the shared view budget. Shader preparation remains synchronous and can pause the frame on first use, after shader reload, or after cache expiry.
+Dimension warmup prepares the main shader pipelines while the world loads, including the Wormholes pocket dimension. Preparing another dimension preserves the active camera’s lighting and shader state. A world view into another dimension draws with that dimension's main pipeline while the camera is elsewhere, so the first view through a newly lit Nether portal or a pocket door, the opposite side of a portal, and the crossing and return cameras of a cross-dimension portal prepare no additional pipeline. One view per dimension uses that pipeline in a frame. A view that takes it over from another view starts from that view's history, a portal or door that switches to the side the player faces keeps the previous side's pipeline and history, and crossing into the dimension continues the history in the main view.
+
+Views into the camera's own dimension, mirrors, nested cameras, and additional simultaneous views into one dimension prepare their own pipelines before portal drawing and require additional graphics memory. Preparation follows the cameras selected for drawing within the shared view budget. This preparation is synchronous and can pause the frame on first use, after shader reload, or after cache expiry.
 
 Identical compiled shader stages can serve separate camera pipelines. Each camera still links separate programs and owns separate render targets and history.
 
-Visible cross-dimension portals also prepare crossing and return cameras within the 12-view cache budget. Nearby native cameras can prepare before they become visible, keeping separate histories ready for return travel. Prepared travel cameras remain available while a nearby return route is usable. Matching native cameras retain their histories during outbound and return travel, including nested views while the return route arrives. ClientView retains its session during preparation.
+Visible same-dimension portals and doors also prepare crossing and return cameras within the 12-view cache budget. Nearby native cameras can prepare before they become visible, keeping separate histories ready for return travel. Prepared travel cameras remain available while a nearby return route is usable. Matching native cameras retain their histories during outbound and return travel, including nested views while the return route arrives. ClientView retains its session during preparation.
 
 Camera movement and brief revisits reuse these pipelines. Native mirrors retain their own shader and distant-terrain histories as nested views arrive or projections reopen. Closing a view retains its pipeline until 60 seconds without use or earlier capacity eviction for a new visible camera. Preparation for possible travel uses available cache space without evicting cached views. Leaving the world or reloading shaders releases all cached view pipelines. Overlapping portals respect the nearer aperture and opaque scenery in front of it. Geometry in front of the destination aperture is clipped from every view.
 
@@ -432,7 +434,7 @@ Every world the client keeps loaded has its own world renderer, light map, fog, 
 
 With Sodium, each loaded world keeps its own renderer. Nearby armed destinations prepare terrain before travel, including the surrounding arrival area beyond the portal opening. Crossing reuses completed terrain; unfinished sections complete before the first destination frame, without fading in, including behind a player who walks through backwards. New destination chunks or terrain changes can still require preparation.
 
-With Iris Shaders, each dimension keeps the main view's shader pipeline, while portal views keep separate temporal histories.
+With Iris Shaders, each dimension keeps the main view's shader pipeline. A portal view into another dimension uses that dimension's pipeline and history, so crossing continues the view's history; other portal views keep separate temporal histories.
 
 View bobbing fades out within a block of the actual plane of an armed opening or the arrival portal, stays damped during immediate return crossings, and returns over the next block. Scaled and rotated openings use the same world-space distances.
 

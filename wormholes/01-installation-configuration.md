@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-13T22:00:00.000Z
+date: 2026-10-14T18:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,11 +46,11 @@ Native server and client mods also support [Directional gravity](/wormholes/04-p
 
 Native clients prepare the fixed vanilla portal terrain and composition shaders during game resource loading, including reflected and RGSS variants. Crossing, revisiting, scene resets, and texture-filtering changes retain these programs. A successful resource reload replaces them. Content-dependent reflected shaders can still compile on first use.
 
-With Iris Shaders, the client prepares each dimension's main shader pipeline while the world loads. Each portal view, mirror, and nested camera requires a separate pipeline and history. Dimension warmup does not prepare these additional pipelines. Returning from a nested view or mirror restores the enclosing camera, including the main view.
+With Iris Shaders, the client prepares each dimension's main shader pipeline while the world loads, including the Wormholes pocket dimension. A view into another dimension draws with that dimension's main pipeline while the camera is in a different dimension, so a newly lit Nether portal, a pocket door, the opposite side of a portal, and the crossing and return cameras of a cross-dimension portal need no additional pipeline. One view per dimension uses that pipeline in a frame, and crossing into the dimension continues its history in the main view. Returning from a nested view or mirror restores the enclosing camera, including the main view.
 
-Before drawing visible views, the client prepares their shader pipelines, including visible nested cameras. Shader preparation remains synchronous and can pause the frame on first use, after shader reload, or after cache expiry. ClientView retains its session during preparation. A visible cross-dimension portal also prepares its crossing and return cameras when the cache has room. Nearby native cameras can also prepare before they become visible, keeping their own histories ready for return travel. Prepared travel cameras remain available while a nearby return route is usable. Matching native cameras continue their histories during outbound and return travel.
+Views into the camera's own dimension, mirrors, nested cameras, and a second view into a dimension that another view draws in the same frame each require a separate pipeline and history. Before drawing visible views, the client prepares these pipelines, including visible nested cameras. This preparation is synchronous and can pause the frame on first use, after shader reload, or after cache expiry. ClientView retains its session during preparation. A visible same-dimension portal or door also prepares its crossing and return cameras when the cache has room. Nearby native cameras can also prepare before they become visible, keeping their own histories ready for return travel. Prepared travel cameras remain available while a nearby return route is usable. Matching native cameras continue their histories during outbound and return travel.
 
-Moving the camera or briefly closing and reopening the same view reuses its pipeline and history. Native mirrors keep their separate histories as nested views arrive or projections reopen. Identical compiled shader stages can serve separate camera pipelines, but each pipeline still links its own programs and owns its render targets and history.
+Moving the camera or briefly closing and reopening the same view reuses its pipeline and history. When a portal or door switches to the side the player now faces, its view keeps the pipeline and history of the previous side. A view that takes over a dimension's main pipeline from another view starts from that view's history. Native mirrors keep their separate histories as nested views arrive or projections reopen. Identical compiled shader stages can serve separate camera pipelines, but each pipeline still links its own programs and owns its render targets and history.
 
 Native and streamed cameras share a cache of up to 12 view pipelines, with release after 60 seconds without use. Preparation for possible travel uses available cache space without evicting cached views. A new visible camera can release an unused view sooner when the cache is full. Leaving the world releases cached portal pipelines. Shader reload also releases retained shader stages.
 
