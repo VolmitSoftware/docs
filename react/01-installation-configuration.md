@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install React, configure automatic reloads, and connect React Web"
 published: true
-date: 2026-10-13T16:16:06.562Z
+date: 2026-10-14T12:43:24.047Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,6 +22,8 @@ Install the selected distribution jar as the only React jar. Each build automati
 4. Open [React Web](https://react.volmitsoftware.com/) or edit the TOML files under `plugins/React/`.
 
 PlaceholderAPI and the other Volmit plugins are optional.
+
+To update React, stop the server, replace its jar, and restart. Keep `plugins/React/` in place. Saved metric history remains available without a separate conversion or cleanup step.
 
 ## Files
 
@@ -77,7 +79,7 @@ If React reports that a task or ticker did not stop during a reload, restart the
 
 Set a retention value to `0` or lower to keep that tier indefinitely. One-hour history is always retained.
 
-Each one-second history point aggregates every available live capture in that second, including its minimum and maximum. Sources can refresh more slowly than live capture. Source timestamps show when the underlying reading changed.
+Each one-second history point aggregates every available live capture in that second, including its minimum and maximum. Sources can refresh more slowly than live capture. Source timestamps show when the underlying reading changed. Saved readings without source timestamps or measurement metadata retain unknown values for those fields.
 
 ## Runtime telemetry
 
