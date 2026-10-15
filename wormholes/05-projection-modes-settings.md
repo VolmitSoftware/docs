@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-14T20:00:00.000Z
+date: 2026-10-15T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -386,7 +386,7 @@ With an Iris shader pack enabled, world views use the destination dimension's sk
 
 Dimension warmup prepares the main shader pipelines while the world loads, including the Wormholes pocket dimension, and links two spare sets of the current dimension's shader programs. This adds roughly 1.5 to 3 seconds to the loading screen, depending on the Minecraft version and shader pack. Preparing another dimension preserves the active camera’s lighting and shader state. A world view into another dimension draws with that dimension's main pipeline while the camera is elsewhere, so the first view through a newly lit Nether portal or a pocket door, the opposite side of a portal, and the crossing and return cameras of a cross-dimension portal prepare no additional pipeline. One view per dimension uses that pipeline in a frame. A view that takes it over from another view starts from that view's history, a portal or door that switches to the side the player faces keeps the previous side's pipeline and history, and crossing into the dimension continues the history in the main view.
 
-Views into the camera's own dimension, mirrors, nested cameras, and additional simultaneous views into one dimension use their own pipelines and require additional graphics memory. A new camera pipeline takes its programs from a spare set, so creating it costs a fraction of a frame, and the client then relinks replacement programs one per frame in the background. For roughly one to two seconds per set, some frames can take a few tens of milliseconds longer. On Minecraft 26.1.2 with Sodium, creating a camera pipeline also compiles the terrain shaders for that camera, so the first frame of a new view takes about a fifth of a second; on 26.2 and 26.3 it takes a few tens of milliseconds.
+Views into the camera's own dimension, mirrors, nested cameras, and additional simultaneous views into one dimension use their own pipelines and require additional graphics memory. A new camera pipeline takes its programs from a spare set, so creating it costs a fraction of a frame, and the client then relinks replacement programs one per frame in the background. For roughly one to two seconds per set, some frames can take a few tens of milliseconds longer. The spare sets include the Sodium terrain programs on every supported Minecraft version, so the first frame of a new view takes a few tens of milliseconds.
 
 The client creates at most one camera pipeline per frame: visible views first, then nested views by depth, then travel cameras. A view whose pipeline is not ready shows the opening with the surrounding scene for that frame and draws once the pipeline exists, usually on the next frame. When several new cameras appear at once, such as nested views three deep, and the spare sets run out, later views can take one to two seconds to appear while programs relink, without pausing the frame. Shader reload and pack changes rebuild the spare sets the same way, and a released camera pipeline relinks its programs when it is needed again. The spare sets belong to the dimension the world loaded in; after crossing into another dimension, the first same-dimension view there links its programs one per frame before it appears, and that dimension then keeps one spare set.
 
