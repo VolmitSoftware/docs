@@ -2,7 +2,7 @@
 title: "Mod Worldgen"
 description: "Use mod biomes, features, structures, dimension types, and dimensions with Iris on Fabric, Forge, and NeoForge"
 published: true
-date: 2026-10-15T14:10:00.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-15T01:53:36.000Z
@@ -116,9 +116,9 @@ Options may appear in any order after the two pack names. Ingest runs in the bac
 | Other placed features | Generate natively through `importedFeatures`. Tree features that a mod adds to vanilla biomes the pack uses are denied in `minecraft:` biomes with a `biomeRules` entry, so they grow in mod biomes without doubling the pack's own trees |
 | Structures | No file changes. Mod structures generate natively in their biomes unless the dimension's `importedStructures` denies them |
 
-Ingest classifies each mod biome by its biome tags. Ocean biomes go to `seaBiomes`, beaches to `shoreBiomes`, cave and underground biomes to `caveBiomes`, and the rest to `landBiomes`. It copies the existing pack biome in the same role that best matches the mod biome's temperature, downfall, and tags, then sets `derivative` and removes `customDerivitives`, `vanillaDerivative`, `biomeScatter`, `biomeSkyScatter`, and `children` from the copy. Regions much rarer than the rest of the dimension are used only when they fit clearly better. When the mod biome declares vegetation of its own, the copy also drops its `objects` and procedural trees so the mod's trees replace them.
+Ingest classifies each mod biome by its biome tags. Ocean biomes go to `seaBiomes`, beaches to `shoreBiomes`, cave and underground biomes to `caveBiomes`, and the rest to `landBiomes`. It copies the existing pack biome in the same role that best matches the mod biome's temperature, downfall, and tags, then sets `derivative` and removes `customDerivitives`, `vanillaDerivative`, `biomeScatter`, `biomeSkyScatter`, and `children` from the copy. Each pack biome hosts at most five adopted land biomes, or three adopted sea, shore, or cave biomes; when the best match is full, the next-best biome is used. Themed regions, which are much rarer than the rest of the dimension, receive a mod biome only when no common region accepts its role or every common candidate is full. When the mod biome declares vegetation of its own, the copy also drops its `objects` and procedural trees so the mod's trees replace them.
 
-Ingest skips river biomes, because Iris hydrology owns rivers. It also skips biomes that are not tagged for the copied dimension's `environment`, such as a biome without `minecraft:is_overworld` in a `NORMAL` dimension, and biomes no region can accept.
+Ingest skips river biomes, because Iris hydrology owns rivers. It also skips biomes that are not tagged for the copied dimension's `environment`, such as a biome without `minecraft:is_overworld` in a `NORMAL` dimension, biomes no region can accept, and biomes whose every candidate pack biome already hosts its limit of adopted biomes.
 
 The copied dimension's `importedFeatures` is updated:
 

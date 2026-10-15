@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-15T14:10:00.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,7 +22,7 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 | Minecraft (mod) | 26.3 only |
 | Fabric Loader | 0.19.5+ |
 | Forge | 66.x |
-| NeoForge | 26.3.x |
+| NeoForge | 26.3.0.65-beta or newer 26.3 build |
 | Network | Outbound HTTP or HTTPS for pack downloads, external datapack downloads and fresh Bukkit library downloads. Retain `plugins/Iris/cache/libraries/` for offline restarts; upgrades may require new downloads. Mod jars include their required libraries |
 
 Before you replace an existing installation:

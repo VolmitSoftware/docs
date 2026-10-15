@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-15T14:10:00.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -140,7 +140,7 @@ Use the Bukkit command names shown below.
 | (empty) / help | | Both | `[section]` (modded) | Open help. Modded supports a section path and page number |
 | `debug version` | | **Bukkit-only** | — | Print `Iris v<version>`; `/iris version` is hidden from help |
 | `version` | | **Modded-only** | — | Print Iris/platform/Minecraft version and engine count |
-| `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions and pack details. Seed only for gamemasters |
+| `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions, one row each: dimension key, pack, seed, height range, and total generated chunks. Seed only for gamemasters |
 | `create` | `c` | Both | **Bukkit:** `<name=…> [type=<installed-pack-or-dimension>] [seed=1337]` (`name` alias `world-name`. `type` aliases `dimension`,`pack`. Omitting `type` uses `generator.defaultWorldType`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an absent Iris world/dimension. Bukkit creation is confined to `iris:*` and remains supported on Spigot |
 | `replace` | `override`, `overwrite` | **Paper-family** and dedicated modded servers. Spigot rejects it | `<target> [type=default] [seed=preserve]` (`target` alias `world-name`. `type` aliases `dimension`,`pack`. `seed` alias `s`). Modded accepts the same arguments positionally or as `key=value` | Replace an existing Iris world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot on the next restart. Omit `seed` to preserve it or provide a signed 64-bit replacement seed. **Modded-only:** any loaded mod dimension as `namespace:path`, and `type=off` (or `<target> off`) to cancel a staged replacement or return a replaced dimension to its own generator |
 | `teleport` | `tp` | Both | **Bukkit:** `<world> [player]` (defaults to the sender). **Modded:** `<dimension> [player]` | Teleport self or a named player into an Iris world/dimension |
