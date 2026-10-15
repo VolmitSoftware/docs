@@ -228,7 +228,7 @@ On a dedicated Fabric, Forge, or NeoForge server, `/iris replace` makes an exist
 /iris replace <dimension> off
 ```
 
-`<dimension>` is the full `namespace:path` of a loaded dimension. `type` defaults to `generator.defaultWorldType`. Omit `seed` to keep the dimension's current seed, which is the world seed unless an earlier replacement set another. The command checks that the pack is installed and loads, records the replacement, and reports that a restart is required. `off` is available only on mod loaders: it cancels a staged replacement, or returns a replaced dimension to its own generator on the next restart. Both forms require gamemaster level. All `/iris replace` forms, aliases, and seed rules are in [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge).
+`<dimension>` is the full `namespace:path` of a loaded dimension that the server creates from a level stem. A mod that registers its dimension in the datapack `dimension` registry provides a level stem, and the catalog lists it under `levelStems`. Some mods instead create a level in code while the server starts, such as a storage dimension that no level stem defines; `/iris replace` refuses those dimensions. `type` defaults to `generator.defaultWorldType`. Omit `seed` to keep the dimension's current seed, which is the world seed unless an earlier replacement set another. The command checks that the pack is installed and loads, records the replacement, and reports that a restart is required. `off` is available only on mod loaders: it cancels a staged replacement, or returns a replaced dimension to its own generator on the next restart. Both forms require gamemaster level. All `/iris replace` forms, aliases, and seed rules are in [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge).
 
 The command stores the replacement in `config/irisworldgen/modded.json`. You can also edit the file and restart:
 
@@ -246,9 +246,11 @@ Each key is the dimension's full `namespace:path`. `type` is `pack` or `pack:dim
 > When a replacement is staged, added, changed, or removed, the next start moves that dimension's `region`, `entities`, and `poi` folders, its Iris Mantle data, and its Iris generation history to `config/irisworldgen/replacement-recovery-<id>/`. The dimension then regenerates. Player data stays in the save. Back up the complete save first, and keep the recovery folder until you have checked the result.
 {.is-warning}
 
-If a hand-edited entry names the pack, dimension, and seed that the dimension's Iris generation history already uses, Iris records the replacement and keeps the data. A replacement configured before the world exists applies to the new world. Iris records applied and staged replacements in `<world>/data/irisworldgen/dimension-replacements.json`; include it in world backups.
+If a hand-edited entry names the pack, dimension, and seed that the dimension's Iris generation history already uses, Iris keeps the data. A replacement counts as applied only once the loaded dimension generates from Iris with the configured pack and seed. A replacement configured before the world exists applies to the new world; for a mod dimension, Iris needs one earlier start to record which dimensions are level stems. Iris records applied and staged replacements in `<world>/data/irisworldgen/dimension-replacements.json`; include it in world backups.
 
 Keep every replacement entry valid and its pack installed:
+
+- An entry for a dimension that is not created from a level stem is skipped with a logged error. Iris writes no dimension override for it and never moves its data. Remove the entry.
 
 - If a `dimensionReplacements` entry cannot be read while the world records applied replacements, the server refuses to start. Iris never treats an unreadable entry as removed, and Iris commands do not rewrite `modded.json` until the entry is fixed.
 - If an applied replacement is changed to a pack or dimension that is not installed, the server refuses to start before moving any data. Install the pack or restore the previous entry.

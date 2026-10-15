@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-15T14:10:00.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -250,7 +250,7 @@ Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris c
 | `mainWorldPack` | `""` | Pack or `pack:dimensionKey` for the main-world preset |
 | `mainWorldSeed` | `0` | Seed for the main-world preset |
 | `mainWorldAutoRestart` | `false` | Restarts automatically after a main-world inject |
-| `dimensionReplacements` | `{}` | Dedicated servers only. Maps a vanilla or mod dimension's `namespace:path` to the replacement that generates it after a restart: `type` is `pack` or `pack:dimensionKey`, and the optional `seed` defaults to the world seed. Adding, changing, or removing an entry moves that dimension's terrain to a recovery folder. `/iris replace` writes this section. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge) and [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension) |
+| `dimensionReplacements` | `{}` | Dedicated servers only. Maps a vanilla or mod dimension's `namespace:path` to the replacement that generates it after a restart: `type` is `pack` or `pack:dimensionKey`, and the optional `seed` defaults to the world seed. Adding, changing, or removing an entry moves that dimension's terrain to a recovery folder. An entry for a dimension that is not created from a level stem is skipped with a logged error. `/iris replace` writes this section. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge) and [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension) |
 
 ```json
 {

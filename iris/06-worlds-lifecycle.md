@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-15T14:10:00.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -193,11 +193,11 @@ On a dedicated Fabric, Forge, or NeoForge server, install the pack and restart t
 
 | Parameter | Use |
 |---|---|
-| Target | `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or an Iris world. **Modded-only:** any other loaded dimension by its full `namespace:path`, such as `examplemod:skylands` |
+| Target | `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or an Iris world. **Modded-only:** any other loaded dimension that the server creates from a level stem, by its full `namespace:path`, such as `examplemod:skylands` |
 | `type` | Installed pack or `pack:dimensionKey`; defaults to `generator.defaultWorldType`. **Modded-only:** `off` |
 | `seed` | Omit it, or pass `preserve`, to keep the target's seed. Supply any other signed 64-bit integer except `-9223372036854775808`, which mod loaders reserve |
 
-The arguments, aliases, and target names match the Paper-family command: `main`/`overworld`, `nether`/`the_nether`, `end`/`the_end`, and the save's `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` resolve to the three vanilla dimensions. An Iris world is named `irisworldgen:<name>`, `iris:<name>`, or just `<name>`. The target must already exist, the pack's environment must match a vanilla target, and a target with a staged replacement refuses another until you restart or run `off`. The command requires gamemaster level.
+The arguments, aliases, and target names match the Paper-family command: `main`/`overworld`, `nether`/`the_nether`, `end`/`the_end`, and the save's `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` resolve to the three vanilla dimensions. An Iris world is named `irisworldgen:<name>`, `iris:<name>`, or just `<name>`. The target must already exist, the pack's environment must match a vanilla target, and a target with a staged replacement refuses another until you restart or run `off`. A dimension that a mod creates in code while the server starts, instead of defining it as a level stem, is refused; see [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension). The command requires gamemaster level.
 
 On the restart, the target's `region`, `entities`, and `poi` folders, its Iris Mantle data, and its Iris generation history move to `config/irisworldgen/replacement-recovery-<id>/`, and the dimension regenerates in place under the same key and save. `level.dat`, player data, the world seed, datapacks, and the other dimensions stay as they are, so Nether portals keep connecting the Overworld and the Nether. Keep the recovery folder and your complete backup until you have checked the result. Running `/iris replace` again on a replaced dimension regenerates it again.
 
