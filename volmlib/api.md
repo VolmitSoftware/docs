@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-15T03:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -39,6 +39,12 @@ For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/a
 ## Cooperative plugin reload
 
 `ReloadAware` lets Bukkit plugins report asynchronous readiness, refuse an unload, resume cancelled preparation, and complete committed cleanup before BileTools tears down their registrations. The explicit contract works across separate classloaders and relocated VolmLib packages. See [Cooperative plugin reload](/volmlib/api/reloading) for signatures and scheduling rules.
+
+## Startup splash helpers
+
+`art.arcane.volmlib.util.plugin.SplashScreenSupport` supplies `javaMajorVersion()`, `startupDate()`, `releaseTrain(String version)`, and `serverVersionWithoutMcSuffix(String serverVersion)`. Pass the platform's server description explicitly; Bukkit callers can pass `Bukkit.getVersion()`. The server helper removes a trailing Minecraft version description beginning with ` (MC:`.
+
+These helpers are available in both `volmlib-shared` and the Bukkit-free `volmlib-localization` artifact. Mod loaders can use the localization artifact for splash, typed configuration, and atomic file APIs without bundling Bukkit classes. The [Husk template](/husk) demonstrates these APIs across the supported server platforms.
 
 ## Chunk loading
 

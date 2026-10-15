@@ -113,6 +113,8 @@ Set `instrumentation = "ALWAYS"` to record continuous plugin-cost history, inclu
 
 ## React Web
 
+The web console uses the Ascii theme with ruled panels and animated page titles. Use the sun or moon button in the top bar to choose light or dark; the browser remembers this setting. Interface motion follows your operating system’s reduced-motion preference.
+
 React Web uses the listener configured in `web.toml`. Saving this file reconfigures the web runtime automatically. Existing WebSocket connections close during reconfiguration and clients must reconnect; saved tokens and server identity are retained. Invalid input or a failed reconfiguration restores the previous working configuration and reports the failure in the server console.
 
 | Key | Default | Purpose |

@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -31,6 +31,10 @@ Use the Gloss web editor to edit menus, holograms, boards, chat surfaces and the
 The command gives you a link with temporary access to the selected content. Do not share it with someone you do not trust.
 
 Once it is open: follow the first-run tour or skip it, pick **New document** or **More actions → Templates**, edit in Visual, check Preview, fix issues in Code, then export the JSON or publish the live session.
+
+## Appearance
+
+The editor uses the Ascii theme with ruled panels and animated text. Use the sun or moon button in the top bar to switch between light and dark; the browser remembers your choice. The same command is available in the command palette. Interface motion follows your operating system’s reduced-motion preference.
 
 ## Editing
 

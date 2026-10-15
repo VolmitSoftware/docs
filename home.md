@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-10-08T12:00:00.000Z
+date: 2026-10-15T03:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -201,6 +201,8 @@ Pick a project to open its documentation.
 </div>
 
 ## Developer tools
+
+[Husk](/husk) provides a template for multiversion Bukkit plugins and Fabric, Forge, and NeoForge mods.
 
 <div class="layout wrap">
   <div class="flex xs12 sm6 pa-2">
