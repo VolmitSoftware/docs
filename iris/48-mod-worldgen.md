@@ -2,7 +2,7 @@
 title: "Mod Worldgen"
 description: "Use mod biomes, features, structures, dimension types, and dimensions with Iris on Fabric, Forge, and NeoForge"
 published: true
-date: 2026-10-15T16:00:00.000Z
+date: 2026-10-16T00:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-15T01:53:36.000Z
@@ -172,6 +172,8 @@ Restart so the new pack loads, then validate it and create a dimension:
 /iris pack validate <target>
 /iris world enable irisworldgen:<name> <target> [seed]
 ```
+
+Inside the dimension, `/locate biome <namespace>:<path>` finds an adopted mod biome, and `/locate structure` finds mod structures.
 
 After adding, removing, or updating mods, restart so the catalog is captured again, then repeat the ingest with `replace=true`. Existing worlds keep their saved pack until you stage `/iris world update`. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
 
