@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-10-15T14:10:00.000Z
+date: 2026-10-15T23:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -122,7 +122,7 @@ If the pack is not installed, create refuses without downloading anything. Insta
 /iris create myworld overworld 1337
 ```
 
-There is no separate load step on modded. The same world management also lives under `/iris world create|enable`, where `create` is simply an alias of `enable`. That form requires the pack argument and has no `overworld` default.
+There is no separate load step on modded. The same world management also lives under `/iris world create|enable`, where `create` is simply an alias of `enable`. That form requires the pack argument and has no `overworld` default. Creation runs in the background: the command replies at once that the world is being created, then reports when it is live or why it failed. Until then, another create, delete, disable, or update of that world is refused. A world still being created when the server stops is not kept.
 
 To replace an existing world on a dedicated server, use the same `/iris replace` command as the Paper family, for example `/iris replace minecraft:overworld type=overworld seed=123456789`, then restart. Mod loaders also accept a mod dimension such as `examplemod:skylands` and `/iris replace <target> off`. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge).
 

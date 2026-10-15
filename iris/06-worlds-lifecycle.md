@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-15T16:00:00.000Z
+date: 2026-10-15T23:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -54,7 +54,7 @@ Install the pack and restart before creating its dimension. For custom packs wit
 
 Teleports require dry, non-hazardous footing and enough unobstructed space for the player’s full standing body, including across chunk boundaries. Reconnecting does not inherit an earlier session’s pending teleport.
 
-`enable` also accepts the alias `create`. The seed is optional and defaults to `1337`; the command group also accepts `/iris w`.
+`enable` also accepts the alias `create`. The seed is optional and defaults to `1337`; the command group also accepts `/iris w`. Creation runs in the background: the command replies at once that the world is being created, then reports when it is live or why it failed. Until then, another create, delete, disable, or update of that world is refused. A world still being created when the server stops is not kept. Run `/iris world status` or teleport once it reports the world is live.
 
 ## Load, unload, and remove
 
