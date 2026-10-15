@@ -2,7 +2,7 @@
 title: "Iris"
 description: "Iris world generation engine for Paper and Folia"
 published: true
-date: 2026-10-13T16:55:00.000Z
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -91,6 +91,7 @@ Use Iris commands to create and remove worlds. For Multiverse commands and suppo
 - [Objects](/iris/19-objects)
 - [Object Placement](/iris/20-object-placement)
 - [Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [Mod Worldgen](/iris/48-mod-worldgen)
 {.links-list}
 
 ### Surfaces and loot

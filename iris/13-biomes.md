@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -193,6 +193,8 @@ Raise the child `rarity` to shrink its share. Raise `childShrinkFactor` to break
 | `biomeScatter` | string[] | empty | Alternative derivatives mixed across the biome for the underground portion of the column. One entry is used as-is. Several are picked per position by `biomeStyle` noise. Use it to break up flat color. |
 | `biomeSkyScatter` | string[] | empty | Alternative derivatives for the surface and above. When this list is non-empty it takes over the visible biome for the column. When it is empty the column falls back to `biomeScatter`, then to `derivative`. |
 | `biomeStyle` | `IrisGeneratorStyle` | `SIMPLEX` | The noise that disperses the scatter lists and picks between multiple `customDerivitives`. Change its `zoom` to make the color patches larger or smaller. |
+
+On Fabric, Forge, and NeoForge, any of these fields can name a mod biome, such as `examplemod:amber_forest`. See [48 - Mod Worldgen](/iris/48-mod-worldgen) for finding mod biome keys and adopting them.
 
 A `derivative`, `vanillaDerivative`, or scatter entry naming a biome the running Minecraft does not have is handled by the version content gate: a missing `derivative` excludes the biome, while a missing `vanillaDerivative` or scatter entry is dropped and the biome keeps generating. See [When a biome uses content this version does not have](#when-a-biome-uses-content-this-version-does-not-have).
 
@@ -553,3 +555,4 @@ Related:
 - [23b - Entities & Spawners](/iris/23b-entities-spawners)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
 - [44 - Biome Catalog](/iris/44-biome-catalog)
+- [48 - Mod Worldgen](/iris/48-mod-worldgen)

@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ A dimension is the root object of a pack. It sets world height, sea level, the r
 
 ## Decide these before you create a world
 
-Choose the dimension key, height, environment, dimension options, and lighting before creating a world. Close and reopen Studio after changing these fields.
+Choose the dimension key, height, environment, dimension options or borrowed dimension type, and lighting before creating a world. Close and reopen Studio after changing these fields.
 
 > On a production world the generated type is stored in Minecraft's registry. **Changing the contract means recreating the world.**
 {.is-warning}
@@ -24,6 +24,7 @@ Choose the dimension key, height, environment, dimension options, and lighting b
 | `environment` | Selects the vanilla dimension template and the Bukkit world environment. `NORMAL` and `CUSTOM` share an Overworld type template but remain distinct world environments |
 | `dimensionOptions` | Overrides the generated type's portal scale, light, time, clouds, spawning limits, and gameplay flags |
 | `fullbright` | Forces the generated type's effective ambient light to `1.0` |
+| `borrowedDimensionType` | Modded only. Uses an already registered dimension type instead of a generated one |
 
 Everything else reloads live in Studio and applies to newly generated chunks: regions, zooms, noise styles, image-map resources and bindings, palettes, ores, deposits, caves, structures, decoration, loot, and `worldBoundary`. Iterate on those freely. Already generated chunks keep the content they were built with. A boundary reload updates the native border without regenerating terrain.
 
@@ -189,6 +190,27 @@ Tri-state options are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the
 | `fixedTime` | `-1` (unset) | Locks the time of day to this tick value. Leave unset for a normal day cycle |
 | `cloudHeight` | `-1` (unset) | Y of the cloud layer, between -2032 and 2031. `null` disables clouds |
 | `monsterSpawnBlockLightLimit` | `-1` (unset) | 0 to 15. Maximum block light at which hostile mobs may spawn |
+
+### Borrow an existing dimension type
+
+On Fabric, Forge, and NeoForge, `borrowedDimensionType` makes the world use a dimension type that is already registered, such as `minecraft:the_end` or a mod's type, instead of the type Iris generates. Sky, fog, lighting, and the other dimension-type settings then come from that type, and `dimensionOptions` and `fullbright` are ignored. Iris writes no dimension type for this dimension.
+
+```json
+{
+  "borrowedDimensionType": "examplemod:skylands",
+  "dimensionHeight": { "min": 0, "max": 256 }
+}
+```
+
+| Rule | Detail |
+|---|---|
+| Key | A lowercase namespaced dimension type key. An empty string generates a type as usual |
+| Floor | `dimensionHeight.min` must equal the type's `min_y` |
+| Ceiling | `dimensionHeight.max` must not exceed the type's top, `min_y + height` |
+| Platform | Bukkit-family servers reject the field during pack validation |
+| Contract | Pick it once per world. Close and reopen Studio after changing it |
+
+A height mismatch refuses generation when the world loads, before any chunk is written. The worldgen catalog lists each type's `minY` and `height`. `/iris datapack install` writes no dimension-type override for a dimension that borrows a type, and such dimensions are not offered as World Types on the singleplayer Create New World screen. To give a mod's existing dimension to a borrowing pack, see [48 - Mod Worldgen](/iris/48-mod-worldgen).
 
 ## Regions and spatial layout
 
@@ -490,7 +512,7 @@ Dimension-level `structures` entries are Iris placements considered everywhere i
 |-------|------|---------|------------------------------------|
 | `structures` | `IrisStructurePlacement[]` | empty | Iris structure placements at dimension scope. Use this for content that must exist regardless of biome, such as a global stronghold analogue or a native structure you are re-anchoring |
 | `importedStructures` | `IrisImportedStructureControl` | default | Allow/deny and Y-adjustment rules for every registered native structure. Every registered structure generates by default. Deny families with `disabled`, one complete key with `disabledExact`. `adjustments` can shift, band, encase, or stilt a structure into Iris terrain. Recipes in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
-| `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. If you leave it out, Iris generates exactly the terrain it always has. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes, snow layers) over Iris terrain. Filter by `disabled` keys, `steps`, and `disabledSteps`. Carvers are never imported. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
+| `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. If you leave it out, Iris generates exactly the terrain it always has. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes, snow layers) over Iris terrain. Filter by `disabled` families, `disabledExact` keys, per-biome `biomeRules`, `steps`, and `disabledSteps`. Carvers are never imported. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | `datapackImports` | string[] | empty | External Modrinth, direct HTTP(S), or absolute local `file:` ZIP URLs this dimension owns. Their structure sets and definitions generate and locate only in dimensions that declare the same source. Bukkit also enables every ZIP under `plugins/Iris/datapacks/imports/` for every Iris dimension. Replacing native generation still requires a placement with `nativeSuppression: REPLACE_SOURCE`. Declaring the source alone never disables anything |
 
 Anchor values for editable placements: `LEGACY`, `SURFACE`, `HEIGHT_BAND`, `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, `CAVE_ANY`. Details in [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), and [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
@@ -703,4 +725,5 @@ Related:
 - [18 - Structures Overview](/iris/18-structures-overview)
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough)
+- [48 - Mod Worldgen](/iris/48-mod-worldgen)
 - [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension)
