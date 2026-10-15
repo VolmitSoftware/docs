@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,6 +23,7 @@ Iris supports Bukkit-family servers, Fabric, Forge and NeoForge. Pack content is
 | Settings | `plugins/Iris/iris.json` | `<configDir>/iris/iris.json` |
 | Packs | `plugins/Iris/packs/` | `<configDir>/irisworldgen/packs/` |
 | Mod config | — | `<configDir>/irisworldgen/modded.json` |
+| Worldgen catalog | — | `<configDir>/irisworldgen/catalog/worldgen-catalog.json` |
 | Studio pack exports | `plugins/Iris/packs/exports/` | `<configDir>/irisworldgen/exports/` |
 | Generated datapack | World `datapacks/` | `<configDir>/irisworldgen/generated/datapack/` |
 | Persistent dynamic-world registry | `<level-root>/iris/worlds.json` | `<world-root>/iris/iris-dimensions.json` |
@@ -42,6 +43,7 @@ Both platforms support `iris.json` hotload and Studio pack hotload. Use `/iris r
 | Load / unload | `/iris load` (alias `import`), `/iris unload` | `/iris world disable` unloads. There is no separate load command |
 | Remove / delete | `/iris remove`, optionally deleting the folder | `/iris world delete` wipes chunk and mantle data |
 | Primary / main world | `/iris replace minecraft:overworld type=<pack>` replaces the selected save's existing main slot without changing `level-name` | `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`. `/iris world mainworld` (and `mainworld off`), `/iris world replace-overworld` |
+| Take over an existing dimension | Not available. `/iris replace` covers `iris:*` worlds and the three vanilla dimensions | `/iris world takeover <dimension> <pack>` on dedicated servers, then restart. See [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension) |
 | Evacuate | `/iris evacuate <world>` — world argument required, player-only origin | `/iris evacuate [dimension]` — defaults to the sender's current level. Destination is always the vanilla overworld, and evacuating the overworld itself is refused |
 | Studio world | Temporary Studio world. Jigsaw Studio is also available | Studio dimension under `irisworldgen:studio_*`. No Jigsaw Studio authoring tree |
 | Folia | Supported; pregeneration automatically uses Folia mode | Not applicable |
@@ -93,6 +95,9 @@ Full command tables: [04 - Commands & Permissions](/iris/04-commands-permissions
 | Structure list / info / place / verify | yes | yes | yes | yes |
 | Datapack HTTP(S), `file:`, and local drop-folder ingest / list / remove | yes | message only | message only | message only |
 | Dimension-type datapack install / status | not applicable | yes | yes | yes |
+| Dimension `borrowedDimensionType` | rejected by pack validation | yes | yes | yes |
+| Worldgen catalog and mod ingest (`/iris catalog`, `/iris ingest mods`) | not registered | yes | yes | yes |
+| Dimension takeover (`/iris world takeover`) | no | dedicated server | dedicated server | dedicated server |
 | PlaceholderAPI | optional | no | no | no |
 | Multiverse-Core | optional | no | no | no |
 | Item plugins (ItemsAdder, Mythic, and similar) | supported integrations | loader-specific / limited | limited | limited |
@@ -158,4 +163,5 @@ Run `/iris pack compat` to check which pack content your server supports. Missin
 - [29 - Client HUD & Maps](/iris/29-client-hud-protocol)
 - [37 - Image Maps](/iris/37-image-maps)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
+- [48 - Mod Worldgen](/iris/48-mod-worldgen)
 - [94 - API - Modded](/iris/94-api-modded)

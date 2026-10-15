@@ -13,8 +13,8 @@ test('Iris pack navigation retains its five authoring groups and every destinati
     'Pack structure', 'Terrain', 'Image maps', 'Structures and objects', 'Surfaces and loot'
   ]);
   const destinations = section.groups.flatMap((group) => group.links.map((page) => page.href));
-  assert.equal(destinations.length, 31);
-  assert.equal(new Set(destinations).size, 31);
+  assert.equal(destinations.length, 32);
+  assert.equal(new Set(destinations).size, 32);
   assert.equal(section.groups.find((group) => group.title === 'Terrain').links.some((page) => page.href === '/iris/36-rivers'), true);
   for (const project of catalog) {
     for (const section of project.sections) {

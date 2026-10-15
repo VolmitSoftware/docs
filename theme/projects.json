@@ -193,6 +193,10 @@
               {
                 "title": "Vanilla Passthrough",
                 "href": "/iris/35-vanilla-passthrough"
+              },
+              {
+                "title": "Mod Worldgen",
+                "href": "/iris/48-mod-worldgen"
               }
             ]
           },

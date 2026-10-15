@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-09T16:48:42.787Z
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -99,7 +99,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 ### Modded
 
 - Same root and aliases.
-- Arguments are ordered literals and typed arguments, never free-form `key=value`.
+- Arguments are ordered literals and typed arguments. A few commands, such as `download` and `ingest mods`, also take `key=value` options.
 - `/iris` and `/iris help [section]` open command help.
 - Flags are literals where used (pregen `gui`, `sync`, `nocache`. Download `force`).
 
@@ -121,7 +121,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 
 | Gate | Level | Applies to |
 |------|-----------------|------------|
-| Gamemaster | `Commands.LEVEL_GAMEMASTERS` (2) | Everything that mutates: create/world, studio, object tools, pregen, download, debug, reload, evacuate, teleport, seed, edit, find/goto, structure, datapack, pack, accesslist |
+| Gamemaster | `Commands.LEVEL_GAMEMASTERS` (2) | Everything that mutates: create/world, studio, object tools, pregen, download, debug, reload, evacuate, teleport, seed, edit, find/goto, structure, datapack, pack, accesslist. Also `catalog` and `ingest` |
 | Read-only | `Commands.LEVEL_ALL` (0) | `help`, `version`, `info` (seed field omitted unless gamemaster), `worlds`, `height`, `metrics`, and the entire `what` subtree |
 
 Anyone can open `/iris` help. Commands that change state require gamemaster level 2.
@@ -151,6 +151,8 @@ Use the Bukkit command names shown below.
 | `unloadWorld` | | **Bukkit** | `<world>`, player origin | Unload an Iris world |
 | `download` | `dl` | Both | Exactly one of `pack=overworld`, `pack=underworld`, or `link=<http(s)-zip-url>`, plus optional `overwrite=false` | Install the latest stable built-in release or a direct ZIP. `overwrite=true` replaces the installed authoring pack and retains its backup. Close Studio first and restart after installation |
 | `reload` | | Both | — | Reload `iris.json` and locale. Modded also schedules forced datapack regeneration |
+| `catalog` | | **Modded** | `[namespace\|refresh]` | List the worldgen content of loaded mods, show one namespace, or capture the catalog again. See [48 - Mod Worldgen](/iris/48-mod-worldgen) |
+| `ingest` | | **Modded** | see Ingest | Build an Iris pack that adopts mod worldgen |
 | `seed` | | **Modded** | — | Print world and engine seeds |
 | `wand` | | **Modded** root (+ `object`) | — | Give object wand |
 | `dust` | `d` | **Modded** root (+ `object`) | — | Give reveal dust |
@@ -411,6 +413,16 @@ See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
 
 ---
 
+## Ingest (modded-only group): `/iris ingest`
+
+| Command | Params | Description |
+|---------|--------|-------------|
+| `mods` | `<source> <target> [dimension=<key>] [namespaces=<a,b>] [excludeRegions=<a,b>] [replace=true]` | Copy the source pack into a new target pack and adopt the worldgen of loaded mods. Runs in the background. `replace=true` rebuilds only a pack that an earlier ingest wrote |
+
+Options follow the two pack names in any order. Details and output: [48 - Mod Worldgen](/iris/48-mod-worldgen#build-a-pack-with-mod-ingest).
+
+---
+
 ## World (modded-only group): `/iris world` (`w`)
 
 Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` instead. `[seed]` accepts a number or the literal `random`. Blank means `1337`.
@@ -421,6 +433,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | `update` | | `<dimension> <pack\|pack:dimensionKey>` | Stage a pack update for an existing dimension. Restart to apply it |
 | `replace-overworld` | | `<pack\|pack:dimensionKey> [seed\|random]` | Inject primary world routing |
 | `mainworld` | | `<pack\|pack:dimensionKey\|off> [seed\|random]` | Configure the main-world preset in `modded.json` |
+| `takeover` | | `<dimension> <pack\|pack:dimensionKey\|off>` | Dedicated servers. Make an existing dimension generate from an Iris pack, or return it to its own generator, after a restart. The restart moves the dimension's terrain to a recovery folder. See [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension) |
 | `disable` | | `<dimension>` | Evacuate and unload. Keep disk data |
 | `delete` | `remove`, `rm` | `<dimension>` | Disable and wipe chunk/mantle data |
 | `list` | `ls` | — | List loaded Iris dimensions |
@@ -434,6 +447,8 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 |---------|--------|--------|
 | Root permission node | `iris.all` (code-gated, whole tree) | `LEVEL_GAMEMASTERS` / `LEVEL_ALL` per node |
 | World lifecycle | `create`, `loadWorld`, `unloadWorld`, `remove` | `world enable/disable/delete`, `create`, `mainworld` |
+| Dimension takeover | — | `world takeover` |
+| Worldgen catalog and mod ingest | — | `catalog`, `ingest mods` |
 | Seed print | — | `/iris seed` |
 | Object expand | — | `/iris object expand` |
 | Object WE / studio / convert | yes | help stubs only |
@@ -459,3 +474,4 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 - [25 - Pack Management](/iris/25-pack-management)
 - [28 - Integrations](/iris/28-integrations)
 - [30 - Platform Differences](/iris/30-platform-differences)
+- [48 - Mod Worldgen](/iris/48-mod-worldgen)

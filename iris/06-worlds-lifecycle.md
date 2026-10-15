@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-13T15:40:00.000Z
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -119,6 +119,7 @@ Back up the complete dimension directory, including `iris/generation`. Do not ed
 | Saved world packs | `<dimensionRoot>/iris/generation/epochs/<epoch>/pack/` |
 | Bukkit world registration | `<level-root>/iris/worlds.json` and the `worlds` section of `bukkit.yml` |
 | Modded world registration | `<world-root>/iris/iris-dimensions.json` |
+| Modded applied dimension takeovers | `<world-root>/data/irisworldgen/dimension-takeovers.json` |
 
 `level-name` in `server.properties` selects the save root. Include the registration files when backing up your server. Use the server's normal stop command and wait for the Java process to exit before copying, restoring, or removing world files. Pending chunk generation and Iris world data finish saving during shutdown.
 
@@ -192,5 +193,18 @@ Install the pack and restart to load it, then run:
 Restart again to apply it. This replaces the vanilla Overworld, Nether, and End with fresh terrain from the selected preset. The previous terrain is retained under `config/irisworldgen/mainworld-recovery-<id>/`. Keep that directory and your complete backup until you have checked the new worlds. Player data, advancements, statistics, datapacks, and non-vanilla dimensions remain in the save.
 
 `/iris world mainworld off` stops forcing the preset on later boots; it does not restore previous terrain. `/iris world replace-overworld overworld 1337` instead creates a separate `irisworldgen:primary` dimension and sends players there.
+
+## Take over a dimension on mod loaders
+
+> A takeover regenerates the dimension. Back up the complete save before staging, adding, changing, or removing one.
+{.is-warning}
+
+On a dedicated Fabric, Forge, or NeoForge server, a takeover makes an existing dimension, such as one a mod adds, generate from an Iris pack. Install the pack and restart to load it, then stage the takeover and restart again:
+
+```none
+/iris world takeover examplemod:skylands skylands
+```
+
+On that restart, the dimension's `region`, `entities`, and `poi` folders, Iris Mantle data, and Iris generation history move to `config/irisworldgen/takeover-recovery-<id>/`, and the dimension regenerates from the pack. Player data stays in the save. `/iris world takeover examplemod:skylands off` returns the dimension to its own generator on the next restart and moves the Iris terrain aside the same way. Takeovers are stored in `modded.json` `dimensionTakeovers`. Pack requirements and startup rules are in [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension).
 
 See [Commands & Permissions](/iris/04-commands-permissions) for access requirements and [Pregeneration](/iris/07-pregeneration) to generate terrain before players explore it.

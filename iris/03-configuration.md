@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-12T00:44:20.753996+00:00
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -240,7 +240,7 @@ Invalid JSON leaves the built-in mappings active. Mod loaders do not use these f
 
 ## Modded-only: `modded.json`
 
-Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris creates the file with defaults if it is absent. Invalid JSON leaves the file untouched and uses defaults for that boot. The Bukkit plugin does not use this file.
+Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris creates the file with defaults if it is absent. Invalid JSON leaves the file untouched and uses defaults for that boot, except that a world with applied dimension takeovers refuses to start until the file is fixed. The Bukkit plugin does not use this file.
 
 | Key | Default | Use |
 |-----|---------|-----|
@@ -250,8 +250,17 @@ Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris c
 | `mainWorldPack` | `""` | Pack or `pack:dimensionKey` for the main-world preset |
 | `mainWorldSeed` | `0` | Seed for the main-world preset |
 | `mainWorldAutoRestart` | `false` | Restarts automatically after a main-world inject |
+| `dimensionTakeovers` | `{}` | Dedicated servers only. Maps an existing dimension's `namespace:path` to the `pack` or `pack:dimensionKey` that generates it after a restart. Adding, changing, or removing an entry moves that dimension's terrain to a recovery folder. See [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension) |
 
-World-management commands also update this file. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [30 - Platform Differences](/iris/30-platform-differences).
+```json
+{
+  "dimensionTakeovers": {
+    "examplemod:skylands": "skylands"
+  }
+}
+```
+
+World-management commands, including `/iris world takeover`, also update this file. They refuse to rewrite it while a `dimensionTakeovers` entry is invalid. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [30 - Platform Differences](/iris/30-platform-differences).
 
 ## Related
 
@@ -259,3 +268,4 @@ World-management commands also update this file. See [06 - Worlds & Lifecycle](/
 - [08 - Localization](/iris/08-localization)
 - [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
 - [25 - Pack Management](/iris/25-pack-management)
+- [48 - Mod Worldgen](/iris/48-mod-worldgen)

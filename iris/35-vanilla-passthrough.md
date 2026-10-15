@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-15T01:53:36.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -17,6 +17,7 @@ Generation changes apply to new chunks. For a production world, stage edits with
 |---|---|
 | Stop a vanilla structure, or place one only where you choose | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) Tasks 3 and 4 |
 | Import vanilla ores, geodes, springs, or snow without vanilla trees | Task 1 |
+| Run a mod's trees only in its own biomes | Task 1, [Deny features in chosen biomes](#deny-features-in-chosen-biomes) |
 | Stop vanilla mobs, add pack mobs, or run both | Task 2 |
 | Keep vanilla chest loot, replace it, or fill only empty chests | Task 3 |
 | Make grown saplings become pack trees | Task 4 |
@@ -28,7 +29,7 @@ Vanilla and mod worldgen run only where Iris runs them.
 | System | Default | Control |
 |---|---|---|
 | Structures (vanilla, datapack, mod) | **On** | `importedStructures.disabled` / `disabledExact`. Re-place with `nativeStructures`. See [22](/iris/22-native-structures-datapacks) |
-| Placed features: ores, trees, plants, springs, geodes, monster rooms, lakes, snow layers | **Off** | `importedFeatures.enabled`, then `steps` / `disabledSteps` / `disabled` |
+| Placed features: ores, trees, plants, springs, geodes, monster rooms, lakes, snow layers | **Off** | `importedFeatures.enabled`, then `steps` / `disabledSteps` / `disabled` / `disabledExact` / `biomeRules` |
 | Carvers (caves, canyons, mod carvers) | **Never** | No pack switch. Use `caveProfile` and `carving[]` |
 | Surface builders and surface rules | **Never** | Pack palettes |
 | Vanilla natural mob spawning | **On** via `vanillaDerivative`, else `derivative` | There is no deny list. Custom `spawns` merge with vanilla. Iris `entitySpawners` are a second loop |
@@ -69,11 +70,40 @@ Use this when Iris terrain should also run Minecraft's placed-feature pass: ores
 | `enabled` | `false` | Master switch. Absent or false leaves chunk output identical to a pack without this block |
 | `steps` | empty = all | Allow-list of decoration steps |
 | `disabledSteps` | empty | Deny-list applied after `steps`. `VEGETAL_DECORATION` is the usual cut for packs that grow their own trees |
-| `disabled` | `[]` | Placed-feature key deny list. Prefix matching is the same as `importedStructures.disabled`: `"minecraft:ore"` covers every vanilla ore, `"minecraft:trees"` covers every tree placement |
+| `disabled` | `[]` | Placed-feature key deny list. Prefix matching is the same as `importedStructures.disabled`: `"minecraft:ore"` covers every vanilla ore, `"minecraft:trees"` covers every tree placement, `"examplemod:"` covers a whole namespace |
+| `disabledExact` | `[]` | Complete placed-feature keys to deny, compared after trimming and lowercasing. Entries never match related keys: `"minecraft:ore_iron"` leaves `"minecraft:ore_iron_small"` running |
+| `biomeRules` | `[]` | Denials that apply only in matching biomes, on top of `disabled` and `disabledExact`. See [Deny features in chosen biomes](#deny-features-in-chosen-biomes) |
 
 Vanilla step order: `RAW_GENERATION`, `LAKES`, `LOCAL_MODIFICATIONS`, `UNDERGROUND_STRUCTURES`, `SURFACE_STRUCTURES`, `STRONGHOLDS`, `UNDERGROUND_ORES`, `UNDERGROUND_DECORATION`, `FLUID_SPRINGS`, `VEGETAL_DECORATION`, `TOP_LAYER_MODIFICATION`.
 
 The pass runs after Iris structures, so early-step features can cut into placed structures.
+
+### Deny features in chosen biomes
+
+Use `biomeRules` when a feature should run in some biomes but not others, such as a mod tree that the mod also adds to vanilla forests:
+
+```json
+{
+  "importedFeatures": {
+    "enabled": true,
+    "biomeRules": [
+      {
+        "biomes": ["#minecraft:is_forest"],
+        "disabled": ["examplemod:trees"],
+        "disabledExact": ["examplemod:patch_amber_bloom"]
+      }
+    ]
+  }
+}
+```
+
+| Rule field | Meaning |
+|---|---|
+| `biomes` | Biomes the rule applies to. Each entry is an exact key (`minecraft:forest`), a namespace ending in `:` (`minecraft:`), or a biome tag starting with `#` (`#minecraft:is_forest`) |
+| `disabled` | Placed-feature families denied in those biomes, matched like `disabled` above |
+| `disabledExact` | Complete placed-feature keys denied in those biomes |
+
+An Iris biome matches through the registry biome that supplies its features and through that biome's tags. A rule for `minecraft:forest` therefore also covers every Iris biome derived from it. Matching ignores case, and tag entries need their full namespace. A feature denied by any matching rule does not generate in that biome. [48 - Mod Worldgen](/iris/48-mod-worldgen) shows the rule that mod ingest writes.
 
 A cold `derivative` tints grass and can freeze water but does **not** stamp snow layers. Snow layers need Iris decorators, object `snow`, or this task with `TOP_LAYER_MODIFICATION`. Iris `postProcessing` only paints slabs and walls from biome palettes.
 
@@ -250,7 +280,7 @@ Tri-state values are `DEFAULT`, `TRUE`, or `FALSE`. `DEFAULT` inherits from the 
 
 ## Related reference
 
-See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Mod authors can find the `importedFeatures` API contract on [94 - API - Modded](/iris/94-api-modded).
+See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks). Mod authors can find the `importedFeatures` API contract on [94 - API - Modded](/iris/94-api-modded). For mod biomes, the worldgen catalog, and mod ingest, see [48 - Mod Worldgen](/iris/48-mod-worldgen).
 
 Related:
 
@@ -264,3 +294,4 @@ Related:
 - [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks)
 - [23 - Loot](/iris/23-loot)
 - [23b - Entities & Spawners](/iris/23b-entities-spawners)
+- [48 - Mod Worldgen](/iris/48-mod-worldgen)
