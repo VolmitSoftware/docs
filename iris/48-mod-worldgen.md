@@ -2,12 +2,12 @@
 title: "Mod Worldgen"
 description: "Use mod biomes, features, structures, dimension types, and dimensions with Iris on Fabric, Forge, and NeoForge"
 published: true
-date: 2026-10-15T02:54:55.000Z
+date: 2026-10-15T14:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-15T01:53:36.000Z
 ---
-On Fabric, Forge, and NeoForge, Iris packs can present mod biomes, run mod features and structures over Iris terrain, and generate a mod's own dimension. The worldgen catalog lists what the loaded mods register, mod ingest builds a pack that adopts that content, and a dimension takeover hands an existing dimension to an Iris pack. The catalog, mod ingest, borrowed dimension types, and takeovers are not available on Bukkit-family servers.
+On Fabric, Forge, and NeoForge, Iris packs can present mod biomes, run mod features and structures over Iris terrain, and generate a mod's own dimension. The worldgen catalog lists what the loaded mods register, mod ingest builds a pack that adopts that content, and `/iris replace` hands an existing mod dimension to an Iris pack. The catalog, mod ingest, borrowed dimension types, and mod-dimension replacement are not available on Bukkit-family servers.
 
 ## Pick a task
 
@@ -17,7 +17,7 @@ On Fabric, Forge, and NeoForge, Iris packs can present mod biomes, run mod featu
 | Present a mod biome from a pack biome you write | [Adopt a mod biome](#adopt-a-mod-biome) |
 | Build a pack that places every mod biome and converts mod ores and plants | [Build a pack with mod ingest](#build-a-pack-with-mod-ingest) |
 | Keep a mod dimension's sky, fog, and lighting | [Borrow a dimension type](#borrow-a-dimension-type) |
-| Generate an existing mod dimension with an Iris pack | [Take over a dimension](#take-over-a-dimension) |
+| Generate an existing mod dimension with an Iris pack | [Replace a mod dimension](#replace-a-mod-dimension) |
 
 ## How mod worldgen reaches Iris terrain
 
@@ -29,12 +29,12 @@ Iris always picks biomes from the pack. Mod content enters through these control
 | Placed features: ores, trees, plants | `importedFeatures`, off by default. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | Structures | Generate by default in biomes that present as an eligible biome. Deny them with `importedStructures`. See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Dimension types | Dimension `borrowedDimensionType` |
-| Dimensions | `/iris world takeover` or `modded.json` `dimensionTakeovers` |
+| Dimensions | `/iris replace` or `modded.json` `dimensionReplacements` |
 | Carvers and surface rules | Never used. The pack supplies caves and surfaces |
 
 ## Read the worldgen catalog
 
-Iris captures the catalog each time the server starts. It records every registered biome, placed feature, structure, dimension type, and level stem, including vanilla entries, and writes them to `config/irisworldgen/catalog/worldgen-catalog.json`. Use it to find the exact keys for `derivative`, `importedFeatures`, `importedStructures`, `borrowedDimensionType`, and takeovers.
+Iris captures the catalog each time the server starts. It records every registered biome, placed feature, structure, dimension type, and level stem, including vanilla entries, and writes them to `config/irisworldgen/catalog/worldgen-catalog.json`. Use it to find the exact keys for `derivative`, `importedFeatures`, `importedStructures`, `borrowedDimensionType`, and `/iris replace` targets.
 
 | Command | Shows |
 |---|---|
@@ -219,41 +219,44 @@ If other loaded mods register placed features, `disabled` also lists their names
 
 Set the dimension's `borrowedDimensionType` to a registered dimension type, such as a mod's, to use its sky, fog, lighting, and other dimension-type settings instead of a type Iris generates. `dimensionHeight.min` must equal the type's `minY`, and `dimensionHeight.max` must not exceed `minY + height`. Read both values from the catalog's `dimensionTypes`. Rules and examples: [11 - Dimensions](/iris/11-dimensions#borrow-an-existing-dimension-type).
 
-## Take over a dimension
+## Replace a mod dimension
 
-A takeover makes an existing dimension, such as one a mod adds, generate from an Iris pack after the next restart. Takeovers apply on dedicated servers only. Use `/iris world enable` instead to add a new Iris dimension.
+On a dedicated Fabric, Forge, or NeoForge server, `/iris replace` makes an existing dimension, such as one a mod adds, generate from an Iris pack after the next restart. It is the same command that replaces the vanilla dimensions and Iris worlds; mod dimensions are an extra target on mod loaders. Use `/iris world enable` instead to add a new Iris dimension.
 
 ```none
-/iris world takeover <dimension> <pack|pack:dimensionKey>
-/iris world takeover <dimension> off
+/iris replace <dimension> [type=<pack|pack:dimensionKey>] [seed=<seed>]
+/iris replace <dimension> off
 ```
 
-The command checks that the pack is installed and loads, stores the entry in `modded.json`, and reports that a restart is required. `off` removes the entry, and the dimension's own generator returns on the next restart. Both forms require gamemaster level. You can also edit `config/irisworldgen/modded.json` and restart:
+`<dimension>` is the full `namespace:path` of a loaded dimension. `type` defaults to `generator.defaultWorldType`. Omit `seed` to keep the dimension's current seed, which is the world seed unless an earlier replacement set another. The command checks that the pack is installed and loads, records the replacement, and reports that a restart is required. `off` is available only on mod loaders: it cancels a staged replacement, or returns a replaced dimension to its own generator on the next restart. Both forms require gamemaster level. All `/iris replace` forms, aliases, and seed rules are in [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge).
+
+The command stores the replacement in `config/irisworldgen/modded.json`. You can also edit the file and restart:
 
 ```json
 {
-  "dimensionTakeovers": {
-    "examplemod:skylands": "skylands"
+  "dimensionReplacements": {
+    "examplemod:skylands": { "type": "skylands" },
+    "examplemod:caverns": { "type": "underground:caverns", "seed": 42 }
   }
 }
 ```
 
-Each key is the dimension's full `namespace:path`. Each value is `pack` or `pack:dimensionKey`; pack names and dimension keys are case-sensitive. The dimension uses the pack's `borrowedDimensionType` when it sets one, otherwise the dimension type Iris generates for the pack. Borrow the dimension's own type to keep its sky, fog, and lighting.
+Each key is the dimension's full `namespace:path`. `type` is `pack` or `pack:dimensionKey`; pack names and dimension keys are case-sensitive. `seed` is optional and defaults to the world seed. The dimension uses the pack's `borrowedDimensionType` when it sets one, otherwise the dimension type Iris generates for the pack. Borrow the dimension's own type to keep its sky, fog, and lighting.
 
-> When a takeover is added, changed, or removed, the next start moves that dimension's `region`, `entities`, and `poi` folders, its Iris Mantle data, and its Iris generation history to `config/irisworldgen/takeover-recovery-<id>/`. The dimension then regenerates. Player data stays in the save. Back up the complete save first, and keep the recovery folder until you have checked the result.
+> When a replacement is staged, added, changed, or removed, the next start moves that dimension's `region`, `entities`, and `poi` folders, its Iris Mantle data, and its Iris generation history to `config/irisworldgen/replacement-recovery-<id>/`. The dimension then regenerates. Player data stays in the save. Back up the complete save first, and keep the recovery folder until you have checked the result.
 {.is-warning}
 
-If the dimension already holds Iris generation history from the configured pack and dimension, Iris records the takeover and keeps the data. A takeover configured before the world exists applies to the new world. Iris records applied takeovers in `<world>/data/irisworldgen/dimension-takeovers.json`; include it in world backups.
+If a hand-edited entry names the pack, dimension, and seed that the dimension's Iris generation history already uses, Iris records the replacement and keeps the data. A replacement configured before the world exists applies to the new world. Iris records applied and staged replacements in `<world>/data/irisworldgen/dimension-replacements.json`; include it in world backups.
 
-Keep every takeover entry valid and its pack installed:
+Keep every replacement entry valid and its pack installed:
 
-- If a `dimensionTakeovers` entry cannot be read while the world records applied takeovers, the server refuses to start. Iris never treats an unreadable entry as removed, and Iris commands do not rewrite `modded.json` until the entry is fixed.
-- If an applied takeover is changed to a pack or dimension that is not installed, the server refuses to start before moving any data. Install the pack or restore the previous entry.
-- If the pack of a dimension with an applied takeover or Iris generation history is missing or fails validation, and the dimension has no saved Iris pack, the server refuses to start. Restore the pack or remove the entry.
-- A new takeover whose pack is missing or fails validation is skipped with a logged error. The dimension keeps its own generator until the pack is installed.
-- If a dimension does not generate from its configured pack after startup, the takeover stays unapplied and Iris logs a warning. If Iris cannot record applied takeovers, it stops the server.
+- If a `dimensionReplacements` entry cannot be read while the world records applied replacements, the server refuses to start. Iris never treats an unreadable entry as removed, and Iris commands do not rewrite `modded.json` until the entry is fixed.
+- If an applied replacement is changed to a pack or dimension that is not installed, the server refuses to start before moving any data. Install the pack or restore the previous entry.
+- If the pack of a dimension with an applied replacement or Iris generation history is missing or fails validation, and the dimension has no saved Iris pack, the server refuses to start. Restore the pack, or remove the entry from `dimensionReplacements`.
+- A new replacement whose pack is missing or fails validation is skipped with a logged error. The dimension keeps its own generator until the pack is installed.
+- If a dimension does not generate from its configured pack and seed after startup, the replacement stays unapplied and Iris logs a warning. If Iris cannot record applied replacements, it stops the server.
 
-### Takeover example
+### Mod dimension example
 
 A mod with the namespace `examplemod` adds the dimension `examplemod:skylands`. The catalog shows that its dimension type `examplemod:skylands` has `minY` 0 and `height` 256.
 
@@ -272,15 +275,15 @@ A mod with the namespace `examplemod` adds the dimension `examplemod:skylands`. 
 /iris pack validate skylands
 ```
 
-3. Back up the save, then stage the takeover:
+3. Back up the save, then stage the replacement:
 
 ```none
-/iris world takeover examplemod:skylands skylands
+/iris replace examplemod:skylands type=skylands
 ```
 
 4. Restart. The previous Skylands terrain moves to the recovery folder, and the dimension regenerates from the `skylands` pack under the mod's sky and fog.
 
-To return the dimension to the mod's generator, run `/iris world takeover examplemod:skylands off` and restart. The Iris terrain then moves to a recovery folder in the same way.
+To return the dimension to the mod's generator, run `/iris replace examplemod:skylands off` and restart. The Iris terrain then moves to a recovery folder in the same way.
 
 ## Related
 

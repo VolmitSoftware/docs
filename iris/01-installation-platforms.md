@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T14:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -170,7 +170,7 @@ Paths are relative to the game instance's `config/` directory.
 |---|---|
 | `config/irisworldgen/packs/<pack>/` | Installed packs. A pack counts as installed when `dimensions/<dimension>.json` exists |
 | `config/irisworldgen/generated/datapack/iris/` | Generated datapack; do not edit it by hand |
-| `config/irisworldgen/modded.json` | Mod-side config: default pack, primary-world routing, main-world override, dimension takeovers |
+| `config/irisworldgen/modded.json` | Mod-side config: default pack, primary-world routing, main-world override, dimension replacements |
 | `config/irisworldgen/catalog/worldgen-catalog.json` | Worldgen catalog of the loaded mods, captured at each server start. See [48 - Mod Worldgen](/iris/48-mod-worldgen) |
 | `config/iris/` | Engine data directory — `iris.json` and per-world engine state |
 | `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The current built-in Overworld and Underworld releases need none |
@@ -189,9 +189,9 @@ Created with these defaults when absent. Edit valid JSON and restart to apply ch
 | `mainWorldPack` | `""` | Pack whose generator replaces the vanilla main world. Empty means the vanilla overworld is untouched |
 | `mainWorldSeed` | `0` | Seed for that main-world override |
 | `mainWorldAutoRestart` | `false` | When true, `/iris world mainworld` halts the server immediately so the override takes effect. Leave false unless you have a supervisor that restarts the process |
-| `dimensionTakeovers` | `{}` | Existing dimensions that generate from an Iris pack on dedicated servers, as `"namespace:path": "pack"` or `"pack:dimensionKey"`. Set by `/iris world takeover`. See [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension) |
+| `dimensionReplacements` | `{}` | Vanilla and mod dimensions that generate from an Iris pack on dedicated servers, as `"namespace:path": {"type": "pack" or "pack:dimensionKey", "seed": <optional>}`. Set by `/iris replace`. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge) |
 
-Only `/iris world replace-overworld`, `/iris world disable|delete` on the primary, `/iris world mainworld`, and `/iris world takeover` rewrite this file at runtime.
+Only `/iris world replace-overworld`, `/iris world disable|delete` on the primary, `/iris world mainworld`, and `/iris replace` rewrite this file at runtime.
 
 ## Settings that affect install and first world
 
@@ -243,6 +243,6 @@ Configure vanilla and mod features in the pack dimension:
 | Mod biomes | Only as a `derivative`, `vanillaDerivative`, `biomeScatter`, or `biomeSkyScatter` target | Iris always picks the biome from the pack. On mod loaders, `/iris ingest mods` builds a pack that adopts them |
 | Mob spawning, including mod mobs | Yes | Biome spawn tables are merged with the vanilla derivative's |
 
-Pack-author examples are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The worldgen catalog, mod ingest, borrowed dimension types, and dimension takeovers are covered in [48 - Mod Worldgen](/iris/48-mod-worldgen).
+Pack-author examples are in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). The worldgen catalog, mod ingest, borrowed dimension types, and mod-dimension replacement are covered in [48 - Mod Worldgen](/iris/48-mod-worldgen).
 
 Separately from that flag, Iris custom biomes inherit the biome tags of their vanilla derivative on every platform. Tag-driven content such as `#minecraft:is_overworld` and mod spawn rules therefore applies to Iris custom biomes without any extra configuration.

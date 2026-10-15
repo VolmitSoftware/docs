@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T14:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -210,7 +210,7 @@ On Fabric, Forge, and NeoForge, `borrowedDimensionType` makes the world use a di
 | Platform | Bukkit-family servers reject the field during pack validation |
 | Contract | Pick it once per world. Close and reopen Studio after changing it |
 
-A height mismatch refuses generation when the world loads, before any chunk is written. The worldgen catalog lists each type's `minY` and `height`. `/iris datapack install` writes no dimension-type override for a dimension that borrows a type, and such dimensions are not offered as World Types on the singleplayer Create New World screen. To give a mod's existing dimension to a borrowing pack, see [48 - Mod Worldgen](/iris/48-mod-worldgen).
+A height mismatch refuses generation when the world loads, before any chunk is written. The worldgen catalog lists each type's `minY` and `height`. `/iris datapack install` writes no dimension-type override for a dimension that borrows a type, and such dimensions are not offered as World Types on the singleplayer Create New World screen. To generate a mod's existing dimension from a borrowing pack, run `/iris replace` on it; see [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension).
 
 ## Regions and spatial layout
 

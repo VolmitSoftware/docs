@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T14:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -78,7 +78,7 @@ Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree f
 | Jigsaw | Iris multi-piece structures | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Native structures | Vanilla / datapack structures on Iris | [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
 | Vanilla passthrough | Enable, deny, or replace vanilla features, mobs, loot, saplings, and gameplay | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
-| Mod worldgen | Worldgen catalog, mod ingest, borrowed dimension types, dimension takeovers | [48 - Mod Worldgen](/iris/48-mod-worldgen) |
+| Mod worldgen | Worldgen catalog, mod ingest, borrowed dimension types, mod-dimension replacement | [48 - Mod Worldgen](/iris/48-mod-worldgen) |
 | Loot and entities | Pack entities, loot, spawners, markers | [23 - Loot](/iris/23-loot), [23b - Entities & Spawners](/iris/23b-entities-spawners), [23c - Markers](/iris/23c-markers) |
 | Pack extensions | Reusable JSON snippets | [24 - Snippets](/iris/24-pack-mods-snippets) |
 | Pack management | Download, validate, cleanup, package, update-world | [25 - Pack Management](/iris/25-pack-management) |

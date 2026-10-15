@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-15T14:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,7 +60,7 @@ Create has one purpose: make a new managed dimension. A normal bare name such as
 
 **Names Iris refuses.** `iris` and `benchmark` are rejected outright (case-insensitive) and Iris suggests something like `irisworld`. Before those checks, the logical name has to be a safe single path segment matching `[a-z0-9_-]`, so anything containing `/`, `\`, or `..` is rejected. Names that collide with the selected save's Bukkit aliases (`<level-name>`, `<level-name>_nether`, and `<level-name>_the_end`) are also rejected, as are `minecraft:*` and foreign namespaced keys.
 
-Choose an unused world name. Use `/iris replace` to replace an existing world on Paper-family servers. Spigot does not support replacement.
+Choose an unused world name. Use `/iris replace` to replace an existing world on Paper-family servers and on dedicated Fabric, Forge, and NeoForge servers. Spigot does not support replacement.
 
 The managed `iris:*` world is built immediately on every Bukkit-family server, including Folia and Spigot. Progress appears as a labeled action-bar meter for players and a text bar in the console.
 
@@ -123,6 +123,8 @@ If the pack is not installed, create refuses without downloading anything. Insta
 ```
 
 There is no separate load step on modded. The same world management also lives under `/iris world create|enable`, where `create` is simply an alias of `enable`. That form requires the pack argument and has no `overworld` default.
+
+To replace an existing world on a dedicated server, use the same `/iris replace` command as the Paper family, for example `/iris replace minecraft:overworld type=overworld seed=123456789`, then restart. Mod loaders also accept a mod dimension such as `examplemod:skylands` and `/iris replace <target> off`. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge).
 
 Confirm with `/iris world status`, which lists each loaded Iris level with its pack and dimension key. Then run `/iris info` to check the seed. `/iris info` takes an optional greedy string. It is a **substring filter** across dimension id, generator identity, and pack key. It is not a dimension selector. `/iris info myworld` narrows the listing. The seed is only printed to gamemasters. At lower permission levels the line simply omits it.
 
