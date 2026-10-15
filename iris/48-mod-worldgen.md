@@ -2,7 +2,7 @@
 title: "Mod Worldgen"
 description: "Use mod biomes, features, structures, dimension types, and dimensions with Iris on Fabric, Forge, and NeoForge"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T02:54:55.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-15T01:53:36.000Z
@@ -54,6 +54,7 @@ The file holds the full detail for every entry:
 | `structures` | `key`, `type`, `step`, `terrainAdaptation`, `biomeTag`, `biomes`, `structureSets` |
 | `dimensionTypes` | `key`, `minY`, `height`, `logicalHeight`, `definition` |
 | `levelStems` | `key`, `dimensionType`, `generatorType`, `biomeSourceType`, `generator` |
+| `blockTags` | block tag key to member block keys, for every block tag a placed feature references |
 
 A level stem is a dimension. Its `dimensionType` names the type that dimension uses, and that type's `minY` and `height` give the range a borrowing pack must fit.
 
