@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-15T12:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -252,6 +252,7 @@ the runtime does not use.
 |-----|---------|--------|
 | `enable-particles` | `true` | Independent global particle switch |
 | `replace-nether-and-end-portals` | `true` | Auto-link vanilla Nether/End frames as Wormholes portals |
+| `two-way-end-portals` | `true` | Converted End portals lead both ways: the End arrival portal shows the Overworld, and players and entities that rise up through it return to the Overworld End portal and land on its frame. `false` makes the End arrival portal receive-only with no view, and the exit fountain is the way back. The exit fountain stays vanilla either way. Applies to existing End portals on hot reload. See [Vanilla nether and end portals](/wormholes/03-building-portals#vanilla-nether-and-end-portals) |
 | `dimensional-doors-enabled` | `true` | Full Dimensional Doors feature set. Live disable is allowed |
 | `pocket-room-size` | `16` | Cube edge in blocks of a newly created pocket room, walls included. The default is a 16×16×16-block cube with a 14×14×14 interior. Clamped to 8–128. Existing pockets keep their own size |
 | `pocket-shell-material` | `SMOOTH_STONE` | Wall, floor, and ceiling block of a newly created pocket. Must be solid and non-falling. Existing pockets keep their own material |
