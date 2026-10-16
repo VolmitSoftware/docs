@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,11 +39,11 @@ Both platforms support `iris.json` hotload and Studio pack hotload. Use `/iris r
 |---------|--------|--------|
 | Create | `/iris create` creates a new managed `iris:*` world | `/iris create` or `/iris world enable` creates or enables an Iris dimension |
 | Update generation | `/iris dev update-world world=<world> pack=<pack> confirm=true`, then restart | `/iris world update <dimension> <pack>`, then restart |
-| Replace | `/iris replace` (aliases `override`, `overwrite`) replaces a supported Iris or vanilla dimension after restart. Keeps its seed unless you specify another | Not available |
+| Replace | `/iris replace` (aliases `override`, `overwrite`) replaces a supported Iris or vanilla dimension after restart. Keeps its seed unless you specify another. Not available on Spigot | Same command, arguments, and targets on dedicated servers. Also accepts any loaded mod dimension created from a level stem and `/iris replace <target> off`. The previous terrain moves to `config/irisworldgen/replacement-recovery-<id>/`. An explicit seed sets only the replaced dimension's Iris terrain. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge) |
 | Load / unload | `/iris load` (alias `import`), `/iris unload` | `/iris world disable` unloads. There is no separate load command |
 | Remove / delete | `/iris remove`, optionally deleting the folder | `/iris world delete` wipes chunk and mantle data |
-| Primary / main world | `/iris replace minecraft:overworld type=<pack>` replaces the selected save's existing main slot without changing `level-name` | `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`. `/iris world mainworld` (and `mainworld off`), `/iris world replace-overworld` |
-| Take over an existing dimension | Not available. `/iris replace` covers `iris:*` worlds and the three vanilla dimensions | `/iris world takeover <dimension> <pack>` on dedicated servers, then restart. See [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension) |
+| Primary / main world | `/iris replace minecraft:overworld type=<pack>` replaces the selected save's existing main slot without changing `level-name` | `/iris replace minecraft:overworld type=<pack>` on dedicated servers. Also `modded.json` `primaryWorld` plus `routePlayersToPrimaryWorld`, `/iris world mainworld` (and `mainworld off`), and `/iris world replace-overworld` |
+| Replace a mod dimension | Not available | `/iris replace <namespace:path> type=<pack>` on dedicated servers, then restart. See [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension) |
 | Evacuate | `/iris evacuate <world>` — world argument required, player-only origin | `/iris evacuate [dimension]` — defaults to the sender's current level. Destination is always the vanilla overworld, and evacuating the overworld itself is refused |
 | Studio world | Temporary Studio world. Jigsaw Studio is also available | Studio dimension under `irisworldgen:studio_*`. No Jigsaw Studio authoring tree |
 | Folia | Supported; pregeneration automatically uses Folia mode | Not applicable |
@@ -97,7 +97,8 @@ Full command tables: [04 - Commands & Permissions](/iris/04-commands-permissions
 | Dimension-type datapack install / status | not applicable | yes | yes | yes |
 | Dimension `borrowedDimensionType` | rejected by pack validation | yes | yes | yes |
 | Worldgen catalog and mod ingest (`/iris catalog`, `/iris ingest mods`) | not registered | yes | yes | yes |
-| Dimension takeover (`/iris world takeover`) | no | dedicated server | dedicated server | dedicated server |
+| Replace an existing world (`/iris replace`) | Paper family | dedicated server | dedicated server | dedicated server |
+| Replace a mod dimension (`/iris replace <namespace:path>`) | no | dedicated server | dedicated server | dedicated server |
 | PlaceholderAPI | optional | no | no | no |
 | Multiverse-Core | optional | no | no | no |
 | Item plugins (ItemsAdder, Mythic, and similar) | supported integrations | loader-specific / limited | limited | limited |

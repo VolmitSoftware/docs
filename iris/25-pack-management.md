@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-15T14:10:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -144,7 +144,7 @@ Modded checks run when a local or dedicated server starts, not when a client mer
 
 ### Replacing the vanilla dimensions
 
-The built-in Overworld and Underworld declare no external datapack imports. On the Paper family (plain Spigot supports managed `/iris create` but not exact-slot `/iris replace`):
+The built-in Overworld and Underworld declare no external datapack imports. On the Paper family and on dedicated Fabric, Forge, and NeoForge servers (plain Spigot supports managed `/iris create` but not exact-slot `/iris replace`):
 
 ```none
 /iris download pack=overworld

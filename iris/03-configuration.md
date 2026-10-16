@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -240,7 +240,7 @@ Invalid JSON leaves the built-in mappings active. Mod loaders do not use these f
 
 ## Modded-only: `modded.json`
 
-Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris creates the file with defaults if it is absent. Invalid JSON leaves the file untouched and uses defaults for that boot, except that a world with applied dimension takeovers refuses to start until the file is fixed. The Bukkit plugin does not use this file.
+Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris creates the file with defaults if it is absent. Invalid JSON leaves the file untouched and uses defaults for that boot, except that a world with applied dimension replacements refuses to start until the file is fixed. The Bukkit plugin does not use this file.
 
 | Key | Default | Use |
 |-----|---------|-----|
@@ -250,17 +250,18 @@ Edit `<configDir>/irisworldgen/modded.json` and restart to apply changes. Iris c
 | `mainWorldPack` | `""` | Pack or `pack:dimensionKey` for the main-world preset |
 | `mainWorldSeed` | `0` | Seed for the main-world preset |
 | `mainWorldAutoRestart` | `false` | Restarts automatically after a main-world inject |
-| `dimensionTakeovers` | `{}` | Dedicated servers only. Maps an existing dimension's `namespace:path` to the `pack` or `pack:dimensionKey` that generates it after a restart. Adding, changing, or removing an entry moves that dimension's terrain to a recovery folder. See [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension) |
+| `dimensionReplacements` | `{}` | Dedicated servers only. Maps a vanilla or mod dimension's `namespace:path` to the replacement that generates it after a restart: `type` is `pack` or `pack:dimensionKey`, and the optional `seed` defaults to the world seed. Adding, changing, or removing an entry moves that dimension's terrain to a recovery folder. An entry for a dimension that is not created from a level stem is skipped with a logged error. `/iris replace` writes this section. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge) and [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension) |
 
 ```json
 {
-  "dimensionTakeovers": {
-    "examplemod:skylands": "skylands"
+  "dimensionReplacements": {
+    "minecraft:overworld": { "type": "overworld", "seed": 123456789 },
+    "examplemod:skylands": { "type": "skylands" }
   }
 }
 ```
 
-World-management commands, including `/iris world takeover`, also update this file. They refuse to rewrite it while a `dimensionTakeovers` entry is invalid. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [30 - Platform Differences](/iris/30-platform-differences).
+World-management commands, including `/iris replace`, also update this file. They refuse to rewrite it while a `dimensionReplacements` entry is invalid. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) and [30 - Platform Differences](/iris/30-platform-differences).
 
 ## Related
 

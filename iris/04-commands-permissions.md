@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T16:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,7 +81,8 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 
 | Goal | Bukkit-family | Fabric / Forge / NeoForge | Detailed guide |
 |---|---|---|---|
-| Replace the exact vanilla Overworld and Nether with the bundled pair | **Paper-family, not Spigot:** download `overworld`, then `underworld`. Restart once so their registry data loads, stage both replacements, and restart once more | Not available | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Replace the exact vanilla Overworld and Nether with the bundled pair | **Paper-family, not Spigot:** download `overworld`, then `underworld`. Restart once so their registry data loads, stage both replacements, and restart once more | Same sequence on a dedicated server | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Generate an existing mod dimension with an Iris pack | Not available | `/iris replace examplemod:skylands type=skylands`, then restart | [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension) |
 | Create an in-game jigsaw project | `/iris jigsaw create overworld village/demo` | Not available. Author on Bukkit and copy the saved pack | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Inspect an Iris jigsaw graph | `/iris structure info overworld <structure>` | `/iris structure info <structure>` while in its Iris dimension | [21 - Jigsaw Structures](/iris/21-jigsaw-structures) |
 | Remove a disposable Iris world | Evacuate players, `/iris unloadWorld <world>`, then `/iris remove <world>` | `/iris world delete <dimension>` | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
@@ -99,7 +100,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 ### Modded
 
 - Same root and aliases.
-- Arguments are ordered literals and typed arguments. A few commands, such as `download` and `ingest mods`, also take `key=value` options.
+- Arguments are ordered literals and typed arguments. A few commands, such as `download`, `replace`, and `ingest mods`, also take `key=value` options.
 - `/iris` and `/iris help [section]` open command help.
 - Flags are literals where used (pregen `gui`, `sync`, `nocache`. Download `force`).
 
@@ -139,9 +140,9 @@ Use the Bukkit command names shown below.
 | (empty) / help | | Both | `[section]` (modded) | Open help. Modded supports a section path and page number |
 | `debug version` | | **Bukkit-only** | — | Print `Iris v<version>`; `/iris version` is hidden from help |
 | `version` | | **Modded-only** | — | Print Iris/platform/Minecraft version and engine count |
-| `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions and pack details. Seed only for gamemasters |
+| `info` | | **Modded** | `[dimension]` (substring filter) | List Iris dimensions, one row each: dimension key, pack, seed, height range, and total generated chunks. Seed only for gamemasters |
 | `create` | `c` | Both | **Bukkit:** `<name=…> [type=<installed-pack-or-dimension>] [seed=1337]` (`name` alias `world-name`. `type` aliases `dimension`,`pack`. Omitting `type` uses `generator.defaultWorldType`). **Modded:** `<name> [pack=overworld] [seed=1337]` | Create an absent Iris world/dimension. Bukkit creation is confined to `iris:*` and remains supported on Spigot |
-| `replace` | `override`, `overwrite` | **Paper-family**. Spigot rejects it | `<target> [type=default] [seed=preserve]` (`target` alias `world-name`. `type` aliases `dimension`,`pack`. `seed` alias `s`) | Replace an existing `iris:*` world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot. Omit `seed` to preserve it or provide a signed 64-bit replacement seed |
+| `replace` | `override`, `overwrite` | **Paper-family** and dedicated modded servers. Spigot rejects it | `<target> [type=default] [seed=preserve]` (`target` alias `world-name`. `type` aliases `dimension`,`pack`. `seed` alias `s`). Modded accepts the same arguments positionally or as `key=value` | Replace an existing Iris world or exact `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end` slot on the next restart. Omit `seed` to preserve it or provide a signed 64-bit replacement seed. **Modded-only:** any loaded mod dimension created from a level stem, as `namespace:path`, and `type=off` (or `<target> off`) to cancel a staged replacement or return a replaced dimension to its own generator |
 | `teleport` | `tp` | Both | **Bukkit:** `<world> [player]` (defaults to the sender). **Modded:** `<dimension> [player]` | Teleport self or a named player into an Iris world/dimension |
 | `evacuate` | | Both | **Bukkit:** `<world>`, player origin. **Modded:** `[dimension]` | Move players out of an Iris world to fallback/primary |
 | `height` | | Both | — | Print world height. Player origin on Bukkit |
@@ -183,6 +184,8 @@ Replacement staging reports its start, current phase, and elapsed time in chat o
 Accepted canonical targets are a safe `iris:*` key or exactly `minecraft:overworld`, `minecraft:the_nether`, or `minecraft:the_end`. Friendly and configured Bukkit world-name aliases resolve to those keys. Other bare names resolve to `iris:*`. Other `minecraft:*` and foreign namespaces are rejected.
 
 Replacement takes effect after a restart and keeps the previous dimension folder as a rollback backup. Omit `seed` to keep the world's saved seed, or provide a signed 64-bit integer for the replacement.
+
+On dedicated Fabric, Forge, and NeoForge servers, `/iris replace` takes the same arguments and target names. An Iris world is `irisworldgen:<name>`, `iris:<name>`, or a bare name. Any other loaded dimension is accepted by its full `namespace:path` when the server creates it from a level stem; dimensions a mod creates in code at startup are refused. The restart moves the target's terrain to `config/irisworldgen/replacement-recovery-<id>/` and regenerates it under the same key. Seed `-9223372036854775808` is reserved there. `/iris replace <target> off` is modded-only. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle#replace-on-fabric-forge-and-neoforge).
 
 Multiple distinct slots may be staged with independent seeds before one restart. Replacing both exact Overworld and Nether slots preserves vanilla portal routing between those canonical identities. Replacing an arbitrary `iris:*` world does not add it to that route. Replacing `minecraft:overworld` makes Iris the current main-world generator without changing `level-name`.
 
@@ -433,7 +436,6 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | `update` | | `<dimension> <pack\|pack:dimensionKey>` | Stage a pack update for an existing dimension. Restart to apply it |
 | `replace-overworld` | | `<pack\|pack:dimensionKey> [seed\|random]` | Inject primary world routing |
 | `mainworld` | | `<pack\|pack:dimensionKey\|off> [seed\|random]` | Configure the main-world preset in `modded.json` |
-| `takeover` | | `<dimension> <pack\|pack:dimensionKey\|off>` | Dedicated servers. Make an existing dimension generate from an Iris pack, or return it to its own generator, after a restart. The restart moves the dimension's terrain to a recovery folder. See [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension) |
 | `disable` | | `<dimension>` | Evacuate and unload. Keep disk data |
 | `delete` | `remove`, `rm` | `<dimension>` | Disable and wipe chunk/mantle data |
 | `list` | `ls` | — | List loaded Iris dimensions |
@@ -447,7 +449,8 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 |---------|--------|--------|
 | Root permission node | `iris.all` (code-gated, whole tree) | `LEVEL_GAMEMASTERS` / `LEVEL_ALL` per node |
 | World lifecycle | `create`, `loadWorld`, `unloadWorld`, `remove` | `world enable/disable/delete`, `create`, `mainworld` |
-| Dimension takeover | — | `world takeover` |
+| Replace a mod dimension | — | `replace <namespace:path>` |
+| Turn a replacement off | — | `replace <target> off` |
 | Worldgen catalog and mod ingest | — | `catalog`, `ingest mods` |
 | Seed print | — | `/iris seed` |
 | Object expand | — | `/iris object expand` |

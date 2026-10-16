@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T23:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -54,7 +54,7 @@ Install the pack and restart before creating its dimension. For custom packs wit
 
 Teleports require dry, non-hazardous footing and enough unobstructed space for the player’s full standing body, including across chunk boundaries. Reconnecting does not inherit an earlier session’s pending teleport.
 
-`enable` also accepts the alias `create`. The seed is optional and defaults to `1337`; the command group also accepts `/iris w`.
+`enable` also accepts the alias `create`. The seed is optional and defaults to `1337`; the command group also accepts `/iris w`. Creation runs in the background: the command replies at once that the world is being created, then reports when it is live or why it failed. Until then, another create, delete, disable, or update of that world is refused. A world still being created when the server stops is not kept. Run `/iris world status` or teleport once it reports the world is live.
 
 ## Load, unload, and remove
 
@@ -119,7 +119,7 @@ Back up the complete dimension directory, including `iris/generation`. Do not ed
 | Saved world packs | `<dimensionRoot>/iris/generation/epochs/<epoch>/pack/` |
 | Bukkit world registration | `<level-root>/iris/worlds.json` and the `worlds` section of `bukkit.yml` |
 | Modded world registration | `<world-root>/iris/iris-dimensions.json` |
-| Modded applied dimension takeovers | `<world-root>/data/irisworldgen/dimension-takeovers.json` |
+| Modded staged and applied replacements | `<world-root>/data/irisworldgen/dimension-replacements.json` |
 
 `level-name` in `server.properties` selects the save root. Include the registration files when backing up your server. Use the server's normal stop command and wait for the Java process to exit before copying, restoring, or removing world files. Pending chunk generation and Iris world data finish saving during shutdown.
 
@@ -140,7 +140,11 @@ Saved biome definitions are re-rendered for the running Minecraft version on eve
 
 ## Exact world-slot replacement
 
-On Paper, Purpur, Leaf, or Folia, use `/iris replace` to replace an existing Iris world or a vanilla dimension:
+`/iris replace` replaces an existing Iris world or a vanilla dimension with fresh terrain from a pack after one restart. The syntax, aliases, and seed rules are the same on Paper-family servers and on dedicated Fabric, Forge, and NeoForge servers. Mod loaders also accept mod dimensions and a modded-only `off` form.
+
+### Replace on Paper-family servers
+
+On Paper, Purpur, Leaf, or Folia:
 
 ```none
 /iris replace minecraft:overworld type=overworld seed=123456789
@@ -175,9 +179,35 @@ Restart after both downloads finish. Then stage each replacement, waiting for it
 /iris replace minecraft:the_nether type=underworld seed=-987654321
 ```
 
-Restart again after both replacements are staged. The first restart loads the packs; the second applies the replacements. Vanilla portals continue to connect this Overworld and Nether pair. A separately created `iris:*` world is outside that pair.
+Restart again after both replacements are staged. The first restart loads the packs; the second applies the replacements. Vanilla portals continue to connect this Overworld and Nether pair. A separately created `iris:*` world is outside that pair. A dedicated Fabric, Forge, or NeoForge server uses the same sequence; `allow-nether` is not checked there.
 
 After an Overworld replacement, players whose old positions are unsafe or unavailable are moved to the new safe spawn. If Iris cannot establish a safe spawn, it blocks entry and reports the problem.
+
+### Replace on Fabric, Forge, and NeoForge
+
+On a dedicated Fabric, Forge, or NeoForge server, install the pack and restart to load it, then stage the replacement and restart again:
+
+```none
+/iris replace minecraft:overworld type=overworld seed=123456789
+```
+
+| Parameter | Use |
+|---|---|
+| Target | `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or an Iris world. **Modded-only:** any other loaded dimension that the server creates from a level stem, by its full `namespace:path`, such as `examplemod:skylands` |
+| `type` | Installed pack or `pack:dimensionKey`; defaults to `generator.defaultWorldType`. **Modded-only:** `off` |
+| `seed` | Omit it, or pass `preserve`, to keep the target's seed. Supply any other signed 64-bit integer except `-9223372036854775808`, which mod loaders reserve |
+
+The arguments, aliases, and target names match the Paper-family command: `main`/`overworld`, `nether`/`the_nether`, `end`/`the_end`, and the save's `<level-name>`, `<level-name>_nether`, and `<level-name>_the_end` resolve to the three vanilla dimensions. An Iris world is named `irisworldgen:<name>`, `iris:<name>`, or just `<name>`. The target must already exist, the pack's environment must match a vanilla target, and a target with a staged replacement refuses another until you restart or run `off`. A dimension that a mod creates in code while the server starts, instead of defining it as a level stem, is refused; see [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension). The command requires gamemaster level.
+
+On the restart, the target's `region`, `entities`, and `poi` folders, its Iris Mantle data, and its Iris generation history move to `config/irisworldgen/replacement-recovery-<id>/`, and the dimension regenerates in place under the same key and save. `level.dat`, player data, the world seed, datapacks, and the other dimensions stay as they are, so Nether portals keep connecting the Overworld and the Nether. Keep the recovery folder and your complete backup until you have checked the result. Running `/iris replace` again on a replaced dimension regenerates it again.
+
+On mod loaders all dimensions share the save's world seed. A kept seed is the target's current one: the world seed, the seed of an earlier replacement, or an Iris world's own seed. An explicit seed sets the Iris terrain of the replaced dimension only; `/seed` and the other dimensions keep the world seed, and so does Minecraft's own structure placement in that dimension.
+
+After an Overworld replacement, the world spawn moves to the terrain surface at 0, 0. Returning players whose saved Overworld position is inside the new terrain are moved to the spawn surface on their next join.
+
+`/iris replace <target> off` is modded-only. Before the restart, it cancels a staged replacement. For a replaced vanilla or mod dimension, it returns the dimension to its own generator on the next restart and moves the Iris terrain to a recovery folder; the earlier terrain is not restored. An Iris world has no other generator, so `off` only cancels its staged replacement.
+
+Replacements of vanilla and mod dimensions are stored in `modded.json` `dimensionReplacements`; see [03 - Configuration](/iris/03-configuration). Replacements of Iris worlds update the world's registration on the restart. The startup rules for missing packs and unreadable entries are in [48 - Mod Worldgen](/iris/48-mod-worldgen#replace-a-mod-dimension).
 
 ## Main world on mod loaders
 
@@ -192,19 +222,6 @@ Install the pack and restart to load it, then run:
 
 Restart again to apply it. This replaces the vanilla Overworld, Nether, and End with fresh terrain from the selected preset. The previous terrain is retained under `config/irisworldgen/mainworld-recovery-<id>/`. Keep that directory and your complete backup until you have checked the new worlds. Player data, advancements, statistics, datapacks, and non-vanilla dimensions remain in the save.
 
-`/iris world mainworld off` stops forcing the preset on later boots; it does not restore previous terrain. `/iris world replace-overworld overworld 1337` instead creates a separate `irisworldgen:primary` dimension and sends players there.
-
-## Take over a dimension on mod loaders
-
-> A takeover regenerates the dimension. Back up the complete save before staging, adding, changing, or removing one.
-{.is-warning}
-
-On a dedicated Fabric, Forge, or NeoForge server, a takeover makes an existing dimension, such as one a mod adds, generate from an Iris pack. Install the pack and restart to load it, then stage the takeover and restart again:
-
-```none
-/iris world takeover examplemod:skylands skylands
-```
-
-On that restart, the dimension's `region`, `entities`, and `poi` folders, Iris Mantle data, and Iris generation history move to `config/irisworldgen/takeover-recovery-<id>/`, and the dimension regenerates from the pack. Player data stays in the save. `/iris world takeover examplemod:skylands off` returns the dimension to its own generator on the next restart and moves the Iris terrain aside the same way. Takeovers are stored in `modded.json` `dimensionTakeovers`. Pack requirements and startup rules are in [48 - Mod Worldgen](/iris/48-mod-worldgen#take-over-a-dimension).
+`/iris world mainworld off` stops forcing the preset on later boots; it does not restore previous terrain. `/iris world replace-overworld overworld 1337` instead creates a separate `irisworldgen:primary` dimension and sends players there. To regenerate a single vanilla dimension in place and keep `level.dat`, use [`/iris replace`](#replace-on-fabric-forge-and-neoforge) instead.
 
 See [Commands & Permissions](/iris/04-commands-permissions) for access requirements and [Pregeneration](/iris/07-pregeneration) to generate terrain before players explore it.
