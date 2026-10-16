@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 | `/wormholes language` | Personal or server language permissions for the selected scope | Open the shared picker |
 | `/wormholes language self <locale\|reset>` | `wormholes.language.self` and `volmit.language.self` | Select or reset your personal Wormholes language |
 | `/wormholes language server <locale>` | `wormholes.admin` or `volmit.language.admin` | Change the Wormholes server default |
-| `/wormholes language server edit [locale]` | `wormholes.admin` or `volmit.language.admin` | Open the per-language inventory message editor |
+| `/wormholes language server edit [locale]` | `wormholes.admin` or `volmit.language.admin` | Open the in-game message editor. See [Message editor](/wormholes/11-localization#message-editor) |
 | `/volmit plugins languages [lang]` | `volmit.language.admin` or every enabled plugin's server-language administration permission | Bukkit only. Open the shared picker or change every enabled provider's server default |
 | `/wormholes info` | none | Show portal-building instructions |
 | `/wormholes wand [rune=true]` | `wormholes.admin.items` | Give a Portal Wand and, by default, a rune |
@@ -58,7 +58,7 @@ removing portal storage. Queued saves cannot recreate deleted portal files.
 
 ## Portal Atlas
 
-`/atlas` opens your portal list; `/atlas favorites` and `/atlas recents` filter it to pinned and recently used portals. These player commands require `wormholes.atlas`. Right-click a portal row to pin or unpin it, or shift-left-click to guide to it. `/atlas guide <portal name>` selects the same guide target, and `/atlas guide off` clears it.
+`/atlas` opens your portal list; `/atlas favorites` and `/atlas recents` filter it to pinned and recently used portals. These player commands require `wormholes.atlas`. Right-click a portal row to pin or unpin it, or shift-left-click to guide to it. On a native screen, use the row's **Favorite** and **Guide** buttons. `/atlas guide <portal name>` selects the same guide target, and `/atlas guide off` clears it.
 
 The guide displays a bearing on the action bar while you are in the target portal's world. Discovery, favorites, recents, and the selected guide target persist across reconnects and restarts. If your atlas is still loading, a menu or guide request opens or runs when its saved state is ready.
 

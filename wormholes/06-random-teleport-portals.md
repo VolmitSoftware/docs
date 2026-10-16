@@ -2,13 +2,13 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-An RTP portal chooses a destination from its world, radius, height, biome, safety, and rotation settings. Set the type to `RTP` with `wormholes.portals.portal`, then open Random Destination. The editor groups are Destination, Landing, Routing, and Effects. Changes apply immediately. A manual reroll, a private-pool rebuild, and Reset defaults ask for confirmation.
+An RTP portal chooses a destination from its world, radius, height, biome, safety, and rotation settings. Set the type to `RTP` with `wormholes.portals.portal`, then open Random Destination. The editor groups are Destination, Landing, Routing, and Effects. Changes apply immediately. A manual reroll and a private-pool rebuild ask for confirmation, and on a native screen Reset defaults does too.
 
 On Fabric, Forge, and NeoForge, a successful RTP trip restores world-down gravity and uses that upright body for landing safety. A refused or failed trip keeps the current gravity frame.
 
@@ -115,7 +115,16 @@ each private reservation on `cycleDurationMillis`. The editor labels that field
 | Routing | SHARED / PER_PLAYER. Shared STATIC / TIMED / ON_TRAVERSAL choices. Shared timed or private rotation interval. Lease idle. Private release. Manual reroll/pool rebuild |
 | Effects | Rim on/off, portal-specific sound on/off |
 
-Numeric fields use decrease/increase steps and optional typed entry. Custom X/Z
+The editor opens as a native screen for players with the client mod and as a
+chest menu otherwise; see
+[Native menus and chest menus](/wormholes/04-portal-types-menus-settings#native-menus-and-chest-menus).
+Both show the same category pages, and the overview shows the portal's current
+RTP state.
+
+In the chest menu, each numeric field opens its own page with small and large
+decrease and increase steps. On a native screen, numeric fields are sliders on
+the category page showing the current value, between − and + buttons;
+shift-click − or + for the large step. Custom X/Z
 must stay from -30_000_000 through 30_000_000, and maximum radius is capped at
 30_000_000 in both the editor and `RtpSettings`. Hand-edited stored coordinates
 outside that range normalize to portal-relative; invalid stored radii, including

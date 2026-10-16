@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-10-13T16:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -47,7 +47,10 @@ Import of a **server** code saves route + trust only. Import of a **portal**
 code from chat saves route + trust and reports the remote portal name. Linking
 a local gateway to that remote portal is done through the portal Link UI. When
 import is invoked with a portal context from the UI, `linkRemote` is applied
-immediately.
+immediately. In the gateway pair menu, Import takes the code in a text box with
+**Apply** on a native screen, or through a chat prompt in the chest menu; see
+[Native menus and chest menus](/wormholes/04-portal-types-menus-settings#native-menus-and-chest-menus).
+The pair menu's first entry shows the paired server and its link state.
 
 Export of either kind also enables network and starts it. Server export to a
 player is click-to-copy. Console prints the raw code.

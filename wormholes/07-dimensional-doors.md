@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -108,16 +108,17 @@ Access is stored on the door's `itemId`, with one entry per player. It does not 
 
 To open the menu, sneak and right-click a placed Pair, Personal, or Public door with an empty main hand. The owner, operators, and players with `wormholes.admin` may manage it. Return doors have no access menu.
 
-The menu contains the OpenState control, an add-player control, and one entry per listed player.
+The menu contains the OpenState control, an add-player control, the projection control described under [Through-door projection](/wormholes/07-dimensional-doors#through-door-projection), and one entry per listed player. Players with the client mod get it as a native screen; others get a chest menu. See [Native menus and chest menus](/wormholes/04-portal-types-menus-settings#native-menus-and-chest-menus).
 
-| Control | Action |
-|---------|--------|
-| OpenState (lime/gray dye) | Left-click toggles `OPEN` ↔ `CLOSED` |
-| Add player | Chat name prompt. New entries start `NEUTRAL` |
-| Listed pane left-click | `WHITELIST` (green) |
-| Listed pane right-click | `BLACKLIST` (red) |
-| Listed pane middle-click or shift-left-click | Remove from list |
-| Black pane (`NEUTRAL`) | No transit effect. Entry is still listed |
+| Action | Chest menu | Native screen |
+|--------|------------|---------------|
+| Toggle OpenState `OPEN` ↔ `CLOSED` | Left-click the lime or gray dye | OpenState toggle |
+| Add a player (new entries start `NEUTRAL`) | Chat name prompt | Text box with **Apply** |
+| Set a listed player to `WHITELIST` (green pane) | Left-click the player's pane | **Whitelist** button on the player's row |
+| Set a listed player to `BLACKLIST` (red pane) | Right-click the player's pane | **Blacklist** button on the player's row |
+| Remove a listed player | Middle-click or shift-left-click the player's pane | **Remove** button on the player's row |
+
+A `NEUTRAL` entry, a black pane in the chest menu, has no transit effect but stays listed. The list shows up to 225 players per page.
 
 Access rules:
 

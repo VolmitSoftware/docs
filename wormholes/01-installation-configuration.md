@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration. Players can also install the Fabric, Forge, or NeoForge jar on their client to receive [ClientView](/wormholes/05-projection-modes-settings#clientview).
+Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration. Players can also install the Fabric, Forge, or NeoForge jar on their client to receive [ClientView](/wormholes/05-projection-modes-settings#clientview) and native menu screens.
 
 ## Requirements
 
@@ -35,6 +35,8 @@ Fabric, Forge, and NeoForge servers store the same settings, portal records, doo
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's Minecraft version and loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
 ClientView requires matching Wormholes releases on channel `wormholes:v11` and the same Minecraft version. Optics stream messages use wire version 9 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.1.2, 26.2, and 26.3. A client requires a server on the same Minecraft version. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+
+The mod also shows every Wormholes menu as a native Minecraft screen instead of a chest menu. This works on Fabric, Forge, and NeoForge servers, in singleplayer, and on Paper, Purpur, and Folia servers running the plugin (and Spigot where the plugin runs). Players without the mod use chest menus, and `[menus] native-screens = false` gives every player chest menus. See [Native menus and chest menus](/wormholes/04-portal-types-menus-settings#native-menus-and-chest-menus).
 
 On Fabric, Forge, and NeoForge servers and in singleplayer, players with the mod cross frame portals and dimensional doors without a teleport or loading screen. On Paper, Purpur, and Folia every player crosses with the ordinary teleport. See [Travel with the client mod](/wormholes/05-projection-modes-settings#travel-with-the-client-mod).
 
@@ -143,7 +145,7 @@ Dimensional doors and pocket rooms are blocks in the world where they were place
 | Path | Bukkit: `plugins/Wormholes/wormholes.toml`; native loaders: `config/wormholes/wormholes.toml` |
 | Schema | `schema = 3` |
 | Quality key | Top-level `quality` |
-| Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`, `[transit]`, `[client-view]` |
+| Sections | `[main]`, `[recipes]`, `[network]`, `[projection]`, `[render]`, `[transit]`, `[client-view]`, `[menus]` |
 | Key form | kebab-case (`teleport-cooldown-millis`) |
 
 A startup load rewrites the file with every known key. Custom comments and unknown keys are removed. A hot reload does not rewrite the file.
@@ -509,6 +511,14 @@ Portal physics, convoy traversal, and traversal cues. Changes hot-reload. A port
 | `remote-view-routes` | `2` | Fabric, Forge, NeoForge, and singleplayer only. Portal destinations in other worlds or beyond the player's view distance streamed ahead per seamless player, 1–4. Same-world destinations within the player's view distance do not count against it |
 | `remote-view-chunks-per-tick` | `8` | Fabric, Forge, NeoForge, and singleplayer only. Destination chunk columns streamed per seamless player per tick, 1–64. The client's acknowledgements can lower it further |
 | `remote-view-bytes-per-tick` | `196608` | Fabric, Forge, NeoForge, and singleplayer only. Destination bytes streamed per seamless player per tick, 16384–2097152 (192 KiB by default) |
+
+## `[menus]`
+
+Player menus. Changes hot-reload and apply to the next menu a player opens; a native screen that is already open stays native until it closes. See [Native menus and chest menus](/wormholes/04-portal-types-menus-settings#native-menus-and-chest-menus).
+
+| Key | Default | Notes |
+|-----|---------|--------|
+| `native-screens` | `true` | Show native menu screens to players running the [client mod](#client-mod). Off gives every player chest menus. Players without the mod always get chest menus |
 
 ## Hot reload
 
