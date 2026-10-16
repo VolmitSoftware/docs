@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -166,7 +166,7 @@ control opens a pair menu:
 | Import | Chat prompt for peer invite code |
 
 Same-world links store `LOCAL`. Cross-world same-server links store
-`DIMENSIONAL`. Remotes store `UNIVERSAL`. Ordinary destination selection is one-way: A→B does not create B→A. Select a return destination at B separately, or use **Link and return** at A after selecting a local destination. That control appears only when you own both portals or have administrator access to both. Deleting one end of a reciprocal pair clears its paired return link.
+`DIMENSIONAL`. Remotes store `UNIVERSAL`. Ordinary destination selection is one-way: A→B does not create B→A. Select a return destination at B separately, or use **Link and return** at A after selecting a local destination. That control appears only when you own both portals or have administrator access to both. Deleting a portal also deletes the cross-world portal it is paired with: its managed counterpart, or a `DIMENSIONAL` destination that links back to it, so both ends of a cross-world **Link and return** pair go together. Deleting one end of a same-world **Link and return** pair keeps the other portal and clears its return link and its **Link and return** mark. Any other link to a deleted portal stays stored on the surviving portal and leads nowhere. Deletion refunds nothing and tells players within 24 blocks of each deleted portal that it was deleted. This is the same on Paper, Folia, Fabric, Forge and NeoForge.
 
 Cross-server handoff detail:
 [10 - Cross-Server Networking](/wormholes/10-cross-server-networking).
