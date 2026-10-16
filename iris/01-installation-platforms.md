@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-16T13:00:00.000Z
+date: 2026-10-16T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,16 +21,16 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 |---|---|
 | Java | 21 for Minecraft 1.21.1 mods; 25 for 26.x |
 | Minecraft (plugin) | 26.1.2, 26.2 and 26.3; one plugin jar supports all three |
-| Minecraft (mod) | 1.21.1 and 26.3; separate jars for each game version and loader |
+| Minecraft (mod) | 1.21.1, 26.1.2, 26.2 and 26.3; separate jars for each game version and loader |
 | Fabric Loader | 0.19.5+ |
-| Forge | 52.x for 1.21.1; 66.x for 26.3 |
-| NeoForge | 21.1.x for 1.21.1; 26.3.0.65-beta or newer for 26.3 |
+| Forge | 52.x for 1.21.1; 64.x for 26.1.2; 65.x for 26.2; 66.x for 26.3 |
+| NeoForge | 21.1.x for 1.21.1; 26.1.2.x for 26.1.2; 26.2.0.x for 26.2; 26.3.0.65-beta or newer for 26.3 |
 | Network | Outbound HTTP or HTTPS for pack downloads, external datapack downloads and fresh Bukkit library downloads. Retain `plugins/Iris/cache/libraries/` for offline restarts; upgrades may require new downloads. Mod jars include their required libraries |
 
 Before you replace an existing installation:
 
 1. Run `java -version` **on the server**. Confirm the server process uses Java 21 for 1.21.1 or Java 25 for 26.x.
-2. Match the jar label to the platform and Minecraft version you run. For example, `Iris v4.3.3 [CraftBukkit] 26.1.2-26.3.jar` supports the three listed plugin versions; the mod jars each name their target game and loader version.
+2. Match the jar label to the platform and Minecraft version you run. For example, `Iris v4.3.3 [CraftBukkit] 26.1.2-26.3.jar` supports the three listed plugin versions. Each mod jar names its loader, Minecraft version and loader version, such as `Iris v4.3.3 [Fabric] 26.2+0.19.5.jar`, `Iris v4.3.3 [Forge] 26.1.2+64.1.4.jar` or `Iris v4.3.3 [NeoForge] 26.2+26.2.0.89.jar`.
 3. Stop the server cleanly.
 4. Back up the Iris jar/mod, the Iris data directory, and every Iris world you intend to keep.
 
@@ -38,7 +38,7 @@ Install only one Iris platform jar in the `plugins/` or `mods/` folder.
 
 Native Billow noise is enabled by default when the jar contains a compatible native library. Start Java 25 with `--enable-native-access=ALL-UNNAMED` before `-jar` to allow it; unavailable native support uses Java sampling. Minecraft 1.21.1 uses Java sampling and supports the Java 21 Vector API kernels. See [Configuration](/iris/03-configuration#native-billow-noise) and [Workspace builds](/volmlib/api/building).
 
-For a local source build, run `./gradlew buildPsychoLT` from the Iris repository, or select that task in IntelliJ's Gradle window. It builds and verifies all four platform jars, exports them to `PluginOuts`, and stages them in the local test-server consumer dropins. Use `./gradlew buildAllToOut` to export the default 26.3 mod jars and Bukkit jar without staging them in a test server. Build the three 1.21.1 mod jars with `./gradlew fabricJar forgeJar neoforgeJar -PminecraftVersion=1.21.1`; output is under `adapters/<loader>/build/1.21.1/libs/`. Source builds require Java 25 and a Java 21 toolchain for the 1.21.1 target.
+For a local source build, run `./gradlew buildPsychoLT` from the Iris repository, or select that task in IntelliJ's Gradle window. It builds and verifies the Bukkit jar and the Fabric, Forge and NeoForge jars for every Minecraft version, exports them to `PluginOuts`, and stages the Bukkit jar and the 26.3 mod jars in the local test-server consumer dropins. Use `./gradlew buildAllToOut` to export all of them without staging them in a test server. Build one mod jar with `./gradlew build<Loader><version>`, writing the version with underscores, for example `./gradlew buildFabric26_2` or `./gradlew buildNeoForge1_21_1`. Source builds require Java 25 and a Java 21 toolchain for the 1.21.1 target.
 
 ## Plugin install (Paper / Purpur / Leaf / Canvas / Folia / Spigot)
 
@@ -120,7 +120,7 @@ Create your first world with [02 - Getting Started](/iris/02-getting-started).
 
 ### Youer
 
-Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. Match the Iris jar to Youer’s Minecraft version: 1.21.1 or 26.3. The 26.2 Youer build requires an Iris distribution targeting 26.2, which is outside the mod version matrix.
+Youer is a NeoForge hybrid. Install the NeoForge-labeled Iris jar in `mods/`; do not install the CraftBukkit-labeled jar in `plugins/`. Match the Iris jar to Youer’s Minecraft version: 1.21.1, 26.1.2, 26.2 or 26.3.
 
 Validate the installed packs:
 

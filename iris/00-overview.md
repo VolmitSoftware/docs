@@ -2,12 +2,12 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-10-15T16:00:00.000Z
+date: 2026-10-16T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Iris replaces the vanilla chunk generator. Terrain, biomes, caves, structures, objects, and entities come from editable JSON packs. The same engine is available as a Bukkit plugin and as a Fabric, Forge, or NeoForge mod. Java 25 is required.
+Iris replaces the vanilla chunk generator. Terrain, biomes, caves, structures, objects, and entities come from editable JSON packs. The same engine is available as a Bukkit plugin and as a Fabric, Forge, or NeoForge mod. Java 25 is required, except for the Minecraft 1.21.1 mod jars, which use Java 21.
 
 The guides cover server operation and pack authoring. Pages `90`–`94` cover the Java API.
 
@@ -29,16 +29,16 @@ The guides cover server operation and pack authoring. Pages `90`–`94` cover th
 
 ## Platforms
 
-One plugin jar covers the Bukkit family. Each mod loader has its own jar.
+One plugin jar covers the Bukkit family. Each mod loader has its own jar for each Minecraft version.
 
 | Platform | Artifact | Minecraft | What is different |
 |---|---|---|---|
 | Paper / Purpur / Leaf / Canvas | plugin jar | 26.1.2 – 26.3 | Nothing. This is the reference plugin target |
 | Spigot / CraftBukkit | plugin jar | 26.1.2 – 26.3 | Managed `iris:*` creation and generation. Exact vanilla-slot `/iris replace` is unavailable |
 | Folia | plugin jar | 26.1.2 – 26.3 | `/iris create` creates managed worlds without a restart. See [01 - Installation & Platforms](/iris/01-installation-platforms) and [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
-| Fabric | mod jar | 26.3 | Server worldgen plus an optional client HUD. Requires Fabric Loader 0.19.5+ and Java 25 |
-| Forge | mod jar | 26.3 | Same. Forge 66.x |
-| NeoForge | mod jar | 26.3 | Same. NeoForge 26.3.0.65-beta or newer |
+| Fabric | mod jar | 1.21.1, 26.1.2, 26.2, 26.3 | Server worldgen plus an optional client HUD. Requires Fabric Loader 0.19.5+ |
+| Forge | mod jar | 1.21.1, 26.1.2, 26.2, 26.3 | Same. Forge 52.x, 64.x, 65.x or 66.x, matching the Minecraft version |
+| NeoForge | mod jar | 1.21.1, 26.1.2, 26.2, 26.3 | Same. NeoForge 21.1.x, 26.1.2.x, 26.2.0.x, or 26.3.0.65-beta or newer |
 
 Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree felling uses `iris.treefeller`.
 

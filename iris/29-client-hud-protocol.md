@@ -2,7 +2,7 @@
 title: "Client HUD & Maps"
 description: "Iris documentation: Client HUD & Maps"
 published: true
-date: 2026-10-16T00:24:18.027Z
+date: 2026-10-16T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,7 +12,7 @@ The Iris client mod adds a pregeneration HUD, a full-screen Vision map, a What o
 
 ## Install the client mod
 
-Install the Iris jar for your client's mod loader and Minecraft target: 1.21.1 or 26.3. Use Java 21 for 1.21.1 and Java 25 for 26.3. Use matching Iris and Minecraft versions on the client and server, then join an Iris world.
+Install the Iris jar for your client's mod loader and Minecraft target: 1.21.1, 26.1.2, 26.2 or 26.3. Use Java 21 for 1.21.1 and Java 25 for the 26.x versions. Use matching Iris and Minecraft versions on the client and server, then join an Iris world.
 
 Multiplayer does not copy Iris packs, objects, settings, or saved generation data between client and server. Keep server packs on the server; the client receives display information for the HUD, Vision, What, and Studio notifications. Those display caches clear on disconnect.
 
