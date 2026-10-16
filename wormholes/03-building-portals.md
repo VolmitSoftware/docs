@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Build portals with a wand or runes, apply skins, and replace vanilla portals"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-15T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -79,7 +79,7 @@ The portal can show its destination after you [link it to another portal](/wormh
 
 For a floor/ceiling falling loop, select a horizontal opening at each end and choose **Link and return**. New horizontal portals use the same downward normal and northward screen-up direction regardless of your heading during construction, so an unrotated pair preserves vertical momentum, yaw, and pitch. The Orientation menu can rotate or flip either frame; an existing pair with opposing normals needs one frame flipped to preserve the falling direction. For a previously rotated pair, select `look` in each portal's Transit Orientation setting to keep your absolute look direction.
 
-With the client mod on Fabric, Forge, NeoForge, or singleplayer, a horizontal portal can sit in a solid floor or ceiling. Once its seamless route is ready, a player can pass through the selected cells and supporting blocks behind the opening without removing them. Blocks around the opening remain solid, and solid obstacles at the destination still stop movement. On Paper, Purpur, Folia, or without the client mod, clear the physical opening for ordinary travel.
+With the client mod on Fabric, Forge, NeoForge, or singleplayer, a horizontal portal can sit in a solid floor or ceiling. Once its seamless route is ready, a player can pass through the selected cells and supporting blocks behind the opening without removing them. Blocks around the opening remain solid, and solid obstacles at the destination still stop movement. On Paper, Purpur, Folia, or without the client mod, clear the physical opening for ordinary travel. Converted End entry portals are the exception on every platform: they send a player or entity on contact with the portal cells, even with a solid floor beneath them.
 
 Changing world, dropping the wand, or leaving it off the hotbar clears the selection.
 
@@ -170,7 +170,7 @@ Config: `[main] replace-nether-and-end-portals` in `wormholes.toml`
 
 When enabled, lighting a Nether portal or completing an End portal converts it into a managed Wormholes portal. These portals lock destination and type. Native Nether pairs allow directional gravity and traveller scale through the Transit menu. Nether pairs work both ways. Generated Nether counterparts prefer nearby supported ground with clear headroom and avoid hazardous blocks and the roof. If no suitable ground is found within the search area, Wormholes builds a landing platform.
 
-End entry portals are one-way and deliver travelers near the center of the main End island. Their receiving area has no reverse travel route. Defeating the Ender Dragon activates the central return fountain as a separate one-way portal. Its view shows each player’s valid bed or respawn-anchor destination, or the world spawn when no valid personal destination exists. Entering the fountain keeps vanilla return routing, credits, and progression.
+End entry portals are one-way and deliver travelers near the center of the main End island. Like vanilla End portals, they send a player or entity as soon as its body touches the portal cells, whether it walks or drops in from the frame, stands inside the portal when it is completed, or arrives inside it by teleport. Solid blocks directly under the portal cells do not prevent travel. The End arrival area, a 3×3 opening above safe ground, is receive-only: it has no reverse travel route and shows no view back to the Overworld. Return from the End is through the central exit fountain, which defeating the Ender Dragon activates as a separate one-way portal. Its view shows each player’s valid bed or respawn-anchor destination, or the world spawn when no valid personal destination exists. Entering the fountain keeps vanilla return routing, credits, and progression.
 
 A converted vanilla portal keeps its original physical frame when its view direction, quarter-turn rotation or aperture shape changes. Keep the original obsidian border intact; breaking it removes the linked Nether pair. On native loaders, directional gravity and traveller scale are shared through Settings sync at both linked ends. See the [Transit menu](/wormholes/04-portal-types-menus-settings#transit-menu).
 
