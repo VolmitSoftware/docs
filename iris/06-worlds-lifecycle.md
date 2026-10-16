@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-15T23:30:00.000Z
+date: 2026-10-16T13:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -83,6 +83,8 @@ Removal reports `UNREGISTERED` when files are kept and `DELETED` when they are d
 /iris world disable irisworldgen:myworld
 /iris world delete irisworldgen:myworld
 ```
+
+Iris restores saved, enabled dimensions during startup, before the server accepts players.
 
 `disable` unloads the dimension and keeps its files. `delete` removes its terrain and Iris world data. Back up before deleting.
 

@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-15T22:46:37.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -267,7 +267,7 @@ Output is written under `<Iris data>/packs/exports/`. Wait for the export's comp
 
 `output` is one direct artifact name: 1-128 characters, starting with a letter, number, `_`, or `-`, then only letters, numbers, `.`, `_`, or `-`. Whitespace, leading `.`, absolute paths, slashes, nested paths, and traversal names are rejected. `format=zip` adds `.zip` when needed. The destination is replaced atomically only when `replace=true`; an existing output is otherwise rejected.
 
-The command emits a Minecraft 26.2 datapack whose `pack.mcmeta` uses `min_format: [107, 1]` and `max_format: 107`, with template pools, compressed structure-template NBT, one jigsaw worldgen structure, and one random-spread structure set.
+The command emits a datapack matching the running 26.2 or 26.3 server, with template pools, compressed structure-template NBT, one jigsaw worldgen structure, and one random-spread structure set. API exports on Minecraft 1.21.1 use pack format 48 and require equal horizontal and vertical maximum distances; that vanilla format cannot express separate limits. Iris native structure generation retains separate vertical limits on 1.21.1.
 
 | Vanilla setting | Export default |
 |---|---|
@@ -297,7 +297,7 @@ Export fails rather than dropping or approximating any of these:
 
 The exporter does not export tile or block-entity NBT, so a chest, spawner, or sign blocks strict export even though it works fine inside Iris.
 
-To use the export, place it in an unmodded Minecraft 26.2 world's `datapacks/` directory and restart the server. `/reload` does not register newly added worldgen structures. Use `/locate structure <namespace>:<resourcePath>` to find a generated start.
+To use the export, place it in the `datapacks/` directory of an unmodded world running the matching Minecraft version and restart the server. `/reload` does not register newly added worldgen structures. Use `/locate structure <namespace>:<resourcePath>` to find a generated start.
 
 ## Content unavailable on this Minecraft version
 

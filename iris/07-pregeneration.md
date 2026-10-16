@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-15T23:58:26.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -74,5 +74,7 @@ Use the dimension identifier after the radius:
 The radius accepts values from `1` to `100000`. Add `gui` for the desktop window, `sync` for one chunk at a time, or `nocache` to disable pregeneration caching. These flags can be combined in any order after the coordinates.
 
 Use `/iris pregen status`, `/iris pregen pause`, `/iris pregen resume`, and `/iris pregen stop` to manage the job.
+
+After Iris submits the last chunk, the job waits for pending chunk requests before its final save. Check the final console summary for completed and failed counts.
 
 See [Configuration](/iris/03-configuration) for pregeneration settings and [Commands & Permissions](/iris/04-commands-permissions) for command access.

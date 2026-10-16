@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-10-15T03:00:00.000Z
+date: 2026-10-15T23:11:58.034Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -17,6 +17,7 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | Package | Use |
 |---|---|
 | `util.scheduling` | Paper/Folia-safe global, region, and entity tasks |
+| `util.parallel` | Batched background work and executor lifecycle |
 | `util.event` | Shared permission-check interaction events |
 | `util.bukkit` | Inventory-view access and entity initialization |
 | `util.bukkit.papi` | PlaceholderAPI expansions and snapshot stores |
@@ -46,11 +47,19 @@ For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/a
 
 These helpers are available in both `volmlib-shared` and the Bukkit-free `volmlib-localization` artifact. Mod loaders can use the localization artifact for splash, typed configuration, and atomic file APIs without bundling Bukkit classes. The [Husk template](/husk) demonstrates these APIs across the supported server platforms.
 
+## Background work
+
+`util.parallel.MultiBurstSupport` runs batches on a reusable worker pool. Its workers use the concrete executor class’s classloader as their context loader, including after `close()` and `reopen()`, so tasks can resolve resources and services bundled with the owning plugin or mod. Background tasks do not acquire ownership of world or entity state; schedule gameplay changes on the appropriate platform thread.
+
 ## Chunk loading
 
 `art.arcane.volmlib.util.scheduling.WorldChunks.load(plugin, world, x, z, generate)` returns a `CompletableFuture<Chunk>`. Set `generate` to `false` to request only existing terrain; a missing chunk completes with `null`. Paper and Folia use the asynchronous chunk-loading API; servers without it execute the load on the chunk's owning scheduler. Scheduling rejection and loading failures complete the future exceptionally.
 
 Future completion does not grant ownership of world or entity state. Schedule any chunk inspection or mutation on its region, and recheck that the target world and chunk are still available. Canceling the returned future does not guarantee that a server load already requested will stop.
+
+## Strict JSON input
+
+`art.arcane.volmlib.util.json.StrictJsonReader` wraps a `Reader` and rejects uppercase JSON literals, raw control characters in strings, and invalid string or Unicode escapes with `IOException`. Use it with a parser configured for strict JSON; it validates lexical rules and leaves document structure to that parser. Closing it closes the supplied reader. This supports strict input validation when the host supplies Gson 2.10.
 
 ## Block-state NBT
 

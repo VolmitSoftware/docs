@@ -2,7 +2,7 @@
 title: "Client HUD & Maps"
 description: "Iris documentation: Client HUD & Maps"
 published: true
-date: 2026-10-06T20:30:00.449Z
+date: 2026-10-16T00:24:18.027Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,7 +12,7 @@ The Iris client mod adds a pregeneration HUD, a full-screen Vision map, a What o
 
 ## Install the client mod
 
-Install the Iris jar for your client's mod loader. Use matching Iris and Minecraft versions on the client and server, then join an Iris world.
+Install the Iris jar for your client's mod loader and Minecraft target: 1.21.1 or 26.3. Use Java 21 for 1.21.1 and Java 25 for 26.3. Use matching Iris and Minecraft versions on the client and server, then join an Iris world.
 
 Multiplayer does not copy Iris packs, objects, settings, or saved generation data between client and server. Keep server packs on the server; the client receives display information for the HUD, Vision, What, and Studio notifications. Those display caches clear on disconnect.
 
@@ -53,7 +53,7 @@ On Bukkit-family servers, use `/iris pregen status` or the server console. A gra
 
 Press `M` in an Iris world to open Vision. Drag to pan, scroll to zoom, and press Escape to close it. The map fills in as its data loads.
 
-Press `J` to show information for the block under your cursor: biome, region, cave biome when present, and height. Vision and What show Iris data only in Iris worlds.
+Press `J` to show information for the block under your cursor: biome, region, cave biome when present, and height. Vision and What show Iris data only in Iris worlds. Their data follows your current dimension when you teleport between worlds.
 
 Studio notifications report pack reloads. After a successful reload, Vision and What refresh the affected pack's data. See [Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 
