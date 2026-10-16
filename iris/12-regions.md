@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-15T23:05:25.062Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -101,7 +101,7 @@ For steep coastlines, set `shoreMinimumWidth` or adjust the terrain slope in the
 
 ## Land-only dimensions
 
-`seaBiomes` and `shoreBiomes` are optional in the schema. Leaving them empty is only safe when no column can ever land at or below `fluidHeight`. That means every biome in the region uses positive generator `min` values. The dimension `landChance` must also keep the continental noise on land. Otherwise the sea or shore role has an empty candidate list at those columns.
+`seaBiomes` and `shoreBiomes` are optional in the schema. Leaving them empty is only safe when no column can ever land at or below `fluidHeight`. That means every biome in the region uses positive generator `min` values. The dimension `landChance` must also keep the continental noise on land. Otherwise the sea or shore role has an empty candidate list at those columns. When a declared land, sea, or shore pool loses every candidate to version content exclusions, the region is excluded from the dimension. Declare compatible alternatives or block fallbacks to keep that region available on older targets.
 
 ```json
 {

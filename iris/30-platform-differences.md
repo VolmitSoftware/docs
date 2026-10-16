@@ -2,12 +2,14 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T22:46:37.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Iris supports Bukkit-family servers, Fabric, Forge and NeoForge. Pack content is shared, while commands, file locations and authoring tools differ. Use the tables below when choosing a platform or moving a pack.
+
+The mod jars target Minecraft 1.21.1 on Java 21 and Minecraft 26.3 on Java 25. Fabric, Forge, and NeoForge each have a separate jar for each target. The Bukkit jar supports 26.1.2, 26.2, and 26.3 on Java 25.
 
 ## What actually differs
 
@@ -61,7 +63,7 @@ Replacement is available on Paper, Purpur, Leaf and Folia and requires a manual 
 | Staff gate | `iris.all` (default `op`) — required for every `/iris` subcommand | Gamemaster access for anything that mutates, downloads, opens Studio, or starts a pregen |
 | Open to any player | Nothing | All players: `help`, `version`, `info`, `worlds`, `height`, `metrics` (alias `measure`), and the whole `what` subtree |
 | Deliberately gated reads | — | `seed` and `accesslist` stay at gamemaster level even though `worlds` shows similar output without the seed field |
-| Tree feller | `iris.treefeller` (default `op`) | Fabric `irisworldgen:treefeller`. Forge and NeoForge node `irisworldgen.treefeller`, defaulting to gamemaster level |
+| Tree feller | `iris.treefeller` (default `op`) | Fabric 26.3 uses `irisworldgen:treefeller`; Fabric 1.21.1, Forge, and NeoForge use `irisworldgen.treefeller`. All default to gamemaster level |
 | Help | Clickable command menu | Clickable help pages |
 
 Full command tables: [04 - Commands & Permissions](/iris/04-commands-permissions).

@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-13T14:45:11.677Z
+date: 2026-10-15T22:46:37.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -133,6 +133,8 @@ These commands run `test` in VolmLib and every selected plugin, or all plugins w
 Add `--rerun` to execute the tests again even when their previous results are up to date, without forcing all compilation tasks to rerun.
 
 Iris's `moddedTest` is part of `check`, so `--tests-only` does not run the `adapters/modded-common` suite. Run `./gradlew moddedTest` or `./gradlew build` from `Iris/` to include it.
+
+Iris defaults to Minecraft 26.3 for mod builds. Add `-PminecraftVersion=1.21.1` to `fabricJar`, `forgeJar`, `neoforgeJar`, or `moddedTest` to select 1.21.1. The target pins are in `gradle/mod-targets.json`; jars are written to `adapters/<loader>/build/<minecraft-version>/libs/`. `./gradlew verifyModdedMatrix` builds and checks all six mod jars and runs the shared mod tests for both Minecraft versions. Gradle runs on Java 25; the 1.21.1 build also requires a Java 21 toolchain.
 
 ## Local dependencies and logs
 

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-15T22:46:37.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -126,7 +126,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 
 Anyone can open `/iris` help. Commands that change state require gamemaster level 2.
 
-Tree feller uses `irisworldgen:treefeller` on mod loaders and defaults to gamemaster level.
+Tree feller defaults to gamemaster level. Fabric 26.3 uses `irisworldgen:treefeller`; Fabric 1.21.1 uses the bundled Fabric Permissions API with `irisworldgen.treefeller`. Forge and NeoForge also use `irisworldgen.treefeller`.
 
 ---
 
@@ -459,7 +459,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 | Datapack status/install (dimension types) | — | yes |
 | Pregen flags | `serial`, `gui`, center string | `sync`, `gui`, `nocache`, `at x z` |
 | `pack validate` / `status` with no pack | validates/reports all packs | validates/reports all packs |
-| Tree feller permission | `iris.treefeller` | `irisworldgen:treefeller` via the loader permission API |
+| Tree feller permission | `iris.treefeller` | `irisworldgen:treefeller` on Fabric 26.3; `irisworldgen.treefeller` on Fabric 1.21.1, Forge, and NeoForge |
 
 ---
 

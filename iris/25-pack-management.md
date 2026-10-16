@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-15T23:05:25.065Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -203,7 +203,7 @@ Compatibility checks include content supplied by installed mods. Use `/iris pack
 | `dropped` | One entry or reference is removed and its container keeps generating. A dropped biome scatter entry falls back to the derivative, a dropped loot entry leaves the rest of the table intact |
 | `substituted` | A declared fallback replaced the missing key and the content still generates |
 
-Exclusion cascades. A container that referenced an excluded unit drops the reference, and if that empties a required pool the container is excluded in turn: an object placement with no placeable object left, a jigsaw pool with no pieces left, a structure whose start pool is excluded, a spawner with no spawns left, a loot table with no entries left, a region with no land biomes left. **If the cascade reaches the dimension the pack is unusable on that version** — a blocking validation error, and world and studio creation are refused.
+Exclusion cascades. A container that referenced an excluded unit drops the reference, and if that empties a required pool the container is excluded in turn: an object placement with no placeable object left, a jigsaw pool with no pieces left, a structure whose start pool is excluded, a spawner with no spawns left, a loot table with no entries left, a region whose declared land, sea, or shore pool has no compatible biomes left. Sea and shore pools that were omitted remain optional for land-only regions. **If the cascade reaches the dimension the pack is unusable on that version** — a blocking validation error, and world and studio creation are refused.
 
 Lists that only select blocks which already exist are never gated: `edit[].find` and `markers[].mark` on an object placement, loot `filter` lists, `blockDrops[].blocks`, and decorator whitelists and blacklists. A missing key in one of those matches nothing and is not reported.
 

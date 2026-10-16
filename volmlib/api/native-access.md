@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-13T15:46:50.258Z
+date: 2026-10-16T00:24:18.027Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -168,7 +168,7 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 
 ## Modded server integrations
 
-The shared mod-loader sources provide `NativeModdedServer` for server scheduling, loaded-world lookup, player lookup, dimension storage paths, and datapack selection. `NativeWorld` identifies a loaded world and provides block, biome, height, and weather access. Use live-world lookup only on the server thread; `worlds()` uses the published world snapshot.
+The shared mod-loader sources support Fabric, Forge, and NeoForge on Minecraft 1.21.1 and 26.3. The 1.21.1 target uses Java 21 and the 26.3 target uses Java 25. They provide `NativeModdedServer` for server scheduling, loaded-world lookup, player lookup, dimension storage paths, and datapack selection. `NativeWorld` identifies a loaded world and provides block, biome, height, and weather access. Use live-world lookup only on the server thread; `worlds()` uses the published world snapshot.
 
 `NativeRegistryAccess` accepts a `Configuration` containing a `Supplier<NativeModdedServer>` and a warning consumer. Return the current server after its datapacks have loaded, or null while no server is available. Registry lookups resolve against the supplied server on each call, including loot tables after datapack reloads. `NativeTileReader.forServer(serverSupplier)` uses the current server for live block-entity reads. The `NativeTileReader` constructor also accepts a registry-provider supplier for offline use. Keep the supplied context available until the owning integration closes.
 
@@ -194,11 +194,15 @@ The Bukkit and modded generation stages apply overlapping starts of each native 
 
 `NativeSpawnQueries.livingEntityCategories(world, chunkX, chunkZ)` returns native-category counts for living entities whose positions belong to the requested chunk, excluding players. Use it on the owning server thread when applying category-specific population limits. Native spawned entities save normally; their persistence flag controls distance despawning separately from saving.
 
-`NativeModdedLoader` exposes the current typed server and its world-access service. Register lifecycle callbacks with `NativeModdedCallbacks`; server, world, player, command, and block-interaction callbacks provide typed VolmLib contexts.
+`NativeModdedLoader` exposes the current typed server and its world-access service. Register lifecycle callbacks with `NativeModdedCallbacks`. Server, world, player, command, and block-interaction callbacks provide typed VolmLib contexts.
+
+`start` runs before vanilla loads the worlds. Forge and NeoForge call `aboutToStart` immediately before `start`. `levelsReady` runs on the server thread after vanilla loads all worlds, before the dedicated-server watchdog starts. Use this callback to restore persistent dimensions. `started` runs after server initialization completes.
+
+`NativeProtocolWorld.generator(type)` resolves the installed generator or its `NativeGeneratorOwner` by the requested type. It returns null when neither matches.
 
 ## Modded client integrations
 
-The `native-minecraft26_2-sources` artifact supplies Minecraft implementation sources for mod-loader builds. Its root contains common terrain code; `modded/` contains shared mod code, and `fabric/`, `forge/`, and `neoforge/` contain loader-specific code. Compile the common sources, the sources under `versions/<minecraft-version>/`, and your selected loader sources against that loader's Minecraft dependencies. Select exactly one matching version directory, such as `versions/26.2/` or `versions/26.3/`, and strip that directory prefix when extracting its sources. The artifact also supplies `resources/modded` and `resources/<loader>`; include those directories as resources. Register `volmlib.entity.mixins.json` and `volmlib.client.mixins.json`, plus `volmlib.fabric.mixins.json` on Fabric. Fabric uses `volmlib.accesswidener`; Forge and NeoForge use the supplied `META-INF/accesstransformer.cfg`.
+The `native-minecraft26_2-sources` artifact supplies Minecraft implementation sources for mod-loader builds. Its root contains common terrain code; `modded/` contains shared mod code, and `fabric/`, `forge/`, and `neoforge/` contain loader-specific code. Compile the common and selected loader sources against that loader's Minecraft dependencies. Select `versions/1.21.1/` or `versions/26.3/` and strip that prefix when extracting its files; version files replace common files with the same relative path. When present, apply `source-replacements.json` rules to common Java sources before replacement: ordered `global` regular expressions followed by the rules for the file's relative archive path under `files`. Version replacement files already use their target APIs. The artifact also supplies `resources/modded` and `resources/<loader>`; include those directories as resources and apply matching version resource replacements. At Gradle configuration time, `NativeAccessRules.prepare` selects `minecraft1_21_1` access rules for 1.21.1 or `minecraft26_2` rules for 26.3. Register `volmlib.entity.mixins.json` and `volmlib.client.mixins.json`, plus `volmlib.fabric.mixins.json` on Fabric. Fabric uses `volmlib.accesswidener`; Forge and NeoForge use the supplied `META-INF/accesstransformer.cfg`.
 
 The neutral client contracts live under `nativelib.client`. `ClientGraphics`, `ClientScreen`, `ClientTexture`, and `ClientKeyBinding` support plugin-owned display behavior without Minecraft types in that behavior. Register a `ClientHudBinding` with the selected loader's native client hooks. Close uploaded textures when they leave your cache or the screen closes.
 
