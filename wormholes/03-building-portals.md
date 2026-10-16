@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Build portals with a wand or runes, apply skins, and replace vanilla portals"
 published: true
-date: 2026-10-15T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -79,7 +79,7 @@ The portal can show its destination after you [link it to another portal](/wormh
 
 For a floor/ceiling falling loop, select a horizontal opening at each end and choose **Link and return**. New horizontal portals use the same downward normal and northward screen-up direction regardless of your heading during construction, so an unrotated pair preserves vertical momentum, yaw, and pitch. The Orientation menu can rotate or flip either frame; an existing pair with opposing normals needs one frame flipped to preserve the falling direction. For a previously rotated pair, select `look` in each portal's Transit Orientation setting to keep your absolute look direction.
 
-With the client mod on Fabric, Forge, NeoForge, or singleplayer, a horizontal portal can sit in a solid floor or ceiling. Once its seamless route is ready, a player can pass through the selected cells and supporting blocks behind the opening without removing them. Blocks around the opening remain solid, and solid obstacles at the destination still stop movement. On Paper, Purpur, Folia, or without the client mod, clear the physical opening for ordinary travel. Converted End entry portals are the exception on every platform: they send a player or entity on contact with the portal cells, even with a solid floor beneath them.
+With the client mod on Fabric, Forge, NeoForge, or singleplayer, a horizontal portal can sit in a solid floor or ceiling. Once its seamless route is ready, a player can pass through the selected cells and supporting blocks behind the opening without removing them, and crosses when their eye passes the portal plane. A player who comes to rest inside an open floor opening, standing on the block under it, or who is stopped by the block above an open ceiling opening, crosses from where they stand and arrives where their eye would have passed the plane. Blocks around the opening remain solid, and solid obstacles at the destination still stop movement. When an arrival would put the player inside the blocks behind a floor or ceiling destination, the player arrives just beyond that opening instead: just above a floor portal's cells, or with their head just below a ceiling portal's cells; if that space is blocked too, the crossing does not happen. With Lithium or another mod that replaces Minecraft's entity collision, players cannot move into the selected cells or the blocks behind the opening, so keep the selected cells open: a player who steps into an open floor opening crosses as soon as they stand on the block under it, and a jump into an open ceiling opening crosses once it lifts the eye past the portal plane, for example from a floor two blocks below the opening's cells. On Paper, Purpur, Folia, or without the client mod, clear the physical opening for ordinary travel. Converted End entry portals are the exception on every platform: they send a player or entity on contact with the portal cells, even with a solid floor beneath them.
 
 Changing world, dropping the wand, or leaving it off the hotbar clears the selection.
 
