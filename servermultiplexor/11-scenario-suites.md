@@ -2,7 +2,7 @@
 title: "Multiplexor: Scenario suites"
 description: "Plugin acceptance modules, fixtures, phases, and coverage"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: servermultiplexor, gameplay
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -34,7 +34,7 @@ Paths below are relative to `VolmitSoftware`.
 | Wormholes | `WormholesPlugin/src/test/gameplay/persistent-workflow.mjs` | Managed session actor follows declared route/command steps through Overworld/Nether portals and returns home. |
 | Iris | `Iris/adapters/bukkit/plugin/src/test/gameplay/studio-acceptance.mjs` | Studio hotload/recovery, object save/paste/undo, Jigsaw editing, production generation, restart, and vanilla replacement. See phases below. |
 | Iris | `Iris/adapters/bukkit/plugin/src/test/gameplay/editor-ownership.mjs` | Editor ownership, ordinary visitors, second-editor rejection, and owner reconnect. |
-| Adapt | `Adapt/src/test/gameplay/all-skills.mjs` | Two-player combat and positive observed XP in all 23 skills. Requires the separate `gameplayFixtureJar` build. |
+| Adapt | `Adapt/src/test/gameplay/all-skills.mjs` | Two-player combat and positive observed XP in all 24 skills. Requires the separate `gameplayFixtureJar` build. |
 | Gloss | `Gloss/src/test/gameplay/public-interaction.mjs` | Pasteable inventory/holographic UI, actual clicks, file hotload, and single action dispatch. Fixtures are under its `fixtures/` directory. |
 | Gloss | `Gloss/src/test/gameplay/display-authoring.mjs`, `entity-overlays.mjs` | Existing display-authoring and entity-overlay acceptance suites. |
 | BileTools / VolmLib | `BileTools/src/test/gameplay/gloss-hotload.mjs` | Repeat Gloss reload and public UI checks; detect stale or duplicated action handlers. |

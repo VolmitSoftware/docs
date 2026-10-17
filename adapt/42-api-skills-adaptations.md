@@ -7,7 +7,7 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`Skill` represents one of the 23 progression lines. `Adaptation` represents a purchasable ability inside a skill. Use the supported read-only members listed below, and use `AdaptationLearningTransaction` to change a player's learned level.
+`Skill` represents one of the 24 progression lines. `Adaptation` represents a purchasable ability inside a skill. Use the supported read-only members listed below, and use `AdaptationLearningTransaction` to change a player's learned level.
 
 Some unsupported accessors expose relocated VolmLib collections and bind that package path into your jar. See [Adapt relocates VolmLib](/adapt/41-api-getting-started#adapt-relocates-volmlib).
 
