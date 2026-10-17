@@ -12,7 +12,7 @@ Golemancy gains XP from building golems, watching golems kill hostile mobs, repa
 ## Earning XP
 
 - Building a snow, copper, or iron golem pays `buildSnowXp`, `buildCopperXp`, or `buildIronXp` to the player who placed its carved pumpkin or jack o'lantern, and counts toward `golemancy.built`. The golem must appear within `buildAttributionWindowMillis` milliseconds and `buildAttributionRadius` blocks of that placement. Each golem type has its own `buildXpCooldownMillis` cooldown per player; builds during the cooldown still count toward the stat. Heads placed by dispensers pay nothing.
-- When an iron golem or snow golem kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. The kill value is `golemKillXpBase` plus the victim's maximum health times `golemKillMaxHealthMultiplier`. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
+- When an iron golem or snow golem kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. The kill value is `golemKillXpBase` plus the victim's maximum health times `golemKillMaxHealthMultiplier`. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
 - Repairing a player-built iron golem with an iron ingot pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
 - Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
 
@@ -45,7 +45,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `repairXpPerHealth` | `2.0` | Skill XP per point of hostile damage repaired on an iron golem. |
 | `copperScrapeXp` | `60` | Skill XP per oxidation stage scraped off a copper golem. |
 | `copperWaxXp` | `30` | Skill XP for the first wax on each copper golem. |
-| `spawnerMobXpMultiplier` | `0.3` | Multiplier for Golemancy XP from mobs that came from a spawner. |
+| `spawnerMobXpMultiplier` | `0.3` | Multiplier for Golemancy XP from mobs that came from a spawner or trial spawner. |
 | `challengeBuiltReward` | `500` | Knowledge paid by the golem building challenges. |
 
 ### Challenges
