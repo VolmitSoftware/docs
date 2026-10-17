@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T17:14:26.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ A survived hit that leaves you at 4 hearts or less also pays `lowHealthSurvivalX
 
 Nothing is credited if you are already dead, invulnerable, or blocking with a shield.
 
-If Adapt's global hardcore reset is on, death wipes all skill data. Otherwise, when `takeAwaySkillsOnDeath` is on, death removes up to `deathXpLoss` TragOul XP, never below zero, and drops every learned TragOul adaptation by one level.
+If Adapt's global hardcore reset is on, death wipes all skill data. Otherwise, when `takeAwaySkillsOnDeath` is on, death removes up to `deathXpLoss` TragOul XP, never below zero, and drops every learned TragOul adaptation by one level. Dropped levels forfeit their Vault refunds, and the drop also removes learned adaptations in any skill whose requirement it breaks.
 
 ## Player preferences
 

@@ -2,13 +2,13 @@
 title: "Overview"
 description: "Adapt skills, knowledge, adaptations, and ability power"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt tracks 23 skills. Skill XP produces a level and knowledge for that skill. Knowledge buys adaptation levels in that skill only. Those levels spend ability power shared across your skills, which comes from master level.
+Adapt tracks 24 skills. Skill XP produces a level and knowledge for that skill. Knowledge buys adaptation levels in that skill only. Those levels spend ability power shared across your skills, which comes from master level.
 
 | System | Role |
 |---|---|

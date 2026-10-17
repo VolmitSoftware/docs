@@ -2,13 +2,13 @@
 title: "Skills Catalog"
 description: "All Adapt skills, their XP sources, and their adaptation guides"
 published: true
-date: 2026-10-01T17:16:15.008Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt has 23 skills. Each page lists XP sources, adaptations, and the keys in `skills/<id>.toml` and `adaptations/<id>.toml`.
+Adapt has 24 skills. Each page lists XP sources, adaptations, and the keys in `skills/<id>.toml` and `adaptations/<id>.toml`.
 
 | Skill | Earn XP by | Adaptations include |
 |---|---|---|
@@ -22,6 +22,7 @@ Adapt has 23 skills. Each page lists XP sources, adaptations, and the keys in `s
 | [Discovery](/adapt/18-skill-discovery) | Finding new blocks, items, entities, places, and effects | HUD details, structure guidance, chest detection, and XP utilities |
 | [Enchanting](/adapt/19-skill-enchanting) | Enchanting items | Refunds, offer previews, rerolls, transfers, and Soul Link |
 | [Excavation](/adapt/20-skill-excavation) | Breaking blocks or fighting with a shovel | Area digging, burrowing, treasure, and ore detection |
+| [Golemancy](/adapt/34-skill-golemancy) | Building golems, watching golems fight, repairing iron golems, and tending copper golems | Golem binding, nodes, and runes |
 | [Herbalism](/adapt/21-skill-herbalism) | Farming and gathering plants | Growth, replanting, composting, luck, and food-based defense |
 | [Hunter](/adapt/22-skill-hunter) | Damaging and killing mobs | Combat effects that often trigger after taking a hit |
 | [Kinetics](/adapt/23-skill-kinetics) | Movement and combat with maces or spears | Charged strikes, shockwaves, dives, and landing effects |
