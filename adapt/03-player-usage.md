@@ -2,7 +2,7 @@
 title: "Player Usage"
 description: "Open the Adapt menu and learn or remove adaptations"
 published: true
-date: 2026-10-13T16:39:54.435Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,6 +30,8 @@ The main menu shows skill level, knowledge, master level, and used power. Owned 
 Buying levels charges knowledge and one power for each level between your current and selected levels. Vault currency also applies when `learningEconomy.enabled` is true. The first purchase of a `permanent` adaptation needs a second click within six seconds.
 
 Unlearning returns the knowledge and configured Vault refund. Permanent adaptations cannot be unlearned by players. With `hardcoreNoRefunds`, unlearning returns neither knowledge nor currency.
+
+An adaptation with prerequisites shows a **Requires:** line for each one on every level. Green lines are met. Red lines name an adaptation and level you must learn first. You cannot unlearn an adaptation below a level that another of your learned adaptations requires; the message names those adaptations so you can unlearn them first.
 
 Passive adaptations run after purchase. Active adaptations use the trigger on their skill page. Active level 0 does not run. The gates are in [Concepts](/adapt/02-concepts).
 

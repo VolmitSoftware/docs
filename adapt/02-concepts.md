@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,9 +34,11 @@ An adaptation id is kebab-case and starts with the skill name, such as `agility-
 
 One level costs `max(1, baseCost + baseCost * level * costFactor)` knowledge. Level 1 also costs `initialCost`. A multi-level purchase sums each step. A refund reverses those steps. `hardcoreNoRefunds` returns nothing. Players cannot unlearn a `permanent` adaptation.
 
+`requires` lists adaptations a player must learn first, each written as `adaptationId:level`, for example `requires = ["rift-blink:2"]`. Entries may name adaptations from any skill. Learning or leveling is refused until every entry is met by levels the player bought; region-granted levels do not count. An entry naming an unknown adaptation can never be met and is logged as a warning at load. Malformed entries are ignored with a warning. While a learned adaptation requires another, players cannot unlearn the required one below that level. A forced removal also removes every learned adaptation whose requirements are no longer met and logs each removal.
+
 Holding level `L` costs `L` power. Region-granted levels cost none. A purchase that fails charges nothing.
 
-Every adaptation file also has `enabled`, `permanent`, `showParticles`, and `showSounds`.
+Every adaptation file also has `enabled`, `permanent`, `requires`, `showParticles`, and `showSounds`.
 
 ## Knowledge
 
@@ -57,7 +59,7 @@ maxPower  = max(0, floor(masterLevel * powerPerLevel) + regionPowerBonus)
 usedPower = sum of learned adaptation levels that are not region-granted
 ```
 
-A purchase that would exceed `maxPower` fails. If max power drops below used power, Adapt removes the lowest learned adaptation levels until used power fits. Those levels are not refunded. Region grants are not removed.
+A purchase that would exceed `maxPower` fails. If max power drops below used power, Adapt removes the lowest learned adaptation levels until used power fits, then removes adaptations whose `requires` entries are no longer met. Those levels are not refunded. Region grants are not removed.
 
 `regionPowerBonus` is the current WorldGuard `adapt-power-bonus`. It is not saved. See [Protection and region policy](/adapt/08-protection-region-policy).
 

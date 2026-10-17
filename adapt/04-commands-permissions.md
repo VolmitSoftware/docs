@@ -32,6 +32,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Boosts stack. The final XP multiplier is limited to `0.01`–`1000`.
 
+`claim-adaptation` refuses a level whose `requires` entries the player has not met. Lowering an adaptation that another learned adaptation requires is refused unless `force=true`; a forced change also removes those dependent adaptations.
+
 ## Clearing data
 
 | Command | Effect |
