@@ -70,7 +70,7 @@ AdaptationLearningTransaction.Result result =
     AdaptationLearningTransaction.learn(adaptation, player, 3, false);
 ```
 
-Call it on the tick thread that owns the player. Pass the level the player should end up at rather than a delta. `learn` clamps to the adaptation's max level. `unlearn` clamps at zero. Pass `bypassCosts = true` only for an administrative action you have already authorised. It skips the power, knowledge, and money checks. On `unlearn` it also overrides the permanent-adaptation and dependent-adaptation refusals, pays nothing back, and removes every learned adaptation whose requirements are no longer met. It never bypasses the requirements checked by `learn`. The returned `Result` is the complete outcome. Do not also write `PlayerSkillLine` yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge, and any Vault charge before it propagates.
+Call it on the tick thread that owns the player. Pass the level the player should end up at rather than a delta. `learn` clamps to the adaptation's max level. `unlearn` clamps at zero. Pass `bypassCosts = true` only for an administrative action you have already authorised. It skips the power, knowledge, and money checks. On `unlearn` it also overrides the permanent-adaptation and dependent-adaptation refusals, pays nothing back, and removes the learned adaptations whose requirement on it is broken, following that chain. It never bypasses the requirements checked by `learn`. The returned `Result` is the complete outcome. Do not also write `PlayerSkillLine` yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge, and any Vault charge before it propagates.
 ## Reference
 
 ### Supported `SkillRegistry` members
