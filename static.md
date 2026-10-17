@@ -2,29 +2,34 @@
 title: Static
 description: Player statistics, profiles, rankings, and administration
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: static, statistics, folia
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
 ---
 
-Static records what players do on your server: blocks, combat, arrows, distance, chat, votes, and time online. Profiles stay readable after a player disconnects.
-
-Players open a profile and rank everyone by any tracked or calculated statistic. Operators edit settings and messages in game.
+Static records player activity, ranks recorded players, and keeps session history, personal bests, milestones, and season results. Players use in-game profiles; operators can also enable a read-only web dashboard.
 
 | | |
 |---|---|
-| Server software | Any Bukkit-compatible server on Minecraft 1.20.1 or newer |
-| Java | Whatever your server version needs, at least 17 |
+| Minecraft | 26.1 through 26.3, including patch releases within those versions |
+| Platform targets | Spigot, Paper, Purpur, Leaf, Folia, Canvas |
+| Java | 25 or newer |
 | Main command | `/static`, plus `/stats` and `/leaderboard` |
 | Config file | `plugins/Static/config.toml` |
 | Required plugins | None. No database either |
+
+Static checks the Minecraft version before starting its services. Earlier versions and 26.4 or newer are rejected. Platform targets do not imply that every platform/version combination has passed runtime testing; see [compatibility and verification](/static/04-compatibility-operations).
 
 ## Start here
 
 - [Installation and configuration *Files, settings, and tracking filters*](/static/01-installation-configuration)
 - [Commands and languages *Player and operator commands, and translations*](/static/02-commands-languages)
 - [Statistics *Every counter, its unit, and what counts*](/static/03-statistics)
+- [History and records *Calendar periods, sessions, personal bests, and participation*](/static/05-history-records)
+- [Milestones and seasons *Lifetime badges and scheduled competitions*](/static/06-milestones-seasons)
+- [Dashboard and privacy *Web access, public profiles, and visibility controls*](/static/07-dashboard-privacy)
+- [Tracking modules *Plugin-owned counters, durations, records, and collection controls*](/static/08-tracking-modules)
 {.links-list}
 
 ## Reference

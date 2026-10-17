@@ -2,7 +2,7 @@
 title: "HiddenOre: Commands and Permissions"
 description: "The /hiddenore command tree and permission nodes"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-08T17:00:00.000Z
 tags: "hiddenore, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,3 +60,9 @@ only Fortune, tool tiers, or experience does not.
 `/hiddenore language` picks a language. Personal selection needs `hiddenore.language.self`; server
 selection needs `hiddenore.admin` or `volmit.language.admin`. See [Languages](/languages).
 
+
+## Update notifications
+
+`/volmit plugins updates` checks registered Volmit plugins and shows installed/latest versions, release links, disabled checks, and failures in the shared Director menu. Operators, players with `volmit.update`, or players with `hiddenore.update` can see HiddenOre updates; the plugin permission defaults to `op`.
+
+When `update_notifications` is enabled (the default), joining eligible players receive one combined notice for registered plugins with newer stable GitHub releases. Checks run asynchronously with shared caching and retry limits. Nothing is downloaded or installed. The shared report uses English; the existing language picker and message editor continue to control plugin-specific messages. See [Shared GitHub update checks](/volmlib/api/github-releases).

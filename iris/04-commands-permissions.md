@@ -479,3 +479,9 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 - [28 - Integrations](/iris/28-integrations)
 - [30 - Platform Differences](/iris/30-platform-differences)
 - [48 - Mod Worldgen](/iris/48-mod-worldgen)
+
+## Shared update checks
+
+On Bukkit-family servers, `/volmit plugins updates` checks registered Volmit plugins and displays one Director-formatted report with versions, status, and release links. Operators and holders of `volmit.update` see all registered plugins; `iris.update` (default `op`) grants access to this plugin. The same permissions control the combined join notice.
+
+Update checks default to enabled. Set `general.updateNotifications` in `iris.json` to `false` to stop this plugin's checks and clear pending notices. Accepted configuration reloads apply the change. Checks read stable GitHub release metadata; they do not download or install plugin JARs. The shared report uses English. See [Shared GitHub release checks](/volmlib/api/github-releases).

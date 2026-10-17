@@ -28,6 +28,7 @@ These pages are for plugin developers building against it.
 - [Shared localization *Language selection and editing*](/volmlib/api/localization)
 - [Shared diagnostic reports *Commands, contents, and API*](/volmlib/api/diagnostics)
 - [Update notifications *Release checks, join notices, and /volmit plugins updates*](/volmlib/api/github-releases)
+- [Bukkit metrics *bStats collection on Bukkit and Folia*](/volmlib/api/metrics)
 - [Cooperative plugin reload *Preparation, cancellation, and committed cleanup*](/volmlib/api/reloading)
 - [Inventory-view access *Top inventories and viewers across Bukkit versions*](/volmlib/api/inventory-views)
 - [Shared action bars and titles *Overlay priorities and claim lifecycle*](/volmlib/api/hud)

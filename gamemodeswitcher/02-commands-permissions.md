@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Commands and permissions"
 description: "Command syntax, player controls, and operator permissions"
 published: true
-date: 2026-10-13T14:42:49.253Z
+date: 2026-10-14T00:00:00.000Z
 tags: "gamemodeswitcher, commands, permissions"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -14,8 +14,9 @@ dateCreated: 2026-09-10T18:30:00.000Z
 | --- | --- |
 | `/gsw` | Command help |
 | `/gsw status` | Active settings, scheduler, personal gesture state, and current mode |
-| `/gsw menu` | Gamemode selector with gesture toggle, language, and configuration shortcuts |
+| `/gsw menu` | Gamemode selector with gesture toggle, personal feedback controls, language, and configuration shortcuts |
 | `/gsw set <mode>` | Select `survival`, `creative`, `adventure`, or `spectator` |
+| `/gsw return` | Leave a tracked Spectator session using its saved return settings |
 | `/gsw toggle` | Reverse the personal gesture setting |
 | `/gsw toggle enabled=false` | Disable gestures while keeping commands and the selector usable |
 | `/gsw toggle enabled=true` | Enable gestures |
@@ -25,6 +26,7 @@ dateCreated: 2026-09-10T18:30:00.000Z
 | `/gsw language self reset` | Clear the personal override and use the server default |
 | `/gsw language server <locale>` | Select the server default language |
 | `/gsw language server edit <locale>` | Edit a catalog in-game |
+| `/gsw debug dump` | Save a diagnostic report and request upload |
 | `/gsw debug dump upload=false` | Save a local diagnostic report |
 | `/gsw debug version` | Show `GamemodeSwitcher v<version>` using the help title gradient |
 | `/gsw debug dump upload=true` | Save a report and request upload if server configuration permits it |
@@ -45,11 +47,21 @@ dateCreated: 2026-09-10T18:30:00.000Z
 | `volmit.language.self` | Everyone | Shared permission also required for personal language selection |
 | `volmit.language.admin` | Operators | Server language selection and editing across suite plugins |
 | `gamemodeswitcher.debug` | Operators | Diagnostic reports |
+| `gamemodeswitcher.update` | Operators | This plugin's notices and entry in the shared update report |
+| `volmit.update` | Operators | Update report for all participating Volmit plugins |
 
 A player needs both `gamemodeswitcher.use` and permission for the destination mode. The selector shows destinations you cannot use and rechecks permission when you click.
+
+Personal chat, action-bar, title, and sound mutes are available through `/gsw menu` → Personal feedback. There is no separate feedback command. `/gsw return` needs an active session started through GSW with previous-mode restoration or return-to-origin enabled; it also checks destination-mode permission and world restrictions.
 
 `general.enabled`, `restrictions.disabled-worlds`, and `gestures.cooldown-millis` apply to commands and the selector too, not just gestures.
 
 See [Languages](/languages) for the language commands and their permissions.
+
+## Update notifications
+
+`/volmit plugins updates` shows the shared release report. Operators and players with `volmit.update` see all participating plugins; `gamemodeswitcher.update` allows this plugin's entry.
+
+See [Update notifications](/gamemodeswitcher/01-installation-configuration#update-notifications) for the server setting.
 
 [Installation and configuration](/gamemodeswitcher/01-installation-configuration) · [Gestures and operations](/gamemodeswitcher/03-gestures-operations)

@@ -1,95 +1,74 @@
 ---
 title: "Rift: Configuration and Localization"
-description: "TOML settings, automatic hot reload, in-game editing, and language files"
+description: "Settings, hot loading, language selection, and message editing"
 published: true
-date: 2026-10-09T23:55:00.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "rift, configuration, hot-reload, localization, gui"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Rift writes `config.toml` on first start and reloads valid external edits automatically. Invalid or incomplete saves leave the current settings active.
+Rift creates `plugins/Rift/config.toml` on first start. Valid saved changes apply automatically; invalid or incomplete saves leave the last valid settings active.
 
 ## Settings
 
-| Setting | Default | Range or effect |
-|---|---:|---|
-| `language` | `en_US` | Safe locale identifier selecting the server-default `languages/<locale>.toml` |
-| `hotReloadPollMillis` | `1000` | Clamped to 250–10,000 ms |
-| `hotReloadCooldownMillis` | `1500` | Clamped to 250–30,000 ms |
-| `autoLoadManagedWorlds` | `false` | Load profiles whose `autoLoad` field is true during startup; missing-profile reconciliation still runs when disabled |
-| `evacuationWorld` | empty | Managed command name or full key of a loaded destination; empty selects the primary world |
-| `firstJoinDestination` | empty | Loaded destination on a player's first join; empty keeps normal joining behavior |
-| `loginDestination` | empty | Loaded destination on later logins; empty keeps the saved location |
-| `allowWorldDeletion` | `true` | Permit confirmed quarantine operations |
-| `deleteConfirmationSeconds` | `30` | Clamped to 10–300 seconds |
-| `splashScreen` | `true` | Print the two-tone Rift startup banner; the separate ready-duration line always prints after successful startup |
-| `titlePopups` | `true` | Show title/subtitle feedback for enabled event groups |
-| `actionBarPopups` | `true` | Publish feedback through VolmLib's shared HUD arbitration |
-| `sounds` | `true` | Play the configured feedback sounds |
-| `worldLifecycleFeedback` | `true` | Feedback for create, import, load, unload, quarantine, and restore |
-| `teleportFeedback` | `true` | Feedback after a successful teleport |
-| `failureFeedback` | `true` | Feedback after a failed operation |
-| `worldLifecycleSound` | `block.beacon.activate` | Namespaced sound key for lifecycle success |
-| `teleportSound` | `entity.enderman.teleport` | Namespaced sound key for teleport success |
-| `failureSound` | `block.note_block.bass` | Namespaced sound key for failure |
-| `soundVolume` | `0.8` | Clamped to 0–4 |
-| `soundPitch` | `1.0` | Clamped to 0.5–2 |
-| `titleFadeInTicks` | `10` | Clamped to 0–200 ticks |
-| `titleStayTicks` | `40` | Clamped to 1–1,200 ticks |
-| `titleFadeOutTicks` | `10` | Clamped to 0–200 ticks |
-| `verbose` | `false` | Log successful lifecycle and hot-reload details |
-| `debugUploadEnabled` | `true` | Permit `/rift debug dump` and shared debug requests to upload after saving locally; a command may still pass `upload=false` |
-| `bstatsEnabled` | `true` | Submit standard anonymous usage metrics for bStats plugin id `33701`; the global bStats opt-out also applies |
+| Setting | Default | Effect or bounds |
+|---|---|---|
+| `language` | `en_US` | Server-default locale |
+| `updateNotifications` | `true` | GitHub release checks and combined Volmit notices |
+| `hotReloadPollMillis` | `1000` | File polling interval, 250-10,000 ms |
+| `hotReloadCooldownMillis` | `1500` | Combine rapid saves, 250-30,000 ms |
+| `autoLoadManagedWorlds` | `true` | Load profiles whose `autoLoad` flag is true at startup |
+| `evacuationWorld` | Empty | Loaded evacuation destination; empty selects the primary world |
+| `allowWorldDeletion` | `true` | Allow confirmed quarantine operations |
+| `deleteConfirmationSeconds` | `30` | Confirmation window, 10-300 seconds |
+| `splashScreen` | `true` | Print the two-color startup banner |
+| `titlePopups` | `true` | Title/subtitle feedback |
+| `actionBarPopups` | `true` | Feedback through shared HUD coordination |
+| `sounds` | `true` | Play feedback sounds |
+| `worldLifecycleFeedback` | `true` | Create, import, load, unload, quarantine, and restore feedback |
+| `teleportFeedback` | `true` | Successful teleport feedback |
+| `failureFeedback` | `true` | Failed-operation feedback |
+| `worldLifecycleSound` | `block.beacon.activate` | Lifecycle success sound |
+| `teleportSound` | `entity.enderman.teleport` | Teleport sound |
+| `failureSound` | `block.note_block.bass` | Failure sound |
+| `soundVolume` | `0.8` | 0-4 |
+| `soundPitch` | `1.0` | 0.5-2 |
+| `titleFadeInTicks` | `10` | 0-200 ticks |
+| `titleStayTicks` | `40` | 1-1,200 ticks |
+| `titleFadeOutTicks` | `10` | 0-200 ticks |
+| `verbose` | `false` | Additional lifecycle and hot-load logging |
+| `debugUploadEnabled` | `true` | Permit public mclo.gs uploads after a report is saved |
+| `bstatsEnabled` | `true` | Standard anonymous bStats metrics, plugin ID `33701` |
 
-Saving config, the active locale, a world profile, or a quarantine manifest triggers automatic reload. Automatic reload cannot be disabled. Invalid files leave the previous runtime state active.
+Configuration, installed active language files, world profiles, and quarantine manifests hot-load. There is no manual reload command. The ready-duration console message prints after successful startup even with the splash disabled.
 
-Rift does not overwrite HUD or title feedback from Adapt, React, or other supported Volmit plugins.
+## In-game editors
 
-## Global policies
+`/rift config` opens a 54-slot dashboard with centered categories and controls. Every persisted plugin setting has a control. Click booleans to toggle them. Left/right click increases/decreases numbers; shift-click uses a larger step, and the drop-item key opens exact-value input. Text settings use a private chat prompt. Saves apply immediately and send a short change confirmation.
 
-The `[globalPolicy]` table controls world-wide rules shared by Rift and the Multiverse configuration API. Values are validated before the configuration becomes active.
+The Language setting opens a clickable server-default picker in the Director chat layout. The Languages and Messages section opens the shared grouped, searchable 54-slot message editor. World Policies opens `/rift policy edit`.
 
-| Setting | Default | Effect |
-|---|---:|---|
-| `enforceAccess` | `true` | Check managed-world access permissions. Lifecycle-owner availability is always required |
-| `enforceGameMode` | `true` | Apply and enforce each world's explicit game mode |
-| `enforceFlight` | `true` | Apply and enforce each world's explicit flight rule |
-| `gamemodeAndFlightEnforceDelay` | `0` | Delay player policy application by 0–1,200 ticks |
-| `applyEntitySpawnRate` | `true` | Apply configured world spawn intervals |
-| `applyEntitySpawnLimit` | `true` | Apply configured world spawn limits |
-| `firstSpawnOverride` | `true` | Enable the global first-join destination |
-| `firstSpawnLocation` | empty | Override `firstJoinDestination` with a loaded world selector |
-| `enableJoinDestination` | `true` | Enable the global login destination |
-| `joinDestination` | empty | Override `loginDestination` with a loaded world selector |
-| `useFinerTeleportPermissions` | `true` | Require destination-specific teleport permissions when checking teleport permission |
-| `safeLocationHorizontalSearchRadius` | `2` | Nearby safe-location search radius, 0–8 blocks |
-| `safeLocationVerticalSearchRadius` | `8` | Nearby safe-location vertical range, 0–32 blocks |
-| `teleportCooldownMillis` | `1000` | Cooldown used by the Multiverse 4 player-session API, 0–300,000 milliseconds |
-| `messageCooldownMillis` | `5000` | Cooldown used by the Multiverse messaging API, 0–300,000 milliseconds |
+Message edits allow 512 characters. Use `\n` for a line break, `\\` for a backslash, or `cancel` to stop. Saves are atomic, and stale edits are rejected. Opening a locale for editing does not select it.
 
-Per-world first-join and login destinations take precedence over global destinations. Disabling a global destination also disables its top-level fallback setting.
+## Language files
 
-The integration API reports which additional global policy families have runtime support. Setters for unavailable families return failures and leave canonical settings unchanged. Automatic world import and generator discovery are disabled; integration calls cannot enable startup scans.
+English is generated locally. Other supported languages download from GitHub only when selected or opened for editing. Rift does not install every catalog at startup.
 
-## In-game editor
+Downloads use the release's pinned Git revision, not a moving branch. Missing translated message keys use the local English catalog. The current published revision predates the update-notification setting label, so that label uses English until a catalog update is published and selected for a later build.
 
-`/rift config` opens the settings dashboard. General → Global World Policies opens the supported world-enforcement, spawn-application, and join-destination controls. Click booleans to toggle them, use left or right click for numbers, shift-click for larger changes, or press Q to enter an exact value. Text settings use a private chat prompt. Valid changes save and apply immediately.
+Supported locales are `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and `zh_TW`.
 
-Changing `bstatsEnabled` takes effect immediately and still honors `plugins/bStats/config.yml`. Rift does not register custom charts.
+Files live at `plugins/Rift/languages/<locale>.toml`. Their headers describe formatting and placeholders. `runtime.prefix` controls the shared label; remove `{prefix}` from an individual message to hide it there.
 
-The Language setting opens the server-default picker. `/rift language` manages a player's language, the server default, and message files. Personal choices affect that player only; console and players without a choice use the server default.
+`/rift language self` selects a personal locale without changing the server default. `/rift language self reset` removes that preference. Console and players without a preference use the server default. See [Languages](/languages) for the shared commands and editing workflow.
 
-Languages and Messages opens the shared editor. It groups message IDs, supports search, and shows the allowed placeholders for each message.
+## Metrics, reports, and updates
 
-Message input is limited to 512 characters. Use `\n` for a line break, `\\` for a backslash, or `cancel` to stop. Saves are atomic, stale edits are rejected, and opening a locale does not select it.
+Changing `bstatsEnabled` applies immediately and still honors the global `plugins/bStats/config.yml` opt-out. Rift uses the official bStats runtime without custom charts.
 
-Enter `primary` or `none` for the evacuation world to clear the explicit destination. Locale changes apply immediately.
+Debug uploads require the global setting and the request's upload flag. Use `/rift debug dump upload=false` to save locally. Reports can contain server paths, world names, and plugin information; review them before sharing.
 
-## Language overrides
+Update notifications check stable releases from `VolmitSoftware/Rift`. `/volmit plugins updates` shows the shared report. Checks cache results, respect GitHub rate limits, and never install updates. Disabling `updateNotifications` stops Rift's checks and notices.
 
-Rift's server default is the `language` setting above. `runtime.prefix` sets the displayed plugin
-name and its formatting per locale; remove `{prefix}` from a message to hide the label there.
-
-See [Languages](/languages).
-
+Next: [World policies](/rift/05-world-policies)

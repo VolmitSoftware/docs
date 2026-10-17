@@ -2,7 +2,7 @@
 title: "Integrations and Service APIs"
 description: "Foundation Vault, PlaceholderAPI, and Adapt behavior, Bukkit services, item policy, and VolmLib metrics"
 published: true
-date: 2026-09-06T03:30:00.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "foundation, vault, placeholderapi, adapt, api, integrations"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -57,7 +57,7 @@ Gloss chat bubbles use Bukkit's per-viewer `canSee` result for their speaker, so
 
 ## Java API
 
-Foundation registers `art.arcane.foundation.api.FoundationApi` as a normal-priority Bukkit service. It exposes the plugin version, immutable module-state snapshots, case-insensitive active-module checks, immutable loaded-player snapshots, and a loaded Foundation balance. `player(UUID)` performs no implicit disk read and returns empty until that profile is loaded; `balance(UUID)` also returns empty while economy is inactive.
+Foundation registers `com.volmit.foundation.api.FoundationApi` as a normal-priority Bukkit service. It exposes the plugin version, immutable module-state snapshots, case-insensitive active-module checks, immutable loaded-player snapshots, and a loaded Foundation balance. `player(UUID)` performs no implicit disk read and returns empty until that profile is loaded; `balance(UUID)` also returns empty while economy is inactive.
 
 ```java
 RegisteredServiceProvider<FoundationApi> registration =
@@ -76,7 +76,7 @@ The player snapshot includes home names, AFK and vanish flags, acceptance choice
 
 ## Item-operation policy
 
-`art.arcane.foundation.api.item.ItemOperationPolicy` is a second normal-priority Bukkit service. Other plugins can inspect an `ItemStack` for `CLONE`, `RESIZE`, `SELL`, `REPAIR`, `ENCHANT`, `STORE`, `GRANT`, or `DELETE`, and can register a priority-ordered `ItemPolicyProvider` for owned persistent-data namespaces. Close the returned `ItemPolicyRegistration` when the provider stops.
+`com.volmit.foundation.api.item.ItemOperationPolicy` is a second normal-priority Bukkit service. Other plugins can inspect an `ItemStack` for `CLONE`, `RESIZE`, `SELL`, `REPAIR`, `ENCHANT`, `STORE`, `GRANT`, or `DELETE`, and can register a priority-ordered `ItemPolicyProvider` for owned persistent-data namespaces. Close the returned `ItemPolicyRegistration` when the provider stops.
 
 Inspection recursively covers use remainders, bundles, block-state persistent data, and container contents with depth and item-count bounds. A denial includes the nested item path and reason. Global providers may deny any item; foreign persistent-data namespaces fail closed unless their owning provider explicitly allows the operation, and provider failures deny the operation and are logged.
 

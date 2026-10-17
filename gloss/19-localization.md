@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Select server and player languages and edit message files"
 published: true
-date: 2026-10-03T14:29:43.000Z
+date: 2026-10-12T16:07:52.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,6 +12,8 @@ Gloss's server default is the `language` key in `plugins/Gloss/gloss.toml`. Its 
 is `gloss.language.self`, and server selection accepts `gloss.admin` or `volmit.language.admin`.
 
 See [Languages](/languages) for the picker, permissions, the full locale list, fallback rules, and how to edit or translate messages.
+
+Cooperative plugin reload waits for open language-editor inventories to close on their players' owning regions before stopping services or cancelling plugin tasks. Cleanup failures fail the reload stage. Direct plugin disable only closes inventories owned by the current thread and reports other views that could not be closed.
 
 The web editor keeps a separate, browser-local language. It does not read or change the server or
 player settings.

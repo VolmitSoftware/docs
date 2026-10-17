@@ -15,10 +15,14 @@ Volmit plugins on Bukkit-based servers (Paper, Spigot, Folia) check their latest
 | Plugin | Settings file | Key | Default | Permission | Applies |
 |---|---|---|---|---|---|
 | Adapt | `plugins/Adapt/adapt.toml` | `autoUpdateCheck` | `true` | `adapt.update` | On save |
+| Foundation | `plugins/Foundation/config.toml` | `runtime.updateNotifications` | `true` | `foundation.update` | On save while `runtime.hotReload` is on |
+| GamemodeSwitcher | `plugins/GamemodeSwitcher/config.toml` | `general.update-notifications` | `true` | `gamemodeswitcher.update` | On save |
 | BileTools | `plugins/BileTools/biletools.yml` | `update-notifications` | `true` | `biletools.update` | Immediately from `/bile config`; file edits on BileTools reload or restart |
 | Gloss | `plugins/Gloss/gloss.toml` | `updateNotifications` | `true` | `gloss.update` | On save |
+| HiddenOre | `plugins/HiddenOre/hiddenore.toml` | `update_notifications` | `true` | `hiddenore.update` | On save |
 | Iris | `plugins/Iris/iris.json` | `general.updateNotifications` | `true` | `iris.update` | On save or `/iris reload` |
 | React | `plugins/React/react.toml` | `updateNotifications` | `true` | `react.update` | On save |
+| Rift | `plugins/Rift/config.toml` | `updateNotifications` | `true` | `rift.update` | On save |
 | Wormholes | `plugins/Wormholes/wormholes.toml` | `update-notifications` | `true` | `wormholes.update` | On save |
 
 Each plugin checks the release page of its own repository under [github.com/VolmitSoftware](https://github.com/VolmitSoftware). Turning a setting off stops that plugin's checks, clears its stored result, and removes it from join notices; `/volmit plugins updates` then lists it under **Checks disabled**. Turning the setting on starts a new check.

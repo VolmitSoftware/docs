@@ -2,7 +2,7 @@
 title: "Native spawn-protection checks"
 description: "Query the server's spawn-protection decision across Bukkit implementation boundaries"
 published: true
-date: 2026-09-20T04:21:21.395Z
+date: 2026-10-15T00:00:00.000Z
 tags: "volmlib, api, bukkit, protection, compatibility"
 editor: markdown
 dateCreated: 2026-09-05T14:10:53.000Z
@@ -13,6 +13,14 @@ dateCreated: 2026-09-05T14:10:53.000Z
 ## Dependency
 
 Bundle `native-api`, `native-common`, and the version modules your plugin supports. Use the same VolmLib release for each module. See [Native server access](/volmlib/api/native-access) for dependency coordinates, shading, and capability selection.
+
+| Minecraft release | Spawn-protection module |
+| --- | --- |
+| 26.1 and 26.1.1 | `native-v26_1_R1` |
+| 26.1.2 and 26.2 | `native-v26_2_R1` |
+| 26.3 | `native-v26_3_R1` |
+
+The 26.1 module provides spawn protection only. It does not expose unrelated native capabilities from later versions. Each provider creates the shared binding and checks the actual server implementation at runtime.
 
 ## Use
 

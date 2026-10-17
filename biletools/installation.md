@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-10-12T23:25:13.822Z
+date: 2026-10-15T18:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,10 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | Runtime JVM | Java 17+; Minecraft 26.1 through 26.3 requires Java 25 |
 | Compile target | Bukkit/Paper API 1.20.1 |
 | `api-version` | `1.20` |
+
+## Building from source
+
+Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically. The compatibility workflow checks out VolmLib's default branch on each run, so BileTools must use its current API. The startup banner supplies the server version to VolmLib's formatter, which removes the Minecraft suffix.
 
 ## Platform support
 

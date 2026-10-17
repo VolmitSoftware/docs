@@ -2,7 +2,7 @@
 title: "HiddenOre: Configuration"
 description: "Every hiddenore.toml key and default"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-12T16:07:52.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,6 +17,7 @@ An automatic reload notifies online operators with a message and a sound.
 | Key | Default | Effect |
 |---|---|---|
 | `language` | `en_US` | Select the default message locale |
+| `update_notifications` | `true` | Check stable GitHub releases and include HiddenOre in shared Volmit update notices; false disables checks and notices |
 | `metrics` | `true` | Enable anonymous bStats reporting; enabling or disabling it applies automatically |
 | `auto_pickup_drops` | `false` | Send mined hidden drops straight to the player's inventory; blast mining rewards always drop on the ground |
 | `suppress_block_drop_on_custom_drop` | `true` | Suppress the block's normal drop when a reward fires |
@@ -29,7 +30,9 @@ Server-language selection updates only the `language` value in `hiddenore.toml`,
 
 `/hiddenore config` opens the inventory editor and requires `hiddenore.admin`. Open tables and individual drop rules to browse their settings. Click a boolean to toggle it; text, numbers, and lists open private chat input. Enter lists as TOML values, such as `["IRON_PICKAXE", "DIAMOND_PICKAXE"]`. Enter `cancel` or wait 60 seconds to stop an edit.
 
-The editor changes existing settings, including adding or removing entries within primitive lists. Add or remove whole tables and drop rules directly in the file. Each save validates the complete configuration, checks that the file still matches the edit's original snapshot, and atomically replaces the selected value. A stale edit is rejected; reopen the editor to use the current file. Comments and formatting outside the edited value stay intact, and the file watcher applies saved changes automatically.
+The editor changes existing settings, including adding or removing entries within primitive lists. It also exposes `update_notifications` with its default value of `true` when the file omits that key; opening the editor leaves the file unchanged, and toggling it writes the selected value. Add or remove whole tables and drop rules directly in the file. Each save validates the complete configuration, checks that the file still matches the edit's original snapshot, and atomically replaces the selected value. A stale edit is rejected; reopen the editor to use the current file. Comments and formatting outside the edited value stay intact, and the file watcher applies saved changes automatically.
+
+Cooperative plugin reload waits for both configuration and language editors to close on their players' owning regions before draining runtime services. Cleanup failures fail the reload stage. Direct plugin disable only closes inventories owned by the current thread and reports other views that could not be closed.
 
 ## Ore removal
 

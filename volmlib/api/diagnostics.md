@@ -2,13 +2,13 @@
 title: "Shared diagnostic reports"
 description: "Debug dump commands, permissions, report contents, and the Bukkit diagnostics API"
 published: true
-date: 2026-10-09T16:58:33.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "volmlib, api, diagnostics"
 editor: markdown
 dateCreated: 2026-09-03T04:58:11.006Z
 ---
 
-VolmLib provides a common diagnostic report service for the Bukkit versions of Adapt, BileTools, Foundation, Fulcrum, Gilt, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes. Reports combine server and JVM information with plugin-owned diagnostic state and save a local file. Uploads to public mclo.gs depend on the invoking command and the plugin's upload setting.
+VolmLib provides a common diagnostic report service for the Bukkit versions of Adapt, BileTools, Foundation, Gilt, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes. Reports combine server and JVM information with plugin-owned diagnostic state and save a local file. Uploads to public mclo.gs depend on the invoking command and the plugin's upload setting.
 
 ## Commands and permissions
 
@@ -19,7 +19,6 @@ For commands exposing an `upload` argument, append `upload=false` to keep the re
 | `/adapt debug dump [upload=true]` | `adapt.debugdump` |
 | `/biletools debug dump [upload=true]` | `biletools.debug` |
 | `/foundations debug dump [upload=true]` | `foundation.debug` |
-| `/fulcrum debug dump [upload=false]` | `fulcrum.debug` |
 | `/gilt debug` | `gilt.debug` |
 | `/gloss debug dump [upload=true]` | `gloss.debugdump` |
 | `/hiddenore debug dump [upload=true]` | `hiddenore.debugdump` |
@@ -68,14 +67,17 @@ The entry point is `art.arcane.volmlib.util.diagnostics.BukkitDebugDump`.
 | `BukkitDebugDump.create(plugin, options)` | Create the service with typed upload policy and a diagnostic contributor |
 | `new BukkitDebugDump.Options(uploadEnabled, contributor)` | Supply a `BooleanSupplier` and `DebugDumpContributor` with compact default feedback |
 | `new BukkitDebugDump.Options(uploadEnabled, contributor, presentation)` | Add a plugin-owned Director command, parent command, theme, and text resolver for result menus |
+| `new BukkitDebugDump.Options(uploadEnabled, contributor, presentation, permission)` | Use an explicit permission node; pass `null` to retain automatic selection |
 | `new BukkitDebugDump.Presentation(command, parentCommand, theme, textResolver)` | Supply a `BukkitDebugDump.TextResolver` that returns `ComponentText` for each `TextKey` and `MessageArgs` |
 | `BukkitDebugDump.TextResolver.ENGLISH` | Resolve built-in English messages as literal components |
 | `request(sender, upload)` | Check the dedicated permission, capture state, then save and optionally upload a report |
-| `permission()` | Return an existing `<plugin>.debug` permission, or derive `<plugin>.debugdump` when none is declared |
+| `permission()` | Return the explicit option when supplied; otherwise use an existing `<plugin>.debug` permission or derive `<plugin>.debugdump` |
 | `updateTheme(theme)` | Replace the presentation colors used by later feedback without reregistering the provider or cancelling its active request |
 | `close()` | Unregister the provider and close the service during plugin shutdown |
 
 Creation registers an `OP` permission when the plugin descriptor does not declare one, then publishes the provider through Bukkit's services registry. The service enforces the dedicated permission. Plugins may keep their own report command.
+
+Explicit permission nodes must be nonblank and contain no whitespace. The same node controls direct requests and the shared provider, and remains in effect when the presentation theme changes. Existing two- and three-argument `Options` constructors retain automatic permission selection.
 
 The text resolver runs with the requesting player's language context. Component-based language services can provide their render method directly; plain-text services wrap their resolved text with `ComponentText.literal(...)`. The theme fills absent colors while retaining explicit formatting. Cross-plugin aggregate results export plain notice and error text alongside exact paths and URLs.
 

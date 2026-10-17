@@ -75,3 +75,9 @@ Most command permissions default to operators. `adapt.effects`, `adapt.language.
 | `adapt.update` | Receive Adapt update notices and see Adapt in `/volmit plugins updates`; default `op`. See [Update notifications](/volmlib/api/github-releases) |
 
 Gameplay access uses `adapt.use.<skill>` and `adapt.use.<adaptation>`. These are allowed unless explicitly denied. Operators bypass them.
+
+## Update notifications
+
+`/volmit plugins updates` checks registered Volmit plugins and shows installed/latest versions, release links, disabled checks, and failures in the shared Director menu. Operators, players with `volmit.update`, or players with `adapt.update` can see Adapt updates; the plugin permission defaults to `op`.
+
+When `autoUpdateCheck` is enabled (the default), joining eligible players receive one combined notice for registered plugins with newer stable GitHub releases. Checks run asynchronously with shared caching and retry limits. Nothing is downloaded or installed. The shared report uses English; the existing language picker and message editor continue to control plugin-specific messages. See [Shared GitHub update checks](/volmlib/api/github-releases).

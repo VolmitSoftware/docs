@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, and find every setting"
 published: true
-date: 2026-10-12T23:36:43.102Z
+date: 2026-10-14T00:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -20,17 +20,17 @@ Install the plugin, open its in-game editor, or edit the TOML file directly. Eve
 
 ## Install
 
-Install the selected distribution jar as the only ShapedPortals jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/ShapedPortals/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
+Install one ShapedPortals distribution jar. The build selects the smaller ordinary or XZ package. XZ packages verify and extract their bundled runtime into the writable `plugins/ShapedPortals/cache/runtime/` directory, then reuse that cache on later starts. Extraction works offline; dependency and language downloads are separate.
 
 1. Stop the server and make a backup.
-2. Place `ShapedPortals v2.1.1 [CraftBukkit] 26.1-26.3.jar` in `plugins/`.
+2. Place the selected ShapedPortals distribution jar in `plugins/`, replacing the previous jar.
 3. Start the server and check that Shaped Portals enables without errors.
 4. Run `/sp status`, then `/sp config` in-game to review the settings.
 5. [Build your first portal](/shapedportals/00-overview#build-your-first-portal).
 
 The current plugin supports Bukkit-compatible Minecraft 26.1 through 26.3 servers on Java 25. See [Compatibility](/shapedportals/03-compatibility-operations) for Java and Folia requirements.
 
-The first start downloads Gson, TOML, and Adventure, so the server needs access to the library repositories. SlimJar caches these libraries under `plugins/ShapedPortals/.libs/` and reuses them on later starts. Keep that directory when moving an installation to a server without internet access. Libraries use plugin-specific packages and must load before Shaped Portals enables.
+The first start downloads Gson, TOML, and Adventure before enabling the plugin. SlimJar relocates and caches them in `plugins/ShapedPortals/.libs/`. Keep this directory when moving the installation to an offline server.
 
 ### Where files live
 
@@ -40,6 +40,7 @@ All paths below are inside `plugins/ShapedPortals/`.
 |---|---|
 | `config.toml` | All plugin settings |
 | `.libs/` | Downloaded libraries and their relocated copies |
+| `cache/runtime/` | Verified runtime extracted by an XZ distribution |
 | `languages/language-preferences.properties` | Persistent per-player language choices, created after the first selection |
 | `languages/en_US.toml` | Editable English messages, created on first start |
 | `languages/<locale>.toml` | Installed translations and custom languages |
@@ -66,11 +67,11 @@ Changes are validated and saved to the same files used by the server. Valid chan
 
 ## Live configuration behavior
 
-By default, changes to `config.toml` and the selected language file load automatically.
+By default, changes to `config.toml` and installed `languages/*.toml` files load automatically. Personal language files refresh independently of the server default.
 
 - Invalid edits keep the last working settings and log the error.
 - Changes from `/sp config` apply immediately.
-- Consecutive external edits remain detectable after a successful reload; refreshing watcher timing does not discard pending changes to the same files.
+- Watcher timing changes preserve pending edits to the same files.
 - If hot reload is disabled, restart the server after editing files on disk. Changes saved through `/sp config` still apply immediately.
 
 ## Settings
@@ -87,11 +88,11 @@ Changes apply when the configuration loads. Turning off creation does not remove
 | `general.language` | `"en_US"` | Selects the directly editable `languages/<locale>.toml`; path characters are rejected |
 | `general.requireCreatePermission` | `true` | Requires `shapedportals.create` from players creating Nether or End portals |
 | `general.failureFeedback` | `true` | Explains recognized rejected candidates; unrelated fires and incomplete End frames are ignored silently |
-| `general.updateNotifications` | `true` | Checks GitHub releases and notifies operators or players with `shapedportals.update` when they join and a newer version is available |
+| `general.updateNotifications` | `true` | Registers GitHub checks with VolmLib for combined join notices and `/volmit plugins updates`; false disables ShapedPortals checks |
 
 {.dense}
 
-The General menu includes a GitHub update notifications toggle. To disable it in `config.toml`, set `updateNotifications = false` under `[general]`. Once the configuration applies, disabling it stops further checks and clears cached and pending notifications; enabling it starts a new check. The notifier never downloads or installs plugin updates. See [Update notifications](/shapedportals/03-compatibility-operations#update-notifications) for release selection and network behavior.
+Set `updateNotifications = false` under `[general]`, or use the General menu toggle, to stop checks and clear pending notices. Enabling it starts a check. The notifier never installs updates. See [Update notifications](/shapedportals/03-compatibility-operations#update-notifications).
 
 ### Portal rules
 
@@ -117,7 +118,7 @@ The General menu includes a GitHub update notifications toggle. To disable it in
 {.dense}
 
 Material lists must contain block materials. Nether frame and interior lists must not overlap, and `NETHER_PORTAL` is not replaceable. End interiors cannot include `END_PORTAL`, `END_PORTAL_FRAME`, or `NETHER_PORTAL`. Both dimensions and total area must fit the configured limits. Denied worlds take priority over allowed worlds; an empty allow-list permits any world not denied.
-End frame material is fixed to `END_PORTAL_FRAME`, and every boundary block must contain an eye. The End settings control the horizontal interior and its limits for both vanilla and custom shapes.
+End frame material is fixed to `END_PORTAL_FRAME`, and every boundary block must contain an eye. The End settings govern managed custom creation. Vanilla End portals retain Minecraft's rules.
 
 Removing a material from `portal.frameMaterials` does not disable existing portals. Their entries in `/sp portals` identify recorded materials no longer allowed for new frames.
 
@@ -140,7 +141,7 @@ Removing a material from `portal.frameMaterials` does not disable existing porta
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `hotReload.enabled` | `true` | Watches the active config and language files |
+| `hotReload.enabled` | `true` | Watches the config and installed language files |
 | `hotReload.pollIntervalMillis` | `1000` | Watch poll interval; range 250–60,000 ms |
 | `hotReload.cooldownMillis` | `1500` | Stable-edit debounce; range 250–60,000 ms |
 | `hotReload.notifyOperators` | `true` | Sends permission-filtered cooperative action-bar results after automatic reloads |
@@ -202,10 +203,9 @@ Reports contain server, plugin, configuration, portal, performance, and system d
 
 ## Language files
 
-Shaped Portals' server default is `general.language`. `runtime.prefix` sets the displayed plugin
-name and its formatting per locale; remove `{prefix}` from a message to hide the label there.
+`general.language` selects the server default. Players can keep a personal language. English is built in; other repository locales install on demand from the revision in the language-source manifest. Installed files remain editable and are never automatically replaced. Missing or invalid entries use English.
 
-See [Languages](/languages).
+Edit `runtime.prefix` to change the displayed plugin name and formatting, or remove `{prefix}` from an individual message to hide its label. See [Languages](/languages) for selection, editing, and reload behavior. The shared update summary currently uses English; it is separate from Shaped Portals' editable messages.
 
 ## Related pages
 

@@ -524,3 +524,9 @@ Player menus. Changes hot-reload and apply to the next menu a player opens; a na
 ## Hot reload
 
 `wormholes.toml` reloads after a complete save. The console prints `Configuration hot-reloaded.` Invalid files leave the current settings active.
+
+## Update notifications
+
+On Bukkit servers, the root `update-notifications` setting defaults to `true`. It enables GitHub release checks and includes this plugin in one combined Volmit join notice. Set it to `false` to disable checks and notices for this plugin; valid configuration reloads apply the change immediately.
+
+Use `/volmit plugins updates` for the shared Director report across registered plugins. Operators and players with `volmit.update` can view all registered plugins; `wormholes.update` grants access for this plugin and defaults to operators. Checks use stable GitHub releases from `VolmitSoftware/Wormholes`, retain cached results on failures, and respect GitHub rate limits. Updates are never downloaded or installed. Shared report text is English; existing plugin language selection and message editing remain available.

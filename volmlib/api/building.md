@@ -99,6 +99,20 @@ Set `intermediate = true` only on an archive consumed by a separately audited fi
 
 With one packed artifact, the task is `packedJar`. Multiple packed artifacts get a `packed<ArtifactName>Jar` task each. Output uses the producer's directory and filename with `-packed` before `.jar`, regardless of the selected format.
 
+## Native implementation boundaries
+
+The packaging plugin checks Java sources and compiled classes for Minecraft and CraftBukkit references. By default these references are permitted only inside `art.arcane.volmlib.nativelib` and its subpackages. Plugin-specific native adapters may declare additional implementation packages:
+
+```kotlin
+extensions.configure<art.arcane.volmit.packaging.PluginPackagingExtension> {
+    nativeImplementationPackages.add("com.example.plugin.nativeadapter.v1_21_1")
+}
+```
+
+Declarations must be qualified Java package names with at least three segments. Blank values, wildcards, and path syntax are rejected. Matching includes the exact package and its descendants, but excludes similarly named sibling packages. Source and bytecode checks use the same policy and rerun when it changes.
+
+Keep these declarations limited to implementation packages. Public contracts and gameplay logic must retain portable types; declaring the whole gameplay package would defeat that separation. For a multi-module plugin, include every runtime module's sources and class outputs in the verification tasks.
+
 ## Parallelism
 
 | Option | Default | Meaning |

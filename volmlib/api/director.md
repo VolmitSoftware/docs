@@ -2,13 +2,17 @@
 title: "Director commands"
 description: "Hidden command shortcuts, themed version output, and component-safe menu delivery"
 published: true
-date: 2026-10-03T18:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "volmlib, api, commands"
 editor: markdown
 dateCreated: 2026-09-11T01:43:00.510Z
 ---
 
 Director builds executable command trees from `@Director` annotations. Help and tab completion use the same command metadata.
+
+## UUID parameters
+
+Director parses `java.util.UUID` parameters through its standard registry. Required UUID arguments accept positional or keyed input, and optional UUID arguments use a keyed value or their declared default. Values use the full 36-character UUID form; hexadecimal letters may be uppercase or lowercase, and surrounding whitespace is ignored. Invalid or abbreviated UUIDs produce normal argument feedback without invoking the command.
 
 ## Parameter defaults
 
@@ -42,3 +46,5 @@ Pass the installed plugin descriptor's name and version and the same resolved `D
 ## Menu delivery
 
 `DirectorMiniMenu.render(...)` and `renderContent(...)` produce MiniMessage. Menu delivery deserializes that completed markup directly, preserving literal ampersands, RGB-like brackets, escaped tags, hover text, and clipboard or URL payloads. Supply content entries as MiniMessage; `ComponentText.literal(value).miniMessage()` safely includes external text in an entry.
+
+`DirectorMiniMenu.deliver(sender, page, theme, resolver, permitted)` accepts a node predicate for permission-filtered help. It filters before paginating player entries and clamps the requested page to the remaining pages. Console delivery lists every permitted entry without pagination; the caller must still check permission to open the requested command group and execute its commands.

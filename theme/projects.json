@@ -887,6 +887,10 @@
                 "href": "/foundation/04-operations-safety"
               },
               {
+                "title": "Feature audit and priorities",
+                "href": "/foundation/04-feature-audit"
+              },
+              {
                 "title": "Integrations and service APIs",
                 "href": "/foundation/05-integrations-api"
               },
@@ -1013,11 +1017,15 @@
                 "href": "/rift/05-world-policies"
               },
               {
-                "title": "Destinations and anchors",
+                "title": "Teleporting",
                 "href": "/rift/06-destinations"
               },
               {
-                "title": "Integration API",
+                "title": "Feature audit and roadmap",
+                "href": "/rift/07-feature-audit-roadmap"
+              },
+              {
+                "title": "Integrations and developer reference",
                 "href": "/rift/99-integration-api"
               },
               {
@@ -1076,6 +1084,10 @@
                 "href": "/shapedportals/04-architecture-limits"
               },
               {
+                "title": "Feature map",
+                "href": "/shapedportals/05-feature-map"
+              },
+              {
                 "title": "Languages",
                 "href": "/languages"
               }
@@ -1100,6 +1112,10 @@
           {
             "title": "",
             "links": [
+              {
+                "title": "Feature checklist",
+                "href": "/skyprime/15-feature-checklist"
+              },
               {
                 "title": "Installation and configuration",
                 "href": "/skyprime/01-installation-configuration"
@@ -1127,8 +1143,40 @@
                 "href": "/skyprime/06-starter-templates"
               },
               {
+                "title": "Island research",
+                "href": "/skyprime/08-research"
+              },
+              {
+                "title": "Events and boosters",
+                "href": "/skyprime/09-events-boosters"
+              },
+              {
+                "title": "Island contracts",
+                "href": "/skyprime/10-contracts"
+              },
+              {
+                "title": "Favorites and ratings",
+                "href": "/skyprime/11-favorites-ratings"
+              },
+              {
+                "title": "Island activity history",
+                "href": "/skyprime/12-activity-history"
+              },
+              {
+                "title": "Island specializations",
+                "href": "/skyprime/13-specializations"
+              },
+              {
+                "title": "Island gamerules",
+                "href": "/skyprime/14-gamerules"
+              },
+              {
                 "title": "Operations and recovery",
                 "href": "/skyprime/04-operations-recovery"
+              },
+              {
+                "title": "Feature map and roadmap",
+                "href": "/skyprime/07-feature-map"
               },
               {
                 "title": "Placeholders and API",
@@ -1170,6 +1218,22 @@
               {
                 "title": "Statistics",
                 "href": "/static/03-statistics"
+              },
+              {
+                "title": "History and records",
+                "href": "/static/05-history-records"
+              },
+              {
+                "title": "Milestones and seasons",
+                "href": "/static/06-milestones-seasons"
+              },
+              {
+                "title": "Dashboard and privacy",
+                "href": "/static/07-dashboard-privacy"
+              },
+              {
+                "title": "Tracking modules",
+                "href": "/static/08-tracking-modules"
               }
             ]
           }
@@ -1227,8 +1291,44 @@
                 "href": "/gamemodeswitcher/03-gestures-operations"
               },
               {
+                "title": "Features and roadmap",
+                "href": "/gamemodeswitcher/04-feature-map"
+              },
+              {
                 "title": "Languages",
                 "href": "/languages"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Husk",
+    "path": "husk",
+    "href": "/husk",
+    "description": "Template for multiversion Bukkit plugins and Fabric, Forge, and NeoForge mods",
+    "mark": "H",
+    "group": "Developer tools",
+    "sections": [
+      {
+        "title": "Documentation",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "01 - Building",
+                "href": "/husk/01-building"
+              },
+              {
+                "title": "02 - Developing a project",
+                "href": "/husk/02-development"
+              },
+              {
+                "title": "03 - Running the example",
+                "href": "/husk/03-runtime"
               }
             ]
           }
@@ -1335,6 +1435,10 @@
               {
                 "title": "GitHub release checks",
                 "href": "/volmlib/api/github-releases"
+              },
+              {
+                "title": "Bukkit metrics",
+                "href": "/volmlib/api/metrics"
               },
               {
                 "title": "Cooperative plugin reload",
