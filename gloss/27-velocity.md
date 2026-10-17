@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -351,7 +351,7 @@ Omitted optional fields retain the proxy's existing ping values. `sampleMode: "h
 
 ### Server links
 
-`serverLinks: {"enabled": true, "links": [...]}` in `motd.json` controls pause-menu links independently of status visibility and the MOTD feature toggle. Its list accepts up to sixteen entries. Existing top-level `links` is used when `serverLinks` is absent and follows the MOTD feature toggle and document `show`. Each entry needs a `url` and either a `type` or a `label`.
+`serverLinks: {"enabled": true, "links": [...]}` in `motd.json` controls pause-menu links independently of status visibility and the MOTD feature toggle. Its list accepts up to sixteen entries. A top-level `links` list is used when `serverLinks` is absent and follows the MOTD feature toggle and document `show`. Each entry needs a `url` and either a `type` or a `label`.
 
 | Key | Notes |
 |---|---|

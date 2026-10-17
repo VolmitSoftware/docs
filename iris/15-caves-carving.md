@@ -2,14 +2,14 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Configure cave shape with `caveProfile` on a dimension, region or biome. Cave biomes provide floor, ceiling and wall materials, decorations and objects. Iris uses these settings instead of vanilla carvers; there are no separate `caves/` or `ravines/` resource folders.
 
-The current built-in pack sources include [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur), a 26.2 cave family derived from the dripstone profiles with sulfur spikes, banded mineral formations and contained pools. The paired Underworld uses the same shapes with lava and Nether ecology.
+The built-in packs include [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur), a 26.2 cave family based on the dripstone profiles, with sulfur spikes, banded mineral formations and contained pools. The paired Underworld uses the same shapes with lava and Nether ecology.
 
 ## Authored rooms and passages
 
@@ -175,7 +175,7 @@ Caves preserve the seabed and the solid boundaries of generated surface water. T
 
 Underground rivers, grottos and deep-fluid bodies remain contained and protected from object and structure placements. Their settings are separate from cave aquifers. See [36 - Rivers](/iris/36-rivers).
 
-Set `allowFluid: false` to disable generated cave aquifers. It does not remove natural surface bodies or player-placed fluid. Combine it with `allowLava: false` when the generated cave interior itself must contain neither aquifers nor deep lava. Use `allowFluid`, `fluidMinDepthBelowSurface` and `fluidRequiresFloor`; the former `allowWater`, `waterMinDepthBelowSurface` and `waterRequiresFloor` names are rejected by validation.
+Set `allowFluid: false` to disable generated cave aquifers. It does not remove natural surface bodies or player-placed fluid. Combine it with `allowLava: false` when the generated cave interior itself must contain neither aquifers nor deep lava.
 
 ## Surface openings
 

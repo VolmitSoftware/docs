@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Server and React Web language settings"
 published: true
-date: 2026-10-08T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 React's server default is the `language` key in `plugins/React/react.toml`. Its own permission node
 is `react.language.self`, and server selection accepts `react.use` or `volmit.language.admin`.
 
-Configuration descriptions use the selected locale, including the `integrationSnapshotMaxMetrics` limit and its cache reset behavior.
+Configuration descriptions use the selected locale.
 
 See [Languages](/languages) for the picker, permissions, the full locale list, fallback rules, and how to edit or translate messages.
 

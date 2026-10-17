@@ -2,7 +2,7 @@
 title: "API: Placeholders"
 description: "Read Gloss state through PlaceholderAPI"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -33,7 +33,7 @@ Do not parse `%gloss_menu.id%` from Java to inspect session state. Use `GlossAPI
 
 Registered expression functions and variable namespaces may receive an `ExprVariableContext` with captured roles in `snapshots()`. Read a captured property with `context.roleValue("subject", "health")`; the value comes from the subject's owning region. A first request for a property can defer the current presentation until its sample is available. Let `RoleSnapshotPendingException` propagate so Gloss can retain the previous presentation.
 
-For contexts without a captured role, read the corresponding live entity only from its owning region. Calling `viewer()`, `subject()`, or `source()` for a captured foreign-region entity throws an ownership error with the required replacement API. Providers that previously dereferenced those foreign entities must use `roleValue`; arbitrary live entity callbacks cannot be made safe by moving them to an asynchronous executor. Captures of different roles are independent and do not represent an atomic world transaction.
+For contexts without a captured role, read the corresponding live entity only from its owning region. Calling `viewer()`, `subject()`, or `source()` for a captured foreign-region entity throws an ownership error with the required replacement API. Providers must read those foreign entities through `roleValue`; arbitrary live entity callbacks cannot be made safe by moving them to an asynchronous executor. Captures of different roles are independent and do not represent an atomic world transaction.
 
 ```java
 ExprVariableContext context = scope.variableContext();
@@ -50,4 +50,4 @@ Register an `EntityOverlaySource` with `EntityOverlayService.registerSource(sour
 
 Return a `Pane` containing prepared text, display style, box and vertical offset, or return `null` to withhold the pane. `scanPolicy()` returns `ScanPolicy(range, subjects, intervalTicks)`; zero inherits the overlay host value, with nonzero limits of `64` blocks, `256` subjects, and `200` ticks. Override `includesSelf()` when the source can present a wearer's own pane.
 
-`displayed(Player, EntityRelationshipSnapshot)` runs on the viewer's owning thread after replacement-display admission. Use it for state that must exist only while a pane is visible. `retired(UUID viewerId, UUID targetId)` releases that state when visibility or audience membership ends; retirement may run during teardown, so use the IDs without reading live entity state. Retirement can repeat and must be idempotent. Update integrations that previously implemented live-entity `wants` or `prepare` callbacks to this captured context contract.
+`displayed(Player, EntityRelationshipSnapshot)` runs on the viewer's owning thread after replacement-display admission. Use it for state that must exist only while a pane is visible. `retired(UUID viewerId, UUID targetId)` releases that state when visibility or audience membership ends; retirement may run during teardown, so use the IDs without reading live entity state. Retirement can repeat and must be idempotent.

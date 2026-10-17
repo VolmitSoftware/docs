@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 
 Reserve choices are 0, 5 or 10 XP levels or lapis items, as labeled. A reserve declines an action that would spend below it and never discounts the cost. Soul Link also checks its reserve when rescuing an item. Confirmations require repeating the same action on the same items within five seconds; no paid result is previewed. Quick Enchant can require right-click instead of left-click. Siphon and Grindstone Recovery keep their original roll and cooldown when one reward is suppressed. Compact Rune Sight shows the first earned offer only.
 
-Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
+Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -66,8 +66,7 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 | `/sp language self <locale\|reset>` | Select or reset your personal ShapedPortals language | Player |
 | `/sp language server <locale>` | Change the ShapedPortals server default | Player or console |
 | `/sp language server edit [locale]` | Open the per-language message editor | Player |
-| `/volmit plugins` | Open shared Volmit language, diagnostic, and update tools | Player or console |
-| `/volmit plugins updates` | Check permitted registered Volmit plugins and show one update report | Player or console |
+| `/volmit plugins` | Open shared Volmit language and diagnostic tools | Player or console |
 | `/volmit plugins languages [lang]` | Open the shared picker or change every enabled provider's server default | Player or console |
 | `/volmit plugins debug [plugin] [upload=true\|false]` | List shared debug providers or request one report | Player or console |
 | `/volmit plugins debug all [upload=true\|false]` | Start reports for every permitted registered provider | Player or console |
@@ -112,8 +111,7 @@ Use an ID from the list. Teleportation looks for clear standing space over a sol
 | `volmit.language.self` | Everyone | Shared requirement for personal language selection |
 | `volmit.language.admin` | Operators | Change language defaults across enabled plugins |
 | `shapedportals.debug` | Operators | Generate diagnostic reports, including uploads when enabled |
-| `shapedportals.update` | Operators | Include ShapedPortals in combined join notices and shared update reports |
-| `volmit.update` | Operators | Access update notices and reports for all registered Volmit plugins |
+| `shapedportals.update` | Operators | Receive the ShapedPortals update notice on join |
 | `shapedportals.portals` | Operators | List portals, including through bare `/sp teleport` |
 | `shapedportals.teleport` | Operators | Teleport to a selected portal |
 | `shapedportals.teleport.unsafe` | Operators | Confirm an unsafe landing; also needs `shapedportals.teleport` |

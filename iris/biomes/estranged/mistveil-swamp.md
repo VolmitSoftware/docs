@@ -2,7 +2,7 @@
 title: "Biome Atlas — Mistveil Swamp"
 description: "Iris biome atlas entry for estranged/mistveil-swamp in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -42,7 +42,7 @@ The slope gate uses rise divided by horizontal distance. Strength reaches its co
 The table lists each profile’s density and crack noise. Active deformation starts above fluid level plus 8 blocks and fades across 24 blocks of base elevation.
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
-- `estranged/mistveil-swamp`: Wetland water and soft banks retain their current terrain.
+- `estranged/mistveil-swamp`: Wetland water and soft banks keep their height-based terrain.
 
 ## Overworld treatment
 

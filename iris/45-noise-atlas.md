@@ -2,7 +2,7 @@
 title: "Noise Atlas"
 description: "Visual catalog of every Iris noise style, with 2D, 3D, zoom, and octave comparisons"
 published: true
-date: 2026-09-05T23:22:08.042Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, noise, generators"
 editor: markdown
 dateCreated: 2026-09-05T22:50:17.493Z
@@ -20,7 +20,7 @@ For configuration fields and complete generator examples, see [Generators, Noise
 - The 3D panels use Y=37.25. These are horizontal slices through the field, not terrain screenshots or perspective views.
 - The style seed is `1337`, passed directly to the style sampler. A world seed also passes through generation seed derivation and layer salts.
 - Samples start at X=-191.875 and Z=-191.625, with 1.5 blocks between pixels. Fine scatter and interpolation can look different at other resolutions.
-- These diagrams use Iris 4.1.0-26.2. They show noise values before biome height bands, generator compositing, or block placement.
+- The diagrams show noise values before biome height bands, generator compositing, or block placement.
 
 The common 64-block base scale describes the underlying lattice, carrier, or root shape. Patterns retain different visual wavelengths. `STATIC` remains unscaled scatter, and `FLAT` remains constant.
 

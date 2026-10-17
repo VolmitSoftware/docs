@@ -2,7 +2,7 @@
 title: "Multiplexor: Scenario suites"
 description: "Plugin acceptance modules, fixtures, phases, and coverage"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: servermultiplexor, gameplay
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -46,7 +46,7 @@ Under `MultiplexorApp/tool/mineflayer/`, `examples/circle-and-combat.mjs` is a m
 
 Copy the selected HiddenOre fixture to the instance's `plugins/HiddenOre/hiddenore.toml` while stopped. Its persistence scenario infers the phase from its saved marker; use the same instance and primary `--username` for both runs across the restart.
 
-The current PacketEvents runtime deliberately closes connected sockets when Gloss is hotloaded. The Bile suite declares that disconnect, waits for fresh server-log reload completion, reconnects the same bot identity, and repeats all UI checks. It verifies reload and reconnect behavior; it does not claim uninterrupted connections.
+PacketEvents closes connected sockets when Gloss is hotloaded. The Bile suite declares that disconnect, waits for fresh server-log reload completion, reconnects the same bot identity, and repeats all UI checks. It verifies reload and reconnect behavior; it does not claim uninterrupted connections.
 
 ## Iris phases
 

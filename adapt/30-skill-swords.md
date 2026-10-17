@@ -2,7 +2,7 @@
 title: "Skill - Swords"
 description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -59,7 +59,7 @@ Left-click with a sword to cut foliage in a sphere centered 2.25 blocks along yo
 
 7 levels · 7 knowledge
 
-Sword hits apply Poison at amplifier 2 for `50 * level` ticks; the menu duration instead shows `effectDuration * level` milliseconds, and those two durations do not match at the defaults. Poison-immune mobs (zombies, skeletons, phantoms, wither, zoglin, giant, spiders, and skeleton and zombie horses) take 1 health instead, and a kill within 4000 ms of the poison expiring still counts as a poison kill.
+Sword hits apply Poison at amplifier 2 for `50 * level` ticks. Poison-immune mobs (zombies, skeletons, phantoms, wither, zoglin, giant, spiders, and skeleton and zombie horses) take 1 health instead, and a kill within 4000 ms of the poison expiring still counts as a poison kill.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

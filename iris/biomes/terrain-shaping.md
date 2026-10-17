@@ -2,7 +2,7 @@
 title: "Biome Terrain Shaping"
 description: "Shared 3D terrain profiles and protected terrain in the built-in Iris packs"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biomes, terrain, overworld, underworld"
 editor: markdown
 dateCreated: 2026-09-08T07:14:15.291Z
@@ -42,50 +42,50 @@ Magnetic Noise uses `IRIS_HALF`, and Magnetic Mycelium uses `NOWHERE`. The paire
 Density amplitudes range from 10 blocks for Lowland profiles to 56 blocks for Cliff profiles.
 Horizontal density scales range from 144 to 280 blocks, and vertical scales range from 24 to 36 blocks. Most profiles use longer scales for broad shelves and recesses while retaining their displacement amplitudes.
 
-The separate crack field remains active in 73 profiles. All 124 Lowland, Hills, Forest, Fungal, and Magnetic profiles disable it.
+The separate crack field is active in 73 profiles. All 124 Lowland, Hills, Forest, Fungal, and Magnetic profiles disable it.
 The 16 Mesa and Sandstone profiles use `PERLIN` crack noise. The other 57 active crack fields use `SIMPLEX`.
 Active crack depths range from 7 to 14 blocks, with horizontal scales from 336 to 416 blocks and half-widths from 2 to 2.25 blocks.
 
 Every active profile starts its elevation fade above fluid level plus 8 blocks. Full elevation strength starts 24 blocks above that threshold.
 The slope gate further reduces deformation on gentle terrain. The atlas tables give both the starting slope and the slope for full strength.
 
-Surface palettes and slope-gated vegetation on lower ledges use neighboring ledge heights. A steep upper cap does not force a flat lower ledge to use steep-slope materials. These surface rules retain the existing three-block slope metric, separate from the density profile's rise/run gate.
+Surface palettes and slope-gated vegetation on lower ledges use neighboring ledge heights. A steep upper cap does not force a flat lower ledge to use steep-slope materials. These surface rules use the three-block slope metric, separate from the density profile's rise/run gate.
 
 ## Protected terrain
 
-Sea, shore, and cave biomes do not enable `terrain3D`. They retain their existing ocean, shore, and cave systems.
+Sea, shore, and cave biomes do not enable `terrain3D`. They use their ordinary ocean, shore, and cave systems.
 The following land or floating identities explicitly set `enabled` to false. An elevated child can use 3D terrain while its wet parent stays protected.
 
 | Biome | Reason |
 |---|---|
-| `estranged/mistveil-swamp` | Wetland water and soft banks retain their current terrain. |
-| `estranged/stiltroot-shallows` | Shallow water and rooted banks retain their current terrain. |
-| `estranged/taxodium` | Wetland floors and tree supports retain their current terrain. |
-| `estranged/weeping-mire` | Mire pools and low banks retain their current terrain. |
-| `frozen/fields/hilly-plains` | Low river-shaped terrain retains its current channels. |
+| `estranged/mistveil-swamp` | Wetland water and soft banks keep their height-based terrain. |
+| `estranged/stiltroot-shallows` | Shallow water and rooted banks keep their height-based terrain. |
+| `estranged/taxodium` | Wetland floors and tree supports keep their height-based terrain. |
+| `estranged/weeping-mire` | Mire pools and low banks keep their height-based terrain. |
+| `frozen/fields/hilly-plains` | Low river-shaped terrain keeps its height-based channels. |
 | `hot/desert-dunes` | Loose sand dunes retain their smooth surface. |
 | `hot/desert-dunes-red` | Loose sand dunes retain their smooth surface. The mountain-cliffs child supplies rock overhangs. |
-| `hot/oasis` | Oasis pools and their banks retain their current terrain. |
-| `magnetics/glass-shard` | This floating-only child keeps its existing floating-island geometry. |
+| `hot/oasis` | Oasis pools and their banks keep their height-based terrain. |
+| `magnetics/glass-shard` | This floating-only child uses only its floating-island geometry. |
 | `swamp/cambian-drift` | Low wetland terrain retains its water. Its elevated child supplies rock shelves. |
 | `swamp/denmyre` | Low wetland terrain retains its water and tree supports. |
-| `swamp/marsh` | Marsh floors and banks retain their current terrain. |
-| `swamp/marsh-rotten` | Flooded marsh floors retain their current terrain. |
+| `swamp/marsh` | Marsh floors and banks keep their height-based terrain. |
+| `swamp/marsh-rotten` | Flooded marsh floors keep their height-based terrain. |
 | `swamp/roofed-forest` | Low wetland forest retains its floor. Its elevated child supplies rock shelves. |
 | `swamp/roofed-wayward` | Low wetland forest retains its floor. Its elevated child supplies rock shelves. |
-| `swamp/sea/lake` | Lake beds retain their current terrain. |
+| `swamp/sea/lake` | Lake beds keep their height-based terrain. |
 | `swamp/swamp-forest` | Low wetland forest retains its floor and tree supports. |
-| `swamp/swamp-puddle` | Puddle beds retain their current terrain. |
+| `swamp/swamp-puddle` | Puddle beds keep their height-based terrain. |
 | `swamp/willow-forest` | Low wetland forest retains its floor. Its elevated child supplies rock shelves. |
 | `temperate/calmplains` | Low wet plains retain their smooth terrain. |
 | `temperate/fancyplains` | Low wet plains retain their smooth terrain. |
-| `temperate/overflowed` | Flooded terrain retains its current floor and water. |
-| `vanilla/mangrove_swamp` | Mangrove water and rooted banks retain their current terrain. |
+| `temperate/overflowed` | Flooded terrain keeps its height-based floor and water. |
+| `vanilla/mangrove_swamp` | Mangrove water and rooted banks keep their height-based terrain. |
 
 ## Paired geometry and materials
 
-Both packs use identical terrain profiles, height generators, biome weights, ordinary children, and floating geometry. Each pack keeps its existing surface materials, objects, decoration, ecology, and ore settings.
-Underworld keeps lava river profiles and its own deep-fluid configuration. Its cave profile continues to disable ordinary cave-fluid admission. These are intentional environmental differences.
+Both packs use identical terrain profiles, height generators, biome weights, ordinary children, and floating geometry. Each pack keeps its own surface materials, objects, decoration, ecology, and ore settings.
+Underworld keeps lava river profiles and its own deep-fluid configuration. Its cave profile disables ordinary cave-fluid admission. These are intentional environmental differences.
 Both packs share Estranged rarity and shore selection, river incision, coastal outlets, coastal grottos, sea-cave geometry, and mouth width.
 Hot and Magnetics select the shared lava-pool geometry in both packs. The pools use lava in each pack.
 

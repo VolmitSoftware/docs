@@ -2,7 +2,7 @@
 title: "Foundation"
 description: "Server essentials: homes, warps, teleports, moderation, kits, mail, and economy"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "foundation, essentials, administration"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -29,7 +29,6 @@ Foundation is the essentials plugin for Paper, Spigot, and Folia. Its 17 modules
 
 - [Modules and behavior *The rules each module's commands follow*](/foundation/03-modules-features)
 - [Operations, storage, and recovery *Files, recovery, and diagnostics*](/foundation/04-operations-safety)
-- [Feature audit and priorities *Implemented features, limits, and recommended work order*](/foundation/04-feature-audit)
 - [Integrations and service APIs *Vault, PlaceholderAPI, Adapt, and the Bukkit services*](/foundation/05-integrations-api)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}

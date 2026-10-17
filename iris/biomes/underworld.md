@@ -2,14 +2,14 @@
 title: "Underworld"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-09-23T11:12:42.385Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 Underworld reuses the Overworld terrain graph at the same seed and coordinates, then replaces its presentation and ecology with Nether-safe content. It is an open, full-height world rather than a vanilla enclosed Nether, so its biome names describe recognizable terrain families rendered through a Nether material language.
 
-| Property | Current value |
+| Property | Value |
 |---|---|
 | Built-in pack | Underworld |
 | Environment | `NETHER` |
@@ -29,7 +29,7 @@ Both packs use `surfaceDetail: 0.5` on nonflat terrain generators to smooth smal
 
 ## 3D terrain
 
-The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes retain their current terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
+The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes keep their height-based terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
 

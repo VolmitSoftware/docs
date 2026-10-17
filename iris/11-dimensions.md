@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-15T14:10:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -485,7 +485,7 @@ The position is the saved object's origin, usually its center, in absolute world
 
 Dimension-level `structures` entries are Iris placements considered everywhere in the dimension. They are independent of any biome or region placement. `importedStructures` and `importedFeatures` control what vanilla, mod, and ingested-datapack content is allowed to generate on top of Iris terrain.
 
-`anchor` is what makes a placement vertical contract explicit. `LEGACY` preserves the historical `underground` boolean. The named anchors do not depend on it. Cave anchors place editable `structures` inside caves. They are unavailable for `nativeStructures`.
+`anchor` is what makes a placement vertical contract explicit. `LEGACY` resolves from the placement's `underground` boolean: `false` selects `SURFACE` and `true` selects `HEIGHT_BAND`. The named anchors do not depend on it. Cave anchors place editable `structures` inside caves. They are unavailable for `nativeStructures`.
 
 ```json
 {
@@ -512,7 +512,7 @@ Dimension-level `structures` entries are Iris placements considered everywhere i
 |-------|------|---------|------------------------------------|
 | `structures` | `IrisStructurePlacement[]` | empty | Iris structure placements at dimension scope. Use this for content that must exist regardless of biome, such as a global stronghold analogue or a native structure you are re-anchoring |
 | `importedStructures` | `IrisImportedStructureControl` | default | Allow/deny and Y-adjustment rules for every registered native structure. Every registered structure generates by default. Deny families with `disabled`, one complete key with `disabledExact`. `adjustments` can shift, band, encase, or stilt a structure into Iris terrain. Recipes in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
-| `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. If you leave it out, Iris generates exactly the terrain it always has. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes, snow layers) over Iris terrain. Filter by `disabled` families, `disabledExact` keys, per-biome `biomeRules`, `steps`, and `disabledSteps`. Carvers are never imported. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
+| `importedFeatures` | `IrisImportedFeatureControl` | disabled | Off by default. Setting `enabled` true runs the vanilla placed-feature decoration pass (ores, trees, plants, springs, geodes, snow layers) over Iris terrain. Filter by `disabled` families, `disabledExact` keys, per-biome `biomeRules`, `steps`, and `disabledSteps`. Carvers are never imported. Recipe in [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | `datapackImports` | string[] | empty | External Modrinth, direct HTTP(S), or absolute local `file:` ZIP URLs this dimension owns. Their structure sets and definitions generate and locate only in dimensions that declare the same source. Bukkit also enables every ZIP under `plugins/Iris/datapacks/imports/` for every Iris dimension. Replacing native generation still requires a placement with `nativeSuppression: REPLACE_SOURCE`. Declaring the source alone never disables anything |
 
 Anchor values for editable placements: `LEGACY`, `SURFACE`, `HEIGHT_BAND`, `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER`, `CAVE_ANY`. Details in [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), and [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
@@ -651,7 +651,7 @@ Use these fields to inspect terrain and objects in Studio. `studioMode` is appli
 
 | Field | Type | Default | What it does and when to change it |
 |-------|------|---------|------------------------------------|
-| `studioMode` | `StudioMode` | `NORMAL` | Selects a preview layout. `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` lay supported pack biomes out by load key in cells of that many chunks. `OBJECT_BUFFET` lays out objects. `REGION_BUFFET` currently installs no generator and behaves exactly like `NORMAL`. Remove before packaging |
+| `studioMode` | `StudioMode` | `NORMAL` | Selects a preview layout. `BIOME_BUFFET_1x1`, `_3x3`, `_5x5`, `_9x9`, `_18x18`, `_36x36` lay supported pack biomes out by load key in cells of that many chunks. `OBJECT_BUFFET` lays out objects. `REGION_BUFFET` behaves like `NORMAL`. Remove before packaging |
 | `debugChunkCrossSections` | boolean | `false` | Deletes whole chunks on a grid so you can walk up and read the terrain column like a diagram |
 | `debugCrossSectionsMod` | int | `3` | The X/Z modulus that decides which chunks get cut, 2 to 16. Larger values cut fewer chunks |
 | `explodeBiomePalettes` | boolean | `false` | Inserts air gaps between palette layers so you can count and identify them visually |

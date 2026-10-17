@@ -2,7 +2,7 @@
 title: "Installation and Configuration"
 description: "Foundation requirements, the TOML settings, the worth catalog, and the in-game editor"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "foundation, installation, configuration"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -47,10 +47,6 @@ Message values accept MiniMessage, legacy `&` codes, `&#RRGGBB`, and escaped lin
 See [Languages](/languages) for the picker, the locale list, permissions, and the message editor.
 
 Foundation supports `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and `zh_TW`. English is generated locally. The 17 translated source catalogs stay in the repository and install when selected; they are not bundled in the runtime JAR. Existing edits are preserved, and missing messages fall back to English.
-
-The translated catalogs currently cover only a subset of messages. Foundation-specific messages without translated entries use English; locale availability does not mean full translation coverage.
-
-The public Foundation repository exists, but the configured `main/src/main/resources/languages/de_DE.toml` endpoint returned HTTP 404 when checked on October 14, 2026. Remote installation is not release-ready until the catalogs are published and their URLs verified. English and already-installed local catalogs remain usable.
 
 ## Worth catalog
 
@@ -107,5 +103,29 @@ If the file changes on disk while you are editing, the save is rejected and noth
 | `cosmetics` | Selectable particle list, celebration cooldown, burst count, and spread |
 
 Messages are not in `config.toml`; they live in the locale file.
+
+## Uninstalling
+
+Foundation keeps all of its data in `plugins/Foundation/`: player profiles with homes, balances, mail, and moderation state; spawn, warps, and jails; kits; the worth catalog; and inventory-clear checkpoints. See [Operations, storage, and recovery](/foundation/04-operations-safety) for the full file list.
+
+While Foundation is still installed:
+
+1. Release jailed players with `/unjail <player>` while they are online. Foundation returns them to the location they were jailed from; a player still jailed at removal stays wherever the jail is.
+2. Restore any inventory-clear checkpoint you still need with `/foundation recovery restore <online-player> <checkpoint-uuid>`. Checkpoints are deleted with the plugin folder.
+3. If Foundation provides your Vault economy, plan for its replacement. Balances exist only in Foundation's player profiles and are not carried over to another economy plugin.
+
+Then remove it:
+
+1. Stop the server and delete the Foundation jar from `plugins/`.
+2. Delete `plugins/Foundation/`.
+3. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
+4. Remove `%foundation_…%` placeholders from other plugins' configuration. Without Foundation, PlaceholderAPI leaves them unreplaced.
+
+> Deleting `plugins/Foundation/` permanently erases every home, warp, jail, kit, balance, mailbox, warning record, and personal setting. Back up the folder with the server stopped first if you may need any of it.
+{.is-danger}
+
+Spawn, homes, warps, and jails are coordinates in Foundation's files, so nothing is left in your worlds. After removal, first joins and respawns use the server's own spawn placement, and Foundation vanish, freeze, mute, jail confinement, and god mode stop applying.
+
+To start fresh, stop the server, delete `plugins/Foundation/`, keep the Foundation jar in `plugins/`, and start the server. Foundation creates a new `config.toml`, `worth.toml`, `languages/en_US.toml`, and empty storage directories. If the server has no internet access, keep `plugins/Foundation/.libs/` so the libraries do not need to download again.
 
 Continue with [Commands and permissions](/foundation/02-commands-permissions).

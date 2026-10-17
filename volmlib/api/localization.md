@@ -2,7 +2,7 @@
 title: "Shared localization"
 description: "Language downloads, server defaults, player preferences, and the in-game picker"
 published: true
-date: 2026-10-15T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "volmlib, api, localization"
 editor: markdown
 dateCreated: 2026-09-02
@@ -42,7 +42,7 @@ Personal selection requires both `volmit.language.self` and the selected plugin'
 | ShapedPortals | `shapedportals.language.self` |
 | Wormholes | `wormholes.language.self` |
 
-Server selection requires `volmit.language.admin` (default `op`) or the selected plugin's existing server-language administration permission. Console senders can change server defaults. Iris on Fabric, Forge, and NeoForge retains its native permission model; Bukkit permission nodes do not apply there.
+Server selection requires `volmit.language.admin` (default `op`) or the selected plugin's own server-language administration permission. Console senders can change server defaults. Iris on Fabric, Forge, and NeoForge retains its native permission model; Bukkit permission nodes do not apply there.
 
 ## Per-language message editor
 
@@ -90,7 +90,7 @@ Rendering uses immutable snapshots. An uncached personal locale loads asynchrono
 
 `RemoteLanguageCatalog` reads a properties manifest containing `revision`, comma-separated `locales`, and optional `sha256.<locale>` checksums. Its `Options` supplies the product name, repository URL, source directory, extension, manifest resource, and resource class loader. The plugin supplies a destination file and a parser-backed validator for each installation.
 
-`mode=remote` downloads missing catalogs from the configured repository; it is also the default when mode is omitted. `mode=bundled` reads `languages/<locale><extension>` from the supplied class loader and never falls back to HTTP. Bundled files use the same size, UTF-8, checksum, validation, and atomic-publication checks. Bundle translations while a public repository is pending; remote releases can exclude them while retaining the manifest.
+`mode=remote` downloads missing catalogs from the configured repository; it is also the default when mode is omitted. `mode=bundled` reads `languages/<locale><extension>` from the supplied class loader and never falls back to HTTP. Bundled files use the same size, UTF-8, checksum, validation, and atomic-publication checks. Bundle translations when no public repository is available; remote releases can exclude them while retaining the manifest.
 
 `readOrInstall` installs a missing editable language file and validates an existing file without replacing it. This method blocks and belongs on a worker, never a gameplay thread. `requestInstallIfMissing` schedules asynchronous installation only when the destination is missing. Downloads have timeouts, size limits, strict UTF-8 decoding, validation before publication, atomic file publication, and a retry cooldown. Installed files work offline. Invalid downloaded content is rejected before publication; an interactive preparation failure selects validated built-in English for the requested scope.
 
@@ -104,7 +104,7 @@ Downloads stage validated bytes outside the publication lock. Final editable-fil
 
 `LocalizationValidator.validValues(catalog, overlay)` returns the known entries that satisfy the catalog's message shapes, required and optional variables, line structure, and plural forms. Runtime loaders can pass this filtered overlay to `LocalizationSnapshot.create` for per-message fallback. `LocalizationValidator.validate` and snapshot creation remain strict for callers that need rejection, including editor validation. Parsers must discard malformed values individually before constructing their `TextValue`, `LinesValue`, or `PluralValue`.
 
-`TomlLanguageParser.parseValidValues(raw, catalog)` reads grouped text, line-list, and plural messages and filters individual entries against the catalog. `parseValidText(raw, catalog)` returns the text entries only. Both skip unknown keys, wrong value shapes, malformed placeholders, and placeholder mismatches, preserve valid strings including empty decorative prefixes, and throw for unreadable TOML. The existing `parseText` methods retain strict type checking for validation workflows.
+`TomlLanguageParser.parseValidValues(raw, catalog)` reads grouped text, line-list, and plural messages and filters individual entries against the catalog. `parseValidText(raw, catalog)` returns the text entries only. Both skip unknown keys, wrong value shapes, malformed placeholders, and placeholder mismatches, preserve valid strings including empty decorative prefixes, and throw for unreadable TOML. The `parseText` methods keep strict type checking for validation workflows.
 
 `TomlLanguageWriter.render(values, headerLines)` serializes typed messages under shared TOML sections with short assignment keys; `renderText` and `renderJson` accept string maps and parsed objects. A scalar message and its child messages can coexist using quoted relative keys in their nearest shared section. `LanguageReferenceRenderer.render` uses the same writer for code-owned English. `LanguageFileHeader.render(Options)` produces localized section labels, editing instructions, prefix and formatting guidance, and sorted per-variable definitions supplied by the plugin.
 

@@ -2,7 +2,7 @@
 title: Static - Milestones and seasons
 description: Lifetime milestone badges and scheduled competitions
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: static, milestones, seasons
 editor: markdown
 dateCreated: 2026-10-14T00:00:00.000Z
@@ -28,6 +28,6 @@ An event also sets `excludedWorlds`, `trackCreative`, `trackSpectator`, and `afk
 
 Use `/static seasons` to browse events, `/static season <id> [player]` for a player's progress, and `/static seasontop <id>` for rankings. Finished events retain their result snapshot. A minimum sample controls qualification for ratio-based events; ranking ties remain ties.
 
-Events do not currently issue rewards or synchronize between servers.
+Events do not issue rewards or synchronize between servers.
 
 [Commands](/static/02-commands-languages) · [Dashboard and privacy](/static/07-dashboard-privacy)

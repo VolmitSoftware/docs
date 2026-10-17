@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Configure server-list responses, request selectors, icons and server links"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -146,7 +146,7 @@ keeps those parts of the vanilla response.
 <video src="/gloss-assets/demos/server-links-pov.webm" aria-label="Native pause-menu server links, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-`serverLinks: {"enabled": true, "links": [...]}` publishes the links that appear in the client's pause menu independently of `[features] motd`, document `show`, and entry selection. Set `enabled` to false to disable them. Existing top-level `links` remains supported when `serverLinks` is absent and follows the MOTD feature switch. It needs the Paper
+`serverLinks: {"enabled": true, "links": [...]}` publishes the links that appear in the client's pause menu independently of `[features] motd`, document `show`, and entry selection. Set `enabled` to false to disable them. When `serverLinks` is absent, a top-level `links` list is used and follows the MOTD feature switch. It needs the Paper
 `ServerLinks` API, which is Paper 1.21 or newer; elsewhere the list is ignored. Links are published
 when the document loads and again whenever it changes, including players already connected. Gloss removes only the ones it added when
 the feature is turned off or the plugin disables.
@@ -203,5 +203,5 @@ Enable **Status request simulator** in the preview to supply a requested hostnam
 
 The editor previews a compatible client, so configured version text leaves the player count and ping bars visible. Hover the player count to read a replacement sample list. Inherited samples come from the real server response and are not available in this preview. Images render when their files are available in the editor workspace; otherwise the resolved path is still shown. Server-link labels and URLs are listed for inspection rather than rendered as a Minecraft pause menu.
 
-MOTD documents stay schema 1. See [Data Files & Hot Reload](/gloss/03-data-files) and
+MOTD documents use schema 1. See [Data Files & Hot Reload](/gloss/03-data-files) and
 [Tablist](/gloss/06-tablist).

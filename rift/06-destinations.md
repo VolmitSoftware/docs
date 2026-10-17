@@ -2,7 +2,7 @@
 title: "Rift: Teleporting"
 description: "Travel to loaded-world spawns and evacuation behavior"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "rift, teleportation, permissions"
 editor: markdown
 dateCreated: 2026-10-09T00:00:00.000Z
@@ -37,4 +37,4 @@ Use `/rift policy respawn <name> <destination>` for death respawns. Read [World 
 
 Use `/rift policy first-join <name> <destination>` or `/rift policy login <name> <destination>` to route joins from the world the server initially selects. Their in-game world pickers include a default/reset option. These policies select loaded managed spawns, without loading worlds or following chains of redirects.
 
-Title, action-bar, and sound feedback are independently configurable under [Configuration and localization](/rift/04-configuration-localization). Saved anchors, coordinate targets, player targets, and personal-bed targets are pending features listed in the [roadmap](/rift/07-feature-audit-roadmap).
+Title, action-bar, and sound feedback are independently configurable under [Configuration and localization](/rift/04-configuration-localization).

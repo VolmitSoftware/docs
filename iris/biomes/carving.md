@@ -2,7 +2,7 @@
 title: "Carving Biomes"
 description: "Navigation for the built-in carving biomes across Overworld and Underworld"
 published: true
-date: 2026-10-05T16:28:23.269830+00:00
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, carving"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -90,7 +90,7 @@ Nine dimension feature definitions place bounded rooms below Y=0. Their biomes o
 
 Ochre Hollows uses `allowedRegions: ["hot"]` in both packs. Its lava passages belong to the Hot region. The other listed features have no region restriction.
 
-Small decorators use `STATIC` scatter or `SIMPLEX` noise thresholds; a noise threshold is not a surface coverage percentage. Procedural objects use a per-chunk chance followed by `density` placement attempts. Surface support, free space and fluid requirements can prevent individual placements. Each room page lists its current formation, fungus and crystal settings.
+Small decorators use `STATIC` scatter or `SIMPLEX` noise thresholds; a noise threshold is not a surface coverage percentage. Procedural objects use a per-chunk chance followed by `density` placement attempts. Surface support, free space and fluid requirements can prevent individual placements. Each room page lists its formation, fungus and crystal settings.
 
 Use `/iris find subterrain <feature-id> radius=8192 teleport=false` or `/iris find underground-biome <load-key> radius=8192 teleport=false` to locate an occupied point. See [Authored Subterrain Features](/iris/15b-subterrain-features).
 

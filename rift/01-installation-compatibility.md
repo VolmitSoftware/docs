@@ -2,7 +2,7 @@
 title: "Rift: Installation and Compatibility"
 description: "Minecraft and Java requirements, installation, builds, and Folia limits"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "rift, installation, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -54,18 +54,45 @@ Folia uses the same Minecraft and Java bounds. Listing, information, configurati
 
 Create, import, load, unload, quarantine, and restore are disabled because Rift cannot use dynamic world lifecycle operations there. Auto-load does not bypass that restriction. Unmanage retires a profile without unloading or moving its world.
 
-## Verification scope
+## Uninstalling
 
-The October 16, 2026 build passed 220 tests, minimum/maximum Paper API compilation, Java 25 dependency checks, and distribution validation. The verified distribution is 976,838 bytes. PlaceholderAPI remains external to the distribution.
+Rift keeps its profiles and settings in `plugins/Rift/`, but the worlds it creates, imports, and quarantines are ordinary world folders in the server's world container. Decide which worlds to keep before you delete anything.
 
-The October 16 runtime checks covered Paper 26.1.2 build 74 and 26.3 build 200 with Temurin 25.0.1. Rift started without PlaceholderAPI and with PlaceholderAPI 2.12.3. Paper 26.3 passed cold-library startup, cached restart, expansion registration, and graceful shutdown; its startup also logged host Windows performance-counter warnings.
+> Back up the world container and `plugins/Rift/` together before uninstalling. A deleted world folder cannot be recovered.
+{.is-warning}
 
-The admission-policy distribution also passed a separate Paper 26.3 cold-library start, cached restart, and graceful shutdown. Rift reported ready in 1,146 ms on the cold start and 451 ms with cached libraries. Both test-server processes exited and the disposable instance was removed.
+### Before removing the jar
 
-Ten admission-policy gameplay checks passed on Paper 26.1.2 build 74 using Mineflayer's 26.1 protocol (775). They covered capacity, independent entry/exit restrictions, same-world teleports, first-ever versus returning login placement, full-destination fallback, profile hot-loading, and all five new editor controls and resets. Three checks after a cached restart confirmed saved login routing, restoration of all five non-default policy values, and managed-world loading with permitted travel. This verifies protocol-visible behavior, not real-client rendering or sound.
+1. Run `/rift list` to record every managed world and quarantine entry, and `/rift check <name>` to see each world's storage path.
+2. Restore any quarantined world you want to keep with `/rift restore <id>`. Only Rift can restore a quarantine entry.
+3. On Paper, run `/rift unload <name>` for each world you will delete. Rift moves the players in it to the evacuation world first.
 
-Player assertions on 26.1.2 with the 26.1 bot protocol passed placeholder values and counts, expansion persistence through `/papi reload`, world creation in `dimensions/rift`, game mode, flight permission restoration, native Creative flight, rain-level transitions, all five policy choice editors and resets, and local diagnostics. A separate restart run verified managed-world loading and profile edits applying to the player without a reload command. The baseline configuration and version-command checks also passed.
+### Remove Rift
 
-Natural-spawn classification and cancellation are unit-tested; the player test confirms commands can still summon animals while natural spawning is denied. The October 14 checks covered language download, hot-loading, edited prefixes, and English fallback. Paper 26.2 build 123 last passed startup/restart/shutdown on October 13. The installed bot harness does not support 26.2 or 26.3; Folia and real-client rendering/sound were not tested in this pass.
+1. Stop the server and delete the Rift jar from `plugins/`.
+2. Delete `plugins/Rift/`. It holds the configuration, languages and language choices, world profiles and their policies, retired profiles, quarantine manifests, and diagnostic reports.
+3. Delete the world data you do not want to keep:
+
+| Data | Location | Remove it? |
+|---|---|---|
+| Worlds created by Rift | `<primary-world>/dimensions/rift/<key>/`, for example `world/dimensions/rift/example_world/` | Delete each unwanted world, or the whole `dimensions/rift/` folder to remove them all |
+| Quarantined worlds | `<world-container>/.rift-trash/<id>/` | Delete the whole `.rift-trash/` folder; without Rift these entries cannot be restored |
+| Imported worlds | Their original location | Rift never moves imported storage; keep or delete them like any other world |
+
+4. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
+5. Remove `%rift_…%` placeholders from other plugins' configuration. Without Rift, PlaceholderAPI leaves them unreplaced.
+
+### What remains
+
+- The server does not load Rift-managed worlds by itself. Worlds you keep stay on disk until another world manager loads them.
+- A world created with the `void` generator depends on Rift's generator. If another world manager loads it without a void generator, unexplored chunks generate as ordinary terrain.
+- Difficulty, game rules (including PvP), world borders, and spawn locations that Rift applied are saved in each world and stay in effect, including in the primary world if Rift managed it. Change them with vanilla commands or another world manager.
+- Players who logged out inside a world that no longer loads join in the primary world.
+
+### Starting fresh
+
+1. Stop the server.
+2. Delete `plugins/Rift/`, `<world-container>/.rift-trash/`, and `<primary-world>/dimensions/rift/`.
+3. Start the server with the Rift jar in `plugins/`. Rift creates a new `config.toml` and manages no worlds until you create or import them.
 
 Next: [Commands and permissions](/rift/02-commands-permissions)

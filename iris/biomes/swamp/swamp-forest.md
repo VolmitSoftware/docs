@@ -2,7 +2,7 @@
 title: "Biome Atlas — Swamp Forest"
 description: "Iris biome atlas entry for swamp/swamp-forest in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -42,7 +42,7 @@ The table lists each profile’s density and crack noise. Active deformation sta
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 - `swamp/swamp-forest`: Low wetland forest retains its floor and tree supports.
-- `swamp/swamp-puddle`: Puddle beds retain their current terrain.
+- `swamp/swamp-puddle`: Puddle beds keep their height-based terrain.
 
 ## Overworld treatment
 

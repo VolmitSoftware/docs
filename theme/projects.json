@@ -54,6 +54,10 @@
                 "href": "/iris/06-worlds-lifecycle"
               },
               {
+                "title": "Uninstalling Iris",
+                "href": "/iris/06b-uninstalling"
+              },
+              {
                 "title": "Pregeneration",
                 "href": "/iris/07-pregeneration"
               },
@@ -887,10 +891,6 @@
                 "href": "/foundation/04-operations-safety"
               },
               {
-                "title": "Feature audit and priorities",
-                "href": "/foundation/04-feature-audit"
-              },
-              {
                 "title": "Integrations and service APIs",
                 "href": "/foundation/05-integrations-api"
               },
@@ -1021,10 +1021,6 @@
                 "href": "/rift/06-destinations"
               },
               {
-                "title": "Feature audit and roadmap",
-                "href": "/rift/07-feature-audit-roadmap"
-              },
-              {
                 "title": "Integrations and developer reference",
                 "href": "/rift/99-integration-api"
               },
@@ -1084,10 +1080,6 @@
                 "href": "/shapedportals/04-architecture-limits"
               },
               {
-                "title": "Feature map",
-                "href": "/shapedportals/05-feature-map"
-              },
-              {
                 "title": "Languages",
                 "href": "/languages"
               }
@@ -1112,10 +1104,6 @@
           {
             "title": "",
             "links": [
-              {
-                "title": "Feature checklist",
-                "href": "/skyprime/15-feature-checklist"
-              },
               {
                 "title": "Installation and configuration",
                 "href": "/skyprime/01-installation-configuration"
@@ -1173,10 +1161,6 @@
               {
                 "title": "Operations and recovery",
                 "href": "/skyprime/04-operations-recovery"
-              },
-              {
-                "title": "Feature map and roadmap",
-                "href": "/skyprime/07-feature-map"
               },
               {
                 "title": "Placeholders and API",
@@ -1289,10 +1273,6 @@
               {
                 "title": "Gestures and operations",
                 "href": "/gamemodeswitcher/03-gestures-operations"
-              },
-              {
-                "title": "Features and roadmap",
-                "href": "/gamemodeswitcher/04-feature-map"
               },
               {
                 "title": "Languages",
@@ -1433,7 +1413,7 @@
                 "href": "/volmlib/api/diagnostics"
               },
               {
-                "title": "GitHub release checks",
+                "title": "Update notifications",
                 "href": "/volmlib/api/github-releases"
               },
               {

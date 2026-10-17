@@ -2,7 +2,7 @@
 title: Static - Installation and configuration
 description: Runtime files, editable settings, and tracking filters
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: static, configuration
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -19,7 +19,7 @@ Install `Static.jar` in `plugins/` and restart the server. Static requires Minec
 | Config file | `plugins/Static/config.toml` |
 | Required plugins | None. No database either |
 
-Static rejects Minecraft versions earlier than 26.1 and versions 26.4 or newer before starting its services. Use Java 25 or newer for the server process. See [compatibility and verification](/static/04-compatibility-operations) for the testing status.
+Static rejects Minecraft versions earlier than 26.1 and versions 26.4 or newer before starting its services. Use Java 25 or newer for the server process.
 
 The plugin directory contains:
 
@@ -70,9 +70,25 @@ If a required library cannot download or load, Static does not enable. Check the
 
 An invalid file keeps the last valid settings active. Settings for [ranking qualification and details](/static/03-statistics), [history retention](/static/05-history-records), [milestones and seasons](/static/06-milestones-seasons), and [web access](/static/07-dashboard-privacy) are described on their feature pages.
 
-The release checker uses `VolmitSoftware/Static`. bStats uses ID `34591` and respects its global opt-out. Reporting remains off by default. Existing configuration files that explicitly set the old ID `0` keep that value; set `general.bstatsPluginId=34591` before enabling metrics. These settings apply through hot reload.
+The release checker uses `VolmitSoftware/Static`. bStats uses ID `34591` and respects its global opt-out. Reporting is off by default. These settings apply through hot reload.
 
 > Back up `plugins/Static/storage/` with the server stopped. Do not edit its files while Static is running.
 {.is-warning}
+
+## Uninstalling
+
+Static keeps everything it records in `plugins/Static/`. It uses no database and does not write to worlds, items, or player data, so removing its folder removes all of its state.
+
+1. If you may want the statistics later, stop the server and copy `plugins/Static/storage/` and `config.toml` somewhere safe.
+2. Stop the server and delete `Static.jar` from `plugins/`.
+3. Delete `plugins/Static/`. It holds the configuration, installed languages and language choices, every recorded statistic and history under `storage/`, the dashboard access token, and diagnostic reports.
+4. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
+5. If you exposed the dashboard through a reverse proxy, remove that proxy route.
+6. Remove `%static_…%` placeholders from other plugins' configuration. Without Static, PlaceholderAPI leaves them unreplaced.
+
+> Deleting `plugins/Static/` permanently erases every player's statistics, sessions, personal bests, milestones, season results, and privacy choices. Back up `storage/` first if there is any chance you will need them.
+{.is-danger}
+
+To start fresh, stop the server, delete `plugins/Static/`, keep `Static.jar` in `plugins/`, and start the server. Static creates a new `config.toml` and English language file and starts with no recorded players. To clear all recorded player data but keep your settings and languages, delete only `plugins/Static/storage/`.
 
 [Commands and languages](/static/02-commands-languages) · [Statistics](/static/03-statistics)

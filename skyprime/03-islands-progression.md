@@ -2,7 +2,7 @@
 title: SkyPrime - Islands and progression
 description: Starter terrain, teams, protection, material value and internal credits
 published: true
-date: 2026-10-10T11:10:38.282Z
+date: 2026-10-17T00:00:00.000Z
 tags: skyprime, islands, protection, progression
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -36,7 +36,7 @@ Teammates with `ENVIRONMENT` can set `/sky time day`, `noon`, `night` or `midnig
 
 These controls change actual world time and weather, so gameplay that depends on daylight or rain uses the selected conditions. Each island's loaded dimensions receive its preferences. Other island worlds and the fallback world keep their own conditions. Refresh runs every 40 server ticks; at 20 TPS, changes apply within two seconds after the preference is saved. Newly loaded dimensions receive the persisted settings.
 
-Paper 26.1.1 build 29 has a fixed-time limitation: a restart test retained `NIGHT` but the native day timeline returned 13,086 instead of 13,000 ticks. Paper subsequently [fixed per-world clocks](https://github.com/PaperMC/Paper/pull/13814). On Paper 26.2 build 123 with default clock configuration, a Normal island world's native and Bukkit clocks both remained at exactly 13,000 before and after restart, and World mode resumed natural progression. That probe did not cover optional Nether/End clocks. Use a Paper build containing that upstream fix. The menu shows the saved preference, not a live clock measurement.
+Exact fixed time across restarts requires a Paper build that includes the upstream [per-world clock fix](https://github.com/PaperMC/Paper/pull/13814). The menu shows the saved preference, not a live clock measurement.
 
 Both preferences default to `world`. `/sky time world` enables the natural day cycle from the world's current time. `/sky weather world` enables natural weather changes and releases the previous lock durations. SkyPrime preserves an initially natural world's current time and weather. Leaving, disconnecting or shutting down does not reset the world settings. Preferences persist in `storage/environment.json`, independently of island terrain.
 
@@ -90,7 +90,7 @@ A new role allows no actions. Its exact allowlist replaces the default member ac
 
 The GUI confirms permission edits, assignments and deletion and rechecks its displayed island, roles and membership. Explicit role commands apply directly. For example, `/sky roles create builder`, `/sky roles permission builder BUILD true`, then `/sky role <player> builder` grants building without the other default member actions.
 
-Bans, active-island state, storage health and ordinary target restrictions still apply. `FLAGS` cannot enable a public gameplay action the actor lacks, and `GUESTS` cannot grant actions beyond the actor’s own permissions. Invitations and temporary co-op grants lose authority when their issuer loses the required permissions. Permanent trusted grants retain their existing permanent semantics. Entry remains governed by visitor policy; a custom team role does not turn a teammate into a visitor.
+Bans, active-island state, storage health and ordinary target restrictions still apply. `FLAGS` cannot enable a public gameplay action the actor lacks, and `GUESTS` cannot grant actions beyond the actor’s own permissions. Invitations and temporary co-op grants lose authority when their issuer loses the required permissions. Permanent trusted grants remain in effect. Entry remains governed by visitor policy; a custom team role does not turn a teammate into a visitor.
 
 ## Island directory
 
@@ -110,7 +110,7 @@ Search opens a private chat prompt that expires after 60 seconds; type `cancel` 
 | `ALLOWLIST` | Team members and players with current trust, co-op or visit-only allowlist access |
 | `CLOSED` | Team members only |
 
-Bans override guest and allowlist access. Existing administrative bypass remains available. The allowlist grants entry only; it does not add building, container or other action permissions. Removing someone from the allowlist removes that source of access, but another valid grant or public access may still admit them. Banning a listed player retains the list entry while denying access, so unbanning can restore it. At most 256 players can be listed.
+Bans override guest and allowlist access. Administrative bypass still applies. The allowlist grants entry only; it does not add building, container or other action permissions. Removing someone from the allowlist removes that source of access, but another valid grant or public access may still admit them. Banning a listed player retains the list entry while denying access, so unbanning can restore it. At most 256 players can be listed.
 
 The visitor limit accepts 0–1000, with zero meaning unlimited. It counts nonteam visitors, including trusted and co-op guests, across all three island dimensions together. Moving between dimensions does not create a second visitor. Lowering the limit prevents new arrivals without evicting current visitors solely because the island is over capacity. Revoking entry access removes affected current visitors. Directory results and travel still recheck current access.
 
@@ -178,7 +178,7 @@ Daily periods begin at 00:00 UTC and weekly periods begin Monday at 00:00 UTC, s
 
 A generator block only counts toward a mission once. Blocks you placed, or moved with a piston, do not count, and neither does anything done in creative or spectator mode. Newly formed output qualifies again after its chunk reloads.
 
-The 17 defaults include three inventory checkpoints, eight daily missions, five weekly missions and a one-time wolf-taming mission. Original daily missions cover generator mining, wheat harvests, cod fishing, zombie kills and bread crafting. Added defaults reward breeding four cows (300 credits, 16 wheat, 50 XP), taming one wolf (500 credits, eight bones, 100 XP), shearing eight sheep (250 credits, two iron ingots, 50 XP) and extracting 16 iron ingots (350 credits, eight coal, 75 XP). Daily and weekly objectives may advance together. Operators can change definitions in `config/missions.toml`.
+The 17 defaults include three inventory checkpoints, eight daily missions, five weekly missions and a one-time wolf-taming mission. They cover generator mining, wheat harvests, cod fishing, zombie kills and bread crafting, plus breeding four cows (300 credits, 16 wheat, 50 XP), taming one wolf (500 credits, eight bones, 100 XP), shearing eight sheep (250 credits, two iron ingots, 50 XP) and extracting 16 iron ingots (350 credits, eight coal, 75 XP). Daily and weekly objectives may advance together. Operators can change definitions in `config/missions.toml`.
 
 ### Personal mission rewards
 
@@ -202,7 +202,7 @@ The Nether and End have separate island-wide unlocks. `/sky dimensions` shows ea
 
 Nether defaults to island level 10 and 5,000 island credits; End defaults to level 50 and 15,000 credits. Default mission requirement lists are empty. Operators must also enable the corresponding global world option. When an unlock is required, meeting the requirements does not spend credits or open access until a teammate with `DIMENSIONS` confirms the quote within 30 seconds. The confirmation rechecks the island, authority, current balance, requirements and complete quoted configuration. The bank debit and unlock are saved together, preventing repeated confirmations from purchasing the same access twice.
 
-Purchased unlocks survive value decreases, reset, ownership transfer and restart. A terrain reset still rebuilds the worlds. Setting `required = false` opens a globally enabled dimension without recording a purchase; turning the requirement back on can therefore close access for islands that never purchased it. A required zero-cost unlock remains an explicit claim. Unlocking does not generate or load a dimension; first admitted travel uses the retained starter as before.
+Purchased unlocks survive value decreases, reset, ownership transfer and restart. A terrain reset still rebuilds the worlds. Setting `required = false` opens a globally enabled dimension without recording a purchase; turning the requirement back on can therefore close access for islands that never purchased it. A required zero-cost unlock remains an explicit claim. Unlocking does not generate or load a dimension; first admitted travel generates it from the retained starter.
 
 Travel commands, portals, homes, reconnects and external teleports enforce availability for the destination island, including visitors. Bypass permissions do not bypass unlock policy. Relocking preserves world files, saved homes and value accounting. Players already in an unavailable dimension are removed through movement checks or the periodic access check within five seconds. A locked reconnect destination attempts the island's safe Normal home, then the configured external fallback if rescue cannot succeed. Respawn into a locked managed world is redirected outside before safe rescue.
 
@@ -309,7 +309,7 @@ Tracked block changes include placement, breaking, growth, formation, spread, fa
 
 ## Favorites and ratings
 
-Save accessible islands through `/sky favorites` or directory details, and rate another publicly open island after a continuous visit. Ratings use one to five stars with configurable visit time, same-island cooldown and a UTC daily change limit. Current teammates cannot contribute to their own island's ratings. Popularity browsing uses a weighted score with a minimum rating count; existing votes remain separate. See [Favorites and ratings](/skyprime/11-favorites-ratings) for commands, limits and persistence.
+Save accessible islands through `/sky favorites` or directory details, and rate another publicly open island after a continuous visit. Ratings use one to five stars with configurable visit time, same-island cooldown and a UTC daily change limit. Current teammates cannot contribute to their own island's ratings. Popularity browsing uses a weighted score with a minimum rating count; votes remain separate. See [Favorites and ratings](/skyprime/11-favorites-ratings) for commands, limits and persistence.
 
 ## Island activity history
 

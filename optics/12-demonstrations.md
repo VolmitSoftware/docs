@@ -2,7 +2,7 @@
 title: "Optics Demonstrations"
 description: "Run the standalone Optics scene plugin and compare first-person renderer recordings"
 published: true
-date: 2026-10-11T18:30:33.446Z
+date: 2026-10-17T00:00:00.000Z
 tags: "optics, api, demos"
 editor: markdown
 dateCreated: 2026-10-11T16:20:00.000Z
@@ -386,3 +386,18 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <video src="/optics-assets/demos/26.3/masked-crossing-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
+
+## Uninstalling
+
+OpticsDemo keeps its configuration in `plugins/OpticsDemo/` and its stage in the `optics_demo_stage` world. It stores nothing on players, items, or other worlds, and its scene displays are not saved.
+
+1. End every active session with `/opticsdemo stop [player]`. Stopping restores each player's game mode, flight, gravity, invulnerability, time, weather, and location. A session also ends when its player leaves or the server stops.
+2. Stop the server and delete the OpticsDemo jar from `plugins/`.
+3. Delete `plugins/OpticsDemo/`, which records the stage world it owns.
+4. Delete the `optics_demo_stage/` world folder in the server's world container, which is the server folder by default.
+5. Players who installed the Wormholes client jar only for Crisp rendering can remove it; see [Uninstalling Wormholes](/wormholes/01-installation-configuration#uninstalling).
+
+> Deleting `optics_demo_stage/` permanently removes the stage world. Back it up first if you changed it.
+{.is-warning}
+
+To start fresh, delete `plugins/OpticsDemo/` and `optics_demo_stage/` together while the server is stopped. OpticsDemo refuses to use an existing `optics_demo_stage` folder that its configuration does not record. The next `/opticsdemo setup` creates a new stage.

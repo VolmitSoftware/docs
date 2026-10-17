@@ -2,7 +2,7 @@
 title: "Procedural Trees"
 description: "Iris documentation: Procedural Trees"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -191,7 +191,7 @@ Targets: `BRANCH_TIP`, `TRUNK_SURFACE`, `CANOPY_TOP`, `CANOPY_BOTTOM`, `TRUNK_BA
 
 ## Poplar biomes
 
-Overworld 4011 and Underworld 1013 include four naturally selected poplar biome pairs. Each biome defines its authored objects, procedural trees, fallen trunks, stumps, ground cover, climate, and ecology directly.
+The built-in Overworld and Underworld packs include four naturally selected poplar biome pairs. Each biome defines its authored objects, procedural trees, fallen trunks, stumps, ground cover, climate, and ecology directly.
 
 | Biome key | Selected within | Overworld foliage | Underworld counterpart |
 |-----------|-----------------|-------------------|------------------------|
@@ -202,14 +202,14 @@ Overworld 4011 and Underworld 1013 include four naturally selected poplar biome 
 
 The paired biomes share terrain, selection settings, object shapes, tree seeds, roots, and rotations. Underworld supplies Nether ground materials, plants, particles, and mobs. Its shroomlights replace shelf mushrooms, and its wart canopies have no leaf-decay properties.
 
-Find a biome in an updated Iris world:
+Find a biome in an Iris world:
 
 ```none
 /iris find biome temperate/golden-poplar-grove
 /iris what biome
 ```
 
-Overworld poplar blocks, red shrubs, and shelf mushrooms require Minecraft 26.3. Existing chunks retain their generated content. Install the updated pack and generate new chunks to find the new biomes.
+Overworld poplar blocks, red shrubs, and shelf mushrooms require Minecraft 26.3.
 
 The biome files contain placement density and chance settings under `objects` and `proceduralObjects.trees`. Edit those entries to change the mix of authored and procedural trees. Each biome includes young, mature, leaning, and forked procedural trees, plus authored living trees and deadwood.
 

@@ -2,7 +2,7 @@
 title: "Features - Maps & Overlays"
 description: "Configure heatmaps, pie maps, list maps, and pressure overlays"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ React Web shows the selected heatmap on a pan-and-zoom coordinate plane. Close v
 
 Selecting a square shows its center as `world X Z`; grouped cells use the center of the represented area. Admins can choose an online player and confirm a safe teleport inside that chunk. The destination may load or generate the chunk.
 
-The coordinate-grid API is a clean break. Detail queries use `centerChunkX`, `centerChunkZ`, and `radius`; the former ambiguous `centerX` and `centerZ` parameters are not accepted. `radius` is bounded to 1–1,875,000 chunks, and invalid requests receive HTTP 400 instead of being silently clamped.
+Coordinate-grid detail queries use `centerChunkX`, `centerChunkZ`, and `radius`. `radius` is bounded to 1–1,875,000 chunks, and invalid requests receive HTTP 400.
 
 ## Shared pie settings
 

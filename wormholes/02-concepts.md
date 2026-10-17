@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Portal types, projection, tunnels, travel, and doors"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -26,7 +26,7 @@ RTP cannot be a tunnel destination. If you switch a portal to `RTP` or away
 from `RTP`, Wormholes force-closes it and clears the tunnel. The portal stays
 closed until RTP is READY or a new tunnel is set. There is no RTP or Gateway
 rune product. Wand box construction creates `PORTAL`; Wormhole Runes create
-`WORMHOLE`; already-placed legacy Portal Runes can still create `PORTAL`.
+`WORMHOLE`; Portal Runes already placed in a world create `PORTAL`.
 Choose `GATEWAY` or `RTP` later in the type menu.
 
 ## Projection mode vs render mode

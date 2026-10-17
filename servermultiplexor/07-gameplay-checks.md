@@ -2,7 +2,7 @@
 title: "07 - Gameplay checks"
 description: "Mineflayer setup, scenarios, viewer feeds, reports, and scenario APIs"
 published: true
-date: 2026-10-09T12:36:04.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "servermultiplexor, testing"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -20,13 +20,13 @@ The harness package lock is checked in. Setup and launcher installs use `npm ci`
 
 The harness pins [Mineflayer commit `f603758e`](https://github.com/PrismarineJS/mineflayer/commit/f603758e4228a7e61d1337526e6066e79308b976), which identifies itself as version 4.38.0 and requires Node 22+. Check a specific target with `gameplay doctor --version <version> --json`, then verify it with an actual connection and scenario assertions. Gameplay results prove protocol-visible behavior. They do not prove client rendering, resource packs, sound, camera behavior, client mods, or human feel.
 
-As checked on October 9, 2026, the installed data resolves 1.21.11 to protocol 774 and 26.1.2 to 26.1/protocol 775. Actual gameplay checks have passed on those targets. Neither the installed data nor the checked upstream data provides usable 26.2/26.3 definitions; newer-version metadata alone does not supply packet codecs. Use a compatible isolated target until the protocol dependencies support the desired version.
+The installed data resolves 1.21.11 to protocol 774 and 26.1.2 to 26.1/protocol 775. It provides no usable 26.2/26.3 definitions; newer-version metadata alone does not supply packet codecs. Use an isolated target on a version the installed data supports.
 
 ### Target-version diagnostics
 
 Without `--version`, doctor checks only Node and the pinned dependency installation. With a target version, it also resolves Minecraft data, checks Mineflayer's tested-version list and constructs the client packet serializers/deserializers for handshaking, status, login, configuration when present, and play. The check uses the same packet overrides as the gameplay runner. It does not open a connection, start a server or install dependencies.
 
-The JSON result retains `status` and `checks`, adding `dependencyStatus` and `protocolCapability`. The latter records the requested/resolved versions, protocol number, package versions, available data, Mineflayer test declaration, individual codec results and errors. An unavailable target can therefore report healthy dependencies while failing the protocol check. Dependency-loading or lookup failures remain structured errors and set `dependencyFailure` to true.
+The JSON result contains `status`, `checks`, `dependencyStatus`, and `protocolCapability`. `protocolCapability` records the requested/resolved versions, protocol number, package versions, available data, Mineflayer test declaration, individual codec results and errors. An unavailable target can therefore report healthy dependencies while failing the protocol check. Dependency-loading or lookup failures remain structured errors and set `dependencyFailure` to true.
 
 Exit code 0 means all requested offline checks passed; 1 means an installation or target-capability check failed. The Node command returns 2 for invalid arguments or an unhandled command failure, while argument errors caught earlier by the launcher, such as a missing `--version` value, return 1. A supported result is an offline capability check, not proof of login or gameplay.
 
@@ -54,7 +54,7 @@ The built-in `connect` scenario validates login, spawn, position, health, and co
 
 ## Reports and feature coverage
 
-Scenario reports record the installed plugin jar filenames and SHA-256 hashes, the scenario source hash, and the observed server version. To inspect Volmit feature coverage, run `node MultiplexorApp/tool/mineflayer/src/coverage.mjs consumers/plugin-consumers/state/gameplay-tests`. It reads the feature manifest in `tool/mineflayer/suites/volmit.json` and emits JSON with passed, failed, untested, or unsupported features. A second argument selects another manifest. Only the latest completed report for each feature and exact recorded server/plugin build set counts; failures on another build remain visible. Older reports without jar hashes have `plugins: null` and do not establish coverage for a known build. Missing scenarios remain untested; the manifest is a coverage target, not a claim that every listed scenario exists or passes.
+Scenario reports record the installed plugin jar filenames and SHA-256 hashes, the scenario source hash, and the observed server version. To inspect Volmit feature coverage, run `node MultiplexorApp/tool/mineflayer/src/coverage.mjs consumers/plugin-consumers/state/gameplay-tests`. It reads the feature manifest in `tool/mineflayer/suites/volmit.json` and emits JSON with passed, failed, untested, or unsupported features. A second argument selects another manifest. Only the latest completed report for each feature and exact recorded server/plugin build set counts; failures on another build remain visible. Reports without jar hashes have `plugins: null` and do not establish coverage for a known build. Missing scenarios remain untested; the manifest is a coverage target, not a claim that every listed scenario exists or passes.
 
 The [Volmit suite guide](/servermultiplexor/11-scenario-suites) maps plugin features to executable scenarios, fixture requirements, and restart phases.
 

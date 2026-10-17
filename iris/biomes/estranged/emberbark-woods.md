@@ -2,7 +2,7 @@
 title: "Biome Atlas — Emberbark Woods"
 description: "Iris biome atlas entry for estranged/emberbark-woods in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -62,7 +62,7 @@ Underworld keeps the terrain links but uses its Nether derivative, materials, ob
 
 ### Emberbark Poplar Grove
 
-`estranged/emberbark-poplar-grove` is a complete child biome introduced in Overworld and Underworld. Its Underworld display name is **Warpedcap Hyphae Grove**. The existing `estranged/emberbark-woods` region memberships make it naturally reachable.
+`estranged/emberbark-poplar-grove` is a complete child biome in Overworld and Underworld. Its Underworld display name is **Warpedcap Hyphae Grove**. The `estranged/emberbark-woods` region memberships make it naturally reachable.
 
 Its rarity is `3`. In the immediate parent selection it receives `1` of `2` slots (50.00%). Both packs retain the same child-list order and use a shrink factor of `2`. These weights describe selection slots, not a guaranteed percentage of terrain area.
 

@@ -2,7 +2,7 @@
 title: "Rift: World Policies"
 description: "World settings, player limits, travel, join placement, and respawn"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "rift, world-policies, permissions, respawn"
 editor: markdown
 dateCreated: 2026-10-09T00:00:00.000Z
@@ -90,7 +90,7 @@ Cancelled transfers release their reservations. A transfer started by another pl
 
 `travelEntry=DENY` blocks travel into the world from another world. `travelExit=DENY` blocks travel out of it. Both apply to cross-world teleports and portals, including travel initiated by other plugins. Same-world teleports are unchanged. `ALLOW` and `INHERIT` impose no Rift travel restriction; neither overrides access permissions, capacity, or another plugin's cancellation.
 
-`rift.travel.bypass` bypasses entry/exit restrictions, not capacity or access permissions. Both new bypass permissions default to false and are not granted by `rift.admin`. Operators must receive them explicitly. Departure restrictions do not prevent respawn or login recovery.
+`rift.travel.bypass` bypasses entry/exit restrictions, not capacity or access permissions. Both bypass permissions default to false and are not granted by `rift.admin`. Operators must receive them explicitly. Departure restrictions do not prevent respawn or login recovery.
 
 The editor adjusts the limit by 1 with left/right click, or 10 with shift-click. Zero is unlimited; the drop-item key resets it to zero. Entry and exit use choice menus with `INHERIT` as the default.
 
@@ -104,7 +104,7 @@ An unavailable first-join destination falls back to the login destination. When 
 
 Rift selects the requested spawn during connection configuration and checks player permissions and capacity on the player's owning thread at join. It respects the final location selected by later spawn handlers. Another plugin can cancel Rift's recovery teleport or disconnect; Rift does not force through those cancellations.
 
-The first-join and login editors list managed worlds, show the current destination and server default, and allow clearing the override with the default button or drop-item key. Existing custom spawn controls determine the destination's spawn.
+The first-join and login editors list managed worlds, show the current destination and server default, and allow clearing the override with the default button or drop-item key. The destination world's custom spawn settings determine where the player arrives.
 
 ## Access and respawn
 

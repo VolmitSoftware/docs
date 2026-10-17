@@ -2,7 +2,7 @@
 title: "Samplers & Metrics"
 description: "Metric IDs, measurement units, availability, and history behavior"
 published: true
-date: 2026-10-13T16:46:23.315Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -539,8 +539,6 @@ Package-scanned sampler configuration lives at `plugins/React/sampler/<id>.toml`
 | `redstone-burst-rate` | `windowMS` | `60000` | Rolling redstone-burst window. |
 | `ticks-per-second` | `countUpTickTimeThresholdMS` | `3000` | Stall duration before formatted output changes from TPS to elapsed time; clamped to at least 1 ms. |
 | `fluid-event-span`, `hopper-event-span`, `physics-event-span`, `redstone-event-span` | `tickAverage` | `15` | Within-tick event-span samples in the rolling mean; clamped to at least one. These spans measure the elapsed wall time between the first and last matching event in a tick, not engine subsystem CPU time. |
-
-The event-span ids and `world-save-event-interval` are hard replacements for the former tick-time and save-duration ids. Old sampler TOML filenames and saved monitor ids are not read or migrated.
 
 ## Convenience PlaceholderAPI keys
 

@@ -2,7 +2,7 @@
 title: "Shared action bars, titles, and sidebars"
 description: "Coordinate player overlays between participating Volmit plugins"
 published: true
-date: 2026-10-07T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "volmlib, api, bukkit, hud, folia"
 editor: markdown
 dateCreated: 2026-09-10T20:57:00.000Z
@@ -18,7 +18,7 @@ Create a `HudActionBar(plugin)` and call `publish(player, segment)`. A `HudSegme
 
 ## Boss bars
 
-Create a `HudBossBarLane(plugin)` and call `show(player, laneId, options)`. `HudBossBarLane.Options` contains priority, title, progress, color, style, stale lifetime in milliseconds, maximum concurrent bars, and an immutable set of Bukkit `BarFlag` values. Supported flags are `DARKEN_SKY`, `PLAY_BOSS_MUSIC`, and `CREATE_FOG`; a new options value updates existing flags and removes omitted flags. The earlier `show` signatures use an empty flag set.
+Create a `HudBossBarLane(plugin)` and call `show(player, laneId, options)`. `HudBossBarLane.Options` contains priority, title, progress, color, style, stale lifetime in milliseconds, maximum concurrent bars, and an immutable set of Bukkit `BarFlag` values. Supported flags are `DARKEN_SKY`, `PLAY_BOSS_MUSIC`, and `CREATE_FOG`; a new options value updates existing flags and removes omitted flags. Other `show` overloads use an empty flag set.
 
 Keep independent bars under distinct lane IDs. `show` returns whether the shared priority decision grants the bar; `hide(player, laneId)` withdraws only that lane, and `hideAll(player)` withdraws the plugin's lanes for the player. Native client layout determines stacking and appearance.
 

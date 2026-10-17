@@ -2,7 +2,7 @@
 title: "Multiplexor: Installation and updates"
 description: "Requirements, launchers, command syntax, and executable updates"
 published: true
-date: 2026-09-25T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: servermultiplexor, installation
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -120,7 +120,7 @@ Press **u** or select **CHECK FOR UPDATE** at the dashboard's bottom right to ch
 | `update status` | Show version, executable path, automatic-update setting, and last check |
 | `update auto [on\|off]` | Read or change automatic updates for this executable |
 
-These commands run before workspace initialization and need neither a workspace nor Dart. Only releases built with `tool/build_exe.dart --version <semver>` can install updates. Source runs and ordinary development builds compile local source instead. Older downloads need one manual replacement with an updater-enabled release. Installation requires a writable executable directory and does not request elevation.
+These commands run before workspace initialization and need neither a workspace nor Dart. Only releases built with `tool/build_exe.dart --version <semver>` can install updates. Source runs and ordinary development builds compile local source instead. Installation requires a writable executable directory and does not request elevation.
 
 Interactive launches with no arguments, `wizard`, or `runtime watch` check on first use, then at most once every six hours after a successful check. Updates select a newer stable semantic version for macOS x64/ARM64, Linux x64/ARM64, or Windows x64; they never downgrade or choose a prerelease. Downloads must pass `SHA256SUMS`, archive, and executable-version checks.
 

@@ -1,8 +1,8 @@
 ---
 title: "Shaped Portals: Installation and configuration"
-description: "Install the plugin, use the in-game editor, and find every setting"
+description: "Install the plugin, use the in-game editor, find every setting, and uninstall"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -16,6 +16,7 @@ Install the plugin, open its in-game editor, or edit the TOML file directly. Eve
 - [In-game editor](#in-game-editor)
 - [Settings](#settings)
 - [Languages](#language-files)
+- [Uninstall](#uninstalling)
 {.grid-list}
 
 ## Install
@@ -28,7 +29,7 @@ Install one ShapedPortals distribution jar. The build selects the smaller ordina
 4. Run `/sp status`, then `/sp config` in-game to review the settings.
 5. [Build your first portal](/shapedportals/00-overview#build-your-first-portal).
 
-The current plugin supports Bukkit-compatible Minecraft 26.1 through 26.3 servers on Java 25. See [Compatibility](/shapedportals/03-compatibility-operations) for Java and Folia requirements.
+Shaped Portals supports Bukkit-compatible Minecraft 26.1 through 26.3 servers on Java 25. See [Compatibility](/shapedportals/03-compatibility-operations) for Java and Folia requirements.
 
 The first start downloads Gson, TOML, and Adventure before enabling the plugin. SlimJar relocates and caches them in `plugins/ShapedPortals/.libs/`. Keep this directory when moving the installation to an offline server.
 
@@ -88,7 +89,7 @@ Changes apply when the configuration loads. Turning off creation does not remove
 | `general.language` | `"en_US"` | Selects the directly editable `languages/<locale>.toml`; path characters are rejected |
 | `general.requireCreatePermission` | `true` | Requires `shapedportals.create` from players creating Nether or End portals |
 | `general.failureFeedback` | `true` | Explains recognized rejected candidates; unrelated fires and incomplete End frames are ignored silently |
-| `general.updateNotifications` | `true` | Registers GitHub checks with VolmLib for combined join notices and `/volmit plugins updates`; false disables ShapedPortals checks |
+| `general.updateNotifications` | `true` | Checks GitHub releases and notifies eligible players on join; false disables the checks |
 
 {.dense}
 
@@ -205,7 +206,38 @@ Reports contain server, plugin, configuration, portal, performance, and system d
 
 `general.language` selects the server default. Players can keep a personal language. English is built in; other repository locales install on demand from the revision in the language-source manifest. Installed files remain editable and are never automatically replaced. Missing or invalid entries use English.
 
-Edit `runtime.prefix` to change the displayed plugin name and formatting, or remove `{prefix}` from an individual message to hide its label. See [Languages](/languages) for selection, editing, and reload behavior. The shared update summary currently uses English; it is separate from Shaped Portals' editable messages.
+Edit `runtime.prefix` to change the displayed plugin name and formatting, or remove `{prefix}` from an individual message to hide its label. See [Languages](/languages) for selection, editing, and reload behavior.
+
+## Uninstalling
+
+Shaped Portals keeps its settings, languages, and portal records in `plugins/ShapedPortals/`. The portal blocks it placed stay in the world after removal.
+
+> Deleting `plugins/ShapedPortals/` permanently erases the portal records and settings. Back up the folder and your worlds with the server stopped first.
+{.is-warning}
+
+While Shaped Portals is still installed, remove any shaped portals you do not want to keep:
+
+1. Run `/sp portals` to list them, and `/sp teleport <UUID>` to visit one.
+2. Break one block of the portal's frame. Shaped Portals clears the portal surface and deletes its record. End Portal Frames can only be broken in Creative mode.
+
+This needs `integrity.enabled = true`, the default, and the portal's chunks loaded.
+
+Then remove it:
+
+1. Stop the server and delete the ShapedPortals jar from `plugins/`.
+2. Delete `plugins/ShapedPortals/`, including `portals.json`, the downloaded libraries in `.libs/`, and the runtime cache.
+3. If you installed the [React pack](/shapedportals/03-compatibility-operations#react-plugin-api-pack), delete `plugins/React/plugin-apis/shapedportals-runtime.toml` and run `/react plugin-api reload`.
+4. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
+
+Shaped Portals stores no data on players, items, or entities. These remain in the world:
+
+| Leftover | After removal | Clean up |
+|---|---|---|
+| Shaped Nether and End portal surfaces | Ordinary Nether portal and End portal blocks that still send players to the Nether or the End. Nothing repairs them | Replace them with air, for example `/fill <from> <to> minecraft:air replace minecraft:nether_portal`, or `minecraft:end_portal` for an End surface |
+| Nether shapes that Wormholes accepted | Wormholes portals. Shaped Portals keeps no record of them | Manage them in [Wormholes](/wormholes/03-building-portals#vanilla-nether-and-end-portals) |
+| Frames and destination portals | Ordinary blocks and vanilla portals | Inert |
+
+To start fresh, stop the server, delete `plugins/ShapedPortals/`, keep the jar in `plugins/`, and start the server. Shaped Portals writes a default `config.toml` and `languages/en_US.toml` and downloads its libraries again. It does not register portal surfaces that are already in the world.
 
 ## Related pages
 

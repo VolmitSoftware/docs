@@ -2,7 +2,7 @@
 title: "Procedural Objects"
 description: "Iris documentation: Procedural Objects"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -232,8 +232,6 @@ Snippet key: `ruin-decorator`.
 |-------|--------------|
 | `treeTypes` | Bukkit `TreeType` names this placement replaces, matched case-insensitively |
 | `sizes` | `IrisTreeSize` entries (`width` by `depth`) describing the sapling footprints it applies to. Width and depth are matched either way round, so a 1x2 entry also matches 2x1 |
-| `anyTree` | Removed. It was never read at runtime. Matching is by `treeTypes` only |
-| `anySize` | Removed. It was never read at runtime. Matching is by `sizes` only |
 
 Vanilla sapling growth continues until this is on. The enable recipe is [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) Task 4.
 

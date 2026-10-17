@@ -2,7 +2,7 @@
 title: "Shared diagnostic reports"
 description: "Debug dump commands, permissions, report contents, and the Bukkit diagnostics API"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "volmlib, api, diagnostics"
 editor: markdown
 dateCreated: 2026-09-03T04:58:11.006Z
@@ -28,7 +28,7 @@ For commands exposing an `upload` argument, append `upload=false` to keep the re
 | `/sp debug dump [upload=true]` | `shapedportals.debug` |
 | `/wormholes debug dump [upload=true]` | `wormholes.debugdump` |
 
-These commands use the Bukkit service; Iris's mod-loader command trees do not expose this service. Existing gameplay debug toggles and debug subcommands remain separate from report generation.
+These commands use the Bukkit service; Iris's mod-loader command trees do not expose this service. Gameplay debug toggles and other debug subcommands are separate from report generation.
 
 `/gilt debug` always saves a local report and has no upload argument. A shared request for Gilt can upload only when its `debugUpload` setting is enabled; that setting defaults to false.
 
@@ -77,7 +77,7 @@ The entry point is `art.arcane.volmlib.util.diagnostics.BukkitDebugDump`.
 
 Creation registers an `OP` permission when the plugin descriptor does not declare one, then publishes the provider through Bukkit's services registry. The service enforces the dedicated permission. Plugins may keep their own report command.
 
-Explicit permission nodes must be nonblank and contain no whitespace. The same node controls direct requests and the shared provider, and remains in effect when the presentation theme changes. Existing two- and three-argument `Options` constructors retain automatic permission selection.
+Explicit permission nodes must be nonblank and contain no whitespace. The same node controls direct requests and the shared provider, and remains in effect when the presentation theme changes. The two- and three-argument `Options` constructors use automatic permission selection.
 
 The text resolver runs with the requesting player's language context. Component-based language services can provide their render method directly; plain-text services wrap their resolved text with `ComponentText.literal(...)`. The theme fills absent colors while retaining explicit formatting. Cross-plugin aggregate results export plain notice and error text alongside exact paths and URLs.
 

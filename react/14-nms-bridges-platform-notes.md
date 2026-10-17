@@ -2,14 +2,14 @@
 title: "NMS Bridges & Platform Notes"
 description: "Bridge requirements and platform limits for React features"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Some React features need a bridge for the running Minecraft version. If no compatible bridge is available, those features stay passive or measurement-only.
 
-Minecraft 26.1.2, 26.2, and 26.3 have bundled bridges. The server version selects the matching bridge automatically. Furnace and brewing batching, hopper coalescing, falling-block handling, and explosion batching remain available on 26.3.
+Minecraft 26.1.2, 26.2, and 26.3 have bundled bridges. The server version selects the matching bridge automatically. Furnace and brewing batching, hopper coalescing, falling-block handling, and explosion batching are available on 26.3.
 
 ## Check bridge status
 

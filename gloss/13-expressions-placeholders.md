@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -313,8 +313,8 @@ static renders.
 `papi(...)` and `papiNumber(...)` try PlaceholderAPI first. If the token stays unresolved, Gloss
 supplies native fallbacks for `player_name`, `player_ping`, `player_health`, `player_level`,
 `server_online`, `server_max_players` and `server_tps`, with the surrounding `%` optional. Other
-PAPI keys need a viewer or an explicit typed fallback. The former `react.tps` metric key resolves to
-the native `server.tps`; use `server.tps` directly in new content.
+PAPI keys need a viewer or an explicit typed fallback. The `react.tps` metric key resolves to
+the native `server.tps`.
 
 | Function | Result |
 |---|---|

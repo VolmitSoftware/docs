@@ -2,7 +2,7 @@
 title: "Rift: Integrations and Developer Reference"
 description: "Current shared services, generator support, and API boundaries"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "rift, api, integrations"
 editor: markdown
 dateCreated: 2026-10-09T00:00:00.000Z
@@ -48,12 +48,10 @@ Install PlaceholderAPI alongside Rift and restart the server. Rift registers its
 
 Append a logical world name to any `world_` field to query it explicitly, for example `%rift_world_loaded_lobby%` or `%rift_world_name_build_world%`. Matching is case-insensitive. Booleans return `true` or `false`. An unknown world or missing player context returns empty text; an unknown placeholder stays unresolved. An unmanaged world's generator can be empty because Rift has no saved generator setting.
 
-World values refresh every 20 server ticks while PlaceholderAPI is available. Requests read cached snapshots, not world files; filesystem presence follows Rift's background discovery. Current-world placeholders need an online player context. No player counts or policy values are exposed in this first set. `/rift debug dump upload=false` includes expansion registration state.
+World values refresh every 20 server ticks while PlaceholderAPI is available. Requests read cached snapshots, not world files; filesystem presence follows Rift's background discovery. Current-world placeholders need an online player context. Player counts and policy values are not exposed. `/rift debug dump upload=false` includes expansion registration state.
 
 ## Developer boundaries
 
-Treat Rift's internal classes and saved profile implementation as private. There are no supported `RiftWorldManager`, `RiftTeleportManager`, lifecycle-provider, economy, or Multiverse compatibility APIs in this release.
-
-A public API needs exact world identity, defined ownership, asynchronous completion, failure handling, and lifecycle events before other plugins can depend on it. Those requirements and optional React, backup, and pregeneration integrations are tracked in the [roadmap](/rift/07-feature-audit-roadmap).
+Treat Rift's internal classes and saved profile implementation as private. There are no supported `RiftWorldManager`, `RiftTeleportManager`, lifecycle-provider, economy, or Multiverse compatibility APIs.
 
 For builds and dependency packaging, see [Installation and compatibility](/rift/01-installation-compatibility).

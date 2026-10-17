@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-10-16T18:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -52,6 +52,7 @@ Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree f
 | Commands and permissions | Full `/iris` tree, Bukkit vs modded argument style | [04 - Commands & Permissions](/iris/04-commands-permissions) |
 | Pack layout | Roots, keys, snippets, generation history vs Studio | [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout) |
 | Worlds | create / update / load / unload / remove, main world, Folia, generation history | [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) |
+| Uninstalling | Removing Iris, its worlds, datapacks, and files; reinstalling from a clean state | [06b - Uninstalling Iris](/iris/06b-uninstalling) |
 | Pregeneration | Starting, pausing, stopping, and viewing jobs | [07 - Pregeneration](/iris/07-pregeneration) |
 | Localization | Locales, overrides, client lang | [08 - Localization](/iris/08-localization) |
 | PlaceholderAPI | `%iris_…%` keys and display formats | [09 - PlaceholderAPI](/iris/09-placeholderapi) |

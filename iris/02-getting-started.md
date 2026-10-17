@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Iris documentation: Getting Started"
 published: true
-date: 2026-10-15T23:30:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ Full command trees and permissions: [04 - Commands & Permissions](/iris/04-comma
 - A Java 25 server or mod instance running
 - Operator access on Bukkit (the `iris.all` permission), or permission level 2 / gamemaster on modded for anything that mutates state
 - The managed `overworld` and `underworld` packs present, or your own pack installed under the platform's packs directory
-- Any external datapacks declared by a custom pack installed through the platform-specific workflow. The current built-in Overworld and Underworld releases declare none
+- Any external datapacks declared by a custom pack installed through the platform-specific workflow. The built-in Overworld and Underworld packs declare none
 
 ## Command syntax
 
@@ -84,7 +84,7 @@ Stage each replacement, then restart once to apply them. Replacing `minecraft:ov
 
 #### Install the bundled Overworld and Nether pair
 
-On a Paper-family server with early plugin bootstrap, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. Plain Spigot cannot use this exact-slot path. The current built-in pair declares no external datapacks:
+On a Paper-family server with early plugin bootstrap, the built-in `overworld` and `underworld` packs can replace the two canonical vanilla slots. Plain Spigot cannot use this exact-slot path. The built-in pair declares no external datapacks:
 
 ```none
 /iris download pack=overworld
@@ -116,7 +116,7 @@ Alias `c`. You cannot pass `seed` without also passing `pack`.
 
 The `pack:dimension` form has to be **quoted** (for example, `"custom_pack:dimensions/sky"`) because Brigadier's unquoted string type does not accept a colon. Use a bare pack such as `overworld` when its dimension key matches its name.
 
-If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Modded `/iris datapack ingest` is only a stub, so place any external datapacks declared by a custom pack in this save's `datapacks/` directory yourself. Restart with the Iris pack and all of its declared imports present, then run create. The built-in Overworld and Underworld need no external archives.
+If the pack is not installed, create refuses without downloading anything. Install `overworld` or `underworld` with the matching `pack=` download command, or install another pack with `link=<zip-url>`. Modded `/iris datapack ingest` does not install datapacks, so place any external datapacks declared by a custom pack in this save's `datapacks/` directory yourself. Restart with the Iris pack and all of its declared imports present, then run create. The built-in Overworld and Underworld need no external archives.
 
 ```none
 /iris create myworld overworld 1337

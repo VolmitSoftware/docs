@@ -2,7 +2,7 @@
 title: "HiddenOre: Events"
 description: "HiddenOreBreakEvent and HiddenOreDropsEvent"
 published: true
-date: 2026-10-13T14:42:49.250Z
+date: 2026-10-17T00:00:00.000Z
 tags: "hiddenore, api"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -75,8 +75,8 @@ public void onHiddenOreBreak(HiddenOreBreakEvent event) {
 }
 ```
 
-A listener written against an older HiddenOre that assumed a non-null player or tool will throw on
-explosion rewards. Guard both before reading them.
+A listener that assumes a non-null player or tool throws on explosion rewards. Guard both before
+reading them.
 
 ## Threading
 

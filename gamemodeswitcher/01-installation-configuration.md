@@ -39,7 +39,7 @@ Click a boolean to toggle it. For numbers, left-click increases the value, right
 
 Press the drop-item key (Q by default) over a number to enter an exact value in private chat. Text values also use chat input; type `cancel` to stop. Server language opens the language picker. If someone changes the file after you open the editor, reopen it before saving.
 
-Missing settings use their defaults and appear in the editor. Saving one adds it to `config.toml`; upgrades leave the rest of your file intact. Saves show one prefixed change confirmation.
+Missing settings use their defaults and appear in the editor. Saving one adds it to `config.toml` and leaves the rest of your file intact. Saves show one prefixed change confirmation.
 
 Disabled Worlds opens a world picker. It lists every loaded world by its dimension key and folder name; click a world to turn switching off or back on there. Disabled worlds that are not loaded stay in the list until you click them to remove them.
 
@@ -112,7 +112,7 @@ The server default is `general.language`. Startup creates English locally. The o
 
 Catalogs cover English, Dutch, Finnish, French, German, Hebrew, Italian, Japanese, Korean, Lithuanian, Polish, Portuguese, Russian, Spanish, Turkish, Vietnamese, Simplified Chinese, and Traditional Chinese.
 
-Downloads are pinned to published revision `fe6047e14d87e10da3b45b6e196da741496979d8`; all 17 catalog URLs were verified on October 14. Some published messages lag behind the local catalogs. Missing entries and support messages with outdated variables use the current English text; installed files and local edits are preserved. See [Translation updates](/gamemodeswitcher/04-feature-map#next-in-order).
+Catalog downloads use a fixed published revision rather than a moving branch. Missing entries and messages with mismatched variables use the English text; installed files and local edits are preserved.
 
 See [Languages](/languages).
 
@@ -121,5 +121,18 @@ See [Languages](/languages).
 `general.update-notifications` defaults to `true`. It checks stable GitHub releases from `VolmitSoftware/GamemodeSwitcher` and includes available updates in one shared Volmit join notice. Set it to `false` to stop this plugin's checks and notices. The change applies automatically.
 
 `/volmit plugins updates` opens the shared report. Checks respect GitHub rate limits and retain cached release details if a request fails. Updates are never installed automatically. The shared report uses English; the config setting is translated.
+
+## Uninstalling
+
+GamemodeSwitcher only changes players' ordinary game modes. It does not store or separate inventories, and it writes nothing to worlds or player data. Its own state lives in `plugins/GamemodeSwitcher/`.
+
+1. If `spectator.restore-previous-mode` or `spectator.return-to-origin` is on, have players in a tracked Spectator session leave it with `/gsw return` while the plugin is still installed. Only GamemodeSwitcher can restore their saved mode and entry location.
+2. Stop the server and delete `GamemodeSwitcher.jar` from `plugins/`.
+3. Delete `plugins/GamemodeSwitcher/`. It holds the configuration, languages and language choices, gesture opt-outs and feedback mutes in `data/player-preferences.toml`, saved Spectator sessions in `data/spectator-sessions.toml`, downloaded libraries in `.libs/`, and diagnostic reports.
+4. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
+
+After removal, every player keeps the game mode they were last in. A player left in Spectator stays there until an operator changes their mode with `/gamemode`. Players who rebound Swap Item With Offhand or Sneak for gestures can restore those keys in Minecraft's Options → Controls → Key Binds.
+
+To start fresh, stop the server, delete `plugins/GamemodeSwitcher/`, keep `GamemodeSwitcher.jar` in `plugins/`, and start the server. It creates a new `config.toml` and English language file. If the server has no internet access, keep `plugins/GamemodeSwitcher/.libs/` so the libraries do not need to download again.
 
 [Commands and permissions](/gamemodeswitcher/02-commands-permissions) · [Gestures and operations](/gamemodeswitcher/03-gestures-operations)

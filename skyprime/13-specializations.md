@@ -2,7 +2,7 @@
 title: 13 - Island Specializations
 description: Configurable island paths, benefits, requirements and switching rules
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: skyprime, progression, specializations
 editor: markdown
 dateCreated: 2026-10-10T09:47:33.780Z
@@ -48,13 +48,13 @@ Requirements gate selection. Losing island value afterward does not cancel a sel
 
 Purchased upgrades and research grants remain permanent. Bonus levels add only the room available below the upgrade track's configured maximum; they do not overwrite saved levels. Specializations cannot grant permanent border expansion. If switching reduces team or home capacity, existing teammates and homes remain, but new additions must fit the current allowance.
 
-Specialization effects combine additively with the already resolved server/island events and wallet boosters. Multipliers add their bonus above 1: a 1.25× specialization plus a 1.50× event gives 1.75×. Shared caps are 4× harvest/fishing, 10× mission credits, 100% crop/drop bonuses, 75% spawner reduction and 100 temporary generator tiers. Upgrade bonuses remain subject to the existing gameplay caps and eligibility rules. Specializations do not add rare-fishing reward tables or bypass ordinary drop, island membership or flight controls.
+Specialization effects combine additively with the already resolved server/island events and wallet boosters. Multipliers add their bonus above 1: a 1.25× specialization plus a 1.50× event gives 1.75×. Shared caps are 4× harvest/fishing, 10× mission credits, 100% crop/drop bonuses, 75% spawner reduction and 100 temporary generator tiers. Upgrade bonuses remain subject to the normal gameplay caps and eligibility rules. Specializations do not add rare-fishing reward tables or bypass ordinary drop, island membership or flight controls.
 
 Disabling the feature, disabling the selected path or removing its definition suppresses its benefits without deleting the selection or resetting its switching timestamp. Restoring the definition re-enables its benefits. Reloading benefits applies to subsequent gameplay; changing prices or relevant upgrade rules invalidates open confirmations. The separate events enable switch does not disable specializations.
 
 ## Persistence and recovery
 
-Island schema 9 stores the specialization ID, selection time and revision in `storage/islands.json`. Reset and ownership transfer retain them; island deletion removes the selection with the island. A successful change creates a `specialization` progression activity entry, and paid changes add a specialization transaction to the credit ledger. The existing transaction journal coordinates island state and history. Back up metadata together with terrain as described in [Operations and recovery](/skyprime/04-operations-recovery).
+Island schema 9 stores the specialization ID, selection time and revision in `storage/islands.json`. Reset and ownership transfer retain them; island deletion removes the selection with the island. A successful change creates a `specialization` progression activity entry, and paid changes add a specialization transaction to the credit ledger. The shared transaction journal coordinates island state and history. Back up metadata together with terrain as described in [Operations and recovery](/skyprime/04-operations-recovery).
 
 PlaceholderAPI exposes `specialization_id`, `specialization_name`, `specialization_active` and `specialization_cooldown_seconds`, with the normal `current_` variants for the player's current island. See [Placeholders and API](/skyprime/90-placeholders-api).
 

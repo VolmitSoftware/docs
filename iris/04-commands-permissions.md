@@ -174,7 +174,7 @@ Use the Bukkit command names shown below.
 
 Only one pack download can run at a time. Wait for it to finish before starting another. Progress appears in chat or the console.
 
-The supported exact bundled-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The current built-in packs declare no external datapack imports. Restart once so Minecraft loads their dimension types and custom biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to apply both replacements. Omit either seed argument when that slot should retain its existing saved seed. Custom packs that declare `datapackImports` must complete the installation and registry-loading workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
+The supported exact bundled-pair sequence is `/iris download pack=overworld`, wait for success, then `/iris download pack=underworld` and wait again. The built-in packs declare no external datapack imports. Restart once so Minecraft loads their dimension types and custom biomes. Then run `/iris replace minecraft:overworld type=overworld seed=<overworld-seed>` and `/iris replace minecraft:the_nether type=underworld seed=<nether-seed>`. Restart once more to apply both replacements. Omit either seed argument when that slot should retain its existing saved seed. Custom packs that declare `datapackImports` must complete the installation and registry-loading workflow in [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) before staging.
 
 ---
 
@@ -364,7 +364,7 @@ Planar Studio always has six independently capacitated/enabled canonical workcel
 
 The seed-`1337` assembly is evaluated automatically and rendered as a permanent protected block preview. Spatial previews form an elevated connected assembly. `preview assemble` remains the separate temporary arbitrary-seed particle diagnostic. See [21 - Jigsaw Structures](/iris/21-jigsaw-structures) for GUI/toolbox controls, whole-assembly theme chances, independent pool-entry chances, rules/caps, markers, ownership, placement, and export.
 
-Only one player can own the active Jigsaw Studio session. Other players cannot edit its workcells or preview. Block and inventory edits autosave after two seconds without changes; duplication waits for pending saves. Use the current toolbox items provided by Studio.
+Only one player can own the active Jigsaw Studio session. Other players cannot edit its workcells or preview. Block and inventory edits autosave after two seconds without changes; duplication waits for pending saves. Use the toolbox items provided by Studio.
 
 ---
 

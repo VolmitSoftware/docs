@@ -2,7 +2,7 @@
 title: "Biome Atlas — Birch Forest"
 description: "Iris biome atlas entry for temperate/birch-forest in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -75,7 +75,7 @@ Direct-root children continue on their own pages: [`temperate/birch-thin`](/iris
 
 ### Golden Poplar Grove
 
-`temperate/golden-poplar-grove` is a complete child biome introduced in Overworld and Underworld. Its Underworld display name is **Crimson Spire Grove**. The existing `temperate/birch-forest` region memberships make it naturally reachable.
+`temperate/golden-poplar-grove` is a complete child biome in Overworld and Underworld. Its Underworld display name is **Crimson Spire Grove**. The `temperate/birch-forest` region memberships make it naturally reachable.
 
 Its rarity is `3`. In the immediate parent selection it receives `4` of `12` slots (33.33%). Both packs retain the same child-list order and use a shrink factor of `1.5`. These weights describe selection slots, not a guaranteed percentage of terrain area.
 

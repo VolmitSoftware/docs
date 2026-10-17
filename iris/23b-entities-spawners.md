@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -337,7 +337,7 @@ From `iris.json` under `world` (see [03 - Configuration](/iris/03-configuration)
 | `asyncTickIntervalMS` | `700` | How often the spawn loop runs per world |
 | `forcePersistEntities` | `false` | Prevents distance despawning of Iris-spawned mobs regardless of `removable`. Ordinary mobs are still saved with their chunks when this is false |
 
-Existing explicit `forcePersistEntities: true` settings continue to retain new mobs. Set it to `false` to allow native despawning for entities with `removable: true`; this affects newly spawned mobs and does not rewrite existing entities. Each species keeps its native despawning rules; animals such as frogs normally remain in the world.
+With `forcePersistEntities` set to `false`, entities with `removable: true` use native despawning. Changing the setting affects newly spawned mobs and does not rewrite existing entities. Each species keeps its native despawning rules; animals such as frogs normally remain in the world.
 
 ## Add entity spawns to a pack
 

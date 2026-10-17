@@ -2,13 +2,13 @@
 title: SkyPrime - Installation and configuration
 description: Runtime requirements, world provisioning and SkyPrime's TOML files
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: skyprime, installation, configuration
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
 ---
 
-SkyPrime requires Java 25 and supports Minecraft 26.1 through 26.3 on Spigot and Paper. The build targets Java 25 bytecode and checks the supported 26.x APIs; runtime coverage is recorded separately in the [feature map](/skyprime/07-feature-map). Required VolmLib classes are bundled, minimized and relocated into SkyPrime's packages; PlaceholderAPI is optional. Startup accepts Minecraft 26.1.x, 26.2.x and 26.3.x.
+SkyPrime requires Java 25 and supports Minecraft 26.1 through 26.3 on Spigot and Paper. The build targets Java 25 bytecode and checks the supported 26.x APIs. Required VolmLib classes are bundled, minimized and relocated into SkyPrime's packages; PlaceholderAPI is optional. Startup accepts Minecraft 26.1.x, 26.2.x and 26.3.x.
 
 ## Install
 
@@ -246,7 +246,7 @@ Base team capacity is two including the owner; base home capacity is one includi
 
 ## Level milestone settings
 
-`config/progression.toml` defines up to 256 `[milestones.<id>]` entries with `enabled`, `level`, `reward`, `presentation` and `rewards`. Presentation and personal reward bundles use the same fields and validation as missions. Level accepts 1–1,000,000,000,000, and credits accept 0–1,000,000,000,000, allowing item-only or command-only milestones. The defaults remain `level_10` (500 credits), `level_25` (1,500), `level_50` (5,000) and `level_100` (10,000). An empty `[milestones]` table disables claims.
+`config/progression.toml` defines up to 256 `[milestones.<id>]` entries with `enabled`, `level`, `reward`, `presentation` and `rewards`. Presentation and personal reward bundles use the same fields and validation as missions. Level accepts 1–1,000,000,000,000, and credits accept 0–1,000,000,000,000, allowing item-only or command-only milestones. The defaults are `level_10` (500 credits), `level_25` (1,500), `level_50` (5,000) and `level_100` (10,000). An empty `[milestones]` table disables claims.
 
 Milestone IDs are durable claim identities. Renaming an ID creates a separate reward; reusing a previously claimed ID does not clear that claim. New definitions can use an island's already recorded peak level. Reload updates definitions but does not recalculate peak levels. See [Level milestones](/skyprime/03-islands-progression#level-milestones).
 
@@ -268,8 +268,6 @@ Use `/sky language self <locale>` for a personal selection, or `self reset` to f
 
 Hot reload refreshes installed personal languages as well as the server default. A malformed personal TOML file keeps its last valid messages while other valid language and configuration changes continue to apply. Missing entries in a valid file use built-in English. Deleting a personal language file uses built-in English without downloading or recreating that file, and preserves the saved player selection; restoring the file refreshes that selection automatically.
 
-Release builds must use a published, pinned `languageSourceRef` containing the matching catalogs. The public `VolmitSoftware/SkyPrime` repository exists, but its current contents do not publish these catalogs. Until publication is verified, the language manifest remains unpublished and missing remote locales use built-in English. Local catalogs still work; no placeholder repository is needed. Before releasing, run `./gradlew verifyPublishedLanguages -PlanguageSourceRef=<40-character-commit-SHA>` to compare remote catalogs with the build sources.
-
 See [Languages](/languages).
 
 ## Usage statistics
@@ -280,7 +278,7 @@ SkyPrime initializes the official bStats Bukkit single-file runtime, version 3.2
 
 ## Update notifications
 
-`general.updateNotifications = true` enables the shared GitHub release notifier for `VolmitSoftware/SkyPrime`. The setting reloads live. Notifications point to available releases; they do not replace the installed jar. The repository exists but has no published releases. A release must be published before the notifier can advertise it.
+`general.updateNotifications = true` enables the shared GitHub release notifier for `VolmitSoftware/SkyPrime`. The setting reloads live. Notifications point to available releases; they do not replace the installed jar.
 
 ## Resource caps
 
@@ -301,7 +299,7 @@ ITEM = 128
 
 Reload applies validated settings. Counts must be prepared before new capped resources can be admitted. Entity unloading does not free capacity. `/sky limits` displays counts and caps for your island; `/sky admin recountlimits <island UUID>` rebuilds counts. Direct block changes by other plugins may bypass events and require an explicit recount. See [Resource limits](/skyprime/03-islands-progression#resource-limits).
 
-Technical block types `PISTON_HEAD`, `MOVING_PISTON`, `NETHER_PORTAL`, `END_PORTAL` and `END_GATEWAY` are not valid cap entries. An invalid candidate rejects reload instead of replacing the active configuration. Caps are exposed through commands; this addition has no separate inventory menu.
+Technical block types `PISTON_HEAD`, `MOVING_PISTON`, `NETHER_PORTAL`, `END_PORTAL` and `END_GATEWAY` are not valid cap entries. An invalid candidate rejects reload instead of replacing the active configuration. Caps are exposed through commands; there is no separate inventory menu.
 
 ## External economy
 
@@ -314,3 +312,38 @@ Optional Vault transfers use `[economy]` in `config.toml`: `enabled = false`, `w
 ## Gamerule policy
 
 `config/gamerules.toml` defines editing access, default values and integer bounds for all 34 island gamerules. These settings reload live and are editable under `gamerules.rules`. See [Island gamerules](/skyprime/14-gamerules) for ranges and inheritance.
+
+## Uninstalling
+
+SkyPrime keeps island records in `plugins/SkyPrime/` and island terrain in the server's world storage. Island worlds rely on SkyPrime's void generator and world loading, so the server cannot use them without the plugin. Remove both together.
+
+> Uninstalling deletes every island with its terrain, team, bank, upgrades, research, missions and history. Stop the server and back up `plugins/SkyPrime/` together with the island world directory first if you may want them back.
+{.is-danger}
+
+### Before removing the jar
+
+1. Have players leave starter previews with `/sky preview leave`.
+2. If external economy transfers and withdrawals are enabled, island owners can move island credits to their own accounts with `/sky bank withdraw <amount>`. Credits left in island banks are deleted with SkyPrime's storage. Check `/sky admin bank pending` for unresolved transfers and compare them with the economy provider's records.
+3. Stop the server normally with SkyPrime still installed. A normal shutdown ends starter previews, revokes island flight and removes the Speed and Jump attribute modifiers from players.
+
+### Remove SkyPrime
+
+1. Delete `SkyPrime.jar` from `plugins/`.
+2. Delete `plugins/SkyPrime/`. It holds the configuration, languages, island and player storage, world-job and starter manifests, custom starter templates, preview journals, the runtime cache and downloaded libraries.
+3. Delete the island world directory set by `worlds.directory` (`skyprime/islands` by default). It contains every island's Normal, Nether and End worlds and the starter-preview worlds under `previews/`. Then delete the parent `skyprime/` folder if it is empty.
+   - Paper: `<level directory>/dimensions/minecraft/skyprime/islands/`, for example `world/dimensions/minecraft/skyprime/islands/`
+   - Spigot: `<world container>/skyprime/islands/`
+4. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
+5. Remove `%skyprime_…%` placeholders from other plugins' configuration. Without SkyPrime, PlaceholderAPI leaves them unreplaced.
+
+### What remains
+
+- **`skyprime:island_flight_owned`** in player persistent data. A normal shutdown removes it. It remains only if the server stopped abruptly while a player had island flight; that player can then still fly in Survival or Adventure. Switch them to Creative and back to their mode to reset flight. The leftover marker itself is inert.
+- **`skyprime:starter_preview`** in player persistent data. It remains only if a preview could not be restored, and that player stays in Spectator. Set their game mode with `/gamemode` and move them to a safe location. The leftover marker itself is inert.
+- **Players who logged out on an island** join in the primary world, because the island world no longer exists.
+
+### Starting fresh
+
+1. Stop the server.
+2. Delete `plugins/SkyPrime/` and the island world directory. If the server has no internet access, keep `plugins/SkyPrime/.libs/` so the libraries do not need to download again.
+3. Start the server with `SkyPrime.jar` in `plugins/`. SkyPrime creates new configuration and English language files and starts with no islands.

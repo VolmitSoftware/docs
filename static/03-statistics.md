@@ -2,7 +2,7 @@
 title: Static - Statistics
 description: Counter identifiers, units, calculated values, and tracking boundaries
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: static, statistics
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -67,14 +67,14 @@ Choose counters with `details.selectedKeys`; `details.enabled` defaults to `true
 
 Detailed counters use the same world and game-mode filters as base statistics. Mining does not distinguish naturally generated blocks from player-placed blocks. Historical Minecraft statistics are not imported.
 
-| New identifiers | What is recorded |
+| Identifiers | What is recorded |
 |---|---|
 | `consumed_items`, `consumed_bread`, `consumed_cooked_beef`, `consumed_golden_apple`, `consumed_potion`, `consumed_milk_bucket` | One accepted item-consumption event, regardless of stack size. The total includes consumables beyond the named breakdowns |
 | `enchanted_items`, `enchanted_book`, `enchanted_diamond_pickaxe`, `enchanted_diamond_sword` | One accepted enchantment-table operation with nonempty enchantments and sufficient levels. Anvils and direct plugin enchantments are excluded |
 | `tamed_animals`, `tamed_wolf`, `tamed_cat`, `tamed_horse` | One accepted tame event attributed to a player owner |
 | `sheared_entities`, `sheared_sheep`, `sheared_mooshroom` | One accepted player shear event; counts actions, not the number of dropped items |
 
-Cancelled events contribute nothing. Existing explicit selections stay unchanged; add the new IDs through the Details editor to record them on an existing installation.
+Cancelled events contribute nothing.
 
 Other plugins can register their own counters through [tracking modules](/static/08-tracking-modules). Module data is stored separately from these built-in counters.
 

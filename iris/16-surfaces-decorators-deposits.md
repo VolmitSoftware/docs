@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -88,7 +88,7 @@ Keep the code spelling `varience`. It is the field name.
 | `seaLayers` | The water column above the seafloor, indexed down from the water surface. Empty means plain fluid |
 | `caveCeilingLayers` | Roof materials for caves and the undersides of volumetric overhangs |
 | `slab` | Palette used by the post pass to soften single-block steps. An empty palette (the default) means no slabs |
-| `wall` | Painted onto exposed vertical faces. The surface post pass skips shore biomes to preserve beach material; cave wall painting is unchanged. Used twice: by the post pass on surface cliffs, and by the carve modifier on cave walls. An empty palette (the default) disables both |
+| `wall` | Painted onto exposed vertical faces. The surface post pass skips shore biomes to preserve beach material; cave walls in shore biomes are still painted. Used twice: by the post pass on surface cliffs, and by the carve modifier on cave walls. An empty palette (the default) disables both |
 | `lockLayers` | Switches to mesa banding, described below |
 | `lockLayersMax` | Caps how many blocks deep the banded stack goes. Default `7` |
 

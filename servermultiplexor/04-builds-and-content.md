@@ -2,7 +2,7 @@
 title: "Builds and content"
 description: "Server build caches, shared drop-ins, addons, and managed downloads"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "servermultiplexor"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -98,7 +98,7 @@ Metadata/download/hash preparation runs up to four at a time; dependencies and f
 
 Development entries display **ProtocolLib (development)**. The modern Paper artifact requires Paper API 26.2 and cannot replace older-version jars. Unknown newer versions require a catalog update.
 
-EssentialsX prefers stable compatible Modrinth releases. For 26.2/26.3 without one, it uses the core jar from [official CI](https://ci.ender.zone/job/EssentialsX/) with declared [26.2](https://github.com/EssentialsX/Essentials/pull/6561)/[26.3](https://github.com/EssentialsX/Essentials/pull/6624) support, labeled **EssentialsX (development fallback)**. The successful build number is pinned before download. On 26.3, EssentialsX, BlueMap, ViaVersion, and ViaBackwards have compatible sources; FAWE/ProtocolLib remain unavailable pending verified upstream builds.
+EssentialsX prefers stable compatible Modrinth releases. For 26.2/26.3 without one, it uses the core jar from [official CI](https://ci.ender.zone/job/EssentialsX/) with declared [26.2](https://github.com/EssentialsX/Essentials/pull/6561)/[26.3](https://github.com/EssentialsX/Essentials/pull/6624) support, labeled **EssentialsX (development fallback)**. The successful build number is pinned before download. On 26.3, EssentialsX, BlueMap, ViaVersion, and ViaBackwards have compatible sources; FAWE and ProtocolLib have no 26.3 source.
 
 BlueMap uses the latest stable exact-version platform artifact from [Modrinth](https://modrinth.com/plugin/bluemap). First start creates `plugins/BlueMap/`. Before rendering, accept the stated Mojang download terms and set `accept-download: true` in `core.conf`. Its web server defaults to `8100`; assign unique `webserver.conf` ports for concurrent instances.
 

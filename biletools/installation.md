@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-10-15T18:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Building from source
 
-Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically. The compatibility workflow checks out VolmLib's default branch on each run, so BileTools must use its current API. The startup banner supplies the server version to VolmLib's formatter, which removes the Minecraft suffix.
+Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically.
 
 ## Platform support
 
@@ -42,8 +42,6 @@ Install the selected distribution jar as the only BileTools jar. Each build auto
 3. Build a plugin into `plugins/`.
 4. Watch the console for the reload.
 
-Older `plugins/BileTools/config.yml` files are not migrated. Copy any settings you still need, remove the old file, and restart to generate `biletools.yml`.
-
 ## Velocity proxies
 
 The same jar runs on a Velocity proxy 3.4 or newer, including 4.x. Copy it into the proxy's `plugins/` directory and start the proxy. Proxy settings live in `plugins/biletools/biletools.json`, not `biletools.yml`, and the proxy edition uses the libraries Velocity already provides. See [Velocity proxy](/biletools/velocity).
@@ -61,3 +59,31 @@ Temporary `.jar.part` files are ignored. A brief delete and recreate has a three
 ## Language
 
 Set `language` in `biletools.yml`. Editing a language file reloads it automatically; malformed TOML leaves the current messages active. See [Languages](/languages).
+
+## Uninstalling
+
+BileTools stores nothing in worlds, chunks, or player data. Plugin jars it loaded, reloaded, or received by remote deploy stay in `plugins/` and load normally without it.
+
+> Deleting `plugins/BileTools/` also deletes the archived plugin jars in `library/`. Back up any you still need first.
+{.is-warning}
+
+1. Keep any archived jars you need. With `archive-plugins` enabled, BileTools copies each plugin jar into `plugins/BileTools/library/<plugin>/<version>.jar` at startup and before `/bile uninstall` deletes it. `/bile library` lists them.
+2. If another server pushes jars to this one, remove this server from that server's `remote-deploy.master.master-deploy-to` list.
+3. Stop the server or proxy.
+4. Delete `BileTools v<version> [CraftBukkit] 1.20.1-26.3.jar` from `plugins/` on every server and Velocity proxy that has it.
+5. Delete the folders BileTools created:
+
+| Location | Contents |
+|---|---|
+| Server `plugins/BileTools/` | `biletools.yml`, `languages/`, `library/`, downloaded libraries in `.libs/`, `cache/runtime/`, `debug/` reports, and recovery and staging copies |
+| Proxy `plugins/biletools/` | `biletools.json`, `archive/`, and recovery and staging copies |
+| Proxy `plugins/BileTools/` | `cache/runtime/` extracted from an XZ jar |
+| `plugins/bStats/` | Shared by every plugin that uses bStats. Delete it only when no remaining plugin uses bStats |
+{.dense}
+
+On Spigot, `plugins/BileTools/runtime-plugins/` can contain symbolic links to other plugins' data folders. Delete the links, not the folders they point to; `rm -r` removes links without following them.
+
+### Starting fresh
+
+1. Complete the steps above.
+2. Copy the jar into `plugins/` and start the server. The first start downloads Gson, TOML, and Adventure into `plugins/BileTools/.libs/`. On a server without internet access, put a saved copy of `.libs/` back before starting.

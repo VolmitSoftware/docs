@@ -2,7 +2,7 @@
 title: SkyPrime - Events and boosters
 description: Server-wide and island-specific timed production and mission bonuses
 published: true
-date: 2026-10-10T09:50:21.103Z
+date: 2026-10-17T00:00:00.000Z
 tags: skyprime, events, boosters, configuration
 editor: markdown
 dateCreated: 2026-10-09T01:20:00.000Z
@@ -169,4 +169,4 @@ Expired records are ignored immediately and pruned by later mutations. Timer rea
 
 `storage/islands.json` version 9 additionally stores island wallets, purchase/token timers and cooldowns. Include this file with `storage/events.json` in backups. Purchases and redemptions become effective and acknowledge success only after island storage succeeds. Manual starts wait for event storage; stop commands await both event storage and island storage/runtime publication. No inventory token or separate wallet database is required. Island storage failure suspends its sponsored timers and blocks further wallet mutations.
 
-There are no event-specific PlaceholderAPI keys or physical event structures in this version.
+There are no event-specific PlaceholderAPI keys or physical event structures.

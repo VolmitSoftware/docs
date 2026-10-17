@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -197,7 +197,7 @@ Waypoints.track(this, viewer, quest, new WaypointOptions("bowtie"));
 Waypoints.untrack(this, viewer, "quest-destination");
 ```
 
-`WaypointOptions` selects the vanilla fallback used until the current Gloss pack provides a custom style. Declare that style in [glyphs waypoint assets](/gloss/28-resource-packs#waypoint-styles). The existing three-argument `Waypoints.track` call uses `default` as its fallback.
+`WaypointOptions` selects the vanilla fallback used until the current Gloss pack provides a custom style. Declare that style in [glyphs waypoint assets](/gloss/28-resource-packs#waypoint-styles). The three-argument `Waypoints.track` overload uses `default` as its fallback.
 
 `WaypointSpec.style` accepts `default`, `bowtie`, or a namespaced resource key such as `trails:quest`. Null and blank values select `default`; keys are trimmed and lowercased, and `minecraft:default`/`minecraft:bowtie` select their built-in forms. Keys must not contain `..` or `//`, and the path must not begin or end with `/`. Other unnamespaced values and invalid resource paths throw `IllegalArgumentException` when constructing the spec. Pass an explicit built-in style when the integration does not provide a resource-pack key.
 

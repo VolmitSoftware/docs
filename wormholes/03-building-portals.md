@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Build portals with a wand or runes, apply skins, and replace vanilla portals"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,12 +17,12 @@ Build the surrounding physical frame from ordinary blocks, such as deepslate til
 | Item | Material | Craft recipe registered? |
 |------|----------|--------------------------|
 | Portal Wand | Enchanted blaze rod | Yes, `portal_wand` |
-| Portal Rune | Enchanted prismarine | No; recognized only for legacy placed items |
+| Portal Rune | Enchanted prismarine | No; recognized only when already placed in a world |
 | Wormhole Rune | Enchanted dark prismarine | No; supplied by an administrator |
 
 Runes are not craftable. `/wormholes wand` gives one Portal Wand and one Wormhole Rune; it does not supply other rune types.
 Breaking a tracked Portal or Wormhole rune block returns the matching item in
-survival. A tracked legacy Gateway rune block returns a Wormhole Rune; a tracked
+survival. A tracked Gateway rune block returns a Wormhole Rune; a tracked
 RTP rune block returns nothing.
 
 ### Craft shapes

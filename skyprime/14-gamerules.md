@@ -2,7 +2,7 @@
 title: 14 - Island Gamerules
 description: Boolean and numeric island rules, operator defaults, limits and live editing
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: skyprime, gamerules, environment
 editor: markdown
 dateCreated: 2026-10-10T10:49:11.887Z
@@ -78,5 +78,3 @@ Choosing `server` removes the island override and uses the configured default. W
 World application runs separately every 40 server ticks and after world loading. It only changes loaded worlds belonging to active islands; it never loads terrain to apply a rule, scans blocks or edits the primary/unrelated worlds. Optional Nether and End dimensions receive the same choices when loaded. A successful save confirms durability; the next refresh applies it to the worlds.
 
 Native registry lookup checks each rule's value type. A missing or mismatched rule is unavailable in the menu and skipped during application, with an operator warning. A storage failure suspends changes and world refreshes; full failures appear in the console. See [Operations and recovery](/skyprime/04-operations-recovery) and [API](/skyprime/90-placeholders-api).
-
-Build and runtime verification are recorded in the [feature map](/skyprime/07-feature-map#verification-checkpoint).

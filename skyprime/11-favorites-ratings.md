@@ -2,13 +2,13 @@
 title: 11 - Favorites and Ratings
 description: Personal island bookmarks, qualified visitor ratings and popularity browsing
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: skyprime, visitors, favorites, ratings
 editor: markdown
 dateCreated: 2026-10-09T12:38:43.057Z
 ---
 
-Players can save islands to a personal favorites list and rate public islands from one to five stars after a continuous visit. Ratings, favorites and existing island votes are separate records. Players do not need to own an island to use these features.
+Players can save islands to a personal favorites list and rate public islands from one to five stars after a continuous visit. Ratings, favorites and island votes are separate records. Players do not need to own an island to use these features.
 
 ## Favorites and island details
 
@@ -38,7 +38,7 @@ Current island teammates' saved ratings are excluded from the average, count and
 
 ## Popularity and browsing
 
-The directory adds the `popular` sort and `favorites` filter. For example:
+The directory provides the `popular` sort and `favorites` filter. For example:
 
 ```text
 /sky directory search=* sort=popular filter=public
@@ -51,7 +51,7 @@ Popularity first groups islands that meet `minimumPopularRatings`, then islands 
 (star total + 15) / (rating count + 5)
 ```
 
-The five assumed three-star ratings reduce the effect of a small number of reviews. Ties use rating count, case-insensitive island name and island UUID. Below the configured minimum, star averages do not decide ordering. Access checks still apply to every directory entry and visit. Existing `/sky vote` and vote rankings keep their separate behavior.
+The five assumed three-star ratings reduce the effect of a small number of reviews. Ties use rating count, case-insensitive island name and island UUID. Below the configured minimum, star averages do not decide ordering. Access checks still apply to every directory entry and visit. `/sky vote` and vote rankings are separate from ratings.
 
 ## Configuration
 

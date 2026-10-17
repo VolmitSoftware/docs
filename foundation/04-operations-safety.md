@@ -2,7 +2,7 @@
 title: "Operations, Storage, and Recovery"
 description: "Foundation's files, how damaged data is recovered, and the diagnostic commands"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "foundation, operations, storage, recovery"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -89,8 +89,6 @@ It records file sizes, timestamps, and hashes, not file contents. It omits playe
 ## Update notices and metrics
 
 `runtime.updateNotifications` enables the shared GitHub notifier for `VolmitSoftware/Foundation`. It defaults to `true` and reloads with configuration. Console receives the check result; players with `foundation.update` receive applicable update notices. The shared `/volmit plugins updates` view includes Foundation. The notifier reports available releases; it does not install plugin updates.
-
-The public repository exists, but GitHub's latest-release endpoint returned HTTP 404 on October 14, 2026. Publish a release before relying on update availability notices. The repository identity is real, not a placeholder.
 
 Foundation uses bStats ID `34483` with the official collector unchanged except for its package. To opt out, set `enabled: false` in `plugins/bStats/config.yml` and restart. This shared bStats configuration is outside Foundation's data folder. Collection starts after Foundation becomes ready and stops during unload. No custom charts are registered.
 

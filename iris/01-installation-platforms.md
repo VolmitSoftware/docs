@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-16T18:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -147,6 +147,8 @@ The client HUD works with modded and Bukkit/Paper Iris servers. Players without 
 
 ## Data directories
 
+To remove Iris and everything it created, see [Uninstalling Iris](/iris/06b-uninstalling).
+
 ### Plugin
 
 | Path | What lives there |
@@ -175,7 +177,7 @@ Paths are relative to the game instance's `config/` directory.
 | `config/irisworldgen/modded.json` | Mod-side config: default pack, primary-world routing, main-world override, dimension replacements |
 | `config/irisworldgen/catalog/worldgen-catalog.json` | Worldgen catalog of the loaded mods, captured at each server start. See [48 - Mod Worldgen](/iris/48-mod-worldgen) |
 | `config/iris/` | Engine data directory — `iris.json` and per-world engine state |
-| `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The current built-in Overworld and Underworld releases need none |
+| `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The built-in Overworld and Underworld packs need none |
 
 Two different roots, and mixing them up is a common mistake. Packs, the generated datapack, and mod config live under `config/irisworldgen/`. The shared engine's own data lives under `config/iris/`.
 

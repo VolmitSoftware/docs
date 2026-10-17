@@ -71,7 +71,7 @@ Decoders and MCA palette reader functions accept `Tag<?>`. The `LOWERCASE` forma
 
 ## Region access and interruption
 
-Mantle region access reports a failed load and propagates its original cause. A failed request does not retry recursively. A later explicit request can retry after the cause is resolved. Asynchronous access releases acquired maintenance permits once, including when lookup or load setup throws. Canceling its returned future does not release permits until the underlying load finishes or prevent their later release. Existing corrupt-file recovery remains part of the region loader.
+Mantle region access reports a failed load and propagates its original cause. A failed request does not retry recursively. A later explicit request can retry after the cause is resolved. Asynchronous access releases acquired maintenance permits once, including when lookup or load setup throws. Canceling its returned future does not release permits until the underlying load finishes or prevent their later release. The region loader also recovers corrupt files.
 
 `HyperLockSupport.lock` preserves the thread interrupt flag and throws `IllegalStateException` with the original `InterruptedException` when acquisition is interrupted. Protected work does not run without an acquired lock. The long-wait warning still reports successful lock acquisition after contention. `hasQueuedThreads(x, z)` reports whether threads are currently queued for an existing coordinate lock without creating one. Its result is advisory and does not acquire the lock.
 
@@ -93,7 +93,7 @@ Relocate `art.arcane.volmlib` to a package owned by your plugin when shading. Do
 
 Use `ComponentText.markup(...)` for trusted MiniMessage templates and `ComponentText.literal(...)` for player or external text. Send it with `ComponentMessenger`. `clickOpenUrl(...)` accepts HTTP and HTTPS URLs.
 
-`ComponentMessenger` uses native rich messages where available. Its Spigot player delivery preserves RGB gradients, nested click actions, and hover text through Bukkit's Bungee component API. Director help and language menus use this delivery path for Bukkit senders; generic non-Bukkit sinks keep their existing text fallback. Action-bar delivery also preserves translatable components, their arguments, and RGB colors through this API; consumers without the optional JSON serializer retain legacy text delivery.
+`ComponentMessenger` uses native rich messages where available. Its Spigot player delivery preserves RGB gradients, nested click actions, and hover text through Bukkit's Bungee component API. Director help and language menus use this delivery path for Bukkit senders; generic non-Bukkit sinks use their plain text fallback. Action-bar delivery also preserves translatable components, their arguments, and RGB colors through this API; consumers without the optional JSON serializer retain legacy text delivery.
 
 `art.arcane.volmlib.util.bukkit.BukkitCommandMaps.commandMap(server)` returns the runtime command map on Paper and Spigot. `knownCommands(map)` returns its live registration table for exact command ownership checks and removal. Call these on the server thread. Access failures throw `IllegalStateException` with the reflective cause; callers must retain foreign registrations and unregister only their own commands.
 
@@ -107,7 +107,7 @@ Plugins that disable VolmLib's transitive dependencies must include `net.kyori:a
 
 `BoardProvider.getTextFormat()` defaults to `BoardTextFormat.LEGACY`, preserving section-code strings and literal markup. Return `BoardTextFormat.MINI_MESSAGE` to render trusted MiniMessage titles and rows, including namespaced resource-pack fonts and mixed legacy colors. Rich text uses the native packet sidebar and requires an available native scoreboard provider; it is not flattened into legacy Bukkit strings. Unchanged rows retain the normal board update cache.
 
-`ScoreboardPackets.newObjectiveJson` and `sendTeamPacketJson` accept serialized Minecraft text components for objective display names and team prefixes/suffixes. The existing string methods retain their legacy-text behavior.
+`ScoreboardPackets.newObjectiveJson` and `sendTeamPacketJson` accept serialized Minecraft text components for objective display names and team prefixes/suffixes. The string methods accept legacy text.
 
 ## Commands
 
@@ -169,7 +169,7 @@ Register providers under `IntegrationServiceContract` and retain `sampleMetrics(
 
 `IntegrationMetricPublisher(capacity, demandTtlMs)` supplies bounded demand tracking and immutable publication. Delegate snapshot requests to `snapshotMetrics(keys, nowMs)`. During collection, obtain `Demand` from `demandedKeys(nowMs)`, collect its `keys()`, and call `publish(demand, capturedAtMs, samples)`. Publishing accepts only keys from that demand. Call `clear()` on disable or reload to invalidate both current values and captures still using an older demand epoch; rejected publication returns `false`. A capture older than the latest publication is also rejected. `reconfigureCapacity(capacity)` clears demand and publication when capacity changes, invalidating pending captures while preserving the increasing capture sequence. Choose a capacity sufficient for supported consumers: oversized individual requests or publications throw, while multiple consumers share a least-recently-requested demand limit, reported by `evictions()`.
 
-Legacy providers remain synchronous. A consumer cannot make arbitrary provider code safe to run asynchronously or interrupt a blocking provider call by applying a timeout after it returns.
+Providers without `IntegrationSnapshotProvider` are sampled synchronously. A consumer cannot make arbitrary provider code safe to run asynchronously or interrupt a blocking provider call by applying a timeout after it returns.
 
 ## Economy
 
@@ -183,7 +183,7 @@ Call economy operations from the correct gameplay thread. A successful withdrawa
 
 `transfer(player, new TransferRequest(direction, amount, context))` accepts `DEPOSIT` or `WITHDRAW` and a finite positive amount. It checks the captured registration, account existence and, for withdrawals, available funds before invoking the payment method. The result is `SUCCESS` only for a successful response reporting the exact requested amount, `REJECTED` for validation failures or a failed response reporting zero transferred, and `UNKNOWN` for missing, malformed, partial or inconsistent responses or exceptions during the payment call.
 
-The transfer API supplies no persistence, scheduling, precision policy, retry or compensation. Callers must persist intent before payment, run the transfer on the correct owner thread, retain uncertain outcomes for reconciliation and avoid automatically repeating them. The older charge/refund API retains its separate behavior.
+The transfer API supplies no persistence, scheduling, precision policy, retry or compensation. Callers must persist intent before payment, run the transfer on the correct owner thread, retain uncertain outcomes for reconciliation and avoid automatically repeating them. The charge/refund API behaves independently of transfers.
 
 ## Entity initialization
 
@@ -193,7 +193,7 @@ The transfer API supplies no persistence, scheduling, precision policy, retry or
 
 ## Matter slice identifiers
 
-Register slice codecs before reading or writing their data. `IrisMatter.registerSliceType(String id, MatterSlice<?> slice)` binds one stored identifier to a payload type and codec. Keep that identifier stable when source packages change. The overload without an ID uses the payload type's canonical Java name. Built-in types retain their existing identifiers.
+Register slice codecs before reading or writing their data. `IrisMatter.registerSliceType(String id, MatterSlice<?> slice)` binds one stored identifier to a payload type and codec. Keep that identifier stable when source packages change. The overload without an ID uses the payload type's canonical Java name. Built-in types have stable identifiers.
 
 Repeated registration of the same ID, payload type, and codec has no effect. Conflicting IDs, payload types, or codecs fail registration. IDs must be nonempty, contain no whitespace or control characters, and fit the UTF header limit of 65,535 encoded bytes.
 

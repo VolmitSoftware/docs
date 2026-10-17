@@ -2,7 +2,7 @@
 title: "Proxy networks"
 description: "Velocity networks, backend routing, forwarding, and proxy plugins"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "servermultiplexor"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -12,7 +12,7 @@ Connect local plugin servers through a managed Velocity proxy. Multiplexor confi
 
 ## Requirements and creation
 
-Networks currently support the Local `plugin` consumer with Paper, Purpur, Folia, Canvas, and Leaf backends on Minecraft 1.19 or newer. Spigot, custom servers, mod consumers, and Remote backends are not supported. Velocity uses modern player forwarding and a generated secret shared with its backends. The proxy authenticates players; backends use offline authentication and bind to loopback so players cannot bypass the proxy from another machine.
+Networks support the Local `plugin` consumer with Paper, Purpur, Folia, Canvas, and Leaf backends on Minecraft 1.19 or newer. Spigot, custom servers, mod consumers, and Remote backends are not supported. Velocity uses modern player forwarding and a generated secret shared with its backends. The proxy authenticates players; backends use offline authentication and bind to loopback so players cannot bypass the proxy from another machine.
 
 Creation requires stopped backend instances. It creates a proxy instance named `<name>-proxy`, downloads Velocity unless `--jar` is supplied, assigns distinct backend ports, and preserves the backend settings it changes. Networks default to `127.0.0.1:25565`; use `--bind 0.0.0.0` for LAN access and connect with the host computer's address. `--offline` is restricted to isolated loopback QA and cannot expose an unauthenticated LAN proxy.
 

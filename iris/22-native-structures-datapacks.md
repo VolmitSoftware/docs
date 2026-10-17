@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-13T20:40:06.551484+00:00
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,7 +68,7 @@ Field details are in 1.5.
 
 ## Task 2: Install a third-party datapack
 
-This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The current built-in `overworld` and `underworld` packs declare no external datapack imports; this workflow is for custom packs that opt into them.
+This Bukkit-family workflow keeps each datapack installed in Minecraft's global registry. Iris then scopes the managed structure sets to the dimensions that declare the source. The built-in `overworld` and `underworld` packs declare no external datapack imports; this workflow is for custom packs that opt into them.
 
 Prerequisites: a Bukkit-family server and the Iris dimension pack that will use the datapack.
 
@@ -269,9 +269,6 @@ Every registered structure generates through its own native placement unless its
 
 On Fabric, Forge, and NeoForge, strongholds use the selected Iris pack's biome mapping in both the main world and additional Iris dimensions. Keep structure generation enabled when creating these worlds.
 
-> Minecraft 26.2 stronghold rings are the one placement-contract exception across Iris versions. Ring coordinates are still deterministic for a given seed, pack, and Iris build, but they intentionally **differ from earlier builds**. Existing stronghold blocks remain in saved chunks; `/locate` and Eyes of Ender use the current rings, and Iris does not migrate the old ring layout.
-{.is-warning}
-
 ### 1.2 Biome mapping for structure filters
 
 Vanilla tests biomes against structure biome filters. Iris answers per Iris biome:
@@ -384,7 +381,7 @@ When terrain fitting lowers ground, it clears contiguous decorations above the o
 
 Dimension stacks supply the original layer surface to native height queries, so igloos, swamp huts, and terrain-matching village paths can retain their original projected elevations after `FLATTEN`.
 
-The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. Underworld applies the same settings to exposed bastions and ruined portals. Underground structures, submerged pieces, Nether fortresses, and Nether fossils retain their existing placement rules.
+The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. Underworld applies the same settings to exposed bastions and ruined portals. Underground structures, submerged pieces, Nether fortresses, and Nether fossils keep their native placement.
 
 #### Examples
 
@@ -480,7 +477,7 @@ Run `/iris datapack ingest` to check for updates. Local ZIP changes are detected
 
 ### 2.3 Modded installation
 
-On Fabric, Forge, and NeoForge, install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory, then restart with both the datapacks and Iris pack present. `/iris datapack ingest` and the Bukkit import folder do not install them on these platforms. The current built-in Overworld and Underworld need no external datapacks.
+On Fabric, Forge, and NeoForge, install every external datapack declared by a custom pack directly in the target save's `datapacks/` directory, then restart with both the datapacks and Iris pack present. `/iris datapack ingest` and the Bukkit import folder do not install them on these platforms. The built-in Overworld and Underworld need no external datapacks.
 
 ### 2.4 Manual commands
 

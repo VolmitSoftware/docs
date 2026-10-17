@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -252,7 +252,7 @@ Do not run `create` again; creation is add-only. Reopen a Studio-owned graph by 
 
 `edit` and `reopen` are aliases. All three reconstruct workcell capacities and labels, enabled states, variant dimensions and labels, themes, rules, and pool memberships from the saved graph. A loaded variant without editable ownership shows as Read-only.
 
-`open` never looks up Minecraft's live structure registry: `minecraft_ancient_city` means `structures/minecraft_ancient_city.json` in the Iris pack. If that legacy graph has no ownership manifest, inspect and adopt it before editing.
+`open` never looks up Minecraft's live structure registry: `minecraft_ancient_city` means `structures/minecraft_ancient_city.json` in the Iris pack. If that graph has no ownership manifest, inspect and adopt it before editing.
 
 ### Adopt an existing Iris graph
 

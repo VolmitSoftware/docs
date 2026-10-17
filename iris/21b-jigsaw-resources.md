@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-10-15T22:46:37.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -76,7 +76,7 @@ Runtime matching never trims either side, so whitespace in schema-authored data 
 | `mode` | Hand-authored schema fallback `SPATIAL_JIGSAW`. Studio `create` default `PLANAR_JIGSAW` | `PLANAR_JIGSAW` forces every piece onto a flat grid with face-center sockets and validates that shape. `SPATIAL_JIGSAW` lets pieces stack and branch in three dimensions |
 | `compatibility` | `IRIS_EXTENDED` | `VANILLA_PORTABLE` locks the graph down to what vanilla jigsaw resources can express, which is what makes datapack export possible |
 | `branchFailurePolicy` | `FAIL_ASSEMBLY` | Decides what a dead-end arm costs you. Throw away the whole structure, or leave a stub where that arm stopped. `TERMINATE_BRANCH` is required for vanilla portability |
-| `cellSize` | `15 x 15 x 15`. Studio X/Z `1..128`, Y `1..192`, volume `<=2,097,152` | The editing volume for spatial cells, and the uniform editing volume for a legacy planar graph that has no `planarWorkcells`. It does not constrain runtime assembly |
+| `cellSize` | `15 x 15 x 15`. Studio X/Z `1..128`, Y `1..192`, volume `<=2,097,152` | The editing volume for spatial cells, and the uniform editing volume for a planar graph that has no `planarWorkcells`. It does not constrain runtime assembly |
 | `spatialWorkcellDisplayName` | empty | Text shown over the spatial editing cell. Empty shows `Spatial` |
 | `planarWorkcells` | Six unique archetypes. Width/depth `3..128`, height `1..192`, volume `<=2,097,152`. `displayName` empty | How large each connector shape may be built. What it is called in the GUI. Whether pieces of that shape are allowed into assemblies and exports at all |
 | `themeSets` | Empty means implicit unthemed. Positive unique key weights | Splits the kit into visual families so one assembly comes out all-stone or all-timber instead of a mix. The weight is that family's share of assemblies |

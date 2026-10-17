@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-10-12T23:25:13.822Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -92,3 +92,51 @@ Enabling a document-backed feature extracts its defaults on reload; `previews` n
 ## Import
 
 On first start, Gloss can import supported menus, images, panels, preview definitions, player preview scales, and settings from `plugins/holoui` or `plugins/HoloUi`. The source remains unchanged, and credentials and editor sessions are excluded. Existing destination conflicts or invalid documents prevent activation. For an explicit import, run `/gloss import holoui mode=preview`, review its results, then `/gloss import holoui mode=apply`; see [Data files](/gloss/03-data-files). HoloUi world boards become Gloss panels; `/gloss board` controls scoreboards.
+
+## Uninstalling
+
+Gloss draws its displays with unsaved entities and client packets. Removing it means removing its jars and data folders; the few traces left in worlds are listed under [What remains in worlds](#what-remains-in-worlds).
+
+> Deleting `plugins/Gloss/` permanently removes holograms, menus, panels, boards, images, document history, and transaction backups. Back up the folder first if you may want that content again.
+{.is-warning}
+
+While Gloss is still installed:
+
+1. Save content you want to keep. `/gloss export bundle` writes a workspace archive under `plugins/Gloss/exports/`; copy it outside `plugins/Gloss/`, or back up the whole folder.
+2. End live editor sessions. List them with `/gloss web sessions list` and revoke each with `/gloss web sessions revoke <session>`. A session you do not revoke ends after `[editor.sync] sessionMinutes`.
+3. If menus use [camera rides](/gloss/12-actions#camera-rides), make sure nobody is riding. A player who disconnected during a ride, or was riding when the server stopped, is returned to their saved position and game mode on their next join only while Gloss is installed. Without Gloss, that player joins in spectator mode; restore them with `/gamemode` and `/tp`.
+
+Remove Gloss:
+
+4. Stop every server and proxy that runs Gloss.
+5. Delete `Gloss v<version> [CraftBukkit] 26.1.2-26.3.jar` from `plugins/` on each server and each Velocity proxy.
+6. Delete what Gloss created:
+
+| Location | Contents |
+|---|---|
+| Server `plugins/Gloss/` | Settings, documents, images, languages, player state, history, editor-sync backups, `forge/` pack output, `exports/`, downloaded libraries in `.libs/`, and `cache/runtime/` |
+| Proxy `plugins/gloss/` | Proxy settings and documents, including `proxy-ownership.key` |
+| Proxy `plugins/Gloss/` | `cache/runtime/` extracted from an XZ jar |
+| Folders given to `/gloss forge export <path>` | Exported resource-pack trees. Also remove those files from any pack you merged them into |
+| Your pack host | The uploaded `gloss-pack.zip`, if `[forge] url` points to your own host |
+| `plugins/bStats/` | Shared by every plugin that uses bStats. Delete it only when no remaining plugin uses bStats |
+{.dense}
+
+If you remove only the proxy edition, backend servers that keep Gloss take back the tablists, boards, surfaces, MOTD, server links, and connection messages the proxy owned once its ownership leases expire. Their configuration needs no changes.
+
+### What remains in worlds
+
+| Data | State |
+|---|---|
+| Holograms, chat bubbles, damage indicators, drop models, and camera carriers | Entities that are never saved to chunks, so none remain after a restart. Gloss text displays carry the scoreboard tag `gloss_display`; remove any that remain with `/kill @e[type=minecraft:text_display,tag=gloss_display]` |
+| Menus, panels, previews, nameplates, scoreboards, tablists, and the MOTD | Sent to players only. Gloss adds no objectives or teams to the world scoreboard |
+| Drop labels on dropped item entities | The custom name and the `gloss:drop_name`, `gloss:drop_name_value`, `gloss:real_drop`, `gloss:real_drop_name_visible`, and `gloss:real_drop_entity_visible` keys. Inert; items on the ground can keep showing their last label until they are picked up or despawn |
+| `minecraft:light` blocks | Present only if the server stopped abruptly while a real-drop style with a `lightLevel` was lighting a drop. Remove them with `/fill <from> <to> minecraft:air replace minecraft:light` |
+| `plugins/HoloUi/` or `plugins/holoui/` | HoloUi's own data. Gloss reads it for imports and never changes it |
+{.dense}
+
+### Starting fresh
+
+1. Complete the removal steps above.
+2. Delete or move `plugins/HoloUi/` or `plugins/holoui/` if it is still present. Otherwise Gloss imports from it again on first start.
+3. Copy the jar into `plugins/` and start the server. The first start needs network access to download runtime libraries into `plugins/Gloss/.libs/`, then writes the default files listed above.

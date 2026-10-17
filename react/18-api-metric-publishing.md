@@ -2,7 +2,7 @@
 title: "API - Metric Publishing"
 description: "Publish metrics for React monitors, maps, history, and integrations"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,6 +64,6 @@ if (ReactMetrics.hostMetricAvailable("tick-time")) {
 
 For repeated integration reads, discover React's Bukkit `IntegrationServiceContract` registration and check for `metric-snapshots-v1`. `IntegrationSnapshotProvider.snapshotMetrics(keys)` returns immutable cached samples under `react.sampler.<sampler-id>` and registers demand for React's next one-second integration cycle. A first request can return an empty publication. Published, remote, API-pack, and cached sampler readings retain their original capture timestamps, so consumers can apply their own maximum sample age.
 
-Demand expires after 30 seconds without another request. `integrationSnapshotMaxMetrics` bounds retained demand and the size of each request; oversized requests are rejected, and least recently requested keys are evicted when distinct requests fill the limit. A limit change or provider shutdown clears publications. The existing `sampleMetrics(keys)` API remains supported. See [Configuration](/react/01-installation-configuration).
+Demand expires after 30 seconds without another request. `integrationSnapshotMaxMetrics` bounds retained demand and the size of each request; oversized requests are rejected, and least recently requested keys are evicted when distinct requests fill the limit. A limit change or provider shutdown clears publications. `sampleMetrics(keys)` is also supported. See [Configuration](/react/01-installation-configuration).
 
 Published metrics also appear as `%react_sampler.<sampler-id>%`. React forms the sampler ID from the source and metric key using lowercase hyphenated text.

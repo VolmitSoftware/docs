@@ -1,6 +1,6 @@
 ---
 title: "Installation & Configuration"
-description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
+description: "Install, client mod, data folder, wormholes.toml, quality profiles, and uninstalling"
 published: true
 date: 2026-10-17T00:00:00.000Z
 tags: "wormholes"
@@ -62,7 +62,7 @@ Native and streamed cameras share a cache of up to 12 view pipelines, with relea
 
 For shader packs on Fabric or NeoForge, install [Iris Shaders](https://irisshaders.dev/) and its required Sodium version for your Minecraft version. Iris Shaders is separate from the Iris world-generation plugin and mod.
 
-For distant terrain on Minecraft 26.1.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/QHxoccsN). On Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders. [Voxy](https://modrinth.com/mod/voxy/versions) and [OptiFine](https://www.optifine.net/downloads) do not currently provide Minecraft 26.3 builds.
+For distant terrain on Minecraft 26.1.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/QHxoccsN). On Minecraft 26.2, install [Distant Horizons 3.3.3](https://modrinth.com/mod/distanthorizons/version/aAow4a9f). On Minecraft 26.3, install [Distant Horizons 3.3.4](https://modrinth.com/mod/distanthorizons/version/TGgEbP9A) for Fabric or NeoForge. These Iris, Sodium, and Distant Horizons releases do not provide Forge builds; Forge uses the native Minecraft renderer. Select a shader pack with explicit Distant Horizons support when enabling shaders.
 
 ### `config/wormholes-client.toml`
 
@@ -530,3 +530,57 @@ Player menus. Changes hot-reload and apply to the next menu a player opens; a na
 On Bukkit servers, the root `update-notifications` setting defaults to `true`. It enables GitHub release checks and includes this plugin in one combined Volmit join notice. Set it to `false` to disable checks and notices for this plugin; valid configuration reloads apply the change immediately.
 
 Use `/volmit plugins updates` for the shared Director report across registered plugins. Operators and players with `volmit.update` can view all registered plugins; `wormholes.update` grants access for this plugin and defaults to operators. Checks use stable GitHub releases from `VolmitSoftware/Wormholes`, retain cached results on failures, and respect GitHub rate limits. Updates are never downloaded or installed. Shared report text is English; existing plugin language selection and message editing remain available.
+
+## Uninstalling
+
+Wormholes keeps its settings and records in its data folder and its pocket rooms in the `wormholes:pockets` dimension of the main world. Removing it also leaves converted vanilla portals without portal blocks and can leave resized entities; see [What stays in the world](#what-stays-in-the-world).
+
+> Deleting the data folder and the pocket dimension permanently erases every portal, door, pocket room and its contents, network link, and backup. Stop the server and back up the server folder and its worlds first.
+{.is-danger}
+
+While Wormholes is still installed:
+
+1. To keep a copy of your portals, run `/wormholes admin backup export` (`wormholes.admin.backup`) and move the bundle out of `plugins/Wormholes/backups/`, or `config/wormholes/backups/` on Fabric, Forge, and NeoForge.
+2. Ask players to leave their pocket rooms.
+3. Restore entities that kept a portal scale with `/wormholes admin scale reset`, or `/wh scale reset` on Fabric, Forge, and NeoForge. See [Commands and permissions](/wormholes/09-commands-permissions).
+4. On every server linked to this one, run `/wormholes server remove <name>` with this server's name from `/wormholes server list`. That server deletes its route and trusted key for this one and drops this server's portals from its lists.
+
+Then remove it:
+
+1. Stop the server and delete the Wormholes jar from `plugins/` on Paper, Purpur, and Folia, or from `mods/` on Fabric, Forge, and NeoForge.
+2. Delete the files in the table below.
+3. If the network uses WormholesProxy, delete its jar from the proxy's `plugins/` folder together with `plugins/WormholesProxy/` and, on Velocity, `plugins/wormholesproxy/`, which holds `secret.txt`. Then restart the proxy.
+4. Players who installed the client mod remove the Wormholes jar from their `mods/` folder and delete `config/wormholes-client.toml`. For singleplayer, they also delete `config/wormholes/` in the game folder and `wormholes/` and `dimensions/wormholes/` in each world's save folder.
+5. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
+6. Remove `%wormholes_…%` placeholders from other plugins' configuration. Without Wormholes, PlaceholderAPI leaves them unreplaced.
+7. If you installed the FastAsyncWorldEdit `2.16.1-wormholes-1` build only for Wormholes, replace it with a standard FastAsyncWorldEdit release.
+
+| Delete | Platform | Contents |
+|---|---|---|
+| `plugins/Wormholes/` | Paper, Purpur, Folia | Settings, portals, door and pocket records, atlas data, network identity, routes, trust, backups, language files, downloaded libraries (`.libs/`), and the runtime cache |
+| `config/wormholes/` | Fabric, Forge, NeoForge server | The same data |
+| `<level-name>/datapacks/wormholes-pockets.zip` | Paper, Purpur, Folia | The pocket dimension datapack. `<level-name>` is `level-name` in `server.properties`, `world` by default |
+| `<level-name>/dimensions/wormholes/` | All | The pocket dimension, with every pocket room and its contents |
+| Your `[network.transport] uds-dir` and `[network.stats] path-override` paths | All | Only when they point outside the data folder |
+
+### What stays in the world
+
+Portal views, skins, and particle effects are not saved in the world. These remain:
+
+| Leftover | After removal | Clean up |
+|---|---|---|
+| Vanilla Nether portals that Wormholes converted, and the counterparts it built | Obsidian frames with no portal blocks | Relight a frame with flint and steel. An irregular Shaped Portals frame relights only while [Shaped Portals](/shapedportals) is installed |
+| End portals that Wormholes converted | Eyed End Portal Frames with no portal blocks | Fill the 3×3 interior at the frame's height: `/fill <x1> <y> <z1> <x2> <y> <z2> minecraft:end_portal` |
+| Portal scale on players and mobs | Attribute modifier `wormholes:portal_scale` on `minecraft:scale`. The entity keeps its size | `/attribute <entity> minecraft:scale modifier remove wormholes:portal_scale` |
+| Entities that were crossing to another server when Wormholes stopped | Invulnerable, silent, and without gravity, with the data key `wormholes:entity_transit_state` | Wormholes restores them when their chunk loads. After removal, run `/data merge entity <uuid> {Invulnerable:0b,Silent:0b,NoGravity:0b}` |
+| Portal Wands, runes, Dimensional Door items, and portal keys | Ordinary items with Wormholes names and `wormholes:` data keys | Inert. Discard them if unwanted |
+| Placed Dimensional Doors and trapdoors | Ordinary doors and trapdoors | Inert |
+| Directional gravity on Fabric, Forge, and NeoForge | Entity tag `wormholesGravity`, which Minecraft ignores | Inert |
+| Recipe book entries for Wormholes recipes | Ignored by Minecraft | Inert |
+| Portal frames, Nether landing platforms, and other placed blocks | Ordinary blocks | Break them if unwanted |
+
+### Starting fresh
+
+To reset Wormholes without removing it, run `/wormholes admin deleteeverything` (`wormholes.admin.reset`). It deletes `wormholes.toml`, portals, door and pocket records, atlas data, rule templates, network identity, routes, trust, and backups, then loads the default settings. World files stay, including the pocket rooms in `dimensions/wormholes/`. See [Commands and permissions](/wormholes/09-commands-permissions).
+
+For a clean reinstall, stop the server, delete everything in the table above, install the jar, and start the server. Wormholes writes a default `wormholes.toml`, creates a new network identity, and on Paper, Purpur, and Folia installs the pocket datapack again. Link other servers again with `/wormholes server export` and `import`; see [Cross-server networking](/wormholes/10-cross-server-networking).

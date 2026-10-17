@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -285,7 +285,7 @@ Slabs and walls only appear when the dimension has `postProcessing`, `postProces
 
 The JSON key really is `customDerivitives`. The misspelling is baked into the engine field. `customDerivatives` is silently ignored.
 
-Type: `IrisBiomeCustom`, available as the `custom-biome` snippet. Existing custom-biome definitions work on Minecraft 26.3 without changing their pack fields. Iris compiles these into a datapack. F3 shows `iris:<dimensionLoadKey>/<id>`, using the authored biome ID in lowercase. For example, `id: "mist"` in the `overworld` dimension appears as `iris:overworld/mist`. When distinct definitions share an ID, additional variants use numbered namespaces such as `iris_2:overworld/mist`. These client names apply to existing and newly generated chunks after restarting the server and reconnecting. Use server registry keys, rather than the F3 label, with vanilla registry commands.
+Type: `IrisBiomeCustom`, available as the `custom-biome` snippet. Iris compiles these into a datapack. F3 shows `iris:<dimensionLoadKey>/<id>`, using the authored biome ID in lowercase. For example, `id: "mist"` in the `overworld` dimension appears as `iris:overworld/mist`. When distinct definitions share an ID, additional variants use numbered namespaces such as `iris_2:overworld/mist`. These client names apply to existing and newly generated chunks after restarting the server and reconnecting. Use server registry keys, rather than the F3 label, with vanilla registry commands.
 
 When a biome has any custom derivative, that custom biome becomes the visible biome for the column. `derivative` / `biomeScatter` / `biomeSkyScatter` stop driving what players see. `vanillaDerivative` still drives structure eligibility and tag inheritance. With several entries, `biomeStyle` picks between them per position.
 
@@ -307,7 +307,7 @@ When a biome has any custom derivative, that custom biome becomes the visible bi
 | `grassColor` | hex | `""` | Forces a grass tint. Empty means "leave it to the category", which is usually what you want unless you are matching a specific look. |
 | `foliageColor` | hex | `""` | Same for leaves. Empty means inherit. |
 
-On Minecraft 26.2, sky, fog, water-fog and ambient-particle values are published through the biome environment-attribute registry. Water, grass and foliage stay biome effects. The conversion is automatic. The pack fields are unchanged.
+On Minecraft 26.2, sky, fog, water-fog and ambient-particle values are published through the biome environment-attribute registry. Water, grass and foliage stay biome effects. The same pack fields apply on every supported version.
 
 Effective tags are your `tags` plus the direct tag membership of the vanilla derivative, deduplicated. Structure tags (`has_structure/*`) are deliberately not inherited. Native structure placement already resolves through the structure derivative. Inheriting them would place structures twice.
 

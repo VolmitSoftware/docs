@@ -2,7 +2,7 @@
 title: SkyPrime
 description: Independent island worlds, teams, protection and progression
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: skyprime, skyblock, islands
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -20,7 +20,6 @@ SkyPrime provides separate island worlds with teams, visitor protection and conf
 
 ## Start here
 
-- [Feature checklist *Current features and remaining work in recommended order*](/skyprime/15-feature-checklist)
 - [Installation and configuration *Requirements, world setup, and every TOML file*](/skyprime/01-installation-configuration)
 - [Commands and permissions *Player commands, operator tools, and access nodes*](/skyprime/02-commands-permissions)
 - [Islands and progression *Starters, teams, protection, value, credits and missions*](/skyprime/03-islands-progression)
@@ -37,7 +36,6 @@ SkyPrime provides separate island worlds with teams, visitor protection and conf
 - [Island specializations *Shared paths, temporary benefits and switching rules*](/skyprime/13-specializations)
 - [Island gamerules *Boolean and numeric rules, defaults, locks and limits*](/skyprime/14-gamerules)
 - [Operations and recovery *Storage, backups, and interrupted world jobs*](/skyprime/04-operations-recovery)
-- [Feature map and roadmap *Implemented features, remaining additions and validation coverage*](/skyprime/07-feature-map)
 - [Placeholders and API *PlaceholderAPI keys and the developer API*](/skyprime/90-placeholders-api)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}

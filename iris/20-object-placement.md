@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-06T19:12:27.334Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -390,7 +390,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `rotateTowardsSlope` | `false` | Turns the object to face downhill, in 90 degree steps |
 | `scale` | Dimension factor | An explicit scale overrides `allObjectScaleFactor`. A min/max spread offers `variations` evenly spaced sizes |
 | `bottom` | `false` | On explicit-Y paths (cave, structure, sapling), seats the object bottom-up instead of centered |
-| `fromBottom` | `false` | Anchors near the world floor. An unfinished code path. Avoid it |
+| `fromBottom` | `false` | Anchors near the world floor. Avoid it |
 | `warp` | flat | Noise displacement of each block X and Z. Inert until `multiplier` is raised |
 
 ### Terrain interaction

@@ -2,7 +2,7 @@
 title: Static
 description: Player statistics, profiles, rankings, and administration
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: static, statistics, folia
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -19,7 +19,7 @@ Static records player activity, ranks recorded players, and keeps session histor
 | Config file | `plugins/Static/config.toml` |
 | Required plugins | None. No database either |
 
-Static checks the Minecraft version before starting its services. Earlier versions and 26.4 or newer are rejected. Platform targets do not imply that every platform/version combination has passed runtime testing; see [compatibility and verification](/static/04-compatibility-operations).
+Static checks the Minecraft version before starting its services. Earlier versions and 26.4 or newer are rejected.
 
 ## Start here
 

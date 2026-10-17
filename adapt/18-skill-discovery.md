@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 
 XP reserve choices retain 0, 5 or 10 points for Better Mending and levels for Resistance or villager benefits. Better Mending can stop at 100%, 50% or 25% durability. Marker colors offer default, aqua, gold and purple. Structure selection uses the server-permitted default, jigsaw-structure, mineshaft, monument, stronghold, fortress or End-city category; range and search limits remain unchanged. Compact Insight shows the species line, while compact Sixth Sense shows direction and distance. Lower cue frequency extends the existing interval. Disabling continuous displays removes that player’s markers or HUD; Polymath removes only its own XP multiplier grants.
 
-Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
+Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

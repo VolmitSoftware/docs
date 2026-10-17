@@ -1,6 +1,6 @@
 ---
 title: "Installation & Configuration"
-description: "Adapt files, requirements, and settings"
+description: "Adapt files, requirements, settings, and uninstalling"
 published: true
 date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
@@ -16,7 +16,7 @@ Startup fills missing player-preference policies and writes adaptation settings 
 
 | | |
 |---|---|
-| Server | Paper, Purpur, or Folia. Minecraft 26.1.2 through 26.2, and Paper 26.3. Folia 26.3 waits on a published server build |
+| Server | Paper, Purpur, or Folia. Minecraft 26.1.2 through 26.2, and Paper 26.3 |
 | Java | 25 |
 | Jar | `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` in each backend `plugins/` folder |
 | Command | `/adapt`, behind `adapt.main`. `adapt.use.*` defaults to true and still needs that root node |
@@ -289,3 +289,72 @@ Invalid policy edits keep the last valid live configuration. Save valid policy c
 ### Reload matrix
 
 Skill, adaptation, GUI, effects, progression, language, model, and protection settings apply on save. SQL, Redis, metrics, and installing or removing an optional plugin need a restart. See [Updates](/adapt/40-operator-runbooks).
+
+## Uninstalling
+
+Removing Adapt deletes every player's skills, knowledge, and learned adaptations. Some items and animals keep changes Adapt made to them, as listed under What remains.
+
+> Back up `plugins/Adapt/` before uninstalling, and back up the SQL schema when `sql.enabled` is `true`. Deleted progression cannot be recovered.
+{.is-warning}
+
+### Before removing the jar
+
+1. Have players empty their backpacks and sneak-drop each Omni Tool and Multi Armor to split it. These items keep their contents in Adapt's item data, which only Adapt can open.
+2. If you use WorldGuard, clear Adapt's flags from your regions with `/rg flag <region> <flag>` and no value. The flags are `use-adaptations`, `adapt-xp`, `adapt-xp-multiplier`, `adapt-power-bonus`, and `adapt-unlock-adaptations`. WorldGuard accepts these flag names only while Adapt is installed.
+
+### Remove Adapt
+
+1. Stop every backend that runs Adapt. With SQL storage, stop every server that shares the schema.
+2. Delete `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` from each backend's `plugins/` folder. Adapt has no proxy plugin or client mod.
+3. Delete `plugins/Adapt/` on each backend. It holds the configuration, language files and per-player language choices, local player profiles, the advancement store, per-world block data, diagnostic reports, the runtime cache, and downloaded libraries.
+4. With `sql.enabled = true`, drop Adapt's tables from the `sql.database` schema:
+
+| Tables | Created when |
+|---|---|
+| `ADAPT_DATA`, `ADAPT_DATA_FENCE` | `sql.enabled = true` |
+| `Teams`, `Players`, `Advancements`, `Unredeemed` | `sql.enabled = true` and `advancements = true`. These hold advancement progress |
+
+> The advancement table names are generic. Before dropping them, confirm that no other plugin uses tables with those names in the same schema.
+{.is-danger}
+
+5. Redis needs no cleanup. Adapt's staged handoff keys expire after 60 seconds.
+6. Remove `%adapt_…%` placeholders from other plugins' configuration. Without Adapt, PlaceholderAPI leaves them unreplaced.
+7. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats. That folder is shared.
+
+### What remains
+
+| Leftover | Without Adapt |
+|---|---|
+| Backpack, Omni Tool, and Multi Armor contents | Unreachable. The base item remains, and a reinstalled Adapt can read the contents again |
+| Orbs, bound items, chalk wands, time bombs, and time bottles | Behave as their base items, such as a snowball, an ender pearl, or a lingering potion of weakness. See [Bound items](/adapt/36-items-orbs-bound-objects#bound-items) |
+| Brewed Adapt potions | Ordinary potions that keep their effects |
+| Masterwork tools and armor | Keep any Masterwork durability, enchantment, or `adapt:masterwork_bonus` attribute modifier, and the lore. These keep working |
+| Heirloom Edge swords | Keep their `adapt:heirloom_edge_damage` attack damage modifier and lore. These keep working |
+| Animals shaped by Stable Hand | Keep their permanent attribute bonuses. Remove them as shown below |
+| Architect Foundation glass and Ranged Web Bomb cobwebs that were active when the server stopped | Ordinary tinted glass and cobwebs. Adapt clears them the next time it loads their chunk; without Adapt, break them by hand |
+| Adapt recipes in players' recipe books | Removed by the server when the player next joins |
+| Status effects from adaptations | Ordinary timed effects that wear off |
+| Other attribute bonuses and penalties on players and mobs | Gone. They are temporary and never saved |
+| Other stored data under the `adapt` namespace on players, items, entities, chunks, and containers | Inert. The server keeps it, but nothing reads it |
+
+Stable Hand bonuses are vanilla attribute modifiers on each animal that a player tamed or bred with Stable Hand learned. Remove them one animal and one attribute at a time:
+
+```none
+/attribute <animal> minecraft:max_health modifier remove adapt:tame-stable-health
+```
+
+| Attribute | Modifier id |
+|---|---|
+| `minecraft:movement_speed` | `adapt:tame-stable-speed` |
+| `minecraft:jump_strength` | `adapt:tame-stable-jump` |
+| `minecraft:max_health` | `adapt:tame-stable-health` |
+| `minecraft:safe_fall_distance` | `adapt:tame-stable-fall` |
+
+### Starting fresh
+
+1. Stop every backend that shares Adapt data.
+2. Delete `plugins/Adapt/`. To keep your configuration and players' language choices, delete only `plugins/Adapt/data/`.
+3. With SQL storage, drop the tables listed above.
+4. Start the servers with the Adapt jar. Adapt creates default files, and every player starts with an empty profile.
+
+To reset individual players instead, use `/adapt reset confirm <player>`. See [Clearing data](/adapt/04-commands-permissions#clearing-data). Items and animals listed under What remains are part of the world and stay after a fresh start.

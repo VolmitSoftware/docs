@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 
 Material filters select supported result or ingredient categories; they never enable a new recipe. Batch limits apply only to bonus production. Ingredient reserves keep 0, 8 or 32 matching items; Compactor leaves that loose reserve before compressing. Masterwork opt-outs suppress the selected bonus without another roll. Backpack preferences apply to newly crafted bags; existing bags retain their storage and contents, and mode conversion still requires an empty bag. Disabling Backpacks closes and saves its open container. Confirmations require repeating the same action on the same items within five seconds.
 
-Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
+Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 
@@ -123,7 +123,7 @@ Right-click air, left-click air, or left-click a block with the station in the m
 
 1 level · 2 knowledge
 
-Nineteen shapeless recipes turn eight drops plus one host into one ore: `STONE` hosts `IRON_INGOT`, `GOLD_INGOT`, `COPPER_INGOT`, `LAPIS_LAZULI`, `REDSTONE`, `EMERALD`, `DIAMOND`, and `COAL` into the matching ore, `DEEPSLATE` hosts those eight into the matching `DEEPSLATE_*` ore, and `NETHER_BRICKS` hosts `GOLD_INGOT` into `NETHER_GOLD_ORE`, `QUARTZ` into `NETHER_QUARTZ_ORE`, and `NETHERITE_SCRAP` into `ANCIENT_DEBRIS`. In-game lore still says scraps, quartz, and emeralds are excluded; emerald ore, deepslate emerald ore, nether quartz ore, and ancient debris have working recipes.
+Nineteen shapeless recipes turn eight drops plus one host into one ore: `STONE` hosts `IRON_INGOT`, `GOLD_INGOT`, `COPPER_INGOT`, `LAPIS_LAZULI`, `REDSTONE`, `EMERALD`, `DIAMOND`, and `COAL` into the matching ore, `DEEPSLATE` hosts those eight into the matching `DEEPSLATE_*` ore, and `NETHER_BRICKS` hosts `GOLD_INGOT` into `NETHER_GOLD_ORE`, `QUARTZ` into `NETHER_QUARTZ_ORE`, and `NETHERITE_SCRAP` into `ANCIENT_DEBRIS`.
 
 ### Bulk Artisan (`crafting-bulk-artisan`)
 

@@ -10,8 +10,6 @@ dateCreated: 2026-10-16T00:00:00.000Z
 
 Other plugins can register lifetime statistics with Static and submit observations through its Java API. Modules have their own identifiers, definitions, and storage. Installing an unrelated plugin does not automatically start collecting its data; that plugin or a dedicated integration must register a module.
 
-Static currently includes no built-in Volmit plugin tracking integrations. Providers can use the registration API below.
-
 ## Viewing modules
 
 `/static modules [page]` lists registered modules and retained modules whose providers are unavailable. `/static module <module> [player] [page]` opens a player's values, or prints them for console callers. The inventory has previous/next, refresh, back, and close controls.
@@ -32,7 +30,7 @@ disabledModules = []
 
 These settings are available in the Modules configuration category and support hot reload. Add exact IDs from `/static modules`, such as `quests:daily`, to disable individual providers. `general.enabled=false` also stops new module observations. Disabling recording or removing a provider preserves existing values and definitions.
 
-Modules can report offline activity. They do not automatically inherit world, game-mode, or AFK filters: the provider owns those rules and must apply them before submitting observations. Module totals do not contribute to built-in counters, calendar reports, personal bests, seasons, or milestones. They currently have no web reports or PlaceholderAPI keys.
+Modules can report offline activity. They do not automatically inherit world, game-mode, or AFK filters: the provider owns those rules and must apply them before submitting observations. Module totals do not contribute to built-in counters, calendar reports, personal bests, seasons, or milestones. They have no web reports or PlaceholderAPI keys.
 
 ## Registering a provider
 

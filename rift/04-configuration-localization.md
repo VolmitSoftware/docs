@@ -2,7 +2,7 @@
 title: "Rift: Configuration and Localization"
 description: "Settings, hot loading, language selection, and message editing"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "rift, configuration, hot-reload, localization, gui"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -55,7 +55,7 @@ Message edits allow 512 characters. Use `\n` for a line break, `\\` for a backsl
 
 English is generated locally. Other supported languages download from GitHub only when selected or opened for editing. Rift does not install every catalog at startup.
 
-Downloads use the release's pinned Git revision, not a moving branch. Missing translated message keys use the local English catalog. The current published revision predates the update-notification setting label, so that label uses English until a catalog update is published and selected for a later build.
+Downloads use the release's pinned Git revision, not a moving branch. Missing translated message keys use the local English catalog.
 
 Supported locales are `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and `zh_TW`.
 

@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-15T22:46:37.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -72,7 +72,7 @@ Each build compares the complete ordinary package with its XZ package and writes
 
 When XZ wins, startup verifies and extracts the bundled runtime into the plugin's writable `cache/runtime/` directory. Later starts verify and reuse that cache. The ordinary format loads directly without extraction. Required external libraries retain their normal download and cache behavior.
 
-`assemble` and `build` also produce the selected artifact. Exports for Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes use `<Name> v<version> [CraftBukkit] <supported Minecraft range>.jar`. The plugin version is separate from the supported game range. BileTools and Gloss use the same exported jar on Velocity; the game range describes their server edition. Iris and Wormholes mod exports name their specific game and loader versions. Maven and API artifacts remain ordinary jars for compile-time use. Test fixtures and Iris mod jars retain their existing format. Install only one artifact for each plugin.
+`assemble` and `build` also produce the selected artifact. Exports for Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes use `<Name> v<version> [CraftBukkit] <supported Minecraft range>.jar`. The plugin version is separate from the supported game range. BileTools and Gloss use the same exported jar on Velocity; the game range describes their server edition. Iris and Wormholes mod exports name their specific game and loader versions. Maven and API artifacts remain ordinary jars for compile-time use. Test fixtures and Iris mod jars are not packed. Install only one artifact for each plugin.
 
 Enable automatic package selection on the final runtime artifact in the shared packaging configuration:
 

@@ -2,7 +2,7 @@
 title: "Bukkit inventory views and editors"
 description: "Inventory access, shared configuration menus, and menu shutdown"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "volmlib, api, bukkit, inventory, compatibility"
 editor: markdown
 dateCreated: 2026-09-05T04:40:00.000Z
@@ -46,7 +46,7 @@ Call `closeAsync()` during a managed shutdown while the plugin remains enabled. 
 
 Use `closeOwned()` when an external plugin disable has already begun. It closes inventories actually owned by the current thread and completes pending foreign-owner tasks exceptionally. Their late callbacks become no-ops. A task already executing on its owner is allowed to finish, and the completion future still tracks it. No shutdown path waits for another region or treats `isStopping()` as ownership.
 
-The existing static `BukkitInventoryShutdown.drain(plugin, views)` entry point now uses this immediate, ownership-checked shutdown path and logs failures. It performs no scheduling or blocking wait. An external live disable cannot guarantee closure of inventories in other regions: plugin schedulers may discard both actions and retirement callbacks once the plugin becomes disabled. Use managed closure before disabling when every inventory must be closed.
+The static `BukkitInventoryShutdown.drain(plugin, views)` entry point uses this immediate, ownership-checked shutdown path and logs failures. It performs no scheduling or blocking wait. An external live disable cannot guarantee closure of inventories in other regions: plugin schedulers may discard both actions and retirement callbacks once the plugin becomes disabled. Use managed closure before disabling when every inventory must be closed.
 
 `BukkitConfigEditor.closeAsync()` and `BukkitLanguageSwitcher.closeAsync()` freeze their editors and return futures that cover both captured inventory closures and menu openings already in progress. An opening that crosses the close boundary must finish its owner-side cleanup before the future can succeed. Cancelling a returned observer does not cancel that cleanup.
 

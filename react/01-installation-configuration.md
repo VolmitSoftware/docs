@@ -1,6 +1,6 @@
 ---
 title: "Installation & Configuration"
-description: "Install React, configure automatic reloads, and connect React Web"
+description: "Install React, configure automatic reloads, connect React Web, and uninstall React"
 published: true
 date: 2026-10-17T00:00:00.000Z
 tags: "react"
@@ -10,7 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 React supports Paper, Purpur, and Folia on Java 25.
 
-The same jar includes Minecraft 26.1.2, 26.2, and 26.3 support. Paper 26.3 currently uses alpha server builds; Folia 26.3 support has not been validated against a published server build.
+The same jar supports Minecraft 26.1.2, 26.2, and 26.3. Folia is supported on 26.1.2 and 26.2.
 
 ## Install
 
@@ -23,7 +23,7 @@ Install the selected distribution jar as the only React jar. Each build automati
 
 PlaceholderAPI and the other Volmit plugins are optional.
 
-To update React, stop the server, replace its jar, and restart. Keep `plugins/React/` in place. Saved metric history remains available without a separate conversion or cleanup step.
+To update React, stop the server, replace its jar, and restart. Keep `plugins/React/` in place. Saved metric history carries over.
 
 ## Files
 
@@ -142,3 +142,61 @@ Roles are `viewer`, `operator`, and `admin`. Treat admin tokens like console acc
 ## Language
 
 Use `/react language` (alias `/react languages`) for a personal choice or `/react language server` for the default in `react.toml`. Edit messages directly in `languages/<locale>.toml`; React creates English on startup and preserves existing catalogs. Generated English and repository catalogs include formatting instructions and a comment reference explaining each variable in the catalog's language. See [Localization](/react/13-localization).
+
+## Uninstalling
+
+React keeps its configuration, metric history, React Web pairings, and per-player settings in `plugins/React/`. Mob stacks and paused mobs also leave state on entities in your worlds, so let React restore them before you remove it.
+
+> Deleting `plugins/React/` erases saved metric history, incident records, and React Web pairings. Copy `history/` and `diagnostics/profiles/` first if you want to keep them.
+{.is-warning}
+
+### Before removing the jar
+
+1. Set `enabled = false` in these files under `plugins/React/feature/`. Each change applies on save.
+
+| File | Effect |
+|---|---|
+| `mob-stacking.toml` | Splits loaded stacks back into separate mobs |
+| `adaptive-entity-sleep.toml` | Wakes the mobs this feature paused or put to sleep |
+| `dynamic-activation-range.toml` | Wakes the mobs this feature paused |
+| `random-tick-governor.toml` | Restores each world's random tick speed |
+
+2. Keep React running while players visit the areas they use. React does not force chunks to load. Stacks and paused mobs in unloaded chunks are restored when their chunk next loads with React installed.
+3. In every browser that paired with this server, open React Web **Settings** and **Remove** the server. React Web keeps server profiles and credentials in the browser.
+
+### Remove React
+
+1. Stop the server and delete `React v<version> [CraftBukkit] 26.1.2-26.3.jar` from `plugins/`. React has no proxy plugin or client mod.
+2. Delete `plugins/React/`. It holds the configuration, language files and per-player language choices, metric history, incident records, per-player settings, the React Web server identity and tokens in `web/`, captured profiles, benchmark results, diagnostic reports, the runtime cache, and downloaded libraries.
+3. Remove `%react_…%` placeholders from other plugins' configuration. Without React, PlaceholderAPI leaves them unreplaced.
+4. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats. That folder is shared.
+
+### What remains
+
+| Leftover | Without React |
+|---|---|
+| Mob stacks (`react:react-stack-count`) | Each stack is one mob, and the rest of its count is gone. A stack label React applied stays as the mob's name |
+| Paused mobs (`react:react-paused`) | Their AI stays off. Use the first command below |
+| Sleeping mobs (`react:react-dozing`) | They stay unaware of their surroundings. Use the second command below |
+| Purge countdown names (`react:react-killer-countdown`) | The countdown stays as the mob's name. Use the third command below |
+| React map items, including copies in item frames | Ordinary filled maps that no longer show React data. Discard them |
+| Dropped-item bundles with the lore `REACT SUPER STACK` | Ordinary bundles that hold the merged items. Pick them up and empty them like any bundle |
+| `minecraft:random_tick_speed` game rule | React restores it when the governor turns off or the server stops normally. If the server stopped abnormally while the governor was engaged, the reduced value stays saved in that world; set it back to your value. The vanilla default is `3` |
+| Other data under the `react` namespace on entities, such as entity protection claims | Inert. The server keeps it, but nothing reads it |
+
+These commands repair mobs that are loaded when you run them:
+
+```none
+/execute as @e[nbt={BukkitValues:{"react:react-paused":1b}}] run data merge entity @s {NoAI:0b}
+/execute as @e[nbt={BukkitValues:{"react:react-dozing":1b}}] run data merge entity @s {"Bukkit.Aware":1b}
+/execute as @e[nbt={BukkitValues:{"react:react-killer-countdown":0b}}] run data remove entity @s CustomName
+```
+
+### Starting fresh
+
+1. Stop the server.
+2. Delete `plugins/React/`.
+3. Start the server with the React jar in `plugins/`. React creates default configuration and a new React Web server identity.
+4. Remove the old server from React Web and pair again with `/react web pair <label> [role=viewer]`.
+
+Entity leftovers listed under What remains stay in the world. A reinstalled React reads stored stack counts again and, with `mob-stacking` disabled, splits those stacks as their chunks load.

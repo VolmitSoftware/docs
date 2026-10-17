@@ -2,7 +2,7 @@
 title: "Shaped Portals"
 description: "Build custom-shaped Nether and End portals and manage them in-game"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -60,7 +60,6 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 - [Compatibility and operations *Server versions, Java, Folia limits, and debug reports*](/shapedportals/03-compatibility-operations)
 - [Developer reference *Geometry, the registry, the Wormholes handoff, and builds*](/shapedportals/04-architecture-limits)
-- [Feature map *Current capabilities, delivery gaps, and proposed operator tools*](/shapedportals/05-feature-map)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}
 

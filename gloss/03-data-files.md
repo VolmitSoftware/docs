@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -148,7 +148,7 @@ The `[imports]` file, preview-byte and path limits apply to source files, affect
 
 HoloUi imports preserve menu paths, panel IDs and UUIDs, menu references, and original source files. `boards/` becomes `panels/`. Preview language keys move from `holoui.preview.*` to `gloss.preview.*`, and historical `previewScale` and `previewLookDistance` settings become each imported preview's `scale` and `viewDistance`. Player scale preferences use the current UUID-to-number map. Editor credentials, sessions, transactions, backups, and regenerable custom-item exports are excluded.
 
-The report identifies exact copies and setting mappings, normalized approximations, unchanged content, unsupported settings, and destination conflicts. Unsupported content, invalid current documents, missing menu/image references, and duplicate panel UUIDs prevent the whole import. Customized destination settings require an overwrite preview. A publication whose recovery record would exceed 1 MiB is refused before staging or changing destination files. Applied imports also obey the captured `maxPreparationBytes` and `maxPreparationMillis` settings; the byte budget includes both backup and replacement data, and the cooperative deadline ends when publication starts. A successful transaction retains destination backups and writes `holoui-import.json` together with the imported content; failed imports do not mark completion. Repeating an unchanged import leaves files intact. HoloUi `language.yml` has no verified automatic conversion to the current localization catalog.
+The report identifies exact copies and setting mappings, normalized approximations, unchanged content, unsupported settings, and destination conflicts. Unsupported content, invalid current documents, missing menu/image references, and duplicate panel UUIDs prevent the whole import. Customized destination settings require an overwrite preview. A publication whose recovery record would exceed 1 MiB is refused before staging or changing destination files. Applied imports also obey the captured `maxPreparationBytes` and `maxPreparationMillis` settings; the byte budget includes both backup and replacement data, and the cooperative deadline ends when publication starts. A successful transaction retains destination backups and writes `holoui-import.json` together with the imported content; failed imports do not mark completion. Repeating an unchanged import leaves files intact. The importer does not convert HoloUi `language.yml` to the localization catalog.
 
 
 A legacy import prepares and validates the resulting documents before writing. Resolve every reported unsupported format, invalid document or customized-document conflict before applying. If a source or destination changes during preparation, run the preview again. Original replaced files are retained under `editor-sync-backups/<transaction>/backup/`. The original `config.yml` remains unchanged; `legacy-import.json` records its successfully applied content hash so a repeated import does not overwrite later TOML edits.

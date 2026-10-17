@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "Event and NMS tweaks with configuration defaults"
 published: true
-date: 2026-09-30T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ This tweak removes selected projectile and utility entities stuck in bubble colu
 
 ### `entity-crowd-prevention`
 
-This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protection and protects player-named entities by default. Config field `preventEntityBubbling` is currently unused at runtime.
+This tweak trims overcrowded livestock-style clusters. It honors `PURGE` protection and protects player-named entities by default. Config field `preventEntityBubbling` has no runtime effect.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -149,7 +149,7 @@ This tweak cancels inventory transfers whose destination holder is a hopper. It 
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `enabled` | boolean | `true` | Enables or disables this tweak. |
-| `maxHopperEventSpan` | double | `0.75` | Maximum observed within-tick hopper-event span before canceling. The former field is not read or migrated. |
+| `maxHopperEventSpan` | double | `0.75` | Maximum observed within-tick hopper-event span before canceling. |
 
 ### `item-despawn-accelerator`
 

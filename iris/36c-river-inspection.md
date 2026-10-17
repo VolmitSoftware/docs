@@ -2,7 +2,7 @@
 title: "River Inspection"
 description: "Find river features, inspect them in Vision, and validate hydrology settings"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -59,7 +59,7 @@ Locate accepted features from an Iris world. On Bukkit, `goto` is an alias of `f
 
 Supported type selectors are `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `deep`, and `pool`. Any other value is treated as a deep-fluid or surface-pool ID and matches only the deep or standing pool features with that profile. Completion appends the active dimension's configured deep-fluid IDs to the built-ins, so `deep_lava` appears only when the pack declares it. **Built-in selector names are reserved and cannot be deep-fluid IDs.**
 
-Searches cover at most 8,192 blocks or fifteen routing tiles, whichever is smaller. Rare features can take longer to find. Use `/iris pack validate` to check which feature types your pack enables. Older generated areas without saved river information may not appear in locator results.
+Searches cover at most 8,192 blocks or fifteen routing tiles, whichever is smaller. Rare features can take longer to find. Use `/iris pack validate` to check which feature types your pack enables. Generated areas without saved river information may not appear in locator results.
 
 ## Validation
 

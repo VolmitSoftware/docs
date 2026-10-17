@@ -2,7 +2,7 @@
 title: "Rift World Manager"
 description: "World creation, loading, quarantine, restoration, and teleport management"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "rift, world-management, bukkit, paper, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -32,7 +32,6 @@ Rift creates, imports, loads, unloads, quarantines, restores, and teleports betw
 - [Configuration and localization *Settings and language files*](/rift/04-configuration-localization)
 - [World policies *Player limits, travel, join placement, and world rules*](/rift/05-world-policies)
 - [Teleporting *Travel to loaded-world spawns*](/rift/06-destinations)
-- [Feature audit and roadmap *Verified coverage and remaining work in priority order*](/rift/07-feature-audit-roadmap)
 - [Integrations and developer reference *PlaceholderAPI, shared services, and API boundaries*](/rift/99-integration-api)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}

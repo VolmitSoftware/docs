@@ -2,7 +2,7 @@
 title: "Behaviors and State"
 description: "Run actions from player events, chat matches, timers, and named events"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T22:00:00.000Z
@@ -109,4 +109,4 @@ Imported extension fields and untouched omitted defaults survive form edits. Mal
 
 ## Importing older Gloss documents
 
-Run `/gloss import legacy mode=preview` to prepare schema-1 behavior documents, review the report, then run `/gloss import legacy mode=apply`. Non-chat documents convert without changing their actions or state. Chat documents report the new bounded-matching policy as an approximation; supported patterns outside the verified ASCII-literal subset also require review for RE2 semantics. Unsupported patterns are reported as unsupported and remain unconverted, with the original files preserved. Rewrite those patterns before preparing another import. See [Data Files & Hot Reload](/gloss/03-data-files) for backups, conflicts, and prepared-plan expiry.
+Run `/gloss import legacy mode=preview` to prepare schema-1 behavior documents, review the report, then run `/gloss import legacy mode=apply`. Non-chat documents convert without changing their actions or state. Chat documents report the bounded-matching policy as an approximation; supported patterns outside the ASCII-literal subset also require review for RE2 semantics. Unsupported patterns are reported as unsupported and remain unconverted, with the original files preserved. Rewrite those patterns before preparing another import. See [Data Files & Hot Reload](/gloss/03-data-files) for backups, conflicts, and prepared-plan expiry.

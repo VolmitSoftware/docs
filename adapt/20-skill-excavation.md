@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,7 +27,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 
 Depth, range and extra-block presets use 100%, 50% or 25% of the earned cap. Food reserves retain eight food points; Burrow’s durability reserve retains a quarter of the tool’s base durability in addition to paying every dug block. Ore filters select one supported ore family or all; Seismic Ping performs its normal single proc roll before the filtered scan. Lower cue frequency extends its cooldown. Tunneler supports sneak-to-activate, sneak-to-suppress or always. Omni-Tool opt-outs preserve stored tools. Disabling marker adaptations removes that player’s markers, and changing Haste preferences clears their owned attribute bonus until the next eligible trigger.
 
-Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
+Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 

@@ -2,7 +2,7 @@
 title: "Remote Servers"
 description: "Pterodactyl accounts, fleet operations, creation, file transfers, and Multiplexor Drive"
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "servermultiplexor, pterodactyl"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -167,7 +167,7 @@ A dedicated local Ed25519 identity is generated per account; only its public key
 | `remote drive doctor` | Check rclone, the local mount provider, SFTP authentication, SSH host trust, and safe Drive-folder ownership. |
 | `remote drive start\|status\|stop` | Mount all configured servers locally, inspect their current paths and health, or stop the mounts safely. No SMB server or administrator authorization is involved. |
 | `remote drive open [server] [--profile <id>]` | Open `~/Multiplexor Drive` in Finder, or open the exact local folder for a server. The drive starts or repairs itself first when necessary. |
-| `remote files <...>` / `remote smb <...>` | Compatibility aliases for `remote drive`; new workflows should use the Drive name. |
+| `remote files <...>` / `remote smb <...>` | Aliases for `remote drive`. |
 
 Mounts last until `remote drive stop` or a reboot. Run `remote drive start` afterward to restore configured mounts; `remote drive open` also starts or repairs them on demand. Stop the drive before changing its accounts.
 

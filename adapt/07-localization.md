@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Select languages and edit message files"
 published: true
-date: 2026-10-09T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,13 +28,13 @@ reset = "&aReset personal settings"
 reset_description = "Use the server defaults for this adaptation."
 ```
 
-The existing legacy codes, hex colors, and supported MiniMessage color markup work here. Use `&r` for an explicit reset. Keep placeholder names such as `{experience}` unchanged.
+Legacy color codes, hex colors, and supported MiniMessage color markup work here. Use `&r` for an explicit reset. Keep placeholder names such as `{experience}` unchanged.
 
 ## Configuration menu text
 
 Menu titles and actions use `config.gui.*` and the other `config.*` message groups. Personal adaptation controls use `gui.preferences.*`, plus the corresponding skill's preference messages. Configuration field labels and descriptions use `config.fields.<scope>.<field-path>.label` and `.description`; descriptions are arrays of lines.
 
-The French (`fr_FR`) catalog includes translated personal adaptation controls and their choices. Limits refer to the capacity unlocked by the player's adaptation level; hunger reserves use food points, with two points per hunger icon.
+In personal adaptation controls, limits refer to the capacity unlocked by the player's adaptation level; hunger reserves use food points, with two points per hunger icon.
 
 ```toml
 [config.fields.core.language]

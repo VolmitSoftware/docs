@@ -2,7 +2,7 @@
 title: "Rivers"
 description: "Surface rivers, shaped valleys, underground rivers, grottos, deep fluids, and standing pools: the physical configuration"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -34,7 +34,7 @@ For fields with `min` and `max`, set the allowed range. The optional `style` con
 | `maximumOutletsPerTile` | `4` | Maximum inland drainage roots (sinkhole grottos) selected in one plan tile, `1..256`; unused when no inland outlet kind is enabled |
 | `maximumCoastalOutletsPerTile` | `2` | Maximum sea outlets (mouths and coastal grottos) selected in one plan tile, `0..64`, budgeted separately from the inland roots; taken by type in turn (the best mouth, the best coastal grotto, the next mouth, ...), each at least two sample spacings from the others, with the tile's own coast ranked ahead of a neighbour's |
 | `oceanOutlets` | `true` | Allows direct sea mouths; qualifying coastal cliffs select an enabled coastal grotto instead, and the coastal budget alternates between the two kinds so a coast with both cliffs and beaches gets both |
-| `inlandOutlets` | empty | Allowed inland terminal types; the current value is `SINKHOLE_GROTTO` |
+| `inlandOutlets` | empty | Allowed inland terminal types; the only type is `SINKHOLE_GROTTO` |
 | `valleyPreference` | `1.5` | Weight on natural height when routing, `0..8`; higher values pull routes into the lowest ground |
 | `uphillPenalty` | `24` | Cost added per block of climb between lattice samples, `0..128` |
 | `slopePenalty` | `2` | Cost multiplied by the local terrain slope, `0..16`; higher values keep routes off hillsides |

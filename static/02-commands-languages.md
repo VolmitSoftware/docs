@@ -2,7 +2,7 @@
 title: Static - Commands and languages
 description: Player commands, operator tools, and downloadable translations
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: static, commands, localization
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -56,7 +56,7 @@ Viewing another player's module values requires `static.modules.others`, which d
 
 Only `languages/en_US.toml` is generated at startup. Selecting another language downloads its catalogue from the Static GitHub repository. Installed files work offline and retain local edits. Personal selections live in `languages/language-preferences.properties`; `general.language` supplies the server default.
 
-Downloads use the revision embedded in the JAR's `static-language-source.properties`, currently `054dca9a12149c324d29023abc7def9fa1e528bf`, from `VolmitSoftware/Static/src/main/resources/languages/`. New catalogue entries and gradient corrections in the local source need publication and a new pinned build revision before remote installations receive them. Missing new messages still use English.
+Downloads use the revision embedded in the JAR's `static-language-source.properties`, from `VolmitSoftware/Static/src/main/resources/languages/`.
 
 The 17 downloadable translations are German (`de_DE`), Spanish (`es_ES`), Finnish (`fi_FI`), French (`fr_FR`), Hebrew (`he_IL`), Italian (`it_IT`), Japanese (`ja-JP`), Korean (`ko_KR`), Lithuanian (`lt_LT`), Dutch (`nl_NL`), Polish (`pl_PL`), Portuguese (`pt_PT`), Russian (`ru_RU`), Turkish (`tr_TR`), Vietnamese (`vi_VI`), Simplified Chinese (`zh_CN`), and Traditional Chinese (`zh_TW`).
 

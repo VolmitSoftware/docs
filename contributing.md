@@ -2,7 +2,7 @@
 title: "Contributing"
 description: "How to contribute to this documentation"
 published: true
-date: 2026-10-13T14:42:49.254Z
+date: 2026-10-17T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,12 @@ schemas, or APIs, update the matching page here at the same time.
 Plugin guides cover installation, use, configuration, commands, permissions, and
 integrations. Keep smoke tests, regression plans, QA scripts, test results,
 and release sign-off out of these pages.
+
+Pages describe the current product in the present tense. Changelog-level
+content stays out: version history ("since 4.0", "new in", "previously",
+"no longer"), upgrade notes, status updates, dated checks, release readiness,
+"not yet" notes, roadmaps, priority lists, known gaps, and feature audits.
+Supported Minecraft and Java versions are current facts and stay.
 
 ## Frontmatter
 

@@ -2,7 +2,7 @@
 title: "Incident Mode & Playbooks"
 description: "Incident scoring, event-rate limits, and sequential mitigation actions"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -46,7 +46,7 @@ Incident entry stores the exact score evidence, tick-time trigger, thresholds, s
 
 ## Structured incident history
 
-The `incident` controller retains up to 256 structured events and atomically persists them to `plugins/React/incidents.json` by default. `plugins/React/core/incident.toml` controls persistence and retention. Startup loads the current canonical file; there is no legacy timeline migration.
+The `incident` controller retains up to 256 structured events and atomically persists them to `plugins/React/incidents.json` by default. `plugins/React/core/incident.toml` controls persistence and retention. Startup loads that file.
 
 `GET /api/v1/incidents?limit=20` returns newest events first together with the current atomic score snapshot and Incident Mode state. Each event includes its incident and event IDs, kind, phase, severity, occurrence and start time, source, title, summary, cause, optional world location, evidence, mitigation actions, and context values. Circuit Manager records its selected component, bounds, current-window events, global redstone event span, threshold, and fixed throttle. Trinity coordination records engagement, recovery, Iris and Adapt trigger evidence, guard activation, and playbook queue or terminal status.
 

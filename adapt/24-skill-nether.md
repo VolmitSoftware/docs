@@ -2,7 +2,7 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -179,7 +179,7 @@ When a piglin barter resolves, the nearest player with this adaptation inside ra
 
 5 levels · 3 knowledge
 
-Soul sand and soul soil no longer slow movement in any dimension, and a speed bonus is applied. The soul-speed burst fires only at max level.
+Soul sand and soul soil do not slow movement in any dimension, and a speed bonus is applied. The soul-speed burst fires only at max level.
 
 Personal controls: Soul-surface slow immunity (on/off); Mastery speed burst (on/off).
 

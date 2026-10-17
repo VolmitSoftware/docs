@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Editable locales and English fallbacks"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,7 +23,7 @@ Each language file starts with four localized sections explaining file editing, 
 
 ## Menu text
 
-Chest menus and native menu screens use the same locale files and the same resolution order, and the server renders every menu string in the viewing player's selected locale. Labels, descriptions, and messages shared with chest menus keep their existing keys. Text added for native screens uses `menu.native.*` keys:
+Chest menus and native menu screens use the same locale files and the same resolution order, and the server renders every menu string in the viewing player's selected locale. Labels, descriptions, and messages shared with chest menus use the same keys on both. Text specific to native screens uses `menu.native.*` keys:
 
 | Keys | Text |
 |------|------|

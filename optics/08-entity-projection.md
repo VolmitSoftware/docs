@@ -2,7 +2,7 @@
 title: "Entity Projection"
 description: "Optics entity snapshots, projected identities, movement, metadata, maps and relationships"
 published: true
-date: 2026-10-13T16:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -54,13 +54,13 @@ Use the `quantize(double)`/`dequantize(long)`, unit, velocity, height and angle 
 | 1 | Big-endian double | Finite positive effective scale |
 | 9 | Remaining bytes | Host entity metadata |
 
-The header occupies `HEADER_BYTES`, currently 9 bytes. The frame must be a proper rotation. The payload may be empty while the header still supplies visual state. An empty outer `EntitySnapshot.metadata()` means absence of metadata. Hosts handle that absence before calling `decode`.
+The header occupies `HEADER_BYTES`, 9 bytes. The frame must be a proper rotation. The payload may be empty while the header still supplies visual state. An empty outer `EntitySnapshot.metadata()` means absence of metadata. Hosts handle that absence before calling `decode`.
 
 Wormholes Bukkit and native hosts use this header for streamed native-client entities. Bukkit captures `GravityFrame.WORLD` and the living entity's complete scale attribute value. Native hosts capture the current gravity frame and effective scale. The native consumer removes the header before reading the host metadata, then applies gravity and scale to its model. Source metadata changes, gravity changes and effective scale changes must invalidate capture reuse.
 
 Native model snapshots keep body yaw and pitch local to the captured gravity frame. Their look vector remains in world coordinates. Convert that vector into the local frame when selecting the head angle.
 
-Use `withData(updatedData)` when patching item-frame rotation, upside-down appearance or other host metadata fields. It retains gravity and effective scale. The header stays inside the existing metadata payload, so `EntitySnapshot` fields and the outer stream message shape do not change.
+Use `withData(updatedData)` when patching item-frame rotation, upside-down appearance or other host metadata fields. It retains gravity and effective scale. The header is part of the metadata payload; it adds no `EntitySnapshot` fields and does not alter the outer stream message shape.
 
 ## Geometry projection
 

@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher"
 description: "Gamemode gestures, selector menus, permissions, and configuration"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gamemodeswitcher, gamemodes, folia"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -25,7 +25,6 @@ Permissions control both who may switch and which gamemode they may switch to.
 - [Installation and configuration *Install the plugin, then set gestures, feedback, and restrictions*](/gamemodeswitcher/01-installation-configuration)
 - [Commands and permissions *The `/gsw` tree and every permission node*](/gamemodeswitcher/02-commands-permissions)
 - [Gestures and operations *Default gestures, rebinding keys, and troubleshooting*](/gamemodeswitcher/03-gestures-operations)
-- [Features and roadmap *What's implemented and what comes next*](/gamemodeswitcher/04-feature-map)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}
 

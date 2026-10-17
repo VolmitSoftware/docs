@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-16T00:24:18.027Z
+date: 2026-10-17T00:00:00.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -29,7 +29,7 @@ The Volmit packaging plugin retains bundled version providers from their `Native
 
 Each plugin pins its own VolmLib release. Updating one plugin does not update another plugin's native code.
 
-Implementations can be bundled or provisioned as runtime dependencies. Runtime loading must share the bundled API types with `native-common` and the selected version provider, keep API package names consistent, and retain bundled API members referenced by those external jars. Keep server-owned types used by native method signatures unrelocated. Use the original provider artifacts; a shrink pass against a different Minecraft version can remove required native overrides. Iris uses this runtime dependency option with build-pinned coordinates and SHA-256 checksums. Publish the provider modules at the pinned VolmLib revision before building the Iris plugin jar. Its provider checksums and retained API members come from the published JitPack artifacts, including when compilation uses a local VolmLib checkout.
+Implementations can be bundled or provisioned as runtime dependencies. Runtime loading must share the bundled API types with `native-common` and the selected version provider, keep API package names consistent, and retain bundled API members referenced by those external jars. Keep server-owned types used by native method signatures unrelocated. Use the original provider artifacts; a shrink pass against a different Minecraft version can remove required native overrides. Iris uses this runtime dependency option with build-pinned coordinates and SHA-256 checksums. Its provider checksums and retained API members come from the published JitPack artifacts, including when compilation uses a local VolmLib checkout.
 
 For a separate provider loader, use the loader that owns `NativeAdapters` as its parent and call `NativeAdapters.registerProviderLoader(loader)` before resolving capabilities. After the owning worlds and hooks have stopped, call `releaseProviderLoader(loader)` and close the provider loader. Bundled integrations need no registration.
 

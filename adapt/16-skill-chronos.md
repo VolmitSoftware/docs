@@ -2,7 +2,7 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T16:39:54.431Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,7 +29,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 
 Trigger options can restrict the server’s enabled inputs and add sprint or held-clock requirements. An eligible Manual Blink owns the double-jump gesture ahead of Instant Recall, including during its cooldown; Recall’s other enabled inputs remain available. Clock sounds remain subject to the server sound gate. Borrowed Time always repays existing damage debt. Pocket Watch’s automatic falling mode still requires any server-required clock and shares its existing airtime budget. Changing Pocket Watch preferences ends its own current slow-fall pulse while preserving unrelated potion effects and the spent airtime budget. Time Bomb presentation choices are captured for each deployed field and never alter its mechanics. Overtime’s individual effect toggles only filter its supported beneficial effects, and harmful shortening still requires maximum level.
 
-Toggle defaults preserve existing behavior. Size and rate presets default to Full; material, ore and structure filters default to their existing selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
+Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
 
@@ -165,7 +165,7 @@ A clock click rewinds position, health, and hunger. Inventory is not restored. R
 | `showRewindTraceParticles` | `true` | Draws the trace along the rewind path. |
 | `rewindTracePoints` | `18` | Points sampled along the rewind path for the trace. |
 | `rewindAnimationDurationMillis` | `1000` | Target length of the rewind animation in milliseconds. |
-| `rewindAnimationTicks` | `18` | Legacy tick count used only when the duration value is invalid. |
+| `rewindAnimationTicks` | `18` | Fallback tick count used only when the duration value is invalid. |
 | `rewindUseTemporarySpectator` | `true` | Puts the player in spectator during the animation so the camera passes through blocks. |
 | `rewindUseClientCamera` | `true` | Anchors a client-side camera during the rewind so the server position only moves at the end. |
 | `rewindTeleportXpSuppressExtraTicks` | `10` | Extra ticks after a recall during which teleport XP and stats are suppressed. |
@@ -532,7 +532,7 @@ Written to `plugins/Adapt/skills/chronos.toml` on first load.
 | `survivalStreakHourCap` | `5` | Hours counted toward the survival multiplier before it stops growing. |
 | `challengeChronosReward` | `500` | Base knowledge reward for the Chronos challenge chain. |
 
-An existing `speedPotionBaseXP` of `45`, the old default, is rewritten to `120` on load.
+A `speedPotionBaseXP` of exactly `45` is rewritten to `120` on load.
 
 ### Challenges
 

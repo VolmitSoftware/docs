@@ -2,7 +2,7 @@
 title: "Optics Overview"
 description: "Build Optics and understand its packages, API guarantees, and integration boundaries"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-08T12:00:00.000Z
@@ -90,3 +90,11 @@ A host can draw sampled shapes and transforms as a virtual scene. This does not 
 | Relay destination appearance and orient block states | [09 - Fidelity and Block States](/optics/09-fidelity-and-block-states) |
 | Implement a compatible stream consumer | [10 - ClientView and Client Geometry](/optics/10-clientview-and-client-geometry) |
 | Implement platform services and use math helpers | [11 - Math and Host Interfaces](/optics/11-math-and-host-interfaces) |
+
+## Uninstalling
+
+Optics creates no files, settings, or world data of its own. Wormholes includes it, so [uninstalling Wormholes](/wormholes/01-installation-configuration#uninstalling) removes it from a server.
+
+In your own project, remove the `art.arcane:optics` dependency and rebuild. A copy installed with `publishToMavenLocal` stays in the local Maven repository; delete `art/arcane/optics/` there, which is under `~/.m2/repository/` by default.
+
+To remove the demonstration plugin, see [Uninstalling OpticsDemo](/optics/12-demonstrations#uninstalling).

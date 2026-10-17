@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tundra Autumn"
 description: "Iris biome atlas entry for tundra/autumn in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -84,7 +84,7 @@ In that immediate child choice it contributes `3` of `8` slots (37.50%); later c
 
 ### Amber Poplar Forest
 
-`tundra/amber-poplar-forest` is a complete child biome introduced in Overworld and Underworld. Its Underworld display name is **Sable Hyphae Forest**. The existing `tundra/autumn` region memberships make it naturally reachable.
+`tundra/amber-poplar-forest` is a complete child biome in Overworld and Underworld. Its Underworld display name is **Sable Hyphae Forest**. The `tundra/autumn` region memberships make it naturally reachable.
 
 Its rarity is `3`. In the immediate parent selection it receives `1` of `8` slots (12.50%). Both packs retain the same child-list order and use a shrink factor of `2.4`. These weights describe selection slots, not a guaranteed percentage of terrain area.
 

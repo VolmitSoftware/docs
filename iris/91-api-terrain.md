@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-10-11T20:57:52.962169+00:00
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -105,7 +105,7 @@ Each owned cell has `room()` context containing its stable feature instance ID, 
 
 For `SOLID` cells, `material()` reports the feature's structural `solid` fallback. Generated exposed boundaries can use the owning biome's safe floor, ceiling or wall palette; interior solids keep the fallback. Air and fluid materials directly match their planned kinds.
 
-Procedural placement implementations receive room context through `getVariantObject(IrisData data, RNG rng, SubterrainRoom room)`. Cave placement resolves the room before baking a variant; ordinary placements pass null. Implementations use the three-argument contract. The two-argument interface method has been removed.
+Procedural placement implementations receive room context through `getVariantObject(IrisData data, RNG rng, SubterrainRoom room)`. Cave placement resolves the room before baking a variant; ordinary placements pass null. Implementations use the three-argument contract.
 
 For floor-aligned object placement, use `IrisObject.placeOnFloor(int x, int firstAirY, int z, IObjectPlacer placer, IrisObjectPlacement config, RNG rng, BiConsumer<BlockPosition, NativeBlockState> listener, IrisData data)`, which returns the placement result Y. Supply the first open internal Y above the chosen supporting floor. The object's lowest rotated non-air block aligns to that Y before configured translation and random Y offsets. The supplied placer continues to govern placement guards; the method does not search for a floor. Use an explicit nonnegative Y and a floor placement mode; ceiling-hung and structure-piece placements use `place`.
 
@@ -137,4 +137,4 @@ Use `IrisTerrainService.biomeKey(world, x, absoluteY, z)` for the saved-aware bi
 
 `Engine.getObjectsAt(chunkX, chunkZ)` returns object keys recorded for a sealed chunk. `Engine.getPOIsAt(chunkX, chunkZ)` returns recorded POI keys and positions. These reads do not open an archived runtime or require its pack. A sealed empty record returns an empty set.
 
-POI positions use world X/Z and internal Y. Add the dimension minimum height to internal Y when converting to an absolute world height. The current mantle fallback uses the same coordinates for chunks without sealed records.
+POI positions use world X/Z and internal Y. Add the dimension minimum height to internal Y when converting to an absolute world height. The mantle fallback uses the same coordinates for chunks without sealed records.

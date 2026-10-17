@@ -2,14 +2,14 @@
 title: "Overworld"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-10-12T01:13:58.426Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 Overworld is the normal-environment half of the paired biome atlas. It supplies the shared terrain geometry used by Underworld, then renders that geometry with normal-world water, stone, soil, vegetation, structures, mobs, and climate derivatives.
 
-| Property | Current value |
+| Property | Value |
 |---|---|
 | Built-in pack | Overworld |
 | Environment | `NORMAL` |
@@ -32,7 +32,7 @@ Both packs use `surfaceDetail: 0.5` on nonflat terrain generators to smooth smal
 
 ## 3D terrain
 
-The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes retain their current terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
+The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes keep their height-based terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
 

@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -337,6 +337,3 @@ Without Vault, with `[groups] useVault = false` (default `true`), or with no Vau
 provider registered, the group value is empty and `inGroup` is false. Other conditions such as
 `viewer.op`, permissions, world and health are unaffected. Changing `[groups] useVault` applies on
 reload.
-
-Gloss ignores schema-1 board documents: rewrite custom files as schema 2, or use `/gloss board reset`
-for a bundled default. See [Data Files & Hot Reload](/gloss/03-data-files).

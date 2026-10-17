@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-10-11T14:27:21.074Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -188,7 +188,7 @@ Use the `iris` expansion placeholders listed in [09 - PlaceholderAPI](/iris/09-p
 
 ## React and Wormholes
 
-Iris advertises `metric-snapshots-v1` through its registered `IntegrationServiceContract`. Consumers can use `IntegrationSnapshotProvider.snapshotMetrics(keys)` to request immutable cached metrics. Requested keys are collected every 20 scheduler ticks, retain their original Iris telemetry timestamps, and expire from demand after 30 seconds without another request. A first request can return an empty publication. Each request and retained demand are bounded by the number of keys in `IntegrationMetricSchema.irisKeys()`; an oversized request is rejected. Disabling Iris clears publications. The existing `sampleMetrics(keys)` and per-world metric groups remain available.
+Iris advertises `metric-snapshots-v1` through its registered `IntegrationServiceContract`. Consumers can use `IntegrationSnapshotProvider.snapshotMetrics(keys)` to request immutable cached metrics. Requested keys are collected every 20 scheduler ticks, retain their original Iris telemetry timestamps, and expire from demand after 30 seconds without another request. A first request can return an empty publication. Each request and retained demand are bounded by the number of keys in `IntegrationMetricSchema.irisKeys()`; an oversized request is rejected. Disabling Iris clears publications. `sampleMetrics(keys)` and per-world metric groups are also available.
 
 - React provides Iris performance dashboards and controls. See [React — Iris, Adapt & Integrations](/react/07-features-iris-adapt-integrations).
 - Wormholes supports biome-aware random teleportation in Iris worlds. See [Wormholes — Integrations](/wormholes/15-integrations).
