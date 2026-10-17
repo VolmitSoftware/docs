@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-16T12:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -363,7 +363,7 @@ Standard projection also shows entities through nested local portal views. Their
 
 ## ClientView
 
-ClientView gives players with the Wormholes client mod native portal views: the destination is drawn with the client's own block models, textures, and lighting, clipped to the portal's exact opening, including irregular apertures. Players without the mod keep the standard projection described above. Installation and client settings: [Client mod](/wormholes/01-installation-configuration#client-mod). Server keys: [`[client-view]`](/wormholes/01-installation-configuration#client-view). The F3 connection line shows `Wormholes: Connected` when ClientView is active, `Wormholes: Mismatch` for incompatible protocol or Minecraft versions, and `Wormholes: Disconnected` otherwise.
+ClientView gives players with the Wormholes client mod native portal views: the destination is drawn with the client's own block models, textures, and lighting, clipped to the portal's exact opening, including irregular apertures. Players without the mod keep the standard projection described above. Installation and client settings: [Client mod](/wormholes/01-installation-configuration#client-mod). Server keys: [`[client-view]`](/wormholes/01-installation-configuration#client-view). The F3 screen shows the connection, server, and portal state; see [F3 debug screen](#f3-debug-screen).
 
 ClientView draws each portal view in one of two ways:
 
@@ -377,8 +377,6 @@ Floor and ceiling portals visible through a linked portal or mirror show their o
 World views meet the destination floor and surrounding frame at the portal plane. Walking around an opening switches the view and travel route to the approached face. This also applies close to the plane. Crossing the plane outside the opening does not transport the player. A ready seamless horizontal opening lets a player pass through intact source floor or ceiling blocks inside its selected cells. Surrounding blocks and closed cells remain solid, and destination obstacles still constrain movement.
 
 Sky horizon shading follows the viewpoint inside the destination, including its height and whether that viewpoint is underwater. Streamed views use destination sky, fog, weather, and lighting on Minecraft 26.1.2, 26.2, and 26.3 Bukkit servers.
-
-With `show-debug-overlay = true` in the client file, the F3 metrics line ends with `stencil=<state> views=<count> backends=<terrain>/<shaders>`. The state is `on` while world views draw, `deferred` while they draw through an Iris shader pack, and `off` otherwise; the count is the number of world views drawn in that frame. The terrain backend is `vanilla` or `sodium`, and the shader backend is `vanilla` without Iris, `iris` with a shader pack, or `iris-off` with Iris installed and no pack, for example `backends=sodium/iris`.
 
 The fixed vanilla portal terrain and composition shaders prepare during game resource loading. Reflections and both RGSS filtering states use prepared variants. Moving, crossing, revisiting, and scene resets retain these programs. A successful resource reload replaces them. Content-dependent reflected shaders can still compile on first use.
 
@@ -407,6 +405,20 @@ Unused histories expire after 60 seconds or earlier capacity eviction. Leaving t
 Terrain on the near side of the destination aperture is clipped with shaders on or off. Iris shader packs must explicitly support Distant Horizons. Streamed views do not render destination LODs.
 
 `/wormholes clientview` lists sessions and switches ClientView at runtime; see [ClientView commands](/wormholes/09-commands-permissions#clientview-commands).
+
+### F3 debug screen
+
+The client mod adds a Wormholes block to the F3 screen on every server. Without a Wormholes server, the block is the single line `Wormholes: Disconnected`.
+
+| Line | Shows |
+|------|-------|
+| `Wormholes: <status> \| <version> <platform>` | `Connected` while ClientView is active, `Mismatch` for an incompatible ClientView protocol or Minecraft version, and `Disconnected` otherwise, followed by the server's Wormholes version and platform, for example `3.1.0 fabric 26.1.2` or `3.1.0 Paper 26.1.2`. `server unknown` means the server did not report its version. |
+| `Protocols: view v<n>, travel <on\|off>, menus v<n> <native\|chest>` | The negotiated ClientView protocol, whether [travel with the client mod](#travel-with-the-client-mod) is available, and the native menu protocol with whether the server opens its menus as native screens or chest menus. `view off` and `menus off` mean the feature was not negotiated. Paper, Purpur, and Folia servers show `travel off`. |
+| `Portals: armed <n>, drawn <n>, streams <n>` | Nearby portals and doors ready for travel, portal views drawn in the last frame, and streamed views. |
+| `Travel: <state>, residents <n>` | `idle`, `armed` while a portal is ready for travel, `awaiting server` while the server confirms a crossing, or `crossing`, followed by the number of destination worlds the client keeps loaded. |
+| `Mismatch: ...` | Appears in yellow, one line per difference, when the client and server Wormholes versions, ClientView protocols, or menu protocols differ, for example `Mismatch: version client 3.1.0, server 3.0.4`. `Mismatch: Minecraft data version` means the client and server run different Minecraft versions. |
+
+With `show-debug-overlay = true` in the client file, detail lines follow, with long values continued on indented lines. `ClientView:` shows the session state, plate memory, and queued outbound messages. `Stream:` shows received frames and bytes, sweep and apply times, unknown block states, projected entities, and effect emitters. `Render:` shows streamed mesh and GPU memory figures. The last entry is `stencil=<state> views=<count> skipped=<count> backends=<terrain>/<shaders> residentMiB=<n>`. The stencil state is `on` while world views draw, `deferred` while they draw through an Iris shader pack, and `off` otherwise; `views` is the number of world views drawn in that frame. The terrain backend is `vanilla` or `sodium`, and the shader backend is `vanilla` without Iris, `iris` with a shader pack, or `iris-off` with Iris installed and no pack, for example `backends=sodium/iris`. `residentMiB` is the memory held by loaded destination worlds.
 
 ### Shaped apertures
 
