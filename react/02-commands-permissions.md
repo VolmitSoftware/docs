@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React command syntax, aliases, and permission requirements"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,7 @@ The root command is `/react` (alias `/re`). Use `/react help [page]` or `/react 
 |------------|---------|-------------|
 | `react.use` | op | Use React administration commands |
 | `react.debugdump` | op | Save and optionally upload diagnostic reports |
+| `react.update` | op | Receive React update notices and see React in `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
 | `react.language.self` | true | Choose or reset your React language; also requires `volmit.language.self` |
 | `volmit.language.self` | true | Shared requirement for personal language selection |
 | `react.*` | op | All React commands. Includes `react.use` and `react.shorthands.*` |

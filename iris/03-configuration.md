@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-15T16:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -90,6 +90,7 @@ Missing groups use their defaults.
 |-----|---------|--------------|-----|
 | `language` | `"en_US"` | Live | Server language. Non-English catalogs download when selected |
 | `metrics` | `true` | **Restart** | **Bukkit only.** Enables bStats reporting |
+| `updateNotifications` | `true` | Live | **Bukkit only.** Checks Iris's stable GitHub releases for shared update notices and `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
 | `commandSounds` | `true` | Live | **Bukkit only.** Plays sounds for command completion and command results |
 | `debug` | `false` | Live | Enables detailed console logging, Studio update wait and phase durations, and chunk error dumps under `debug/chunk-errors/`. Leave off during normal operation |
 | `dumpMantleOnError` | `false` | Live | Saves a region dump under `dump/` when stored generation data cannot be read correctly |

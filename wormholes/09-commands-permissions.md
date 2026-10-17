@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -121,6 +121,7 @@ See [Languages](/languages).
 | `volmit.language.self` | Shared requirement for personal language selection |
 | `wormholes.admin` | Administration, including applying and clearing portal surface skins |
 | `wormholes.debugdump` | Save and optionally upload diagnostic reports; default `op` |
+| `wormholes.update` | Receive Wormholes update notices and see Wormholes in `/volmit plugins updates`; default `op`. See [Update notifications](/volmlib/api/github-releases) |
 | `wormholes.admin.items` | Give portal and door items |
 | `wormholes.admin.network` | Manage linked servers |
 | `wormholes.admin.projection` | Freeze or rebuild projections |

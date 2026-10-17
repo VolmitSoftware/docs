@@ -2,7 +2,7 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-10-13T14:42:49.252Z
+date: 2026-10-17T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -61,6 +61,7 @@ Manual `/bile load`, `/bile unload`, and `/bile reload` commands bypass the
 | `bile.use` | `op` | Manage plugins |
 | `biletools.config` | `op` | Open the settings editor and change the server language |
 | `biletools.debug` | `op` | Save and optionally upload diagnostic reports |
+| `biletools.update` | `op` | Receive BileTools update notices and see BileTools in `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
 | `biletools.language.self` | `true` | Choose or reset your BileTools language; also requires `volmit.language.self` |
 | `volmit.language.self` | `true` | Shared requirement for personal language selection |
 

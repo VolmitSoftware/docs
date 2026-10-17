@@ -2,7 +2,7 @@
 title: "BileTools: Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-10-07T13:45:13.245Z
+date: 2026-10-17T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,6 +16,7 @@ Configuration lives in `plugins/BileTools/biletools.yml`. The table below lists 
 |---|---|---|
 | `language` | `en_US` | Selects the default locale used for player and operator text. The selector updates this value |
 | `metrics` | `true` | Enables anonymous bStats reporting. Changes from the in-game editor apply immediately |
+| `update-notifications` | `true` | Checks BileTools' stable GitHub releases for shared update notices and `/volmit plugins updates`. Changes from the in-game editor apply immediately. See [Update notifications](/volmlib/api/github-releases) |
 
 ## Watcher
 

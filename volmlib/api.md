@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-10-15T23:11:58.034Z
+date: 2026-10-17T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -218,5 +218,7 @@ For PlaceholderAPI, see [Placeholders](/volmlib/api/placeholders).
 For downloads, jar packaging, server defaults, player preferences, and the per-language inventory editor, see [Shared localization](/volmlib/api/localization).
 
 For the `debugdump` command, report contents, permissions, and plugin contributors, see [Shared diagnostic reports](/volmlib/api/diagnostics).
+
+For release checks, join notices, `/volmit plugins updates`, and per-plugin update settings, see [Update notifications](/volmlib/api/github-releases).
 
 For Linux container memory limits, usage, pressure, and remaining headroom, see [Container memory](/volmlib/api/diagnostics#container-memory).

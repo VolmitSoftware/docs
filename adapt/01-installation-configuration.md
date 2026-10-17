@@ -2,13 +2,13 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, and settings"
 published: true
-date: 2026-10-13T16:39:54.436Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Edit the TOML files under `plugins/Adapt/`. A valid save refreshes open menus. Invalid TOML is rejected and the current settings stay. SQL, Redis, metrics, update checks, and optional-plugin detection apply on restart.
+Edit the TOML files under `plugins/Adapt/`. A valid save refreshes open menus. Invalid TOML is rejected and the current settings stay. SQL, Redis, metrics, and optional-plugin detection apply on restart.
 
 Startup fills missing player-preference policies and writes adaptation settings in a stable order. Existing canonical files remain untouched when their settings and generated comments are unchanged.
 
@@ -99,7 +99,7 @@ plugins/Adapt/
 | `debug` | `false` | Prints Adapt's developer debug lines to the console |
 | `playerSettingsEnabled` | `true` | Allows personal skill/adaptation settings and enable toggles. `false` forces their server defaults and hides the controls; learning, unlearning, personal effects, and language remain available. Hot-reloadable |
 | `verbose` | `false` | Prints gated profile, permission, XP, and per-action diagnostics. `/adapt debug verbose` flips the in-memory value without writing the file |
-| `autoUpdateCheck` | `true` | Starts the update check asynchronously during enable. Each remote source has a 3 second connect and read timeout |
+| `autoUpdateCheck` | `true` | Checks Adapt's stable GitHub releases and includes Adapt in shared update notices and `/volmit plugins updates`. Applies on save. See [Update notifications](/volmlib/api/github-releases) |
 | `splashScreen` | `true` | Prints the startup banner |
 | `metrics` | `true` | Starts bStats during enable |
 | `integrationSnapshotMaxMetrics` | `65536` | Maximum distinct metrics retained for snapshot consumers, clamped to 1–65536. A changed limit clears the snapshot cache on the next collection cycle |

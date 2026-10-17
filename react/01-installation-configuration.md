@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install React, configure automatic reloads, and connect React Web"
 published: true
-date: 2026-10-14T12:43:24.047Z
+date: 2026-10-17T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -48,6 +48,7 @@ To update React, stop the server, replace its jar, and restart. Keep `plugins/Re
 |---|---:|---|
 | `language` | `en_US` | Message language |
 | `metrics` | `true` | Enable anonymous bStats metrics; changes apply automatically |
+| `updateNotifications` | `true` | Check React's stable GitHub releases for shared update notices and `/volmit plugins updates`; changes apply automatically. See [Update notifications](/volmlib/api/github-releases) |
 | `integrationSnapshotMaxMetrics` | `65536` | Maximum distinct metrics retained for snapshot consumers, clamped to 1–65536. A changed limit clears the snapshot cache on the next collection cycle |
 | `verbose` | `false` | Additional operator logs |
 | `debug` | `false` | Debug diagnostics |

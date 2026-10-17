@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-16T18:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -112,6 +112,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 |------------|---------|------|
 | `iris.all` | `op` | Use Iris administration commands and change the server language |
 | `iris.debugdump` | `op` | Save and optionally upload diagnostic reports |
+| `iris.update` | `op` | Receive Iris update notices and see Iris in `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
 | `iris.language.self` | `true` | Choose or reset your Iris language; also requires `volmit.language.self` |
 | `volmit.language.self` | `true` | Shared requirement for personal language selection |
 | `iris.treefeller` | `op` | Use survival tree felling; also requires `treeFeller.enabled` |

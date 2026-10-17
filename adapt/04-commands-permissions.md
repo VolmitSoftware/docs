@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -72,5 +72,6 @@ Most command permissions default to operators. `adapt.effects`, `adapt.language.
 | `adapt.effects` | Toggle personal effects |
 | `adapt.debug` | Use debug mode |
 | `adapt.debugdump` | Save and optionally upload diagnostic reports; default `op` |
+| `adapt.update` | Receive Adapt update notices and see Adapt in `/volmit plugins updates`; default `op`. See [Update notifications](/volmlib/api/github-releases) |
 
 Gameplay access uses `adapt.use.<skill>` and `adapt.use.<adaptation>`. These are allowed unless explicitly denied. Operators bypass them.

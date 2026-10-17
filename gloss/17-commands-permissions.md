@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-10-08T00:57:06Z
+date: 2026-10-17T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -151,7 +151,7 @@ FeatherBoard and AnimatedScoreboard imports produce board and animation document
 
 ## Permissions
 
-`gloss.*` grants Gloss permissions; personal language selection also requires the shared `volmit.language.self` permission. `gloss.debugdump` defaults to operators and authorizes diagnostic reports independently of `gloss.admin`. Most permissions default to operators. These are available to players by default:
+`gloss.*` grants Gloss permissions; personal language selection also requires the shared `volmit.language.self` permission. `gloss.debugdump` defaults to operators and authorizes diagnostic reports independently of `gloss.admin`. `gloss.update` defaults to operators and shows Gloss in shared update notices and `/volmit plugins updates`; see [Update notifications](/volmlib/api/github-releases). Most permissions default to operators. These are available to players by default:
 
 - `gloss.emoji.use`
 - `gloss.bubbles.send`

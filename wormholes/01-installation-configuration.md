@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, and quality profiles"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -244,6 +244,7 @@ the runtime does not use.
 |-----|---------|--------|
 | `language` | `en_US` | Active locale name. See [11 - Localization](/wormholes/11-localization) |
 | `metrics` | `true` | Enables anonymous bStats reporting after a restart |
+| `update-notifications` | `true` | Bukkit only. Checks Wormholes' stable GitHub releases for shared update notices and `/volmit plugins updates`; applies on save. See [Update notifications](/volmlib/api/github-releases) |
 | `language-fallbacks` | `""` | Comma-separated fallback locales. Code English is always final |
 | `schema` | `3` | Must match exactly |
 | `quality` | `auto` | `auto` \| `performance` \| `balanced` \| `cinematic` |
