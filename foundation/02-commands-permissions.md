@@ -2,7 +2,7 @@
 title: "Commands and Permissions"
 description: "Every Foundation command, its permission, and what it does"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "foundation, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -12,21 +12,26 @@ dateCreated: 2026-08-28T00:00:00.000Z
 
 | Command | Permission | Behavior |
 |---|---|---|
-| `/foundation` (`fdn`, `found`, `foundations`) | Any Foundation root or routed-command permission | Opens the player control center for players with `foundation.user` or `foundation.admin`; otherwise displays the command atlas |
+| `/foundation` (`fdn`, `found`, `foundations`) | Any Foundation root or routed-command permission | Opens paginated, permission-filtered command help |
 | `/foundation menu` (`gui`, `open`) | `foundation.user` or `foundation.admin` | Opens the control center |
-| `/foundation status` (`about`, `version`) | `foundation.user` or `foundation.admin` | Shows version, Java, and module totals, plus an explicit preparation notice while the online-profile barrier is active |
-| `/foundation reload` | `foundation.admin.reload` | Parses, validates, and applies `foundation.toml` |
+| `/foundation status` (`about`) | `foundation.user` or `foundation.admin` | Shows version, Java, and module totals, plus an explicit preparation notice while the online-profile barrier is active |
+| `/foundation reload` | `foundation.admin.reload` | Parses, validates, and applies `config.toml` |
 | `/foundation modules` (`features`) | `foundation.admin.modules` | Lists every module and lifecycle state |
 | `/foundation config` (`editor`, `settings`) | `foundation.admin.config` | Opens the transactional configuration editor |
 | `/foundation doctor` (`diagnostics`) | `foundation.admin.diagnostics` | Reports failed or blocked modules and live ownership for every active direct-command label and alias |
+| `/foundation doctor command <command-or-alias>` | `foundation.admin.diagnostics` | Explains the sender's dispatch permission, module availability, and disabled-command decision without running the command |
 | `/foundation language` (`locale`, `lang`) | Personal tools require both `foundation.language.self` and `volmit.language.self`; server tools require `foundation.admin.config` or `volmit.language.admin` | Opens the language tools available to the sender |
 | `/foundation language <locale>` | Player: both personal nodes; console: either server-administration node | Selects a player's personal locale, or the server locale when issued by console |
 | `/foundation language self [locale\|reset]` | Both `foundation.language.self` and `volmit.language.self` | Opens the personal picker, selects a locale, or returns to the server default |
 | `/foundation language server [locale]` | `foundation.admin.config` or `volmit.language.admin` | Opens the server picker or transactionally changes the default locale |
 | `/foundation language server edit [locale]` | `foundation.admin.config` or `volmit.language.admin`; player only | Opens the grouped, searchable editor, preparing an uninstalled repository or valid custom locale when needed |
 | `/foundations debug` (`/foundation debug`, `report`) | `foundation.debug` | Opens the Director debug submenu; `foundation.admin.debug` grants this node |
-| `/foundations debug dump [upload=true]` | `foundation.debug` | Always saves a sanitized local diagnostic report, then uploads it to mclo.gs when requested and enabled; pass `false` for local-only output |
+| `/foundation debug version` | `foundation.debug` | Shows the installed plugin version |
+| `/foundation version` | `foundation.debug` | Hidden alias for the version action; omitted from normal help |
+| `/foundations debug dump [upload=true]` | `foundation.debug` | Saves a sanitized local diagnostic report, then uploads it to mclo.gs when requested and enabled; pass `upload=false` for local-only output |
 | `/foundation help [page\|command-or-alias]` (`?`) | Any Foundation root or routed-command permission | Opens the complete clickable, paged command atlas or one command's detail card |
+| `/foundation recovery list <online-player\|uuid>` | `foundation.recovery.list` | Lists retained inventory-clear checkpoints; use a UUID for an offline player |
+| `/foundation recovery restore <online-player> <checkpoint-uuid> [confirm]` | `foundation.recovery.restore` | Previews and confirms a one-use restoration to the original player's empty inventory |
 
 Each administration surface enforces the permission in its row. A granular node grants that surface and root help on its own, without the `foundation.user` or `foundation.admin` parent.
 
@@ -225,3 +230,5 @@ Remote utility use also requires `foundation.utility.others`. Remote vanish requ
 Some nodes are created at runtime rather than declared: `foundation.home.limit.1` through `foundation.home.limit.1000`, `foundation.warp.<name>`, and `foundation.kit.<name>`. The language service registers `foundation.language.self` and `volmit.language.self` (both default `true`) and `volmit.language.admin` (operator).
 
 See [Languages](/languages) for the language commands and their permissions.
+
+`foundation.update` defaults to operators and controls who receives GitHub update notices. It does not grant administrative commands. Set `runtime.updateNotifications=false` to disable the notifier.

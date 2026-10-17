@@ -38,6 +38,7 @@ For a separate provider loader, use the loader that owns `NativeAdapters` as its
 | Server release | Module |
 | --- | --- |
 | 1.21.11 | `native-v1_21_R7` |
+| 26.1 and 26.1.1 | `native-v26_1_R1` (spawn protection only) |
 | 26.1.2 and 26.2 | `native-v26_2_R1` |
 | 26.3 | `native-v26_3_R1` |
 

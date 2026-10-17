@@ -2,13 +2,15 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry constraints, the portal registry, the Wormholes handoff, and building from source"
 published: true
-date: 2026-10-12T23:36:43.102Z
+date: 2026-10-14T00:00:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
 <nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Developer reference</span></nav>
+
+Shaped Portals owns shape validation and the registry for native portal surfaces. VolmLib supplies shared services; Wormholes may take ownership of accepted Nether shapes.
 
 ## Geometry constraints
 
@@ -28,7 +30,7 @@ For standalone Nether portals, the [creation event contract](/shapedportals/02-p
 
 Neither `NETHER_PORTAL` nor `END_PORTAL` is a tile state that can hold a persistent data container, and runtime block metadata does not survive a restart. Scanning the world after startup cannot tell a managed portal from a vanilla one.
 
-So Shaped Portals keeps its own registry. Deleting it orphans the portals. Vertical axes `X` and `Z` identify Nether portals; axis `Y` identifies a horizontal End portal, which keeps both types in one schema.
+The registry identifies managed portals across restarts; deleting it leaves their blocks unmanaged. Axes `X` and `Z` identify Nether portals, and `Y` identifies horizontal End portals.
 
 Events mark nearby records for checking and a periodic sweep reconciles loaded records. The plugin never globally cancels `BlockPhysicsEvent` to hold a shape together.
 
@@ -36,9 +38,9 @@ See [Persistent ownership](/shapedportals/02-portal-behavior-events#persistent-o
 
 ## Native mechanics boundary
 
-Shaped Portals uses Bukkit `Orientable` block data for Nether portal axes and ordinary `END_PORTAL` data for horizontal End surfaces. No NMS, packets, or version adapters.
+Shaped Portals uses Bukkit `Orientable` data for Nether axes and ordinary `END_PORTAL` data for horizontal End surfaces. It uses no NMS, packets, or version adapters.
 
-Minecraft controls destination search, coordinate scaling, and generated destination frames. End surfaces are horizontal because the block is. Vertical End surfaces, 3D surfaces, exact pairing, and custom destinations need a separate display or teleport system.
+Standalone travel uses Minecraft's destination search, coordinate scaling, and generated frames. Vertical End surfaces, 3D surfaces, exact pairing, and custom destinations require a separate display or teleport system. Wormholes supplies linked travel for Nether shapes it accepts.
 
 No event set covers every external block mutation, which is why the periodic integrity sweep exists.
 
@@ -56,17 +58,19 @@ Shaped Portals submits Nether interior block positions and their vertical axis t
 
 ## Build from source
 
-Run the Gradle wrapper from the ShapedPortals repository root with Java 25. It produces Java 25 bytecode.
+Use Java 25. Build the sibling `Wormholes` API first with `apiJar`, or pass `-PwormholesApiJar=<path>` to select another API jar. The default reads `wormholesVersion` from `../Wormholes/gradle.properties` and uses `../Wormholes/build/libs/Wormholes-<wormholesVersion>-api.jar`. The API is compile-only and is not bundled.
 
-Build the sibling Wormholes API first with `./gradlew apiJar` from `WormholesPlugin/`. Shaped Portals reads `wormholesVersion` from the sibling's `gradle.properties` and compiles against `../WormholesPlugin/build/libs/Wormholes-<wormholesVersion>-api.jar`; pass `-PwormholesApiJar=/path/to/Wormholes-api.jar` to use another location. The API is not bundled.
+Run from the ShapedPortals repository root:
 
-```none
-./gradlew build
+```powershell
+.\gradlew.bat build buildSwiftSwamp
 ```
 
-The shaded artifact lands in `build/libs/ShapedPortals-<version>.jar`, and the build also exports the React pack to `build/distributions/react-api-packs/`. Run `./gradlew buildPsychoLT` to export the selected distribution to `PluginOuts/ShapedPortals v<version> [CraftBukkit] 26.1-26.3.jar` and stage it in the managed test-server dropins.
+The build resolves a local VolmLib checkout by walking up the directory tree. Use `-PlocalVolmLibDirectory=<path>` or `VOLMLIB_DIR` for an explicit checkout, or `-PuseLocalVolmLib=false` for remote resolution.
 
-`./gradlew publishToMavenLocal` publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building).
+`build` runs verification and creates distribution artifacts. `buildSwiftSwamp` stages the selected distribution as `../BUILDS/ShapedPortals.jar`; `-PbuildsDirectory=<path>` changes that directory. The React pack is exported to `build/distributions/react-api-packs/`.
+
+`publishToMavenLocal` verifies and publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building) and [Compatibility](/shapedportals/03-compatibility-operations) for shared checks and platform limits.
 
 ## Related pages
 

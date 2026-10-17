@@ -2,7 +2,7 @@
 title: "Rift World Manager"
 description: "World creation, loading, quarantine, restoration, and teleport management"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "rift, world-management, bukkit, paper, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -12,9 +12,9 @@ Rift creates, imports, loads, unloads, quarantines, restores, and teleports betw
 
 | | |
 |---|---|
-| Version | 2.0.1-26.x |
-| Server software | Paper 26.x; Folia with lifecycle limits |
-| Java | 25 or newer |
+| Version | 2.0.1-26.1-26.3 |
+| Server software | Paper 26.1 through 26.3, including patch releases; Folia with lifecycle limits |
+| Java | 25 only |
 | Main command | `/rift` (`/rft`) |
 | Config file | `plugins/Rift/config.toml` |
 | Folia | Partial. World create, load, and unload are disabled |
@@ -30,9 +30,10 @@ Rift creates, imports, loads, unloads, quarantines, restores, and teleports betw
 
 - [Storage and operations *Profiles, quarantine, and recovery*](/rift/03-storage-operations)
 - [Configuration and localization *Settings and language files*](/rift/04-configuration-localization)
-- [World policies *Gameplay, travel, and entity settings*](/rift/05-world-policies)
-- [Destinations and anchors *Coordinates, player targets, and saved locations*](/rift/06-destinations)
-- [Integration API *World services and lifecycle ownership*](/rift/99-integration-api)
+- [World policies *Player limits, travel, join placement, and world rules*](/rift/05-world-policies)
+- [Teleporting *Travel to loaded-world spawns*](/rift/06-destinations)
+- [Feature audit and roadmap *Verified coverage and remaining work in priority order*](/rift/07-feature-audit-roadmap)
+- [Integrations and developer reference *PlaceholderAPI, shared services, and API boundaries*](/rift/99-integration-api)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}
 

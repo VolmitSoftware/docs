@@ -2,7 +2,7 @@
 title: "BileTools: Hot Reload Behavior"
 description: "What hot-reload does, what it cannot do, and how to tell when it failed"
 published: true
-date: 2026-10-07T14:11:48.233Z
+date: 2026-10-12T16:07:52.000Z
 tags: "biletools"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,6 +15,8 @@ BileTools watches the server's `plugins/` folder. Adding, replacing, or deleting
 BileTools checks replacement jars, required dependencies, and plugin identities before calling cooperative preparation or unloading the running group. Missing required dependencies, required-dependency cycles, self-dependencies, and conflicting plugin names or provided aliases refuse the operation. Dependents unload first and load after their dependencies. Plugins implementing the [cooperative reload API](/volmlib/api/reloading) can finish asynchronous work or refuse the operation before teardown begins.
 
 A refused preparation leaves the group loaded and cancels completed preparations. Once committed cleanup starts, a failure can require rebuilding the group from its recovery copies. Client command suggestions refresh after the operation; command ownership determines which aliases are removed.
+
+BileTools waits for its shared language editor to close on each player's owning region before completing its own cooperative reload cleanup. Gloss waits for its language editor, and HiddenOre waits for both its configuration and language editors. A cleanup failure fails the reload stage instead of reporting the plugin ready to unload. Direct server or plugin disable uses immediate cleanup on the current owner and cannot guarantee closure on other Folia regions.
 
 A fresh load cannot claim a plugin name that an already loaded plugin provides as an alias. Reloading an existing plugin uses its own identity and includes its affected dependents.
 

@@ -2,13 +2,13 @@
 title: "Overview"
 description: "What Foundation does, its 17 modules, and how it shares commands with other plugins"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "foundation, overview, volmit-suite"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
 ---
 
-Foundation is the server-essentials plugin for Paper, Spigot, and Folia on Minecraft 1.20.1 through 26.x. It is built from 17 modules that you turn on and off individually.
+Foundation provides server essentials for Paper, Spigot, and Folia on Minecraft 26.1 through 26.3 with Java 25. Its 17 modules can be turned on and off individually.
 
 ## Runtime modules
 
@@ -44,7 +44,7 @@ Every Foundation command also works as `/foundation <command>`, with the same pe
 
 ## Where Foundation stops
 
-Foundation covers everyday player and staff utilities. It does not do portals, world management, progression, display polish, or performance tuning — the Volmit plugin that owns each of those keeps it.
+Foundation covers everyday player and staff utilities. Portals, world management, progression, display polish, and performance tuning remain with the Volmit plugins that own those features.
 
 It also leaves `/op`, `/whitelist`, `/ban`, `/pardon`, `/stop`, and `/reload` to the server.
 

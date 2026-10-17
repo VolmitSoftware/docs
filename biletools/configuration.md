@@ -2,7 +2,7 @@
 title: "BileTools: Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-10-07T13:45:13.245Z
+date: 2026-10-08T16:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -109,3 +109,9 @@ See [Languages](/languages).
 `remote-deploy.slave.slave-payload` and `remote-deploy.master.master-deploy-to` are represented as redacted, file-only entries because they contain secrets. Edit them directly in `biletools.yml`, then reload BileTools or restart the server.
 
 The language entry opens `/bile language server edit`, which edits messages without changing anyone's selected language. It needs `biletools.config` or `volmit.language.admin`.
+
+## Update notifications
+
+`update-notifications` in `biletools.yml` defaults to `true`. It enables checks for stable GitHub releases from `VolmitSoftware/BileTools` and includes this plugin in one combined Volmit join notice. Set it to `false` to disable this plugin's checks and notices. Configuration reloads and config-menu changes apply the setting without restarting.
+
+`/volmit plugins updates` opens the shared Director report for registered plugins. Operators and players with `volmit.update` can view all participating plugins; `biletools.update` grants access to this plugin and defaults to operators. Checks retain cached release metadata on failures and respect GitHub rate limits. Nothing is downloaded or installed. Shared report text is English; the notification setting's config-menu text is included in the plugin's translated catalogs.

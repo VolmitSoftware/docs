@@ -1,53 +1,47 @@
 ---
 title: "Rift: Overview"
-description: "World states, lifecycle behavior, and the Rift safety model"
+description: "World states, everyday commands, and safe removal"
 published: true
-date: 2026-10-09T00:00:00.000Z
+date: 2026-10-16T00:00:00.000Z
 tags: "rift, world-management, lifecycle, safety"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift creates, imports, loads, unloads, protects, and safely removes worlds.
+Rift manages server worlds and their policies. It creates worlds in the `rift` dimension namespace and moves confirmed deletions into recoverable quarantine.
+
+## First commands
+
+```none
+/rift create resource
+/rift tp resource
+/rift list
+/rift info resource
+/rift policy edit name=resource
+```
+
+Use `/rift config` for plugin settings and `/rift help` for the command menu. Settings and managed profiles reload when valid changes are saved.
 
 ## World states
 
 | State | Meaning |
 |---|---|
-| Loaded | The server currently has the world open |
-| Managed | Rift has a profile for it |
-| On disk | A valid world exists but may not be loaded or managed |
-| Quarantined | Rift moved it to `.rift-trash` and can restore it |
+| Loaded | The server has the world open |
+| Managed | Rift has a saved profile for it |
+| On disk | Rift found its world storage |
+| Missing | A managed profile has no available storage |
+| Quarantined | The world is in `.rift-trash` and can be restored |
 
-Use `/rift list [page]` to browse known worlds and `/rift info <name>` to inspect one. `/rift status` shows server, storage, locale, and world-count health.
+These counts overlap: a world can be loaded, managed, and on disk at once. `/rift status` shows totals; `/rift check <name>` explains one world's readiness without changing it.
 
-## Managed worlds
+`/rift create` creates and manages a world. `/rift import` manages an existing world and loads it if necessary. `/rift load` opens an existing managed or discovered world; loading an unmanaged world does not create a profile.
 
-`/rift create` explicitly creates a managed world. `/rift import` registers existing storage or adopts an already loaded world without loading or generating it. `/rift load` opens validated storage for a managed world.
+Startup auto-loading is enabled by default. Both `autoLoadManagedWorlds` and a profile's `autoLoad` must be true for that world to load. Missing unprotected profiles are retired during startup; protected or uncertain cases stay available for review.
 
-Each profile records the exact namespaced key, UUID, directory, and lifecycle owner separately from its command and display names. Use a command name or the full namespaced key to select a managed world.
+## Removal and recovery
 
-Automatic loading is disabled by default. Enable both `autoLoadManagedWorlds` and the individual profile's `autoLoad` flag to opt in. Rift does not probe generator plugins during discovery or adoption. An explicit load attaches the configured generator for new chunks and refuses unavailable generators or lifecycle owners.
+Run `/rift unmanage <name>` to retire a profile while keeping world files and any loaded world. Run `/rift delete <name>` twice within the confirmation window to quarantine a managed world. `/rift restore <id>` restores it without loading it.
 
-The built-in `void` generator creates an empty world with a small bedrock spawn platform.
+Primary, protected, and evacuation worlds cannot be unloaded or quarantined. Back up valuable worlds before lifecycle changes: quarantine protects against removal mistakes but is not a separate backup.
 
-If a managed world's directory disappears, Rift retires its profile rather than deleting it. See [Externally removed worlds](/rift/03-storage-operations#externally-removed-worlds).
-
-## Diagnostics
-
-`/rift debug dump` saves a support report under `plugins/Rift/debug/` and uploads it to mclo.gs by default. Set `debugUploadEnabled` to `false`, or pass `upload=false`, for a local-only report. See [Shared diagnostic reports](/volmlib/api/diagnostics).
-
-## Safe removal
-
-Rift quarantines managed worlds instead of permanently deleting them. Run the same delete command twice within the confirmation window, then use `/rift restore <id>` if you need the world back.
-
-Rift will not unload or quarantine:
-
-- the primary world or its Nether and End
-- the configured evacuation world
-- a protected profile
-- a path outside the server's world storage
-
-Folia does not currently support dynamic world creation, loading, or unloading. Rift's listing, diagnostics, configuration, and teleport tools remain available there.
-
-Next: [Installation and compatibility](/rift/01-installation-compatibility)
+Folia disables create, import, load, unload, delete, and restore. Read [Installation and compatibility](/rift/01-installation-compatibility) before choosing a server platform.

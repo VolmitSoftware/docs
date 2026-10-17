@@ -99,3 +99,9 @@ The receiver secret and password-bearing deployment target list are deliberately
 `/bile language` opens the language picker. Personal selection requires both `biletools.language.self`
 and `volmit.language.self`. Server selection requires `biletools.config` or `volmit.language.admin`. See [Languages](/languages).
 
+
+## Update notifications
+
+`update-notifications` in `biletools.yml` defaults to `true`. It enables checks for stable GitHub releases from `VolmitSoftware/BileTools` and includes this plugin in one combined Volmit join notice. Set it to `false` to disable this plugin's checks and notices. Configuration reloads and config-menu changes apply the setting without restarting.
+
+`/volmit plugins updates` opens the shared Director report for registered plugins. Operators and players with `volmit.update` can view all participating plugins; `biletools.update` grants access to this plugin and defaults to operators. Checks retain cached release metadata on failures and respect GitHub rate limits. Nothing is downloaded or installed. Shared report text is English; the notification setting's config-menu text is included in the plugin's translated catalogs.

@@ -2,7 +2,7 @@
 title: "07 - Gameplay checks"
 description: "Mineflayer setup, scenarios, viewer feeds, reports, and scenario APIs"
 published: true
-date: 2026-09-21T00:00:00.000Z
+date: 2026-10-09T12:36:04.000Z
 tags: "servermultiplexor, testing"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -18,9 +18,21 @@ The gameplay harness is pinned under `MultiplexorApp/tool/mineflayer/`; `gamepla
 
 The harness package lock is checked in. Setup and launcher installs use `npm ci`; gameplay commands through either launcher refresh an installation when its installed lock is missing or older than the manifest or package lock. An installation failure stops the command with a nonzero exit code. Use `gameplay setup` to repair a damaged installation explicitly, then run `gameplay doctor --json`.
 
-The harness pins bleeding-edge [Mineflayer commit `f603758e`](https://github.com/PrismarineJS/mineflayer/commit/f603758e4228a7e61d1337526e6066e79308b976), which identifies itself as version 4.38.0 and requires Node 22+. It supports vanilla Java protocols through 26.1. Minecraft 26.2 and newer are outside its tested protocol range. Gameplay results prove protocol-visible behavior. They do not prove client rendering, resource packs, sound, camera behavior, client mods, or human feel.
+The harness pins [Mineflayer commit `f603758e`](https://github.com/PrismarineJS/mineflayer/commit/f603758e4228a7e61d1337526e6066e79308b976), which identifies itself as version 4.38.0 and requires Node 22+. Check a specific target with `gameplay doctor --version <version> --json`, then verify it with an actual connection and scenario assertions. Gameplay results prove protocol-visible behavior. They do not prove client rendering, resource packs, sound, camera behavior, client mods, or human feel.
 
-For protocol QA with this dependency set, create an isolated 1.21.11 server instead of using a 26.2 or 26.3 instance. A passing doctor check verifies the harness installation; it does not make an unsupported server protocol compatible.
+As checked on October 9, 2026, the installed data resolves 1.21.11 to protocol 774 and 26.1.2 to 26.1/protocol 775. Actual gameplay checks have passed on those targets. Neither the installed data nor the checked upstream data provides usable 26.2/26.3 definitions; newer-version metadata alone does not supply packet codecs. Use a compatible isolated target until the protocol dependencies support the desired version.
+
+### Target-version diagnostics
+
+Without `--version`, doctor checks only Node and the pinned dependency installation. With a target version, it also resolves Minecraft data, checks Mineflayer's tested-version list and constructs the client packet serializers/deserializers for handshaking, status, login, configuration when present, and play. The check uses the same packet overrides as the gameplay runner. It does not open a connection, start a server or install dependencies.
+
+The JSON result retains `status` and `checks`, adding `dependencyStatus` and `protocolCapability`. The latter records the requested/resolved versions, protocol number, package versions, available data, Mineflayer test declaration, individual codec results and errors. An unavailable target can therefore report healthy dependencies while failing the protocol check. Dependency-loading or lookup failures remain structured errors and set `dependencyFailure` to true.
+
+Exit code 0 means all requested offline checks passed; 1 means an installation or target-capability check failed. The Node command returns 2 for invalid arguments or an unhandled command failure, while argument errors caught earlier by the launcher, such as a missing `--version` value, return 1. A supported result is an offline capability check, not proof of login or gameplay.
+
+```powershell
+.\start.ps1 --consumer plugin gameplay doctor --version 26.3 --json
+```
 
 ## Viewer and run ownership
 
@@ -31,7 +43,7 @@ Every gameplay run starts a first-person Prismarine web feed on a free loopback 
 | Command | What it does |
 |---------|--------------|
 | `gameplay setup` | Install the pinned Mineflayer, pathfinder, and Prismarine Viewer dependencies with `npm ci`. |
-| `gameplay doctor [--json]` | Verify Node and the pinned gameplay dependency versions. |
+| `gameplay doctor [--version <version>] [--json]` | Verify Node and pinned dependencies; optionally check target-version data and client packet codecs without connecting. |
 | `gameplay list [--json]` | List built-in scenarios. |
 | `gameplay prepare [instance] [--instance <name>]` | Prepare a stopped, isolated instance for loopback-only offline bot authentication. |
 | `gameplay run <scenario> [instance] [flags]` | Run a built-in name or `.mjs` scenario. Supports `--scenario`, `--instance`, `--profiles-folder`, `--version`, `--auth`, `--startup-timeout`, `--connect-timeout`, `--assertion-timeout`, `--prepare`, `--start`, `--stop-after`, `--username`, `--timeout`, `--command`, `--expect`, `--effect`, `--viewer-port`, `--no-viewer`, `--no-op`, and `--json`. |

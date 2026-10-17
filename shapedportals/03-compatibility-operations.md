@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility and operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-10-12T23:36:43.102Z
+date: 2026-10-14T00:00:00.000Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -34,7 +34,7 @@ The current Shaped Portals jar supports Bukkit-compatible Minecraft 26.1 through
 |---|---|
 | 26.1 to 26.3 | Java 25 |
 
-Use Java 25 for this distribution. See [Paper's system requirements](https://docs.papermc.io/paper/getting-started/) for server setup.
+The plugin declares API 26.1 and emits Java 25 bytecode. Builds compile against Spigot 26.1, Paper 26.1.2, Spigot 26.2, and Paper 26.3 APIs. Paper 26.3 uses an alpha API; compilation alone does not verify runtime behavior on every platform. Earlier Minecraft versions and releases after 26.3 are outside this distribution's support range.
 
 ## Folia and chunk loading
 
@@ -52,13 +52,15 @@ Protection plugins can cancel creation through `PortalCreateEvent`, `BlockPlaceE
 
 ## Update notifications
 
-`general.updateNotifications` defaults to `true`. Shaped Portals then checks [its GitHub releases](https://github.com/VolmitSoftware/ShapedPortals/releases) at startup, caches the answer for an hour, and tells operators and anyone with `shapedportals.update` on join. The message carries the installed version, the new version, and a link.
+`general.updateNotifications` defaults to `true`. Shaped Portals registers [its GitHub releases](https://github.com/VolmitSoftware/ShapedPortals/releases) with VolmLib's shared update service. Operators and players with `volmit.update` or `shapedportals.update` receive one combined join notice listing permitted registered plugins with updates.
 
-It reads release metadata from `api.github.com` and never downloads or replaces a jar. Install the update yourself.
+Run `/volmit plugins updates`, or click the notice, to see installed and newer versions with release links. Checks run at startup and roughly hourly; repeated commands share active requests and respect cooldowns. Failed checks retain previous release metadata as cached. Only registered plugins appear in the combined report.
 
-Only a higher numeric plugin version counts. Drafts and prereleases are skipped, and the Minecraft suffix is ignored: `2.0.0-1.20.1-26.2` compares as `2.0.0`, so a rebuild for a different Minecraft range is not an update.
+The service reads release metadata from `api.github.com`; installing an update remains manual. The shared join notice and report currently use English.
 
-Set `updateNotifications = false`, or turn it off under General in `/sp config`, to stop the checks and clear pending notices.
+Only stable GitHub releases qualify. The service compares the numeric plugin version, ignoring a recognized Minecraft compatibility suffix. A stable release also supersedes an installed prerelease with the same numeric core, such as `2.0.0-rc.1`. Unrecognized suffixes are reported as incomparable.
+
+Set `updateNotifications = false`, or turn it off under General in `/sp config`, to stop ShapedPortals checks and clear its pending notices. The shared command reports it as disabled and does not override the setting. Other plugins retain their own settings. See [Shared GitHub release checks](/volmlib/api/github-releases) for retry and permission behavior.
 
 ## Diagnostic reports
 

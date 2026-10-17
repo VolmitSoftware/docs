@@ -2,7 +2,7 @@
 title: "Shaped Portals"
 description: "Build custom-shaped Nether and End portals and manage them in-game"
 published: true
-date: 2026-10-13T14:42:49.254Z
+date: 2026-10-14T00:00:00.000Z
 tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -12,7 +12,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 <section class="sp-hero" aria-labelledby="sp-introduction">
   <div>
     <p class="sp-kicker">Shaped Portals</p>
-    <h2 id="sp-introduction">Build portals that fit the build.</h2>
+    <h2 id="sp-introduction">Custom-shaped Nether and End portals</h2>
     <p>Make upright Nether portals and horizontal End portals with custom sizes and outlines. Minecraft handles travel unless Wormholes takes ownership of a Nether portal.</p>
     <nav class="sp-actions" aria-label="Get started">
       <a class="sp-primary" href="/shapedportals/00-overview#build-your-first-portal">Build your first portal</a>
@@ -35,7 +35,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
       <p>Build a closed ring of End Portal Frames, then insert an eye into every frame block.</p>
     </article>
   </div>
-  <p class="sp-note">Shaped Portals controls frame activation and repairs managed surfaces. Minecraft handles destination selection. With the Wormholes integration enabled, accepted Nether portals use Wormholes projections and linked travel.</p>
+  <p class="sp-note">Managed surfaces persist across restarts and repair missing portal blocks while the frame remains valid. Wormholes owns the lifecycle of Nether shapes it accepts.</p>
 </section>
 </div>
 
@@ -60,6 +60,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 - [Compatibility and operations *Server versions, Java, Folia limits, and debug reports*](/shapedportals/03-compatibility-operations)
 - [Developer reference *Geometry, the registry, the Wormholes handoff, and builds*](/shapedportals/04-architecture-limits)
+- [Feature map *Current capabilities, delivery gaps, and proposed operator tools*](/shapedportals/05-feature-map)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}
 

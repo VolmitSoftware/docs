@@ -2,7 +2,7 @@
 title: "Modules and Behavior"
 description: "What each Foundation module does, and the rules its commands follow"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "foundation, modules, features"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -14,7 +14,7 @@ Every module turns on and off on its own. A disabled module keeps its command la
 
 ## Teleport
 
-The `teleport` module owns consent requests, request preferences, `/back`, and back-history capture. Turning it off does not affect spawn, homes, warps, administration travel, or jail movement — those share the same travel engine.
+The `teleport` module owns consent requests, request preferences, `/back`, and back-history capture. Turning it off does not affect spawn, homes, warps, administration travel, or jail movement. Those features share the same travel engine.
 
 That engine refuses a destination in a missing world, outside the world border, in a restricted suite-owned world, or on an unsafe landing. Safe-landing keeps your requested X and Z, then checks the block you would actually occupy: liquids, waterlogged or collapsible support, leaves, damaging blocks, portals, and an occupied space are all rejected. The bypass permissions are on [Commands and permissions](/foundation/02-commands-permissions), and they are checked against the player being moved.
 
@@ -61,7 +61,7 @@ A jail is a named location. Foundation remembers where the player came from, con
 
 Mail delivers to offline profiles, caps each mailbox, and tracks unread state. `/mail read <page>` marks only the messages on that page.
 
-Kits live in `data/kits.yml` and keep full item metadata. Kit count, cooldown, and per-kit stack limits apply to hand-edited data as well as to `/createkit`. Overflow is either rejected or dropped, depending on configuration.
+Kits live in `storage/kits.yml` and keep full item metadata. Kit count, cooldown, and per-kit stack limits apply to hand-edited data as well as to `/createkit`. Overflow is either rejected or dropped, depending on configuration.
 
 When Adapt is installed, an active `moderation` module denies Adapt ability use to frozen and jailed players.
 

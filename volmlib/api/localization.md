@@ -2,7 +2,7 @@
 title: "Shared localization"
 description: "Language downloads, server defaults, player preferences, and the in-game picker"
 published: true
-date: 2026-10-13T14:45:11.678Z
+date: 2026-10-15T00:00:00.000Z
 tags: "volmlib, api, localization"
 editor: markdown
 dateCreated: 2026-09-02
@@ -50,19 +50,23 @@ Every Bukkit plugin provides `/[plugin] language server edit [locale]`. Omitting
 
 The editor groups messages by ID and shows 45 message entries per page by default. Adapt uses 36 left-aligned entries across the first four rows, with skill and adaptation icons from its gameplay menus. Search and navigation remain available in both layouts. Select a text message to replace it through private chat. Multiline and plural messages open one line or form at a time. Use `\n` for a newline, `\\` for a literal backslash, or `cancel` to stop; the TOML codec preserves that distinction when the edited catalog is read again. Input is limited to 512 characters and expires after 60 seconds.
 
+Sending a player command silently cancels pending input, including a reply queued for processing, even if another plugin cancels the command. The abandoned prompt cannot save an edit or reopen its menu. This cancellation does not open or close inventories; an ordinary editor menu with no pending input stays active.
+
 Shared English editor chrome uses classic ampersand formatting. Plugin catalogs may override it with any formatting accepted by their renderer. Translation completeness checks should require every shared string containing natural-language text to be translated while allowing formatting-and-placeholder-only layouts to remain language-neutral.
 
 Inventory titles resolve `language.editor.title`, whose shared default is `{plugin} › {section}`, and strip formatting so Minecraft applies its native container-header text color. Plugin catalogs can override that template to use an editable name. The plugin's Director theme continues to color chat and item text.
 
 When a plugin overrides a shared message definition, the switcher and editor use serialized MiniMessage from its configured `DirectorTextResolver` if direct snapshot resolution cannot apply that definition. This preserves custom placeholders and formatting, including editable prefixes, with the viewing player's language context active. Missing definitions still use shared English defaults. Shared feedback parses template formatting before substituting untrusted values, strips section color codes from those values, and applies its theme without parsing the rendered text again.
 
-The editor validates message shape, variables, and file format before saving. It rejects stale or invalid edits. Saving refreshes users of that locale without changing server or personal language choices. If Folia retires a player or rejects an editor continuation, VolmLib discards the associated prompt, pending work, and menu ownership instead of leaving a stale session. During plugin disable, open editor inventories are closed on their player owners before the owning plugin becomes unavailable; this does not depend on another Volmit plugin remaining enabled.
+The editor validates message shape, variables, and file format before saving. It rejects stale or invalid edits. Saving refreshes users of that locale without changing server or personal language choices. If Folia retires a player or rejects an editor continuation, VolmLib discards the associated prompt and pending edit instead of leaving a stale session.
+
+Close the switcher with `closeAsync()` while its plugin remains enabled, and await successful completion before disabling the plugin or releasing its tasks and listeners. The returned future includes editor inventory closures and openings already in progress. `close()` also schedules owner cleanup while enabled, but only logs failure and does not provide a completion barrier. Failed managed closure retains tracked views and click/drag protection for retry or normal player closure. Forced plugin disable has only an owner-only fallback and cannot guarantee closure in other regions. See [inventory shutdown](/volmlib/api/inventory-views#close-menus-before-disabling-a-plugin) for retry and lifecycle requirements.
 
 Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes edit `languages/<locale>.toml` directly. These plugins generate an editable `en_US.toml` file on startup when it is missing and preserve existing files. Repository catalogs, generated English, and editor saves use grouped TOML sections. Their translated headers follow the same order: file editing, prefix, formatting, and variable definitions. ShapedPortals also provides a Languages tile in its configuration GUI. English editing works offline. The inventory frontend applies to Bukkit-family servers; Iris mod loaders retain their native command interface.
 
 ## Shared plugin tools
 
-`/volmit plugins` opens the shared language and diagnostic tools. The menu lists the providers currently registered with Bukkit.
+`/volmit plugins` opens the shared language, diagnostic, and update tools. The menu lists providers registered with Bukkit. `/volmit plugins updates` checks permitted update providers and produces one report; see [GitHub release checks](/volmlib/api/github-releases).
 
 ### Server defaults across plugins
 
@@ -84,7 +88,9 @@ Rendering uses immutable snapshots. An uncached personal locale loads asynchrono
 
 ## Download and packaging contract
 
-`RemoteLanguageCatalog` reads a small properties manifest containing `revision`, comma-separated `locales`, and optional `sha256.<locale>` checksums. Its `Options` supplies the product name, repository URL, source directory, extension, manifest resource, and resource class loader. The plugin supplies a destination file and a parser-backed validator for each installation. Build tasks exclude bulk translation resources from distributable jars while retaining the manifest.
+`RemoteLanguageCatalog` reads a properties manifest containing `revision`, comma-separated `locales`, and optional `sha256.<locale>` checksums. Its `Options` supplies the product name, repository URL, source directory, extension, manifest resource, and resource class loader. The plugin supplies a destination file and a parser-backed validator for each installation.
+
+`mode=remote` downloads missing catalogs from the configured repository; it is also the default when mode is omitted. `mode=bundled` reads `languages/<locale><extension>` from the supplied class loader and never falls back to HTTP. Bundled files use the same size, UTF-8, checksum, validation, and atomic-publication checks. Bundle translations while a public repository is pending; remote releases can exclude them while retaining the manifest.
 
 `readOrInstall` installs a missing editable language file and validates an existing file without replacing it. This method blocks and belongs on a worker, never a gameplay thread. `requestInstallIfMissing` schedules asynchronous installation only when the destination is missing. Downloads have timeouts, size limits, strict UTF-8 decoding, validation before publication, atomic file publication, and a retry cooldown. Installed files work offline. Invalid downloaded content is rejected before publication; an interactive preparation failure selects validated built-in English for the requested scope.
 
@@ -120,7 +126,7 @@ Plugins using `ConfigHotloadEngine` can wrap an internal file save in `write(fil
 
 Call `configure(pollIntervalMs, hotloadCooldownMs, watchedFiles, watchedDirectories)` when initializing the watch set; it resets tracked contents and establishes a baseline from disk. After settings change, use `updateTiming(pollIntervalMs, hotloadCooldownMs)` to adjust scan cadence and the cooldown without replacing that baseline, pending edits, queued snapshots, or self-write revisions. Both timing values have a 100 ms minimum. The next poll reconciles the existing watch set; the new cooldown applies from the previous completed application or emission rather than starting a new cooldown window. The consuming plugin remains responsible for scheduling polls at its configured interval.
 
-While language providers are registered, the shared switcher automatically maintains one `/volmit` command for `/volmit plugins`, `/volmit plugins languages [lang]`, and `/volmit plugins debug [plugin] [upload=true|false]`. If the owning plugin closes, ownership passes to another registered provider; no additional command configuration is required. Language and debug providers use separate service protocols, so a plugin's debug report remains discoverable without coupling it to another plugin's locale implementation.
+While language providers are registered, the shared switcher automatically maintains one `/volmit` command for `/volmit plugins`, `/volmit plugins languages [lang]`, `/volmit plugins debug [plugin] [upload=true|false]`, and `/volmit plugins updates`. If the owning plugin closes, ownership passes to another registered provider; no additional command configuration is required. Language, debug, and update providers use separate service protocols. A current command implementation can take ownership from a recognized older Volmit command and restore it on close if its provider remains loaded.
 
 The plugin owns its local language command registration. `open(sender)` opens its picker; `command(sender, arguments)` and `complete(sender, arguments)` handle the arguments after `language`. Route this subcommand before a root administration check so players can reach their personal preferences. Providers exchange only JDK types through Bukkit's services registry, so separately relocated VolmLib copies can coordinate without sharing plugin classes. Close both the switcher and service during shutdown.
 

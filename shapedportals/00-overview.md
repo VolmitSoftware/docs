@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -36,7 +36,7 @@ Install Shaped Portals first, then choose the portal type.
 3. Insert an Eye of Ender into every frame block. The accepted final eye activates the custom surface.
 4. Step into the native End portal blocks.
 
-A larger portal can use a 4×4 empty interior with eyed End Portal Frames along all four sides; the four diagonal corner blocks do not matter. Build and eye the complete boundary, then insert the last eye into any side frame. A normal vanilla 3×3 End portal remains owned by the server and is not added to the managed registry. Custom End surfaces can be larger, smaller, concave, or irregular within the configured limits.
+For example, surround a 4×4 empty interior with End Portal Frames on all four sides, then insert every eye. The four diagonal corner blocks do not matter. Vanilla 3×3 End portals remain server-owned; managed surfaces may be smaller, larger, concave, or irregular within the configured limits.
 
 ## Valid shapes
 
@@ -66,7 +66,8 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 | `/sp language self <locale\|reset>` | Select or reset your personal ShapedPortals language | Player |
 | `/sp language server <locale>` | Change the ShapedPortals server default | Player or console |
 | `/sp language server edit [locale]` | Open the per-language message editor | Player |
-| `/volmit plugins` | Open shared Volmit language and diagnostic tools | Player or console |
+| `/volmit plugins` | Open shared Volmit language, diagnostic, and update tools | Player or console |
+| `/volmit plugins updates` | Check permitted registered Volmit plugins and show one update report | Player or console |
 | `/volmit plugins languages [lang]` | Open the shared picker or change every enabled provider's server default | Player or console |
 | `/volmit plugins debug [plugin] [upload=true\|false]` | List shared debug providers or request one report | Player or console |
 | `/volmit plugins debug all [upload=true\|false]` | Start reports for every permitted registered provider | Player or console |
@@ -83,9 +84,7 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 
 ### Find and visit a portal
 
-Run `/sp portals`, then click a portal entry to visit it. You need the list permission to view entries and the teleport permission to travel.
-
-You can also supply its full UUID or a unique prefix of at least eight characters:
+Run `/sp portals` and click an entry, or supply its full UUID or a unique prefix of at least eight characters. Listing and teleportation require their separate permissions:
 
 ```none
 /sp teleport <portal UUID>
@@ -113,7 +112,8 @@ Use an ID from the list. Teleportation looks for clear standing space over a sol
 | `volmit.language.self` | Everyone | Shared requirement for personal language selection |
 | `volmit.language.admin` | Operators | Change language defaults across enabled plugins |
 | `shapedportals.debug` | Operators | Generate diagnostic reports, including uploads when enabled |
-| `shapedportals.update` | Operators | Receive a chat notice on joining when a newer GitHub release is available and update notifications are enabled |
+| `shapedportals.update` | Operators | Include ShapedPortals in combined join notices and shared update reports |
+| `volmit.update` | Operators | Access update notices and reports for all registered Volmit plugins |
 | `shapedportals.portals` | Operators | List portals, including through bare `/sp teleport` |
 | `shapedportals.teleport` | Operators | Teleport to a selected portal |
 | `shapedportals.teleport.unsafe` | Operators | Confirm an unsafe landing; also needs `shapedportals.teleport` |
@@ -128,7 +128,7 @@ For the language picker and message editing, see [Languages](/languages).
 
 ## Creation lifecycle
 
-Minecraft gets the first chance to make a normal portal. A shaped Nether proposal then fires a cancellable `PortalCreateEvent`, so protection plugins can refuse it; a shaped End proposal starts once the final eye is accepted. See [Portal behavior](/shapedportals/02-portal-behavior-events).
+Minecraft gets the first chance to make a normal portal. Shaped Nether creation offers the shape to Wormholes first. If Wormholes is unavailable, Shaped Portals fires a cancellable `PortalCreateEvent` before placing native blocks; a rejected handoff stops creation. Shaped End creation starts once the final eye is accepted. See [Portal behavior](/shapedportals/02-portal-behavior-events).
 
 ## Related pages
 

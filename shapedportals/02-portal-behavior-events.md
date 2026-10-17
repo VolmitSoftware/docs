@@ -2,7 +2,7 @@
 title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-10-14T00:00:00.000Z
 tags: "shapedportals, portals, events, persistence"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 <nav class="doc-breadcrumb" aria-label="Breadcrumb"><a href="/shapedportals">Shaped Portals</a><span aria-hidden="true">/</span><span aria-current="page">Portal behavior and troubleshooting</span></nav>
 
-Shaped Portals keeps track of the portals it creates so their unusual shapes can survive block updates and restarts. Minecraft handles travel and destination portals unless Wormholes accepts the Nether shape.
+Shaped Portals saves and repairs managed portal surfaces. Minecraft handles travel and destinations unless Wormholes accepts a Nether shape.
 
 - [Portal changes](#repair-based-integrity)
 - [Saved data](#persistent-ownership)
@@ -43,9 +43,7 @@ Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, an
 
 ## Persistent ownership
 
-Managed portals are saved in `plugins/ShapedPortals/portals.json`.
-
-Each record stores its UUID, world identity, plane axis, anchor, interior and frame coordinates, frame-material snapshot, creation time, and creator. Axis `Y` identifies a horizontal End portal without changing the existing record schema.
+The registry at `plugins/ShapedPortals/portals.json` stores each portal's UUID, world, axis, anchor, interior and frame coordinates, frame-material snapshot, creation time, and creator. Axis `Y` identifies horizontal End portals.
 
 > Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store stops the plugin from enabling and is preserved for recovery rather than overwritten.
 {.is-warning}
@@ -56,9 +54,7 @@ Use [the portal commands](/shapedportals/00-overview#find-and-visit-a-portal) to
 
 Portal entries show the type, world, location, axis, size, creator, and creation time. Nether landing checks look beside the surface. End landing checks stand above the frame so the command does not send the player straight through the portal.
 
-Teleportation fails if the portal or world is unavailable, no safe landing exists, or another plugin cancels it.
-
-An unsafe landing requires a separate permission and confirmation. Read the [unsafe teleport warning](/shapedportals/00-overview#find-and-visit-a-portal) before using it.
+Teleportation fails if the portal or world is unavailable, no safe landing exists, or another plugin cancels it. An [unsafe landing override](/shapedportals/00-overview#find-and-visit-a-portal) requires separate permission and confirmation.
 
 ## Ignition and protection plugins
 
@@ -67,6 +63,12 @@ Cancelled ignition events are ignored. For standalone creation, before a shaped 
 Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces ask `BlockCanBuildEvent` about each proposed cell before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
 
 Bukkit has no `PortalCreateEvent` reason for End-frame activation, so none is emitted; watch the placement and build events instead. On Folia, either portal type must be created inside one owned region.
+
+## Creation failure messages
+
+Recognized failed attempts use a complete `portal.failure.*` message in the player's language. The 15 reasons cover shape limits, ambiguous axes, blocked or open frames, Folia ownership, Wormholes rejection, protection denial, changed frames, overlaps, and failed block changes. `general.failureFeedback` enables these notices; `presentation.portalNotices` selects their channels. Unrelated fires and incomplete End frames remain silent.
+
+Edit these messages under `[portal.failure]` in `languages/<locale>.toml` or in the Portal language-editor group. The optional `{prefix}` token is their only placeholder. Missing entries use built-in English, and installed locale files retain local edits when the published download revision changes.
 
 ## Troubleshooting
 
@@ -85,7 +87,7 @@ Bukkit has no `PortalCreateEvent` reason for End-frame activation, so none is em
 | The destination portal is a rectangle | This is normal: vanilla creates destination portals and decides where they go |
 {.dense}
 
-Shaped Portals does not pair portals or provide custom destinations. A dedicated routing plugin is needed for fixed links.
+Standalone Shaped Portals does not pair portals or choose custom destinations. Wormholes owns pairing and travel for Nether shapes it accepts.
 
 ## Related pages
 

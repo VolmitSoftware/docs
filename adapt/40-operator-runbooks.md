@@ -2,7 +2,7 @@
 title: "Updates"
 description: "Replace Adapt and reload configuration"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-08T17:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -15,7 +15,7 @@ Back up `plugins/Adapt/` before replacing the jar. Back up the database when `sq
 | Gameplay settings in `adapt.toml` | Save, or use `/adapt configure` |
 | Skill or adaptation TOML | Save |
 | `models.toml`, locale overrides | Save |
-| SQL, Redis, metrics, update checks | Restart |
+| SQL, Redis, metrics | Restart |
 | Install, remove, enable, or disable an integration | Restart |
 
 Malformed TOML is rejected. The previous settings stay active.

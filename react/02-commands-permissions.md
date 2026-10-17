@@ -197,3 +197,9 @@ The `shorthands` tweak is off by default. When enabled, its built-in labels repl
 | custom map keys | `react.shorthands.custom` or per-entry permission | Operator-defined shortcuts |
 
 Configure in `plugins/React/tweak/shorthands.toml`. See [08 - Tweaks Catalog](/react/08-tweaks-catalog).
+
+## Shared update checks
+
+On Bukkit-family servers, `/volmit plugins updates` checks registered Volmit plugins and displays one Director-formatted report with versions, status, and release links. Operators and holders of `volmit.update` see all registered plugins; `react.update` (default `op`) grants access to this plugin. The same permissions control the combined join notice.
+
+Update checks default to enabled. Set `updateNotifications` in `react.toml` to `false` to stop this plugin's checks and clear pending notices. Accepted configuration reloads apply the change. Checks read stable GitHub release metadata; they do not download or install plugin JARs. The shared report uses English. See [Shared GitHub release checks](/volmlib/api/github-releases).
