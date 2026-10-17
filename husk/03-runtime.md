@@ -2,17 +2,17 @@
 title: "Husk - Running the example"
 description: "Install the example artifact, inspect startup, and configure its status command"
 published: true
-date: 2026-10-15T03:00:00.000Z
+date: 2026-10-15T20:56:52.181Z
 tags: "husk, commands, configuration"
 editor: markdown
 dateCreated: 2026-10-15T03:00:00.000Z
 ---
 
-Install the CraftBukkit jar in a supported Spigot, Paper, or Folia server's `plugins` directory, or install the matching loader/Minecraft jar in `mods`. Use Java 25. Fabric's three required API modules and the used VolmLib libraries are included in the artifact.
+Install the CraftBukkit jar in a supported Spigot, Paper, or Folia server's `plugins` directory, or install the matching loader/Minecraft jar in `mods`. Use Java 17 for Minecraft 1.20.1, Java 21 for 1.21.1, and Java 25 for 26.x. NeoForge 1.20.1 uses the Forge 1.20.1 jar; NeoForge 1.21.1 has its own jar. Fabric's three required API modules and the used VolmLib libraries are included in the artifact.
 
 ## Startup and commands
 
-Successful startup prints the Volmit-style splash with the project identity and runtime details. The command is available to players and console without an additional permission:
+Successful startup prints the Volmit-style splash with the project identity, exact supported Minecraft releases, and runtime details. The command is available to players and console without an additional permission:
 
 ```text
 /husk

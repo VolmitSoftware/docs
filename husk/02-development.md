@@ -2,7 +2,7 @@
 title: "Husk - Developing a project"
 description: "Customize project identity, add shared behavior, and extend Minecraft targets"
 published: true
-date: 2026-10-15T03:00:00.000Z
+date: 2026-10-15T20:56:52.181Z
 tags: "husk, development"
 editor: markdown
 dateCreated: 2026-10-15T03:00:00.000Z
@@ -39,7 +39,7 @@ Replace the logo and product description in `HuskSplash` when adding your projec
 
 ## Add shared behavior
 
-Place game-independent services in `core/src/main/java`. The core has no Bukkit or Minecraft dependency. Pass required runtime values explicitly through typed records or service constructors, and release owned resources when the runtime closes.
+Place game-independent services in `core/src/main/java`. The core has no Bukkit or Minecraft dependency and targets Java 17. Build with JDK 25; use Java 17 APIs in shared services so they run on every supported release. Pass required runtime values explicitly through typed records or service constructors, and release owned resources when the runtime closes.
 
 Use `bukkit/src/main/java` for Spigot/Paper/Folia integration. Use `adapters/mod-common/src/main/java` for Minecraft code shared by Fabric, Forge, and NeoForge. Loader-specific registration belongs in the respective adapter's `src/main/java` directory. Mod-common sources are compiled against each target's Minecraft classes.
 
@@ -47,10 +47,10 @@ The supplied status command reads cached configuration. When adding world or ent
 
 ## Add or change a Minecraft target
 
-Add a target entry in `gradle/targets.json` with matching Fabric API modules, Fabric Loader, Forge, Forge loader range, and NeoForge versions. The target key is the exact Minecraft version. It drives the generated supported-version list, Gradle task matrix, mod metadata, and output directories.
+Add a target entry in `gradle/targets.json` with matching Fabric API modules, Fabric Loader, Forge, Forge loader range, NeoForge, and `javaVersion` values. Every target must declare Forge support and `forgeRuntimeMappings`: `srg` for 1.20.1, or `official` for 1.21.1 and 26.x. Set `obfuscated` to `true` when the upstream Minecraft target needs development mappings. Minecraft 1.20.1 uses `neoforgeUsesForge: true` instead of a separate NeoForge dependency. The target key is the exact Minecraft version. It drives the generated supported-version list, Gradle task matrix, mod metadata, and output directories.
 
-Keep common source in `src/main`. When a target needs a different implementation, put the replacement at the same relative path under `src/versions/<minecraft>/java` or `src/versions/<minecraft>/resources`. Shared mod overrides belong under `adapters/mod-common`; loader overrides belong under that loader. Loader overrides take precedence over shared overrides, and both replace the corresponding main source/resource.
+Keep common source in `src/main`. When a target needs a different implementation, put the replacement at the same relative path under `src/versions/<minecraft>/java` or `src/versions/<minecraft>/resources`. Shared mod overrides belong under `adapters/mod-common`; loader overrides belong under that loader. Targets with a common API can set `sourceFamily` and share replacements under `src/families/<family>/java` or `src/families/<family>/resources`. Exact-version overrides take precedence over family overrides; within each level, loader overrides take precedence over shared overrides. All overrides replace the corresponding main source/resource.
 
 Update the Bukkit API baseline, supported artifact range, and plugin API version when changing the Bukkit target range. Add any required version-specific Bukkit implementations before declaring support. Running `./gradlew build` compiles the Bukkit sources against each declared Spigot API and produces each mod target with its own dependencies.
 
-The supplied targets use unobfuscated Minecraft 26.x toolchains. Supporting earlier releases requires appropriate mapping and loader build configuration.
+The supplied 1.20.1 and 1.21.1 targets use official Minecraft mappings for development. Fabric distributions are remapped to intermediary names. Forge 1.20.1 distributions use SRG names; Forge 1.21.1 distributions retain Mojang names. Minecraft 26.x targets use unobfuscated toolchains. Keep Minecraft API differences in the supplied family or version overrides; shared game-independent behavior stays in the core.
