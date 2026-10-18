@@ -90,11 +90,34 @@ A new node starts with no channel, priority 3, a whitelist filter with no entrie
 
 Nodes are hidden until you hold the Crook, a Node, a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. Labels draw within `labelRange` blocks.
 
+Click one of your revealed nodes to configure it. Only the node's owner can configure it, and its label updates after each change.
+
+| Input | Result |
+|---|---|
+| Right-click with the Crook in your main hand | Opens the Node GUI |
+| Left-click with the Crook in your main hand | Moves the channel to the next dye color, then to no channel, then back to white |
+| Right-click with a dye, Crook in your off hand | Sets the channel to that dye's color |
+| Right-click with any other item, Crook in your off hand | Adds that item to the filter while a slot is free, or removes it when the filter already holds the same item |
+| Sneak + right-click with the Crook in your main hand | Raises the priority by 1, from 5 back to 1 (level 3) |
+| Sneak + left-click with the Crook in your main hand | Removes the node and gives its item back |
+
+While a node is revealed, looking at it from within 6 blocks outlines its work area in its channel color, or in white when it has no channel. Only the owner sees the outline.
+
+The Node GUI shows the node type and its block, and holds these controls:
+
+- **Channel**: left-click for the next color, right-click for the previous one.
+- **Priority** (level 3): left-click raises it and right-click lowers it, from 1 to 5.
+- **Redstone** (level 4): cycles Ignored, Works while powered, and Works while unpowered. A node set to work while powered does no work while its block receives no redstone power, and a node set to work while unpowered does no work while its block is powered.
+- **X, Y, and Z radius**: left-click grows the work area by 1 block on that axis and right-click shrinks it, from 0 up to your level's largest radius.
+- **Filter slots**: pick up an item in your inventory and click an empty slot to add it or a filled slot to replace that entry, or right-click a slot to clear it. Your level sets how many slots you have. A slot keeps one of the item as you set it, with its name, enchantments, and potion type but without the contents of shulker boxes, bundles, or other containers, so two different potions take two slots and the same item never takes two. Golems match filter entries by item type.
+- **Whitelist or Blacklist** (level 5): a whitelist lets golems use only matching items, and a blacklist lets them use everything except matching items. An empty filter matches every item.
+- **Add Tag** (level 5): closes the GUI and asks you to type an item tag, such as `#logs` or `#minecraft:saplings`, in chat. A tag without a namespace means `minecraft`. Typing a tag the filter already holds removes it, and typing `cancel` stops. Each tag uses one filter slot, and the prompt ends after 45 seconds.
+
 Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its block. If the block is gone, or a Deposit, Input, or Filter node's container is replaced by a block that is not a container, the node drops as an item.
 
 | Level | Node cap | Max area radius | Filter slots | Unlocks |
 |---|---|---|---|---|
-| 1 | 4 | 2 | 3 | Node placement, whitelist filters |
+| 1 | 4 | 2 | 3 | Node placement and configuration, whitelist filters |
 | 2 | 8 | 3 | 6 | |
 | 3 | 12 | 4 | 6 | Node priority 1-5 |
 | 4 | 18 | 6 | 9 | Redstone gating |
