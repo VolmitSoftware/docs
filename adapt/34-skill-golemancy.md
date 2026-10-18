@@ -223,7 +223,7 @@ Every bound iron golem you own gains the extra maximum health, armor, and attack
 While you are online, anyone who repairs one of your bound iron golems with an iron ingot heals it by your level's `ingotHealBonusByLevel` on top of the vanilla 25 health. The extra health counts toward repair XP like the rest of the repair.
 
 - **Sweeping Fists** (level `sweepLevel`): each punch from one of your awake bound iron golems also hits up to your level's `sweepTargetsByLevel` other hostile mobs within `sweepRadius` blocks of the punched mob, nearest first, for `sweepDamageFraction` of the punch's damage. The golem deals these hits, so its kills and damage count as its own. Sweeping Fists hits only hostile mobs, and never Adapt minions or mobs that region protection shields from you.
-- **Colossus Form** (level `colossusLevel`): the Golem GUI of each of your bound iron golems shows a Colossus Form toggle. Turning it on grows the golem to `colossusScale` over `colossusGrowTicks` ticks and raises its attack damage by `colossusAttackBonus`. A golem in Colossus Form takes no work. Turning the toggle off shrinks it back to its bound size over the same time, and a toggle during a size change is ignored. The form lasts through chunk unloads and restarts. If you drop below `colossusLevel`, the golem keeps its size but loses the attack bonus, and the toggle stays in its Golem GUI so you can turn the form off. Releasing a golem ends Colossus Form.
+- **Colossus Form** (level `colossusLevel`): the Golem GUI of each of your bound iron golems shows a Colossus Form toggle. Turning it on grows the golem to `colossusScale` over `colossusGrowTicks` ticks and raises its total attack damage, frame bonus included, by `colossusAttackBonus`. The golem grows only when a golem of that size fits where it stands; otherwise it stays at its bound size and the menu tells you there is not enough room. A golem in Colossus Form takes no work. Turning the toggle off shrinks it back to its bound size over the same time, and while a golem is changing size the toggle only tells you to wait. The form lasts through chunk unloads and restarts. Your golems shrink back to their bound size on their own when you drop below `colossusLevel` or when Iron Frame is turned off, and releasing a golem ends Colossus Form.
 
 | Level | Bonus health | Bonus armor | Bonus attack | Ingot repair bonus | Unlocks |
 |---|---|---|---|---|---|
@@ -243,9 +243,9 @@ While you are online, anyone who repairs one of your bound iron golems with an i
 | `sweepTargetsByLevel` | `[0, 0, 1, 1, 2]` | Extra hostile mobs each punch also hits with Sweeping Fists, from level 1 upward. |
 | `sweepDamageFraction` | `0.5` | Fraction of a punch's damage that Sweeping Fists deals to each extra mob. 0.5 is half. |
 | `sweepRadius` | `2.0` | Blocks around the punched mob within which Sweeping Fists finds extra hostile mobs, from 0 to 8. Larger values load as 8. |
-| `colossusLevel` | `5` | Level at which the Golem GUI offers Colossus Form for your bound iron golems. |
-| `colossusScale` | `1.0` | Scale a bound iron golem grows to in Colossus Form. 1.0 is the vanilla iron golem size. |
-| `colossusAttackBonus` | `0.2` | Fraction added to a bound iron golem's attack damage while it is in Colossus Form. 0.2 is 20% more. |
+| `colossusLevel` | `5` | Level at which the Golem GUI offers Colossus Form for your bound iron golems. Golems in Colossus Form shrink back when you drop below it. |
+| `colossusScale` | `1.0` | Scale a bound iron golem grows to in Colossus Form, from 0.36 to 1.5. Values outside that range load as the nearest limit. 1.0 is the vanilla iron golem size. |
+| `colossusAttackBonus` | `0.2` | Fraction added to a bound iron golem's total attack damage, frame bonus included, while it is in Colossus Form. 0.2 is 20% more. |
 | `colossusGrowTicks` | `20` | Ticks a bound iron golem takes to grow into Colossus Form or shrink back. |
 
 ## Reference
