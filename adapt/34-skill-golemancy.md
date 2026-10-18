@@ -262,7 +262,7 @@ Makes golems bound with a Guardian Core defend their home, you, or a Guard Node'
 
 Bind a golem with a Guardian Core through Animus Binding. Snow and iron golems take the core by default; `allowedCoresFrost` and `allowedCoresIron` in the skill configuration decide which bodies can. A new Guardian starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home.
 
-A Guardian guards the area within your level's `perceptionByLevel` blocks of its guard point: you while it follows you, the spot where it was told to stay while it stays, and its home in Home and Work mode. In Work mode it also guards the work area of each of your Guard Nodes that lies within `baseWorkRadius` blocks of its home, has a channel the golem matches, and is not switched off by redstone. A Guard Node's area only counts within `leashRadius` blocks of the Guardian's home, so a Guardian never chases a mob past its leash. Inside its guarded area a Guardian attacks the nearest hostile mob, or the nearest mob that is targeting you or the Guardian, and lets go of a mob that leaves the area. Guardians never attack your pets or Adapt minions, and while you are online they never attack mobs that region protection shields from you. Creepers are left alone unless `targetCreepers` is on, and mobs with a custom name unless `ignoreNamedMobs` is off. Iron Guardians fight in melee. Frost Guardians are sentries: they throw snowballs only at mobs within `sentryRange` blocks of themselves and never chase mobs farther away.
+A Guardian guards the area within your level's `perceptionByLevel` blocks of its guard point, plus its Tide rune's bonus, up to `leashRadius` blocks: you while it follows you, the spot where it was told to stay while it stays, and its home in Home and Work mode. In Work mode it also guards the work area of each of your Guard Nodes that lies within `baseWorkRadius` blocks of its home, has a channel the golem matches, and is not switched off by redstone. A Guard Node's area only counts within `leashRadius` blocks of the Guardian's home, so a Guardian never chases a mob past its leash. Inside its guarded area a Guardian attacks the nearest hostile mob, or the nearest mob that is targeting you or the Guardian, and lets go of a mob that leaves the area. Guardians never attack your pets or Adapt minions, and while you are online they never attack mobs that region protection shields from you. Creepers are left alone unless `targetCreepers` is on, and mobs with a custom name unless `ignoreNamedMobs` is off. Iron Guardians fight in melee. Frost Guardians are sentries: they throw snowballs only at mobs within `sentryRange` blocks of themselves and never chase mobs farther away.
 
 Place a Guard Node with Node Weaving. Its channel, work area, and redstone setting work like any other node's. A Guard Node hands out no jobs; it shows Working while one of your Guardians fights a mob inside its area and for 10 seconds after.
 
@@ -290,7 +290,7 @@ The recipe tables use the same fields as the Animus Binding recipes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `perceptionByLevel` | `[8, 12, 16, 20, 24]` | Blocks around a Guardian's guard point within which it attacks, from level 1 upward. Each value is clamped to 1 up to `leashRadius` in the skill configuration. |
+| `perceptionByLevel` | `[8, 12, 16, 20, 24]` | Blocks around a Guardian's guard point within which it attacks, from level 1 upward. Each value, plus the Guardian's Tide rune bonus, is clamped to 1 up to `leashRadius` in the skill configuration. |
 | `targetCreepers` | `false` | Lets Guardians attack creepers. |
 | `ignoreNamedMobs` | `true` | Keeps Guardians from attacking mobs that have a custom name, unless Retaliate sends them after one that hurt you. |
 | `interceptLevel` | `2` | Level at which Guardians use Intercept. |
@@ -347,7 +347,7 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 
 - **Swiftness** shortens the time between a working golem's actions and its waits at containers.
 - **Ember** sets on fire whatever the golem hits. Fire immunity covers fire, burning, magma blocks, and campfires.
-- **Tide** adds to `baseWorkRadius` for the jobs and Deposit Nodes the golem considers, and to its follow range, which sets how far it notices mobs. Breathing underwater protects the golem from drowning and, for frost golems, from water damage.
+- **Tide** adds to `baseWorkRadius` for the jobs and Deposit Nodes the golem considers, to a Guardian's guard radius, and to its follow range, which sets how far it notices mobs. Breathing underwater protects the golem from drowning and, for frost golems, from water damage.
 - **Order** adds channels. With an Order rune slotted, the channel button in the Golem GUI opens a channel picker: click a dye to select it, up to the golem's channel count, and click a selected dye to drop it. The golem takes jobs from and delivers to nodes on any of its channels. A golem with more channels selected than it can use uses the first ones in dye order, starting with white. A golem that gives up a job skips it for a shorter time.
 - **Entropy** doubles each drop that wins its roll.
 
@@ -373,7 +373,7 @@ The recipe table uses the same fields as the Animus Binding recipes.
 | `emberIgniteSecondsByTier` | `[2, 4, 6]` | Seconds an Ember rune of tier 1, 2, and 3 sets whatever its golem hits on fire. |
 | `emberFireImmuneByTier` | `[false, true, true]` | Whether an Ember rune of tier 1, 2, and 3 makes its golem immune to fire damage. |
 | `emberLavaImmuneByTier` | `[false, false, true]` | Whether an Ember rune of tier 1, 2, and 3 makes its golem immune to lava damage. |
-| `tideRadiusByTier` | `[4.0, 8.0, 12.0]` | Blocks a Tide rune of tier 1, 2, and 3 adds to its golem's work radius and to how far it notices mobs. |
+| `tideRadiusByTier` | `[4.0, 8.0, 12.0]` | Blocks a Tide rune of tier 1, 2, and 3 adds to its golem's work radius, to a Guardian's guard radius, and to how far it notices mobs. |
 | `tideWaterBreathingByTier` | `[false, true, true]` | Whether a Tide rune of tier 1, 2, and 3 lets its golem breathe underwater. |
 | `tideSwimSpeedByTier` | `[0.0, 0.0, 1.0]` | Water movement efficiency a Tide rune of tier 1, 2, and 3 adds to its golem. 1.0 moves through water as fast as on land. |
 | `orderChannelsByTier` | `[1, 2, 3]` | Extra channels an Order rune of tier 1, 2, and 3 gives its golem on top of its one channel. |
