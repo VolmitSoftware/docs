@@ -53,6 +53,9 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Breaker Node | `BRICK` | Golemancy: Breaker Core | Item kind and node type |
 | Rancher Core | `FIREWORK_STAR` | Golemancy: Rancher Core | Item kind and role |
 | Pasture Node | `BRICK` | Golemancy: Rancher Core | Item kind and node type |
+| Sorter Core | `FIREWORK_STAR` | Golemancy: Sorter Core | Item kind and role |
+| Input Node | `BRICK` | Golemancy: Sorter Core | Item kind and node type |
+| Filter Node | `BRICK` | Golemancy: Sorter Core | Item kind and node type |
 | Angler Core | `FIREWORK_STAR` | Golemancy: Angler Core | Item kind and role |
 | Fishing Node | `BRICK` | Golemancy: Angler Core | Item kind and node type |
 | Blank Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments | Item kind |

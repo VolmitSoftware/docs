@@ -90,7 +90,7 @@ Hold a node in your main hand, sneak, and right-click a block face. The node att
 
 A new node starts with no channel, priority 3, a whitelist filter with no entries, and a work area radius of 2 blocks, or your level's largest radius when that is smaller. The work area is centered on the block in front of the face.
 
-Nodes are hidden until you hold the Crook, a Node, a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: Full while a Deposit Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
+Nodes are hidden until you hold the Crook, a Node, a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: Full while a Deposit or Filter Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
 
 Click one of your revealed nodes to configure it. Only the node's owner can configure it, and its label updates after each change.
 
@@ -111,8 +111,8 @@ The Node GUI shows the node type and its block, and holds these controls:
 - **Priority** (level 3): left-click raises it and right-click lowers it, from 1 to 5.
 - **Redstone** (level 4): cycles Ignored, Works while powered, and Works while unpowered. A node set to work while powered does no work while its block receives no redstone power, and a node set to work while unpowered does no work while its block is powered.
 - **X, Y, and Z radius**: left-click grows the work area by 1 block on that axis and right-click shrinks it, from 0 up to your level's largest radius.
-- **Filter slots**: pick up an item in your inventory and click an empty slot to add it or a filled slot to replace that entry, or right-click a slot to clear it. Your level sets how many slots you have. A slot keeps one of the item as you set it, with its name, enchantments, and potion type but without the contents of shulker boxes, bundles, or other containers, so two different potions take two slots and the same item never takes two. Golems match filter entries by item type.
-- **Whitelist or Blacklist** (level 5): a whitelist lets golems use only matching items, and a blacklist lets them use everything except matching items. An empty filter matches every item.
+- **Filter slots**: pick up an item in your inventory and click an empty slot to add it or a filled slot to replace that entry, or right-click a slot to clear it. Your level sets how many slots you have. A slot keeps one of the item as you set it, with its name, enchantments, and potion type but without the contents of shulker boxes, bundles, or other containers, so two different potions take two slots and the same item never takes two. Golems match filter entries by item type, and Sorters with enough Sorter Core levels also tell enchanted books and potions apart, as described under Sorter Core.
+- **Whitelist or Blacklist** (level 5): a whitelist lets golems use only matching items, and a blacklist lets them use everything except matching items. An empty filter matches every item, except on a Filter Node, as described under Sorter Core.
 - **Add Tag** (level 5): closes the GUI and asks you to type an item tag, such as `#logs` or `#minecraft:saplings`, in chat. A tag without a namespace means `minecraft`. Typing a tag the filter already holds removes it, and typing `cancel` stops. Each tag uses one filter slot, and the prompt ends after 45 seconds.
 
 Golems bound with a role core work their owner's nodes while in Work mode. A golem takes jobs only from nodes whose work lies within `baseWorkRadius` blocks of its home, plus its Tide rune's bonus, and only from the node types its core works. A node with no channel hands jobs to every one of your golems; a node with a channel hands them only to golems on that channel, and a golem with no channel works only nodes with no channel. A golem has one channel, or more with an Order rune. A golem takes the highest-priority job first, then the nearest one. It keeps its claim on a job for `taskLeaseSeconds` seconds, renewed while it gets closer or keeps working; if it gets less than half a block closer within `stuckTimeoutSeconds` seconds, it gives the job up and skips it for 10 seconds, or less with an Order rune, while other golems may take it. A golem that gives up `stuckReleasesBeforePause` jobs or containers in a row rests for `stuckPauseSeconds` seconds before it looks for work again. A node switched off by redstone hands out no jobs, and the jobs it already handed out are cancelled. A golem that stands idle away from home for `idleReturnSeconds` seconds, or strays beyond `leashRadius` blocks of home, walks back. Iron golems in Colossus Form take no jobs.
@@ -571,6 +571,81 @@ The recipe tables use the same fields as the Animus Binding recipes.
 | `workXpPerCull` | `1.0` | Golemancy work XP paid for each animal a Rancher culls. Values below 0 load as 0. |
 | `rancherCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Rancher Core recipe. |
 | `pastureNodeRecipe` | ` X ` / ` B ` / `   ` | Pasture Node recipe. |
+
+### Sorter Core (`golem-sorter-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
+
+Makes copper golems bound with a Sorter Core empty the container under an Input Node into the containers around it that already hold each item, and unlocks the Sorter Core and Input Node recipes at level 1 and the Filter Node recipe at level `filterLevel`.
+
+Bind a copper golem with a Sorter Core through Animus Binding. Only copper golems take the core by default; `allowedCoresCopper` and the other `allowedCores` lists in the skill configuration decide which bodies can, and copper golems bind only after you learn Copper Frame. A bound Sorter never carries items between copper chests on its own the way an unbound copper golem does; it sorts only for your Input Nodes. A new Sorter starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Sorters work only in Work mode, so place an Input Node with Node Weaving on the container you want emptied, such as the chest your hoppers fill. Its channel, priority, and redstone setting work like any other node's; its work area and filter are not used.
+
+An Input Node serves the chests, trapped chests, copper chests, barrels, and shulker boxes within your level's `destinationRadiusByLevel` blocks of its block, in loaded chunks, that region protection lets you open, up to the nearest `maxServedContainers` of them. A double chest counts as one container. Containers under another Input Node, and containers under a Filter Node that does not serve this Input Node, are never served.
+
+At each node check, an Input Node hands out fetch and restock jobs first, then a sort job for each kind of item in its container that has somewhere to go. When the node holds as many jobs as it can, a fetch or restock job replaces the sort job for the item the Input Node holds least of. A Sorter takes the job, opens the container, and takes up to your level's `stacksPerTripByLevel` stacks, as many items as it can carry: first the job's item, then other items that have somewhere to go. It walks to the nearest place one of its items goes, puts in every item that belongs there, and moves on to the next, and it takes no new job while it still has somewhere to take what it carries. When a container fills up before the Sorter gets there, it skips that container for 10 seconds and tries the next place. Items that have nowhere left to go go back into the Input Node's container, or to a Deposit Node or the Sorter's home chest like any other golem's items when that container is full. A Sorter only uses containers within `baseWorkRadius` blocks of its home, plus its Tide rune's bonus, and leaves items bound elsewhere for your other Sorters. Sorters skip containers region protection does not let you open, and the Input Node shows Blocked while protection stops a Sorter at a container. A copper Sorter opens each container's lid while it works.
+
+A Sorter puts each item in the first of these that has room for it:
+
+1. (level `filterLevel`) A Filter Node whose filter accepts the item, highest priority first, then the nearest to the Input Node.
+2. The nearest container that already holds the same item.
+3. (level `groupsLevel`) The nearest container that holds an item of the same group in `groups`, so birch logs join oak logs.
+4. (level `filterLevel`) An overflow Filter Node whose filter accepts the item, highest priority first, then the nearest.
+
+The same item means the same item type. From level `preciseLevel`, enchanted books also need the same enchantments, at any level, and potions, splash and lingering potions, and tipped arrows need the same potion. The same rule decides which Filter Node entries an item matches; tag entries match by item type. Sorters move shulker boxes only from level `shulkerBoxLevel`, whole with their contents, and never put a shulker box into a shulker box.
+
+The bottom row of an Input Node's GUI holds these controls:
+
+- **Matching**: Same Item, Item Groups (level `groupsLevel`), or Enchantments and Potions (level `preciseLevel`); left-click for the next and right-click for the previous. Same Item turns off item groups, and Item Groups turns off enchantment and potion matching. A new Input Node uses the highest your level allows.
+- **Destination Radius**: left-click grows it by 2 blocks and right-click shrinks it, from 2 up to your level's radius. A new Input Node uses your level's radius.
+- **Fetch Items** (level `fetchLevel`): opens the fetch menu described below.
+
+From level `filterLevel`, a Filter Node marks a served container for chosen items; below that level, Sorters leave containers under Filter Nodes alone. A Filter Node serves your Input Nodes on its channel; one with no channel serves all of them. A Filter Node switched off by redstone takes nothing, and one whose filter is empty takes nothing unless it is an overflow. Its label shows Full while its container has no empty slot. The bottom row of a Filter Node's GUI holds these controls:
+
+- **Overflow**: click to switch. An overflow Filter Node takes the items no other place takes; its filter still applies, so an empty filter takes everything.
+- **Restock** (level `restockLevel`): left-click raises the amount and right-click lowers it, through 1, 4, 8, 16, 32, 64, 128, 256, and 512. A Filter Node with a restock amount keeps that many of each item its whitelist lists and takes nothing else. Sorters stop putting an item in once it holds the amount. While it holds less, the Input Node hands out a restock job: a Sorter takes the missing items from the nearest other served container, including the Input Node's own, and brings them over. Restocking Filter Nodes never take an item from each other. A restock amount does nothing on an overflow or blacklist Filter Node.
+
+From level `indexLevel`, Sorters keep an index of what the containers they serve hold and read a container again only after `indexRefreshSeconds` seconds, or at once after a player clicks in it or closes it, a hopper moves items in or out of it, or a Sorter works it. The server indexes at most `maxIndexedContainers` containers at once.
+
+From level `fetchLevel`, **Fetch Items** in an Input Node's GUI lists every item stored in the containers the Input Node serves, including its own, with the amount available. The bottom row sets how many to request at a time: 1, 8, 16, 32, or 64. Click an item to request that many, or what is available when that is less. One of your Sorters takes the items from the nearest container that holds them, as many as it can carry per trip, and brings them to you; what does not fit in your inventory drops at your feet. Logging off or changing worlds ends your request, and the Sorter puts the items away again. If you are farther than `baseWorkRadius` blocks from its home, plus its Tide rune's bonus, it also puts them away, and the request takes them up again on a later trip while it lasts. A new request replaces your previous one, and a request ends after `fetchTimeoutSeconds` seconds.
+
+Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` work XP, as described in Earning XP. Items it returns to the Input Node pay nothing.
+
+| Level | Destination radius | Stacks per trip | Unlocks |
+|---|---|---|---|
+| 1 | 8 | 1 | Sorts into containers that already hold each item |
+| 2 | 12 | 1 | Item groups |
+| 3 | 16 | 2 | Filter Nodes and overflow Filter Nodes |
+| 4 | 20 | 2 | Enchantment and potion matching, shulker boxes, restock amounts |
+| 5 | 24 | 4 | Index and Fetch Items |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Sorter Core | ` X ` / `YBY` / ` Z ` | X `COMPARATOR`, Y `QUARTZ`, Z `COPPER_CHEST`, B `golemancy:blank_core` | 1 | 2 levels |
+| Input Node | ` X ` / ` B ` / `   ` | X `COPPER_CHEST`, B `golemancy:blank_node` | 1 | 0 |
+| Filter Node | ` X ` / ` B ` / `   ` | X `ITEM_FRAME`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `destinationRadiusByLevel` | `[8, 12, 16, 20, 24]` | Blocks around an Input Node within which a Sorter puts items away, from level 1 upward. Each Input Node can narrow it in its GUI. Values below 1 count as 1. |
+| `stacksPerTripByLevel` | `[1, 1, 2, 2, 4]` | Stacks a Sorter takes from a container on each trip, from level 1 upward. Its carry limit still applies. Values below 1 count as 1. |
+| `groupsLevel` | `2` | Level at which Sorters also use containers that hold another item of the same group. |
+| `groups` | `["logs=#minecraft:logs", "planks=#minecraft:planks", "ores=#minecraft:coal_ores,#minecraft:iron_ores,#minecraft:copper_ores,#minecraft:gold_ores,#minecraft:redstone_ores,#minecraft:lapis_ores,#minecraft:diamond_ores,#minecraft:emerald_ores,NETHER_QUARTZ_ORE,NETHER_GOLD_ORE,ANCIENT_DEBRIS", "stone=STONE,COBBLESTONE,DEEPSLATE,COBBLED_DEEPSLATE,GRANITE,DIORITE,ANDESITE,TUFF,CALCITE,BLACKSTONE,BASALT,SMOOTH_BASALT,NETHERRACK,END_STONE", "wool=#minecraft:wool", "food=APPLE,BREAD,CARROT,POTATO,BAKED_POTATO,BEETROOT,MELON_SLICE,SWEET_BERRIES,GLOW_BERRIES,COOKIE,PUMPKIN_PIE,GOLDEN_CARROT,BEEF,COOKED_BEEF,PORKCHOP,COOKED_PORKCHOP,CHICKEN,COOKED_CHICKEN,MUTTON,COOKED_MUTTON,RABBIT,COOKED_RABBIT,COD,COOKED_COD,SALMON,COOKED_SALMON,DRIED_KELP", "redstone=REDSTONE,REDSTONE_TORCH,REPEATER,COMPARATOR,LEVER,PISTON,STICKY_PISTON,OBSERVER,HOPPER,DROPPER,DISPENSER,REDSTONE_LAMP,TARGET,DAYLIGHT_DETECTOR,TRIPWIRE_HOOK,STONE_PRESSURE_PLATE,STONE_BUTTON", "saplings=#minecraft:saplings", "seeds=WHEAT_SEEDS,BEETROOT_SEEDS,MELON_SEEDS,PUMPKIN_SEEDS,TORCHFLOWER_SEEDS,PITCHER_POD"]` | Item groups, written as `name=members` with members separated by commas. A member is an item name or `#` item tag. An item in two groups counts for the first. Entries that name no item or tag are ignored with a warning. |
+| `filterLevel` | `3` | Level at which Sorters use Filter Nodes, including overflow Filter Nodes, and the Filter Node recipe unlocks. |
+| `preciseLevel` | `4` | Level at which Sorters tell enchanted books apart by their enchantments, and potions and tipped arrows by their potion. |
+| `shulkerBoxLevel` | `4` | Level at which Sorters move shulker boxes, whole with their contents. |
+| `restockLevel` | `4` | Level at which Filter Nodes can set a restock amount. |
+| `indexLevel` | `5` | Level at which Sorters keep an index of what their containers hold. |
+| `fetchLevel` | `5` | Level at which you can fetch items from an Input Node's GUI. |
+| `indexRefreshSeconds` | `30` | Seconds an indexed container's contents are trusted before a Sorter reads the container again, from 1 to 3600. |
+| `maxIndexedContainers` | `1024` | Most containers the server indexes at once, from 1 to 16384. The oldest entry is dropped when the index is full. |
+| `fetchTimeoutSeconds` | `120` | Seconds a fetch request waits for a Sorter before it ends, from 10 to 3600. |
+| `maxServedContainers` | `128` | Most containers one Input Node serves, nearest first, from 1 to 1024. Containers beyond the limit are left alone. |
+| `workXpPerStack` | `0.3` | Golemancy work XP paid for each stack a Sorter puts away or brings you. Values below 0 load as 0. |
+| `sorterCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Sorter Core recipe. |
+| `inputNodeRecipe` | ` X ` / ` B ` / `   ` | Input Node recipe. |
+| `filterNodeRecipe` | ` X ` / ` B ` / `   ` | Filter Node recipe, unlocked at level `filterLevel`. |
 
 ### Angler Core (`golem-angler-core`)
 
