@@ -57,6 +57,8 @@ A binding needs all of the following:
 
 A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
 
+Your roster notes each time one of your bound golems loads, and a copy saved before the latest of those loads, such as one from a world backup or from a chunk that a server crash kept from saving, turns back into an ordinary golem and drops nothing.
+
 | Recipe | Pattern | Keys | Yield | Tithe |
 |---|---|---|---|---|
 | Artificer's Crook | ` A ` / `RHR` / ` C ` | H `IRON_HOE`, A `AMETHYST_SHARD`, R `REDSTONE`, C `COPPER_INGOT` | 1 | 0 |
