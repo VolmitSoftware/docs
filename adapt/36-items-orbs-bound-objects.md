@@ -57,6 +57,7 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Fishing Node | `BRICK` | Golemancy: Angler Core | Item kind and node type |
 | Blank Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments | Item kind |
 | Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments, infused at the Animus Plinth | Item kind, aspect, and tier |
+| Shattered Core | `FIREWORK_STAR` | Golemancy: Golem Mending | Item kind, golem id, owner, and the fallen golem's cores, runes, settings, name, and record |
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.
 

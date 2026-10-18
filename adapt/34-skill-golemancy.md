@@ -7,7 +7,7 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
 ---
-Golemancy gains XP from building and binding golems, fighting beside your bound golems, the jobs your working golems finish, watching other golems kill hostile mobs, repairing iron golems, tending copper golems, and infusing at the Animus Plinth.
+Golemancy gains XP from building and binding golems, fighting beside your bound golems, the jobs your working golems finish, watching other golems kill hostile mobs, repairing and healing golems, tending copper golems, and infusing at the Animus Plinth.
 
 ## Earning XP
 
@@ -18,14 +18,14 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 - When your bound golem takes damage from a hostile mob, you earn the damage taken times `tankXpMultiplier`, at most once per `tankCooldownMillis`. Damage beyond the golem's remaining health does not count.
 - Damage, kill, and tanking XP pay in full while you are within `ownerProximityRadius` blocks of the golem. Farther away or in another world, they pay `distantOwnerXpMultiplier` times as much, and nothing while you are offline. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount, and Adapt minions and Excavation grave mobs pay nothing.
 - When an iron golem or snow golem that is not bound kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
-- Repairing a player-built iron golem with an iron ingot pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
+- Repairing a player-built iron golem with an iron ingot, or healing one of your bound golems with a copper ingot or snow block through Golem Mending, pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
 - Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
 - Completing an infusion at the Animus Plinth pays `infuseRuneTier1Xp`, `infuseRuneTier2Xp`, or `infuseRuneTier3Xp` for a rune of that tier, or `infuseMasterworkHeartXp` for a Masterwork Heart, and counts toward `golemancy.infusions`.
 - When one of your working golems finishes a job, you earn the work XP that its Core adaptation sets for that job. Work XP pays only while you are online and within `workXpOwnerRadius` blocks of the golem, and you earn at most `workXpHourlyCap` work XP in any 60 minutes. Golem labor never pays other skills. Each finished job counts toward `golemancy.tasks`, and each item your golems deliver into a container counts toward `golemancy.items.moved`.
 
 ## Adaptations
 
-Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, and runes.
+Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, runes, and ways to heal and rebuild your golems.
 
 ### Animus Binding (`golem-animus-binding`)
 
@@ -647,7 +647,7 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 - A body cannot take the runes `runeBodyBlocks` lists for it; by default, frost golems cannot take Ember runes.
 - Your golems use runes up to your level's `maxTierByLevel` tier. A higher-tier rune can still be slotted, but it stays inert, and the Golem GUI shows why in red. Runes in slots your level does not open, and runes a body cannot use, are inert the same way.
 - Rune effects follow your level: when you learn or unlearn levels, your awake golems update shortly and sleeping golems update when they wake.
-- Runes stay in the golem through chunk unloads and restarts. Releasing a golem drops its runes, and when a bound golem dies each rune drops at the `deathDropRuneChance` set in the skill configuration.
+- Runes stay in the golem through chunk unloads and restarts. Releasing a golem drops its runes, and when a bound golem dies each rune drops at the `deathDropRuneChance` set in the skill configuration, unless the golem leaves a Shattered Core through Golem Mending, which keeps its runes.
 
 | Level | Extra rune slots | Highest usable tier | Unlocks |
 |---|---|---|---|
@@ -708,6 +708,65 @@ The recipe table uses the same fields as the Animus Binding recipes.
 | `bulwarkArmorByTier` | `[4.0, 8.0, 12.0]` | Armor added to a golem by a Bulwark rune of tier 1, 2, and 3. |
 | `bulwarkToughnessByTier` | `[0.0, 2.0, 4.0]` | Armor toughness added to a golem by a Bulwark rune of tier 1, 2, and 3. |
 | `bulwarkKnockbackResistanceByTier` | `[0.0, 0.0, 0.5]` | Knockback resistance added to a golem by a Bulwark rune of tier 1, 2, and 3. 1.0 means no knockback. |
+
+### Golem Mending (`golem-mending`)
+
+5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
+
+Heals your golems with copper ingots, snow blocks, and bone meal, lets them regenerate near you and at home, and rebuilds a fallen golem from the Shattered Core it leaves behind.
+
+Right-click one of your bound golems or servants with its healing item to heal it:
+
+| Item | Heals | Base health |
+|---|---|---|
+| Copper ingot | Your bound copper golems | `copperIngotHeal` |
+| Snow block | Your bound frost golems | `snowBlockHeal` |
+| Bone meal | Your TragOul skeletal servants | `boneMealHeal` |
+
+Each heal restores its base health plus your level's `healBonusByLevel` fraction of it, never above the maximum health, and uses up one item unless you are in creative mode. A golem or servant at full health refuses the item, and an action-bar message says so. Heals on golems count toward repair XP as described in Earning XP. While you are online, an iron ingot repair of one of your bound iron golems, by anyone, also heals your level's `healBonusByLevel` fraction of the vanilla 25 health, on top of the vanilla repair and any Iron Frame bonus.
+
+- **Regeneration near you** (level `ownerRegenLevel`): your awake golems heal `ownerRegenAmount` health every `regenIntervalSeconds` seconds while they are within `ownerRegenRadius` blocks of you in the same world.
+- **Regeneration at home** (level `homeRegenLevel`): a golem with no job and no target heals `homeRegenAmount` health every `regenIntervalSeconds` seconds while it is within `homeRegenRadius` blocks of its home. When both regenerations apply, the golem heals the larger amount, not both. Sleeping golems never regenerate.
+- **Shattered Core** (level `shatterLevel`): when one of your bound golems dies while you are online, it still drops the items it carries and its essence as experience, but instead of dropping cores and runes at the skill's `deathDropCoreChance` and `deathDropRuneChance`, it leaves a Shattered Core where it died, and an action-bar message tells you. The Shattered Core keeps the golem's cores, runes, channels, mode, home, home chest, name, and record of kills, damage, jobs, and items moved. Only you can pick it up, it never despawns, and nothing destroys it on the ground. The golem stays in your roster as shattered and still counts toward your golem cap. A golem that dies while you are offline, or before you reach `shatterLevel`, drops its cores and runes as usual.
+- **Reborn** (level `rebornLevel`): a rebuilt copper golem keeps the oxidation stage and wax it had when it died, and every rebuilt golem gets Resistance with amplifier `rebornResistanceAmplifier`, Resistance II by default, for `rebornResistanceSeconds` seconds.
+
+To rebuild a shattered golem, hold its Shattered Core in your main hand, sneak, and right-click a freshly built golem of the same body within 3 blocks. The golem is bound to you at once with everything the Shattered Core kept, at full health, and the Shattered Core is used up. A rebuild has no ritual, costs no tithe, pays no bind XP, and earns no first-bind challenge. It needs all of the following:
+
+- The Shattered Core is yours.
+- The golem is still shattered in your roster.
+- You have Golem Mending level `shatterLevel`.
+- The golem is not bound already. A player built it; iron golems that no player built rebuild only when `allowBindingVillageGolems` is on. For `builderExclusiveSeconds` after a golem is built, only the player who built it can use it.
+- You can bind that body: copper golems need Copper Frame and iron golems Iron Frame. The skill's `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron` list allows every core the golem had.
+- Region protection lets you interact with the golem.
+- The chunk holds fewer than `maxBoundGolemsPerChunk` bound golems. Your golem cap is not checked again, because the shattered golem already counts toward it.
+
+Shift-right-click a shattered golem in the Roster GUI to release it for good. Its Shattered Core then crumbles the next time you use it, and so does a Shattered Core whose golem is no longer shattered, for example because it was already rebuilt.
+
+| Level | Heal bonus | Unlocks |
+|---|---|---|
+| 1 | +20% | Copper ingots, snow blocks, and bone meal heal your golems and servants |
+| 2 | +40% | Regeneration: 0.5 health every 5 s within 16 blocks of you |
+| 3 | +60% | Regeneration: 1 health every 5 s while idle within 4 blocks of home |
+| 4 | +80% | Shattered Core on death, rebuilt on a freshly built body |
+| 5 | +100% | Reborn golems keep their copper state and get 10 s of Resistance II |
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `healBonusByLevel` | `[0.2, 0.4, 0.6, 0.8, 1.0]` | Fraction added to every heal you give your golems and servants with items, from level 1 upward. 0.2 heals 20% more. An iron ingot repair of a bound iron golem gains this fraction of the vanilla 25. |
+| `copperIngotHeal` | `4.0` | Health a copper ingot restores to your bound copper golem before the level bonus. Values below 0 load as 0. |
+| `snowBlockHeal` | `2.0` | Health a snow block restores to your bound frost golem before the level bonus. Values below 0 load as 0. |
+| `boneMealHeal` | `2.0` | Health bone meal restores to your TragOul skeletal servant before the level bonus. Values below 0 load as 0. |
+| `ownerRegenLevel` | `2` | Level at which your awake golems regenerate while you are near them. |
+| `ownerRegenAmount` | `0.5` | Health your golems regenerate every `regenIntervalSeconds` while they are within `ownerRegenRadius` blocks of you. Values below 0 load as 0. |
+| `ownerRegenRadius` | `16.0` | Blocks from you, in the same world, within which your golems regenerate. Values below 0 load as 0. |
+| `homeRegenLevel` | `3` | Level at which your idle golems regenerate at home. |
+| `homeRegenAmount` | `1.0` | Health your golems regenerate every `regenIntervalSeconds` while they are idle, with no job and no target, within `homeRegenRadius` blocks of their home. When both regenerations apply, only the larger one heals. Values below 0 load as 0. |
+| `homeRegenRadius` | `4.0` | Blocks from its home within which an idle golem regenerates. Values below 0 load as 0. |
+| `regenIntervalSeconds` | `5` | Seconds between regeneration heals. Values below 1 load as 1. |
+| `shatterLevel` | `4` | Level at which your bound golems leave a Shattered Core when they die while you are online. |
+| `rebornLevel` | `5` | Level at which a golem rebuilt from its Shattered Core keeps its copper oxidation stage and wax and gains Resistance. |
+| `rebornResistanceSeconds` | `10` | Seconds of Resistance a reborn golem gains. Values below 0 load as 0, which gives none. |
+| `rebornResistanceAmplifier` | `1` | Amplifier of the Resistance a reborn golem gains. 0 is Resistance I and 1 is Resistance II. Values load between 0 and 255. |
 
 ## Animus Plinth
 
@@ -792,7 +851,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `witnessHourlyCap` | `600` | Most witness XP one player can earn in any 60 minutes. |
 | `golemKillXpBase` | `15` | Base kill value before the victim's health is added. |
 | `golemKillMaxHealthMultiplier` | `1.0` | Kill value added per point of the victim's maximum health. |
-| `repairXpPerHealth` | `2.0` | Skill XP per point of hostile damage repaired on an iron golem. |
+| `repairXpPerHealth` | `2.0` | Skill XP per point of hostile damage repaired on an iron golem or healed on a bound golem with Golem Mending. |
 | `copperScrapeXp` | `60` | Skill XP per oxidation stage scraped off a copper golem. |
 | `copperWaxXp` | `30` | Skill XP for the first wax on each copper golem. |
 | `spawnerMobXpMultiplier` | `0.3` | Multiplier for Golemancy XP from mobs that came from a spawner or trial spawner. |
@@ -829,8 +888,8 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `allowedCoresFrost` | `["BLANK", "GUARDIAN", "GATHERER", "HARVESTER"]` | Cores a frost golem can be bound with. |
 | `allowedCoresCopper` | `["BLANK", "GATHERER", "HARVESTER", "LUMBER", "RANCHER", "SORTER", "ANGLER"]` | Cores a copper golem can be bound with. |
 | `allowedCoresIron` | `["BLANK", "GUARDIAN", "GATHERER", "LUMBER", "BREAKER", "RANCHER", "ANGLER"]` | Cores an iron golem can be bound with. |
-| `deathDropCoreChance` | `0.5` | Chance that each core drops when a bound golem dies. |
-| `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies. |
+| `deathDropCoreChance` | `0.5` | Chance that each core drops when a bound golem dies without leaving a Shattered Core. |
+| `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies without leaving a Shattered Core. |
 | `brainIntervalTicks` | `5` | Ticks between bound golem decisions, clamped to 2-20. Lower values react faster but cost more server time. |
 | `followTeleportDistance` | `32` | Blocks from its owner, in the same world, at which a following golem teleports to them instead of walking. The minimum is 8. |
 | `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. |
