@@ -61,6 +61,11 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `allowedCoresIron` | `["BLANK", "GUARDIAN", "GATHERER", "LUMBER", "BREAKER", "RANCHER", "ANGLER"]` | Cores an iron golem can be bound with. |
 | `deathDropCoreChance` | `0.5` | Chance that each core drops when a bound golem dies. |
 | `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies. |
+| `brainIntervalTicks` | `5` | Ticks between bound golem decisions, clamped to 2-20. Lower values react faster but cost more server time. |
+| `followTeleportDistance` | `32` | Blocks from its owner, in the same world, at which a following golem teleports to them instead of walking. The minimum is 8. |
+| `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. The minimum is 8. |
+| `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
+| `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 1-20. |
 | `revealRange` | `32.0` | Blocks around you within which your golems show their status labels while you hold a Golemancy item. |
 | `labelRange` | `8.0` | Blocks within which revealed golem labels are drawn on screen. |
 | `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems as you move while holding a Golemancy item. Holding no Golemancy item costs nothing. |
