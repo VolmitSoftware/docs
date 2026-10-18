@@ -26,7 +26,7 @@ Golemancy's adaptations unlock golem binding, nodes, and runes.
 
 Binds a golem to you as a companion and unlocks the Artificer's Crook and Blank Animus Core recipes at level 1.
 
-Hold an Animus Core in your main hand, sneak, and right-click a golem. The golem freezes and shrinks toward its bound size while the ritual runs. Moving more than 4 blocks from the golem, switching your held item, or the golem taking damage breaks the ritual, and the golem returns to its normal size. When the ritual finishes, the core and the tithe levels are used up, the golem becomes "*Owner*'s *Body* Golem", and it starts following you. Creative players pay no levels.
+Hold an Animus Core in your main hand, sneak, and right-click a snow, copper, or iron golem. The golem freezes and shrinks toward its bound size while the ritual runs. Moving more than 4 blocks from the golem, switching your held item, or the golem being attacked, set on fire, caught in lava, or caught in an explosion breaks the ritual, and the golem returns to its normal size. Rain and melting do not break it. When the ritual finishes, the core and the tithe levels are used up and the golem becomes "*Owner*'s *Body* Golem". A Companion golem starts following you; a golem bound with a role core starts working. Creative players pay no levels.
 
 A binding needs all of the following:
 
@@ -60,7 +60,7 @@ Each recipe is a table with `rows` (1 to 3 rows of up to 3 symbols, a space for 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `golemCapByLevel` | `[1, 2, 3, 5, 7]` | Most golems you can own at once, from level 1 upward. `hardCapPerPlayer` still caps every level. |
-| `ritualSecondsByLevel` | `[4.0, 3.5, 3.0, 2.5, 2.0]` | Seconds the binding ritual takes, from level 1 upward. |
+| `ritualSecondsByLevel` | `[4.0, 3.5, 3.0, 2.5, 2.0]` | Seconds the binding ritual takes, from level 1 upward. Each value is clamped to 0.5-30. |
 | `titheSnowByLevel` | `[1, 1, 1, 1, 0]` | Experience levels to bind a frost golem, from level 1 upward. |
 | `titheCopperByLevel` | `[2, 2, 1, 1, 1]` | Experience levels to bind a copper golem, from level 1 upward. |
 | `titheIronByLevel` | `[3, 3, 2, 2, 1]` | Experience levels to bind an iron golem, from level 1 upward. |
