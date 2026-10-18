@@ -25,7 +25,7 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 
 ## Adaptations
 
-Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, runes, and ways to heal and rebuild your golems.
+Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, runes, signals sent with the Crook, and ways to heal and rebuild your golems.
 
 ### Animus Binding (`golem-animus-binding`)
 
@@ -783,6 +783,54 @@ The recipe table uses the same fields as the Animus Binding recipes.
 | `bulwarkArmorByTier` | `[4.0, 8.0, 12.0]` | Armor added to a golem by a Bulwark rune of tier 1, 2, and 3. |
 | `bulwarkToughnessByTier` | `[0.0, 2.0, 4.0]` | Armor toughness added to a golem by a Bulwark rune of tier 1, 2, and 3. |
 | `bulwarkKnockbackResistanceByTier` | `[0.0, 0.0, 0.5]` | Knockback resistance added to a golem by a Bulwark rune of tier 1, 2, and 3. 1.0 means no knockback. |
+
+### Overseer (`golem-overseer`)
+
+5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
+
+Lets you signal your bound golems with the Artificer's Crook to follow you, hold, go home, or work, and as it grows, to attack what you look at, answer only on one channel, rally to you, and guard you in formation.
+
+Hold the Crook in your main hand:
+
+| Input | Result |
+|---|---|
+| Sneak + left-click the air | Picks the next signal: Follow, Hold, Home, and Work, then Sic from level `sicLevel`. The action bar shows the signal. |
+| Left-click the air | Sends the current signal. |
+
+Left-clicking a node, a golem, or any other entity never sends a signal. Your signal starts at Follow and goes back to Follow when you log out.
+
+A signal reaches your awake golems within your level's `radiusByLevel` blocks of you in the same world. Each signal plays a chime only you hear, puts a ring of particles around every golem that answers, and starts a `signalCooldownMillis` cooldown before you can send the next one.
+
+- **Follow, Hold, Home, and Work** set the golem's mode, the same modes its Golem GUI cycles: Follow walks after you, Hold makes it stay where it stands, Home sends it home, and Work puts it back to work. A golem that does not have the mode ignores the signal; Companion golems have no Work mode.
+- **Sic** (level `sicLevel`): look at a creature within `sicRange` blocks and send Sic. Your Companion and Guardian golems in range attack it for `sicHoldSeconds` seconds, or until it dies or leaves their world, and then choose their own targets again. A Follow, Hold, Home, or Work signal ends the attack sooner, and a golem that goes past `leashRadius` from you, its Stay spot, or its home drops the attack and comes back. Frost golems never chase: they take a Sic target only when it is within the Guardian Core `sentryRange` blocks of them, and otherwise ignore the signal. The target glows red for you alone for `sicGlowSeconds` seconds. Your look passes through armor stands, your pets, bound golems, and other Adapt minions, and Sic never targets any of them. Sic targets players only where region protection allows PvP, and other creatures only where region protection allows you to attack them. When nothing valid is in sight, the action bar says so and nothing is sent.
+- **Crook channel** (level `channelFilterLevel`): sneak and right-click the air with the Crook to open your golem roster, click Crook Channel at the bottom, and pick a dye. The Crook in your main hand keeps that channel, and its signals then reach only golems that have it, including the extra channels of an Order rune. Pick All Golems to clear it. Below level `channelFilterLevel`, the Crook signals every golem.
+- **Rally** (level `rallyLevel`): a Follow signal also teleports your awake golems in the same world that are beyond the signal radius to you and puts them in Follow mode. The Crook channel still applies. Rally works only while you stand on the ground; a Follow signal sent in the air reaches only golems within the signal radius and leaves Rally ready. After a Rally, it cools down for `rallyCooldownSeconds` seconds, and Follow signals during the cooldown reach only golems within the signal radius.
+- **Formation** (level `formationLevel`): your awake golems in Follow mode stand evenly spaced on a ring `formationRingRadius` blocks around you, and each keeps its place while the same golems follow you. You gain `formationArmorPerGolem` armor for each of them within `formationArmorRange` blocks of you, up to `formationArmorMax`. The armor updates every second and goes away when you log out, die, change worlds, or drop below level `formationLevel`.
+
+| Level | Signal radius | Unlocks |
+|---|---|---|
+| 1 | 16 blocks | Follow, Hold, Home, and Work signals |
+| 2 | 24 blocks | Sic: your Companion and Guardian golems attack the creature you look at for 20 s |
+| 3 | 32 blocks | Crook channel: signals reach only golems on the Crook's channel |
+| 4 | 48 blocks | Rally: Follow teleports golems beyond the radius to you, once per 60 s |
+| 5 | 64 blocks | Formation: following golems ring you, +1 armor for each within 8 blocks, up to +6 |
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `radiusByLevel` | `[16, 24, 32, 48, 64]` | Blocks from you within which your golems hear a signal, from level 1 upward. Each value is clamped to 1-128. |
+| `signalCooldownMillis` | `1000` | Milliseconds after you send a signal before you can send another. |
+| `sicLevel` | `2` | Level at which Sic joins the signal cycle. |
+| `sicRange` | `24.0` | Blocks within which you must look at a creature to send Sic, from 1 to 64. Blocks in the way stop your look. Values outside that range load as the nearest limit. |
+| `sicGlowSeconds` | `5` | Seconds the Sic target glows for you alone. 0 turns the glow off. |
+| `sicHoldSeconds` | `20` | Seconds your golems attack a Sic target before they choose their own targets again, at least 1. |
+| `channelFilterLevel` | `3` | Level at which the Crook channel limits your signals to golems on that channel. |
+| `rallyLevel` | `4` | Level at which a Follow signal also teleports your golems beyond the signal radius to you. |
+| `rallyCooldownSeconds` | `60` | Seconds after a Rally before a Follow signal can rally golems again. |
+| `formationLevel` | `5` | Level at which your following golems ring you and give you armor. |
+| `formationRingRadius` | `2.5` | Blocks from you at which following golems stand in the ring, from 1 to 8. |
+| `formationArmorPerGolem` | `1.0` | Armor you gain for each following golem within `formationArmorRange` blocks of you. |
+| `formationArmorMax` | `6.0` | Most armor the formation gives you, from 0 to 30. |
+| `formationArmorRange` | `8.0` | Blocks from you within which a following golem counts toward your formation armor. |
 
 ### Golem Mending (`golem-mending`)
 
