@@ -51,7 +51,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `guardWhileOwnerOffline` | `false` | Keeps Guardian golems awake while their owner is offline. |
 | `serverMaxActiveGolems` | `1500` | Most bound golems awake on the server at once; the rest stay dormant until room frees. |
 | `maxBoundGolemsPerChunk` | `8` | Most bound golems allowed in one chunk when binding. |
-| `hardCapPerPlayer` | `32` | Most golems one player can own at once, counting bound, packed, and shattered golems. |
+| `hardCapPerPlayer` | `32` | Most golems one player can own at once, counting bound, packed, and shattered golems. Missing golems count until they are released. |
 | `bodyScaleFrost` | `0.50` | Size of a bound frost golem as a multiple of its normal size. |
 | `bodyScaleCopper` | `1.00` | Size of a bound copper golem as a multiple of its normal size. |
 | `bodyScaleIron` | `0.36` | Size of a bound iron golem as a multiple of its normal size. |
