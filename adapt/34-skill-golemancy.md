@@ -61,6 +61,9 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `allowedCoresIron` | `["BLANK", "GUARDIAN", "GATHERER", "LUMBER", "BREAKER", "RANCHER", "ANGLER"]` | Cores an iron golem can be bound with. |
 | `deathDropCoreChance` | `0.5` | Chance that each core drops when a bound golem dies. |
 | `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies. |
+| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels while you hold a Golemancy item. |
+| `labelRange` | `8.0` | Blocks within which revealed golem labels are drawn on screen. |
+| `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems as you move while holding a Golemancy item. Holding no Golemancy item costs nothing. |
 
 ### Challenges
 
