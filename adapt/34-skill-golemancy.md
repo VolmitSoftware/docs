@@ -66,9 +66,9 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. The minimum is 8. |
 | `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
 | `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 1-20. |
-| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels while you hold a Golemancy item. |
+| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels while you hold the Crook, a Node, a Core or a Dormant Golem. |
 | `labelRange` | `8.0` | Blocks within which revealed golem labels are drawn on screen. |
-| `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems as you move while holding a Golemancy item. Holding no Golemancy item costs nothing. |
+| `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems as you move while holding the Crook, a Node, a Core or a Dormant Golem. Holding none of them costs nothing. |
 
 ### Challenges
 
