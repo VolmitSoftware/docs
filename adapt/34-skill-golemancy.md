@@ -254,6 +254,61 @@ While you are online, anyone who repairs one of your bound iron golems with an i
 | `colossusAttackBonus` | `0.2` | Fraction added to a bound iron golem's total attack damage, frame bonus included, while it is in Colossus Form. 0.2 is 20% more. |
 | `colossusGrowTicks` | `20` | Ticks a bound iron golem takes to grow into Colossus Form or shrink back. |
 
+### Guardian Core (`golem-guardian-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
+
+Makes golems bound with a Guardian Core defend their home, you, or a Guard Node's area, and unlocks the Guardian Core and Guard Node recipes at level 1.
+
+Bind a golem with a Guardian Core through Animus Binding. Snow and iron golems take the core by default; `allowedCoresFrost` and `allowedCoresIron` in the skill configuration decide which bodies can. A new Guardian starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home.
+
+A Guardian guards the area within your level's `perceptionByLevel` blocks of its guard point: you while it follows you, the spot where it was told to stay while it stays, and its home in Home and Work mode. In Work mode it also guards the work area of each of your Guard Nodes that lies within `baseWorkRadius` blocks of its home, has a channel the golem matches, and is not switched off by redstone. A Guard Node's area only counts within `leashRadius` blocks of the Guardian's home, so a Guardian never chases a mob past its leash. Inside its guarded area a Guardian attacks the nearest hostile mob, or the nearest mob that is targeting you or the Guardian, and lets go of a mob that leaves the area. Guardians never attack your pets or Adapt minions, and while you are online they never attack mobs that region protection shields from you. Creepers are left alone unless `targetCreepers` is on, and mobs with a custom name unless `ignoreNamedMobs` is off. Iron Guardians fight in melee. Frost Guardians are sentries: they throw snowballs only at mobs within `sentryRange` blocks of themselves and never chase mobs farther away.
+
+Place a Guard Node with Node Weaving. Its channel, work area, and redstone setting work like any other node's. A Guard Node hands out no jobs; it shows Working while one of your Guardians fights a mob inside its area and for 10 seconds after.
+
+- **Intercept** (level `interceptLevel`): every `interceptIntervalMillis` milliseconds, each Guardian turns the mobs inside its guarded area that are targeting you onto itself.
+- **Retaliate** (level `retaliateLevel`): for `retaliateWindowMillis` milliseconds after something hurts you, your Guardians attack it while it is inside their guarded area, and drop the mob they were fighting to do so. This includes creepers, named mobs, and players where region protection allows PvP. An arrow or other projectile counts as its shooter.
+- **Bulwark Presence** (level `bulwarkLevel`): while you are within `bulwarkRadius` blocks of one of your awake Guardians, you take `bulwarkDamageReduction` less damage. More Guardians nearby do not add to it. Damage from the void, the kill command, and the world border is not reduced.
+- **Last Stand** (level `lastStandLevel`): when a hit leaves one of your Guardians alive below `lastStandHealthFraction` of its maximum health, it gains Resistance for `lastStandTicks` ticks at amplifier `lastStandAmplifier`. Each Guardian can trigger Last Stand once per `lastStandCooldownMillis` milliseconds.
+
+With `guardWhileOwnerOffline` on in the skill configuration, your Guardians stay awake while you are offline. They then guard level 1's radius, attack only hostile mobs, and use none of Intercept, Retaliate, Bulwark Presence, or Last Stand. Region protection cannot be checked while you are offline, so offline Guardians also attack hostile mobs that it would shield from you. Guardians do no jobs, so they pay no work XP; their fights pay the damage, kill, and tanking XP in Earning XP.
+
+| Level | Guard radius | Unlocks |
+|---|---|---|
+| 1 | 8 | Guards against hostile mobs |
+| 2 | 12 | Intercept: every 3 s, mobs targeting you turn onto your Guardians |
+| 3 | 16 | Retaliate: Guardians attack whatever hurt you in the last 5 s |
+| 4 | 20 | Bulwark Presence: 15% less damage within 4 blocks of an awake Guardian |
+| 5 | 24 | Last Stand: Resistance II for 5 s below 20% health, at most once per 60 s per Guardian |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Guardian Core | ` X ` / `YBY` / ` Z ` | X `IRON_SWORD`, Y `IRON_INGOT`, Z `SHIELD`, B `golemancy:blank_core` | 1 | 2 levels |
+| Guard Node | ` X ` / ` B ` / `   ` | X `IRON_SWORD`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `perceptionByLevel` | `[8, 12, 16, 20, 24]` | Blocks around a Guardian's guard point within which it attacks, from level 1 upward. Each value is clamped to 1 up to `leashRadius` in the skill configuration. |
+| `targetCreepers` | `false` | Lets Guardians attack creepers. |
+| `ignoreNamedMobs` | `true` | Keeps Guardians from attacking mobs that have a custom name, unless Retaliate sends them after one that hurt you. |
+| `interceptLevel` | `2` | Level at which Guardians use Intercept. |
+| `interceptIntervalMillis` | `3000` | Milliseconds between a Guardian's Intercept checks, at least 500. Lower values load as 500. |
+| `retaliateLevel` | `3` | Level at which Guardians use Retaliate. |
+| `retaliateWindowMillis` | `5000` | Milliseconds after something hurts you during which your Guardians retaliate against it. |
+| `bulwarkLevel` | `4` | Level at which Bulwark Presence protects you. |
+| `bulwarkRadius` | `4.0` | Blocks from one of your awake Guardians within which Bulwark Presence protects you, from 0 to 16. Values outside that range load as the nearest limit. |
+| `bulwarkDamageReduction` | `0.15` | Fraction of damage Bulwark Presence removes, from 0 to 1. 0.15 is 15% less. |
+| `lastStandLevel` | `5` | Level at which Guardians use Last Stand. |
+| `lastStandHealthFraction` | `0.2` | Fraction of maximum health, from 0 to 1, that a Guardian must drop below for Last Stand to trigger. 0.2 is 20%. |
+| `lastStandTicks` | `100` | Ticks of Resistance Last Stand gives. |
+| `lastStandAmplifier` | `1` | Resistance amplifier Last Stand gives. 0 is Resistance I and 1 is Resistance II. |
+| `lastStandCooldownMillis` | `60000` | Milliseconds after Last Stand triggers before it can trigger again on the same Guardian. |
+| `sentryRange` | `10.0` | Blocks within which frost Guardians shoot, from 1 to 10, the snow golem's throwing range. Values outside that range load as the nearest limit. |
+| `guardianCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Guardian Core recipe. |
+| `guardNodeRecipe` | ` X ` / ` B ` / `   ` | Guard Node recipe. |
+
 ### Runic Augments (`golem-runic-augments`)
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2
@@ -466,7 +521,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `maxOpenTasksPerNode` | `16` | Most unfinished jobs one node can hand out to golems at once, clamped to 1-256. |
 | `nodeVisibility` | `"OWNER"` | Who sees nodes while holding the Crook, a Node, a Core or a Dormant Golem. `OWNER` shows each player only their own nodes; `ANY_GOLEMANCER` also shows every node to players who have learned Node Weaving. |
 | `taskLeaseSeconds` | `20` | Seconds a golem keeps its claim on a node job without making progress before another golem may take it, clamped to 5-600. |
-| `baseWorkRadius` | `24` | Blocks around its home within which a working golem takes node jobs and finds Deposit Nodes, clamped to 4-128. |
+| `baseWorkRadius` | `24` | Blocks around its home within which a working golem takes node jobs, finds Deposit Nodes, and defends Guard Nodes, clamped to 4-128. |
 | `stuckTimeoutSeconds` | `4` | Seconds a golem walking to a job or a container may go without getting half a block closer before it gives up and skips that job or container for 10 seconds, clamped to 1-60. |
 | `stuckReleasesBeforePause` | `3` | Jobs or containers in a row a golem may give up because it got stuck before it rests for `stuckPauseSeconds`, clamped to 1-100. |
 | `stuckPauseSeconds` | `15` | Seconds a trapped golem rests without looking for jobs or containers, clamped to 0-600. 0 never rests it. |
