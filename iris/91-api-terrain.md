@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -113,6 +113,8 @@ For floor-aligned object placement, use `IrisObject.placeOnFloor(int x, int firs
 int resultY = object.placeOnFloor(
         blockX, firstOpenInternalY, blockZ, placer, placement, rng, listener, data);
 ```
+
+Procedural canopy placement calls `IObjectPlacer.beginTreeCanopy(BlockPosition)` before writing a cell. Return `false` to preserve an existing solid block and skip the cell's metadata. A successful call is paired with `endTreeCanopy()`. Custom placer wrappers must forward both methods; buffered placers must retain the condition and check the destination again when applying the cell and its metadata.
 
 For retained generation definitions and XYZ locate:
 

@@ -2,7 +2,7 @@
 title: "Procedural Trees"
 description: "Iris documentation: Procedural Trees"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T21:19:18.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -102,18 +102,26 @@ Variant heights are not random per variant. Iris spreads them evenly across `hei
 | `secondaryTrunk` | unset | Optional second wood block for a banded trunk. Ignored when `secondaryTrunkPalette` is set |
 | `secondaryTrunkPalette` | unset | Noise palette for that band |
 | `secondaryTrunkStart` / `secondaryTrunkEnd` | `0.5` / `1` | Normalized band bounds |
-| `roots` | `true` | Builds a root system so the tree meets uneven ground instead of hovering |
-| `rootStyle` | `BUTTRESS` | `TAPROOT` drives one thick root down. `BUTTRESS` flares several out at the base. `STILT` lifts the trunk on legs |
-| `rootDepth` | `0` | Explicit reach in blocks. 0 scales automatically with tree height |
-| `rootFlare` | `0` | Explicit flare radius. 0 scales automatically |
+| `roots` | `true` | Builds connected roots and extends short gaps to solid ground during surface placement |
+| `rootStyle` | `BUTTRESS` | `TAPROOT` tapers downward. `BUTTRESS` spreads connected roots at varied depths. `STILT` connects lower-trunk legs to the ground |
+| `rootDepth` | `0` | Root depth in blocks. Also bounds additional ground-contact extensions, capped at 16 blocks. Zero scales with tree height |
+| `rootFlare` | `0` | Horizontal reach for buttress and stilt roots. Zero uses a compact radius based on trunk width. Taproots ignore this field |
 
 `IrisTreeFunction`: `CONSTANT`, `LINEAR`, `SIGMOID`, `LOG`, `SINE`, `PARABOLIC`, `EXPONENTIAL`, `SQRT`, `STEP`, `BELL`, `EASE_IN_OUT`.
 
 `IrisTreeAzimuthMode`: `CONSTANT`, `LINEAR`, `SPIRAL`, `SINE`, `NOISE`, `RANDOM`, `GOLDEN_ANGLE`, `ALTERNATING`, `WHORL`, `ZIGZAG`.
 
+## Ground contact
+
+Surface placement anchors the trunk base to the selected terrain height. Roots keep their connections to the trunk and extend short gaps into solid ground. A placement is skipped when a root cannot reach supported terrain within its allowed extension. With `roots: false`, the trunk base must meet solid ground without an extension.
+
+Use `rootDepth: 2` and `rootFlare: 1.5` for compact buttress roots, or choose `TAPROOT` for a narrow spindle base. Larger flares suit swamp trees and broad trunks. Surface trees use these bounded root extensions with stilt placement modes, while the selected mode still determines the tree's anchor height. Explicit-height placement, cave placement, `PAINT`, and `FLOATING` retain their own anchoring rules.
+
 ## Canopy (`IrisTreeCanopy`)
 
 Snippet key: `tree-canopy`. Stacked discs, sized by the profile unless you override them.
+
+Canopy placement preserves existing solid blocks, including neighboring trunks. This applies to all canopy materials, including wart blocks and custom blocks.
 
 | Field | Default | What it does |
 |-------|---------|--------------|
@@ -132,6 +140,8 @@ Snippet key: `tree-canopy`. Stacked discs, sized by the profile unless you overr
 ## Branches (`IrisTreeBranches`)
 
 Snippet key: `tree-branches`. Adding a `branches` object switches the tree from a stack of leaf discs to real limbs with leaf balls at their tips. That is the difference between a vanilla oak and an old-growth silhouette.
+
+Branch wood takes priority where branches cross leaf clusters within the same tree.
 
 | Field | Default | What it does |
 |-------|---------|--------------|

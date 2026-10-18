@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-12T01:13:58.426Z
+date: 2026-10-18T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -56,6 +56,8 @@ The [Carving family](/iris/biomes/carving#authored-room-selection) includes ochr
 Overworld [Tundra Autumn and its extended variant](/iris/biomes/tundra/autumn) scatter red shrubs on grass blocks, coarse dirt, and podzol, alongside the red shrub ground cover in the four poplar biomes. These plants require Minecraft 26.3.
 
 Overworld wildlife and hostile mobs follow each biome's native derivative spawn table and Minecraft's spawning rules. The [Swamp](/iris/biomes/swamp#ecology), [Temperate](/iris/biomes/temperate#ecology), [Tropical](/iris/biomes/tropical#ecology), and [Mushroom](/iris/biomes/mushroom#ecology) entries describe these native biome identities.
+
+Procedural trees in the [Estranged woodlands](/iris/biomes/estranged) use compact taproots, buttress roots, or wetland stilt roots. [Spindlewood](/iris/biomes/estranged/spindlewood) uses two-block taproots. [Pallid spindles](/iris/biomes/estranged/pallid-necropolis) use three-block buttress roots with a `1.5`-block flare. Each biome entry lists its root settings, which match between packs while tree materials remain distinct.
 
 ## Read the atlas
 

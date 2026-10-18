@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Iris documentation: Integrations"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T02:23:31.381Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -97,6 +97,8 @@ Block properties use the palette entry's `data` object or a state suffix, `names
 
 Custom blocks finish placement when players approach or chunks are force-loaded. Keep the surrounding 3×3 chunks loaded while inspecting them. Pack aliases and saved objects retain custom IDs and properties.
 
+Native structures and imported features take precedence where they replace generated custom content. A non-air placeholder must retain its block type until custom placement; changes to its properties do not prevent placement. Fire and soul-fire placeholders can finish placement after extinguishing.
+
 An unresolved block uses the normal dimension fallback chain and the entry's `backup`. A direct unresolved entry without a fallback returns air with a warning.
 
 > Load custom content before creating an Iris world. If a required provider remains unavailable for 120 seconds, Iris leaves generation locked and shuts down. See [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle).
@@ -119,6 +121,8 @@ Unknown properties and invalid values fail resolution instead of silently using 
 
 Use furniture IDs in generated palettes or objects with `variant`, `yaw`, `pitch`, `randomYaw`, and `randomPitch`. Angles must be finite, at least zero, and below 360 degrees. Random angles depend on the world seed and placement coordinates, and an omitted variant selects the first variant in sorted order. Furniture appears after chunk generation; furniture entities are not captured by the wand or spawned by direct paste and previews.
 
+When native structures or imported features overwrite generated furniture positions, Iris removes that furniture, including furniture in already-loaded neighbouring chunks. Removal preserves separately placed replacement furniture at the same position. Regenerating a chunk preserves furniture in surrounding chunks unless generation overwrites its position.
+
 ### Per-provider caveats
 
 | Provider | Caveat |
@@ -140,6 +144,8 @@ This disables the repair across the server, including cleanup of old vanilla not
 ### Add another provider
 
 Adding an unsupported provider requires a plugin integration. See [90 - API - Getting Started](/iris/90-api-getting-started).
+
+For Bukkit providers, `ExternalDataProvider.processUpdate(engine, block, identifier)` returns `null` for ordinary block placement or a unique string token for separately persistent content. Implement `removeGenerated(block, token)` to remove only the content identified by that token when native generation overwrites its position. Both callbacks run on the block's owning thread. Return `true` once removal succeeds or the content is already absent, and `false` to retry later; defer absence checks until the chunk's entities are loaded.
 
 ## MythicMobs skill conditions
 

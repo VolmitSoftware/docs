@@ -2,7 +2,7 @@
 title: "Vanilla Passthrough"
 description: "Iris documentation: Vanilla Passthrough"
 published: true
-date: 2026-10-15T01:53:36.000Z
+date: 2026-10-18T02:23:31.381Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-20T00:00:00.000Z
@@ -76,7 +76,7 @@ Use this when Iris terrain should also run Minecraft's placed-feature pass: ores
 
 Vanilla step order: `RAW_GENERATION`, `LAKES`, `LOCAL_MODIFICATIONS`, `UNDERGROUND_STRUCTURES`, `SURFACE_STRUCTURES`, `STRONGHOLDS`, `UNDERGROUND_ORES`, `UNDERGROUND_DECORATION`, `FLUID_SPRINGS`, `VEGETAL_DECORATION`, `TOP_LAYER_MODIFICATION`.
 
-The pass runs after Iris structures, so early-step features can cut into placed structures.
+The pass runs after Iris structures, so early-step features can cut into placed structures. Imported features replace generated custom blocks and object chest contents at the positions they overwrite.
 
 ### Deny features in chosen biomes
 

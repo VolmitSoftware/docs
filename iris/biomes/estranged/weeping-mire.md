@@ -2,7 +2,7 @@
 title: "Biome Atlas — Weeping Mire"
 description: "Iris biome atlas entry for estranged/weeping-mire in Overworld and Underworld"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,6 +43,8 @@ The table lists each profile’s density and crack noise. Active deformation sta
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 - `estranged/weeping-mire`: Mire pools and low banks keep their height-based terrain.
+
+Weeping willows use buttress roots with `rootDepth: 3` and `rootFlare: 2`. Both packs use these root settings with their own tree materials.
 
 ## Overworld treatment
 

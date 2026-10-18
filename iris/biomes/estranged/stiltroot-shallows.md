@@ -2,7 +2,7 @@
 title: "Biome Atlas — Stiltroot Shallows"
 description: "Iris biome atlas entry for estranged/stiltroot-shallows in Overworld and Underworld"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,6 +43,8 @@ The table lists each profile’s density and crack noise. Active deformation sta
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 - `estranged/stiltroot-shallows`: Shallow water and rooted banks keep their height-based terrain.
+
+Stiltroot trees use stilt roots with `rootDepth: 3` and `rootFlare: 3`. Both packs use these root settings with their own tree materials.
 
 ## Overworld treatment
 

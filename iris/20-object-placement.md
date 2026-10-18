@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -185,6 +185,8 @@ Iris refuses surface objects that roof over, bridge, or overhang a carved openin
 
 Natural scatter also rejects a surface placement whose support columns intersect accepted river water or lava. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` **do not** bypass that river exclusion; only an explicit-Y call such as `/iris object paste` can build in a river.
 
+Procedural trees check the trunk base and root footprint. Their roots fill short gaps to solid terrain within the configured reach, and unsupported cliff placements are skipped. See [Procedural Trees](/iris/17b-procedural-trees#ground-contact) for root settings.
+
 ```json
 { "requireSurfaceSupport": true, "surfaceSupportBuffer": 2, "surfaceSupportDepth": 2 }
 ```
@@ -219,6 +221,8 @@ A second guard rejects surface-anchored placements that resolve to y <= 1 in a b
 ```
 
 `STILT` is `MAX_HEIGHT` plus columns. `MIN_STILT` is `MIN_HEIGHT` plus columns. `CENTER_STILT` is `CENTER_HEIGHT` plus columns. The `FAST_` variants sample fewer columns. Use `overStilt` to extend the legs below the surface. `ERODE_STILT` tapers the legs like a cone: deepest at the footprint centroid, dropping off toward the edges, with the lower portion randomly broken up.
+
+Procedural surface trees retain the selected stilt mode's anchor height and use their bounded root extensions for ground contact. Their root settings control this support instead of `stiltSettings`.
 
 Occluding blocks and full ice or glass blocks can stilt; containers, block entities, stairs, slabs, and dirt paths cannot, and `stiltSettings.exclude` adds more material keys to that list. Grass, mycelium, podzol, and dirt-path bottoms are substituted with dirt so you do not get grass columns, and a `palette` overrides the column material entirely. A column stops as soon as it hits a fluid, so stilts never punch through a lake floor.
 

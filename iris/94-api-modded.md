@@ -2,7 +2,7 @@
 title: "API - Modded"
 description: "Iris documentation: API - Modded"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-18T02:23:31.381Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -49,7 +49,8 @@ public interface ModdedDataProvider {
     Collection<String> getTypes(ModdedDataType type);
     boolean isValidProvider(String id, ModdedDataType type);
     default ModdedBlockData getBlockData(String id, Map<String, String> state);
-    default void processBlockPlacement(ModdedBlockPlacementContext context);
+    default String processBlockPlacement(ModdedBlockPlacementContext context);
+    default boolean removeGenerated(ModdedBlockPlacementContext context, String token);
     default NativeSpawnedEntity spawnMob(NativeEntityRuntime.CustomSpawn request);
 }
 ```
@@ -57,6 +58,10 @@ public interface ModdedDataProvider {
 `isValidProvider` and `getBlockData` may run concurrently during generation. Keep them fast and do not mutate the world. `processBlockPlacement` and `spawnMob` run on the server thread. A spawned entity must be added to the level by your provider. Keys are canonical `namespace:path` strings. Return block answers with `ModdedBlockData.direct(ModdedBlockState)` or `ModdedBlockData.deferred(ModdedBlockState)`; resolve state strings with `NativeBlockResolver.strictParse(String)`.
 
 `ModdedBlockPlacementContext.placement()` provides the captured position, level, and block state through `NativeBlockPlacement`. A spawn request provides `runtime()`, `position()`, and `key()`; return the spawned entity as `NativeSpawnedEntity`. These native handle types are in `art.arcane.volmlib.nativelib.minecraft26_2.modded`.
+
+Deferred placement checks the placeholder's block type, allowing property changes and extinguished fire or soul fire. Native structures and imported features cancel deferred placements at overwritten positions. Choose a stable placeholder with the final block's shape and occlusion.
+
+Return `null` from `processBlockPlacement` for ordinary block placement. When placement creates separate persistent content such as furniture entities, return a unique ownership token and implement `removeGenerated` to remove only that placement. The callback runs on the server thread when native generation overwrites its position, including in loaded neighbouring chunks. Return `true` when that content is removed or already absent, and `false` to retry later. Removal must tolerate repeated calls and preserve replacement content with a different token.
 
 Register the provider during mod setup with `IrisModdedAPI.registerProvider(provider)`, or list it for `ServiceLoader` under:
 

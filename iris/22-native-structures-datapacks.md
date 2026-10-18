@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T02:23:31.381Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,6 +39,8 @@ Native placement stays in charge of where and how often.
 You only adjust how the structure meets the ground.
 
 When multiple starts of the same native structure overlap a chunk, Iris applies them in origin-chunk coordinate order. With the same seed, pack, Iris build, and server version, saving and resuming chunk generation retains that placement order and its seeded block choices.
+
+Native structure blocks, terrain cuts, foundations, and tree clearing replace generated custom content at the affected positions. Object chest contents apply only to surviving containers. `FLATTEN` also removes generated furniture immediately above terrain it cuts away.
 
 Prerequisite: the structure appears in `/iris structure list <dimension>`.
 
