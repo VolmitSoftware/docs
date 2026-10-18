@@ -2,7 +2,7 @@
 title: "Items, Orbs & Bound Objects"
 description: "Experience orbs, backpacks, bound items, and stored item data"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,6 +39,8 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Multi Armor | The visible piece | Blocking: Multi Armor | Serialized remaining pieces |
 | Artificer's Crook | `IRON_HOE` | Golemancy: Animus Binding | Item kind |
 | Blank Animus Core | `FIREWORK_STAR` | Golemancy: Animus Binding | Item kind |
+| Blank Node | `CLAY_BALL` | Golemancy: Node Weaving | Item kind |
+| Deposit Node | `BRICK` | Golemancy: Node Weaving | Item kind and node type |
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.
 
