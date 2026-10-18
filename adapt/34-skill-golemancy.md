@@ -7,7 +7,7 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
 ---
-Golemancy gains XP from building and binding golems, fighting beside your bound golems, watching other golems kill hostile mobs, repairing iron golems, and tending copper golems.
+Golemancy gains XP from building and binding golems, fighting beside your bound golems, watching other golems kill hostile mobs, repairing iron golems, tending copper golems, and infusing at the Animus Plinth.
 
 ## Earning XP
 
@@ -20,6 +20,7 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 - When an iron golem or snow golem that is not bound kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
 - Repairing a player-built iron golem with an iron ingot pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
 - Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
+- Completing an infusion at the Animus Plinth pays `infuseRuneTier1Xp`, `infuseRuneTier2Xp`, or `infuseRuneTier3Xp` for a rune of that tier, or `infuseMasterworkHeartXp` for a Masterwork Heart, and counts toward `golemancy.infusions`.
 
 ## Adaptations
 
@@ -248,6 +249,66 @@ While you are online, anyone who repairs one of your bound iron golems with an i
 | `colossusAttackBonus` | `0.2` | Fraction added to a bound iron golem's total attack damage, frame bonus included, while it is in Colossus Form. 0.2 is 20% more. |
 | `colossusGrowTicks` | `20` | Ticks a bound iron golem takes to grow into Colossus Form or shrink back. |
 
+## Animus Plinth
+
+The Animus Plinth infuses runes and the Masterwork Heart. Build it from a lodestone with a pedestal block exactly two blocks north, east, south, and west of it, all at the same height. The pedestal blocks are the eight chiseled copper blocks, waxed or not, and `pedestalBlocks` in the skill configuration changes the list.
+
+Loading and using a plinth needs Runic Augments level 1:
+
+- Sneak and right-click a pedestal or the lodestone while holding an item to place one of it there. The item floats and turns above the block, and every player can see it.
+- Sneak and right-click with an empty hand to take the item back.
+- Region protection must let you open containers at the block.
+- Right-clicking the lodestone with a compass still binds the compass.
+- Breaking a pedestal or the lodestone, or moving it with a piston, drops the item on that block. Items on the other blocks stay where they are.
+
+To start an infusion, place its center item on the lodestone and its four pedestal items on the pedestals, then right-click the lodestone with the Artificer's Crook. The pedestal items rise, streams of dust flow to the center, and the center item spins faster. When the ritual ends, the items and the essence levels are used up and the result pops out above the lodestone. Creative players pay no levels.
+
+An infusion starts only when all of the following hold:
+
+- An infusion recipe matches: the item on the lodestone matches its center, and the four pedestal items match its pedestals in any order.
+- You have the recipe's unlocking adaptation at its level.
+- Region protection lets you interact with and place blocks at the lodestone.
+- You have the recipe's essence levels.
+
+The ritual stops when you move more than 8 blocks from the lodestone, log out, or change worlds, when any block of the plinth breaks, or when an item is taken off or placed on the plinth. Nothing is used up when a ritual stops, and the items stay on the plinth.
+
+### Infusion recipes
+
+Each rune tier is infused from the tier below it.
+
+| Tier | Center | Essence | Ritual | Unlocks at |
+|---|---|---|---|---|
+| 1 | Blank Rune | 2 levels | 100 ticks (5 s) | Runic Augments level 1 |
+| 2 | Tier 1 rune of the same aspect | 5 levels | 160 ticks (8 s) | Runic Augments level 3 |
+| 3 | Tier 2 rune of the same aspect | 10 levels | 240 ticks (12 s) | Runic Augments level 5 |
+
+| Rune | Tier 1 pedestals | Tier 2 pedestals | Tier 3 pedestals |
+|---|---|---|---|
+| Swiftness | 2 `SUGAR`, 2 `FEATHER` | 2 `RABBIT_FOOT`, 2 `PHANTOM_MEMBRANE` | 4 `BREEZE_ROD` |
+| Might | 2 `IRON_INGOT`, 2 `PISTON` | 2 `IRON_BLOCK`, 2 `STICKY_PISTON` | 2 `NETHERITE_SCRAP`, 2 `IRON_BLOCK` |
+| Ember | 2 `BLAZE_POWDER`, 2 `COAL` | 2 `BLAZE_ROD`, 2 `MAGMA_CREAM` | 2 `GHAST_TEAR`, 2 `BLAZE_ROD` |
+| Tide | 2 `PRISMARINE_SHARD`, 2 `KELP` | 2 `PRISMARINE_CRYSTALS`, 2 `NAUTILUS_SHELL` | 1 `HEART_OF_THE_SEA`, 3 `PRISMARINE_CRYSTALS` |
+| Order | 2 `QUARTZ`, 2 `REDSTONE` | 2 `COMPARATOR`, 2 `QUARTZ_BLOCK` | 2 `ECHO_SHARD`, 2 `COMPARATOR` |
+| Entropy | 2 `GUNPOWDER`, 2 `FERMENTED_SPIDER_EYE` | 2 `ENDER_EYE`, 2 `GUNPOWDER` | 2 `SHULKER_SHELL`, 2 `ENDER_EYE` |
+| Bulwark | 2 `IRON_INGOT`, 2 `OBSIDIAN` | 2 `DIAMOND`, 2 `OBSIDIAN` | 1 `NETHERITE_INGOT`, 3 `CRYING_OBSIDIAN` |
+
+The Masterwork Heart takes a `HEART_OF_THE_SEA` on the lodestone and a `DIAMOND_BLOCK`, `IRON_BLOCK`, `COPPER_BLOCK`, and `SNOW_BLOCK` on the pedestals. It costs 15 levels, takes 300 ticks (15 s), and unlocks at Masterwork level 1.
+
+Infusions are the `infusionRecipes` tables in the skill configuration, one table per infusion named by its key, such as `[infusionRecipes.swiftness_1]`. Edit a table to change an infusion, set `enabled = false` to turn it off, or add a table to create a new infusion. Changes apply when the skill configuration reloads. Each table has these fields:
+
+| Field | Meaning |
+|---|---|
+| `result` | The item made: `golemancy:rune/<aspect>/<tier>`, with aspect `swiftness`, `might`, `ember`, `tide`, `order`, `entropy`, or `bulwark` and tier 1 to 3, or `golemancy:masterwork_heart`. |
+| `center` | The item on the lodestone: a material name such as `HEART_OF_THE_SEA`, or a Golemancy item such as `golemancy:blank_rune` or `golemancy:rune/tide/1`. |
+| `pedestals` | Exactly four material names or Golemancy items, matched in any order. Repeat an entry to need it on more than one pedestal. |
+| `essenceLevels` | Experience levels charged when the infusion completes. |
+| `durationTicks` | Ticks the ritual takes, clamped to 20-6000. |
+| `unlockAdaptation` | Id of the Golemancy adaptation that unlocks the infusion, such as `golem-runic-augments` or `golem-masterwork`. Its region protection rules apply to the ritual. |
+| `unlockLevel` | Lowest level of `unlockAdaptation` that can perform the infusion, at least 1. |
+| `enabled` | Set to `false` to turn the infusion off. |
+
+A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table with an unknown item, a result that is not a rune or the Masterwork Heart, a pedestal list without exactly four entries, or an empty `unlockAdaptation` is skipped with a console warning.
+
 ## Reference
 
 ### Skill configuration defaults
@@ -322,6 +383,13 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `blocksPerNodeScan` | `64` | Most blocks of a node's work area looked at in one check, clamped to 1-4096. |
 | `maxOpenTasksPerNode` | `16` | Most unfinished jobs one node can hand out to golems at once, clamped to 1-256. |
 | `nodeVisibility` | `"OWNER"` | Who sees nodes while holding the Crook, a Node, a Core or a Dormant Golem. `OWNER` shows each player only their own nodes; `ANY_GOLEMANCER` also shows every node to players who have learned Node Weaving. |
+| `pedestalBlocks` | the eight chiseled copper blocks | Blocks that work as Animus Plinth pedestals. Unknown names and `LODESTONE` are ignored with a console warning. |
+| `infusionRecipes` | the infusions listed above | Infusions the Animus Plinth performs, one table per infusion. See Infusion recipes for the fields. |
+| `infuseRuneTier1Xp` | `60` | Skill XP for each tier 1 rune infused. |
+| `infuseRuneTier2Xp` | `180` | Skill XP for each tier 2 rune infused. |
+| `infuseRuneTier3Xp` | `450` | Skill XP for each tier 3 rune infused. |
+| `infuseMasterworkHeartXp` | `1500` | Skill XP for each Masterwork Heart infused. |
+| `challengeInfusionsReward` | `500` | Skill XP paid by the infusion challenges. |
 
 ### Challenges
 
@@ -337,6 +405,8 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `challenge_golemancy_first_bind_frost` | First frost golem bound | `firstBindXp` |
 | `challenge_golemancy_first_bind_copper` | First copper golem bound | `firstBindXp` |
 | `challenge_golemancy_first_bind_iron` | First iron golem bound | `firstBindXp` |
+| `challenge_golemancy_infusions_10` | 10 | `challengeInfusionsReward` |
+| `challenge_golemancy_infusions_100` | 100 | `challengeInfusionsReward` x 5 |
 
 ## See also
 
