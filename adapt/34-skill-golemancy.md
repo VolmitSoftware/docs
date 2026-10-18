@@ -47,6 +47,20 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `copperWaxXp` | `30` | Skill XP for the first wax on each copper golem. |
 | `spawnerMobXpMultiplier` | `0.3` | Multiplier for Golemancy XP from mobs that came from a spawner or trial spawner. |
 | `challengeBuiltReward` | `500` | Knowledge paid by the golem building challenges. |
+| `dormantInvulnerable` | `true` | Makes bound golems invulnerable while they are dormant. |
+| `guardWhileOwnerOffline` | `false` | Keeps Guardian golems awake while their owner is offline. |
+| `serverMaxActiveGolems` | `1500` | Most bound golems awake on the server at once; the rest stay dormant until room frees. |
+| `maxBoundGolemsPerChunk` | `8` | Most bound golems allowed in one chunk when binding. |
+| `hardCapPerPlayer` | `32` | Most golems one player can own at once, counting bound, packed, and shattered golems. |
+| `bodyScaleFrost` | `0.50` | Size of a bound frost golem as a multiple of its normal size. |
+| `bodyScaleCopper` | `1.00` | Size of a bound copper golem as a multiple of its normal size. |
+| `bodyScaleIron` | `0.36` | Size of a bound iron golem as a multiple of its normal size. |
+| `bodyScaleBone` | `1.00` | Size of a bound bone golem as a multiple of its normal size. |
+| `allowedCoresFrost` | `["BLANK", "GUARDIAN", "GATHERER", "HARVESTER"]` | Cores a frost golem can be bound with. |
+| `allowedCoresCopper` | `["BLANK", "GATHERER", "HARVESTER", "LUMBER", "RANCHER", "SORTER", "ANGLER"]` | Cores a copper golem can be bound with. |
+| `allowedCoresIron` | `["BLANK", "GUARDIAN", "GATHERER", "LUMBER", "BREAKER", "RANCHER", "ANGLER"]` | Cores an iron golem can be bound with. |
+| `deathDropCoreChance` | `0.5` | Chance that each core drops when a bound golem dies. |
+| `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies. |
 
 ### Challenges
 
