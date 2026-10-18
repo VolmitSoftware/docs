@@ -25,7 +25,7 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 
 ## Adaptations
 
-Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, runes, signals sent with the Crook, ways to heal and rebuild your golems, and packing them into blocks you carry.
+Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, runes, signals sent with the Crook, ways to heal and rebuild your golems, packing them into blocks you carry, and masterwork golems.
 
 ### Animus Binding (`golem-animus-binding`)
 
@@ -714,7 +714,7 @@ The recipe tables use the same fields as the Animus Binding recipes.
 
 Lets you infuse runes at the Animus Plinth and slot them into your bound golems for speed, carrying, fire, reach, channels, yield, and armor. Level 1 unlocks loading and using the Animus Plinth, tier 1 rune infusions, and the Blank Rune recipe.
 
-Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` for a copper golem, or `ironSlots` for an iron golem, plus your level's `extraSlotsByLevel`. With the defaults, frost golems have 1, 2, and 3 slots at levels 1, 3, and 5, copper golems 2, 3, and 4, and iron golems 3, 4, and 5. The Golem GUI shows the slots in its second row; a locked slot names the Runic Augments level that opens it.
+Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` for a copper golem, or `ironSlots` for an iron golem, plus your level's `extraSlotsByLevel`. With the defaults, frost golems have 1, 2, and 3 slots at levels 1, 3, and 5, copper golems 2, 3, and 4, and iron golems 3, 4, and 5. A masterwork golem has Masterwork's `extraRuneSlots` more. The Golem GUI shows the slots in its second row; a locked slot names the Runic Augments level that opens it.
 
 - **Slotting a rune:** with the Golem GUI open, pick up a rune from your inventory and click an empty slot. One rune from the stack moves into the golem.
 - **Taking a rune back:** click a slotted rune. It goes into your inventory, or drops at your feet when your inventory is full.
@@ -801,7 +801,7 @@ Left-clicking a node, a golem, or any other entity never sends a signal. Your si
 
 A signal reaches your awake golems within your level's `radiusByLevel` blocks of you in the same world. Each signal plays a chime only you hear, puts a ring of particles around every golem that answers, and starts a `signalCooldownMillis` cooldown before you can send the next one.
 
-- **Follow, Hold, Home, and Work** set the golem's mode, the same modes its Golem GUI cycles: Follow walks after you, Hold makes it stay where it stands, Home sends it home, and Work puts it back to work. A golem that does not have the mode ignores the signal; Companion golems have no Work mode.
+- **Follow, Hold, Home, and Work** set the golem's mode, the same modes its Golem GUI cycles: Follow walks after you, Hold makes it stay where it stands, Home sends it home, and Work puts it back to work. A golem that does not have the mode ignores the signal; Companion golems have no Work mode unless they are masterworks with a second role core.
 - **Sic** (level `sicLevel`): look at a creature within `sicRange` blocks and send Sic. Your Companion and Guardian golems in range attack it for `sicHoldSeconds` seconds, or until it dies or leaves their world, and then choose their own targets again. A Follow, Hold, Home, or Work signal ends the attack sooner, and a golem that goes past `leashRadius` from you, its Stay spot, or its home drops the attack and comes back. Frost golems never chase: they take a Sic target only when it is within the Guardian Core `sentryRange` blocks of them, and otherwise ignore the signal. The target glows red for you alone for `sicGlowSeconds` seconds. Your look passes through armor stands, your pets, bound golems, and other Adapt minions, and Sic never targets any of them. Sic targets players only where region protection allows PvP, and other creatures only where region protection allows you to attack them. When nothing valid is in sight, the action bar says so and nothing is sent.
 - **Crook channel** (level `channelFilterLevel`): sneak and right-click the air with the Crook to open your golem roster, click Crook Channel at the bottom, and pick a dye. The Crook in your main hand keeps that channel, and its signals then reach only golems that have it, including the extra channels of an Order rune. Pick All Golems to clear it. Below level `channelFilterLevel`, the Crook signals every golem.
 - **Rally** (level `rallyLevel`): a Follow signal also teleports your awake golems in the same world that are beyond the signal radius to you and puts them in Follow mode. The Crook channel still applies. Rally works only while you stand on the ground; a Follow signal sent in the air reaches only golems within the signal radius and leaves Rally ready. After a Rally, it cools down for `rallyCooldownSeconds` seconds, and Follow signals during the cooldown reach only golems within the signal radius.
@@ -850,7 +850,7 @@ Each heal restores its base health plus your level's `healBonusByLevel` fraction
 
 - **Regeneration near you** (level `ownerRegenLevel`): your awake golems heal `ownerRegenAmount` health every `regenIntervalSeconds` seconds while they are within `ownerRegenRadius` blocks of you in the same world.
 - **Regeneration at home** (level `homeRegenLevel`): a golem with no job and no target heals `homeRegenAmount` health every `regenIntervalSeconds` seconds while it is within `homeRegenRadius` blocks of its home. When both regenerations apply, the golem heals the larger amount, not both. Sleeping golems never regenerate.
-- **Shattered Core** (level `shatterLevel`): when one of your bound golems dies while you are online, it still drops the items it carries and its essence as experience, but instead of dropping cores and runes at the skill's `deathDropCoreChance` and `deathDropRuneChance`, it leaves a Shattered Core where it died, and an action-bar message tells you. The Shattered Core keeps the golem's cores, runes, channels, mode, home, home chest, name, and record of kills, damage, jobs, and items moved. Only you can pick it up; hoppers and other mobs cannot take it. It never despawns, and damage such as fire, lava, cactus, and explosions cannot destroy it. When a golem dies below the bottom of the world, its Shattered Core appears at the lowest block height, where it can still fall into the void and be lost. The golem stays in your roster as shattered and still counts toward your golem cap. A golem that dies while you are offline, or before you reach `shatterLevel`, drops its cores and runes as usual.
+- **Shattered Core** (level `shatterLevel`): when one of your bound golems dies while you are online, it still drops the items it carries and its essence as experience, but instead of dropping cores and runes at the skill's `deathDropCoreChance` and `deathDropRuneChance`, it leaves a Shattered Core where it died, and an action-bar message tells you. The Shattered Core keeps the golem's cores, runes, masterwork Heart, channels, mode, home, home chest, name, and record of kills, damage, jobs, and items moved. Only you can pick it up; hoppers and other mobs cannot take it. It never despawns, and damage such as fire, lava, cactus, and explosions cannot destroy it. When a golem dies below the bottom of the world, its Shattered Core appears at the lowest block height, where it can still fall into the void and be lost. The golem stays in your roster as shattered and still counts toward your golem cap. A golem that dies while you are offline, or before you reach `shatterLevel`, drops its cores and runes as usual.
 - **Reborn** (level `rebornLevel`): a rebuilt copper golem keeps the oxidation stage and wax it had when it died, and every rebuilt golem gets Resistance with amplifier `rebornResistanceAmplifier`, Resistance II by default, for `rebornResistanceSeconds` seconds.
 
 To rebuild a shattered golem, hold its Shattered Core in your main hand, sneak, and right-click a freshly built golem of the same body within 3 blocks. The golem is bound to you at once with everything the Shattered Core kept, at full health, and the Shattered Core is used up. A rebuilt golem that has to sleep because the server is at its limit of awake golems wakes at full health. A rebuild has no ritual, costs no tithe, pays no bind XP, and earns no first-bind challenge. It needs all of the following:
@@ -899,7 +899,7 @@ Packs one of your bound golems into a Dormant Golem block that you carry and pla
 
 Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound frost, copper, or iron golems to pack it. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem, and the golem holds still. You or the golem ending up more than `channelAbortDistance` blocks apart, switching your held item away from the Crook, or the golem taking any damage breaks the channel, and an action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
 
-The packed golem leaves the world without dropping anything and becomes a Dormant Golem in your inventory: a snow block for a frost golem, an iron block for an iron golem, and for a copper golem the copper block of its oxidation stage, waxed when the golem was waxed. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, channels, mode, home, home chest, name, record of kills, damage, jobs, and items moved, the items it carries, its stored essence, its health, and its copper oxidation stage and wax. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up; hoppers and other mobs cannot take it, it never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
+The packed golem leaves the world without dropping anything and becomes a Dormant Golem in your inventory: a snow block for a frost golem, an iron block for an iron golem, and for a copper golem the copper block of its oxidation stage, waxed when the golem was waxed. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, masterwork Heart, channels, mode, home, home chest, name, record of kills, damage, jobs, and items moved, the items it carries, its stored essence, its health, and its copper oxidation stage and wax. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up; hoppers and other mobs cannot take it, it never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
 
 To awaken the golem, place its Dormant Golem like a block. No block appears: the golem rises at that spot from a tenth of a block to its bound size over `awakenRiseTicks` ticks, facing you, and the Dormant Golem is used up. It wakes with everything the Dormant Golem kept. An awakened iron golem keeps whether a player built it. Awakening pays no build or bind XP. An awakening needs all of the following; otherwise an action-bar message names the reason and you keep the Dormant Golem:
 
@@ -932,6 +932,53 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 | `recallLevel` | `3` | Level at which Pocket Roster lets you recall a loaded golem in your world from the Roster GUI. |
 | `recallCooldownSeconds` | `120` | Seconds after a Pocket Roster recall before you can recall another golem. Values below 0 load as 0. |
 | `awakenRiseTicks` | `20` | Ticks an awakened golem takes to rise from a tenth of a block to its bound size. 0 skips the rise. |
+
+### Masterwork (`golem-masterwork`)
+
+3 levels · 2 knowledge, then 4 per level · requires Runic Augments level 3 and Animus Binding level 5
+
+Turns one of your golems into a masterwork with a Masterwork Heart infused at the Animus Plinth. A masterwork has an extra rune slot, more health, a gold frame on its label, and a gold aura, and at higher levels a second core and stronger runes. Level 1 unlocks the Masterwork Heart infusion.
+
+To designate a masterwork, open the golem's Golem GUI, pick up a Masterwork Heart, and click the Masterwork slot in the bottom row. One Heart from the stack goes into the golem. The slot shows how many masterworks you have and how many your level allows. A designation needs all of the following:
+
+- You have Masterwork level 1.
+- The golem is a snow, copper, or iron golem.
+- You have fewer masterworks than your level's `maxMasterworksByLevel`. Every masterwork in your roster counts: golems in unloaded chunks, packed golems, and shattered golems too.
+
+A masterwork golem gains:
+
+- `extraRuneSlots` more open rune slots on top of its body's slots and your Runic Augments slots. With the defaults, a masterwork iron golem at Runic Augments level 3 has 5 open slots.
+- `healthBonusFraction` more maximum health, 25% by default. The bonus multiplies the golem's whole maximum health, frame bonuses included, and the golem heals by any gain above the highest maximum health it has had.
+- A gold ✦ on each side of its name on the status label only you see. The label of a golem with two cores names both.
+- A ring of gold sparkles every `auraIntervalTicks` ticks while it is awake.
+
+Its size stays the same.
+
+- **Second core** (level `dualCoreLevel`): the Golem GUI of a masterwork shows a second core slot in its top row, beside the core. Pick up a role core and click the slot to put it in. The second core must be a role core the golem does not hold yet, allowed for that body by the skill's `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron`, and its Core adaptation must be learned; a Blank Animus Core never fits. The golem then works the nodes and jobs of both cores. With a Guardian Core as either core, it picks its targets as a Guardian, and fighting comes before work. A Companion golem with a second role core can also be set to Work mode. Click the second core to take it back. Below level `dualCoreLevel`, a second core that is still slotted does nothing.
+- **Runes one tier higher** (level `tierUpLevel`): a masterwork's runes act one tier higher. A tier 1 rune uses the tier 2 values, a tier 2 rune the tier 3 values, and a tier 3 rune the tier 3 values plus `tierThreeBoost`, 25% more by default. Whole-number values, such as burn seconds, channels, and Weakness levels, round to the nearest whole number. Fire immunity, lava immunity, and water breathing follow the rune's own tier, and a rune above your Runic Augments `maxTierByLevel` stays inert.
+
+Click the Masterwork Heart in the Golem GUI to take the designation back. The Heart, the second core, and each rune beyond the slots the golem has without the masterwork bonus go into your inventory, or drop at your feet when your inventory is full. A Companion golem in Work mode that loses its second core goes back to Follow.
+
+Releasing a masterwork drops its Heart along with its cores, runes, and carried items. A packed or shattered masterwork released from the Roster GUI loses its Heart with the rest of its Dormant Golem or Shattered Core. When a masterwork dies, its Heart drops at `heartDeathDropChance`, every time by default. A masterwork that leaves a Shattered Core through Golem Mending keeps its Heart, and the rebuilt golem is still a masterwork.
+
+The extra slots, health, aura, second core, and stronger runes follow your Masterwork level.
+
+| Level | Masterworks | Unlocks |
+|---|---|---|
+| 1 | 1 | Masterwork Heart infusion; a masterwork gains +1 rune slot, +25% maximum health, a gold label frame, and a gold aura |
+| 2 | 1 | Second core slot |
+| 3 | 2 | Runes act one tier higher; tier 3 runes gain 25% |
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `maxMasterworksByLevel` | `[1, 1, 2]` | Masterwork golems you can have at once, from level 1 upward. Masterworks that are unloaded, packed, or shattered count. |
+| `healthBonusFraction` | `0.25` | Fraction added to a masterwork golem's maximum health. 0.25 is 25% more. Values below 0 load as 0. |
+| `extraRuneSlots` | `1` | Rune slots a masterwork golem has on top of its body's slots and your Runic Augments slots, from 0 to 9. |
+| `dualCoreLevel` | `2` | Level at which a masterwork golem takes a second core and works both roles. |
+| `tierUpLevel` | `3` | Level at which a masterwork golem's runes act one tier higher. |
+| `tierThreeBoost` | `0.25` | Fraction added to the values of a tier 3 rune in a masterwork golem once its runes act one tier higher, from 0 to 4. 0.25 is 25% more. Values outside that range load as the nearest limit. |
+| `heartDeathDropChance` | `1.0` | Chance a masterwork golem drops its Masterwork Heart when it dies, from 0 to 1. A golem that leaves a Shattered Core keeps its Heart instead. |
+| `auraIntervalTicks` | `40` | Ticks between the gold sparkles around your awake masterwork golems, at least 1. |
 
 ## Animus Plinth
 
@@ -977,7 +1024,7 @@ Each rune tier is infused from the tier below it.
 | Entropy | 2 `GUNPOWDER`, 2 `FERMENTED_SPIDER_EYE` | 2 `ENDER_EYE`, 2 `GUNPOWDER` | 2 `SHULKER_SHELL`, 2 `ENDER_EYE` |
 | Bulwark | 2 `IRON_INGOT`, 2 `OBSIDIAN` | 2 `DIAMOND`, 2 `OBSIDIAN` | 1 `NETHERITE_INGOT`, 3 `CRYING_OBSIDIAN` |
 
-The Masterwork Heart takes a `HEART_OF_THE_SEA` on the lodestone and a `DIAMOND_BLOCK`, `IRON_BLOCK`, `COPPER_BLOCK`, and `SNOW_BLOCK` on the pedestals. It costs 15 levels, takes 300 ticks (15 s), and unlocks at Masterwork level 1.
+The Masterwork Heart takes a `HEART_OF_THE_SEA` on the lodestone and a `DIAMOND_BLOCK`, `IRON_BLOCK`, `COPPER_BLOCK`, and `SNOW_BLOCK` on the pedestals. It costs 15 levels, takes 300 ticks (15 s), and unlocks at Masterwork level 1. Masterwork describes how to put the Heart into a golem.
 
 Infusions are the `infusionRecipes` tables in the skill configuration, one table per infusion named by its key, such as `[infusionRecipes.swiftness_1]`. Edit a table to change an infusion, set `enabled = false` to turn it off, or add a table to create a new infusion. Changes apply when the skill configuration reloads. Each table has these fields:
 
