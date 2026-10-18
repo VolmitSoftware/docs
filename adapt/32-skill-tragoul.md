@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -216,6 +216,8 @@ Damage you are credited for heals you, including melee, arrows, TNT you lit, lin
 
 Sneak-right-click air or a block with bones in the main hand to raise a skeleton at your feet that takes your current mark; item-use protection blocks the summon, and block-use protection blocks it on that block. Servants are tagged `adapt:tragoul_servant_owner`, do not burn in daylight, drop nothing, cannot damage you, inherit your other TragOul effects, including siphon, curse, and plague, and wear leather, chainmail, iron, or diamond plus a sword or bow, and creative mode skips the bone cost.
 
+Your Golemancy skill level raises the servant cap by one for every `golemancyCapBonusEveryLevels` levels, up to `golemancyCapBonusMax` extra servants and never past 16, and lengthens servant lifetime by `golemancyDurationBonusPerLevel` per level, up to `golemancyDurationBonusMax`; each extra servant still costs `healthCostPerMinion` maximum health. With Golemancy's [Bone Frame](/adapt/34-skill-golemancy#bone-frame-golem-bone-frame), your servants also answer Crook signals, show status labels, wear a Bone Lattice of runes, and pay Golemancy XP for their kills.
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `boneCostBase` | `8` | Bones per summon at level percent 0. |
@@ -239,6 +241,10 @@ Sneak-right-click air or a block with bones in the main hand to raise a skeleton
 | `healthCostEnabled` | `true` | True applies the owner max-health upkeep while servants live. |
 | `healthCostPerMinion` | `2.0` | Health points removed from your max health per living servant. |
 | `minimumOwnerMaxHealth` | `4.0` | Lowest max health the upkeep can push you to. |
+| `golemancyCapBonusEveryLevels` | `20` | Golemancy skill levels for each extra living servant on top of the level cap. 0 turns the bonus off. |
+| `golemancyCapBonusMax` | `2` | Most extra living servants Golemancy levels can add, still within the hard cap of 16. |
+| `golemancyDurationBonusPerLevel` | `0.01` | Fraction of servant lifetime added per Golemancy skill level. 0.01 is 1% longer per level. |
+| `golemancyDurationBonusMax` | `0.5` | Most extra servant lifetime Golemancy levels can add, as a fraction. 0.5 is 50% longer. |
 
 ### Marrow Armor (`tragoul-marrow-armor`)
 

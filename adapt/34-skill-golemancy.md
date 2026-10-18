@@ -7,7 +7,7 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
 ---
-Golemancy gains XP from building and binding golems, fighting beside your bound golems, the jobs your working golems finish, watching other golems kill hostile mobs, repairing and healing golems, tending copper golems, and infusing at the Animus Plinth.
+Golemancy gains XP from building and binding golems, fighting beside your bound golems, the jobs your working golems finish, watching other golems kill hostile mobs, repairing and healing golems, tending copper golems, infusing at the Animus Plinth, and, with Bone Frame, the kills of your TragOul skeletal servants.
 
 ## Earning XP
 
@@ -21,11 +21,12 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 - Repairing a player-built iron golem with an iron ingot, or healing one of your bound golems with a copper ingot or snow block through Golem Mending, pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
 - Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
 - Completing an infusion at the Animus Plinth pays `infuseRuneTier1Xp`, `infuseRuneTier2Xp`, or `infuseRuneTier3Xp` for a rune of that tier, or `infuseMasterworkHeartXp` for a Masterwork Heart, and counts toward `golemancy.infusions`.
+- With Bone Frame, when one of your TragOul skeletal servants kills a hostile mob, you earn your Bone Frame level's `servantShareByLevel` share of the kill value, with the same raid, spawner, and owner-distance rules as a golem kill. Kills of Adapt minions and Excavation grave mobs pay nothing. Servant kills do not count toward `golemancy.golem.kills`, and TragOul still pays its own XP.
 - When one of your working golems finishes a job, you earn the work XP that its Core adaptation sets for that job. Work XP pays only while you are online and within `workXpOwnerRadius` blocks of the golem, and you earn at most `workXpHourlyCap` work XP in any 60 minutes. Golem labor never pays other skills. Each finished job counts toward `golemancy.tasks`, and each item your golems deliver into a container counts toward `golemancy.items.moved`.
 
 ## Adaptations
 
-Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, runes, signals sent with the Crook, ways to heal and rebuild your golems, packing them into blocks you carry, and masterwork golems.
+Golemancy's adaptations unlock golem binding, frames that strengthen each golem body and your TragOul skeletal servants, nodes, runes, signals sent with the Crook, ways to heal and rebuild your golems, packing them into blocks you carry, and masterwork golems.
 
 ### Animus Binding (`golem-animus-binding`)
 
@@ -54,6 +55,8 @@ A binding needs all of the following:
 | 3 | 3 | 3.0 s | 1 / 1 / 2 levels |
 | 4 | 5 | 2.5 s | 1 / 1 / 2 levels |
 | 5 | 7 | 2.0 s | 0 / 1 / 1 levels |
+
+While you hold the Crook, a Node, a Core, or a Dormant Golem, your bound golems within `revealRange` blocks show a status label only you see and glow for you in their first channel's color, or white when they have no channel.
 
 A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
 
@@ -255,6 +258,35 @@ While you are online, anyone who repairs one of your bound iron golems with an i
 | `colossusScale` | `1.0` | Scale a bound iron golem grows to in Colossus Form, from 0.36 to 1.5. Values outside that range load as the nearest limit. 1.0 is the vanilla iron golem size. |
 | `colossusAttackBonus` | `0.2` | Fraction added to a bound iron golem's total attack damage, frame bonus included, while it is in Colossus Form. 0.2 is 20% more. |
 | `colossusGrowTicks` | `20` | Ticks a bound iron golem takes to grow into Colossus Form or shrink back. |
+
+### Bone Frame (`golem-bone-frame`)
+
+3 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1 and TragOul's Skeletal Servant level 1
+
+Brings your TragOul skeletal servants into Golemancy: they answer your Crook signals, glow in your servant channel with status labels only you see, wear a Bone Lattice of runes, and pay Golemancy XP for their kills.
+
+Bone Frame works on the servants you summon with Skeletal Servant. Servants never attack your bound golems, with or without Bone Frame.
+
+- **Crook signals** (level 1): with Overseer, your servants within the signal radius answer Follow, Hold, and Sic; Home and Work do not reach them. Follow makes a servant walk back to you when it is more than 4 blocks away and has no live target; a fighting servant keeps its fight until it is more than the skill's `leashRadius` blocks from you, and then drops it and walks back. Hold makes a servant stand where it was when the signal arrived and attack only what attacks it, then walk back to that spot. Sic sends every servant in range after the creature you look at for the Overseer's `sicHoldSeconds` seconds, or until the creature dies or leaves their world, whatever the servant stance and even while it holds; then the servant goes back to its Follow or Hold order, and a holding servant walks back to its spot. A Follow or Hold signal ends the attack sooner. An order lasts until the servant's lifetime ends or another signal replaces it. When your Crook has a channel, only servants on that channel answer, so servants without a channel ignore it.
+- **Servant channel and labels** (level 1): while you hold the Crook, a Node, a Core, or a Dormant Golem, your servants within the skill's `revealRange` blocks glow for you alone in your servant channel's color, or white when you have none, and those within `servantLabelRange` blocks carry a status label only you see with the servant's name, health, seconds left, and channel.
+- **Servant menu** (level 1): open your golem roster and click Bone Lattice at the bottom. The lower rows hold the 16 dye channels; click one to set your servant channel, or click Servant Channel: None to clear it. The top row holds your lattice slots, and each locked slot names the Bone Frame level that opens it.
+- **Bone Lattice** (level 2): pick up a rune from your inventory and click an empty slot in the servant menu to set it. Only the aspects in `latticeAspects` fit, and the lattice holds one rune of each aspect. Click a slotted rune to take it back; it goes into your inventory, or drops at your feet when your inventory is full. A rune in a slot your level does not open does nothing, but you can still take it back.
+- **Lattice runes on summon:** each servant you summon wears the lattice runes for its lifetime, each at the lower of the rune's tier and the highest tier your Runic Augments level allows, with the Runic Augments values for that tier. Swiftness adds movement speed, Might adds attack damage, Bulwark adds armor, armor toughness, and knockback resistance, and Ember sets what the servant hits on fire. At the tiers where Runic Augments makes golems immune to fire, an Ember rune gives the servant Fire Resistance. Without Runic Augments, lattice runes do nothing. Changes to the lattice apply to servants you summon afterwards.
+- **Servant kill XP** (level 1): your servants' kills of hostile mobs pay Golemancy XP, as described in [Earning XP](/adapt/34-skill-golemancy#earning-xp).
+- When the skill's `bodyScaleBone` is not 1.0, servants you summon grow or shrink to that size.
+
+| Level | Lattice slots | Servant kill XP | Unlocks |
+|---|---|---|---|
+| 1 | 0 | 35% of the kill value | Crook signals, servant channel glow, status labels, and the servant menu |
+| 2 | 2 | 35% of the kill value | Bone Lattice |
+| 3 | 3 | 100% of the kill value | |
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `latticeSlotsByLevel` | `[0, 2, 3]` | Bone Lattice rune slots your servants get on summon, from level 1 upward, from 0 to 7. |
+| `latticeAspects` | `["swiftness", "might", "ember", "bulwark"]` | Rune aspects the Bone Lattice accepts, as aspect ids. Other runes are refused. Unknown entries are ignored with a console warning. |
+| `servantShareByLevel` | `[0.35, 0.35, 1.0]` | Share of the golem kill value that your servants' kills of hostile mobs pay into Golemancy, from level 1 upward. 1.0 pays the full value. |
+| `servantLabelRange` | `8.0` | Blocks within which your servants show status labels while you hold the Crook, a Node, a Core, or a Dormant Golem, from 1 to 64. Values outside that range load as the nearest limit. |
 
 ### Guardian Core (`golem-guardian-core`)
 
@@ -1109,7 +1141,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. |
 | `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
 | `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 1-20. |
-| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels and your nodes appear while you hold the Crook, a Node, a Core or a Dormant Golem. |
+| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels and channel glow, your skeletal servants glow with Bone Frame, and your nodes appear while you hold the Crook, a Node, a Core or a Dormant Golem. |
 | `labelRange` | `8.0` | Blocks within which revealed golem and node labels are drawn on screen. |
 | `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems and nodes as you move while holding the Crook, a Node, a Core or a Dormant Golem. Holding none of them costs nothing. |
 | `maxNodesPerChunk` | `16` | Most nodes allowed in one chunk, counting every player's nodes. |
