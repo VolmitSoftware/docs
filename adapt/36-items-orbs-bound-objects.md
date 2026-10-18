@@ -49,6 +49,8 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Harvest Node | `BRICK` | Golemancy: Harvester Core | Item kind and node type |
 | Lumber Core | `FIREWORK_STAR` | Golemancy: Lumber Core | Item kind and role |
 | Lumber Node | `BRICK` | Golemancy: Lumber Core | Item kind and node type |
+| Breaker Core | `FIREWORK_STAR` | Golemancy: Breaker Core | Item kind and role |
+| Breaker Node | `BRICK` | Golemancy: Breaker Core | Item kind and node type |
 | Blank Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments | Item kind |
 | Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments, infused at the Animus Plinth | Item kind, aspect, and tier |
 

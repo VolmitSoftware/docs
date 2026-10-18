@@ -375,7 +375,7 @@ Bind a golem with a Harvester Core through Animus Binding. Snow and copper golem
 
 At each node check, a Harvest Node looks over part of its work area and hands out a harvest job for each ripe crop listed in `crops` that its filter accepts. A filter entry matches a crop by its block or by the item that plants it, so `WHEAT_SEEDS` or `WHEAT` both match wheat and `SWEET_BERRIES` matches sweet berry bushes. A crop is ripe at its maximum growth age. A torchflower is ripe once it has grown into the flower on farmland, a sweet berry bush when fully grown, and cave vines while they carry glow berries. From level `extendedCropsLevel`, melons and pumpkins attached to a stem are ripe, and sugar cane, bamboo, and cactus are harvested from the second block of a stalk upward. Stems and the bottom block of a stalk are never harvested, and Harvesters work only inside the node's current work area.
 
-A Harvester walks to its job, works for its level's `actionIntervalTicksByLevel` ticks, then harvests the crop and carries the drops. It replants the crop with one seed from those drops, such as a wheat seed for wheat or a carrot for carrots; when the drops hold no seed, the spot is left empty. Sweet berry bushes and cave vines keep growing after their berries are picked, melons and pumpkins leave their stem, and stalks keep their bottom block. In the same action it also harvests other ripe crops of that node within 3 blocks that no other golem is walking to, up to its level's `cropsPerActionByLevel` crops in all. Region protection must let you break every block the harvest removes, such as each block of a stalk above its base and both halves of a pitcher plant; otherwise nothing is removed and the node shows Blocked. A Harvester delivers what it carries to a Deposit Node or its home chest like any other working golem, and drops it cannot carry fall to the ground. Copper Overdrive and Swiftness runes shorten the action time.
+A Harvester walks to its job, works for its level's `actionIntervalTicksByLevel` ticks, then harvests the crop and carries the drops. It replants the crop with one seed from those drops, such as a wheat seed for wheat or a carrot for carrots; when the drops hold no seed, the spot is left empty. Sweet berry bushes and cave vines keep growing after their berries are picked, melons and pumpkins leave their stem, and stalks keep their bottom block. In the same action it also harvests other ripe crops of that node within 3 blocks that no other golem is walking to, up to its level's `cropsPerActionByLevel` crops in all. Region protection must let you break every block the harvest removes, such as each block of a stalk above its base and both halves of a pitcher plant; otherwise nothing is removed and the node shows Blocked. A Harvester delivers what it carries to a Deposit Node or its home chest like any other working golem, and drops it cannot carry fall to the ground. Static Overdrive and Swiftness runes shorten the action time.
 
 - **Tending** (level `tendingLevel`): while it has no harvest job, a Harvester bone meals a young crop in one of your Harvest Nodes' areas, at most once per `tendingIntervalMillis` milliseconds. Each bone meal comes from its linked home chest, so a Harvester without a home chest or without bone meal in it does not tend. Region protection must let you interact with the crop. Nether wart, cave vines, stalks, melons, and pumpkins are not tended.
 - **Tilling** (level `tillingLevel`): Harvest Nodes also hand out jobs to till dirt with nothing above it into farmland. While it has no harvest job, a Harvester that carries seeds plants empty farmland in the area, and it plants freshly tilled farmland at once. It plants wheat, carrots, potatoes, beetroots, torchflowers, and pitcher plants that are listed in `crops` and accepted by the node's filter, prefers the crop growing next to the spot, and never tills dirt or plants farmland beside a melon or pumpkin stem, so the fruit has room to grow. Region protection must let you break and build at the dirt it tills, and build above the farmland it plants.
@@ -468,6 +468,52 @@ The recipe tables use the same fields as the Animus Binding recipes.
 | `workXpPerLog` | `0.6` | Golemancy work XP paid for each log or stem a Lumber golem fells. Values below 0 load as 0. |
 | `lumberCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Lumber Core recipe. |
 | `lumberNodeRecipe` | ` X ` / ` B ` / `   ` | Lumber Node recipe. |
+
+### Breaker Core (`golem-breaker-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
+
+Makes golems bound with a Breaker Core break the blocks a Breaker Node's filter lists inside its work area, such as the output of a cobblestone or basalt generator or the ice of an ice farm, and unlocks the Breaker Core and Breaker Node recipes at level 1.
+
+Bind an iron golem with a Breaker Core through Animus Binding. Only iron golems take the core by default; `allowedCoresIron` and the other `allowedCores` lists in the skill configuration decide which bodies can, and iron golems bind only after you learn Iron Frame. A new Breaker starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Breakers work only in Work mode and only on Breaker Nodes, so place a Breaker Node with Node Weaving and set its work area over the blocks to mine. Its channel, priority, work area, and redstone setting work like any other node's.
+
+A Breaker Node needs a whitelist filter: it breaks only the blocks its filter lists, and a node with an empty filter or a blacklist breaks nothing. A filter entry matches a block by its block or by the item that places it, so `REDSTONE` matches redstone wire, and an item tag such as `#minecraft:coal_ores` matches each block whose item the tag holds, here both coal ores. At each node check, a Breaker Node looks over part of its work area and hands out a break job for each listed block your level can mine: one no harder than your level's `maxHardnessByLevel`, that your level's pickaxe in `toolByLevel` can harvest, and that is not water or lava. Breakers never break the blocks in `blacklist`, blocks with a block entity, such as chests, furnaces, signs, beds, and spawners, the block any node is placed on, including the Breaker Node's own block, or the blocks of an Animus Plinth.
+
+A Breaker walks to its job, works for its level's `intervalTicksByLevel` ticks, then breaks the block and carries the drops. The drops are rolled as if your level's pickaxe broke the block, with Silk Touch or Fortune I when the node turns them on. Breaking a block updates its neighbors as mining does, so water and lava flow back into a generator and sand or gravel above the block falls, and a waterlogged block leaves its water behind. Region protection must let you break the block; otherwise it stays and the node shows Blocked. A Breaker delivers what it carries to a Deposit Node or its home chest like any other working golem, and drops it cannot carry fall to the ground. Swiftness runes shorten the time per block. An Entropy rune doubles each drop that wins its own roll, except on blocks a player placed and for drops of the broken block itself, such as cobblestone from cobblestone or stone mined with Silk Touch.
+
+The bottom row of a Breaker Node's GUI shows whether the node has the whitelist entries it needs, and holds the Silk Touch and Fortune I toggles. Turning one of them on turns the other off.
+
+- **Silk Touch** (level `silkTouchLevel`): Breakers mine blocks whole, such as stone instead of cobblestone or ice instead of nothing.
+- **Fortune I** (level `fortuneLevel`): Breakers mine with Fortune I, which raises the drops of ores and the other blocks Fortune affects.
+
+Each broken block pays `workXpPerBlock` work XP, as described in Earning XP. Golem mining never pays Pickaxes or any other skill.
+
+| Level | Time per block | Hardest block | Pickaxe | Unlocks |
+|---|---|---|---|---|
+| 1 | 2 s | 2 (cobblestone) | Stone | Breaks the blocks a Breaker Node's filter lists |
+| 2 | 1.5 s | 3 (deepslate) | Iron | |
+| 3 | 1 s | 5 | Iron | Silk Touch toggle |
+| 4 | 0.75 s | 10 | Diamond | |
+| 5 | 0.5 s | 50 (obsidian) | Netherite | Fortune I toggle |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Breaker Core | ` X ` / `YBY` / ` Z ` | X `IRON_PICKAXE`, Y `REDSTONE`, Z `PISTON`, B `golemancy:blank_core` | 1 | 2 levels |
+| Breaker Node | ` X ` / ` B ` / `   ` | X `IRON_PICKAXE`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `intervalTicksByLevel` | `[40, 30, 20, 15, 10]` | Ticks a Breaker spends on each block after it reaches it, from level 1 upward. Values below 1 count as 1. |
+| `maxHardnessByLevel` | `[2.0, 3.0, 5.0, 10.0, 50.0]` | Hardest block a Breaker breaks, from level 1 upward. Stone is 1.5, cobblestone 2, deepslate 3, and obsidian 50. |
+| `toolByLevel` | `["STONE_PICKAXE", "IRON_PICKAXE", "IRON_PICKAXE", "DIAMOND_PICKAXE", "NETHERITE_PICKAXE"]` | Pickaxe a Breaker mines with, by item name, from level 1 upward. Drops are rolled as if this pickaxe broke the block, and blocks it cannot harvest are left alone. Names that are not a pickaxe use the default pickaxe for that level, with a warning. |
+| `silkTouchLevel` | `3` | Level at which Breaker Nodes can turn on Silk Touch. |
+| `fortuneLevel` | `5` | Level at which Breaker Nodes can turn on Fortune I. |
+| `blacklist` | `["BEDROCK", "BARRIER", "COMMAND_BLOCK", "CHAIN_COMMAND_BLOCK", "REPEATING_COMMAND_BLOCK", "STRUCTURE_BLOCK", "STRUCTURE_VOID", "JIGSAW", "SPAWNER", "TRIAL_SPAWNER", "VAULT", "END_PORTAL_FRAME", "REINFORCED_DEEPSLATE", "BUDDING_AMETHYST", "#beds", "#doors"]` | Blocks Breakers never break, by block name or `#` block tag. Unknown names and tags are ignored. Blocks with a block entity, the block any node is placed on, and the blocks of an Animus Plinth are never broken either. |
+| `workXpPerBlock` | `0.4` | Golemancy work XP paid for each block a Breaker breaks. Values below 0 load as 0. |
+| `breakerCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Breaker Core recipe. |
+| `breakerNodeRecipe` | ` X ` / ` B ` / `   ` | Breaker Node recipe. |
 
 ### Runic Augments (`golem-runic-augments`)
 
