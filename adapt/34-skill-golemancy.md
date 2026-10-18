@@ -63,7 +63,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies. |
 | `brainIntervalTicks` | `5` | Ticks between bound golem decisions, clamped to 2-20. Lower values react faster but cost more server time. |
 | `followTeleportDistance` | `32` | Blocks from its owner, in the same world, at which a following golem teleports to them instead of walking. The minimum is 8. |
-| `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. The minimum is 8. |
+| `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. |
 | `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
 | `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 1-20. |
 | `revealRange` | `32.0` | Blocks around you within which your golems show their status labels while you hold the Crook, a Node, a Core or a Dormant Golem. |
