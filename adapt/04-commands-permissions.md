@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -56,6 +56,17 @@ These commands require `adapt.clear`. `clear` targets online players; `reset con
 | `/adapt default adaptation <skill:adaptation>` | `adapt.configurator` | Restore one adaptation config |
 | `/adapt default all` | `adapt.configurator` | Archive and restore all Adapt configs |
 
+## Golems
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/adapt golem roster` | `adapt.main` | Open your golem roster |
+| `/adapt golem list [player=<player>]` | `adapt.golemancy.admin` | List a player's golems with their ids, states, and last known positions |
+| `/adapt golem release <id> [player=<player>]` | `adapt.golemancy.admin` | Release one of a player's golems |
+| `/adapt golem wake [player=<player>]` | `adapt.golemancy.admin` | Recheck a player's loaded golems and wake the ones that can wake |
+
+The admin commands target online players and default to you. `id` is a golem id from `/adapt golem list`, or enough of its first characters to match exactly one of that player's golems. Releasing a loaded golem works like its owner's Release: it becomes an ordinary golem, drops its cores, runes, masterwork Heart, and carried items, and returns its stored essence as experience. Releasing a golem that is not loaded removes it from the roster at once, and its body, Dormant Golem, or Shattered Core turns ordinary or crumbles without drops the next time it appears. Waking never lifts `serverMaxActiveGolems`; golems beyond it stay dormant until room frees. See [Skill - Golemancy](/adapt/34-skill-golemancy).
+
 ## Permissions
 
 Most command permissions default to operators. `adapt.effects`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
@@ -71,6 +82,7 @@ Most command permissions default to operators. `adapt.effects`, `adapt.language.
 | `adapt.cheatitem` | Give XP and knowledge orbs |
 | `adapt.determine` | Set skills and adaptations |
 | `adapt.clear` | Clear or reset profiles |
+| `adapt.golemancy.admin` | List, release, and wake other players' golems |
 | `adapt.effects` | Toggle personal effects |
 | `adapt.debug` | Use debug mode |
 | `adapt.debugdump` | Save and optionally upload diagnostic reports; default `op` |
