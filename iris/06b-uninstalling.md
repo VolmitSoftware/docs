@@ -2,7 +2,7 @@
 title: "Uninstalling Iris"
 description: "Remove Iris with its worlds, datapacks, and files, or reinstall it from a clean state"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-17T19:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -32,12 +32,13 @@ While Iris is still installed:
 
    `/iris remove` accepts the plain name, `iris:example_world`, or the Bukkit name. It moves players out, unloads the world, deletes its folder, and removes its entries from `bukkit.yml`, the Iris world registry, and Multiverse-Core. Wait for each result before removing the next world. `DELETE_QUEUED` means the folder is deleted at the next startup; delete it by hand in the next procedure instead.
 4. If `/iris worlds` lists your main world, `<level-name>_nether`, or `<level-name>_the_end` as an Iris world, `/iris replace` made Iris its generator. `/iris remove` refuses these worlds. Handle them after you stop the server; see [Main world, Nether, and End](#main-world-nether-and-end).
+5. In `plugins/Iris/iris.json`, set `autoConfiguration.configureSpigotTimeoutTime` and `autoConfiguration.configurePaperWatchdogDelay` to `false`, then restart once with Iris installed. Iris restores its recorded original timeout values from `plugins/Iris/server-timeouts.json`, preserving any timeout you changed after Iris's adjustment. Wait for startup to finish and check the console for restoration errors before deleting the data folder. The restored values apply at the following startup. If no original is recorded, set your intended values yourself: `settings.timeout-time` in `spigot.yml` is in seconds, and `watchdog.early-warning-delay` in `config/paper-global.yml` is in milliseconds. Custom launch paths are described in [Configuration](/iris/03-configuration#autoconfiguration).
 
 ### Remove the plugin and its files
 
 1. Stop the server and wait for the Java process to exit.
 2. Delete the Iris jar from `plugins/`.
-3. If the start command contains `-javaagent:plugins/Iris/agent.jar`, remove that option. The JVM does not start while it names a missing file. Also remove options you added only for Iris, such as `-XX:+EnableDynamicAgentLoading`, `--enable-native-access=ALL-UNNAMED`, `-Diris.durability`, and `-Diris.strictContent`.
+3. Remove every `-javaagent` option that points to Iris's `agent.jar`, including absolute paths. Check the startup script, hosting panel's Java options, service configuration, Java argument files, `JAVA_TOOL_OPTIONS`, and `JDK_JAVA_OPTIONS`. The JVM does not start while an agent option names a missing file. Also remove options you added only for Iris, such as `-XX:+EnableDynamicAgentLoading`, `--enable-native-access=ALL-UNNAMED`, `-Diris.durability`, and `-Diris.strictContent`.
 4. Delete the files and folders in the table below.
 5. In `bukkit.yml`, delete each entry under `worlds:` whose `generator` is `Iris` or starts with `Iris:`:
 
@@ -49,14 +50,13 @@ While Iris is still installed:
    ```
 
 6. If Multiverse-Core is installed, remove any remaining entry whose generator starts with `Iris:`. Edit its `worlds.yml` while the server is stopped, or run `/mv remove <world>` after it starts. Worlds removed with `/iris remove` have no entry left.
-7. Iris raises two server timeouts at startup and does not lower them again: `settings.timeout-time` in `spigot.yml`, to at least `300` seconds, and `watchdog.early-warning-delay` in `config/paper-global.yml`, to at least `180000` milliseconds. Iris logs the previous value when it changes one. Set them back if you want the previous values; see [Configuration](/iris/03-configuration#autoconfiguration).
-8. Remove `iris.` permission grants, such as `iris.all` and `iris.treefeller`, from your permissions plugin.
-9. Remove `%iris_…%` placeholders from other plugins' configuration. Without Iris, PlaceholderAPI leaves them unreplaced. Iris registers its expansion from the jar, so there is no expansion file to delete.
-10. Leave `plugins/bStats/` in place unless no remaining plugin uses bStats; that folder is shared.
+7. Remove `iris.` permission grants, such as `iris.all` and `iris.treefeller`, from your permissions plugin.
+8. Remove `%iris_…%` placeholders from other plugins' configuration. Without Iris, PlaceholderAPI leaves them unreplaced. Iris registers its expansion from the jar, so there is no expansion file to delete.
+9. Leave `plugins/bStats/` in place unless no remaining plugin uses bStats; that folder is shared.
 
 | Delete | Contents |
 |---|---|
-| `plugins/Iris/` | Settings (`iris.json`, `compat.json`), installed packs and Studio projects (`packs/`, with backups from `overwrite=true` downloads in `packs/.backups/`), packaged exports (`exports/`), external datapack imports and records (`datapacks/`), downloaded libraries and caches (`cache/`), language files and players' language choices (`languages/`), the Java agent (`agent.jar`), and queued world deletions and replacements |
+| `plugins/Iris/` | Settings (`iris.json`, `compat.json`), saved original server timeouts (`server-timeouts.json`), installed packs and Studio projects (`packs/`, with backups from `overwrite=true` downloads in `packs/.backups/`), packaged exports (`exports/`), external datapack imports and records (`datapacks/`), downloaded libraries and caches (`cache/`), language files and players' language choices (`languages/`), the Java agent (`agent.jar`), and queued world deletions and replacements |
 | `<level-root>/datapacks/iris/` | The datapack Iris builds from installed packs: custom biomes, biome tags, dimension types, and the dimension entries of Iris worlds. Keep it if you keep a main world, Nether, or End that Iris generated; see [Main world, Nether, and End](#main-world-nether-and-end) |
 | `<level-root>/datapacks/<id>/`, for each id from `/iris datapack list` | External datapacks Iris installed for packs. Kept without Iris, they are ordinary datapacks, and nothing limits their structures to the Iris dimensions that declared them |
 | `<level-root>/iris/` | The Iris world registry (`worlds.json`) and empty world folders Iris set aside (`husks/`) |

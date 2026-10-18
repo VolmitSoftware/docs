@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-17T19:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -137,7 +137,9 @@ These windows open on the machine running the server. Set `useServerLaunchedGuis
 
 ## `autoConfiguration`
 
-These settings apply only to Bukkit servers. Iris saves changes at startup to the configuration files selected by the server launch options. Restart the server to apply the saved values. Disable these settings if you manage the corresponding server timeouts yourself.
+These settings apply only to Bukkit servers. Iris saves changes at startup to the configuration files selected by the server launch options. Restart the server to apply the saved values. Before changing a timeout, Iris saves its original value in `plugins/Iris/server-timeouts.json`.
+
+To manage the timeouts yourself, set the corresponding options to `false` and restart once with Iris installed. Iris restores the recorded values in the server configuration files; the following restart applies them. Values you changed after Iris's adjustment stay as you set them. Keep `server-timeouts.json` until restoration finishes; if no original value is recorded, set your intended timeout in the server configuration yourself.
 
 | Key | Default | Takes effect | Use |
 |-----|---------|--------------|-----|
