@@ -41,6 +41,8 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Blank Animus Core | `FIREWORK_STAR` | Golemancy: Animus Binding | Item kind |
 | Blank Node | `CLAY_BALL` | Golemancy: Node Weaving | Item kind |
 | Deposit Node | `BRICK` | Golemancy: Node Weaving | Item kind and node type |
+| Blank Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments | Item kind |
+| Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments, infused at the Animus Plinth | Item kind, aspect, and tier |
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.
 

@@ -115,9 +115,9 @@ The Node GUI shows the node type and its block, and holds these controls:
 - **Whitelist or Blacklist** (level 5): a whitelist lets golems use only matching items, and a blacklist lets them use everything except matching items. An empty filter matches every item.
 - **Add Tag** (level 5): closes the GUI and asks you to type an item tag, such as `#logs` or `#minecraft:saplings`, in chat. A tag without a namespace means `minecraft`. Typing a tag the filter already holds removes it, and typing `cancel` stops. Each tag uses one filter slot, and the prompt ends after 45 seconds.
 
-Golems bound with a role core work their owner's nodes while in Work mode. A golem takes jobs only from nodes whose work lies within `baseWorkRadius` blocks of its home, and only from the node types its core works. A node with no channel hands jobs to every one of your golems; a node with a channel hands them only to golems on that channel, and a golem with no channel works only nodes with no channel. A golem takes the highest-priority job first, then the nearest one. It keeps its claim on a job for `taskLeaseSeconds` seconds, renewed while it gets closer or keeps working; if it gets less than half a block closer within `stuckTimeoutSeconds` seconds, it gives the job up and skips it for 10 seconds while other golems may take it. A golem that gives up `stuckReleasesBeforePause` jobs or containers in a row rests for `stuckPauseSeconds` seconds before it looks for work again. A node switched off by redstone hands out no jobs, and the jobs it already handed out are cancelled. A golem that stands idle away from home for `idleReturnSeconds` seconds, or strays beyond `leashRadius` blocks of home, walks back. Iron golems in Colossus Form take no jobs.
+Golems bound with a role core work their owner's nodes while in Work mode. A golem takes jobs only from nodes whose work lies within `baseWorkRadius` blocks of its home, plus its Tide rune's bonus, and only from the node types its core works. A node with no channel hands jobs to every one of your golems; a node with a channel hands them only to golems on that channel, and a golem with no channel works only nodes with no channel. A golem has one channel, or more with an Order rune. A golem takes the highest-priority job first, then the nearest one. It keeps its claim on a job for `taskLeaseSeconds` seconds, renewed while it gets closer or keeps working; if it gets less than half a block closer within `stuckTimeoutSeconds` seconds, it gives the job up and skips it for 10 seconds, or less with an Order rune, while other golems may take it. A golem that gives up `stuckReleasesBeforePause` jobs or containers in a row rests for `stuckPauseSeconds` seconds before it looks for work again. A node switched off by redstone hands out no jobs, and the jobs it already handed out are cancelled. A golem that stands idle away from home for `idleReturnSeconds` seconds, or strays beyond `leashRadius` blocks of home, walks back. Iron golems in Colossus Form take no jobs.
 
-A Deposit Node accepts the items your working golems carry. A golem carrying items delivers them when it can carry no more, or when it has no job to do. It walks to the highest-priority Deposit Node, then the nearest, within `baseWorkRadius` blocks of its home whose channel it matches, whose filter accepts at least one of its items, and whose container has room. A Deposit Node switched off by redstone takes nothing. Items no Deposit Node takes go to the golem's linked home chest. With neither, the golem keeps its items; a golem carrying as many items as it can hold takes no new jobs and shows an angry particle above its head every 3 seconds until it can deliver. A container that cannot take the rest of a golem's items is skipped for 10 seconds. A double chest counts as one container, and region protection must let the golem's owner open the container. A copper golem opens the container's lid while it delivers.
+A Deposit Node accepts the items your working golems carry. A golem carrying items delivers them when it can carry no more, or when it has no job to do. It walks to the highest-priority Deposit Node, then the nearest, within `baseWorkRadius` blocks of its home, plus its Tide rune's bonus, whose channel it matches, whose filter accepts at least one of its items, and whose container has room. A Deposit Node switched off by redstone takes nothing. Items no Deposit Node takes go to the golem's linked home chest. With neither, the golem keeps its items; a golem carrying as many items as it can hold takes no new jobs and shows an angry particle above its head every 3 seconds until it can deliver. A container that cannot take the rest of a golem's items is skipped for 10 seconds. A double chest counts as one container, and region protection must let the golem's owner open the container. A copper golem opens the container's lid while it delivers.
 
 Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its block. If the block is gone, or a Deposit, Input, or Filter node's container is replaced by a block that is not a container, the node drops as an item.
 
@@ -253,6 +253,82 @@ While you are online, anyone who repairs one of your bound iron golems with an i
 | `colossusScale` | `1.0` | Scale a bound iron golem grows to in Colossus Form, from 0.36 to 1.5. Values outside that range load as the nearest limit. 1.0 is the vanilla iron golem size. |
 | `colossusAttackBonus` | `0.2` | Fraction added to a bound iron golem's total attack damage, frame bonus included, while it is in Colossus Form. 0.2 is 20% more. |
 | `colossusGrowTicks` | `20` | Ticks a bound iron golem takes to grow into Colossus Form or shrink back. |
+
+### Runic Augments (`golem-runic-augments`)
+
+5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2
+
+Lets you infuse runes at the Animus Plinth and slot them into your bound golems for speed, carrying, fire, reach, channels, yield, and armor. Level 1 unlocks loading and using the Animus Plinth, tier 1 rune infusions, and the Blank Rune recipe.
+
+Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` for a copper golem, or `ironSlots` for an iron golem, plus your level's `extraSlotsByLevel`. With the defaults, frost golems have 1, 2, and 3 slots at levels 1, 3, and 5, copper golems 2, 3, and 4, and iron golems 3, 4, and 5. The Golem GUI shows the slots in its second row; a locked slot names the Runic Augments level that opens it.
+
+- **Slotting a rune:** with the Golem GUI open, pick up a rune from your inventory and click an empty slot. One rune from the stack moves into the golem.
+- **Taking a rune back:** click a slotted rune. It goes into your inventory, or drops at your feet when your inventory is full.
+- A golem holds one rune of each aspect.
+- A body cannot take the runes `runeBodyBlocks` lists for it; by default, frost golems cannot take Ember runes.
+- Your golems use runes up to your level's `maxTierByLevel` tier. A higher-tier rune can still be slotted, but it stays inert, and the Golem GUI shows why in red. Runes in slots your level does not open, and runes a body cannot use, are inert the same way.
+- Rune effects follow your level: when you learn or unlearn levels, your awake golems update shortly and sleeping golems update when they wake.
+- Runes stay in the golem through chunk unloads and restarts. Releasing a golem drops its runes, and when a bound golem dies each rune drops at the `deathDropRuneChance` set in the skill configuration.
+
+| Level | Extra rune slots | Highest usable tier | Unlocks |
+|---|---|---|---|
+| 1 | +0 | 1 | Animus Plinth, tier 1 infusions, Blank Rune recipe |
+| 2 | +0 | 1 | |
+| 3 | +1 | 2 | Tier 2 infusions |
+| 4 | +1 | 2 | |
+| 5 | +2 | 3 | Tier 3 infusions |
+
+#### Runes
+
+| Rune | Tier 1 | Tier 2 | Tier 3 |
+|---|---|---|---|
+| Swiftness | +10% movement speed, 10% less time between work actions | +20% speed, 20% less time | +30% speed, 30% less time |
+| Might | +50% carry capacity, +2 attack damage | +100% capacity, +4 attack | +150% capacity, +6 attack |
+| Ember | Hits set the target on fire for 2 s | Fire for 4 s, immune to fire | Fire for 6 s, immune to fire and lava |
+| Tide | +4 blocks of work radius and mob detection range | +8 blocks, breathes underwater | +12 blocks, moves through water as fast as on land |
+| Order | +1 channel | +2 channels, retries a skipped job after half the wait | +3 channels, retries after a quarter of the wait |
+| Entropy | 5% chance to double each drop of Harvester, Lumber, Breaker, and Angler work | 10% chance, hits apply Weakness I for 3 s | 15% chance, hits apply Weakness II for 3 s |
+| Bulwark | +4 armor | +8 armor, +2 armor toughness | +12 armor, +4 armor toughness, +0.5 knockback resistance |
+
+- **Swiftness** shortens the time between a working golem's actions and its waits at containers.
+- **Ember** sets on fire whatever the golem hits. Fire immunity covers fire, burning, magma blocks, and campfires.
+- **Tide** adds to `baseWorkRadius` for the jobs and Deposit Nodes the golem considers, and to its follow range, which sets how far it notices mobs. Breathing underwater protects the golem from drowning and, for frost golems, from water damage.
+- **Order** adds channels. With an Order rune slotted, the channel button in the Golem GUI opens a channel picker: click a dye to select it, up to the golem's channel count, and click a selected dye to drop it. The golem takes jobs from and delivers to nodes on any of its channels. A golem with more channels selected than it can use uses the first ones in dye order, starting with white. A golem that gives up a job skips it for a shorter time.
+- **Entropy** doubles each drop that wins its roll.
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Blank Rune | ` A ` / `ASA` / ` A ` | A `AMETHYST_SHARD`, S `SMOOTH_STONE` | 2 | 0 |
+
+The recipe table uses the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `extraSlotsByLevel` | `[0, 0, 1, 1, 2]` | Extra rune slots every bound golem you own gets on top of its body's slots, from level 1 upward. |
+| `maxTierByLevel` | `[1, 1, 2, 2, 3]` | Highest rune tier your bound golems can use, from level 1 upward. Slotted runes above it stay in place but do nothing. |
+| `frostSlots` | `1` | Rune slots a bound frost golem has before Runic Augments adds extra slots, from 0 to 9. |
+| `copperSlots` | `2` | Rune slots a bound copper golem has before Runic Augments adds extra slots, from 0 to 9. |
+| `ironSlots` | `3` | Rune slots a bound iron golem has before Runic Augments adds extra slots, from 0 to 9. |
+| `runeBodyBlocks` | `["ember:frost"]` | Runes a golem body cannot use, as `aspect:body` entries. Listed runes cannot be slotted into that body, and any already slotted do nothing. Unknown entries are ignored with a console warning. |
+| `blankRuneRecipe` | ` A ` / `ASA` / ` A `, yields 2 | Blank Rune recipe. |
+| `swiftnessSpeedByTier` | `[0.1, 0.2, 0.3]` | Fraction added to a golem's movement speed by a Swiftness rune of tier 1, 2, and 3. 0.1 is 10% faster. |
+| `swiftnessWorkIntervalByTier` | `[0.1, 0.2, 0.3]` | Fraction cut from the time between a golem's work actions by a Swiftness rune of tier 1, 2, and 3. The time never drops below 5% of normal. |
+| `mightCarryByTier` | `[0.5, 1.0, 1.5]` | Fraction added to a golem's carry capacity by a Might rune of tier 1, 2, and 3. 0.5 is 50% more. |
+| `mightAttackByTier` | `[2.0, 4.0, 6.0]` | Attack damage added to a golem by a Might rune of tier 1, 2, and 3. |
+| `emberIgniteSecondsByTier` | `[2, 4, 6]` | Seconds an Ember rune of tier 1, 2, and 3 sets whatever its golem hits on fire. |
+| `emberFireImmuneByTier` | `[false, true, true]` | Whether an Ember rune of tier 1, 2, and 3 makes its golem immune to fire damage. |
+| `emberLavaImmuneByTier` | `[false, false, true]` | Whether an Ember rune of tier 1, 2, and 3 makes its golem immune to lava damage. |
+| `tideRadiusByTier` | `[4.0, 8.0, 12.0]` | Blocks a Tide rune of tier 1, 2, and 3 adds to its golem's work radius and to how far it notices mobs. |
+| `tideWaterBreathingByTier` | `[false, true, true]` | Whether a Tide rune of tier 1, 2, and 3 lets its golem breathe underwater. |
+| `tideSwimSpeedByTier` | `[0.0, 0.0, 1.0]` | Water movement efficiency a Tide rune of tier 1, 2, and 3 adds to its golem. 1.0 moves through water as fast as on land. |
+| `orderChannelsByTier` | `[1, 2, 3]` | Extra channels an Order rune of tier 1, 2, and 3 gives its golem on top of its one channel. |
+| `orderReclaimDelayByTier` | `[0.0, 0.5, 0.75]` | Fraction cut from the 10 seconds an Order golem skips a job it gave up on, by rune tier 1, 2, and 3. 0.5 is half as long. |
+| `entropyBonusYieldByTier` | `[0.05, 0.1, 0.15]` | Chance for each drop of Harvester, Lumber, Breaker, or Angler work to be doubled by an Entropy rune of tier 1, 2, and 3. 0.05 is 5%. |
+| `entropyWeaknessLevelByTier` | `[0, 1, 2]` | Weakness level an Entropy rune of tier 1, 2, and 3 puts on whatever its golem hits. 0 applies none. |
+| `entropyWeaknessSecondsByTier` | `[0, 3, 3]` | Seconds the Weakness from an Entropy rune of tier 1, 2, and 3 lasts. |
+| `bulwarkArmorByTier` | `[4.0, 8.0, 12.0]` | Armor added to a golem by a Bulwark rune of tier 1, 2, and 3. |
+| `bulwarkToughnessByTier` | `[0.0, 2.0, 4.0]` | Armor toughness added to a golem by a Bulwark rune of tier 1, 2, and 3. |
+| `bulwarkKnockbackResistanceByTier` | `[0.0, 0.0, 0.5]` | Knockback resistance added to a golem by a Bulwark rune of tier 1, 2, and 3. 1.0 means no knockback. |
 
 ## Animus Plinth
 
