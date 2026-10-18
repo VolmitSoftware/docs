@@ -7,7 +7,7 @@ tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
 ---
-Golemancy gains XP from building and binding golems, fighting beside your bound golems, watching other golems kill hostile mobs, repairing iron golems, tending copper golems, and infusing at the Animus Plinth.
+Golemancy gains XP from building and binding golems, fighting beside your bound golems, the jobs your working golems finish, watching other golems kill hostile mobs, repairing iron golems, tending copper golems, and infusing at the Animus Plinth.
 
 ## Earning XP
 
@@ -21,6 +21,7 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 - Repairing a player-built iron golem with an iron ingot pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
 - Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
 - Completing an infusion at the Animus Plinth pays `infuseRuneTier1Xp`, `infuseRuneTier2Xp`, or `infuseRuneTier3Xp` for a rune of that tier, or `infuseMasterworkHeartXp` for a Masterwork Heart, and counts toward `golemancy.infusions`.
+- When one of your working golems finishes a job, you earn the work XP that its Core adaptation sets for that job. Work XP pays only while you are online and within `workXpOwnerRadius` blocks of the golem, and you earn at most `workXpHourlyCap` work XP in any 60 minutes. Golem labor never pays other skills. Each finished job counts toward `golemancy.tasks`, and each item your golems deliver into a container counts toward `golemancy.items.moved`.
 
 ## Adaptations
 
@@ -89,7 +90,7 @@ Hold a node in your main hand, sneak, and right-click a block face. The node att
 
 A new node starts with no channel, priority 3, a whitelist filter with no entries, and a work area radius of 2 blocks, or your level's largest radius when that is smaller. The work area is centered on the block in front of the face.
 
-Nodes are hidden until you hold the Crook, a Node, a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. Labels draw within `labelRange` blocks.
+Nodes are hidden until you hold the Crook, a Node, a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: Full while a Deposit Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
 
 Click one of your revealed nodes to configure it. Only the node's owner can configure it, and its label updates after each change.
 
@@ -113,6 +114,10 @@ The Node GUI shows the node type and its block, and holds these controls:
 - **Filter slots**: pick up an item in your inventory and click an empty slot to add it or a filled slot to replace that entry, or right-click a slot to clear it. Your level sets how many slots you have. A slot keeps one of the item as you set it, with its name, enchantments, and potion type but without the contents of shulker boxes, bundles, or other containers, so two different potions take two slots and the same item never takes two. Golems match filter entries by item type.
 - **Whitelist or Blacklist** (level 5): a whitelist lets golems use only matching items, and a blacklist lets them use everything except matching items. An empty filter matches every item.
 - **Add Tag** (level 5): closes the GUI and asks you to type an item tag, such as `#logs` or `#minecraft:saplings`, in chat. A tag without a namespace means `minecraft`. Typing a tag the filter already holds removes it, and typing `cancel` stops. Each tag uses one filter slot, and the prompt ends after 45 seconds.
+
+Golems bound with a role core work their owner's nodes while in Work mode. A golem takes jobs only from nodes whose work lies within `baseWorkRadius` blocks of its home, and only from the node types its core works. A node with no channel hands jobs to every one of your golems; a node with a channel hands them only to golems on that channel, and a golem with no channel works only nodes with no channel. A golem takes the highest-priority job first, then the nearest one. It keeps its claim on a job for `taskLeaseSeconds` seconds, renewed while it gets closer or keeps working; if it gets less than half a block closer within `stuckTimeoutSeconds` seconds, it gives the job up and skips it for 10 seconds while other golems may take it. A golem that gives up `stuckReleasesBeforePause` jobs or containers in a row rests for `stuckPauseSeconds` seconds before it looks for work again. A node switched off by redstone hands out no jobs, and the jobs it already handed out are cancelled. A golem that stands idle away from home for `idleReturnSeconds` seconds, or strays beyond `leashRadius` blocks of home, walks back. Iron golems in Colossus Form take no jobs.
+
+A Deposit Node accepts the items your working golems carry. A golem carrying items delivers them when it can carry no more, or when it has no job to do. It walks to the highest-priority Deposit Node, then the nearest, within `baseWorkRadius` blocks of its home whose channel it matches, whose filter accepts at least one of its items, and whose container has room. A Deposit Node switched off by redstone takes nothing. Items no Deposit Node takes go to the golem's linked home chest. With neither, the golem keeps its items; a golem carrying as many items as it can hold takes no new jobs and shows an angry particle above its head every 3 seconds until it can deliver. A container that cannot take the rest of a golem's items is skipped for 10 seconds. A double chest counts as one container, and region protection must let the golem's owner open the container. A copper golem opens the container's lid while it delivers.
 
 Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its block. If the block is gone, or a Deposit, Input, or Filter node's container is replaced by a block that is not a container, the node drops as an item.
 
@@ -383,6 +388,15 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `blocksPerNodeScan` | `64` | Most blocks of a node's work area looked at in one check, clamped to 1-4096. |
 | `maxOpenTasksPerNode` | `16` | Most unfinished jobs one node can hand out to golems at once, clamped to 1-256. |
 | `nodeVisibility` | `"OWNER"` | Who sees nodes while holding the Crook, a Node, a Core or a Dormant Golem. `OWNER` shows each player only their own nodes; `ANY_GOLEMANCER` also shows every node to players who have learned Node Weaving. |
+| `taskLeaseSeconds` | `20` | Seconds a golem keeps its claim on a node job without making progress before another golem may take it, clamped to 5-600. |
+| `baseWorkRadius` | `24` | Blocks around its home within which a working golem takes node jobs and finds Deposit Nodes, clamped to 4-128. |
+| `stuckTimeoutSeconds` | `4` | Seconds a golem walking to a job or a container may go without getting half a block closer before it gives up and skips that job or container for 10 seconds, clamped to 1-60. |
+| `stuckReleasesBeforePause` | `3` | Jobs or containers in a row a golem may give up because it got stuck before it rests for `stuckPauseSeconds`, clamped to 1-100. |
+| `stuckPauseSeconds` | `15` | Seconds a trapped golem rests without looking for jobs or containers, clamped to 0-600. 0 never rests it. |
+| `workXpHourlyCap` | `1200` | Most work XP one player can earn from their golems' finished jobs in any 60 minutes. Values below 0 count as 0. |
+| `workXpOwnerRadius` | `96` | Blocks from a working golem within which its owner earns work XP. Owners farther away or in another world earn none. Values below 0 count as 0. |
+| `challengeTasksReward` | `500` | Skill XP paid by the golem job challenges. |
+| `challengeItemsMovedReward` | `500` | Skill XP paid by the golem item hauling challenges. |
 | `pedestalBlocks` | the eight chiseled copper blocks | Blocks that work as Animus Plinth pedestals. Unknown names and `LODESTONE` are ignored with a console warning. |
 | `infusionRecipes` | the infusions listed above | Infusions the Animus Plinth performs, one table per infusion. See Infusion recipes for the fields. |
 | `infuseRuneTier1Xp` | `60` | Skill XP for each tier 1 rune infused. |
@@ -405,6 +419,10 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `challenge_golemancy_first_bind_frost` | First frost golem bound | `firstBindXp` |
 | `challenge_golemancy_first_bind_copper` | First copper golem bound | `firstBindXp` |
 | `challenge_golemancy_first_bind_iron` | First iron golem bound | `firstBindXp` |
+| `challenge_golemancy_tasks_1000` | 1000 | `challengeTasksReward` |
+| `challenge_golemancy_tasks_25000` | 25000 | `challengeTasksReward` x 5 |
+| `challenge_golemancy_items_moved_10000` | 10000 | `challengeItemsMovedReward` |
+| `challenge_golemancy_items_moved_250000` | 250000 | `challengeItemsMovedReward` x 5 |
 | `challenge_golemancy_infusions_10` | 10 | `challengeInfusionsReward` |
 | `challenge_golemancy_infusions_100` | 100 | `challengeInfusionsReward` x 5 |
 
