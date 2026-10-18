@@ -515,6 +515,63 @@ The recipe tables use the same fields as the Animus Binding recipes.
 | `breakerCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Breaker Core recipe. |
 | `breakerNodeRecipe` | ` X ` / ` B ` / `   ` | Breaker Node recipe. |
 
+### Rancher Core (`golem-rancher-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
+
+Makes golems bound with a Rancher Core tend the animals in a Pasture Node's area: they breed pairs up to the node's keep count, and at higher levels shear sheep, milk cows, goats, and mooshrooms, and cull spare adults. Unlocks the Rancher Core and Pasture Node recipes at level 1.
+
+Bind a golem with a Rancher Core through Animus Binding. Copper and iron golems take the core by default; `allowedCoresCopper` and `allowedCoresIron` in the skill configuration decide which bodies can, and only iron Ranchers cull. A new Rancher starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Ranchers work only in Work mode and only in the work area of each of your Pasture Nodes that lies within their work radius (`baseWorkRadius` plus Tide), has a channel the golem matches, and is not switched off by redstone. Place a Pasture Node with Node Weaving and set its work area over your pen. Its channel, priority, work area, and redstone setting work like any other node's; its filter is not used.
+
+Pasture Nodes tend the animals listed in `species`. The bottom row of a Pasture Node's GUI holds its settings:
+
+- **Species**: all tended animals, or one of them. Left-click for the next species, right-click for the previous one.
+- **Keep count**: from 2 to 64, and `defaultKeep` until you change it. Left-click raises it and right-click lowers it. Each species is counted on its own, inside the work area, including animals Ranchers leave alone. For breeding, adults and babies count, plus one for every pair already in love; for culling, only adults count.
+- **Breeding, Shearing, Milking, and Culling**: click a toggle to switch it. Breeding, Shearing, and Milking start on and Culling starts off. A toggle stays locked until you reach its level.
+
+When the task board has nothing for it, a Rancher looks for work in your Pasture Nodes, highest priority first, then nearest first. In each node it takes culling jobs first, then breeding, shearing, and milking, and the nearest animal for each. It walks to the animal, works for `actionIntervalTicks` ticks, then acts. Region protection must let you interact with the animal, or damage it for culling; otherwise nothing happens and the node shows Blocked. Ranchers never touch invulnerable animals, NPCs, Adapt minions, or animals you tamed. Copper Overdrive and Swiftness runes shorten the action time.
+
+- **Breeding** (level 1): while a species' breeding count in the area is below the keep count, a Rancher feeds that species' breeding food to two adults that are ready to breed, one after the other, and each goes into love mode. It starts a pair only when it has food for both animals. When an adult it fed is still waiting in love, it feeds the ready adult nearest to it within 8 blocks. It never finishes a pair a player started. The food comes from what the golem carries, then from its linked home chest. Parents wait out their breeding cooldown as usual, and births from parents a Rancher fed give no experience.
+- **Shearing** (level `shearLevel`): Ranchers shear adult sheep and carry 1 to 3 wool of the sheep's color. Mooshrooms are never sheared.
+- **Milking** (level `milkLevel`): Ranchers milk adult cows, goats, and mooshrooms into an empty bucket and carry the milk bucket. A mooshroom fills an empty bowl with mushroom stew instead when a bowl is at hand, unless it holds a suspicious stew, which it keeps for you. Buckets and bowls come from what the golem carries, then from its linked home chest.
+- **Culling** (level `cullLevel`, iron golems only): while a species has more adults in the area than the keep count, an iron Rancher kills the nearest spare adult with one blow and carries its loot. Culled animals drop no experience. It never culls babies, or named, leashed, tamed, ridden, or equipped animals, such as a saddled pig or a llama wearing a carpet.
+- **Husbandry** (level `husbandryLevel`): parents a Rancher fed wait `husbandryCooldownMultiplier` times the normal breeding cooldown before they can breed again, and each cull rolls the animal's loot `husbandryExtraLootRolls` more times while the game rule that lets mobs drop loot is on.
+
+A Rancher delivers what it carries to a Deposit Node or its home chest like any other working golem, and items it cannot carry fall to the ground. Each animal it feeds pays half of `workXpPerPair`, each sheep it shears `workXpPerShear`, each bucket or bowl it fills `workXpPerMilk`, and each animal it culls `workXpPerCull` work XP, as described in Earning XP. A cull is a golem kill, so it never pays Hunter or any other skill's kill rewards, and animals pay no Golemancy kill XP. Breeding by a Rancher never pays Taming.
+
+| Level | Unlocks |
+|---|---|
+| 1 | Breeding: feeds pairs while a species is below the keep count |
+| 2 | Shearing: shears sheep and carries their wool |
+| 3 | Milking: fills buckets and bowls from the home chest at cows, goats, and mooshrooms |
+| 4 | Culling: iron Ranchers cull adults above the keep count |
+| 5 | Husbandry: half the breeding cooldown for parents it fed, and one extra loot roll for each cull |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Rancher Core | ` X ` / `YBY` / ` Z ` | X `SHEARS`, Y `WHEAT`, Z `LEAD`, B `golemancy:blank_core` | 1 | 2 levels |
+| Pasture Node | ` X ` / ` B ` / `   ` | X `LEAD`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `species` | `["COW", "MOOSHROOM", "SHEEP", "PIG", "CHICKEN", "GOAT", "RABBIT"]` | Animals Pasture Nodes tend, by entity type name. Each Pasture Node tends all of them or the one species chosen in its GUI. Names that are not animals are ignored. |
+| `defaultKeep` | `8` | Keep count of a Pasture Node until you change it in its GUI. Ranchers breed a species while its adults, babies, and pairs in love number fewer than this, and cull adults above it. Values load between 2 and 64. |
+| `actionIntervalTicks` | `40` | Ticks a Rancher spends on each breeding, shearing, milking, or culling action after it reaches the animal. Values below 1 load as 1. |
+| `shearLevel` | `2` | Level at which Ranchers shear sheep. |
+| `milkLevel` | `3` | Level at which Ranchers milk cows, goats, and mooshrooms. |
+| `cullLevel` | `4` | Level at which iron Ranchers cull adults above the keep count. |
+| `husbandryLevel` | `5` | Level at which Ranchers use Husbandry. |
+| `husbandryCooldownMultiplier` | `0.5` | Multiplier, from 0 to 1, on the breeding cooldown of parents a Rancher fed once Husbandry is unlocked. 0.5 halves it. Values outside that range load as the nearest limit. |
+| `husbandryExtraLootRolls` | `1` | Extra times a culled animal's loot is rolled once Husbandry is unlocked, from 0 to 8. Values outside that range load as the nearest limit. |
+| `workXpPerPair` | `4.0` | Golemancy work XP paid for each pair of animals a Rancher feeds, half for each animal. Values below 0 load as 0. |
+| `workXpPerShear` | `2.0` | Golemancy work XP paid for each sheep a Rancher shears. Values below 0 load as 0. |
+| `workXpPerMilk` | `1.0` | Golemancy work XP paid for each bucket or bowl a Rancher fills. Values below 0 load as 0. |
+| `workXpPerCull` | `1.0` | Golemancy work XP paid for each animal a Rancher culls. Values below 0 load as 0. |
+| `rancherCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Rancher Core recipe. |
+| `pastureNodeRecipe` | ` X ` / ` B ` / `   ` | Pasture Node recipe. |
+
 ### Angler Core (`golem-angler-core`)
 
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
