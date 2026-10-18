@@ -189,6 +189,42 @@ Bound copper golems never turn into statues as they oxidize. Each oxidation stag
 | `overdriveCooldownSeconds` | `300` | Seconds after a Static Overdrive starts before the same golem can be overdriven again. |
 | `overdriveWorkIntervalMultiplier` | `0.5` | Multiplier on a bound copper golem's work interval while Static Overdrive lasts. 0.5 makes it work twice as fast; 1 leaves it unchanged. |
 
+### Iron Frame (`golem-iron-frame`)
+
+5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
+
+Lets you bind iron golems and strengthens them with extra health, armor, and attack, stronger ingot repairs, sweeping punches, and a full-size Colossus Form. Iron golems bind only after you learn Iron Frame.
+
+Every bound iron golem you own gains the extra maximum health, armor, and attack damage for your current level. When a golem reaches a new highest maximum health, it heals by the amount gained. The bonuses follow your level: when you learn or unlearn levels, your awake golems update shortly and sleeping golems update when they wake. Releasing a golem removes them.
+
+While you are online, anyone who repairs one of your bound iron golems with an iron ingot heals it by your level's `ingotHealBonusByLevel` on top of the vanilla 25 health. The extra health counts toward repair XP like the rest of the repair.
+
+- **Sweeping Fists** (level `sweepLevel`): each punch from one of your awake bound iron golems also hits up to your level's `sweepTargetsByLevel` other hostile mobs within `sweepRadius` blocks of the punched mob, nearest first, for `sweepDamageFraction` of the punch's damage. The golem deals these hits, so its kills and damage count as its own. Sweeping Fists hits only hostile mobs, and never Adapt minions or mobs that region protection shields from you.
+- **Colossus Form** (level `colossusLevel`): the Golem GUI of each of your bound iron golems shows a Colossus Form toggle. Turning it on grows the golem to `colossusScale` over `colossusGrowTicks` ticks and raises its attack damage by `colossusAttackBonus`. A golem in Colossus Form takes no work. Turning the toggle off shrinks it back to its bound size over the same time, and a toggle during a size change is ignored. The form lasts through chunk unloads and restarts. If you drop below `colossusLevel`, the golem keeps its size but loses the attack bonus, and the toggle stays in its Golem GUI so you can turn the form off. Releasing a golem ends Colossus Form.
+
+| Level | Bonus health | Bonus armor | Bonus attack | Ingot repair bonus | Unlocks |
+|---|---|---|---|---|---|
+| 1 | +10 | +2 | +1.5 | +5 | |
+| 2 | +20 | +4 | +3.0 | +10 | |
+| 3 | +30 | +6 | +4.5 | +15 | Sweeping Fists: each punch also hits 1 nearby hostile mob for 50% damage |
+| 4 | +40 | +8 | +6.0 | +20 | |
+| 5 | +50 | +10 | +7.5 | +25 | Sweeping Fists hits 2 nearby hostile mobs. Colossus Form: grows to full iron golem size over 1 s with +20% attack, and takes no work while grown |
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `healthBonusByLevel` | `[10, 20, 30, 40, 50]` | Extra maximum health for your bound iron golems, from level 1 upward. A golem heals by any gain above the highest maximum health it has had. |
+| `armorBonusByLevel` | `[2, 4, 6, 8, 10]` | Extra armor for your bound iron golems, from level 1 upward. |
+| `attackBonusByLevel` | `[1.5, 3.0, 4.5, 6.0, 7.5]` | Extra attack damage for your bound iron golems, from level 1 upward. |
+| `ingotHealBonusByLevel` | `[5, 10, 15, 20, 25]` | Extra health an iron ingot repair restores on your bound iron golems, on top of the vanilla 25, from level 1 upward. |
+| `sweepLevel` | `3` | Level at which your bound iron golems' punches also hit nearby hostile mobs with Sweeping Fists. |
+| `sweepTargetsByLevel` | `[0, 0, 1, 1, 2]` | Extra hostile mobs each punch also hits with Sweeping Fists, from level 1 upward. |
+| `sweepDamageFraction` | `0.5` | Fraction of a punch's damage that Sweeping Fists deals to each extra mob. 0.5 is half. |
+| `sweepRadius` | `2.0` | Blocks around the punched mob within which Sweeping Fists finds extra hostile mobs, from 0 to 8. Larger values load as 8. |
+| `colossusLevel` | `5` | Level at which the Golem GUI offers Colossus Form for your bound iron golems. |
+| `colossusScale` | `1.0` | Scale a bound iron golem grows to in Colossus Form. 1.0 is the vanilla iron golem size. |
+| `colossusAttackBonus` | `0.2` | Fraction added to a bound iron golem's attack damage while it is in Colossus Form. 0.2 is 20% more. |
+| `colossusGrowTicks` | `20` | Ticks a bound iron golem takes to grow into Colossus Form or shrink back. |
+
 ## Reference
 
 ### Skill configuration defaults
