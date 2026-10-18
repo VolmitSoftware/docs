@@ -12,9 +12,9 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 ## Earning XP
 
 - Building a snow, copper, or iron golem pays `buildSnowXp`, `buildCopperXp`, or `buildIronXp` to the player who placed its carved pumpkin or jack o'lantern, and counts toward `golemancy.built`. The golem must appear within `buildAttributionWindowMillis` milliseconds and `buildAttributionRadius` blocks of that placement. Each golem type has its own `buildXpCooldownMillis` cooldown per player; builds during the cooldown still count toward the stat. Heads placed by dispensers pay nothing.
-- Binding a golem with Animus Binding pays `bindSnowXp`, `bindCopperXp`, or `bindIronXp` and counts toward `golemancy.bound`. Each golem pays this only on its first binding; a golem that was released and bound again pays nothing. The first time you bind each body (frost, copper, and iron), you also earn that body's first-bind challenge and `firstBindXp`.
+- Binding a golem with Animus Binding pays `bindFrostXp`, `bindCopperXp`, or `bindIronXp` and counts toward `golemancy.bound`. Each golem pays and counts only on its first binding; a golem that was released and bound again pays nothing and does not count. The first time you bind each body (frost, copper, and iron), you also earn that body's first-bind challenge and `firstBindXp`.
 - When your bound golem damages a hostile mob, you earn the damage dealt times `assistDamageXpMultiplier` times the body multiplier: `assistBodyMultiplierFrost`, `assistBodyMultiplierCopper`, `assistBodyMultiplierIron`, or `assistBodyMultiplierBone`. Frost golem snowballs count. Damage beyond the victim's remaining health does not count. You earn damage XP at most once per `assistCooldownMillis`, but every hit counts toward `golemancy.golem.damage`.
-- When your bound golem or its snowball kills a hostile mob, you earn the kill value, `golemKillXpBase` plus the victim's maximum health times `golemKillMaxHealthMultiplier`, and the kill counts toward `golemancy.golem.kills`. Raiders that belong to an active raid pay `raidXpMultiplier` times as much.
+- When your bound golem or its snowball kills a hostile mob, you earn the kill value, `golemKillXpBase` plus the victim's maximum health times `golemKillMaxHealthMultiplier`, and the kill counts toward `golemancy.golem.kills`. Raiders that belong to an active raid pay `raidXpMultiplier` times as much. A kill whose final blow comes from a bound golem or its snowball is a golem kill: it pays only Golemancy, and other skills and adaptations grant no kill XP or kill rewards for it, even when you hit the mob shortly before.
 - When your bound golem takes damage from a hostile mob, you earn the damage taken times `tankXpMultiplier`, at most once per `tankCooldownMillis`. Damage beyond the golem's remaining health does not count.
 - Damage, kill, and tanking XP pay in full while you are within `ownerProximityRadius` blocks of the golem. Farther away or in another world, they pay `distantOwnerXpMultiplier` times as much, and nothing while you are offline. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount, and Adapt minions and Excavation grave mobs pay nothing.
 - When an iron golem or snow golem that is not bound kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
@@ -74,6 +74,47 @@ Each recipe is a table with `rows` (1 to 3 rows of up to 3 symbols, a space for 
 | `crookRecipe` | ` A ` / `RHR` / ` C `, tithe 0 | Artificer's Crook recipe. |
 | `blankCoreRecipe` | `ARA` / `RPR` / `ARA`, tithe 1 | Blank Animus Core recipe. |
 
+### Node Weaving (`golem-node-weaving`)
+
+5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
+
+Anchors nodes to block faces so your golems know where to work, and unlocks the Blank Node and Deposit Node recipes at level 1. Each Core adaptation unlocks the recipes for its own nodes.
+
+Hold a node in your main hand, sneak, and right-click a block face. The node attaches to that face and one node item is used up. Each face holds one node. Deposit, Input, and Filter nodes go only on a chest, trapped chest, copper chest, barrel, or shulker box. A placement needs all of the following:
+
+- Region protection lets you interact with the block and build in front of the face. A Deposit, Input, or Filter node also needs access to the container.
+- The chunk holds fewer than `maxNodesPerChunk` nodes, counting every player's nodes.
+- You own fewer nodes than your level allows.
+
+A new node starts with no channel, priority 3, a whitelist filter with no entries, and a work area radius of 2 blocks, or your level's largest radius when that is smaller. The work area is centered on the block in front of the face.
+
+Nodes are hidden until you hold the Crook, a Node, a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. Labels draw within `labelRange` blocks.
+
+Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its block. If the block is gone, or a Deposit, Input, or Filter node's container is replaced by a block that is not a container, the node drops as an item.
+
+| Level | Node cap | Max area radius | Filter slots | Unlocks |
+|---|---|---|---|---|
+| 1 | 4 | 2 | 3 | Node placement, whitelist filters |
+| 2 | 8 | 3 | 6 | |
+| 3 | 12 | 4 | 6 | Node priority 1-5 |
+| 4 | 18 | 6 | 9 | Redstone gating |
+| 5 | 24 | 8 | 18 | Blacklist filters and `#tag` filter entries |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Blank Node | `CRC` / `RAR` / `CRC` | C `CLAY_BALL`, R `REDSTONE`, A `AMETHYST_SHARD` | 4 | 0 |
+| Deposit Node | ` X ` / ` B ` / `   ` | X `CHEST`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `nodeCapByLevel` | `[4, 8, 12, 18, 24]` | Most nodes you can own at once, from level 1 upward. |
+| `maxAreaRadiusByLevel` | `[2, 3, 4, 6, 8]` | Largest work area radius in blocks a node can be set to, from level 1 upward. Each value is capped at 32. |
+| `filterSlotsByLevel` | `[3, 6, 6, 9, 18]` | Filter entries a node can hold, from level 1 upward. Each value is capped at 18. |
+| `blankNodeRecipe` | `CRC` / `RAR` / `CRC`, yields 4 | Blank Node recipe. |
+| `depositNodeRecipe` | ` X ` / ` B ` / `   ` | Deposit Node recipe. |
+
 ## Reference
 
 ### Skill configuration defaults
@@ -101,7 +142,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `copperWaxXp` | `30` | Skill XP for the first wax on each copper golem. |
 | `spawnerMobXpMultiplier` | `0.3` | Multiplier for Golemancy XP from mobs that came from a spawner or trial spawner. |
 | `challengeBuiltReward` | `500` | Skill XP paid by the golem building challenges. |
-| `bindSnowXp` | `100` | Skill XP for the first binding of a snow golem. |
+| `bindFrostXp` | `100` | Skill XP for the first binding of a frost golem. |
 | `bindCopperXp` | `220` | Skill XP for the first binding of a copper golem. |
 | `bindIronXp` | `450` | Skill XP for the first binding of an iron golem. |
 | `firstBindXp` | `600` | Skill XP paid with each first-bind challenge. |
@@ -137,9 +178,14 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. |
 | `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
 | `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 1-20. |
-| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels while you hold the Crook, a Node, a Core or a Dormant Golem. |
-| `labelRange` | `8.0` | Blocks within which revealed golem labels are drawn on screen. |
-| `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems as you move while holding the Crook, a Node, a Core or a Dormant Golem. Holding none of them costs nothing. |
+| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels and your nodes appear while you hold the Crook, a Node, a Core or a Dormant Golem. |
+| `labelRange` | `8.0` | Blocks within which revealed golem and node labels are drawn on screen. |
+| `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems and nodes as you move while holding the Crook, a Node, a Core or a Dormant Golem. Holding none of them costs nothing. |
+| `maxNodesPerChunk` | `16` | Most nodes allowed in one chunk, counting every player's nodes. |
+| `nodeScanIntervalTicks` | `40` | Ticks between checks of each node, clamped to 5-1200. Each check confirms the node's block is still there. |
+| `blocksPerNodeScan` | `64` | Most blocks of a node's work area looked at in one check, clamped to 1-4096. |
+| `maxOpenTasksPerNode` | `16` | Most unfinished jobs one node can hand out to golems at once, clamped to 1-256. |
+| `nodeVisibility` | `"OWNER"` | Who sees nodes while holding the Crook, a Node, a Core or a Dormant Golem. `OWNER` shows each player only their own nodes; `ANY_GOLEMANCER` also shows every node to players who have learned Node Weaving. |
 
 ### Challenges
 
