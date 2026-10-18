@@ -60,12 +60,12 @@ These commands require `adapt.clear`. `clear` targets online players; `reset con
 
 | Command | Permission | Purpose |
 |---|---|---|
-| `/adapt golem roster` | `adapt.main` | Open your golem roster |
-| `/adapt golem list [player=<player>]` | `adapt.golemancy.admin` | List a player's golems with their ids, states, and last known positions |
-| `/adapt golem release <id> [player=<player>]` | `adapt.golemancy.admin` | Release one of a player's golems |
-| `/adapt golem wake [player=<player>]` | `adapt.golemancy.admin` | Recheck a player's loaded golems and wake the ones that can wake |
+| `/adapt golem roster` | `adapt.main` | Open your golem roster while Golemancy is enabled |
+| `/adapt golem list [player]` | `adapt.golemancy.admin` | List a player's golems with their ids, states, and last known positions |
+| `/adapt golem release <id> [player]` | `adapt.golemancy.admin` | Release one of a player's golems |
+| `/adapt golem wake [player]` | `adapt.golemancy.admin` | Recheck a player's loaded golems and wake the ones that can wake |
 
-The admin commands target online players and default to you. `id` is a golem id from `/adapt golem list`, or enough of its first characters to match exactly one of that player's golems. Releasing a loaded golem works like its owner's Release: it becomes an ordinary golem, drops its cores, runes, masterwork Heart, and carried items, and returns its stored essence as experience. Releasing a golem that is not loaded removes it from the roster at once, and its body, Dormant Golem, or Shattered Core turns ordinary or crumbles without drops the next time it appears. Waking never lifts `serverMaxActiveGolems`; golems beyond it stay dormant until room frees. See [Skill - Golemancy](/adapt/34-skill-golemancy).
+The admin commands default to you. `list` also reads an offline player's roster without changing it; `release` and `wake` need the player online. `id` is a golem id from `/adapt golem list`, or enough of its first characters to match exactly one of that player's golems. Releasing a loaded golem works like its owner's Release: it becomes an ordinary golem, drops its cores, runes, masterwork Heart, and carried items, and returns its stored essence as experience. A missing, packed, or shattered golem leaves the roster at once, and its Dormant Golem or Shattered Core crumbles without drops the next time it is used. An active golem that is not loaded is refused; release it once its chunk is loaded or it shows as missing. Waking never lifts `serverMaxActiveGolems`; golems beyond it stay dormant until room frees. See [Skill - Golemancy](/adapt/34-skill-golemancy).
 
 ## Permissions
 
