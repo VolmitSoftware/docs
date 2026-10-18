@@ -309,6 +309,62 @@ The recipe tables use the same fields as the Animus Binding recipes.
 | `guardianCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Guardian Core recipe. |
 | `guardNodeRecipe` | ` X ` / ` B ` / `   ` | Guard Node recipe. |
 
+### Gatherer Core (`golem-gatherer-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
+
+Makes golems bound with a Gatherer Core pick up dropped items and deliver them, and unlocks the Gatherer Core and Collection Node recipes at level 1.
+
+Bind a golem with a Gatherer Core through Animus Binding. Snow, copper, and iron golems take the core by default; `allowedCoresFrost`, `allowedCoresCopper`, and `allowedCoresIron` in the skill configuration decide which bodies can. A new Gatherer starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home.
+
+In Work mode a Gatherer picks up dropped items in the work area of each of your Collection Nodes that lies within its work radius (`baseWorkRadius` plus Tide), has a channel the golem matches, and is not switched off by redstone. A Collection Node's filter decides which items Gatherers take from its area, including the items Magnet pulls and the items Gatherers pick up at once. While every Collection Node on a matching channel within its work radius is switched off by redstone, a Gatherer gathers nothing. With no Collection Node on a matching channel within its work radius, the Gatherer picks up items within your level's `pickupRadiusByLevel` blocks of its home, plus its Tide rune's bonus, but never beyond its work radius (`baseWorkRadius` plus Tide). It walks to the nearest item, takes as much of the stack as it can carry, and delivers its load to a Deposit Node or its home chest as described under Node Weaving. Each stack it picks up earns `workXpPerStack` work XP. Place a Collection Node with Node Weaving; its channel, work area, filter, and redstone setting work like any other node's.
+
+Gatherers leave these items alone:
+
+- Items still under their pickup delay, and items that players or mobs cannot pick up, such as display items.
+- Items another player threw, until `foreignItemSeconds` seconds after they dropped, and items another player owns.
+- Items and experience orbs within `deathSiteRadius` blocks of the spot where any player died, for `deathSiteSeconds` seconds after the death. Gatherers remember up to 256 recent deaths in each world.
+- Items where region protection stops you from interacting or breaking blocks, or where a protection plugin stops mobs from picking items up. Protection is checked for you wherever you are, so Gatherers keep working while you are in another world.
+
+Higher levels add these perks:
+
+- **Essence** (from level 2 with the default `essenceCapByLevel`): Gatherers also collect experience orbs in their gathering area and store the experience as essence, up to your level's cap. The Golem GUI of a Gatherer, or of any golem that still holds essence, shows an Essence button with the stored experience points; click it to take them all as experience. Releasing a golem gives you its essence as experience, or drops it as an experience orb when you are offline, and a bound golem that dies drops its essence as experience.
+- **Magnet** (level `magnetLevel`): items within `magnetRadius` blocks of a Gatherer that it can pick up fly toward it while the Gatherer stands inside its gathering area, where region protection lets you interact, and has room to carry them.
+- **Instant pickup** (level `instantPickupLevel`): a Gatherer picks up items and absorbs experience orbs within `instantPickupRadius` blocks without walking to them.
+- **Carry bonus** (level `carryBonusLevel`): Gatherers carry `carryBonusFraction` more items. The bonus adds to other carry bonuses, such as a Might rune's.
+
+| Level | Pickup radius | Unlocks |
+|---|---|---|
+| 1 | 4 | Picks up items around its home or in Collection Nodes and delivers them |
+| 2 | 6 | Essence: stores up to 500 experience points from experience orbs |
+| 3 | 8 | Essence storage grows to 1500 experience points |
+| 4 | 10 | Magnet: pulls items within 3 blocks |
+| 5 | 12 | Instant pickup within 1.5 blocks; carries 50% more items |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Gatherer Core | ` X ` / `YBY` / ` Z ` | X `BUNDLE`, Y `STRING`, Z `HOPPER`, B `golemancy:blank_core` | 1 | 2 levels |
+| Collection Node | ` X ` / ` B ` / `   ` | X `BUNDLE`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `pickupRadiusByLevel` | `[4, 6, 8, 10, 12]` | Blocks around a Gatherer's home within which it picks up items when none of your Collection Nodes serve it, from level 1 upward. A Tide rune adds its bonus. |
+| `essenceCapByLevel` | `[0, 500, 1500, 1500, 1500]` | Experience points a Gatherer can store as essence, from level 1 upward. 0 means it absorbs no experience orbs. |
+| `magnetLevel` | `4` | Level at which Gatherers use Magnet. |
+| `magnetRadius` | `3.0` | Blocks around a Gatherer within which Magnet pulls items toward it, from 0 to 16. Values outside that range load as the nearest limit. |
+| `instantPickupLevel` | `5` | Level at which Gatherers pick up items next to them at once. |
+| `instantPickupRadius` | `1.5` | Blocks around a Gatherer within which it picks up items and absorbs experience orbs at once, from 0 to 4. Values outside that range load as the nearest limit. |
+| `carryBonusLevel` | `5` | Level at which Gatherers carry more items. |
+| `carryBonusFraction` | `0.5` | Fraction added to a Gatherer's carry capacity from `carryBonusLevel`. 0.5 is 50% more. |
+| `foreignItemSeconds` | `30` | Seconds after an item drops during which Gatherers leave it alone when another player threw it, from 0 to 600. Items another player owns are never picked up. |
+| `deathSiteRadius` | `8.0` | Blocks around the spot where a player died within which Gatherers pick up nothing, from 0 to 64. |
+| `deathSiteSeconds` | `300` | Seconds after a player dies during which Gatherers leave items and experience orbs near that spot alone, from 0 to 3600. 0 turns the protection off. |
+| `workXpPerStack` | `0.5` | Golemancy work XP a Gatherer earns you for each item stack it picks up. |
+| `gathererCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Gatherer Core recipe. |
+| `collectionNodeRecipe` | ` X ` / ` B ` / `   ` | Collection Node recipe. |
+
 ### Harvester Core (`golem-harvester-core`)
 
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
@@ -451,7 +507,7 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 
 - **Swiftness** shortens the time between a working golem's actions and its waits at containers.
 - **Ember** sets on fire whatever the golem hits. Fire immunity covers fire, burning, magma blocks, and campfires.
-- **Tide** adds to `baseWorkRadius` for the jobs, Deposit Nodes, and Guard Nodes the golem considers, to the range in which a Companion or Guardian golem attacks mobs, up to `leashRadius`, and to its follow range, which sets how far it notices mobs. Breathing underwater protects the golem from drowning and, for frost golems, from water damage.
+- **Tide** adds to `baseWorkRadius` for the jobs, Deposit Nodes, Collection Nodes, and Guard Nodes the golem considers, to the pickup radius of a Gatherer without a Collection Node, to the range in which a Companion or Guardian golem attacks mobs, up to `leashRadius`, and to its follow range, which sets how far it notices mobs. Breathing underwater protects the golem from drowning and, for frost golems, from water damage.
 - **Order** adds channels. With an Order rune slotted, the channel button in the Golem GUI opens a channel picker: click a dye to select it, up to the golem's channel count, and click a selected dye to drop it. The golem takes jobs from and delivers to nodes on any of its channels. A golem with more channels selected than it can use uses the first ones in dye order, starting with white. A golem that gives up a job skips it for a shorter time.
 - **Entropy** doubles each drop that wins its roll.
 
@@ -477,7 +533,7 @@ The recipe table uses the same fields as the Animus Binding recipes.
 | `emberIgniteSecondsByTier` | `[2, 4, 6]` | Seconds an Ember rune of tier 1, 2, and 3 sets whatever its golem hits on fire. |
 | `emberFireImmuneByTier` | `[false, true, true]` | Whether an Ember rune of tier 1, 2, and 3 makes its golem immune to fire damage. |
 | `emberLavaImmuneByTier` | `[false, false, true]` | Whether an Ember rune of tier 1, 2, and 3 makes its golem immune to lava damage. |
-| `tideRadiusByTier` | `[4.0, 8.0, 12.0]` | Blocks a Tide rune of tier 1, 2, and 3 adds to its golem's work radius, to the range in which a Companion or Guardian golem attacks mobs, up to `leashRadius`, and to how far it notices mobs. |
+| `tideRadiusByTier` | `[4.0, 8.0, 12.0]` | Blocks a Tide rune of tier 1, 2, and 3 adds to its golem's work radius, to a Gatherer's pickup radius, to the range in which a Companion or Guardian golem attacks mobs, up to `leashRadius`, and to how far it notices mobs. |
 | `tideWaterBreathingByTier` | `[false, true, true]` | Whether a Tide rune of tier 1, 2, and 3 lets its golem breathe underwater. |
 | `tideSwimSpeedByTier` | `[0.0, 0.0, 1.0]` | Water movement efficiency a Tide rune of tier 1, 2, and 3 adds to its golem. 1.0 moves through water as fast as on land. |
 | `orderChannelsByTier` | `[1, 2, 3]` | Extra channels an Order rune of tier 1, 2, and 3 gives its golem on top of its one channel. |
