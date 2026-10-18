@@ -152,6 +152,42 @@ When a snowball from one of your bound frost golems hits the golem's target or a
 | `frostbiteFreezeTicks` | `100` | Ticks a Frostbite target stays fully frozen before it starts to thaw. |
 | `frostbitePerTargetCooldownMillis` | `10000` | Milliseconds before Frostbite can freeze the same target again. |
 
+### Copper Frame (`golem-copper-frame`)
+
+5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
+
+Lets you bind copper golems and strengthens them with extra health, carry capacity, and speed, plus armor from their patina. Copper golems bind only after you learn Copper Frame.
+
+Every bound copper golem you own gains the extra maximum health and movement speed for your current level, and carries up to your level's `carryByLevel` items at once, never fewer than the skill's `bodyCarryCopper`. When a golem reaches a new highest maximum health, it heals by the amount gained. The bonuses follow your level: when you learn or unlearn levels, your awake golems update shortly and sleeping golems update when they wake. Releasing a golem removes them.
+
+Bound copper golems never turn into statues as they oxidize. Each oxidation stage counts as patina, from 0 when unaffected through exposed and weathered to 3 when oxidized. Every stage gives the golem `patinaArmorPerStage` armor and slows it by `patinaSpeedPenaltyPerStage`. When the golem's stage changes, for example when you scrape it with an axe, its armor and speed follow at once.
+
+- **Patina armor doubled** (level 3): each stage gives twice `patinaArmorPerStage` armor.
+- **Static Overdrive** (level 4): when lightning strikes within `overdriveRadius` blocks of one of your awake bound copper golems, the golem gets Speed II for `overdriveSeconds` seconds and its work interval is halved for that time. A golem can be overdriven again `overdriveCooldownSeconds` seconds after its last Static Overdrive started.
+- **No patina slowdown** (level 5): patina no longer slows your copper golems; its armor stays.
+
+| Level | Bonus health | Carry | Speed | Unlocks |
+|---|---|---|---|---|
+| 1 | +4 | 16 | +0% | Never turns into a statue. Patina: +2 armor and -5% speed per oxidation stage |
+| 2 | +8 | 32 | +5% | |
+| 3 | +12 | 48 | +10% | Patina armor doubled |
+| 4 | +16 | 64 | +15% | Static Overdrive: lightning within 16 blocks gives 60 s of Speed II and halves the work interval, at most once per 300 s per golem |
+| 5 | +20 | 128 | +20% | Patina no longer slows the golem |
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `healthBonusByLevel` | `[4, 8, 12, 16, 20]` | Extra maximum health for your bound copper golems, from level 1 upward. A golem heals by any gain above the highest maximum health it has had. |
+| `carryByLevel` | `[16, 32, 48, 64, 128]` | Items your bound copper golems can carry at once, from level 1 upward. A value below `bodyCarryCopper` keeps that base. |
+| `speedBonusByLevel` | `[0.0, 0.05, 0.1, 0.15, 0.2]` | Fraction added to your bound copper golems' movement speed, from level 1 upward. 0.05 is 5% faster. |
+| `patinaArmorPerStage` | `2` | Armor a bound copper golem gains for each oxidation stage, from 0 when unaffected to 3 when oxidized. |
+| `patinaSpeedPenaltyPerStage` | `0.05` | Fraction of movement speed a bound copper golem loses for each oxidation stage. 0 removes the slowdown. |
+| `patinaArmorDoubleLevel` | `3` | Level at which patina armor is doubled. |
+| `patinaPenaltyRemovedLevel` | `5` | Level at which patina no longer slows copper golems. |
+| `overdriveLevel` | `4` | Level at which nearby lightning triggers Static Overdrive. |
+| `overdriveRadius` | `16.0` | Blocks from a lightning strike within which your bound copper golems gain Static Overdrive. |
+| `overdriveSeconds` | `60` | Seconds of Speed II and halved work interval that Static Overdrive gives. |
+| `overdriveCooldownSeconds` | `300` | Seconds after a Static Overdrive starts before the same golem can be overdriven again. |
+
 ## Reference
 
 ### Skill configuration defaults
@@ -205,6 +241,9 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `bodyScaleCopper` | `1.00` | Size of a bound copper golem as a multiple of its normal size. |
 | `bodyScaleIron` | `0.36` | Size of a bound iron golem as a multiple of its normal size. |
 | `bodyScaleBone` | `1.00` | Size of a bound bone golem as a multiple of its normal size. |
+| `bodyCarryFrost` | `8` | Items a bound frost golem can carry at once. |
+| `bodyCarryCopper` | `16` | Items a bound copper golem can carry at once before Copper Frame raises it. |
+| `bodyCarryIron` | `64` | Items a bound iron golem can carry at once. |
 | `allowedCoresFrost` | `["BLANK", "GUARDIAN", "GATHERER", "HARVESTER"]` | Cores a frost golem can be bound with. |
 | `allowedCoresCopper` | `["BLANK", "GATHERER", "HARVESTER", "LUMBER", "RANCHER", "SORTER", "ANGLER"]` | Cores a copper golem can be bound with. |
 | `allowedCoresIron` | `["BLANK", "GUARDIAN", "GATHERER", "LUMBER", "BREAKER", "RANCHER", "ANGLER"]` | Cores an iron golem can be bound with. |
