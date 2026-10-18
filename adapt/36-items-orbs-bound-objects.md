@@ -61,6 +61,7 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Blank Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments | Item kind |
 | Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments, infused at the Animus Plinth | Item kind, aspect, and tier |
 | Shattered Core | `FIREWORK_STAR` | Golemancy: Golem Mending | Item kind, golem id, owner, and the fallen golem's cores, runes, settings, name, and record |
+| Dormant Golem | `SNOW_BLOCK`, `IRON_BLOCK`, or the copper block of the golem's oxidation stage | Golemancy: Stasis | Item kind, golem id, owner, and the packed golem's cores, runes, settings, name, record, carried items, essence, health, and copper state |
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.
 
