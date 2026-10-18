@@ -24,6 +24,99 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 - With Bone Frame, when one of your TragOul skeletal servants kills a hostile mob, you earn your Bone Frame level's `servantShareByLevel` share of the kill value, with the same raid, spawner, and owner-distance rules as a golem kill. Kills of Adapt minions and Excavation grave mobs pay nothing. Servant kills do not count toward `golemancy.golem.kills`, and TragOul still pays its own XP.
 - When one of your working golems finishes a job, you earn the work XP that its Core adaptation sets for that job. Work XP pays only while you are online and within `workXpOwnerRadius` blocks of the golem, and you earn at most `workXpHourlyCap` work XP in any 60 minutes. Golem labor never pays other skills. Each finished job counts toward `golemancy.tasks`, and each item your golems deliver into a container counts toward `golemancy.items.moved`.
 
+## Items and crafting
+
+Golemancy items keep what they hold through drops, chests, and restarts, and never act as their base item. [Items, Orbs & Bound Objects](/adapt/36-items-orbs-bound-objects#bound-items) lists each item's base item and stored data.
+
+| Item | Stack | How you get it | Use |
+|---|---|---|---|
+| Artificer's Crook | 1 | Crafted with Animus Binding level 1 | Opens the Golem GUI and your roster, configures nodes, packs golems with Stasis, sends Overseer signals, and starts infusions |
+| Blank Animus Core | 16 | Crafted with Animus Binding level 1 | Binds a Companion golem, and is the base of every role core |
+| Role cores | 16 | Crafted with level 1 of their Core adaptation | Bind a golem to its role: Guardian, Gatherer, Harvester, Lumber, Breaker, Rancher, Sorter, or Angler |
+| Blank Node | 64 | Crafted with Node Weaving level 1 | The base of every node |
+| Nodes | 16 | Crafted with Node Weaving or the Core adaptation that works them | Attach to a block face to mark work for your golems |
+| Blank Rune | 16 | Crafted with Runic Augments level 1 | The center item of every tier 1 rune infusion |
+| Runes | 16 | Infused at the Animus Plinth with Runic Augments | Slot into golems for speed, carrying, fire, reach, channels, yield, or armor |
+| Masterwork Heart | 1 | Infused at the Animus Plinth with Masterwork level 1 | Turns one of your golems into a masterwork |
+| Dormant Golem | 1 | Packing one of your golems with Stasis | Place it to awaken the golem |
+| Shattered Core | 1 | Left where your bound golem dies while you are online, with Golem Mending level 4 | Rebuilds the golem on a freshly built body |
+
+Holding the Crook, a Node, a Core (a Blank Animus Core or a role core), or a Dormant Golem in either hand reveals your nodes and your bound golems' status labels, as described under Animus Binding and Node Weaving. A Dormant Golem or Shattered Core belongs to the player whose golem it holds: only that player can use it or pick it up, and hoppers cannot take it. Cores, nodes, runes, and Masterwork Hearts carry no owner and can be traded.
+
+Each adaptation lists the crafting recipes it unlocks, and [Infusion recipes](/adapt/34-skill-golemancy#infusion-recipes) lists what the Animus Plinth makes. Every crafting recipe is a table in its adaptation's configuration with these fields:
+
+| Field | Meaning |
+|---|---|
+| `rows` | 1 to 3 rows of the same width, top to bottom, each up to 3 symbols. A space leaves that slot empty. |
+| `keys` | The ingredient for each symbol: a material name, an item tag such as `#planks`, or a Golemancy item such as `golemancy:blank_core`. |
+| `result` | The item the recipe makes. |
+| `amount` | Items made by one craft, from 1 to 64. |
+| `tithe` | Experience levels charged for each craft. 0 makes the recipe free. |
+| `enabled` | Set to `false` to remove the recipe. |
+
+Players without the tithe levels see no result, shift-crafting stops at the crafts their levels cover, creative players craft free, and crafter blocks never craft a recipe with a tithe. Recipe changes apply after a restart.
+
+## Animus Plinth
+
+The Animus Plinth infuses runes and the Masterwork Heart. Build it from a lodestone with a pedestal block exactly two blocks north, east, south, and west of it, all at the same height. The pedestal blocks are the eight chiseled copper blocks, waxed or not, and `pedestalBlocks` in the skill configuration changes the list.
+
+Loading and using a plinth needs Runic Augments level 1:
+
+- Sneak and right-click a pedestal or the lodestone while holding an item to place one of it there. The item floats and turns above the block, and every player can see it.
+- Sneak and right-click with an empty hand to take the item back.
+- Region protection must let you open containers at the block.
+- Right-clicking the lodestone with a compass in either hand still binds the compass.
+- These clicks always work the plinth, even while you hold a node; nodes never attach to the blocks of a complete plinth.
+- Breaking a pedestal or the lodestone, or moving it with a piston, drops the item on that block. Items on the other blocks stay where they are.
+
+To start an infusion, place its center item on the lodestone and its four pedestal items on the pedestals, then right-click the lodestone with the Artificer's Crook. The pedestal items rise, streams of dust flow to the center, and the center item spins faster. When the ritual ends, the items and the essence levels are used up and the result pops out above the lodestone. Creative players pay no levels.
+
+An infusion starts only when all of the following hold:
+
+- An infusion recipe matches: the item on the lodestone matches its center, and the four pedestal items match its pedestals in any order.
+- You have the recipe's unlocking adaptation at its level.
+- Region protection lets you interact with and place blocks at the lodestone.
+- You have the recipe's essence levels.
+
+The ritual stops when you move more than 8 blocks from the lodestone, log out, or change worlds, when any block of the plinth breaks, or when an item is taken off or placed on the plinth. Nothing is used up when a ritual stops, and the items stay on the plinth.
+
+### Infusion recipes
+
+Each rune tier is infused from the tier below it.
+
+| Tier | Center | Essence | Ritual | Unlocks at |
+|---|---|---|---|---|
+| 1 | Blank Rune | 2 levels | 100 ticks (5 s) | Runic Augments level 1 |
+| 2 | Tier 1 rune of the same aspect | 5 levels | 160 ticks (8 s) | Runic Augments level 3 |
+| 3 | Tier 2 rune of the same aspect | 10 levels | 240 ticks (12 s) | Runic Augments level 5 |
+
+| Rune | Tier 1 pedestals | Tier 2 pedestals | Tier 3 pedestals |
+|---|---|---|---|
+| Swiftness | 2 `SUGAR`, 2 `FEATHER` | 2 `RABBIT_FOOT`, 2 `PHANTOM_MEMBRANE` | 4 `BREEZE_ROD` |
+| Might | 2 `IRON_INGOT`, 2 `PISTON` | 2 `IRON_BLOCK`, 2 `STICKY_PISTON` | 2 `NETHERITE_SCRAP`, 2 `IRON_BLOCK` |
+| Ember | 2 `BLAZE_POWDER`, 2 `COAL` | 2 `BLAZE_ROD`, 2 `MAGMA_CREAM` | 2 `GHAST_TEAR`, 2 `BLAZE_ROD` |
+| Tide | 2 `PRISMARINE_SHARD`, 2 `KELP` | 2 `PRISMARINE_CRYSTALS`, 2 `NAUTILUS_SHELL` | 1 `HEART_OF_THE_SEA`, 3 `PRISMARINE_CRYSTALS` |
+| Order | 2 `QUARTZ`, 2 `REDSTONE` | 2 `COMPARATOR`, 2 `QUARTZ_BLOCK` | 2 `ECHO_SHARD`, 2 `COMPARATOR` |
+| Entropy | 2 `GUNPOWDER`, 2 `FERMENTED_SPIDER_EYE` | 2 `ENDER_EYE`, 2 `GUNPOWDER` | 2 `SHULKER_SHELL`, 2 `ENDER_EYE` |
+| Bulwark | 2 `IRON_INGOT`, 2 `OBSIDIAN` | 2 `DIAMOND`, 2 `OBSIDIAN` | 1 `NETHERITE_INGOT`, 3 `CRYING_OBSIDIAN` |
+
+The Masterwork Heart takes a `HEART_OF_THE_SEA` on the lodestone and a `DIAMOND_BLOCK`, `IRON_BLOCK`, `COPPER_BLOCK`, and `SNOW_BLOCK` on the pedestals. It costs 15 levels, takes 300 ticks (15 s), and unlocks at Masterwork level 1. Masterwork describes how to put the Heart into a golem.
+
+Infusions are the `infusionRecipes` tables in the skill configuration, one table per infusion named by its key, such as `[infusionRecipes.swiftness_1]`. Edit a table to change an infusion, set `enabled = false` to turn it off, or add a table to create a new infusion. Changes apply when the skill configuration reloads. Each table has these fields:
+
+| Field | Meaning |
+|---|---|
+| `result` | The item made: `golemancy:rune/<aspect>/<tier>`, with aspect `swiftness`, `might`, `ember`, `tide`, `order`, `entropy`, or `bulwark` and tier 1 to 3, or `golemancy:masterwork_heart`. |
+| `center` | The item on the lodestone: a material name such as `HEART_OF_THE_SEA`, or a Golemancy item such as `golemancy:blank_rune` or `golemancy:rune/tide/1`. |
+| `pedestals` | Exactly four material names or Golemancy items, matched in any order. Repeat an entry to need it on more than one pedestal. |
+| `essenceLevels` | Experience levels charged when the infusion completes. |
+| `durationTicks` | Ticks the ritual takes, clamped to 20-6000. |
+| `unlockAdaptation` | Id of the Golemancy adaptation that unlocks the infusion, such as `golem-runic-augments` or `golem-masterwork`. Its region protection rules apply to the ritual. |
+| `unlockLevel` | Lowest level of `unlockAdaptation` that can perform the infusion, at least 1. |
+| `enabled` | Set to `false` to turn the infusion off. |
+
+A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table with an unknown name or a material that is not an item, a result that is not a rune or the Masterwork Heart, a pedestal list without exactly four entries, or an empty `unlockAdaptation` is skipped with a console warning.
+
 ## Adaptations
 
 Golemancy's adaptations unlock golem binding, frames that strengthen each golem body and your TragOul skeletal servants, nodes, runes, signals sent with the Crook, ways to heal and rebuild your golems, packing them into blocks you carry, and masterwork golems.
@@ -66,8 +159,6 @@ Your roster notes each time one of your bound golems unloads or the server stops
 |---|---|---|---|---|
 | Artificer's Crook | ` A ` / `RHR` / ` C ` | H `IRON_HOE`, A `AMETHYST_SHARD`, R `REDSTONE`, C `COPPER_INGOT` | 1 | 0 |
 | Blank Animus Core | `ARA` / `RPR` / `ARA` | A `AMETHYST_SHARD`, R `REDSTONE`, P `ENDER_PEARL` | 1 | 1 level |
-
-Each recipe is a table with `rows` (1 to 3 rows of up to 3 symbols, a space for an empty slot), `keys` (a material name, an item tag such as `#planks`, or a Golemancy item such as `golemancy:blank_core`), `result`, `amount` (1 to 64), `tithe` (experience levels charged per craft), and `enabled`. Players without the tithe levels see no result, shift-crafting stops at the crafts their levels cover, creative players craft free, and crafter blocks never craft a recipe with a tithe. Recipe changes apply after a restart.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -139,8 +230,6 @@ Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its b
 | Blank Node | `CRC` / `RAR` / `CRC` | C `CLAY_BALL`, R `REDSTONE`, A `AMETHYST_SHARD` | 4 | 0 |
 | Deposit Node | ` X ` / ` B ` / `   ` | X `CHEST`, B `golemancy:blank_node` | 1 | 0 |
 
-The recipe tables use the same fields as the Animus Binding recipes.
-
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `nodeCapByLevel` | `[4, 8, 12, 18, 24]` | Most nodes you can own at once, from level 1 upward. |
@@ -198,7 +287,7 @@ Bound copper golems never turn into statues as they oxidize. Each oxidation stag
 
 - **Patina armor doubled** (level 3): each stage gives twice `patinaArmorPerStage` armor.
 - **Static Overdrive** (level 4): when lightning strikes within `overdriveRadius` blocks of one of your awake bound copper golems, the golem gets Speed II for `overdriveSeconds` seconds and its work interval is multiplied by `overdriveWorkIntervalMultiplier` for that time, which halves it by default. A golem can be overdriven again `overdriveCooldownSeconds` seconds after its last Static Overdrive started.
-- **No patina slowdown** (level 5): patina no longer slows your copper golems; its armor stays.
+- **No patina slowdown** (level 5): patina does not slow your copper golems; its armor stays.
 
 | Level | Bonus health | Carry | Speed | Unlocks |
 |---|---|---|---|---|
@@ -206,7 +295,7 @@ Bound copper golems never turn into statues as they oxidize. Each oxidation stag
 | 2 | +8 | 32 | +5% | |
 | 3 | +12 | 48 | +10% | Patina armor doubled |
 | 4 | +16 | 64 | +15% | Static Overdrive: lightning within 16 blocks gives 60 s of Speed II and halves the work interval, at most once per 300 s per golem |
-| 5 | +20 | 128 | +20% | Patina no longer slows the golem |
+| 5 | +20 | 128 | +20% | Patina does not slow the golem |
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -216,7 +305,7 @@ Bound copper golems never turn into statues as they oxidize. Each oxidation stag
 | `patinaArmorPerStage` | `2` | Armor a bound copper golem gains for each oxidation stage, from 0 when unaffected to 3 when oxidized. |
 | `patinaSpeedPenaltyPerStage` | `0.05` | Fraction of movement speed a bound copper golem loses for each oxidation stage. 0 removes the slowdown. |
 | `patinaArmorDoubleLevel` | `3` | Level at which patina armor is doubled. |
-| `patinaPenaltyRemovedLevel` | `5` | Level at which patina no longer slows copper golems. |
+| `patinaPenaltyRemovedLevel` | `5` | Level from which patina does not slow copper golems. |
 | `overdriveLevel` | `4` | Level at which nearby lightning triggers Static Overdrive. |
 | `overdriveRadius` | `16.0` | Blocks from a lightning strike within which your bound copper golems gain Static Overdrive, from 0 to 64. Larger values load as 64. |
 | `overdriveSeconds` | `60` | Seconds of Speed II and faster work that Static Overdrive gives. |
@@ -320,8 +409,6 @@ With `guardWhileOwnerOffline` on in the skill configuration, your Guardians stay
 | Guardian Core | ` X ` / `YBY` / ` Z ` | X `IRON_SWORD`, Y `IRON_INGOT`, Z `SHIELD`, B `golemancy:blank_core` | 1 | 2 levels |
 | Guard Node | ` X ` / ` B ` / `   ` | X `IRON_SWORD`, B `golemancy:blank_node` | 1 | 0 |
 
-The recipe tables use the same fields as the Animus Binding recipes.
-
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `perceptionByLevel` | `[8, 12, 16, 20, 24]` | Blocks around a Guardian's guard point within which it attacks, from level 1 upward. Each value, plus the Guardian's Tide rune bonus, is clamped to 1 up to `leashRadius` in the skill configuration. |
@@ -380,8 +467,6 @@ Higher levels add these perks:
 | Gatherer Core | ` X ` / `YBY` / ` Z ` | X `BUNDLE`, Y `STRING`, Z `HOPPER`, B `golemancy:blank_core` | 1 | 2 levels |
 | Collection Node | ` X ` / ` B ` / `   ` | X `BUNDLE`, B `golemancy:blank_node` | 1 | 0 |
 
-The recipe tables use the same fields as the Animus Binding recipes.
-
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `pickupRadiusByLevel` | `[4, 6, 8, 10, 12]` | Blocks around a Gatherer's home within which it picks up items when none of your Collection Nodes serve it, from level 1 upward. A Tide rune adds its bonus. |
@@ -409,7 +494,7 @@ Bind a golem with a Harvester Core through Animus Binding. Snow and copper golem
 
 At each node check, a Harvest Node looks over part of its work area and hands out a harvest job for each ripe crop listed in `crops` that its filter accepts. A filter entry matches a crop by its block or by the item that plants it, so `WHEAT_SEEDS` or `WHEAT` both match wheat and `SWEET_BERRIES` matches sweet berry bushes. A crop is ripe at its maximum growth age. A torchflower is ripe once it has grown into the flower on farmland, a sweet berry bush when fully grown, and cave vines while they carry glow berries. From level `extendedCropsLevel`, melons and pumpkins attached to a stem are ripe, and sugar cane, bamboo, and cactus are harvested from the second block of a stalk upward. Stems and the bottom block of a stalk are never harvested, and Harvesters work only inside the node's current work area.
 
-A Harvester walks to its job, works for its level's `actionIntervalTicksByLevel` ticks, then harvests the crop and carries the drops. It replants the crop with one seed from those drops, such as a wheat seed for wheat or a carrot for carrots; when the drops hold no seed, the spot is left empty. Sweet berry bushes and cave vines keep growing after their berries are picked, melons and pumpkins leave their stem, and stalks keep their bottom block. In the same action it also harvests other ripe crops of that node within 3 blocks that no other golem is walking to, up to its level's `cropsPerActionByLevel` crops in all. Region protection must let you break every block the harvest removes, such as each block of a stalk above its base and both halves of a pitcher plant; otherwise nothing is removed and the node shows Blocked. A Harvester delivers what it carries to a Deposit Node or its home chest like any other working golem, and drops it cannot carry fall to the ground. Static Overdrive and Swiftness runes shorten the action time.
+A Harvester walks to its job, works for its level's `actionIntervalTicksByLevel` ticks, then harvests the crop and carries the drops. It replants the crop with one seed from those drops, such as a wheat seed for wheat or a carrot for carrots; when the drops hold no seed, the spot is left empty. Sweet berry bushes and cave vines keep growing after their berries are picked, melons and pumpkins leave their stem, and stalks keep their bottom block. In the same action it also harvests other ripe crops of that node within 3 blocks that no other golem is walking to, up to its level's `cropsPerActionByLevel` crops in all. Region protection must let you break every block the harvest removes, such as each block of a stalk above its base and both halves of a pitcher plant; otherwise nothing is removed and the node shows Blocked. A Harvester delivers what it carries to a Deposit Node or its home chest like any other working golem, and drops it cannot carry fall to the ground. Swiftness runes and Copper Frame's Static Overdrive shorten the action time.
 
 - **Tending** (level `tendingLevel`): while it has no harvest job, a Harvester bone meals a young crop in one of your Harvest Nodes' areas, at most once per `tendingIntervalMillis` milliseconds. Each bone meal comes from its linked home chest, so a Harvester without a home chest or without bone meal in it does not tend. Region protection must let you interact with the crop. Nether wart, cave vines, stalks, melons, and pumpkins are not tended.
 - **Tilling** (level `tillingLevel`): Harvest Nodes also hand out jobs to till dirt with nothing above it into farmland. While it has no harvest job, a Harvester that carries seeds plants empty farmland in the area, and it plants freshly tilled farmland at once. It plants wheat, carrots, potatoes, beetroots, torchflowers, and pitcher plants that are listed in `crops` and accepted by the node's filter, prefers the crop growing next to the spot, and never tills dirt or plants farmland beside a melon or pumpkin stem, so the fruit has room to grow. Region protection must let you break and build at the dirt it tills, and build above the farmland it plants.
@@ -429,8 +514,6 @@ Each harvested crop pays `workXpPerCrop` work XP, as described in Earning XP; ti
 |---|---|---|---|---|
 | Harvester Core | ` X ` / `YBY` / ` Z ` | X `IRON_HOE`, Y `WHEAT`, Z `COMPOSTER`, B `golemancy:blank_core` | 1 | 2 levels |
 | Harvest Node | ` X ` / ` B ` / `   ` | X `IRON_HOE`, B `golemancy:blank_node` | 1 | 0 |
-
-The recipe tables use the same fields as the Animus Binding recipes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -466,7 +549,7 @@ Trees that break any of these rules, including houses and other builds made of l
 
 A tree may have at most your level's `copperTreeCapByLevel` logs for a copper golem, or `ironTreeCapByLevel` logs for an iron golem; golems of any other body use the copper limit. A Lumber Node offers each tree only to the golems that can fell it, and trees too big for every golem are left standing.
 
-A Lumber golem walks to the bottom of the trunk, works for a second, then fells the tree from the top down at your level's `logsPerSecondByLevel` and carries the logs. It fells only as many logs at a time as it has room for. Region protection must let you break every block it fells in that second; otherwise none of them is felled and the node shows Blocked. If something is built against the tree while it is being felled, the golem stops felling it. A Lumber golem that fills up delivers what it carries to a Deposit Node or its home chest like any other working golem. The felling stays open while the Lumber Node keeps working, and the next Lumber golem to take the job finishes the same tree. A felling is dropped a minute after its node stops working, for example when the node is broken, switched off by redstone, or unloaded. Leaves left behind decay as usual. Static Overdrive and Swiftness runes speed up felling, and an Entropy rune can double each drop.
+A Lumber golem walks to the bottom of the trunk, works for a second, then fells the tree from the top down at your level's `logsPerSecondByLevel` and carries the logs. It fells only as many logs at a time as it has room for. Region protection must let you break every block it fells in that second; otherwise none of them is felled and the node shows Blocked. If something is built against the tree while it is being felled, the golem stops felling it. A Lumber golem that fills up delivers what it carries to a Deposit Node or its home chest like any other working golem. The felling stays open while the Lumber Node keeps working, and the next Lumber golem to take the job finishes the same tree. A felling is dropped a minute after its node stops working, for example when the node is broken, switched off by redstone, or unloaded. Leaves left behind decay as usual. Swiftness runes and Copper Frame's Static Overdrive speed up felling, and an Entropy rune can double each drop.
 
 - **Replanting** (level `replantLevel`): after felling a tree, the golem plants a matching sapling where the trunk stood, as long as the spot is empty and stands on soil the sapling grows on. The sapling comes from what the golem carries, then from its linked home chest. A tree with a 2x2 trunk is replanted with four saplings when four are at hand; otherwise one sapling replants it, except dark oaks and pale oaks, which need all four. Azalea trees are replanted with an azalea, or a flowering azalea when at least half of the azalea leaves near the top are flowering. A mangrove standing on its roots is not replanted. Region protection must let you build where the sapling goes.
 - **Leaf Sweep** (level `leafSweepLevel`): 2 seconds after the last log falls, the golem breaks the felled tree's leaves that have started to decay and carries their saplings, sticks, and apples. It looks at up to 64 leaves a second and pauses while it has no room left. Leaves still held up by another tree's logs and leaves a player placed stay where they are, and leaves region protection does not let you break are left to decay as usual.
@@ -487,8 +570,6 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 |---|---|---|---|---|
 | Lumber Core | ` X ` / `YBY` / ` Z ` | X `IRON_AXE`, Y `#logs`, Z `#saplings`, B `golemancy:blank_core` | 1 | 2 levels |
 | Lumber Node | ` X ` / ` B ` / `   ` | X `IRON_AXE`, B `golemancy:blank_node` | 1 | 0 |
-
-The recipe tables use the same fields as the Animus Binding recipes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -535,8 +616,6 @@ Each broken block pays `workXpPerBlock` work XP, as described in Earning XP. Gol
 | Breaker Core | ` X ` / `YBY` / ` Z ` | X `IRON_PICKAXE`, Y `REDSTONE`, Z `PISTON`, B `golemancy:blank_core` | 1 | 2 levels |
 | Breaker Node | ` X ` / ` B ` / `   ` | X `IRON_PICKAXE`, B `golemancy:blank_node` | 1 | 0 |
 
-The recipe tables use the same fields as the Animus Binding recipes.
-
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `intervalTicksByLevel` | `[40, 30, 20, 15, 10]` | Ticks a Breaker spends on each block after it reaches it, from level 1 upward. Values below 1 count as 1. |
@@ -563,7 +642,7 @@ Pasture Nodes tend the animals listed in `species`. The bottom row of a Pasture 
 - **Keep count**: from 2 to 64, and `defaultKeep` until you change it. Left-click raises it and right-click lowers it. Each species is counted on its own, inside the work area, including animals Ranchers leave alone. For breeding, adults and babies count, plus one for every pair in love, and a lone animal in love counts as a pair; for culling, only adults count.
 - **Breeding, Shearing, Milking, and Culling**: click a toggle to switch it. Breeding, Shearing, and Milking start on and Culling starts off. A toggle stays locked until you reach its level.
 
-When the task board has nothing for it, a Rancher looks for work in your Pasture Nodes, highest priority first, then nearest first. In each node it takes culling jobs first, then breeding, shearing, and milking, and the nearest animal for each. It walks to the animal, works for `actionIntervalTicks` ticks, then acts. Region protection must let you interact with the animal, or damage it for culling; otherwise nothing happens and the node shows Blocked. Ranchers never touch invulnerable animals, NPCs, Adapt minions, or animals you tamed. Static Overdrive and Swiftness runes shorten the action time.
+When the task board has nothing for it, a Rancher looks for work in your Pasture Nodes, highest priority first, then nearest first. In each node it takes culling jobs first, then breeding, shearing, and milking, and the nearest animal for each. It walks to the animal, works for `actionIntervalTicks` ticks, then acts. Region protection must let you interact with the animal, or damage it for culling; otherwise nothing happens and the node shows Blocked. Ranchers never touch invulnerable animals, NPCs, Adapt minions, or animals you tamed. Swiftness runes and Copper Frame's Static Overdrive shorten the action time.
 
 - **Breeding** (level 1): while a species' breeding count in the area is below the keep count, a Rancher feeds that species' breeding food to two adults that are ready to breed, one after the other, and each goes into love mode. It starts a pair only when it has food for both animals. When an adult it fed is still waiting in love, it feeds the ready adult nearest to it within 8 blocks. It never finishes a pair a player started. The food comes from what the golem carries, then from its linked home chest. Parents wait out their breeding cooldown as usual, and births from parents a Rancher fed give no experience.
 - **Shearing** (level `shearLevel`): Ranchers shear adult sheep and carry 1 to 3 wool of the sheep's color. Mooshrooms are never sheared.
@@ -585,8 +664,6 @@ A Rancher delivers what it carries to a Deposit Node or its home chest like any 
 |---|---|---|---|---|
 | Rancher Core | ` X ` / `YBY` / ` Z ` | X `SHEARS`, Y `WHEAT`, Z `LEAD`, B `golemancy:blank_core` | 1 | 2 levels |
 | Pasture Node | ` X ` / ` B ` / `   ` | X `LEAD`, B `golemancy:blank_node` | 1 | 0 |
-
-The recipe tables use the same fields as the Animus Binding recipes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -658,8 +735,6 @@ Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` wor
 | Input Node | ` X ` / ` B ` / `   ` | X `COPPER_CHEST`, B `golemancy:blank_node` | 1 | 0 |
 | Filter Node | ` X ` / ` B ` / `   ` | X `ITEM_FRAME`, B `golemancy:blank_node` | 1 | 0 |
 
-The recipe tables use the same fields as the Animus Binding recipes.
-
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `destinationRadiusByLevel` | `[8, 12, 16, 20, 24]` | Blocks around an Input Node within which a Sorter puts items away, from level 1 upward. Each Input Node can narrow it in its GUI. Values below 1 count as 1. |
@@ -693,7 +768,7 @@ A Fishing Node fishes the water in front of its face: a patch 5 blocks wide that
 
 Each Fishing Node seats one Angler for each of `maxAnglersPerChunk`, up to 5, on the blocks right in front of its face, and offers one free seat at a time. At most `maxAnglersPerChunk` Anglers fish at once in one chunk, counting every Fishing Node in that chunk; other Anglers wait until a seat frees up.
 
-An Angler walks to its seat and casts, then lands one catch every `catchIntervalSecondsByLevel` seconds and carries it. Each catch is rolled from the `fish`, `junk`, and `treasure` tables. The category is picked by `fishWeight`, `junkWeight`, and `treasureWeight`, each changed by its luck shift times your level's `luckByLevel`, the way Luck of the Sea shifts vanilla fishing toward treasure, and the item is picked by its weight in that table. Treasure enchanted books and treasure with durability, such as bows and fishing rods, come enchanted as if at an enchanting table with `treasureEnchantLevels` levels, treasure enchantments included. An Angler keeps fishing until it is full, then delivers its catch to a Deposit Node or its home chest like any other working golem and returns to fish; catches it cannot carry fall to the ground beside it. Region protection must let you interact with the seat block; otherwise the Angler stops and the node shows Blocked. Static Overdrive on copper golems and Swiftness runes shorten the catch time, and an Entropy rune can double each catch. Each cast and each catch splashes the water with the fishing bobber's sound.
+An Angler walks to its seat and casts, then lands one catch every `catchIntervalSecondsByLevel` seconds and carries it. Each catch is rolled from the `fish`, `junk`, and `treasure` tables. The category is picked by `fishWeight`, `junkWeight`, and `treasureWeight`, each changed by its luck shift times your level's `luckByLevel`, the way Luck of the Sea shifts vanilla fishing toward treasure, and the item is picked by its weight in that table. Treasure enchanted books and treasure with durability, such as bows and fishing rods, come enchanted as if at an enchanting table with `treasureEnchantLevels` levels, treasure enchantments included. An Angler keeps fishing until it is full, then delivers its catch to a Deposit Node or its home chest like any other working golem and returns to fish; catches it cannot carry fall to the ground beside it. Region protection must let you interact with the seat block; otherwise the Angler stops and the node shows Blocked. Swiftness runes and Copper Frame's Static Overdrive shorten the catch time, and an Entropy rune can double each catch. Each cast and each catch splashes the water with the fishing bobber's sound.
 
 The bottom row of a Fishing Node's GUI shows whether the node found open water, and holds the junk filter toggle.
 
@@ -715,8 +790,6 @@ Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including 
 |---|---|---|---|---|
 | Angler Core | ` X ` / `YBY` / ` Z ` | X `FISHING_ROD`, Y `PRISMARINE_SHARD`, Z `DRIED_KELP`, B `golemancy:blank_core` | 1 | 2 levels |
 | Fishing Node | ` X ` / ` B ` / `   ` | X `FISHING_ROD`, B `golemancy:blank_node` | 1 | 0 |
-
-The recipe tables use the same fields as the Animus Binding recipes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -787,8 +860,6 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 | Recipe | Pattern | Keys | Yield | Tithe |
 |---|---|---|---|---|
 | Blank Rune | ` A ` / `ASA` / ` A ` | A `AMETHYST_SHARD`, S `SMOOTH_STONE` | 2 | 0 |
-
-The recipe table uses the same fields as the Animus Binding recipes.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -897,7 +968,7 @@ To rebuild a shattered golem, hold its Shattered Core in your main hand, sneak, 
 - Region protection lets you interact with the golem.
 - The chunk holds fewer than `maxBoundGolemsPerChunk` bound golems. Your golem cap is not checked again, because the shattered golem already counts toward it.
 
-Shift-right-click a shattered golem in the Roster GUI to release it for good. Its Shattered Core then crumbles the next time you use it. A Shattered Core also crumbles when its golem is no longer shattered, for example because it was already rebuilt, and when it is not the exact Shattered Core the golem left behind.
+Shift-right-click a shattered golem in the Roster GUI to release it for good. Its Shattered Core then crumbles the next time you use it. A Shattered Core also crumbles when its golem is not shattered, for example because it was already rebuilt, and when it is not the exact Shattered Core the golem left behind.
 
 | Level | Heal bonus | Unlocks |
 |---|---|---|
@@ -948,7 +1019,7 @@ To awaken the golem, place its Dormant Golem like a block. No block appears: the
 
 **Pocket Roster** (level `recallLevel`): sneak and right-click the air with the Crook to open your Roster GUI, then right-click one of your active golems that is loaded in your world. It packs at once from any distance, without a channel, and its Dormant Golem goes into your inventory. After a recall, Pocket Roster cools down for `recallCooldownSeconds` seconds; a recall that fails does not start the cooldown.
 
-Shift-right-click a packed golem in the Roster GUI to release it for good. Its Dormant Golem then crumbles the next time you place it. A Dormant Golem also crumbles when its golem is no longer packed, for example because it already awakened, and when it is not the exact Dormant Golem the golem was packed into.
+Shift-right-click a packed golem in the Roster GUI to release it for good. Its Dormant Golem then crumbles the next time you place it. A Dormant Golem also crumbles when its golem is not packed, for example because it already awakened, and when it is not the exact Dormant Golem the golem was packed into.
 
 | Level | Packing | Unlocks |
 |---|---|---|
@@ -1014,67 +1085,6 @@ The extra slots, health, aura, second core, and stronger runes follow your Maste
 | `heartDeathDropChance` | `1.0` | Chance a masterwork golem drops its Masterwork Heart when it dies, from 0 to 1. A golem that leaves a Shattered Core keeps its Heart instead. |
 | `auraIntervalTicks` | `40` | Ticks between the gold sparkles around your awake masterwork golems, at least 1. |
 
-## Animus Plinth
-
-The Animus Plinth infuses runes and the Masterwork Heart. Build it from a lodestone with a pedestal block exactly two blocks north, east, south, and west of it, all at the same height. The pedestal blocks are the eight chiseled copper blocks, waxed or not, and `pedestalBlocks` in the skill configuration changes the list.
-
-Loading and using a plinth needs Runic Augments level 1:
-
-- Sneak and right-click a pedestal or the lodestone while holding an item to place one of it there. The item floats and turns above the block, and every player can see it.
-- Sneak and right-click with an empty hand to take the item back.
-- Region protection must let you open containers at the block.
-- Right-clicking the lodestone with a compass in either hand still binds the compass.
-- These clicks always work the plinth, even while you hold a node; nodes never attach to the blocks of a complete plinth.
-- Breaking a pedestal or the lodestone, or moving it with a piston, drops the item on that block. Items on the other blocks stay where they are.
-
-To start an infusion, place its center item on the lodestone and its four pedestal items on the pedestals, then right-click the lodestone with the Artificer's Crook. The pedestal items rise, streams of dust flow to the center, and the center item spins faster. When the ritual ends, the items and the essence levels are used up and the result pops out above the lodestone. Creative players pay no levels.
-
-An infusion starts only when all of the following hold:
-
-- An infusion recipe matches: the item on the lodestone matches its center, and the four pedestal items match its pedestals in any order.
-- You have the recipe's unlocking adaptation at its level.
-- Region protection lets you interact with and place blocks at the lodestone.
-- You have the recipe's essence levels.
-
-The ritual stops when you move more than 8 blocks from the lodestone, log out, or change worlds, when any block of the plinth breaks, or when an item is taken off or placed on the plinth. Nothing is used up when a ritual stops, and the items stay on the plinth.
-
-### Infusion recipes
-
-Each rune tier is infused from the tier below it.
-
-| Tier | Center | Essence | Ritual | Unlocks at |
-|---|---|---|---|---|
-| 1 | Blank Rune | 2 levels | 100 ticks (5 s) | Runic Augments level 1 |
-| 2 | Tier 1 rune of the same aspect | 5 levels | 160 ticks (8 s) | Runic Augments level 3 |
-| 3 | Tier 2 rune of the same aspect | 10 levels | 240 ticks (12 s) | Runic Augments level 5 |
-
-| Rune | Tier 1 pedestals | Tier 2 pedestals | Tier 3 pedestals |
-|---|---|---|---|
-| Swiftness | 2 `SUGAR`, 2 `FEATHER` | 2 `RABBIT_FOOT`, 2 `PHANTOM_MEMBRANE` | 4 `BREEZE_ROD` |
-| Might | 2 `IRON_INGOT`, 2 `PISTON` | 2 `IRON_BLOCK`, 2 `STICKY_PISTON` | 2 `NETHERITE_SCRAP`, 2 `IRON_BLOCK` |
-| Ember | 2 `BLAZE_POWDER`, 2 `COAL` | 2 `BLAZE_ROD`, 2 `MAGMA_CREAM` | 2 `GHAST_TEAR`, 2 `BLAZE_ROD` |
-| Tide | 2 `PRISMARINE_SHARD`, 2 `KELP` | 2 `PRISMARINE_CRYSTALS`, 2 `NAUTILUS_SHELL` | 1 `HEART_OF_THE_SEA`, 3 `PRISMARINE_CRYSTALS` |
-| Order | 2 `QUARTZ`, 2 `REDSTONE` | 2 `COMPARATOR`, 2 `QUARTZ_BLOCK` | 2 `ECHO_SHARD`, 2 `COMPARATOR` |
-| Entropy | 2 `GUNPOWDER`, 2 `FERMENTED_SPIDER_EYE` | 2 `ENDER_EYE`, 2 `GUNPOWDER` | 2 `SHULKER_SHELL`, 2 `ENDER_EYE` |
-| Bulwark | 2 `IRON_INGOT`, 2 `OBSIDIAN` | 2 `DIAMOND`, 2 `OBSIDIAN` | 1 `NETHERITE_INGOT`, 3 `CRYING_OBSIDIAN` |
-
-The Masterwork Heart takes a `HEART_OF_THE_SEA` on the lodestone and a `DIAMOND_BLOCK`, `IRON_BLOCK`, `COPPER_BLOCK`, and `SNOW_BLOCK` on the pedestals. It costs 15 levels, takes 300 ticks (15 s), and unlocks at Masterwork level 1. Masterwork describes how to put the Heart into a golem.
-
-Infusions are the `infusionRecipes` tables in the skill configuration, one table per infusion named by its key, such as `[infusionRecipes.swiftness_1]`. Edit a table to change an infusion, set `enabled = false` to turn it off, or add a table to create a new infusion. Changes apply when the skill configuration reloads. Each table has these fields:
-
-| Field | Meaning |
-|---|---|
-| `result` | The item made: `golemancy:rune/<aspect>/<tier>`, with aspect `swiftness`, `might`, `ember`, `tide`, `order`, `entropy`, or `bulwark` and tier 1 to 3, or `golemancy:masterwork_heart`. |
-| `center` | The item on the lodestone: a material name such as `HEART_OF_THE_SEA`, or a Golemancy item such as `golemancy:blank_rune` or `golemancy:rune/tide/1`. |
-| `pedestals` | Exactly four material names or Golemancy items, matched in any order. Repeat an entry to need it on more than one pedestal. |
-| `essenceLevels` | Experience levels charged when the infusion completes. |
-| `durationTicks` | Ticks the ritual takes, clamped to 20-6000. |
-| `unlockAdaptation` | Id of the Golemancy adaptation that unlocks the infusion, such as `golem-runic-augments` or `golem-masterwork`. Its region protection rules apply to the ritual. |
-| `unlockLevel` | Lowest level of `unlockAdaptation` that can perform the infusion, at least 1. |
-| `enabled` | Set to `false` to turn the infusion off. |
-
-A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table with an unknown name or a material that is not an item, a result that is not a rune or the Masterwork Heart, a pedestal list without exactly four entries, or an empty `unlockAdaptation` is skipped with a console warning.
-
 ## Reference
 
 ### Skill configuration defaults
@@ -1127,7 +1137,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `bodyScaleFrost` | `0.50` | Size of a bound frost golem as a multiple of its normal size. |
 | `bodyScaleCopper` | `1.00` | Size of a bound copper golem as a multiple of its normal size. |
 | `bodyScaleIron` | `0.36` | Size of a bound iron golem as a multiple of its normal size. |
-| `bodyScaleBone` | `1.00` | Size of a bound bone golem as a multiple of its normal size. |
+| `bodyScaleBone` | `1.00` | Size of the TragOul skeletal servants you summon with Bone Frame, as a multiple of their normal size. |
 | `bodyCarryFrost` | `8` | Items a bound frost golem can carry at once. |
 | `bodyCarryCopper` | `16` | Items a bound copper golem can carry at once before Copper Frame raises it. |
 | `bodyCarryIron` | `64` | Items a bound iron golem can carry at once. |

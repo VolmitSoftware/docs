@@ -37,7 +37,7 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Time bottle | `POTION` | Chronos: Time in a Bottle | Stored seconds |
 | Omni Tool | The visible tool | Excavation: Omni Tool | Serialized remaining tools |
 | Multi Armor | The visible piece | Blocking: Multi Armor | Serialized remaining pieces |
-| Artificer's Crook | `IRON_HOE` | Golemancy: Animus Binding | Item kind |
+| Artificer's Crook | `IRON_HOE` | Golemancy: Animus Binding. Overseer sets its channel | Item kind and Crook channel |
 | Blank Animus Core | `FIREWORK_STAR` | Golemancy: Animus Binding | Item kind |
 | Blank Node | `CLAY_BALL` | Golemancy: Node Weaving | Item kind |
 | Deposit Node | `BRICK` | Golemancy: Node Weaving | Item kind and node type |
@@ -66,7 +66,7 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.
 
-Golemancy items never act as their base item. The Crook does not till, and Golemancy items do not work as ingredients outside Golemancy recipes, in anvils, grindstones, smithing tables, furnaces, stonecutters, or enchanting tables, and dispensers do not fire them.
+Golemancy items never act as their base item. The Crook does not till, and Golemancy items do not work as ingredients outside Golemancy recipes, in anvils, grindstones, smithing tables, furnaces, stonecutters, or enchanting tables. Villagers do not take them in trades, and dispensers do not fire them. Only the owner can pick up a Shattered Core or Dormant Golem, and hoppers cannot take them. Uses and recipes: [Skill - Golemancy](/adapt/34-skill-golemancy#items-and-crafting).
 
 Omni Tool swaps the visible tool for the block or action in progress. Sneak-drop splits it back into the stored tools. Shift-left-click does not merge tools: that click leaves the cursor empty, so the merge never runs. The same click is cancelled when the tool already holds more components than its slot budget. Destroying the combined item destroys the stored tools.
 

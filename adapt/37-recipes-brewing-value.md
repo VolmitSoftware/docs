@@ -2,7 +2,7 @@
 title: "Recipes, Brewing & Value"
 description: "Crafting recipes, custom brewing, and material value settings"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,7 +33,7 @@ Registered Adapt recipes are included in the walk. The value cache is `plugins/A
 
 ### Crafting recipe catalog
 
-Shapes list rows top to bottom, and a space is an empty cell. Symbols are defined in the recipe column. Required level is the learned level of the owning adaptation. Every recipe is level 1 except the chalk wands and the netherite shield.
+Shapes list rows top to bottom, and a space is an empty cell. Symbols are defined in the recipe column. Required level is the learned level of the owning adaptation. Every recipe is level 1 except the chalk wands, the netherite shield, and the Filter Node. Golemancy recipes are tables in their adaptation's configuration, and a tithe in the recipe column is the experience levels each craft charges. Recipe fields: [Skill - Golemancy](/adapt/34-skill-golemancy#items-and-crafting).
 
 | Adaptation | Key and type | Recipe | Output | Required level |
 |---|---|---|---|---:|
@@ -64,6 +64,28 @@ Shapes list rows top to bottom, and a space is an empty cell. Symbols are define
 | Crafting: Skulls | `crafting-zombieskull`, shaped | same shape. Keys: `I` Rotten Flesh, `X` Bone Block | Zombie Head | 1 |
 | Crafting: Skulls | `crafting-creeperhead`, shaped | same shape. Keys: `I` Gunpowder, `X` Bone Block | Creeper Head | 1 |
 | Crafting: Skulls | `crafting-dragonhead`, shaped | same shape. Keys: `I` Dragon's Breath, `X` Bone Block | Dragon Head | 1 |
+| Golemancy: Angler Core | `golemancy-angler-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Fishing Rod, `Y` Prismarine Shard, `Z` Dried Kelp, `B` Blank Animus Core. Tithe 2 levels | Angler Core | 1 |
+| Golemancy: Angler Core | `golemancy-fishing-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Fishing Rod, `B` Blank Node | Fishing Node | 1 |
+| Golemancy: Animus Binding | `golemancy-crook`, shaped | ` A ` / `RHR` / ` C `. Keys: `A` Amethyst Shard, `R` Redstone, `H` Iron Hoe, `C` Copper Ingot | Artificer's Crook | 1 |
+| Golemancy: Animus Binding | `golemancy-blank-core`, shaped | `ARA` / `RPR` / `ARA`. Keys: `A` Amethyst Shard, `R` Redstone, `P` Ender Pearl. Tithe 1 level | Blank Animus Core | 1 |
+| Golemancy: Breaker Core | `golemancy-breaker-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Iron Pickaxe, `Y` Redstone, `Z` Piston, `B` Blank Animus Core. Tithe 2 levels | Breaker Core | 1 |
+| Golemancy: Breaker Core | `golemancy-breaker-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Iron Pickaxe, `B` Blank Node | Breaker Node | 1 |
+| Golemancy: Gatherer Core | `golemancy-gatherer-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Bundle, `Y` String, `Z` Hopper, `B` Blank Animus Core. Tithe 2 levels | Gatherer Core | 1 |
+| Golemancy: Gatherer Core | `golemancy-collection-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Bundle, `B` Blank Node | Collection Node | 1 |
+| Golemancy: Guardian Core | `golemancy-guardian-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Iron Sword, `Y` Iron Ingot, `Z` Shield, `B` Blank Animus Core. Tithe 2 levels | Guardian Core | 1 |
+| Golemancy: Guardian Core | `golemancy-guard-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Iron Sword, `B` Blank Node | Guard Node | 1 |
+| Golemancy: Harvester Core | `golemancy-harvester-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Iron Hoe, `Y` Wheat, `Z` Composter, `B` Blank Animus Core. Tithe 2 levels | Harvester Core | 1 |
+| Golemancy: Harvester Core | `golemancy-harvest-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Iron Hoe, `B` Blank Node | Harvest Node | 1 |
+| Golemancy: Lumber Core | `golemancy-lumber-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Iron Axe, `Y` any Log, `Z` any Sapling, `B` Blank Animus Core. Tithe 2 levels | Lumber Core | 1 |
+| Golemancy: Lumber Core | `golemancy-lumber-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Iron Axe, `B` Blank Node | Lumber Node | 1 |
+| Golemancy: Node Weaving | `golemancy-blank-node`, shaped | `CRC` / `RAR` / `CRC`. Keys: `C` Clay Ball, `R` Redstone, `A` Amethyst Shard | 4 Blank Nodes | 1 |
+| Golemancy: Node Weaving | `golemancy-deposit-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Chest, `B` Blank Node | Deposit Node | 1 |
+| Golemancy: Rancher Core | `golemancy-rancher-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Shears, `Y` Wheat, `Z` Lead, `B` Blank Animus Core. Tithe 2 levels | Rancher Core | 1 |
+| Golemancy: Rancher Core | `golemancy-pasture-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Lead, `B` Blank Node | Pasture Node | 1 |
+| Golemancy: Runic Augments | `golemancy-blank-rune`, shaped | ` A ` / `ASA` / ` A `. Keys: `A` Amethyst Shard, `S` Smooth Stone | 2 Blank Runes | 1 |
+| Golemancy: Sorter Core | `golemancy-sorter-core`, shaped | ` X ` / `YBY` / ` Z `. Keys: `X` Comparator, `Y` Quartz, `Z` Copper Chest, `B` Blank Animus Core. Tithe 2 levels | Sorter Core | 1 |
+| Golemancy: Sorter Core | `golemancy-input-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Copper Chest, `B` Blank Node | Input Node | 1 |
+| Golemancy: Sorter Core | `golemancy-filter-node`, shaped | ` X ` / ` B ` / `   `. Keys: `X` Item Frame, `B` Blank Node | Filter Node | 3 |
 | Herbalism: Craftable Cobweb | `herbalism-cobwebblock`, shaped | `III` / `III` / `III`. Keys: `I` String | Cobweb | 1 |
 | Herbalism: Mushroom Blocks | `herbalism-redmushblock`, shaped | `II` / `II`. Keys: `I` Red Mushroom | Red Mushroom Block | 1 |
 | Herbalism: Mushroom Blocks | `herbalism-brownmushblock`, shaped | `II` / `II`. Keys: `I` Brown Mushroom | Brown Mushroom Block | 1 |
@@ -98,6 +120,22 @@ Crafting: Reconstruction registers 19 shapeless recipes, all at adaptation level
 | `reconstruction-nether-gold-ore` | Nether Bricks + 8 Gold Ingots | Nether Gold Ore |
 | `reconstruction-nether-quartz-ore` | Nether Bricks + 8 Quartz | Nether Quartz Ore |
 | `reconstruction-ancient-debris` | Nether Bricks + 8 Netherite Scrap | Ancient Debris |
+
+### Golemancy infusions
+
+The Animus Plinth performs 22 infusions, one table each under `infusionRecipes` in `skills/golemancy.toml`. A tier 1 rune takes a Blank Rune on the lodestone, and each higher tier takes the rune of the same aspect one tier lower. Tier 1 costs 2 levels over 100 ticks and needs Runic Augments level 1, tier 2 costs 5 levels over 160 ticks at level 3, and tier 3 costs 10 levels over 240 ticks at level 5. The ritual: [Animus Plinth](/adapt/34-skill-golemancy#animus-plinth).
+
+| Rune | `<aspect>_1` pedestals | `<aspect>_2` pedestals | `<aspect>_3` pedestals |
+|---|---|---|---|
+| `swiftness` | 2 Sugar, 2 Feather | 2 Rabbit's Foot, 2 Phantom Membrane | 4 Breeze Rod |
+| `might` | 2 Iron Ingot, 2 Piston | 2 Iron Block, 2 Sticky Piston | 2 Netherite Scrap, 2 Iron Block |
+| `ember` | 2 Blaze Powder, 2 Coal | 2 Blaze Rod, 2 Magma Cream | 2 Ghast Tear, 2 Blaze Rod |
+| `tide` | 2 Prismarine Shard, 2 Kelp | 2 Prismarine Crystals, 2 Nautilus Shell | 1 Heart of the Sea, 3 Prismarine Crystals |
+| `order` | 2 Quartz, 2 Redstone | 2 Comparator, 2 Quartz Block | 2 Echo Shard, 2 Comparator |
+| `entropy` | 2 Gunpowder, 2 Fermented Spider Eye | 2 Eye of Ender, 2 Gunpowder | 2 Shulker Shell, 2 Eye of Ender |
+| `bulwark` | 2 Iron Ingot, 2 Obsidian | 2 Diamond, 2 Obsidian | 1 Netherite Ingot, 3 Crying Obsidian |
+
+`masterwork_heart` takes a Heart of the Sea on the lodestone and a Diamond Block, Iron Block, Copper Block, and Snow Block on the pedestals. It costs 15 levels over 300 ticks, needs Masterwork level 1, and makes a Masterwork Heart.
 
 ### Custom brewing recipes
 
