@@ -23,7 +23,7 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 
 ## Adaptations
 
-Golemancy's adaptations unlock golem binding, nodes, and runes.
+Golemancy's adaptations unlock golem binding, frames that strengthen each golem body, nodes, and runes.
 
 ### Animus Binding (`golem-animus-binding`)
 
@@ -53,7 +53,7 @@ A binding needs all of the following:
 | 4 | 5 | 2.5 s | 1 / 1 / 2 levels |
 | 5 | 7 | 2.0 s | 0 / 1 / 1 levels |
 
-A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. It attacks mobs within 12 blocks that target you or it: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
+A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs within 12 blocks that target you or it: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
 
 | Recipe | Pattern | Keys | Yield | Tithe |
 |---|---|---|---|---|
@@ -121,15 +121,13 @@ The recipe tables use the same fields as the Animus Binding recipes.
 
 Strengthens your bound frost golems with extra health, damaging snowballs, and protection from rain and heat. Frost golems bind with Animus Binding alone; Frost Frame only makes them stronger.
 
-Every bound frost golem you own gains the extra maximum health for your current level, and a gain in maximum health also heals the golem by the same amount. The bonus follows your level: when you learn or unlearn levels, your awake golems update within a second and sleeping golems update when they wake. Releasing a golem removes the bonus.
+Every bound frost golem you own gains the extra maximum health for your current level. When a golem reaches a new highest maximum health, it heals by the amount gained; losing levels and learning them again does not heal it a second time. The bonus follows your level: when you learn or unlearn levels, your awake golems update shortly and sleeping golems update when they wake. Releasing a golem removes the bonus.
 
 When a snowball from one of your bound frost golems hits the golem's target or a hostile mob, it deals your level's snowball damage. Other mobs take vanilla snowball damage, and a snowball never deals less than vanilla, so blazes still take 3. Rain and water never hurt your bound frost golems, and damage from warm biomes is multiplied by your level's `warmBiomeDamageMultiplierByLevel` value.
 
 - **Chill** (level 3): each snowball hit that damages its target gives it Slowness I for `chillTicks` ticks.
-- **Extra snowball** (level 4): each snowball has an `extraSnowballChance` chance to be followed 5 ticks later by a second snowball at the same target.
-- **Frostbite** (level 5): when `frostbiteHits` snowball hits damage the same target within `frostbiteWindowMillis` milliseconds, the target freezes with `frostbiteFreezeTicks` freeze ticks. Frostbite cannot freeze that target again for `frostbitePerTargetCooldownMillis` milliseconds, and hits during that time do not count.
-
-Bound frost golems leave no snow trail. Turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again.
+- **Extra snowball** (level 4): each snowball has an `extraSnowballChance` chance to be followed 5 ticks later by a second snowball at the same target. The second snowball's hit lands even though the first hit just hurt the target.
+- **Frostbite** (level 5): when `frostbiteHits` snowball hits damage the same target within `frostbiteWindowMillis` milliseconds, the target stays fully frozen for `frostbiteFreezeTicks` ticks. Frostbite cannot freeze that target again for `frostbitePerTargetCooldownMillis` milliseconds, and hits during that time do not count.
 
 | Level | Bonus health | Snowball damage | Warm biome damage | Unlocks |
 |---|---|---|---|---|
@@ -137,11 +135,11 @@ Bound frost golems leave no snow trail. Turn on Snow Trail in a frost golem's Go
 | 2 | +8 | 2 | 50% | |
 | 3 | +12 | 2 | None | Chill: Slowness I for 2 s on hit |
 | 4 | +16 | 3 | None | Extra snowball: 25% chance per throw |
-| 5 | +20 | 4 | None | Frostbite: 4 hits in 5 s freeze the target, at most once per 10 s per target |
+| 5 | +20 | 4 | None | Frostbite: 4 hits in 5 s freeze the target for 7 s, at most once per 10 s per target |
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `healthBonusByLevel` | `[4, 8, 12, 16, 20]` | Extra maximum health for your bound frost golems, from level 1 upward. A raise also heals them by the difference. |
+| `healthBonusByLevel` | `[4, 8, 12, 16, 20]` | Extra maximum health for your bound frost golems, from level 1 upward. A golem heals by any gain above the highest maximum health it has had. |
 | `snowballDamageByLevel` | `[1, 2, 2, 3, 4]` | Damage a bound frost golem's snowball deals to the golem's target or a hostile mob, from level 1 upward. Snowballs never deal less than vanilla. |
 | `warmBiomeDamageMultiplierByLevel` | `[1.0, 0.5, 0.0, 0.0, 0.0]` | Multiplier on the damage bound frost golems take in warm biomes, from level 1 upward. 0 makes them immune. |
 | `chillLevel` | `3` | Level at which snowball hits apply Chill. |
@@ -151,7 +149,7 @@ Bound frost golems leave no snow trail. Turn on Snow Trail in a frost golem's Go
 | `frostbiteLevel` | `5` | Level at which snowball hits can freeze the target with Frostbite. |
 | `frostbiteHits` | `4` | Snowball hits that must land on one target within `frostbiteWindowMillis` to freeze it. |
 | `frostbiteWindowMillis` | `5000` | Milliseconds within which the `frostbiteHits` hits must land. |
-| `frostbiteFreezeTicks` | `140` | Freeze ticks Frostbite gives the target. 140 is fully frozen. |
+| `frostbiteFreezeTicks` | `140` | Ticks a Frostbite target stays fully frozen. |
 | `frostbitePerTargetCooldownMillis` | `10000` | Milliseconds before Frostbite can freeze the same target again. |
 
 ## Reference
