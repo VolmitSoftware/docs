@@ -357,6 +357,62 @@ The recipe tables use the same fields as the Animus Binding recipes.
 | `harvesterCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Harvester Core recipe. |
 | `harvestNodeRecipe` | ` X ` / ` B ` / `   ` | Harvest Node recipe. |
 
+### Lumber Core (`golem-lumber-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
+
+Makes golems bound with a Lumber Core fell the natural trees in a Lumber Node's area and carry off their logs, then replant, sweep leaves, and fell bigger trees at higher levels, and unlocks the Lumber Core and Lumber Node recipes at level 1.
+
+Bind a golem with a Lumber Core through Animus Binding. Copper and iron golems take the core by default; `allowedCoresCopper` and `allowedCoresIron` in the skill configuration decide which bodies can. A new Lumber golem starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Lumber golems work only in Work mode and only on Lumber Nodes, so place a Lumber Node with Node Weaving and set its work area over the bottom of your trees. Its channel, priority, work area, and redstone setting work like any other node's.
+
+At each node check, a Lumber Node looks over part of its work area and hands out a felling job for each natural tree whose trunk starts there. Only the bottom of the trunk has to be inside the work area. A tree is natural when all of these hold:
+
+- Its bottom log stands on dirt, grass, podzol, coarse dirt, rooted dirt, mycelium, moss, mud, or farmland. A mangrove may also stand on its own mangrove roots, and a huge fungus stands on nylium.
+- Leaves that no player placed grow within 2 blocks of its top logs. For a huge fungus, wart blocks or shroomlights take the place of leaves.
+- No player placed any of its logs. A tree that grew from a sapling you planted still counts as natural.
+- None of its logs touches a block that does not grow around trees, such as planks, glass, stairs, fences, torches, wool, cobblestone, stripped logs, wood blocks, or leaves a player placed.
+
+Trees that break any of these rules, including houses and other builds made of logs, are never cut. Logs of another kind of tree touching the trunk are allowed and left standing.
+
+A tree may have at most your level's `copperTreeCapByLevel` logs for a copper golem, or `ironTreeCapByLevel` logs for an iron golem; golems of any other body use the copper limit. A Lumber Node offers each tree only to the golems that can fell it, and trees too big for every golem are left standing.
+
+A Lumber golem walks to the bottom of the trunk, works for a second, then fells the tree from the top down at your level's `logsPerSecondByLevel` and carries the logs. It fells only as many logs at a time as it has room for. Region protection must let you break every block it fells in that second; otherwise none of them is felled and the node shows Blocked. If something is built against the tree while it is being felled, the golem stops felling it. A Lumber golem that fills up delivers what it carries to a Deposit Node or its home chest like any other working golem, and a Lumber golem that takes the job again within a minute finishes the same tree. Leaves left behind decay as usual. Copper Overdrive and Swiftness runes speed up felling, and an Entropy rune can double each drop.
+
+- **Replanting** (level `replantLevel`): after felling a tree, the golem plants a matching sapling where the trunk stood, as long as the spot is empty and stands on soil the sapling grows on. The sapling comes from what the golem carries, then from its linked home chest. A tree with a 2x2 trunk is replanted with four saplings when four are at hand; otherwise one sapling replants it, except dark oaks and pale oaks, which need all four. Region protection must let you build where the sapling goes.
+- **Leaf Sweep** (level `leafSweepLevel`): 2 seconds after the last log falls, the golem breaks the felled tree's leaves that have started to decay and carries their saplings, sticks, and apples. Leaves still held up by another tree's logs and leaves a player placed stay where they are, and leaves region protection does not let you break are left to decay as usual.
+- **Mega trees** (level `megaTreeLevel`): Lumber golems also fell trees with a 2x2 trunk, such as dark oaks, pale oaks, and giant spruce and jungle trees. Below this level, these trees and trees whose trunks touch are left standing.
+- **Nether fungi** (level `netherLevel`): Lumber golems also fell huge crimson and warped fungi. They take the fungus's wart blocks and shroomlights from the top down along with the stems, without counting them against the logs per second, and Replanting plants a matching fungus on the nylium.
+
+Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP; leaves, wart blocks, shroomlights, and replanting pay none. Golem felling never pays Axes or any other skill.
+
+| Level | Logs per second | Logs per tree (copper / iron) | Unlocks |
+|---|---|---|---|
+| 1 | 1 | 24 / 64 | Fells natural trees from the top down and carries the logs |
+| 2 | 1.5 | 32 / 96 | Replanting: plants a sapling where the trunk stood |
+| 3 | 2 | 48 / 128 | Leaf Sweep: breaks decaying leaves and carries their saplings, sticks, and apples |
+| 4 | 3 | 64 / 192 | Fells trees with a 2x2 trunk |
+| 5 | 4 | 96 / 256 | Fells huge crimson and warped fungi with their wart blocks and shroomlights, and replants fungus |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Lumber Core | ` X ` / `YBY` / ` Z ` | X `IRON_AXE`, Y `#logs`, Z `#saplings`, B `golemancy:blank_core` | 1 | 2 levels |
+| Lumber Node | ` X ` / ` B ` / `   ` | X `IRON_AXE`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `logsPerSecondByLevel` | `[1.0, 1.5, 2.0, 3.0, 4.0]` | Logs a Lumber golem fells per second once it reaches a tree, from level 1 upward. Values load between 0.05 and 64. |
+| `copperTreeCapByLevel` | `[24, 32, 48, 64, 96]` | Most logs a tree can have for a copper golem, or a golem of any body other than iron, to fell it, from level 1 upward. Values below 1 count as 1. |
+| `ironTreeCapByLevel` | `[64, 96, 128, 192, 256]` | Most logs a tree can have for an iron golem to fell it, from level 1 upward. Values below 1 count as 1. |
+| `replantLevel` | `2` | Level at which Lumber golems use Replanting. |
+| `leafSweepLevel` | `3` | Level at which Lumber golems use Leaf Sweep. |
+| `megaTreeLevel` | `4` | Level at which Lumber golems fell trees with a 2x2 trunk. |
+| `netherLevel` | `5` | Level at which Lumber golems fell huge crimson and warped fungi. |
+| `workXpPerLog` | `0.6` | Golemancy work XP paid for each log or stem a Lumber golem fells. Values below 0 load as 0. |
+| `lumberCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Lumber Core recipe. |
+| `lumberNodeRecipe` | ` X ` / ` B ` / `   ` | Lumber Node recipe. |
+
 ### Runic Augments (`golem-runic-augments`)
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2
