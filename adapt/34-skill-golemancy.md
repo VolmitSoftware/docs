@@ -2,17 +2,22 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
 ---
-Golemancy gains XP from building golems, watching golems kill hostile mobs, repairing iron golems, and tending copper golems.
+Golemancy gains XP from building and binding golems, fighting beside your bound golems, watching other golems kill hostile mobs, repairing iron golems, and tending copper golems.
 
 ## Earning XP
 
 - Building a snow, copper, or iron golem pays `buildSnowXp`, `buildCopperXp`, or `buildIronXp` to the player who placed its carved pumpkin or jack o'lantern, and counts toward `golemancy.built`. The golem must appear within `buildAttributionWindowMillis` milliseconds and `buildAttributionRadius` blocks of that placement. Each golem type has its own `buildXpCooldownMillis` cooldown per player; builds during the cooldown still count toward the stat. Heads placed by dispensers pay nothing.
-- When an iron golem or snow golem kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. The kill value is `golemKillXpBase` plus the victim's maximum health times `golemKillMaxHealthMultiplier`. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
+- Binding a golem with Animus Binding pays `bindSnowXp`, `bindCopperXp`, or `bindIronXp` and counts toward `golemancy.bound`. Each golem pays this only on its first binding; a golem that was released and bound again pays nothing. The first time you bind each body (frost, copper, and iron), you also earn that body's first-bind challenge and `firstBindXp`.
+- When your bound golem damages a hostile mob, you earn the damage dealt times `assistDamageXpMultiplier` times the body multiplier: `assistBodyMultiplierFrost`, `assistBodyMultiplierCopper`, `assistBodyMultiplierIron`, or `assistBodyMultiplierBone`. Frost golem snowballs count. Damage beyond the victim's remaining health does not count. You earn damage XP at most once per `assistCooldownMillis`, but every hit counts toward `golemancy.golem.damage`.
+- When your bound golem or its snowball kills a hostile mob, you earn the kill value, `golemKillXpBase` plus the victim's maximum health times `golemKillMaxHealthMultiplier`, and the kill counts toward `golemancy.golem.kills`. Raiders that belong to an active raid pay `raidXpMultiplier` times as much.
+- When your bound golem takes damage from a hostile mob, you earn the damage taken times `tankXpMultiplier`, at most once per `tankCooldownMillis`. Damage beyond the golem's remaining health does not count.
+- Damage, kill, and tanking XP pay in full while you are within `ownerProximityRadius` blocks of the golem. Farther away or in another world, they pay `distantOwnerXpMultiplier` times as much, and nothing while you are offline. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount, and Adapt minions and Excavation grave mobs pay nothing.
+- When an iron golem or snow golem that is not bound kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
 - Repairing a player-built iron golem with an iron ingot pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
 - Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
 
@@ -95,7 +100,24 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `copperScrapeXp` | `60` | Skill XP per oxidation stage scraped off a copper golem. |
 | `copperWaxXp` | `30` | Skill XP for the first wax on each copper golem. |
 | `spawnerMobXpMultiplier` | `0.3` | Multiplier for Golemancy XP from mobs that came from a spawner or trial spawner. |
-| `challengeBuiltReward` | `500` | Knowledge paid by the golem building challenges. |
+| `challengeBuiltReward` | `500` | Skill XP paid by the golem building challenges. |
+| `bindSnowXp` | `100` | Skill XP for the first binding of a snow golem. |
+| `bindCopperXp` | `220` | Skill XP for the first binding of a copper golem. |
+| `bindIronXp` | `450` | Skill XP for the first binding of an iron golem. |
+| `firstBindXp` | `600` | Skill XP paid with each first-bind challenge. |
+| `assistDamageXpMultiplier` | `3.0` | Skill XP per point of damage your bound golems deal to hostile mobs, before the body multiplier. |
+| `assistBodyMultiplierFrost` | `2.0` | Body multiplier for damage XP from bound frost golems, including their snowballs. |
+| `assistBodyMultiplierCopper` | `1.0` | Body multiplier for damage XP from bound copper golems. |
+| `assistBodyMultiplierIron` | `1.0` | Body multiplier for damage XP from bound iron golems. |
+| `assistBodyMultiplierBone` | `0.35` | Body multiplier for damage XP from bound bone golems. |
+| `assistCooldownMillis` | `1500` | Milliseconds before one player earns damage XP from their bound golems again. |
+| `raidXpMultiplier` | `1.5` | Kill XP multiplier for raiders that belong to an active raid. |
+| `ownerProximityRadius` | `48.0` | Blocks from a bound golem within which its owner earns full damage, kill, and tanking XP. |
+| `distantOwnerXpMultiplier` | `0.25` | Multiplier on damage, kill, and tanking XP for owners farther than `ownerProximityRadius` or in another world, clamped to 0-1. |
+| `tankXpMultiplier` | `1.5` | Skill XP per point of damage your bound golems take from hostile mobs. |
+| `tankCooldownMillis` | `2000` | Milliseconds before one player earns tanking XP from their bound golems again. |
+| `challengeBoundReward` | `500` | Skill XP paid by the golem binding challenges. |
+| `challengeGolemKillsReward` | `500` | Skill XP paid by the bound golem kill challenges. |
 | `dormantInvulnerable` | `true` | Makes bound golems invulnerable while they are dormant. |
 | `guardWhileOwnerOffline` | `false` | Keeps Guardian golems awake while their owner is offline. |
 | `serverMaxActiveGolems` | `1500` | Most bound golems awake on the server at once; the rest stay dormant until room frees. |
@@ -125,6 +147,14 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 |---|---|---|
 | `challenge_golemancy_built_10` | 10 | `challengeBuiltReward` |
 | `challenge_golemancy_built_100` | 100 | `challengeBuiltReward` x 5 |
+| `challenge_golemancy_bound_5` | 5 | `challengeBoundReward` |
+| `challenge_golemancy_bound_25` | 25 | `challengeBoundReward` x 5 |
+| `challenge_golemancy_golem_kills_50` | 50 | `challengeGolemKillsReward` |
+| `challenge_golemancy_golem_kills_500` | 500 | `challengeGolemKillsReward` x 2 |
+| `challenge_golemancy_golem_kills_5000` | 5000 | `challengeGolemKillsReward` x 5 |
+| `challenge_golemancy_first_bind_frost` | First frost golem bound | `firstBindXp` |
+| `challenge_golemancy_first_bind_copper` | First copper golem bound | `firstBindXp` |
+| `challenge_golemancy_first_bind_iron` | First iron golem bound | `firstBindXp` |
 
 ## See also
 
