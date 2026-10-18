@@ -2,7 +2,7 @@
 title: "Items, Orbs & Bound Objects"
 description: "Experience orbs, backpacks, bound items, and stored item data"
 published: true
-date: 2026-10-08T00:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,8 +37,12 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Time bottle | `POTION` | Chronos: Time in a Bottle | Stored seconds |
 | Omni Tool | The visible tool | Excavation: Omni Tool | Serialized remaining tools |
 | Multi Armor | The visible piece | Blocking: Multi Armor | Serialized remaining pieces |
+| Artificer's Crook | `IRON_HOE` | Golemancy: Animus Binding | Item kind |
+| Blank Animus Core | `FIREWORK_STAR` | Golemancy: Animus Binding | Item kind |
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.
+
+Golemancy items never act as their base item. The Crook does not till, and Golemancy items do not work as ingredients outside Golemancy recipes, in anvils, grindstones, smithing tables, furnaces, stonecutters, or enchanting tables, and dispensers do not fire them.
 
 Omni Tool swaps the visible tool for the block or action in progress. Sneak-drop splits it back into the stored tools. Shift-left-click does not merge tools: that click leaves the cursor empty, so the merge never runs. The same click is cancelled when the tool already holds more components than its slot budget. Destroying the combined item destroys the stored tools.
 

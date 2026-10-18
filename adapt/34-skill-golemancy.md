@@ -20,6 +20,55 @@ Golemancy gains XP from building golems, watching golems kill hostile mobs, repa
 
 Golemancy's adaptations unlock golem binding, nodes, and runes.
 
+### Animus Binding (`golem-animus-binding`)
+
+5 levels · 2 knowledge, then 4 per level
+
+Binds a golem to you as a companion and unlocks the Artificer's Crook and Blank Animus Core recipes at level 1.
+
+Hold an Animus Core in your main hand, sneak, and right-click a golem. The golem freezes and shrinks toward its bound size while the ritual runs. Moving more than 4 blocks from the golem, switching your held item, or the golem taking damage breaks the ritual, and the golem returns to its normal size. When the ritual finishes, the core and the tithe levels are used up, the golem becomes "*Owner*'s *Body* Golem", and it starts following you. Creative players pay no levels.
+
+A binding needs all of the following:
+
+- The golem is not bound already.
+- A player built the golem. Iron golems that no player built, such as village iron golems, bind only when `allowBindingVillageGolems` is on.
+- For `builderExclusiveSeconds` after a golem is built, only the player who built it can bind it.
+- Frost golems bind with this adaptation alone. Copper golems also need Copper Frame and iron golems Iron Frame.
+- The core is allowed for that body by `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron` in the skill configuration. A Blank Animus Core binds a Companion; a role core also needs that role's Core adaptation.
+- You own fewer golems than your level allows. `hardCapPerPlayer` caps every level.
+- The chunk holds fewer than `maxBoundGolemsPerChunk` bound golems.
+- Region protection lets you interact with the golem.
+- You have the tithe levels for that body.
+
+| Level | Golem cap | Ritual | Bind tithe (frost / copper / iron) |
+|---|---|---|---|
+| 1 | 1 | 4.0 s | 1 / 2 / 3 levels |
+| 2 | 2 | 3.5 s | 1 / 2 / 3 levels |
+| 3 | 3 | 3.0 s | 1 / 1 / 2 levels |
+| 4 | 5 | 2.5 s | 1 / 1 / 2 levels |
+| 5 | 7 | 2.0 s | 0 / 1 / 1 levels |
+
+A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. It attacks mobs within 12 blocks that target you or it: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Artificer's Crook | ` A ` / `RHR` / ` C ` | H `IRON_HOE`, A `AMETHYST_SHARD`, R `REDSTONE`, C `COPPER_INGOT` | 1 | 0 |
+| Blank Animus Core | `ARA` / `RPR` / `ARA` | A `AMETHYST_SHARD`, R `REDSTONE`, P `ENDER_PEARL` | 1 | 1 level |
+
+Each recipe is a table with `rows` (1 to 3 rows of up to 3 symbols, a space for an empty slot), `keys` (a material name, an item tag such as `#planks`, or a Golemancy item such as `golemancy:blank_core`), `result`, `amount` (1 to 64), `tithe` (experience levels charged per craft), and `enabled`. Players without the tithe levels see no result, shift-crafting stops at the crafts their levels cover, creative players craft free, and crafter blocks never craft a recipe with a tithe. Recipe changes apply after a restart.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `golemCapByLevel` | `[1, 2, 3, 5, 7]` | Most golems you can own at once, from level 1 upward. `hardCapPerPlayer` still caps every level. |
+| `ritualSecondsByLevel` | `[4.0, 3.5, 3.0, 2.5, 2.0]` | Seconds the binding ritual takes, from level 1 upward. |
+| `titheSnowByLevel` | `[1, 1, 1, 1, 0]` | Experience levels to bind a frost golem, from level 1 upward. |
+| `titheCopperByLevel` | `[2, 2, 1, 1, 1]` | Experience levels to bind a copper golem, from level 1 upward. |
+| `titheIronByLevel` | `[3, 3, 2, 2, 1]` | Experience levels to bind an iron golem, from level 1 upward. |
+| `builderExclusiveSeconds` | `300` | Seconds after a golem is built during which only its builder can bind it. 0 lets anyone bind it at once. |
+| `allowBindingVillageGolems` | `false` | Lets players bind iron golems that no player built. |
+| `crookRecipe` | ` A ` / `RHR` / ` C `, tithe 0 | Artificer's Crook recipe. |
+| `blankCoreRecipe` | `ARA` / `RPR` / `ARA`, tithe 1 | Blank Animus Core recipe. |
+
 ## Reference
 
 ### Skill configuration defaults
