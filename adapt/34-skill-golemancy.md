@@ -82,7 +82,7 @@ Each recipe is a table with `rows` (1 to 3 rows of up to 3 symbols, a space for 
 
 Anchors nodes to block faces so your golems know where to work, and unlocks the Blank Node and Deposit Node recipes at level 1. Each Core adaptation unlocks the recipes for its own nodes.
 
-Hold a node in your main hand, sneak, and right-click a block face. The node attaches to that face and one node item is used up. Each face holds one node. Deposit, Input, and Filter nodes go only on a chest, trapped chest, copper chest, barrel, or shulker box. A placement needs all of the following:
+Hold a node in your main hand, sneak, and right-click a block face. The node attaches to that face and one node item is used up. Each face holds one node. Deposit, Input, and Filter nodes go only on a chest, trapped chest, copper chest, barrel, or shulker box. Nodes never attach to the lodestone or pedestals of a complete Animus Plinth; that click works the plinth instead. A placement needs all of the following:
 
 - Region protection lets you interact with the block and build in front of the face. A Deposit, Input, or Filter node also needs access to the container.
 - The chunk holds fewer than `maxNodesPerChunk` nodes, counting every player's nodes.
@@ -263,7 +263,8 @@ Loading and using a plinth needs Runic Augments level 1:
 - Sneak and right-click a pedestal or the lodestone while holding an item to place one of it there. The item floats and turns above the block, and every player can see it.
 - Sneak and right-click with an empty hand to take the item back.
 - Region protection must let you open containers at the block.
-- Right-clicking the lodestone with a compass still binds the compass.
+- Right-clicking the lodestone with a compass in either hand still binds the compass.
+- These clicks always work the plinth, even while you hold a node; nodes never attach to the blocks of a complete plinth.
 - Breaking a pedestal or the lodestone, or moving it with a piston, drops the item on that block. Items on the other blocks stay where they are.
 
 To start an infusion, place its center item on the lodestone and its four pedestal items on the pedestals, then right-click the lodestone with the Artificer's Crook. The pedestal items rise, streams of dust flow to the center, and the center item spins faster. When the ritual ends, the items and the essence levels are used up and the result pops out above the lodestone. Creative players pay no levels.
@@ -312,7 +313,7 @@ Infusions are the `infusionRecipes` tables in the skill configuration, one table
 | `unlockLevel` | Lowest level of `unlockAdaptation` that can perform the infusion, at least 1. |
 | `enabled` | Set to `false` to turn the infusion off. |
 
-A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table with an unknown item, a result that is not a rune or the Masterwork Heart, a pedestal list without exactly four entries, or an empty `unlockAdaptation` is skipped with a console warning.
+A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table with an unknown name or a material that is not an item, a result that is not a rune or the Masterwork Heart, a pedestal list without exactly four entries, or an empty `unlockAdaptation` is skipped with a console warning.
 
 ## Reference
 
@@ -397,7 +398,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `workXpOwnerRadius` | `96` | Blocks from a working golem within which its owner earns work XP. Owners farther away or in another world earn none. Values below 0 count as 0. |
 | `challengeTasksReward` | `500` | Skill XP paid by the golem job challenges. |
 | `challengeItemsMovedReward` | `500` | Skill XP paid by the golem item hauling challenges. |
-| `pedestalBlocks` | the eight chiseled copper blocks | Blocks that work as Animus Plinth pedestals. Unknown names and `LODESTONE` are ignored with a console warning. |
+| `pedestalBlocks` | the eight chiseled copper blocks | Blocks that work as Animus Plinth pedestals. Names that are not blocks, and `LODESTONE`, are ignored with one console warning each. |
 | `infusionRecipes` | the infusions listed above | Infusions the Animus Plinth performs, one table per infusion. See Infusion recipes for the fields. |
 | `infuseRuneTier1Xp` | `60` | Skill XP for each tier 1 rune infused. |
 | `infuseRuneTier2Xp` | `180` | Skill XP for each tier 2 rune infused. |
