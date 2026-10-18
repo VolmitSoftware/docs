@@ -897,18 +897,18 @@ Shift-right-click a shattered golem in the Roster GUI to release it for good. It
 
 Packs one of your bound golems into a Dormant Golem block that you carry and place to wake the golem again, with its loadout, cargo, and health.
 
-Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound frost, copper, or iron golems to pack it. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem. Moving more than `channelAbortDistance` blocks from the golem, switching your held item away from the Crook, or the golem taking any damage breaks the channel, and an action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
+Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound frost, copper, or iron golems to pack it. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem, and the golem holds still. You or the golem ending up more than `channelAbortDistance` blocks apart, switching your held item away from the Crook, or the golem taking any damage breaks the channel, and an action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
 
 The packed golem leaves the world without dropping anything and becomes a Dormant Golem in your inventory: a snow block for a frost golem, an iron block for an iron golem, and for a copper golem the copper block of its oxidation stage, waxed when the golem was waxed. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, channels, mode, home, home chest, name, record of kills, damage, jobs, and items moved, the items it carries, its stored essence, its health, and its copper oxidation stage and wax. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up; hoppers and other mobs cannot take it, it never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
 
-To awaken the golem, place its Dormant Golem like a block. No block appears: the golem rises at that spot from a tenth of a block to its bound size over `awakenRiseTicks` ticks, facing you, and the Dormant Golem is used up. It wakes with everything the Dormant Golem kept. An awakened iron golem counts as built by a player. Awakening pays no build or bind XP. An awakening needs all of the following; otherwise an action-bar message names the reason and you keep the Dormant Golem:
+To awaken the golem, place its Dormant Golem like a block. No block appears: the golem rises at that spot from a tenth of a block to its bound size over `awakenRiseTicks` ticks, facing you, and the Dormant Golem is used up. It wakes with everything the Dormant Golem kept. An awakened iron golem keeps whether a player built it. Awakening pays no build or bind XP. An awakening needs all of the following; otherwise an action-bar message names the reason and you keep the Dormant Golem:
 
 - The Dormant Golem is yours, and you have Stasis.
 - The golem is still packed in your roster, and this is the Dormant Golem it was packed into.
 - You can bind that body: copper golems need Copper Frame and iron golems Iron Frame. The skill's `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron` list allows every core the golem has.
-- Nothing solid fills the block where you place it.
+- The block where you place it is open: nothing solid fills it, it holds no lava or fire, and for a frost golem it holds no water.
 - The chunk holds fewer than `maxBoundGolemsPerChunk` bound golems, and the server has fewer than `serverMaxActiveGolems` awake golems.
-- Golemancy is enabled in that world, and region protection lets you place blocks there.
+- Golemancy is enabled in that world, and the server and region protection let you place blocks there.
 
 **Packed healing** (level `packedHealLevel`): when you awaken a golem, it heals `packedHealAmount` health for every full `packedHealIntervalSeconds` seconds it spent packed, never above its maximum health. Your level when you place the Dormant Golem decides the healing; below `packedHealLevel`, the golem wakes with the health it had when it was packed.
 
@@ -925,7 +925,7 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `channelSecondsByLevel` | `[2.0, 0.0, 0.0]` | Seconds you channel to pack a golem, from level 1 upward. 0 packs at once. Values load between 0 and 30. |
-| `channelAbortDistance` | `4.0` | Blocks you can move away from the golem before a packing channel breaks. Values below 0 load as 0. |
+| `channelAbortDistance` | `4.0` | Blocks you and the golem can be apart before a packing channel breaks. Values below 0 load as 0. |
 | `packedHealLevel` | `2` | Level at which packed golems heal for the time they spend packed. |
 | `packedHealAmount` | `1.0` | Health a packed golem heals for each `packedHealIntervalSeconds` it spent packed, added when it awakens and never above its maximum health. Values below 0 load as 0. |
 | `packedHealIntervalSeconds` | `10` | Seconds a golem must stay packed for each `packedHealAmount` of healing. Values below 1 load as 1. |
