@@ -127,7 +127,7 @@ When a snowball from one of your bound frost golems hits the golem's target or a
 
 - **Chill** (level 3): each snowball hit that damages its target gives it Slowness I for `chillTicks` ticks.
 - **Extra snowball** (level 4): each snowball has an `extraSnowballChance` chance to be followed 5 ticks later by a second snowball at the same target. The second snowball's hit lands even though the first hit just hurt the target.
-- **Frostbite** (level 5): when `frostbiteHits` snowball hits damage the same target within `frostbiteWindowMillis` milliseconds, the target stays fully frozen for `frostbiteFreezeTicks` ticks. Frostbite cannot freeze that target again for `frostbitePerTargetCooldownMillis` milliseconds, and hits during that time do not count.
+- **Frostbite** (level 5): when `frostbiteHits` snowball hits damage the same target within `frostbiteWindowMillis` milliseconds, the target stays fully frozen for `frostbiteFreezeTicks` ticks and then thaws at the normal rate. A target that is already frozen for longer stays frozen. Frostbite cannot freeze that target again for `frostbitePerTargetCooldownMillis` milliseconds, and hits during that time do not count.
 
 | Level | Bonus health | Snowball damage | Warm biome damage | Unlocks |
 |---|---|---|---|---|
@@ -135,7 +135,7 @@ When a snowball from one of your bound frost golems hits the golem's target or a
 | 2 | +8 | 2 | 50% | |
 | 3 | +12 | 2 | None | Chill: Slowness I for 2 s on hit |
 | 4 | +16 | 3 | None | Extra snowball: 25% chance per throw |
-| 5 | +20 | 4 | None | Frostbite: 4 hits in 5 s freeze the target for 7 s, at most once per 10 s per target |
+| 5 | +20 | 4 | None | Frostbite: 4 hits in 5 s freeze the target for 5 s, at most once per 10 s per target |
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -149,7 +149,7 @@ When a snowball from one of your bound frost golems hits the golem's target or a
 | `frostbiteLevel` | `5` | Level at which snowball hits can freeze the target with Frostbite. |
 | `frostbiteHits` | `4` | Snowball hits that must land on one target within `frostbiteWindowMillis` to freeze it. |
 | `frostbiteWindowMillis` | `5000` | Milliseconds within which the `frostbiteHits` hits must land. |
-| `frostbiteFreezeTicks` | `140` | Ticks a Frostbite target stays fully frozen. |
+| `frostbiteFreezeTicks` | `100` | Ticks a Frostbite target stays fully frozen before it starts to thaw. |
 | `frostbitePerTargetCooldownMillis` | `10000` | Milliseconds before Frostbite can freeze the same target again. |
 
 ## Reference
