@@ -309,6 +309,54 @@ The recipe tables use the same fields as the Animus Binding recipes.
 | `guardianCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Guardian Core recipe. |
 | `guardNodeRecipe` | ` X ` / ` B ` / `   ` | Guard Node recipe. |
 
+### Harvester Core (`golem-harvester-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
+
+Makes golems bound with a Harvester Core harvest and replant the crops in a Harvest Node's area, then tend and till the field at higher levels, and unlocks the Harvester Core and Harvest Node recipes at level 1.
+
+Bind a golem with a Harvester Core through Animus Binding. Snow and copper golems take the core by default; `allowedCoresFrost` and `allowedCoresCopper` in the skill configuration decide which bodies can. A new Harvester starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Harvesters work only in Work mode and only on Harvest Nodes, so place a Harvest Node with Node Weaving and set its work area over your field. Its channel, priority, work area, and redstone setting work like any other node's.
+
+At each node check, a Harvest Node looks over part of its work area and hands out a harvest job for each ripe crop listed in `crops` that its filter accepts. A filter entry matches a crop by its block or by the item that plants it, so `WHEAT_SEEDS` or `WHEAT` both match wheat and `SWEET_BERRIES` matches sweet berry bushes. A crop is ripe at its maximum growth age. A torchflower is ripe once it has grown into the flower on farmland, a sweet berry bush when fully grown, and cave vines while they carry glow berries. From level `extendedCropsLevel`, melons and pumpkins attached to a stem are ripe, and sugar cane, bamboo, and cactus are harvested from the second block of a stalk upward. Stems and the bottom block of a stalk are never harvested.
+
+A Harvester walks to its job, works for its level's `actionIntervalTicksByLevel` ticks, then harvests the crop and carries the drops. It replants the crop with one seed from those drops, such as a wheat seed for wheat or a carrot for carrots; when the drops hold no seed, the spot is left empty. Sweet berry bushes and cave vines keep growing after their berries are picked, melons and pumpkins leave their stem, and stalks keep their bottom block. In the same action it also harvests other ripe crops of that node within 3 blocks that no other golem is walking to, up to its level's `cropsPerActionByLevel` crops in all. Region protection must let you break the crop; otherwise the node shows Blocked. A Harvester delivers what it carries to a Deposit Node or its home chest like any other working golem, and drops it cannot carry fall to the ground. Copper Overdrive and Swiftness runes shorten the action time.
+
+- **Tending** (level `tendingLevel`): while it has no harvest job, a Harvester bone meals a young crop in one of your Harvest Nodes' areas, at most once per `tendingIntervalMillis` milliseconds. Each bone meal comes from its linked home chest, so a Harvester without a home chest or without bone meal in it does not tend. Region protection must let you interact with the crop. Nether wart, cave vines, stalks, melons, and pumpkins are not tended.
+- **Tilling** (level `tillingLevel`): Harvest Nodes also hand out jobs to till dirt with nothing above it into farmland. While it has no harvest job, a Harvester that carries seeds plants empty farmland in the area, and it plants freshly tilled farmland at once. It plants wheat, carrots, potatoes, beetroots, torchflowers, and pitcher plants that are listed in `crops` and accepted by the node's filter, prefers the crop growing next to the spot, and leaves farmland beside a melon or pumpkin stem empty for the fruit. Region protection must let you break and build at the dirt it tills, and build above the farmland it plants.
+- **Bountiful** (level `bountifulLevel`): each harvest has a `bountifulChance` chance to roll its drops a second time. An Entropy rune then doubles each drop that wins its own roll.
+
+Each harvested crop pays `workXpPerCrop` work XP, as described in Earning XP; tilling, planting, and tending pay none. Golem harvests never pay Herbalism or any other skill.
+
+| Level | Action time | Crops per action | Unlocks |
+|---|---|---|---|
+| 1 | 2 s | 1 | Harvests ripe crops and replants them from their drops |
+| 2 | 1.5 s | 1 | Melons, pumpkins, sugar cane, bamboo, and cactus |
+| 3 | 1.2 s | 2 | Tending: bone meal from the home chest on young crops, once per 10 s |
+| 4 | 0.9 s | 3 | Tilling: re-tills dirt and plants empty farmland from carried seeds |
+| 5 | 0.6 s | 4 | Bountiful: 10% chance to roll a harvest's drops again |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Harvester Core | ` X ` / `YBY` / ` Z ` | X `IRON_HOE`, Y `WHEAT`, Z `COMPOSTER`, B `golemancy:blank_core` | 1 | 2 levels |
+| Harvest Node | ` X ` / ` B ` / `   ` | X `IRON_HOE`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `actionIntervalTicksByLevel` | `[40, 30, 24, 18, 12]` | Ticks a Harvester spends on each harvest, tilling, planting, or tending action after it reaches the spot, from level 1 upward. Values below 1 count as 1. |
+| `cropsPerActionByLevel` | `[1, 1, 2, 3, 4]` | Crops a Harvester harvests in one action, from level 1 upward: the crop it walked to, plus other ripe crops of the same Harvest Node within 3 blocks that no other golem is walking to. Values below 1 count as 1. |
+| `crops` | `["WHEAT", "CARROTS", "POTATOES", "BEETROOTS", "NETHER_WART", "COCOA", "SWEET_BERRY_BUSH", "CAVE_VINES", "TORCHFLOWER_CROP", "PITCHER_CROP", "MELON", "PUMPKIN", "SUGAR_CANE", "BAMBOO", "CACTUS"]` | Blocks Harvesters work, by block name. `TORCHFLOWER_CROP` covers grown torchflowers on farmland, `CAVE_VINES` covers both cave vine blocks, `MELON`, `PUMPKIN`, `SUGAR_CANE`, `BAMBOO`, and `CACTUS` need `extendedCropsLevel`, and any other name is harvested at its maximum growth age. Unknown names are ignored. |
+| `extendedCropsLevel` | `2` | Level at which Harvesters also harvest melons, pumpkins, sugar cane, bamboo, and cactus. |
+| `tendingLevel` | `3` | Level at which Harvesters use Tending. |
+| `tendingIntervalMillis` | `10000` | Milliseconds after a Harvester uses bone meal before it can use another, at least 1000. Lower values load as 1000. |
+| `tillingLevel` | `4` | Level at which Harvesters use Tilling. |
+| `bountifulLevel` | `5` | Level at which harvests can roll their drops a second time with Bountiful. |
+| `bountifulChance` | `0.1` | Chance, from 0 to 1, that a Bountiful harvest rolls its drops a second time. 0.1 is 10%. Values outside that range load as the nearest limit. |
+| `workXpPerCrop` | `0.4` | Golemancy work XP paid for each crop a Harvester harvests. Values below 0 load as 0. |
+| `harvesterCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Harvester Core recipe. |
+| `harvestNodeRecipe` | ` X ` / ` B ` / `   ` | Harvest Node recipe. |
+
 ### Runic Augments (`golem-runic-augments`)
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2

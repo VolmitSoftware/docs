@@ -43,6 +43,8 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Deposit Node | `BRICK` | Golemancy: Node Weaving | Item kind and node type |
 | Guardian Core | `FIREWORK_STAR` | Golemancy: Guardian Core | Item kind and role |
 | Guard Node | `BRICK` | Golemancy: Guardian Core | Item kind and node type |
+| Harvester Core | `FIREWORK_STAR` | Golemancy: Harvester Core | Item kind and role |
+| Harvest Node | `BRICK` | Golemancy: Harvester Core | Item kind and node type |
 | Blank Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments | Item kind |
 | Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments, infused at the Animus Plinth | Item kind, aspect, and tier |
 
