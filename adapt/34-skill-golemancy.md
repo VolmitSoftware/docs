@@ -127,7 +127,7 @@ When a snowball from one of your bound frost golems hits the golem's target or a
 
 - **Chill** (level 3): each snowball hit that damages its target gives it Slowness I for `chillTicks` ticks.
 - **Extra snowball** (level 4): each snowball has an `extraSnowballChance` chance to be followed 5 ticks later by a second snowball at the same target. The second snowball's hit lands even though the first hit just hurt the target.
-- **Frostbite** (level 5): when `frostbiteHits` snowball hits damage the same target within `frostbiteWindowMillis` milliseconds, the target stays fully frozen for `frostbiteFreezeTicks` ticks and then thaws at the normal rate. A target that is already frozen for longer stays frozen. Frostbite cannot freeze that target again for `frostbitePerTargetCooldownMillis` milliseconds, and hits during that time do not count.
+- **Frostbite** (level 5): when `frostbiteHits` snowball hits damage the same target within `frostbiteWindowMillis` milliseconds, the target stays fully frozen for `frostbiteFreezeTicks` ticks and then thaws at the normal rate. A target that is already frozen for longer stays frozen, and a target whose freezing another plugin holds in place is left as it is. Frostbite cannot freeze that target again for `frostbitePerTargetCooldownMillis` milliseconds, and hits during that time do not count.
 
 | Level | Bonus health | Snowball damage | Warm biome damage | Unlocks |
 |---|---|---|---|---|
@@ -163,7 +163,7 @@ Every bound copper golem you own gains the extra maximum health and movement spe
 Bound copper golems never turn into statues as they oxidize. Each oxidation stage counts as patina, from 0 when unaffected through exposed and weathered to 3 when oxidized. Every stage gives the golem `patinaArmorPerStage` armor and slows it by `patinaSpeedPenaltyPerStage`. When the golem's stage changes, for example when you scrape it with an axe, its armor and speed follow at once.
 
 - **Patina armor doubled** (level 3): each stage gives twice `patinaArmorPerStage` armor.
-- **Static Overdrive** (level 4): when lightning strikes within `overdriveRadius` blocks of one of your awake bound copper golems, the golem gets Speed II for `overdriveSeconds` seconds and its work interval is halved for that time. A golem can be overdriven again `overdriveCooldownSeconds` seconds after its last Static Overdrive started.
+- **Static Overdrive** (level 4): when lightning strikes within `overdriveRadius` blocks of one of your awake bound copper golems, the golem gets Speed II for `overdriveSeconds` seconds and its work interval is multiplied by `overdriveWorkIntervalMultiplier` for that time, which halves it by default. A golem can be overdriven again `overdriveCooldownSeconds` seconds after its last Static Overdrive started.
 - **No patina slowdown** (level 5): patina no longer slows your copper golems; its armor stays.
 
 | Level | Bonus health | Carry | Speed | Unlocks |
@@ -184,9 +184,10 @@ Bound copper golems never turn into statues as they oxidize. Each oxidation stag
 | `patinaArmorDoubleLevel` | `3` | Level at which patina armor is doubled. |
 | `patinaPenaltyRemovedLevel` | `5` | Level at which patina no longer slows copper golems. |
 | `overdriveLevel` | `4` | Level at which nearby lightning triggers Static Overdrive. |
-| `overdriveRadius` | `16.0` | Blocks from a lightning strike within which your bound copper golems gain Static Overdrive. |
-| `overdriveSeconds` | `60` | Seconds of Speed II and halved work interval that Static Overdrive gives. |
+| `overdriveRadius` | `16.0` | Blocks from a lightning strike within which your bound copper golems gain Static Overdrive, from 0 to 64. Larger values load as 64. |
+| `overdriveSeconds` | `60` | Seconds of Speed II and faster work that Static Overdrive gives. |
 | `overdriveCooldownSeconds` | `300` | Seconds after a Static Overdrive starts before the same golem can be overdriven again. |
+| `overdriveWorkIntervalMultiplier` | `0.5` | Multiplier on a bound copper golem's work interval while Static Overdrive lasts. 0.5 makes it work twice as fast; 1 leaves it unchanged. |
 
 ## Reference
 
