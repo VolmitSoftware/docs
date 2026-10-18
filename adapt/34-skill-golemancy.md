@@ -515,6 +515,67 @@ The recipe tables use the same fields as the Animus Binding recipes.
 | `breakerCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Breaker Core recipe. |
 | `breakerNodeRecipe` | ` X ` / ` B ` / `   ` | Breaker Node recipe. |
 
+### Angler Core (`golem-angler-core`)
+
+5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
+
+Makes golems bound with an Angler Core fish the open water in front of a Fishing Node and carry the catch, with more luck, a junk filter, faster catches in the rain, and double catches at higher levels, and unlocks the Angler Core and Fishing Node recipes at level 1.
+
+Bind a golem with an Angler Core through Animus Binding. Copper and iron golems take the core by default; `allowedCoresCopper` and `allowedCoresIron` in the skill configuration decide which bodies can. A new Angler starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Anglers work only in Work mode and only at Fishing Nodes, so place a Fishing Node with Node Weaving on a block beside open water. Its channel, priority, and redstone setting work like any other node's; its work area setting has no effect.
+
+A Fishing Node fishes the water in front of the face it is placed on: for a node on the side of a block, a patch 5 blocks wide that starts at the face and reaches 5 blocks out, centered on the node; for a node on top of a block, the 5 by 5 patch right above it; for a node under a block, the patch right below it. The water is open, as it is for a fishing bobber, when four layers of that patch hold nothing but water source blocks and air. For a node on the side of a block, the layers run from one block below the node to two blocks above it. The lowest layer must be all water, every layer above it must be all water or all air, and no water layer may sit above an air layer, so a node on the side of a block at the waterline or one block above it suits most ponds, rivers, and oceans. Seagrass, kelp, and bubble columns count as water and lily pads count as air; flowing water, waterlogged blocks, and every other block close the water. A node without open water hands out no jobs and shows Blocked, and changes to the water are noticed within 10 seconds.
+
+Each Fishing Node seats one Angler for each of `maxAnglersPerChunk`, up to 5, on the blocks right in front of its face, and offers one free seat at a time. At most `maxAnglersPerChunk` Anglers fish at once in one chunk, counting every Fishing Node in that chunk; other Anglers wait until a seat frees up.
+
+An Angler walks to its seat and casts, then lands one catch every `catchIntervalSecondsByLevel` seconds and carries it. Each catch is rolled from the `fish`, `junk`, and `treasure` tables. The category is picked by `fishWeight`, `junkWeight`, and `treasureWeight`, each changed by its luck shift times your level's `luckByLevel`, the way Luck of the Sea shifts vanilla fishing toward treasure, and the item is picked by its weight in that table. Treasure enchanted books and treasure with durability, such as bows and fishing rods, come enchanted as if at an enchanting table with `treasureEnchantLevels` levels, treasure enchantments included. An Angler keeps fishing until it is full, then delivers its catch to a Deposit Node or its home chest like any other working golem and returns to fish; catches it cannot carry fall to the ground beside it. Region protection must let you interact with the seat block; otherwise the Angler stops and the node shows Blocked. Static Overdrive on copper golems and Swiftness runes shorten the catch time, and an Entropy rune can double each catch. Each cast and each catch splashes the water with the fishing bobber's sound.
+
+The bottom row of a Fishing Node's GUI shows whether the node found open water, and holds the junk filter toggle.
+
+- **Junk filter** (level `junkFilterLevel`): set the node's junk toggle to Discard, and Anglers throw junk catches back instead of carrying them.
+- **Rain** (level `rainLevel`): while rain falls on the water, the catch time is multiplied by `rainIntervalMultiplier`. Rain falls on the water during a storm when nothing above the water blocks the sky and the biome is neither cold enough for snow nor too dry for rain.
+- **Double catch** (level `doubleCatchLevel`): each catch has a `doubleCatchChance` chance to bring up a second catch, rolled on its own.
+
+Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including junk the filter throws back and both catches of a double catch. Golem fishing drops no experience orbs and never pays Seaborne or any other skill.
+
+| Level | Catch time | Luck | Unlocks |
+|---|---|---|---|
+| 1 | 60 s | 0 | Fishes the open water at a Fishing Node and carries the catch |
+| 2 | 50 s | 0 | |
+| 3 | 40 s | 1 | Junk filter toggle |
+| 4 | 32 s | 1 | 25% shorter catch time in the rain |
+| 5 | 25 s | 2 | 10% chance of a double catch |
+
+| Recipe | Pattern | Keys | Yield | Tithe |
+|---|---|---|---|---|
+| Angler Core | ` X ` / `YBY` / ` Z ` | X `FISHING_ROD`, Y `PRISMARINE_SHARD`, Z `DRIED_KELP`, B `golemancy:blank_core` | 1 | 2 levels |
+| Fishing Node | ` X ` / ` B ` / `   ` | X `FISHING_ROD`, B `golemancy:blank_node` | 1 | 0 |
+
+The recipe tables use the same fields as the Animus Binding recipes.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `catchIntervalSecondsByLevel` | `[60, 50, 40, 32, 25]` | Seconds an Angler waits for each catch, from level 1 upward. Values below 1 count as 1. |
+| `luckByLevel` | `[0, 0, 1, 1, 2]` | Fishing luck of each catch, from level 1 upward. Each point changes the category weights by their luck shifts. Values below 0 count as 0. |
+| `junkFilterLevel` | `3` | Level at which Fishing Nodes can turn on the junk filter. |
+| `rainLevel` | `4` | Level at which Anglers catch faster while rain falls on their water. |
+| `rainIntervalMultiplier` | `0.75` | Multiplier on the catch time while rain falls on the water. 0.75 is 25% shorter. Values load between 0.05 and 1. |
+| `doubleCatchLevel` | `5` | Level at which a catch can bring up a second catch. |
+| `doubleCatchChance` | `0.1` | Chance, from 0 to 1, that a catch brings up a second catch. 0.1 is 10%. Values outside that range load as the nearest limit. |
+| `maxAnglersPerChunk` | `2` | Most Anglers that fish at once in one chunk, counting every Fishing Node in it. Each Fishing Node seats up to 5 of them. Values below 1 load as 1. |
+| `fishWeight` | `85` | Weight of the fish category at 0 luck. |
+| `fishLuckShift` | `-1` | Change to the fish weight per point of luck. |
+| `junkWeight` | `10` | Weight of the junk category at 0 luck. |
+| `junkLuckShift` | `-2` | Change to the junk weight per point of luck. Weights never drop below 0. |
+| `treasureWeight` | `5` | Weight of the treasure category at 0 luck. |
+| `treasureLuckShift` | `2` | Change to the treasure weight per point of luck. |
+| `fish` | `["COD:60", "SALMON:25", "TROPICAL_FISH:2", "PUFFERFISH:13"]` | Fish catches as `MATERIAL:weight`, or `MATERIAL:weight:min:max` for a stack of min to max items. Entries that are not an item or have no weight above 0 are ignored with a warning. |
+| `junk` | `["LILY_PAD:17", "LEATHER_BOOTS:10", "LEATHER:10", "BONE:10", "STRING:5", "FISHING_ROD:2", "BOWL:10", "STICK:5", "INK_SAC:1:10:10", "TRIPWIRE_HOOK:10", "ROTTEN_FLESH:10"]` | Junk catches, in the same format as `fish`. |
+| `treasure` | `["NAME_TAG:1", "SADDLE:1", "BOW:1", "FISHING_ROD:1", "ENCHANTED_BOOK:1", "NAUTILUS_SHELL:1"]` | Treasure catches, in the same format as `fish`. `ENCHANTED_BOOK` and items with durability, such as bows and fishing rods, are enchanted with `treasureEnchantLevels`. |
+| `treasureEnchantLevels` | `30` | Enchantment levels for treasure enchanted books and durable treasure, as at an enchanting table, treasure enchantments included. Values below 1 load as 1. |
+| `workXpPerCatch` | `6` | Golemancy work XP paid for each catch, including junk the filter throws back. Values below 0 load as 0. |
+| `anglerCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Angler Core recipe. |
+| `fishingNodeRecipe` | ` X ` / ` B ` / `   ` | Fishing Node recipe. |
+
 ### Runic Augments (`golem-runic-augments`)
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2
