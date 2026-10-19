@@ -110,9 +110,9 @@ GriefPrevention checks the claim at the location Adapt checks:
 |---|---|
 | `canBlockBreak`, `canBlockPlace` | Build trust in the claim. Claim owners, players ignoring claims, and players with `griefprevention.adminclaims` in an admin claim pass. |
 | `canAccessChest` | Container trust in the claim. |
-| `canPVE` for a mob | Monsters always pass. Other creatures, such as animals, golems, and villagers, need container trust while GriefPrevention's `GriefPrevention.Claims.ProtectCreatures` setting is on. |
+| `canPVE` for a mob | Monsters always pass. Creatures, such as animals, fish, golems, and villagers, need container trust while GriefPrevention's `GriefPrevention.Claims.ProtectCreatures` setting is on. Bats, armor stands, and other mobs that are not creatures pass. |
 
-GriefPrevention counts as monsters every monster, shulkers, the killer bunny, aggressive pandas, and hoglins and polar bears that are hunting and were not lured. `canPVP`, `canInteract`, `checkRegion`, and `canPVE` checks that name only a location are not limited by GriefPrevention. Adaptation hits on a mob, the targets of Adapt minions such as skeletal servants and golems, and a Rancher's work on animals use the mob check.
+GriefPrevention counts as monsters every monster, shulkers, the killer bunny, aggressive pandas, and hoglins and polar bears that are hunting and were not lured. `canPVP`, `canInteract`, `checkRegion`, and `canPVE` checks that name only a location are not limited by GriefPrevention. The mob check covers damage from golems and Adapt minions such as skeletal servants, a Rancher's work on animals, and adaptations that pass the mob they hit. Adaptations that judge a hit by its location use the location check.
 
 Factions checks the faction that owns the location's chunk. Wilderness and admin bypass pass every check:
 
@@ -122,6 +122,7 @@ Factions checks the faction that owns the location's chunk. Wilderness and admin
 | `canBlockPlace` | The faction's `BUILD` permission for the player |
 | `canAccessChest` | The faction's `CONTAINER` permission for the player |
 | `canPVP` | The player's own territory, or territory that allows PvP |
-| `canPVE`, `checkRegion` | The player's own territory |
+| `canPVE` for a mob | Monsters always pass. Creatures need the player's own territory. |
+| `checkRegion` | The player's own territory |
 
-`canInteract` is not limited by Factions.
+Factions sorts monsters and creatures as GriefPrevention does, except that a hunting hoglin or polar bear always counts as a monster. `canInteract` and `canPVE` checks that name only a location are not limited by Factions.

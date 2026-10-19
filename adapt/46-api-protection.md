@@ -28,11 +28,11 @@ Register it through Bukkit's `ServicesManager` under `Protector`. Return `true` 
 
 Protector methods cover block breaking, block placement, interaction, damage, item use, entity interaction, and movement. The adaptation may be `null` for a general check.
 
-`canPVE(player, entity, adaptation)` judges damage to, or handling of, one mob. It falls back to `canPVE(player, location, adaptation)` at the mob's location, so override it when your rule depends on the kind of mob, such as letting players hit monsters but not animals. `Adaptation.canPVE(player, entity)` evaluates it across the active protectors. Adapt uses it for adaptation hits on a mob, for the targets of its minions, and for golem work on animals.
+`canPVE(player, entity, adaptation)` judges damage to, or handling of, one mob. It falls back to `canPVE(player, location, adaptation)` at the mob's location, so override it when your rule depends on the kind of mob, such as letting players hit monsters but not animals. `Adaptation.canPVE(player, entity)` evaluates it across the active protectors. Adapt uses it for damage from golems and minions, for Rancher work on animals, and for adaptations that pass the mob they hit.
 
 Use `Protector` for location-specific rules. Use [Ability Use Policy](/adapt/43-api-ability-use-policy) for player state such as jail, duel, quest, or rank restrictions.
 
-Calls run on the owner of the player or location. Keep them fast and do not perform I/O.
+Calls run on the thread that owns the player or location, and `canPVE(player, entity, adaptation)` runs on the thread that owns the mob. Keep them fast and do not perform I/O.
 
 `Adaptation.checkRegion(player, location)` evaluates the active protectors at an explicit destination. `checkRegion(player)` uses the player's current location. Blink checks both region access and interaction at its proposed destination before teleporting, then honors the normal teleport cancellation events. A reactive Blink whose teleport is denied retains the incoming attack.
 
