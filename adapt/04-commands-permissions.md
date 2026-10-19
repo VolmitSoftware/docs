@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 Boosts stack. The final XP multiplier is limited to `0.01`–`1000`.
 
+`force=true` on `claim-adaptation` skips power, knowledge, and permanence checks but never prerequisites: a level whose `requires` entries the player has not met is always refused. Lowering an adaptation that another learned adaptation requires is refused unless `force=true`; a forced change also removes the adaptations whose requirement it breaks, then any that required those.
+
 ## Clearing data
 
 | Command | Effect |
@@ -54,6 +56,17 @@ These commands require `adapt.clear`. `clear` targets online players; `reset con
 | `/adapt default adaptation <skill:adaptation>` | `adapt.configurator` | Restore one adaptation config |
 | `/adapt default all` | `adapt.configurator` | Archive and restore all Adapt configs |
 
+## Golems
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/adapt golem roster` | `adapt.main` | Open your golem roster while Golemancy is enabled |
+| `/adapt golem list [player]` | `adapt.golemancy.admin` | List a player's golems with their ids, states, and last known positions |
+| `/adapt golem release <id> [player]` | `adapt.golemancy.admin` | Release one of a player's golems |
+| `/adapt golem wake [player]` | `adapt.golemancy.admin` | Recheck a player's loaded golems and wake the ones that can wake |
+
+The admin commands default to you. `list` also reads an offline player's roster without changing it; `release` and `wake` need the player online. `id` is a golem id from `/adapt golem list`, or enough of its first characters to match exactly one of that player's golems. Releasing a loaded golem works like its owner's Release: it becomes an ordinary golem, drops its cores, runes, Masterwork Heart, and carried items, and returns its stored essence as experience. A missing, packed, or shattered golem leaves the roster at once: a released missing golem's body turns ordinary without drops if it shows up later, and a Dormant Golem or Shattered Core crumbles the next time it is used. An active golem that is not loaded is refused; release it once its chunk is loaded or it shows as missing. Waking never lifts `serverMaxActiveGolems`; golems beyond it stay asleep until room frees. See [Skill - Golemancy](/adapt/34-skill-golemancy).
+
 ## Permissions
 
 Most command permissions default to operators. `adapt.effects`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
@@ -69,6 +82,7 @@ Most command permissions default to operators. `adapt.effects`, `adapt.language.
 | `adapt.cheatitem` | Give XP and knowledge orbs |
 | `adapt.determine` | Set skills and adaptations |
 | `adapt.clear` | Clear or reset profiles |
+| `adapt.golemancy.admin` | List, release, and wake other players' golems |
 | `adapt.effects` | Toggle personal effects |
 | `adapt.debug` | Use debug mode |
 | `adapt.debugdump` | Save and optionally upload diagnostic reports; default `op` |

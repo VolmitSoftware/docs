@@ -2,13 +2,13 @@
 title: "Adapt"
 description: "Skills, progression, and abilities for Paper, Purpur, and Folia servers"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-17T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt adds 23 skills. Actions award skill XP. Levels award knowledge, which buys adaptations. Learned adaptation levels spend a shared ability-power budget.
+Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys adaptations. Learned adaptation levels spend a shared ability-power budget.
 
 | | |
 |---|---|

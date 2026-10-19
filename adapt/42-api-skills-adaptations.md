@@ -2,12 +2,12 @@
 title: "API - Skills & Adaptations"
 description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-10-13T16:42:44.153Z
+date: 2026-10-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-`Skill` represents one of the 23 progression lines. `Adaptation` represents a purchasable ability inside a skill. Use the supported read-only members listed below, and use `AdaptationLearningTransaction` to change a player's learned level.
+`Skill` represents one of the 24 progression lines. `Adaptation` represents a purchasable ability inside a skill. Use the supported read-only members listed below, and use `AdaptationLearningTransaction` to change a player's learned level.
 
 Some unsupported accessors expose relocated VolmLib collections and bind that package path into your jar. See [Adapt relocates VolmLib](/adapt/41-api-getting-started#adapt-relocates-volmlib).
 
@@ -63,14 +63,16 @@ When `AdaptConfig.get().isPlayerSettingsEnabled()` is `false`, preference resolu
 
 ## Learning and unlearning
 
-`AdaptationLearningTransaction` is the only supported way to change a learned level. Each of its two statics is a complete transaction. It clamps the target. It checks power and knowledge. It runs the Vault charge or refund when the learning economy is on. It honors permanent-adaptation rules and the hardcore no-refunds setting. It converts a region-granted level into a paid one.
+`AdaptationLearningTransaction` is the only supported way to change a learned level. Each of its two statics is a complete transaction. It clamps the target. It checks power and knowledge. It runs the Vault charge or refund when the learning economy is on. It honors permanent-adaptation rules, adaptation requirements, and the hardcore no-refunds setting. It converts a region-granted level into a paid one.
 
 ```java
 AdaptationLearningTransaction.Result result =
     AdaptationLearningTransaction.learn(adaptation, player, 3, false);
 ```
 
-Call it on the tick thread that owns the player. Pass the level the player should end up at rather than a delta. `learn` clamps to the adaptation's max level. `unlearn` clamps at zero. Pass `bypassCosts = true` only for an administrative action you have already authorised. It skips the power, knowledge, and money checks. On `unlearn` it also overrides the permanent-adaptation refusal and pays nothing back. The returned `Result` is the complete outcome. Do not also write `PlayerSkillLine` yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge, and any Vault charge before it propagates.
+Call it on the tick thread that owns the player. Pass the level the player should end up at rather than a delta. `learn` clamps to the adaptation's max level. `unlearn` clamps at zero. Pass `bypassCosts = true` only for an administrative action you have already authorised. It skips the power, knowledge, and money checks. On `unlearn` it also overrides the permanent-adaptation and dependent-adaptation refusals, pays nothing back, and removes the learned adaptations whose requirement on it is broken, following that chain. It never bypasses the requirements checked by `learn`. The returned `Result` is the complete outcome. Do not also write `PlayerSkillLine` yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge, and any Vault charge before it propagates.
+
+`Adaptation.onLevelChanged(Player, int)` runs whenever an online player's learned level of that adaptation changes, from a transaction, a dependent removal, or a region grant. It receives the new level, `0` when the adaptation is gone. It runs on the thread that changed the level, so schedule world and entity work on the owning scheduler.
 ## Reference
 
 ### Supported `SkillRegistry` members
@@ -112,6 +114,7 @@ Do not call `getAdaptations()`, `getRecipes()`, `getStatTrackers()`, `getModel()
 | `getLevel(Player)` | `int`, the stored learned level |
 | `getActiveLevel(Player)` | `int`, `0` unless every gate passes |
 | `isEnabled()`, `isPermanent()`, `canUse(Player)` | `boolean` |
+| `getRequirements()` | `List<AdaptationRequirement>`, each with `adaptationId()` and `level()` |
 
 `canUse(Player)` is public and fires `AdaptAdaptationUseEvent` plus every `AbilityUsePolicy` on its own, without the learned-level test. It is the one path that can present a policy with `level() == 0`.
 
@@ -130,6 +133,7 @@ The base TOML shape for a first-party adaptation. External code may read these b
 | `costFactor` | double | `0.45` | Growth applied to each level above the first |
 | `maxLevel` | int | `5` | Highest level a player can reach |
 | `initialCost` | int | `2` | Knowledge charged for level 1 |
+| `requires` | list of strings | `[]` | Prerequisites as `adaptationId:level`; learning waits until each is met, and each required adaptation cannot be unlearned below that level while this one is learned |
 
 ### `AdaptationLearningTransaction.Result`
 
@@ -145,6 +149,8 @@ The base TOML shape for a first-party adaptation. External code may read these b
 | `ECONOMY_UNAVAILABLE` | Vault or its economy provider is missing |
 | `ECONOMY_FAILED` | Vault accepted the call and reported a failure |
 | `PERMANENT` | `unlearn` refused because the adaptation is permanent |
+| `REQUIREMENTS_MISSING` | `learn` refused because a `requires` entry is not met |
+| `REQUIRED_BY_DEPENDENTS` | `unlearn` refused because a learned adaptation requires the current level |
 ## See also
 
 - [41 - API - Getting Started](/adapt/41-api-getting-started)

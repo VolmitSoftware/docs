@@ -2,7 +2,7 @@
 title: "Protection & Region Policy"
 description: "WorldGuard flags, claim protection, and region policy"
 published: true
-date: 2026-09-28T18:00:00.000Z
+date: 2026-10-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,7 +28,7 @@ A missing plugin, a missing location, or a protector error uses the default poli
 
 `adapt-xp deny` zeroes awards that carry a location. The location is the one the skill passed, often the block. No location uses the default policy and the award is paid. Bypass applies to `adapt-xp` only. `adapt-xp-multiplier` applies after novelty and before the skill-line multipliers. Overlapping regions do not compound. `0` zeroes the award. Bypass does not apply to the multiplier, the power bonus, or unlocks. Where the multiplier sits in the award is in [Configuration math](/adapt/05-configuration-math).
 
-`adapt-power-bonus` is added to max power on the one-second tick from the player's position. It is not saved. The next tick outside a region that sets it clears the bonus. If used power then exceeds max power, the lowest learned levels are removed with no refund. Moving to an equal or higher bonus does not remove levels. Region grants are exempt. `/adapt debug mode` skips that removal.
+`adapt-power-bonus` is added to max power on the one-second tick from the player's position. It is not saved. The next tick outside a region that sets it clears the bonus. If used power then exceeds max power, learned levels are removed with no refund, lowest first. Levels that no other learned adaptation requires go before prerequisite levels, and lowering a prerequisite also removes the adaptations whose requirement it breaks. Moving to an equal or higher bonus does not remove levels. Region grants are exempt. `/adapt debug mode` skips that removal.
 
 `adapt-unlock-adaptations` takes adaptation ids, or `*`. Names are trimmed and lowercased. Applicable regions are combined. Each listed adaptation is granted at level 1 while the player is inside, when the skill and adaptation are enabled. Grants cost no knowledge, currency, or power, and are removed on leave, quit, and profile load. An adaptation the player already learned is left as a normal learned adaptation.
 
@@ -104,3 +104,25 @@ Each WorldGuard check also requires `use-adaptations` to be unset or `allow`:
 | `canInteract` | `use-adaptations` + `INTERACT` |
 | `canAccessChest` | `use-adaptations` + `CHEST_ACCESS` |
 
+GriefPrevention checks the claim at the location Adapt checks:
+
+| Adapt check | GriefPrevention rule |
+|---|---|
+| `canBlockBreak`, `canBlockPlace` | Build trust in the claim. Claim owners, players ignoring claims, and players with `griefprevention.adminclaims` in an admin claim pass. |
+| `canAccessChest` | Container trust in the claim. |
+| `canPVE` for a mob | Monsters always pass. Creatures, such as animals, fish, golems, and villagers, need container trust while GriefPrevention's `GriefPrevention.Claims.ProtectCreatures` setting is on. Bats, armor stands, and other mobs that are not creatures pass. |
+
+GriefPrevention counts as monsters every monster, shulkers, the killer bunny, aggressive pandas, and hoglins and polar bears that are hunting and were not lured. `canPVP`, `canInteract`, `checkRegion`, and `canPVE` checks that name only a location are not limited by GriefPrevention. The mob check covers damage from golems and Adapt minions such as skeletal servants, a Rancher's work on animals, and adaptations that pass the mob they hit. Adaptations that judge a hit by its location use the location check.
+
+Factions checks the faction that owns the location's chunk. Wilderness and admin bypass pass every check:
+
+| Adapt check | Factions rule |
+|---|---|
+| `canBlockBreak` | The faction's `DESTROY` permission for the player |
+| `canBlockPlace` | The faction's `BUILD` permission for the player |
+| `canAccessChest` | The faction's `CONTAINER` permission for the player |
+| `canPVP` | The player's own territory, or territory that allows PvP |
+| `canPVE` for a mob | Monsters always pass. Creatures need the player's own territory. |
+| `checkRegion` | The player's own territory |
+
+Factions sorts monsters and creatures as GriefPrevention does, except that a hunting hoglin or polar bear always counts as a monster. `canInteract` and `canPVE` checks that name only a location are not limited by Factions.
