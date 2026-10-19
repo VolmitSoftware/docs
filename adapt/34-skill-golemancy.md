@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-19T19:56:21.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -28,6 +28,11 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 - When one of your working golems finishes a job, you earn the work XP that its Core adaptation sets for that job. Work XP pays only while you are online and within `workXpOwnerRadius` blocks of the golem, and you earn at most `workXpHourlyCap` work XP in any 60 minutes. Golem labor never pays other skills. Each finished job counts toward `golemancy.tasks`, and each item your golems deliver into a container counts toward `golemancy.items.moved`. Items a Sorter puts back into its Input Node's container count toward neither.
 
 ## Items and crafting
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Crafting Golemancy items" src="/adapt-assets/demos/golemancy/golemancy-crafting-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Crafting Golemancy items" src="/adapt-assets/demos/golemancy/golemancy-crafting-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 Golemancy items keep what they hold through drops, chests, and restarts, and never act as their base item. [Items, Orbs & Bound Objects](/adapt/36-items-orbs-bound-objects#bound-items) lists each item's base item and stored data.
 
@@ -65,6 +70,16 @@ Players without the tithe levels see no result until they change the grid after 
 
 ## Bound golems
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Bound golem bodies" src="/adapt-assets/demos/golemancy/golemancy-bodies-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Bound golem bodies" src="/adapt-assets/demos/golemancy/golemancy-bodies-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Golem modes" src="/adapt-assets/demos/golemancy/golemancy-modes-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Golem modes" src="/adapt-assets/demos/golemancy/golemancy-modes-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 A golem you bind stays yours until you release it. You manage each golem through its Golem GUI and all of your golems through your golem roster, both opened with the Artificer's Crook.
 
 Snow, iron, and copper golems are built from these blocks:
@@ -78,6 +93,11 @@ A bound golem sleeps while you are offline, while you are online but your Adapt 
 A sleeping golem stays where it is and does not move, work, fight, answer Crook signals, or regenerate. With `dormantInvulnerable` on, it takes no damage while it sleeps.
 
 ### Golem GUI
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Golem GUI tour" src="/adapt-assets/demos/golemancy/golemancy-golem-gui-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Golem GUI tour" src="/adapt-assets/demos/golemancy/golemancy-golem-gui-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 Hold the Artificer's Crook in your main hand and right-click one of your bound golems to open its Golem GUI; with Stasis, a sneaking right-click packs the golem instead. Only the golem's owner can open it, whether the golem is awake or asleep.
 
@@ -103,6 +123,11 @@ The bottom row holds:
 
 ### Golem roster
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Golem roster" src="/adapt-assets/demos/golemancy/golemancy-roster-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Golem roster" src="/adapt-assets/demos/golemancy/golemancy-roster-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 Your golem roster lists every golem you own. Sneak and right-click the air with the Crook in your main hand, or use `/adapt golem roster`, to open it. Each entry shows the golem's body and core, its health and position while it is loaded or the world and spot it was last seen near otherwise, and its state:
 
 | State | Meaning |
@@ -123,6 +148,11 @@ While you are online, the roster watches the chunk each of your active golems wa
 Only one copy of each golem stays bound. Your roster records the golem's newest copy each time the golem unloads, the server stops, or the golem awakens or is rebuilt. An older copy that loads later, such as one from a world backup or from a chunk that a server crash kept from saving, turns back into an ordinary golem and drops nothing. So does a copy of a golem that your roster lists as packed or shattered, or does not list at all, and the older of two copies of one golem that are loaded at once. When neither copy is newer, the copy that loaded second turns back. If the newest copy does not appear after an older one turns back, the golem shows as Missing.
 
 ## Animus Plinth
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Animus Plinth ritual" src="/adapt-assets/demos/golemancy/golemancy-plinth-ritual-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Animus Plinth ritual" src="/adapt-assets/demos/golemancy/golemancy-plinth-ritual-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 The Animus Plinth infuses runes and the Masterwork Heart. Build it from a lodestone with a pedestal block exactly two blocks north, east, south, and west of it, all at the same height. The pedestal blocks are the eight chiseled copper blocks, waxed or not, and `pedestalBlocks` in the skill configuration changes the list.
 
@@ -205,6 +235,11 @@ A material name never matches a Golemancy item made from that material, so a Mas
 
 ## Player preferences
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Player preferences" src="/adapt-assets/demos/golemancy/golemancy-preferences-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Player preferences" src="/adapt-assets/demos/golemancy/golemancy-preferences-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior, and a control for a perk that unlocks at a later level appears once you reach that level. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation's TOML file; the control ids are `status-labels`, `node-reveal`, `work-area-outline`, `intercept`, `retaliate-players`, `magnet`, `absorb-orbs`, `tending`, `tilling`, `leaf-sweep`, `sweeping-fists`, `static-overdrive`, `signal-feedback`, `aura`, and `obey-overseer`.
 
 | Adaptation | Personal controls |
@@ -232,6 +267,11 @@ Arrows point from each prerequisite to the adaptations it unlocks; unlabelled ar
 ![Golemancy prerequisite tree: Animus Binding leads to Node Weaving, Frost Frame, Copper Frame, Iron Frame, Bone Frame, Guardian Core, Runic Augments at level 2, Overseer, Golem Mending, and Stasis at level 2; Node Weaving leads to the Gatherer, Harvester, Lumber, Breaker, Rancher, Sorter, and Angler Cores; Masterwork needs Runic Augments level 3 and Animus Binding level 5; Bone Frame also needs TragOul's Skeletal Servant level 1](/adapt-assets/golemancy/diagrams/prerequisite-tree.png =880x)
 
 ### Animus Binding (`golem-animus-binding`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Animus Binding" src="/adapt-assets/demos/golemancy/golem-animus-binding-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Animus Binding" src="/adapt-assets/demos/golemancy/golem-animus-binding-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level
 
@@ -281,6 +321,16 @@ A Companion golem, bound with a Blank Animus Core, follows you by default. Its G
 | `blankCoreRecipe` | `ARA` / `RPR` / `ARA`, tithe 1 | Blank Animus Core recipe. |
 
 ### Node Weaving (`golem-node-weaving`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Node Weaving" src="/adapt-assets/demos/golemancy/golem-node-weaving-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Node Weaving" src="/adapt-assets/demos/golemancy/golem-node-weaving-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Node clicks" src="/adapt-assets/demos/golemancy/golemancy-node-config-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Node clicks" src="/adapt-assets/demos/golemancy/golemancy-node-config-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
 
@@ -353,6 +403,11 @@ Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its b
 
 ### Frost Frame (`golem-frost-frame`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Frost Frame" src="/adapt-assets/demos/golemancy/golem-frost-frame-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Frost Frame" src="/adapt-assets/demos/golemancy/golem-frost-frame-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
 
 Strengthens your bound frost golems with extra health, damaging snowballs, and protection from rain and heat. Frost golems bind with Animus Binding alone; Frost Frame only makes them stronger.
@@ -389,6 +444,11 @@ When a snowball from one of your bound frost golems hits the golem's target or a
 | `frostbitePerTargetCooldownMillis` | `10000` | Milliseconds before Frostbite can freeze the same target again. |
 
 ### Copper Frame (`golem-copper-frame`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Copper Frame" src="/adapt-assets/demos/golemancy/golem-copper-frame-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Copper Frame" src="/adapt-assets/demos/golemancy/golem-copper-frame-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
 
@@ -427,6 +487,11 @@ Bound copper golems never turn into statues as they oxidize. Each oxidation stag
 
 ### Iron Frame (`golem-iron-frame`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Iron Frame" src="/adapt-assets/demos/golemancy/golem-iron-frame-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Iron Frame" src="/adapt-assets/demos/golemancy/golem-iron-frame-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
 
 Lets you bind iron golems and strengthens them with extra health, armor, and attack, stronger ingot repairs, sweeping punches, and a full-size Colossus Form. Iron golems bind only after you learn Iron Frame.
@@ -463,6 +528,11 @@ While you are online, anyone who repairs one of your bound iron golems with an i
 
 ### Bone Frame (`golem-bone-frame`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Bone Frame" src="/adapt-assets/demos/golemancy/golem-bone-frame-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Bone Frame" src="/adapt-assets/demos/golemancy/golem-bone-frame-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 3 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1 and TragOul's Skeletal Servant level 1
 
 Brings your TragOul skeletal servants into Golemancy: they answer your Crook signals, glow in your servant channel with status labels only you see, wear a Bone Lattice of runes, and pay Golemancy XP for their kills.
@@ -491,6 +561,11 @@ Bone Frame works on the servants you summon with Skeletal Servant. Servants neve
 | `servantLabelRange` | `8.0` | Blocks within which your servants show status labels while you hold the Crook, a Node, a Core, or a Dormant Golem, from 1 to 64. Values outside that range load as the nearest limit. |
 
 ### Guardian Core (`golem-guardian-core`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Guardian Core" src="/adapt-assets/demos/golemancy/golem-guardian-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Guardian Core" src="/adapt-assets/demos/golemancy/golem-guardian-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
 
@@ -546,6 +621,11 @@ With `guardWhileOwnerOffline` on in the skill configuration, your Guardians stay
 | `guardNodeRecipe` | ` X ` / ` B ` / `   ` | Guard Node recipe. |
 
 ### Gatherer Core (`golem-gatherer-core`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Gatherer Core" src="/adapt-assets/demos/golemancy/golem-gatherer-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Gatherer Core" src="/adapt-assets/demos/golemancy/golem-gatherer-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
 
@@ -603,6 +683,11 @@ Higher levels add these perks:
 
 ### Harvester Core (`golem-harvester-core`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Harvester Core" src="/adapt-assets/demos/golemancy/golem-harvester-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Harvester Core" src="/adapt-assets/demos/golemancy/golem-harvester-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
 
 Makes golems bound with a Harvester Core harvest and replant the crops in a Harvest Node's area, then tend and till the field at higher levels, and unlocks the Harvester Core and Harvest Node recipes at level 1.
@@ -650,6 +735,11 @@ Each harvested crop pays `workXpPerCrop` work XP, as described in Earning XP; ti
 | `harvestNodeRecipe` | ` X ` / ` B ` / `   ` | Harvest Node recipe. |
 
 ### Lumber Core (`golem-lumber-core`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Lumber Core" src="/adapt-assets/demos/golemancy/golem-lumber-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Lumber Core" src="/adapt-assets/demos/golemancy/golem-lumber-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
 
@@ -707,6 +797,11 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 
 ### Breaker Core (`golem-breaker-core`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Breaker Core" src="/adapt-assets/demos/golemancy/golem-breaker-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Breaker Core" src="/adapt-assets/demos/golemancy/golem-breaker-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
 
 Makes golems bound with a Breaker Core break the blocks a Breaker Node's filter lists inside its work area, such as the output of a cobblestone or basalt generator or the ice of an ice farm, and unlocks the Breaker Core and Breaker Node recipes at level 1.
@@ -752,6 +847,11 @@ Each broken block pays `workXpPerBlock` work XP, as described in Earning XP. Gol
 | `breakerNodeRecipe` | ` X ` / ` B ` / `   ` | Breaker Node recipe. |
 
 ### Rancher Core (`golem-rancher-core`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Rancher Core" src="/adapt-assets/demos/golemancy/golem-rancher-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Rancher Core" src="/adapt-assets/demos/golemancy/golem-rancher-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
 
@@ -809,6 +909,11 @@ A Rancher delivers what it carries to a Deposit Node or its home chest like any 
 | `pastureNodeRecipe` | ` X ` / ` B ` / `   ` | Pasture Node recipe. |
 
 ### Sorter Core (`golem-sorter-core`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Sorter Core" src="/adapt-assets/demos/golemancy/golem-sorter-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Sorter Core" src="/adapt-assets/demos/golemancy/golem-sorter-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
 
@@ -885,6 +990,11 @@ Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` wor
 
 ### Angler Core (`golem-angler-core`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Angler Core" src="/adapt-assets/demos/golemancy/golem-angler-core-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Angler Core" src="/adapt-assets/demos/golemancy/golem-angler-core-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level · requires Node Weaving level 1
 
 Makes golems bound with an Angler Core fish the open water in front of a Fishing Node and carry the catch, with more luck, a junk filter, faster catches in the rain, and double catches at higher levels, and unlocks the Angler Core and Fishing Node recipes at level 1.
@@ -945,6 +1055,11 @@ Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including 
 | `fishingNodeRecipe` | ` X ` / ` B ` / `   ` | Fishing Node recipe. |
 
 ### Runic Augments (`golem-runic-augments`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Runic Augments" src="/adapt-assets/demos/golemancy/golem-runic-augments-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Runic Augments" src="/adapt-assets/demos/golemancy/golem-runic-augments-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2
 
@@ -1022,6 +1137,11 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 
 ### Overseer (`golem-overseer`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Overseer" src="/adapt-assets/demos/golemancy/golem-overseer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Overseer" src="/adapt-assets/demos/golemancy/golem-overseer-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
 
 Lets you signal your bound golems with the Artificer's Crook to follow you, hold, go home, or work, and as it grows, to attack what you look at, answer only on one channel, rally to you, and guard you in formation.
@@ -1069,6 +1189,11 @@ A signal reaches your awake golems within your level's `radiusByLevel` blocks of
 | `formationArmorRange` | `8.0` | Blocks from you within which a following golem counts toward your formation armor. |
 
 ### Golem Mending (`golem-mending`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Golem Mending" src="/adapt-assets/demos/golemancy/golem-mending-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Golem Mending" src="/adapt-assets/demos/golemancy/golem-mending-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 1
 
@@ -1129,6 +1254,11 @@ Shift-right-click a shattered golem in the Roster GUI to release it for good. It
 
 ### Stasis (`golem-stasis`)
 
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Stasis" src="/adapt-assets/demos/golemancy/golem-stasis-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Stasis" src="/adapt-assets/demos/golemancy/golem-stasis-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
+
 3 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2
 
 Packs one of your bound golems into a Dormant Golem block that you carry and place to wake the golem again, with its loadout, cargo, and health.
@@ -1170,6 +1300,11 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 | `awakenRiseTicks` | `20` | Ticks an awakened golem takes to rise from a tenth of its normal size to its bound size. 0 skips the rise. |
 
 ### Masterwork (`golem-masterwork`)
+
+<div class="adapt-demo">
+<video aria-label="First-person demonstration of Masterwork" src="/adapt-assets/demos/golemancy/golem-masterwork-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Masterwork" src="/adapt-assets/demos/golemancy/golem-masterwork-observer.webm" muted loop playsinline controls preload="none"></video>
+</div>
 
 3 levels · 2 knowledge, then 4 per level · requires Runic Augments level 3 and Animus Binding level 5
 
