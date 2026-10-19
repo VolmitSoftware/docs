@@ -294,6 +294,8 @@ Hold a node in your main hand, sneak, and right-click a block face. The node att
 
 A new node starts with no channel, priority 3, a whitelist filter with no entries, and a work area radius of 2 blocks, or your level's largest radius when that is smaller. The work area is centered on the block in front of the face.
 
+![A node attached to the front face of a chest, with its work area drawn as a dashed box centered on the block in front of that face, labelled Node, Chest, and Work area](/adapt-assets/golemancy/diagrams/node-on-chest.png =720x)
+
 Nodes are hidden until you hold the Crook, a Node (not a Blank Node), a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: Full while a Deposit or Filter Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
 
 Click one of your revealed nodes to configure it. Only the node's owner can configure it, and its label updates after each change.
