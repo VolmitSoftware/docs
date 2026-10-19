@@ -61,12 +61,12 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Blank Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments | Item kind |
 | Rune | `DISC_FRAGMENT_5` | Golemancy: Runic Augments, infused at the Animus Plinth | Item kind, aspect, and tier |
 | Shattered Core | `FIREWORK_STAR` | Golemancy: Golem Mending | Item kind, golem id, owner, and the fallen golem's cores, runes, settings, name, and record |
-| Dormant Golem | `SNOW_BLOCK`, `IRON_BLOCK`, or the copper block of the golem's oxidation stage | Golemancy: Stasis | Item kind, golem id, owner, and the packed golem's cores, runes, settings, name, record, carried items, essence, health, and copper state |
+| Dormant Golem | `SNOW_BLOCK`, `IRON_BLOCK`, or the copper block of the golem's oxidation stage, waxed when the golem was waxed | Golemancy: Stasis | Item kind, golem id, owner, and the packed golem's cores, runes, settings, name, record, carried items, essence, health, and copper state |
 | Masterwork Heart | `HEART_OF_THE_SEA` | Golemancy: Masterwork, infused at the Animus Plinth | Item kind |
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.
 
-Golemancy items never act as their base item. The Crook does not till, and Golemancy items do not work as ingredients outside Golemancy recipes, in anvils, grindstones, smithing tables, furnaces, stonecutters, or enchanting tables. Villagers do not take them in trades, and dispensers do not fire them. Only the owner can pick up a Shattered Core or Dormant Golem, and hoppers cannot take them. Uses and recipes: [Skill - Golemancy](/adapt/34-skill-golemancy#items-and-crafting).
+Golemancy items never act as their base item. The Crook does not till, and Golemancy items do not work as ingredients outside Golemancy recipes, in anvils, grindstones, smithing tables, furnaces, stonecutters, or enchanting tables. Villagers do not take them in trades, and dispensers do not fire them. Only the owner of a Shattered Core or Dormant Golem can use it. The Shattered Core a golem leaves where it dies, and a Dormant Golem that drops because its owner's inventory is full, can be picked up only by that owner; any other Shattered Core or Dormant Golem on the ground can be picked up by anyone. Hoppers never pick up a Shattered Core or Dormant Golem from the ground. Uses and recipes: [Skill - Golemancy](/adapt/34-skill-golemancy#items-and-crafting).
 
 Omni Tool swaps the visible tool for the block or action in progress. Sneak-drop splits it back into the stored tools. Shift-left-click does not merge tools: that click leaves the cursor empty, so the merge never runs. The same click is cancelled when the tool already holds more components than its slot budget. Destroying the combined item destroys the stored tools.
 

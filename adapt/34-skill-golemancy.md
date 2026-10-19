@@ -12,14 +12,16 @@ Golemancy gains XP from building and binding golems, fighting beside your bound 
 ## Earning XP
 
 - Building a snow, copper, or iron golem pays `buildSnowXp`, `buildCopperXp`, or `buildIronXp` to the player who placed its carved pumpkin or jack o'lantern, and counts toward `golemancy.built`. The golem must appear within `buildAttributionWindowMillis` milliseconds and `buildAttributionRadius` blocks of that placement. Each golem type has its own `buildXpCooldownMillis` cooldown per player; builds during the cooldown still count toward the stat. Heads placed by dispensers pay nothing.
-- Binding a golem with Animus Binding pays `bindFrostXp`, `bindCopperXp`, or `bindIronXp` and counts toward `golemancy.bound`. Each golem pays and counts only on its first binding; a golem that was released and bound again pays nothing and does not count. The first time you bind each body (frost, copper, and iron), you also earn that body's first-bind challenge and `firstBindXp`.
-- When your bound golem damages a hostile mob, you earn the damage dealt times `assistDamageXpMultiplier` times the body multiplier: `assistBodyMultiplierFrost`, `assistBodyMultiplierCopper`, `assistBodyMultiplierIron`, or `assistBodyMultiplierBone`. Frost golem snowballs count. Damage beyond the victim's remaining health does not count. You earn damage XP at most once per `assistCooldownMillis`, but every hit counts toward `golemancy.golem.damage`.
+- Binding a golem with Animus Binding pays `bindFrostXp`, `bindCopperXp`, or `bindIronXp` and counts toward `golemancy.bound`. Each golem pays and counts only on its first binding; a golem that was released and bound again pays nothing and does not count. Each golem type has its own `bindXpCooldownMillis` cooldown per player; bindings during the cooldown still count toward the stat. The first time you bind each body (frost, copper, and iron), you also earn that body's first-bind challenge and `firstBindXp`.
+- When your bound golem damages a hostile mob, you earn the damage dealt times `assistDamageXpMultiplier` times the body multiplier: `assistBodyMultiplierFrost`, `assistBodyMultiplierCopper`, or `assistBodyMultiplierIron`. Frost golem snowballs count. Damage beyond the victim's remaining health does not count. You earn damage XP at most once per `assistCooldownMillis`, but every hit counts toward `golemancy.golem.damage`.
 - When your bound golem or its snowball kills a hostile mob, you earn the kill value, `golemKillXpBase` plus the victim's maximum health times `golemKillMaxHealthMultiplier`, and the kill counts toward `golemancy.golem.kills`. Raiders that belong to an active raid pay `raidXpMultiplier` times as much. A kill whose final blow comes from a bound golem or its snowball is a golem kill: it pays only Golemancy, and other skills and adaptations grant no kill XP or kill rewards for it, even when you hit the mob shortly before.
 - When your bound golem takes damage from a hostile mob, you earn the damage taken times `tankXpMultiplier`, at most once per `tankCooldownMillis`. Damage beyond the golem's remaining health does not count.
 - Damage, kill, and tanking XP pay in full while you are within `ownerProximityRadius` blocks of the golem. Farther away or in another world, they pay `distantOwnerXpMultiplier` times as much, and nothing while you are offline. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount, and Adapt minions and Excavation grave mobs pay nothing.
 - When an iron golem or snow golem that is not bound kills a hostile mob, every player within `witnessRadius` blocks of the golem who can use Golemancy earns `witnessXpMultiplier` times the kill value. One golem pays each player at most once per `witnessCooldownMillis`, and each player earns at most `witnessHourlyCap` witness XP in any 60 minutes. Mobs from spawners and trial spawners pay `spawnerMobXpMultiplier` times the normal amount. Adapt minions, such as TragOul skeletal servants and Stealth shadow decoys, and Excavation grave mobs pay nothing.
 - Repairing a player-built iron golem with an iron ingot, or healing one of your bound golems with a copper ingot or snow block through Golem Mending, pays `repairXpPerHealth` per point of health restored. Only health that hostile mobs took away counts; damage from players is never paid back as XP.
-- Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
+- Scraping an oxidation stage off a copper golem with an axe pays `copperScrapeXp`, for stages the golem oxidized on its own; the stages it was built with, or came back from a Dormant Golem or Shattered Core with, pay nothing. Waxing a copper golem with honeycomb pays `copperWaxXp`, once per golem.
+- Crafting Golemancy items pays `craftCrookXp`, `craftBlankCoreXp`, `craftRoleCoreXp`, `craftBlankNodeXp`, `craftNodeXp`, or `craftBlankRuneXp` for each craft, counted per craft also when you shift-click. Creative mode pays nothing.
+- Placing your first node of each type pays Node Weaving's `firstNodeXp`.
 - Completing an infusion at the Animus Plinth pays `infuseRuneTier1Xp`, `infuseRuneTier2Xp`, or `infuseRuneTier3Xp` for a rune of that tier, or `infuseMasterworkHeartXp` for a Masterwork Heart, and counts toward `golemancy.infusions`.
 - With Bone Frame, when one of your TragOul skeletal servants kills a hostile mob, you earn your Bone Frame level's `servantShareByLevel` share of the kill value, with the same raid, spawner, and owner-distance rules as a golem kill. Kills of Adapt minions and Excavation grave mobs pay nothing. Servant kills do not count toward `golemancy.golem.kills`, and TragOul still pays its own XP.
 - When one of your working golems finishes a job, you earn the work XP that its Core adaptation sets for that job. Work XP pays only while you are online and within `workXpOwnerRadius` blocks of the golem, and you earn at most `workXpHourlyCap` work XP in any 60 minutes. Golem labor never pays other skills. Each finished job counts toward `golemancy.tasks`, and each item your golems deliver into a container counts toward `golemancy.items.moved`.
@@ -41,7 +43,7 @@ Golemancy items keep what they hold through drops, chests, and restarts, and nev
 | Dormant Golem | 1 | Packing one of your golems with Stasis | Place it to awaken the golem |
 | Shattered Core | 1 | Left where your bound golem dies while you are online, with Golem Mending level 4 | Rebuilds the golem on a freshly built body |
 
-Holding the Crook, a Node, a Core (a Blank Animus Core or a role core), or a Dormant Golem in either hand reveals your nodes and your bound golems' status labels, as described under Animus Binding and Node Weaving. A Dormant Golem or Shattered Core belongs to the player whose golem it holds: only that player can use it or pick it up, and hoppers cannot take it. Cores, nodes, runes, and Masterwork Hearts carry no owner and can be traded.
+Holding the Crook, a Node (not a Blank Node), a Core (a Blank Animus Core or a role core), or a Dormant Golem in either hand reveals your nodes and your bound golems' status labels, as described under Animus Binding and Node Weaving. A Dormant Golem or Shattered Core belongs to the player whose golem it holds, and only that player can use it. The Shattered Core a golem leaves where it dies, and a Dormant Golem that drops because your inventory is full when you pack a golem, can be picked up only by that player. Any other Dormant Golem or Shattered Core on the ground, such as one a player throws, can be picked up by anyone. Hoppers never pick up a Dormant Golem or Shattered Core from the ground. Cores, nodes, runes, and Masterwork Hearts carry no owner and can be traded.
 
 Each adaptation lists the crafting recipes it unlocks, and [Infusion recipes](/adapt/34-skill-golemancy#infusion-recipes) lists what the Animus Plinth makes. Every crafting recipe is a table in its adaptation's configuration with these fields:
 
@@ -54,7 +56,62 @@ Each adaptation lists the crafting recipes it unlocks, and [Infusion recipes](/a
 | `tithe` | Experience levels charged for each craft. 0 makes the recipe free. |
 | `enabled` | Set to `false` to remove the recipe. |
 
-Players without the tithe levels see no result, shift-crafting stops at the crafts their levels cover, creative players craft free, and crafter blocks never craft a recipe with a tithe. Recipe changes apply after a restart.
+Players without the tithe levels see no result until they change the grid after gaining the levels, shift-crafting stops at the crafts their levels cover, creative players craft free, and crafter blocks never craft a recipe with a tithe. Recipe changes apply after a restart.
+
+## Bound golems
+
+A golem you bind stays yours until you release it. You manage each golem through its Golem GUI and all of your golems through your golem roster, both opened with the Artificer's Crook.
+
+### Awake and asleep
+
+A bound golem sleeps while you are offline, while you are online but your Adapt data has not finished loading, and while the server already has `serverMaxActiveGolems` bound golems awake. It wakes as soon as the reason clears, and golems kept asleep by the server limit wake in turn as room frees. With `guardWhileOwnerOffline` on in the skill configuration, golems bound with a Guardian Core stay awake while you are offline, as described under Guardian Core.
+
+A sleeping golem stays where it is and does not move, work, fight, answer Crook signals, or regenerate. With `dormantInvulnerable` on, it takes no damage while it sleeps.
+
+### Golem GUI
+
+Hold the Artificer's Crook in your main hand and right-click one of your bound golems to open its Golem GUI; with Stasis, a sneaking right-click packs the golem instead. Only the golem's owner can open it, whether the golem is awake or asleep.
+
+The top row holds:
+
+- **Body**: the golem's body and health, with a note while it is asleep.
+- **Core**: the core the golem was bound with, and for a masterwork the second core slot described under Masterwork.
+- **Mode**: left-click for the next mode and right-click for the previous one. Companion golems cycle Follow, Stay, and Home; golems with a role core also have Work.
+- **Channel**: left-click for the next dye color, then no channel, and right-click for the previous one. With an Order rune slotted, it opens the channel picker described under Runic Augments.
+- **Set Home Here**: makes the spot where you stand the golem's home. A golem's home starts where it stood when you bound it.
+- **Link Home Chest**: shows the golem's home chest, if it has one. Click it, then within 30 seconds right-click a container with the Crook in your main hand to make that container the home chest. Region protection must let you open the container, and the container must be in the golem's world within the skill's `leashRadius` blocks of the golem's home. Working golems put the items no Deposit Node takes into their home chest, and some roles take supplies from it, as their Core adaptations describe.
+
+The second row holds the rune slots described under Runic Augments. The two rows below it show the items the golem carries; click a stack to take it into your inventory, or onto the ground at your feet when your inventory is full. A golem carrying more than 18 stacks shows 17 of them and the count of the rest.
+
+The bottom row holds:
+
+- **Statistics**: the golem's kills, damage dealt, tasks completed, and items moved.
+- **Snow Trail** on frost golems, described under Animus Binding, or **Colossus Form** on iron golems once you reach Iron Frame's `colossusLevel`.
+- **Masterwork** slot, described under Masterwork.
+- **Essence** on Gatherers and on golems that hold essence, described under Gatherer Core.
+- **Pack**, with Stasis, described under Stasis.
+- **Release**: after you confirm, the golem turns back into an ordinary golem at its normal size, drops its cores, runes, Masterwork Heart, and carried items, gives you its stored essence as experience, and leaves your roster.
+
+### Golem roster
+
+Your golem roster lists every golem you own. Sneak and right-click the air with the Crook in your main hand, or use `/adapt golem roster`, to open it. Each entry shows the golem's body and core, its health and position while it is loaded or the world and spot it was last seen near otherwise, and its state:
+
+| State | Meaning |
+|---|---|
+| Active | The golem is in the world, loaded or not. |
+| Packed | The golem is held in a Dormant Golem, as described under Stasis. |
+| Shattered | The golem left a Shattered Core, as described under Golem Mending. |
+| Missing | The golem did not appear when the chunk it was last seen in loaded. |
+
+Entries list Active golems first, then Packed, Shattered, and Missing ones. When you own more golems than fit, arrows in the bottom row turn the page. The bottom row also holds Crook Channel, described under Overseer, and Bone Lattice, described under Bone Frame.
+
+- **Left-click** an entry to locate the golem. A loaded golem in your world glows for you for 10 seconds while a trail of particles points to it. Otherwise, chat names the world and spot it was last seen near, and when that spot is in your world, a trail of particles points toward it.
+- **Right-click** an active golem that is loaded in your world to recall it with Stasis's Pocket Roster.
+- **Shift-right-click** a packed, shattered, or missing golem to release it for good after you confirm. An active golem is released from its Golem GUI.
+
+While you are online, the roster watches the chunk each of your active golems was last seen in. When that chunk loads and the golem does not appear within 5 seconds, the golem shows as Missing. A missing golem turns Active again when it loads, and it counts toward your golem cap until you release it. A missing golem you release turns back into an ordinary golem and drops nothing if it loads later.
+
+Only one copy of each golem stays bound. Your roster records the golem's newest copy each time the golem unloads, the server stops, or the golem awakens or is rebuilt. An older copy that loads later, such as one from a world backup or from a chunk that a server crash kept from saving, turns back into an ordinary golem and drops nothing. So does a copy of a golem that your roster lists as packed or shattered, or does not list at all, and the older of two copies of one golem that are loaded at once. If the newest copy does not appear after an older one turns back, the golem shows as Missing.
 
 ## Animus Plinth
 
@@ -115,7 +172,7 @@ Infusions are the `infusionRecipes` tables in the skill configuration, one table
 | `unlockLevel` | Lowest level of `unlockAdaptation` that can perform the infusion, at least 1. |
 | `enabled` | Set to `false` to turn the infusion off. |
 
-A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table with an unknown name or a material that is not an item, a result that is not a rune or the Masterwork Heart, a pedestal list without exactly four entries, or an empty `unlockAdaptation` is skipped with a console warning.
+A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table is skipped with a console warning when its `result` is not a rune or the Masterwork Heart, when its `center` or a pedestal is empty, names a material that is not an item, or names an unknown Golemancy item, when `pedestals` does not hold exactly four entries, or when `unlockAdaptation` is empty.
 
 ## Adaptations
 
@@ -153,8 +210,6 @@ While you hold the Crook, a Node, a Core, or a Dormant Golem, your bound golems 
 
 A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
 
-Your roster notes each time one of your bound golems unloads or the server stops, and a copy saved before the golem last unloaded, such as one from a world backup or from a chunk that a server crash kept from saving, turns back into an ordinary golem and drops nothing.
-
 | Recipe | Pattern | Keys | Yield | Tithe |
 |---|---|---|---|---|
 | Artificer's Crook | ` A ` / `RHR` / ` C ` | H `IRON_HOE`, A `AMETHYST_SHARD`, R `REDSTONE`, C `COPPER_INGOT` | 1 | 0 |
@@ -178,7 +233,7 @@ Your roster notes each time one of your bound golems unloads or the server stops
 
 Anchors nodes to block faces so your golems know where to work, and unlocks the Blank Node and Deposit Node recipes at level 1. Each Core adaptation unlocks the recipes for its own nodes.
 
-Hold a node in your main hand, sneak, and right-click a block face. The node attaches to that face and one node item is used up. Each face holds one node. Deposit, Input, and Filter nodes go only on a chest, trapped chest, copper chest, barrel, or shulker box, and Fishing Nodes go only on the side of a block. Nodes never attach to the lodestone or pedestals of a complete Animus Plinth; that click works the plinth instead. A placement needs all of the following:
+Hold a node in your main hand, sneak, and right-click a block face. The node attaches to that face and one node item is used up. Each face holds one node. Deposit, Input, and Filter nodes go only on a chest, trapped chest, copper chest, barrel, or shulker box, and Fishing Nodes go only on the side of a block. Nodes never attach to the lodestone or pedestals of a complete Animus Plinth; with Runic Augments level 1, that click works the plinth instead. A placement needs all of the following:
 
 - Region protection lets you interact with the block and build in front of the face. A Deposit, Input, or Filter node also needs access to the container.
 - The chunk holds fewer than `maxNodesPerChunk` nodes, counting every player's nodes.
@@ -186,7 +241,7 @@ Hold a node in your main hand, sneak, and right-click a block face. The node att
 
 A new node starts with no channel, priority 3, a whitelist filter with no entries, and a work area radius of 2 blocks, or your level's largest radius when that is smaller. The work area is centered on the block in front of the face.
 
-Nodes are hidden until you hold the Crook, a Node, a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: Full while a Deposit or Filter Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
+Nodes are hidden until you hold the Crook, a Node (not a Blank Node), a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: Full while a Deposit or Filter Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
 
 Click one of your revealed nodes to configure it. Only the node's owner can configure it, and its label updates after each change.
 
@@ -235,6 +290,7 @@ Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its b
 | `nodeCapByLevel` | `[4, 8, 12, 18, 24]` | Most nodes you can own at once, from level 1 upward. |
 | `maxAreaRadiusByLevel` | `[2, 3, 4, 6, 8]` | Largest work area radius in blocks a node can be set to, from level 1 upward. Each value is capped at 32. |
 | `filterSlotsByLevel` | `[3, 6, 6, 9, 18]` | Filter entries a node can hold, from level 1 upward. Each value is capped at 18. |
+| `firstNodeXp` | `200` | Golemancy XP paid the first time you place each type of node. |
 | `blankNodeRecipe` | `CRC` / `RAR` / `CRC`, yields 4 | Blank Node recipe. |
 | `depositNodeRecipe` | ` X ` / ` B ` / `   ` | Deposit Node recipe. |
 
@@ -424,7 +480,7 @@ With `guardWhileOwnerOffline` on in the skill configuration, your Guardians stay
 | `lastStandLevel` | `5` | Level at which Guardians use Last Stand. |
 | `lastStandHealthFraction` | `0.2` | Fraction of maximum health, from 0 to 1, that a Guardian must drop below for Last Stand to trigger. 0.2 is 20%. |
 | `lastStandTicks` | `100` | Ticks of Resistance Last Stand gives. |
-| `lastStandAmplifier` | `1` | Resistance amplifier Last Stand gives. 0 is Resistance I and 1 is Resistance II. |
+| `lastStandAmplifier` | `1` | Resistance amplifier Last Stand gives. 0 is Resistance I and 1 is Resistance II. Values above 3 count as 3. |
 | `lastStandCooldownMillis` | `60000` | Milliseconds after Last Stand triggers before it can trigger again on the same Guardian. |
 | `sentryRange` | `10.0` | Blocks within which frost Guardians shoot, from 1 to 10, the snow golem's throwing range. Values outside that range load as the nearest limit. |
 | `guardianCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Guardian Core recipe. |
@@ -444,7 +500,7 @@ Gatherers leave these items alone:
 
 - Items still under their pickup delay, and items that players or mobs cannot pick up, such as display items.
 - Items another player threw, until `foreignItemSeconds` seconds after they dropped, and items another player owns.
-- Items and experience orbs within `deathSiteRadius` blocks of the spot where any player died, for `deathSiteSeconds` seconds after the death. Gatherers remember up to 256 recent deaths in each world.
+- Items and experience orbs within `deathSiteRadius` blocks of the spot where any player died, for `deathSiteSeconds` seconds after the death.
 - Items where region protection stops you from interacting or breaking blocks, or where a protection plugin stops mobs from picking items up. Protection is checked for you wherever you are, so Gatherers keep working while you are in another world.
 
 Higher levels add these perks:
@@ -469,7 +525,7 @@ Higher levels add these perks:
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `pickupRadiusByLevel` | `[4, 6, 8, 10, 12]` | Blocks around a Gatherer's home within which it picks up items when none of your Collection Nodes serve it, from level 1 upward. A Tide rune adds its bonus. |
+| `pickupRadiusByLevel` | `[4, 6, 8, 10, 12]` | Blocks around a Gatherer's home within which it picks up items when none of your Collection Nodes serve it, from level 1 upward. A Tide rune adds its bonus. Values above 64 count as 64. |
 | `essenceCapByLevel` | `[0, 500, 1500, 1500, 1500]` | Experience points a Gatherer can store as essence, from level 1 upward. 0 means it absorbs no experience orbs. |
 | `magnetLevel` | `4` | Level at which Gatherers use Magnet. |
 | `magnetRadius` | `3.0` | Blocks around a Gatherer within which Magnet pulls items toward it, from 0 to 16. Values outside that range load as the nearest limit. |
@@ -540,7 +596,7 @@ Bind a golem with a Lumber Core through Animus Binding. Copper and iron golems t
 
 At each node check, a Lumber Node looks over part of its work area and hands out a felling job for each natural tree whose trunk starts there. Only the bottom of the trunk has to be inside the work area. A tree is natural when all of these hold:
 
-- Its bottom log stands on dirt, grass, podzol, coarse dirt, rooted dirt, mycelium, moss, mud, or farmland. A mangrove may also stand on its own mangrove roots, and a huge fungus stands on nylium.
+- Its bottom log stands on dirt, a grass block, podzol, coarse dirt, rooted dirt, mycelium, a moss block, a pale moss block, mud, muddy mangrove roots, or farmland. A mangrove may also stand on its own mangrove roots, and a huge fungus stands on crimson or warped nylium.
 - Leaves that no player placed grow within 2 blocks of its top logs. For a huge fungus, wart blocks or shroomlights take the place of leaves.
 - No player placed any of its logs, apart from the logs that grew where you planted saplings or fungi: the bottom log of a one-block trunk, or all four bottom logs of a 2x2 trunk whose four columns all continue upward. A 2x2 trunk with only some of its bottom logs placed, a 2x2 trunk with a bottom log that has no log of the same tree above it, such as logs placed around the base of a one-block trunk, and a wide fungus stem with any placed bottom stem are never cut.
 - None of its logs touches a block that does not grow around trees, such as planks, glass, stairs, fences, torches, wool, cobblestone, stripped logs, wood blocks, or leaves a player placed.
@@ -667,7 +723,7 @@ A Rancher delivers what it carries to a Deposit Node or its home chest like any 
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `species` | `["COW", "MOOSHROOM", "SHEEP", "PIG", "CHICKEN", "GOAT", "RABBIT"]` | Animals Pasture Nodes tend, by entity type name. Each Pasture Node tends all of them or the one species chosen in its GUI. Names that are not animals are ignored. |
+| `species` | `["COW", "MOOSHROOM", "SHEEP", "PIG", "CHICKEN", "GOAT", "RABBIT"]` | Animals Pasture Nodes tend, by entity type name. Each Pasture Node tends all of them or the one species chosen in its GUI. Names that are not animals, and hostile animals such as hoglins, are ignored. |
 | `defaultKeep` | `8` | Keep count of a Pasture Node until you change it in its GUI. Ranchers breed a species while its adults, babies, and pairs in love number fewer than this, and cull adults above it. Values load between 2 and 64. |
 | `actionIntervalTicks` | `40` | Ticks a Rancher spends on each breeding, shearing, milking, or culling action after it reaches the animal. Values below 1 load as 1. |
 | `shearLevel` | `2` | Level at which Ranchers shear sheep. |
@@ -737,8 +793,8 @@ Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` wor
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `destinationRadiusByLevel` | `[8, 12, 16, 20, 24]` | Blocks around an Input Node within which a Sorter puts items away, from level 1 upward. Each Input Node can narrow it in its GUI. Values below 1 count as 1. |
-| `stacksPerTripByLevel` | `[1, 1, 2, 2, 4]` | Stacks a Sorter takes from a container on each trip, from level 1 upward. Its carry limit still applies. Values below 1 count as 1. |
+| `destinationRadiusByLevel` | `[8, 12, 16, 20, 24]` | Blocks around an Input Node within which a Sorter puts items away, from level 1 upward. Each Input Node can narrow it in its GUI. Values outside 1 to 64 load as the nearest limit. |
+| `stacksPerTripByLevel` | `[1, 1, 2, 2, 4]` | Stacks a Sorter takes from a container on each trip, from level 1 upward. Its carry limit still applies. Values outside 1 to 64 load as the nearest limit. |
 | `groupsLevel` | `2` | Level at which Sorters also use containers that hold another item of the same group. |
 | `groups` | `["logs=#minecraft:logs", "planks=#minecraft:planks", "ores=#minecraft:coal_ores,#minecraft:iron_ores,#minecraft:copper_ores,#minecraft:gold_ores,#minecraft:redstone_ores,#minecraft:lapis_ores,#minecraft:diamond_ores,#minecraft:emerald_ores,NETHER_QUARTZ_ORE,NETHER_GOLD_ORE,ANCIENT_DEBRIS", "stone=STONE,COBBLESTONE,DEEPSLATE,COBBLED_DEEPSLATE,GRANITE,DIORITE,ANDESITE,TUFF,CALCITE,BLACKSTONE,BASALT,SMOOTH_BASALT,NETHERRACK,END_STONE", "wool=#minecraft:wool", "food=APPLE,BREAD,CARROT,POTATO,BAKED_POTATO,BEETROOT,MELON_SLICE,SWEET_BERRIES,GLOW_BERRIES,COOKIE,PUMPKIN_PIE,GOLDEN_CARROT,BEEF,COOKED_BEEF,PORKCHOP,COOKED_PORKCHOP,CHICKEN,COOKED_CHICKEN,MUTTON,COOKED_MUTTON,RABBIT,COOKED_RABBIT,COD,COOKED_COD,SALMON,COOKED_SALMON,DRIED_KELP", "redstone=REDSTONE,REDSTONE_TORCH,REPEATER,COMPARATOR,LEVER,PISTON,STICKY_PISTON,OBSERVER,HOPPER,DROPPER,DISPENSER,REDSTONE_LAMP,TARGET,DAYLIGHT_DETECTOR,TRIPWIRE_HOOK,STONE_PRESSURE_PLATE,STONE_BUTTON", "saplings=#minecraft:saplings", "seeds=WHEAT_SEEDS,BEETROOT_SEEDS,MELON_SEEDS,PUMPKIN_SEEDS,TORCHFLOWER_SEEDS,PITCHER_POD"]` | Item groups, written as `name=members` with members separated by commas. A member is an item name or `#` item tag. An item in two groups counts for the first. Entries that name no item or tag are ignored with a warning. |
 | `filterLevel` | `3` | Level at which Sorters use Filter Nodes, including overflow Filter Nodes, and the Filter Node recipe unlocks. |
@@ -955,7 +1011,7 @@ Each heal restores its base health plus your level's `healBonusByLevel` fraction
 
 - **Regeneration near you** (level `ownerRegenLevel`): your awake golems heal `ownerRegenAmount` health every `regenIntervalSeconds` seconds while they are within `ownerRegenRadius` blocks of you in the same world.
 - **Regeneration at home** (level `homeRegenLevel`): a golem with no job and no target heals `homeRegenAmount` health every `regenIntervalSeconds` seconds while it is within `homeRegenRadius` blocks of its home. When both regenerations apply, the golem heals the larger amount, not both. Sleeping golems never regenerate.
-- **Shattered Core** (level `shatterLevel`): when one of your bound golems dies while you are online, it still drops the items it carries and its essence as experience, but instead of dropping cores and runes at the skill's `deathDropCoreChance` and `deathDropRuneChance`, it leaves a Shattered Core where it died, and an action-bar message tells you. The Shattered Core keeps the golem's cores, runes, masterwork Heart, channels, mode, home, home chest, name, and record of kills, damage, jobs, and items moved. Only you can pick it up; hoppers and other mobs cannot take it. It never despawns, and damage such as fire, lava, cactus, and explosions cannot destroy it. When a golem dies below the bottom of the world, its Shattered Core appears at the lowest block height, where it can still fall into the void and be lost. The golem stays in your roster as shattered and still counts toward your golem cap. A golem that dies while you are offline, or before you reach `shatterLevel`, drops its cores and runes as usual.
+- **Shattered Core** (level `shatterLevel`): when one of your bound golems dies while you are online, it still drops the items it carries and its essence as experience, but instead of dropping cores and runes at the skill's `deathDropCoreChance` and `deathDropRuneChance`, it leaves a Shattered Core where it died, and an action-bar message tells you. The Shattered Core keeps the golem's cores, runes, Masterwork Heart, channels, mode, home, home chest, name, and record of kills, damage, jobs, and items moved. Only you can pick it up; hoppers and other mobs cannot take it. It never despawns, and damage such as fire, lava, cactus, and explosions cannot destroy it. When a golem dies below the bottom of the world, its Shattered Core appears at the lowest block height, where it can still fall into the void and be lost. The golem stays in your roster as shattered and still counts toward your golem cap. A golem that dies before you reach `shatterLevel` drops its cores and runes as usual. A golem that dies while you are offline leaves nothing behind, and its roster entry shows as Missing once the chunk it died in loads while you are online; release it from your roster.
 - **Reborn** (level `rebornLevel`): a rebuilt copper golem keeps the oxidation stage and wax it had when it died, and every rebuilt golem gets Resistance with amplifier `rebornResistanceAmplifier`, Resistance II by default, for `rebornResistanceSeconds` seconds.
 
 To rebuild a shattered golem, hold its Shattered Core in your main hand, sneak, and right-click a freshly built golem of the same body within 3 blocks. The golem is bound to you at once with everything the Shattered Core kept, at full health, and the Shattered Core is used up. A rebuilt golem that has to sleep because the server is at its limit of awake golems wakes at full health. A rebuild has no ritual, costs no tithe, pays no bind XP, and earns no first-bind challenge. It needs all of the following:
@@ -1004,9 +1060,9 @@ Packs one of your bound golems into a Dormant Golem block that you carry and pla
 
 Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound frost, copper, or iron golems to pack it. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem, and the golem holds still. You or the golem ending up more than `channelAbortDistance` blocks apart, switching your held item away from the Crook, or the golem taking any damage breaks the channel, and an action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
 
-The packed golem leaves the world without dropping anything and becomes a Dormant Golem in your inventory: a snow block for a frost golem, an iron block for an iron golem, and for a copper golem the copper block of its oxidation stage, waxed when the golem was waxed. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, masterwork Heart, channels, mode, home, home chest, name, record of kills, damage, jobs, and items moved, the items it carries, its stored essence, its health, and its copper oxidation stage and wax. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up; hoppers and other mobs cannot take it, it never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
+The packed golem leaves the world without dropping anything and becomes a Dormant Golem in your inventory: a snow block for a frost golem, an iron block for an iron golem, and for a copper golem the copper block of its oxidation stage, waxed when the golem was waxed. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, Masterwork Heart, channels, mode, home, home chest, name, record of kills, damage, jobs, and items moved, the items it carries, its stored essence, its health, and its copper oxidation stage and wax. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up; hoppers and other mobs cannot take it, it never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
 
-To awaken the golem, place its Dormant Golem like a block. No block appears: the golem rises at that spot from a tenth of a block to its bound size over `awakenRiseTicks` ticks, facing you, and the Dormant Golem is used up. It wakes with everything the Dormant Golem kept. An awakened iron golem keeps whether a player built it. Awakening pays no build or bind XP. An awakening needs all of the following; otherwise an action-bar message names the reason and you keep the Dormant Golem:
+To awaken the golem, place its Dormant Golem like a block. No block appears: the golem rises at that spot from a tenth of its normal size to its bound size over `awakenRiseTicks` ticks, facing you, and the Dormant Golem is used up. It wakes with everything the Dormant Golem kept. An awakened iron golem keeps whether a player built it. Awakening pays no build or bind XP. An awakening needs all of the following; otherwise an action-bar message names the reason and you keep the Dormant Golem:
 
 - The Dormant Golem is yours, and you have Stasis.
 - The golem is still packed in your roster, and this is the Dormant Golem it was packed into.
@@ -1036,7 +1092,7 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 | `packedHealIntervalSeconds` | `10` | Seconds a golem must stay packed for each `packedHealAmount` of healing. Values below 1 load as 1. |
 | `recallLevel` | `3` | Level at which Pocket Roster lets you recall a loaded golem in your world from the Roster GUI. |
 | `recallCooldownSeconds` | `120` | Seconds after a Pocket Roster recall before you can recall another golem. Values below 0 load as 0. |
-| `awakenRiseTicks` | `20` | Ticks an awakened golem takes to rise from a tenth of a block to its bound size. 0 skips the rise. |
+| `awakenRiseTicks` | `20` | Ticks an awakened golem takes to rise from a tenth of its normal size to its bound size. 0 skips the rise. |
 
 ### Masterwork (`golem-masterwork`)
 
@@ -1110,17 +1166,23 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `repairXpPerHealth` | `2.0` | Skill XP per point of hostile damage repaired on an iron golem or healed on a bound golem with Golem Mending. |
 | `copperScrapeXp` | `60` | Skill XP per oxidation stage scraped off a copper golem. |
 | `copperWaxXp` | `30` | Skill XP for the first wax on each copper golem. |
+| `craftCrookXp` | `60` | Skill XP for each Artificer's Crook crafted. |
+| `craftBlankCoreXp` | `40` | Skill XP for each Blank Animus Core crafted. |
+| `craftRoleCoreXp` | `90` | Skill XP for each role core crafted. |
+| `craftBlankNodeXp` | `5` | Skill XP for each Blank Node craft, not per node in the result. |
+| `craftNodeXp` | `15` | Skill XP for each typed node crafted. |
+| `craftBlankRuneXp` | `10` | Skill XP for each Blank Rune craft, not per rune in the result. |
 | `spawnerMobXpMultiplier` | `0.3` | Multiplier for Golemancy XP from mobs that came from a spawner or trial spawner. |
 | `challengeBuiltReward` | `500` | Skill XP paid by the golem building challenges. |
 | `bindFrostXp` | `100` | Skill XP for the first binding of a frost golem. |
 | `bindCopperXp` | `220` | Skill XP for the first binding of a copper golem. |
 | `bindIronXp` | `450` | Skill XP for the first binding of an iron golem. |
+| `bindXpCooldownMillis` | `20000` | Milliseconds before one player earns bind XP again for the same golem type. |
 | `firstBindXp` | `600` | Skill XP paid with each first-bind challenge. |
 | `assistDamageXpMultiplier` | `3.0` | Skill XP per point of damage your bound golems deal to hostile mobs, before the body multiplier. |
 | `assistBodyMultiplierFrost` | `2.0` | Body multiplier for damage XP from bound frost golems, including their snowballs. |
 | `assistBodyMultiplierCopper` | `1.0` | Body multiplier for damage XP from bound copper golems. |
 | `assistBodyMultiplierIron` | `1.0` | Body multiplier for damage XP from bound iron golems. |
-| `assistBodyMultiplierBone` | `0.35` | Body multiplier for damage XP from bound bone golems. |
 | `assistCooldownMillis` | `1500` | Milliseconds before one player earns damage XP from their bound golems again. |
 | `raidXpMultiplier` | `1.5` | Kill XP multiplier for raiders that belong to an active raid. |
 | `ownerProximityRadius` | `48.0` | Blocks from a bound golem within which its owner earns full damage, kill, and tanking XP. |
@@ -1129,9 +1191,9 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `tankCooldownMillis` | `2000` | Milliseconds before one player earns tanking XP from their bound golems again. |
 | `challengeBoundReward` | `500` | Skill XP paid by the golem binding challenges. |
 | `challengeGolemKillsReward` | `500` | Skill XP paid by the bound golem kill challenges. |
-| `dormantInvulnerable` | `true` | Makes bound golems invulnerable while they are dormant. |
-| `guardWhileOwnerOffline` | `false` | Keeps Guardian golems awake while their owner is offline. |
-| `serverMaxActiveGolems` | `1500` | Most bound golems awake on the server at once; the rest stay dormant until room frees. |
+| `dormantInvulnerable` | `true` | Makes bound golems invulnerable while they sleep. |
+| `guardWhileOwnerOffline` | `false` | Keeps golems bound with a Guardian Core awake while their owner is offline. |
+| `serverMaxActiveGolems` | `1500` | Most bound golems awake on the server at once; the rest sleep until room frees. |
 | `maxBoundGolemsPerChunk` | `8` | Most bound golems allowed in one chunk when binding. |
 | `hardCapPerPlayer` | `32` | Most golems one player can own at once, counting bound, packed, and shattered golems. Missing golems count until they are released. |
 | `bodyScaleFrost` | `0.50` | Size of a bound frost golem as a multiple of its normal size. |
@@ -1146,14 +1208,14 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `allowedCoresIron` | `["BLANK", "GUARDIAN", "GATHERER", "LUMBER", "BREAKER", "RANCHER", "ANGLER"]` | Cores an iron golem can be bound with. |
 | `deathDropCoreChance` | `0.5` | Chance that each core drops when a bound golem dies without leaving a Shattered Core. |
 | `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies without leaving a Shattered Core. |
-| `brainIntervalTicks` | `5` | Ticks between bound golem decisions, clamped to 2-20. Lower values react faster but cost more server time. |
+| `brainIntervalTicks` | `5` | Ticks between bound golem decisions, clamped to 2-20. Lower values make golems react faster. |
 | `followTeleportDistance` | `32` | Blocks from its owner, in the same world, at which a following golem teleports to them instead of walking. The minimum is 8. |
 | `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. |
 | `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
-| `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 1-20. |
+| `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 2-20. |
 | `revealRange` | `32.0` | Blocks around you within which your golems show their status labels and channel glow, your skeletal servants glow with Bone Frame, and your nodes appear while you hold the Crook, a Node, a Core or a Dormant Golem. |
 | `labelRange` | `8.0` | Blocks within which revealed golem and node labels are drawn on screen. |
-| `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems and nodes as you move while holding the Crook, a Node, a Core or a Dormant Golem. Holding none of them costs nothing. |
+| `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems and nodes as you move while holding the Crook, a Node, a Core or a Dormant Golem. |
 | `maxNodesPerChunk` | `16` | Most nodes allowed in one chunk, counting every player's nodes. |
 | `nodeScanIntervalTicks` | `40` | Ticks between checks of each node, clamped to 5-1200. Each check confirms the node's block is still there. |
 | `blocksPerNodeScan` | `64` | Most blocks of a node's work area looked at in one check, clamped to 1-4096. |
@@ -1199,4 +1261,4 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 
 ## See also
 
-Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts). Golem commands: [04 - Commands & Permissions](/adapt/04-commands-permissions#golems).
