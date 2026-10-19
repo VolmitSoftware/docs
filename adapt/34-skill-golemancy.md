@@ -44,6 +44,10 @@ Golemancy items keep what they hold through drops, chests, and restarts, and nev
 | Dormant Golem | 1 | Packing one of your golems with Stasis | Place it to awaken the golem |
 | Shattered Core | 1 | Left where your bound golem dies while you are online, with Golem Mending level 4 | Rebuilds the golem on a freshly built body |
 
+Animus Binding level 1 unlocks the Crook and Blank Animus Core recipes:
+
+![Crafting grid for the Artificer's Crook. Top row: amethyst shard in the middle. Middle row: redstone dust, iron hoe, redstone dust. Bottom row: copper ingot in the middle](/adapt-assets/golemancy/recipes/golemancy-crook.png =352x) ![Crafting grid for the Blank Animus Core. Top row: amethyst shard, redstone dust, amethyst shard. Middle row: redstone dust, ender pearl, redstone dust. Bottom row: amethyst shard, redstone dust, amethyst shard; tithe 1 level](/adapt-assets/golemancy/recipes/golemancy-blank-core.png =352x)
+
 Holding the Crook, a Node (not a Blank Node), a Core (a Blank Animus Core or a role core), or a Dormant Golem in either hand reveals your nodes and your bound golems' status labels, as described under Animus Binding and Node Weaving. A Dormant Golem or Shattered Core belongs to the player whose golem it holds, and only that player can use it. The Shattered Core a golem leaves where it dies, and a Dormant Golem that drops because your inventory is full when you pack a golem, can be picked up only by that player. Any other Dormant Golem or Shattered Core on the ground, such as one a player throws, can be picked up by anyone. Hoppers never pick up a Dormant Golem or Shattered Core from the ground. Cores, nodes, runes, and Masterwork Hearts carry no owner and can be traded.
 
 Each adaptation lists the crafting recipes it unlocks, and [Infusion recipes](/adapt/34-skill-golemancy#infusion-recipes) lists what the Animus Plinth makes. Every crafting recipe is a table in its adaptation's configuration with these fields:
@@ -62,6 +66,10 @@ Players without the tithe levels see no result until they change the grid after 
 ## Bound golems
 
 A golem you bind stays yours until you release it. You manage each golem through its Golem GUI and all of your golems through your golem roster, both opened with the Artificer's Crook.
+
+Snow, iron, and copper golems are built from these blocks:
+
+![Front views of the three golem builds: a snow golem of two snow blocks with a carved pumpkin on top, an iron golem of four iron blocks in a T with a carved pumpkin above the middle, and a copper golem of one copper block with a carved pumpkin on top](/adapt-assets/golemancy/diagrams/golem-builds.png =960x)
 
 ### Awake and asleep
 
@@ -118,6 +126,8 @@ Only one copy of each golem stays bound. Your roster records the golem's newest 
 
 The Animus Plinth infuses runes and the Masterwork Heart. Build it from a lodestone with a pedestal block exactly two blocks north, east, south, and west of it, all at the same height. The pedestal blocks are the eight chiseled copper blocks, waxed or not, and `pedestalBlocks` in the skill configuration changes the list.
 
+![Top view of the Animus Plinth on a 5 by 5 area: a lodestone in the center and a chiseled copper pedestal two blocks north, east, south, and west of it, with an empty block between each pedestal and the lodestone](/adapt-assets/golemancy/diagrams/animus-plinth-top.png =288x) ![Three-quarter view of the Animus Plinth: the lodestone in the center and the four chiseled copper pedestals at north, east, south, and west, labelled Lodestone and Pedestal (any chiseled copper)](/adapt-assets/golemancy/diagrams/animus-plinth-view.png =466x)
+
 Loading and using a plinth needs Runic Augments level 1:
 
 - Sneak and right-click a pedestal or the lodestone while holding an item to place one of it there. The item floats and turns above the block, and every player can see it.
@@ -158,7 +168,25 @@ Each rune tier is infused from the tier below it.
 | Entropy | 2 `GUNPOWDER`, 2 `FERMENTED_SPIDER_EYE` | 2 `ENDER_EYE`, 2 `GUNPOWDER` | 2 `SHULKER_SHELL`, 2 `ENDER_EYE` |
 | Bulwark | 2 `IRON_INGOT`, 2 `OBSIDIAN` | 2 `DIAMOND`, 2 `OBSIDIAN` | 1 `NETHERITE_INGOT`, 3 `CRYING_OBSIDIAN` |
 
+Each row shows one rune's infusions from tier 1 to tier 3:
+
+![Swiftness Rune I infusion: a Blank Rune on the lodestone, sugar on two pedestals and feathers on the other two; 2 levels, 5 seconds](/adapt-assets/golemancy/infusions/swiftness_1.png =256x) ![Swiftness Rune II infusion: a Swiftness Rune I on the lodestone, rabbit's feet on two pedestals and phantom membranes on the other two; 5 levels, 8 seconds](/adapt-assets/golemancy/infusions/swiftness_2.png =256x) ![Swiftness Rune III infusion: a Swiftness Rune II on the lodestone, a breeze rod on each pedestal; 10 levels, 12 seconds](/adapt-assets/golemancy/infusions/swiftness_3.png =256x)
+
+![Might Rune I infusion: a Blank Rune on the lodestone, iron ingots on two pedestals and pistons on the other two; 2 levels, 5 seconds](/adapt-assets/golemancy/infusions/might_1.png =256x) ![Might Rune II infusion: a Might Rune I on the lodestone, iron blocks on two pedestals and sticky pistons on the other two; 5 levels, 8 seconds](/adapt-assets/golemancy/infusions/might_2.png =256x) ![Might Rune III infusion: a Might Rune II on the lodestone, netherite scrap on two pedestals and iron blocks on the other two; 10 levels, 12 seconds](/adapt-assets/golemancy/infusions/might_3.png =256x)
+
+![Ember Rune I infusion: a Blank Rune on the lodestone, blaze powder on two pedestals and coal on the other two; 2 levels, 5 seconds](/adapt-assets/golemancy/infusions/ember_1.png =256x) ![Ember Rune II infusion: an Ember Rune I on the lodestone, blaze rods on two pedestals and magma cream on the other two; 5 levels, 8 seconds](/adapt-assets/golemancy/infusions/ember_2.png =256x) ![Ember Rune III infusion: an Ember Rune II on the lodestone, ghast tears on two pedestals and blaze rods on the other two; 10 levels, 12 seconds](/adapt-assets/golemancy/infusions/ember_3.png =256x)
+
+![Tide Rune I infusion: a Blank Rune on the lodestone, prismarine shards on two pedestals and kelp on the other two; 2 levels, 5 seconds](/adapt-assets/golemancy/infusions/tide_1.png =256x) ![Tide Rune II infusion: a Tide Rune I on the lodestone, prismarine crystals on two pedestals and nautilus shells on the other two; 5 levels, 8 seconds](/adapt-assets/golemancy/infusions/tide_2.png =256x) ![Tide Rune III infusion: a Tide Rune II on the lodestone, a heart of the sea on one pedestal and prismarine crystals on the other three; 10 levels, 12 seconds](/adapt-assets/golemancy/infusions/tide_3.png =256x)
+
+![Order Rune I infusion: a Blank Rune on the lodestone, nether quartz on two pedestals and redstone dust on the other two; 2 levels, 5 seconds](/adapt-assets/golemancy/infusions/order_1.png =256x) ![Order Rune II infusion: an Order Rune I on the lodestone, redstone comparators on two pedestals and quartz blocks on the other two; 5 levels, 8 seconds](/adapt-assets/golemancy/infusions/order_2.png =256x) ![Order Rune III infusion: an Order Rune II on the lodestone, echo shards on two pedestals and redstone comparators on the other two; 10 levels, 12 seconds](/adapt-assets/golemancy/infusions/order_3.png =256x)
+
+![Entropy Rune I infusion: a Blank Rune on the lodestone, gunpowder on two pedestals and fermented spider eyes on the other two; 2 levels, 5 seconds](/adapt-assets/golemancy/infusions/entropy_1.png =256x) ![Entropy Rune II infusion: an Entropy Rune I on the lodestone, eyes of ender on two pedestals and gunpowder on the other two; 5 levels, 8 seconds](/adapt-assets/golemancy/infusions/entropy_2.png =256x) ![Entropy Rune III infusion: an Entropy Rune II on the lodestone, shulker shells on two pedestals and eyes of ender on the other two; 10 levels, 12 seconds](/adapt-assets/golemancy/infusions/entropy_3.png =256x)
+
+![Bulwark Rune I infusion: a Blank Rune on the lodestone, iron ingots on two pedestals and obsidian on the other two; 2 levels, 5 seconds](/adapt-assets/golemancy/infusions/bulwark_1.png =256x) ![Bulwark Rune II infusion: a Bulwark Rune I on the lodestone, diamonds on two pedestals and obsidian on the other two; 5 levels, 8 seconds](/adapt-assets/golemancy/infusions/bulwark_2.png =256x) ![Bulwark Rune III infusion: a Bulwark Rune II on the lodestone, a netherite ingot on one pedestal and crying obsidian on the other three; 10 levels, 12 seconds](/adapt-assets/golemancy/infusions/bulwark_3.png =256x)
+
 The Masterwork Heart takes a `HEART_OF_THE_SEA` on the lodestone and a `DIAMOND_BLOCK`, `IRON_BLOCK`, `COPPER_BLOCK`, and `SNOW_BLOCK` on the pedestals. It costs 15 levels, takes 300 ticks (15 s), and unlocks at Masterwork level 1. Masterwork describes how to put the Heart into a golem.
+
+![Masterwork Heart infusion: a heart of the sea on the lodestone, a diamond block, an iron block, a copper block, and a snow block on the pedestals; 15 levels, 15 seconds](/adapt-assets/golemancy/infusions/masterwork_heart.png =256x)
 
 Infusions are the `infusionRecipes` tables in the skill configuration, one table per infusion named by its key, such as `[infusionRecipes.swiftness_1]`. Edit a table to change an infusion, set `enabled = false` to turn it off, or add a table to create a new infusion. Changes apply when the skill configuration reloads. Each table has these fields:
 
@@ -198,6 +226,10 @@ Frost Frame, Breaker Core, Rancher Core, Sorter Core, Angler Core, Runic Augment
 ## Adaptations
 
 Golemancy's adaptations unlock golem binding, frames that strengthen each golem body and your TragOul skeletal servants, nodes, runes, signals sent with the Crook, ways to heal and rebuild your golems, packing them into blocks you carry, and masterwork golems.
+
+Arrows point from each prerequisite to the adaptations it unlocks; unlabelled arrows need level 1.
+
+![Golemancy prerequisite tree: Animus Binding leads to Node Weaving, Frost Frame, Copper Frame, Iron Frame, Bone Frame, Guardian Core, Runic Augments at level 2, Overseer, Golem Mending, and Stasis at level 2; Node Weaving leads to the Gatherer, Harvester, Lumber, Breaker, Rancher, Sorter, and Angler Cores; Masterwork needs Runic Augments level 3 and Animus Binding level 5; Bone Frame also needs TragOul's Skeletal Servant level 1](/adapt-assets/golemancy/diagrams/prerequisite-tree.png =880x)
 
 ### Animus Binding (`golem-animus-binding`)
 
@@ -305,6 +337,8 @@ Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its b
 |---|---|---|---|---|
 | Blank Node | `CRC` / `RAR` / `CRC` | C `CLAY_BALL`, R `REDSTONE`, A `AMETHYST_SHARD` | 4 | 0 |
 | Deposit Node | ` X ` / ` B ` / `   ` | X `CHEST`, B `golemancy:blank_node` | 1 | 0 |
+
+![Crafting grid for the Blank Node. Top row: clay ball, redstone dust, clay ball. Middle row: redstone dust, amethyst shard, redstone dust. Bottom row: clay ball, redstone dust, clay ball; makes 4](/adapt-assets/golemancy/recipes/golemancy-blank-node.png =352x) ![Crafting grid for the Deposit Node. Top row: chest in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-deposit-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -486,6 +520,8 @@ With `guardWhileOwnerOffline` on in the skill configuration, your Guardians stay
 | Guardian Core | ` X ` / `YBY` / ` Z ` | X `IRON_SWORD`, Y `IRON_INGOT`, Z `SHIELD`, B `golemancy:blank_core` | 1 | 2 levels |
 | Guard Node | ` X ` / ` B ` / `   ` | X `IRON_SWORD`, B `golemancy:blank_node` | 1 | 0 |
 
+![Crafting grid for the Guardian Core. Top row: iron sword in the middle. Middle row: iron ingot, Blank Animus Core, iron ingot. Bottom row: shield in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-guardian-core.png =352x) ![Crafting grid for the Guard Node. Top row: iron sword in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-guard-node.png =352x)
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `perceptionByLevel` | `[8, 12, 16, 20, 24]` | Blocks around a Guardian's guard point within which it attacks, from level 1 upward. Each value, plus the Guardian's Tide rune bonus, is clamped to 1 up to `leashRadius` in the skill configuration. |
@@ -544,6 +580,8 @@ Higher levels add these perks:
 | Gatherer Core | ` X ` / `YBY` / ` Z ` | X `BUNDLE`, Y `STRING`, Z `HOPPER`, B `golemancy:blank_core` | 1 | 2 levels |
 | Collection Node | ` X ` / ` B ` / `   ` | X `BUNDLE`, B `golemancy:blank_node` | 1 | 0 |
 
+![Crafting grid for the Gatherer Core. Top row: bundle in the middle. Middle row: string, Blank Animus Core, string. Bottom row: hopper in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-gatherer-core.png =352x) ![Crafting grid for the Collection Node. Top row: bundle in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-collection-node.png =352x)
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `pickupRadiusByLevel` | `[4, 6, 8, 10, 12]` | Blocks around a Gatherer's home within which it picks up items when none of your Collection Nodes serve it, from level 1 upward. A Tide rune adds its bonus. Values above 64 count as 64. |
@@ -591,6 +629,8 @@ Each harvested crop pays `workXpPerCrop` work XP, as described in Earning XP; ti
 |---|---|---|---|---|
 | Harvester Core | ` X ` / `YBY` / ` Z ` | X `IRON_HOE`, Y `WHEAT`, Z `COMPOSTER`, B `golemancy:blank_core` | 1 | 2 levels |
 | Harvest Node | ` X ` / ` B ` / `   ` | X `IRON_HOE`, B `golemancy:blank_node` | 1 | 0 |
+
+![Crafting grid for the Harvester Core. Top row: iron hoe in the middle. Middle row: wheat, Blank Animus Core, wheat. Bottom row: composter in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-harvester-core.png =352x) ![Crafting grid for the Harvest Node. Top row: iron hoe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-harvest-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -648,6 +688,8 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 | Lumber Core | ` X ` / `YBY` / ` Z ` | X `IRON_AXE`, Y `#logs`, Z `#saplings`, B `golemancy:blank_core` | 1 | 2 levels |
 | Lumber Node | ` X ` / ` B ` / `   ` | X `IRON_AXE`, B `golemancy:blank_node` | 1 | 0 |
 
+![Crafting grid for the Lumber Core. Top row: iron axe in the middle. Middle row: any log, Blank Animus Core, any log. Bottom row: any sapling in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-lumber-core.png =352x) ![Crafting grid for the Lumber Node. Top row: iron axe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-lumber-node.png =352x)
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `logsPerSecondByLevel` | `[1.0, 1.5, 2.0, 3.0, 4.0]` | Logs a Lumber golem fells per second once it reaches a tree, from level 1 upward. Values load between 0.05 and 64. |
@@ -692,6 +734,8 @@ Each broken block pays `workXpPerBlock` work XP, as described in Earning XP. Gol
 |---|---|---|---|---|
 | Breaker Core | ` X ` / `YBY` / ` Z ` | X `IRON_PICKAXE`, Y `REDSTONE`, Z `PISTON`, B `golemancy:blank_core` | 1 | 2 levels |
 | Breaker Node | ` X ` / ` B ` / `   ` | X `IRON_PICKAXE`, B `golemancy:blank_node` | 1 | 0 |
+
+![Crafting grid for the Breaker Core. Top row: iron pickaxe in the middle. Middle row: redstone dust, Blank Animus Core, redstone dust. Bottom row: piston in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-breaker-core.png =352x) ![Crafting grid for the Breaker Node. Top row: iron pickaxe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-breaker-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -741,6 +785,8 @@ A Rancher delivers what it carries to a Deposit Node or its home chest like any 
 |---|---|---|---|---|
 | Rancher Core | ` X ` / `YBY` / ` Z ` | X `SHEARS`, Y `WHEAT`, Z `LEAD`, B `golemancy:blank_core` | 1 | 2 levels |
 | Pasture Node | ` X ` / ` B ` / `   ` | X `LEAD`, B `golemancy:blank_node` | 1 | 0 |
+
+![Crafting grid for the Rancher Core. Top row: shears in the middle. Middle row: wheat, Blank Animus Core, wheat. Bottom row: lead in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-rancher-core.png =352x) ![Crafting grid for the Pasture Node. Top row: lead in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-pasture-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -812,6 +858,8 @@ Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` wor
 | Input Node | ` X ` / ` B ` / `   ` | X `COPPER_CHEST`, B `golemancy:blank_node` | 1 | 0 |
 | Filter Node | ` X ` / ` B ` / `   ` | X `ITEM_FRAME`, B `golemancy:blank_node` | 1 | 0 |
 
+![Crafting grid for the Sorter Core. Top row: redstone comparator in the middle. Middle row: nether quartz, Blank Animus Core, nether quartz. Bottom row: copper chest in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-sorter-core.png =352x) ![Crafting grid for the Input Node. Top row: copper chest in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-input-node.png =352x) ![Crafting grid for the Filter Node. Top row: item frame in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-filter-node.png =352x)
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `destinationRadiusByLevel` | `[8, 12, 16, 20, 24]` | Blocks around an Input Node within which a Sorter puts items away, from level 1 upward. Each Input Node can narrow it in its GUI. Values outside 1 to 64 load as the nearest limit. |
@@ -867,6 +915,8 @@ Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including 
 |---|---|---|---|---|
 | Angler Core | ` X ` / `YBY` / ` Z ` | X `FISHING_ROD`, Y `PRISMARINE_SHARD`, Z `DRIED_KELP`, B `golemancy:blank_core` | 1 | 2 levels |
 | Fishing Node | ` X ` / ` B ` / `   ` | X `FISHING_ROD`, B `golemancy:blank_node` | 1 | 0 |
+
+![Crafting grid for the Angler Core. Top row: fishing rod in the middle. Middle row: prismarine shard, Blank Animus Core, prismarine shard. Bottom row: dried kelp in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-angler-core.png =352x) ![Crafting grid for the Fishing Node. Top row: fishing rod in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-fishing-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -937,6 +987,8 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 | Recipe | Pattern | Keys | Yield | Tithe |
 |---|---|---|---|---|
 | Blank Rune | ` A ` / `ASA` / ` A ` | A `AMETHYST_SHARD`, S `SMOOTH_STONE` | 2 | 0 |
+
+![Crafting grid for the Blank Rune. Top row: amethyst shard in the middle. Middle row: amethyst shard, smooth stone, amethyst shard. Bottom row: amethyst shard in the middle; makes 2](/adapt-assets/golemancy/recipes/golemancy-blank-rune.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
