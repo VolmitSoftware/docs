@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, settings, and uninstalling"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T01:55:01.954Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,12 +35,18 @@ Skeletal servants, Shadow Decoys, and the attacker's tamed pets are excluded fro
 
 ## SQL and Redis
 
-SQL is authoritative when `sql.enabled` is true. Create the schema and grant `SELECT`, `INSERT`, `UPDATE`, `DELETE`, and `CREATE TABLE`. Adapt creates `ADAPT_DATA` and `ADAPT_DATA_FENCE` in that schema. Both tables must use InnoDB before Adapt can use SQL storage:
+SQL is authoritative when `sql.enabled` is true. Create the schema and grant `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `CREATE TABLE`, and `REFERENCES`. Adapt creates `ADAPT_DATA` and `ADAPT_DATA_FENCE` in that schema. Both tables must use InnoDB before Adapt can use SQL storage:
 
 ```sql
 ALTER TABLE ADAPT_DATA ENGINE=InnoDB;
 ALTER TABLE ADAPT_DATA_FENCE ENGINE=InnoDB;
 ```
+
+With `advancements = true`, Adapt also creates four InnoDB tables: `ADAPT_ADVANCEMENT_TEAMS`, `ADAPT_ADVANCEMENT_PLAYERS`, `ADAPT_ADVANCEMENT_PROGRESS`, and `ADAPT_ADVANCEMENT_UNREDEEMED`. `ADAPT_ADVANCEMENT_MIGRATIONS` records completed imports. Include all seven tables in SQL backups. Keep separate Adapt networks in separate schemas.
+
+At startup, Adapt imports advancement records from `Teams`, `Players`, `Advancements`, and `Unredeemed` when those tables match the advancement storage format. Only namespaces beginning with the literal prefix `adapt_skill_` qualify. Back up the schema and stop other Adapt servers sharing it before the first import. The source tables and their rows remain unchanged.
+
+Existing player names, teams, and advancement entries take precedence. Adapt adds missing players and advancements; pending rewards transfer only with newly imported advancement entries. A completed import does not repeat on later starts, so it cannot restore progress or rewards cleared afterward. An incomplete import remains pending for a later startup.
 
 Credentials go in the JDBC URL. Adapt has no TLS switch of its own. Redis handoff runs only when `redis.enabled` is also true. A fenced write that exhausts its retries is kept as `data/players/<uuid>.json.pending-sql`. See [Cross-server SQL and Redis](/adapt/39-velocity-cross-server).
 
@@ -190,7 +196,7 @@ An unrecognized failure-mode string falls back to `deny` for use policies and `a
 | `sql.enabled` | `false` | Makes the InnoDB `ADAPT_DATA` and `ADAPT_DATA_FENCE` tables authoritative instead of local JSON |
 | `sql.host` | `localhost` | MySQL-compatible server hostname |
 | `sql.port` | `3306` | Server port |
-| `sql.database` | `adapt` | Existing schema the table lives in. Adapt creates the table, never the schema |
+| `sql.database` | `adapt` | Existing schema for player profiles, ownership fences, and advancement tables. Adapt creates tables, never the schema |
 | `sql.username` | `user` | SQL account |
 | `sql.password` | `password` | SQL account password, sent in plain text unless the server enforces TLS |
 | `sql.poolSize` | `10` | Connection pool size requested by the advancement backend only |
@@ -312,10 +318,12 @@ Removing Adapt deletes every player's skills, knowledge, and learned adaptations
 | Tables | Created when |
 |---|---|
 | `ADAPT_DATA`, `ADAPT_DATA_FENCE` | `sql.enabled = true` |
-| `Teams`, `Players`, `Advancements`, `Unredeemed` | `sql.enabled = true` and `advancements = true`. These hold advancement progress |
+| `ADAPT_ADVANCEMENT_UNREDEEMED`, `ADAPT_ADVANCEMENT_PROGRESS`, `ADAPT_ADVANCEMENT_PLAYERS`, `ADAPT_ADVANCEMENT_TEAMS` | `sql.enabled = true` and `advancements = true`. These hold advancement progress |
+| `ADAPT_ADVANCEMENT_MIGRATIONS` | `sql.enabled = true` and `advancements = true`. This records completed imports |
 
-> The advancement table names are generic. Before dropping them, confirm that no other plugin uses tables with those names in the same schema.
-{.is-danger}
+Drop the advancement tables in the listed order so their foreign keys remain valid until each dependent table is removed.
+
+The source tables `Teams`, `Players`, `Advancements`, and `Unredeemed` remain separate from these tables and can contain other plugins' data. Remove only records you have verified belong to Adapt if you also want to erase the retained import sources.
 
 5. Redis needs no cleanup. Adapt's staged handoff keys expire after 60 seconds.
 6. Remove `%adapt_…%` placeholders from other plugins' configuration. Without Adapt, PlaceholderAPI leaves them unreplaced.
@@ -354,7 +362,7 @@ Stable Hand bonuses are vanilla attribute modifiers on each animal that a player
 
 1. Stop every backend that shares Adapt data.
 2. Delete `plugins/Adapt/`. To keep your configuration and players' language choices, delete only `plugins/Adapt/data/`.
-3. With SQL storage, drop the tables listed above.
+3. With SQL storage, use an empty schema. To reuse the current schema after a completed import, drop the tables listed above except `ADAPT_ADVANCEMENT_MIGRATIONS`; keep its completion record so retained source rows are not imported again.
 4. Start the servers with the Adapt jar. Adapt creates default files, and every player starts with an empty profile.
 
 To reset individual players instead, use `/adapt reset confirm <player>`. See [Clearing data](/adapt/04-commands-permissions#clearing-data). Items and animals listed under What remains are part of the world and stay after a fresh start.

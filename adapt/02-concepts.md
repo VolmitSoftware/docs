@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-18T01:55:01.954Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -68,5 +68,7 @@ On the one-second tick, XP past `experienceMaxLevel` grants 1 wisdom and sets th
 ## Storage
 
 Adapt stores one JSON file per player under `data/players/` unless `sql.enabled` is true. SQL stores the profile in `ADAPT_DATA` and the ownership fence in `ADAPT_DATA_FENCE`. If a profile cannot be loaded, the player still joins and Adapt stays inactive for that player until the profile loads.
+
+With advancements enabled, local advancement progress lives in `data/advancements.db`. SQL mode stores it in `ADAPT_ADVANCEMENT_TEAMS`, `ADAPT_ADVANCEMENT_PLAYERS`, `ADAPT_ADVANCEMENT_PROGRESS`, and `ADAPT_ADVANCEMENT_UNREDEEMED` in the configured schema. `ADAPT_ADVANCEMENT_MIGRATIONS` prevents completed startup imports from repeating; include it when backing up or restoring advancement data. See [SQL and Redis](/adapt/01-installation-configuration#sql-and-redis) for import behavior.
 
 Curves, multipliers, and the key tables are in [Configuration math](/adapt/05-configuration-math).
