@@ -1,6 +1,6 @@
 ---
 title: "Skill - Golemancy"
-description: "Golemancy XP sources, adaptations, and configuration"
+description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
 date: 2026-10-19T00:00:00.000Z
 tags: "adapt"
@@ -174,6 +174,26 @@ Infusions are the `infusionRecipes` tables in the skill configuration, one table
 | `enabled` | Set to `false` to turn the infusion off. |
 
 A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table is skipped with a console warning when its `result` is not a rune or the Masterwork Heart, when its `center` or a pedestal is empty, names a material that is not an item, or names an unknown Golemancy item, when `pedestals` does not hold exactly four entries, or when `unlockAdaptation` is empty.
+
+## Player preferences
+
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior, and a control for a perk that unlocks at a later level appears once you reach that level.
+
+| Adaptation | Personal controls |
+| --- | --- |
+| Animus Binding | Show or hide the status labels over your bound golems. Hidden labels leave the channel glow in place. |
+| Node Weaving | Reveal nodes while holding any reveal item or only while holding the Crook; turn off the work-area outline. With Crook only, the other reveal items show neither your nodes nor their outlines. |
+| Copper Frame | Turn off Static Overdrive. |
+| Iron Frame | Turn off Sweeping Fists. |
+| Bone Frame | Stop your skeletal servants from answering Crook signals. Your golems still answer them. |
+| Guardian Core | Turn off Intercept; turn off Retaliate against players, which leaves players who hurt you alone while Guardians still retaliate against mobs. With it on, Guardians attack players only where region protection allows PvP. |
+| Gatherer Core | Turn off Magnet; turn off absorbing experience orbs, which leaves the orbs on the ground for you. |
+| Harvester Core | Turn off Tending; turn off Tilling, which also stops planting empty farmland. |
+| Lumber Core | Turn off Leaf Sweep. |
+| Overseer | Choose chime and particles or action bar only for signal feedback. Action bar only keeps the action-bar confirmation and drops the chime and the particle ring around each golem or servant that answers. |
+| Masterwork | Turn off the gold aura around your masterwork golems. |
+
+Frost Frame, Breaker Core, Rancher Core, Sorter Core, Angler Core, Runic Augments, Golem Mending, and Stasis have the enable switch.
 
 ## Adaptations
 
