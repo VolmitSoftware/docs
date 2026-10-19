@@ -2,7 +2,7 @@
 title: "Protection & Region Policy"
 description: "WorldGuard flags, claim protection, and region policy"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -104,3 +104,24 @@ Each WorldGuard check also requires `use-adaptations` to be unset or `allow`:
 | `canInteract` | `use-adaptations` + `INTERACT` |
 | `canAccessChest` | `use-adaptations` + `CHEST_ACCESS` |
 
+GriefPrevention checks the claim at the location Adapt checks:
+
+| Adapt check | GriefPrevention rule |
+|---|---|
+| `canBlockBreak`, `canBlockPlace` | Build trust in the claim. Claim owners, players ignoring claims, and players with `griefprevention.adminclaims` in an admin claim pass. |
+| `canAccessChest` | Container trust in the claim. |
+| `canPVE` for a mob | Monsters always pass. Other creatures, such as animals, golems, and villagers, need container trust while GriefPrevention's `GriefPrevention.Claims.ProtectCreatures` setting is on. |
+
+GriefPrevention counts as monsters every monster, shulkers, the killer bunny, aggressive pandas, and hoglins and polar bears that are hunting and were not lured. `canPVP`, `canInteract`, `checkRegion`, and `canPVE` checks that name only a location are not limited by GriefPrevention. Adaptation hits on a mob, the targets of Adapt minions such as skeletal servants and golems, and a Rancher's work on animals use the mob check.
+
+Factions checks the faction that owns the location's chunk. Wilderness and admin bypass pass every check:
+
+| Adapt check | Factions rule |
+|---|---|
+| `canBlockBreak` | The faction's `DESTROY` permission for the player |
+| `canBlockPlace` | The faction's `BUILD` permission for the player |
+| `canAccessChest` | The faction's `CONTAINER` permission for the player |
+| `canPVP` | The player's own territory, or territory that allows PvP |
+| `canPVE`, `checkRegion` | The player's own territory |
+
+`canInteract` is not limited by Factions.

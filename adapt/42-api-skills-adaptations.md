@@ -2,7 +2,7 @@
 title: "API - Skills & Adaptations"
 description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -71,6 +71,8 @@ AdaptationLearningTransaction.Result result =
 ```
 
 Call it on the tick thread that owns the player. Pass the level the player should end up at rather than a delta. `learn` clamps to the adaptation's max level. `unlearn` clamps at zero. Pass `bypassCosts = true` only for an administrative action you have already authorised. It skips the power, knowledge, and money checks. On `unlearn` it also overrides the permanent-adaptation and dependent-adaptation refusals, pays nothing back, and removes the learned adaptations whose requirement on it is broken, following that chain. It never bypasses the requirements checked by `learn`. The returned `Result` is the complete outcome. Do not also write `PlayerSkillLine` yourself. A `RuntimeException` thrown part way through `learn` rolls back the level, the knowledge, and any Vault charge before it propagates.
+
+`Adaptation.onLevelChanged(Player, int)` runs whenever an online player's learned level of that adaptation changes, from a transaction, a dependent removal, or a region grant. It receives the new level, `0` when the adaptation is gone. It runs on the thread that changed the level, so schedule world and entity work on the owning scheduler.
 ## Reference
 
 ### Supported `SkillRegistry` members

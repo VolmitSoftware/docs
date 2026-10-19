@@ -2,7 +2,7 @@
 title: "API - Protection"
 description: "Register protection and region policy services"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-19T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,6 +27,8 @@ public final class ClaimsProtector implements Protector {
 Register it through Bukkit's `ServicesManager` under `Protector`. Return `true` when your plugin has no objection and `false` to deny the action.
 
 Protector methods cover block breaking, block placement, interaction, damage, item use, entity interaction, and movement. The adaptation may be `null` for a general check.
+
+`canPVE(player, entity, adaptation)` judges damage to, or handling of, one mob. It falls back to `canPVE(player, location, adaptation)` at the mob's location, so override it when your rule depends on the kind of mob, such as letting players hit monsters but not animals. `Adaptation.canPVE(player, entity)` evaluates it across the active protectors. Adapt uses it for adaptation hits on a mob, for the targets of its minions, and for golem work on animals.
 
 Use `Protector` for location-specific rules. Use [Ability Use Policy](/adapt/43-api-ability-use-policy) for player state such as jail, duel, quest, or rank restrictions.
 
