@@ -177,11 +177,11 @@ A material name never matches a Golemancy item made from that material, so a Mas
 
 ## Player preferences
 
-Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior, and a control for a perk that unlocks at a later level appears once you reach that level.
+Every adaptation has an enable switch in the bottom settings row of its level screen. Server policy controls which choices are available; settings change only your player profile. Defaults preserve the standard behavior, and a control for a perk that unlocks at a later level appears once you reach that level. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation's TOML file; the control ids are `status-labels`, `node-reveal`, `work-area-outline`, `intercept`, `retaliate-players`, `magnet`, `absorb-orbs`, `tending`, `tilling`, `leaf-sweep`, `sweeping-fists`, `static-overdrive`, `signal-feedback`, `aura`, and `obey-overseer`.
 
 | Adaptation | Personal controls |
 | --- | --- |
-| Animus Binding | Show or hide the status labels over your bound golems. Hidden labels leave the channel glow in place. |
+| Animus Binding | Show or hide the status labels over your bound golems and your skeletal servants. Hidden labels leave the channel glow in place. |
 | Node Weaving | Reveal nodes while holding any reveal item or only while holding the Crook; turn off the work-area outline. With Crook only, the other reveal items show neither your nodes nor their outlines. |
 | Copper Frame | Turn off Static Overdrive. |
 | Iron Frame | Turn off Sweeping Fists. |
@@ -190,7 +190,7 @@ Every adaptation has an enable switch in the bottom settings row of its level sc
 | Gatherer Core | Turn off Magnet; turn off absorbing experience orbs, which leaves the orbs on the ground for you. |
 | Harvester Core | Turn off Tending; turn off Tilling, which also stops planting empty farmland. |
 | Lumber Core | Turn off Leaf Sweep. |
-| Overseer | Choose chime and particles or action bar only for signal feedback. Action bar only keeps the action-bar confirmation and drops the chime and the particle ring around each golem or servant that answers. |
+| Overseer | Choose chime and particles or action bar only for signal feedback. Action bar only keeps the action-bar messages and drops the click when you cycle signals, the chime when you send one, and the particle ring around each golem or servant that answers. |
 | Masterwork | Turn off the gold aura around your masterwork golems. |
 
 Frost Frame, Breaker Core, Rancher Core, Sorter Core, Angler Core, Runic Augments, Golem Mending, and Stasis have the enable switch.
