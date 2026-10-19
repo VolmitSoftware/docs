@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T19:56:21.000Z
+date: 2026-10-19T20:42:18.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -231,7 +231,7 @@ Infusions are the `infusionRecipes` tables in the skill configuration, one table
 | `unlockLevel` | Lowest level of `unlockAdaptation` that can perform the infusion, at least 1. |
 | `enabled` | Set to `false` to turn the infusion off. |
 
-A material name never matches a Golemancy item made from that material, so a Masterwork Heart or a rune does not count as a plain `HEART_OF_THE_SEA` or `DISC_FRAGMENT_5`. When two infusions match the same items, the one listed first runs. A table is skipped with a console warning when its `result` is not a rune or the Masterwork Heart, when its `center` or a pedestal is empty, names a material that is not an item, or names an unknown Golemancy item, when `pedestals` does not hold exactly four entries, or when `unlockAdaptation` is empty.
+A material name never matches a Golemancy item made from that material, so a Masterwork Heart does not count as a plain `HEART_OF_THE_SEA`, and a rune does not count as the plain pottery sherd it is made from, such as `GUSTER_POTTERY_SHERD`. When two infusions match the same items, the one listed first runs. A table is skipped with a console warning when its `result` is not a rune or the Masterwork Heart, when its `center` or a pedestal is empty, names a material that is not an item, or names an unknown Golemancy item, when `pedestals` does not hold exactly four entries, or when `unlockAdaptation` is empty.
 
 ## Player preferences
 

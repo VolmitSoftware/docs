@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-19T20:42:18.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -252,7 +252,7 @@ Each skill line at or above the threshold adds a bonus to all XP gain, up to the
 
 5 levels · 3 knowledge, then 2 per level
 
-Sneak-right-click a head, skull, music disc, armor trim template, or pottery sherd in the main hand to grant rarity-scaled Discovery XP and a bounded random XP payout to one enabled, permitted skill other than Discovery. The item is stamped with a lore tag and refused on a later attempt, placing and breaking an appraised head or skull keeps that data and lore, and with no eligible skill only the Discovery XP is granted.
+Sneak-right-click a head, skull, music disc, armor trim template, or pottery sherd in the main hand to grant rarity-scaled Discovery XP and a bounded random XP payout to one enabled, permitted skill other than Discovery. The item is stamped with a lore tag and refused on a later attempt, placing and breaking an appraised head or skull keeps that data and lore, and with no eligible skill only the Discovery XP is granted. Golemancy items made from a pottery sherd are never appraised.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
