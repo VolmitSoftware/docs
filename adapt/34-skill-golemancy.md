@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T22:30:00.000Z
+date: 2026-10-20T02:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -53,7 +53,7 @@ Animus Binding level 1 unlocks the Crook and Blank Animus Core recipes:
 
 ![Crafting grid for the Artificer's Crook. Top row: amethyst shard in the middle. Middle row: redstone dust, iron hoe, redstone dust. Bottom row: copper ingot in the middle](/adapt-assets/golemancy/recipes/golemancy-crook.png =352x) ![Crafting grid for the Blank Animus Core. Top row: amethyst shard, redstone dust, amethyst shard. Middle row: redstone dust, ender pearl, redstone dust. Bottom row: amethyst shard, redstone dust, amethyst shard](/adapt-assets/golemancy/recipes/golemancy-blank-core.png =352x)
 
-Holding the Crook, a Node (not a Blank Node), a Core (a Blank Animus Core or a role core), or a Dormant Golem in either hand reveals your nodes and your bound golems' status labels, as described under Animus Binding and Node Weaving. A Dormant Golem or Shattered Core belongs to the player whose golem it holds, and only that player can use it. The Shattered Core a golem leaves where it dies, and a Dormant Golem that drops because your inventory is full when you pack a golem, can be picked up only by that player. Any other Dormant Golem or Shattered Core on the ground, such as one a player throws, can be picked up by anyone. Hoppers never pick up a Dormant Golem or Shattered Core from the ground. Cores, nodes, runes, and Masterwork Hearts carry no owner and can be traded.
+Holding the Crook, a Node (not a Blank Node), a Core (a Blank Animus Core or a role core), or a Dormant Golem in either hand reveals your nodes and your bound golems' status, as described under [Names and status](/adapt/34-skill-golemancy#names-and-status) and Node Weaving. A Dormant Golem or Shattered Core belongs to the player whose golem it holds, and only that player can use it. The Shattered Core a golem leaves where it dies, and a Dormant Golem that drops because your inventory is full when you pack a golem, can be picked up only by that player. Any other Dormant Golem or Shattered Core on the ground, such as one a player throws, can be picked up by anyone. Hoppers never pick up a Dormant Golem or Shattered Core from the ground. Cores, nodes, runes, and Masterwork Hearts carry no owner and can be traded.
 
 Each adaptation lists the crafting recipes it unlocks, and [Infusion recipes](/adapt/34-skill-golemancy#infusion-recipes) lists what the Animus Plinth makes. Every crafting recipe is a table in its adaptation's configuration with these fields:
 
@@ -90,6 +90,20 @@ Snow, iron, and copper golems are built from these blocks:
 A bound golem sleeps while you are offline, while you are online but your Adapt data has not finished loading, and while the server already has `serverMaxActiveGolems` bound golems awake. It wakes as soon as the reason clears, and golems kept asleep by the server limit wake in turn as room frees. With `guardWhileOwnerOffline` on in the skill configuration, golems bound with a Guardian Core stay awake while you are offline, as described under Guardian Core.
 
 A sleeping golem stays where it is and does not move, work, fight, answer Crook signals, or regenerate. With `dormantInvulnerable` on, it takes no damage while it sleeps.
+
+### Names and status
+
+A golem you bind is named "*Owner*'s *Body* Golem". To rename it, use a name tag on it as you would on any mob. The tag is used up unless you are in Creative. Only the golem's owner can rename it; another player's name tag is refused and stays in that player's hand. The name stays with the golem through server restarts, in its Dormant Golem, and when a Shattered Core rebuilds it.
+
+While you hold the Crook, a Node, a Core, or a Dormant Golem, your golems within `revealRange` blocks show you their status: health, cores, mode, channel, and the Masterwork mark. Where the name and the status appear depends on the server:
+
+| Server | Golem name | Your golem's status |
+|---|---|---|
+| [Gloss entity overlays](/gloss/20-entity-overlays) on | In the golem's Gloss overlay | In the Gloss overlay of the golem you look at within `labelRange` blocks, or in your [Discovery Insight](/adapt/18-skill-discovery) readout of it |
+| Discovery Insight enabled, Gloss entity overlays off | Not shown above the golem | A floating label only you see, with the golem's name |
+| Neither | The golem's nametag, as on any named mob | A floating label only you see, without the name |
+
+Setting golem status labels to hidden in the Animus Binding settings (`status-labels`) hides the status of your golems and skeletal servants in every case. The name and the channel glow stay.
 
 ### Golem GUI
 
@@ -243,7 +257,7 @@ Every adaptation has an enable switch in the bottom settings row of its level sc
 
 | Adaptation | Personal controls |
 | --- | --- |
-| Animus Binding | Show or hide the status labels over your bound golems and your skeletal servants. Hidden labels leave the channel glow in place. |
+| Animus Binding | Show or hide the status of your bound golems and your skeletal servants, as a floating label, in the Gloss overlay, or in the Discovery Insight readout. Hidden status leaves the names and the channel glow in place. |
 | Node Weaving | Reveal nodes while holding any reveal item or only while holding the Crook; turn off the work-area outline. With Crook only, the other reveal items show neither your nodes nor their outlines. |
 | Copper Frame | Turn off Static Overdrive. |
 | Iron Frame | Turn off Sweeping Fists. |
@@ -276,7 +290,7 @@ Arrows point from each prerequisite to the adaptations it unlocks; unlabelled ar
 
 Binds a golem to you as a companion and unlocks the Artificer's Crook and Blank Animus Core recipes at level 1.
 
-Hold an Animus Core in your main hand, sneak, and right-click a snow, copper, or iron golem. The golem freezes and shrinks toward its bound size while the ritual runs. Moving more than 4 blocks from the golem, switching your held item, or the golem being attacked, set on fire, caught in lava, or caught in an explosion breaks the ritual, and the golem returns to its normal size. Rain and melting do not break it. When the ritual finishes, the core and the tithe levels are used up and the golem becomes "*Owner*'s *Body* Golem". A Companion golem starts following you; a golem bound with a role core starts working. Creative players pay no levels.
+Hold an Animus Core in your main hand, sneak, and right-click a snow, copper, or iron golem. The golem freezes and shrinks toward its bound size while the ritual runs. Moving more than 4 blocks from the golem, switching your held item, or the golem being attacked, set on fire, caught in lava, or caught in an explosion breaks the ritual, and the golem returns to its normal size. Rain and melting do not break it. When the ritual finishes, the core and the tithe levels are used up and the golem is named "*Owner*'s *Body* Golem", which you can change with a name tag as described under [Names and status](/adapt/34-skill-golemancy#names-and-status). A Companion golem starts following you; a golem bound with a role core starts working. Creative players pay no levels.
 
 A binding needs all of the following:
 
@@ -298,7 +312,7 @@ A binding needs all of the following:
 | 4 | 5 | 2.5 s | 1 / 1 / 2 levels |
 | 5 | 7 | 2.0 s | 0 / 1 / 1 levels |
 
-While you hold the Crook, a Node, a Core, or a Dormant Golem, your bound golems within `revealRange` blocks show a status label only you see and glow for you in their first channel's color, or white when they have no channel.
+While you hold the Crook, a Node, a Core, or a Dormant Golem, your bound golems within `revealRange` blocks glow for you in their first channel's color, or white when they have no channel, and show you their status as described under [Names and status](/adapt/34-skill-golemancy#names-and-status).
 
 A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
 
@@ -539,7 +553,7 @@ Brings your TragOul skeletal servants into Golemancy: they answer your Crook sig
 Bone Frame works on the servants you summon with Skeletal Servant. Servants never attack your bound golems, with or without Bone Frame.
 
 - **Crook signals** (level 1): with Overseer, your servants within the signal radius answer Follow, Hold, and Sic; Home and Work do not reach them. Follow makes a servant walk back to you when it is more than 4 blocks away and has no live target; a fighting servant keeps its fight until it is more than the skill's `leashRadius` blocks from you, and then drops it and walks back. Hold makes a servant stand where it was when the signal arrived and attack only what attacks it, then walk back to that spot. Sic sends every servant in range after the creature you look at for the Overseer's `sicHoldSeconds` seconds, or until the creature dies or leaves their world, whatever the servant stance and even while it holds; then the servant goes back to its Follow or Hold order, and a holding servant walks back to its spot. A Follow or Hold signal ends the attack sooner. An order lasts until the servant's lifetime ends or another signal replaces it. When your Crook has a channel, only servants on that channel answer, so servants without a channel ignore it.
-- **Servant channel and labels** (level 1): while you hold the Crook, a Node, a Core, or a Dormant Golem, your servants within the skill's `revealRange` blocks glow for you alone in your servant channel's color, or white when you have none, and those within `servantLabelRange` blocks carry a status label only you see with the servant's name, health, seconds left, and channel.
+- **Servant channel and labels** (level 1): while you hold the Crook, a Node, a Core, or a Dormant Golem, your servants within the skill's `revealRange` blocks glow for you alone in your servant channel's color, or white when you have none, and those within `servantLabelRange` blocks show you a status with the servant's name, health, seconds left, and channel. The status is a floating label only you see; with Gloss entity overlays on, it shows in the Gloss overlay of the servant you look at, or in your Discovery Insight readout of it, instead.
 - **Servant menu** (level 1): open your golem roster and click Bone Lattice at the bottom. The lower rows hold the 16 dye channels; click one to set your servant channel, or click Servant Channel: None to clear it. The top row holds your lattice slots, and each locked slot names the Bone Frame level that opens it.
 - **Bone Lattice** (level 2): pick up a rune from your inventory and click an empty slot in the servant menu to set it. Only the aspects in `latticeAspects` fit, and the lattice holds one rune of each aspect. Click a slotted rune to take it back; it goes into your inventory, or drops at your feet when your inventory is full. A rune in a slot your level does not open does nothing, but you can still take it back.
 - **Lattice runes on summon:** each servant you summon wears the lattice runes for its lifetime, each at the lower of the rune's tier and the highest tier your Runic Augments level allows, with the Runic Augments values for that tier. Swiftness adds movement speed, Might adds attack damage, Bulwark adds armor, armor toughness, and knockback resistance, and Ember sets what the servant hits on fire. At the tiers where Runic Augments makes golems immune to fire, an Ember rune gives the servant Fire Resistance. Without Runic Augments, lattice runes do nothing. Changes to the lattice apply to servants you summon afterwards.
@@ -1423,8 +1437,8 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. |
 | `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
 | `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 2-20. |
-| `revealRange` | `32.0` | Blocks around you within which your golems show their status labels and channel glow, your skeletal servants glow with Bone Frame, and your nodes appear while you hold the Crook, a Node, a Core or a Dormant Golem. |
-| `labelRange` | `8.0` | Blocks within which revealed golem and node labels are drawn on screen. |
+| `revealRange` | `32.0` | Blocks around you within which your golems glow in their channel color and show you their status, your skeletal servants glow with Bone Frame, and your nodes appear while you hold the Crook, a Node, a Core or a Dormant Golem. |
+| `labelRange` | `8.0` | Blocks within which revealed golem and node labels are drawn on screen, and within which a golem you look at shows you its status in the Gloss entity overlay. |
 | `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems and nodes as you move while holding the Crook, a Node, a Core or a Dormant Golem. |
 | `maxNodesPerChunk` | `16` | Most nodes allowed in one chunk, counting every player's nodes. |
 | `nodeScanIntervalTicks` | `40` | Ticks between checks of each node, clamped to 5-1200. Each check confirms the node's block is still there. |
