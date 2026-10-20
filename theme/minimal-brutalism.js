@@ -1786,6 +1786,30 @@
     }
   }
 
+  function prepareDemo(video) {
+    video.autoplay = false;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'none';
+    pauseDemo(video);
+  }
+
+  function updateVideoPlayback(video, visible, playing) {
+    video.preload = visible ? 'metadata' : 'none';
+    video.autoplay = visible && playing;
+    if (!video.autoplay) {
+      pauseDemo(video);
+    } else if (video.paused) {
+      video.play().catch((error) => {
+        if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
+          console.error('Unable to play the demonstration.', error);
+        }
+      });
+    }
+  }
+
   function updateDemoPlayback(player) {
     const selected = player.views.has(demoPerspective) ? demoPerspective : player.views.keys().next().value;
     for (const [perspective, view] of player.views) {
@@ -1793,15 +1817,7 @@
       view.panel.hidden = !active;
       view.tab.setAttribute('aria-selected', String(active));
       view.tab.tabIndex = active ? 0 : -1;
-      if (!active || !player.visible || document.hidden || !player.playing) {
-        pauseDemo(view.video);
-      } else if (view.video.paused) {
-        view.video.play().catch((error) => {
-          if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
-            console.error('Unable to play the skill demonstration.', error);
-          }
-        });
-      }
+      updateVideoPlayback(view.video, active && player.visible && !document.hidden, player.playing);
     }
   }
 
@@ -1844,7 +1860,7 @@
     if (third) {
       choices.push(['third-person', 'Third person', third]);
     }
-    const player = { views: new Map(), visible: false, playing: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches };
+    const player = { views: new Map(), visible: false, playing: true };
     demoPlayers.set(container, player);
     const header = element('div', 'demo-header');
     const tabs = element('div', 'demo-tabs');
@@ -1856,10 +1872,7 @@
     }
     const id = 'adapt-demo-' + ++demoSequence;
     for (const [perspective, label, video] of choices) {
-      video.autoplay = false;
-      video.muted = true;
-      video.preload = 'none';
-      pauseDemo(video);
+      prepareDemo(video);
       if (!video.hasAttribute('aria-label')) {
         video.setAttribute('aria-label', label + ' demonstration');
       }
@@ -2004,15 +2017,7 @@
       for (const [perspective, view] of variant.views) {
         const active = perspective === player.camera.value;
         view.panel.hidden = !active;
-        if (!selected || !active || !player.visible || document.hidden || !player.playing) {
-          pauseDemo(view.video);
-        } else if (view.video.paused) {
-          view.video.play().catch((error) => {
-            if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
-              console.error('Unable to play the portal demonstration.', error);
-            }
-          });
-        }
+        updateVideoPlayback(view.video, selected && active && player.visible && !document.hidden, player.playing);
       }
     }
   }
@@ -2035,7 +2040,7 @@
     if (!variants.size) {
       return;
     }
-    const player = { variants, client: variants.keys().next().value, visible: false, playing: !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches, camera: element('select') };
+    const player = { variants, client: variants.keys().next().value, visible: false, playing: true, camera: element('select') };
     const id = 'wormholes-demo-' + ++demoSequence;
     const header = element('div', 'demo-header');
     const tabs = element('div', 'demo-tabs');
@@ -2079,11 +2084,8 @@
         if (!video) {
           continue;
         }
-        video.autoplay = false;
-        video.muted = true;
-        video.preload = 'none';
+        prepareDemo(video);
         video.setAttribute('aria-label', label + ', ' + name.toLowerCase() + ' demonstration');
-        pauseDemo(video);
         const panel = element('div', 'demo-panel');
         panel.append(video);
         variant.panel.append(panel);

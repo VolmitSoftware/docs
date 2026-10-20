@@ -68,6 +68,14 @@ test('each demonstration mounts independent client tabs and paired perspectives'
       assert.equal(panel.getAttribute('aria-labelledby'), tab.id);
     }
     assert.equal(demo.querySelectorAll('video').length, 4);
+    for (const video of demo.querySelectorAll('video')) {
+      assert.equal(video.muted, true);
+      assert.equal(video.defaultMuted, true);
+      assert.equal(video.loop, true);
+      assert.equal(video.playsInline, true);
+      assert.equal(video.autoplay, false);
+      assert.equal(video.preload, 'none');
+    }
   }
   demos[0].querySelectorAll(':scope > .demo-header button')[1].click();
   assert.equal(demos[0].querySelector('[data-client="clientview"]').hidden, false);
@@ -136,7 +144,11 @@ test('inactive client, inactive perspective, offscreen, and background clips pau
   const third = demo.querySelector('video[src$="standard-observer.webm"]');
   visible(demo, true);
   assert.equal(first.paused, false);
+  assert.equal(first.autoplay, true);
+  assert.equal(first.preload, 'metadata');
   assert.equal(third.paused, true);
+  assert.equal(third.autoplay, false);
+  assert.equal(third.preload, 'none');
   const camera = demo.querySelector('select');
   camera.value = 'third-person';
   camera.dispatchEvent(new window.Event('change', { bubbles: true }));
@@ -148,6 +160,7 @@ test('inactive client, inactive perspective, offscreen, and background clips pau
   assert.equal(modded.paused, false);
   visible(demo, false);
   assert.equal(modded.paused, true);
+  assert.equal(modded.autoplay, false);
   visible(demo, true);
   assert.equal(modded.paused, false);
   Object.defineProperty(window.document, 'hidden', { value: true, configurable: true });
@@ -202,11 +215,19 @@ test('first-person-only demonstrations play with a saved observer preference and
   assert.equal(demos[0].querySelector('video[src$="clientview-pov.webm"]').parentElement.hidden, false);
 });
 
-test('reduced motion prevents initial playback across client, camera, and single-view demonstrations', async t => {
+test('visible demonstrations autoplay muted and loop even with reduced motion enabled', async t => {
   const { window, demos, visible } = await page(t, 'third-person', false, true);
   const clips = [...window.document.querySelectorAll('.adapt-demo, .gloss-demo')];
   for (const container of [...demos, ...clips]) visible(container, true);
-  assert.ok([...window.document.querySelectorAll('video')].every(video => video.paused));
+  for (const container of [...demos, ...clips]) {
+    const playing = [...container.querySelectorAll('video')].filter(video => !video.paused);
+    assert.equal(playing.length, 1);
+    assert.equal(playing[0].autoplay, true);
+    assert.equal(playing[0].muted, true);
+    assert.equal(playing[0].defaultMuted, true);
+    assert.equal(playing[0].loop, true);
+    assert.equal(playing[0].playsInline, true);
+  }
   demos[0].querySelectorAll(':scope > .demo-header button')[1].click();
   const camera = demos[0].querySelector('select');
   camera.value = 'first-person';
@@ -216,17 +237,17 @@ test('reduced motion prevents initial playback across client, camera, and single
     visible(container, false);
     visible(container, true);
   }
-  assert.ok([...window.document.querySelectorAll('video')].every(video => video.paused));
+  for (const container of [...demos, ...clips]) {
+    assert.equal([...container.querySelectorAll('video')].filter(video => !video.paused).length, 1);
+  }
 });
 
-test('reduced motion allows intentional playback and preserves a manual pause', async t => {
+test('autoplay preserves a manual pause across visibility changes', async t => {
   const { window, demos, visible } = await page(t, undefined, false, true);
   const containers = [demos[0], window.document.querySelector('.adapt-demo'), ...window.document.querySelectorAll('.gloss-demo')];
   for (const container of containers) {
     visible(container, true);
     const video = container.querySelector('video');
-    assert.equal(video.paused, true);
-    await video.play();
     assert.equal(video.paused, false);
     visible(container, false);
     assert.equal(video.paused, true);
@@ -236,7 +257,11 @@ test('reduced motion allows intentional playback and preserves a manual pause', 
     visible(container, false);
     visible(container, true);
     assert.equal(video.paused, true);
+    assert.equal(video.autoplay, false);
+    assert.equal(video.preload, 'metadata');
     assert.ok([...container.querySelectorAll('video')].every(clip => clip.paused));
+    await video.play();
+    assert.equal(video.paused, false);
   }
 });
 

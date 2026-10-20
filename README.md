@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-10-13T17:30:00.000Z
+date: 2026-10-20T02:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,8 +58,8 @@ node tools/build-theme-data.mjs --check
 In Wiki.js **Administration > Theme > Head HTML Injection**, include one stylesheet and one script reference. Update the version value when publishing theme changes. Browsers keep the previous URL for several hours, so a Git sync alone does not refresh a browser that already loaded the same `?v=` value.
 
 ```html
-<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261013-production">
-<script src="/theme/minimal-brutalism.js?v=graphite-20261013-production"></script>
+<link rel="stylesheet" href="/theme/minimal-brutalism.css?v=graphite-20261019-video">
+<script src="/theme/minimal-brutalism.js?v=graphite-20261019-video"></script>
 ```
 
 Keep the script in the head without `defer` or `async` so navigation initialization starts before the first page render. Preserve unrelated head content such as favicon settings. The theme uses system fonts and a local subset of Lucide 0.468.0 SVG icons. The license is in `theme/lucide-LICENSE.txt`.
@@ -80,7 +80,7 @@ Wormholes demonstrations with both client modes have **No client mod** and **Cli
 
 Gloss demonstrations label Minecraft client footage and browser editor footage separately. Single-view clips use the same playback controls. Paired client clips add **First person** and **Third person** tabs.
 
-Visible clips autoplay muted and loop. With reduced motion enabled, clips start only when the reader uses the playback controls. Hidden, offscreen, and background clips pause.
+Demonstrations use half the article width on desktop and the full article width on phones and tablets. Visible clips autoplay muted and loop, including when reduced motion is enabled. Readers can pause or enable audio with the playback controls. Hidden, offscreen, and background clips pause.
 
 ### Local validation
 
