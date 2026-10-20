@@ -2,7 +2,7 @@
 title: "API - Player Data, XP & World"
 description: "Read player data, award XP, and work with world data"
 published: true
-date: 2026-09-28T10:36:37.000Z
+date: 2026-10-20T18:42:05.167Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,9 @@ Get the server from `Adapt.instance.getAdaptServer()` after Adapt has enabled. T
 
 `getPlayerData(UUID)` reads memory only. It can still return the wrapper kept for about 60 seconds after quit, and it is empty while an online player's runtime is unavailable. `getOnlineAdaptPlayer(UUID)` and `getPlayer(Player)` return the current ready session, or `null`. `peekData(UUID)` inspects memory, a pending local write, SQL, or the JSON file. It does not claim SQL ownership or use Redis. A missing offline profile returns an empty `PlayerData`. Do not call `peekData` from a tick.
 
-On `AdaptPlayer`, read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAdaptation(id)`, `hasSkill(skill)`, `isBusy()`, the food-charge queries, and `saveNow()`. Do not construct an `AdaptPlayer`, and do not call its tick, login, or unregister methods.
+On `AdaptPlayer`, read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAdaptation(id)`, `hasSkill(skill)`, `isBusy()`, the food-charge queries, `saveNow()`, and `checkpoint()`. Do not construct an `AdaptPlayer`, and do not call its tick, login, or unregister methods.
+
+`saveNow()` queues a save. `checkpoint()` captures the current profile on its owning thread and returns a `CompletableFuture<Void>` that succeeds only after that exact revision is saved to the configured local or SQL store. It fails if the profile is unavailable, its ownership is lost, its revision is superseded, or the save fails. Never wait for the future on a tick thread; schedule subsequent player or entity work on its owning thread.
 
 ## Awarding progression
 
@@ -37,7 +39,7 @@ On `AdaptPlayer`, read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAda
 
 ## World data
 
-`WorldData.of(world)` is the block store. Use its get, set, remove, and provenance methods on the region thread. `stop`, `unregister`, `onTick`, and the save and unload handlers belong to Adapt.
+`WorldData.of(world)` is the block store. Use its get, set, remove, and provenance methods on the region thread. A missing value is empty; an unreadable stored region raises a runtime exception and remains unavailable. Callers must stop the affected action when storage is unavailable instead of treating the result as absent. `stop`, `unregister`, `onTick`, and the save and unload handlers belong to Adapt.
 
 ## Reference
 

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-10-20T08:42:00.000Z
+date: 2026-10-20T19:06:22.706Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -63,12 +63,17 @@ Clearing learned adaptations dismisses Skeletal Servants and bound bone golems a
 | Command | Permission | Purpose |
 |---|---|---|
 | `/adapt golem roster` | `adapt.main` | Open your golem roster while Golemancy is enabled |
+| `/adapt golem returns` | Operator and `adapt.golemancy.admin` | List node-item returns awaiting delivery confirmation |
+| `/adapt golem returns id=<return-id> outcome=delivered\|missing` | Operator and `adapt.golemancy.admin` | Confirm a listed node return was delivered, or retry it after confirming it was not delivered |
 | `/adapt golem list [player]` | `adapt.golemancy.admin` | List a player's golems with their ids, states, and last known positions |
 | `/adapt golem release <id> [player]` | `adapt.golemancy.admin` | Release one of a player's golems |
 | `/adapt golem wake [player]` | `adapt.golemancy.admin` | Recheck a player's loaded golems and wake the ones that can wake |
 | `/adapt golem give <item> [amount=1] [player]` | `adapt.golemancy.admin` | Give a player Golemancy items for testing; players need Adapt debug mode on |
 
-The admin commands default to you. `list` also reads an offline player's roster without changing it; `release`, `wake`, and `give` need the player online. `id` is a golem id from `/adapt golem list`, or enough of its first characters to match exactly one of that player's golems. Releasing a loaded golem works like its owner's Release: it becomes an ordinary golem, drops its cores, runes, Masterwork Heart, and carried items, and returns its stored essence as experience. A missing, packed, or shattered golem leaves the roster at once: a released missing golem's body turns ordinary without drops if it shows up later, and a Dormant Golem or Shattered Core crumbles the next time it is used. An active golem that is not loaded is refused; release it once its chunk is loaded or it shows as missing. Waking never lifts `serverMaxActiveGolems`; golems beyond it stay asleep until room frees. See [Skill - Golemancy](/adapt/34-skill-golemancy).
+The player-targeted admin commands default to you. `list` also reads an offline player's roster without changing it; `release`, `wake`, and `give` need the player online. `id` is a golem id from `/adapt golem list`, or enough of its first characters to match exactly one of that player's golems. Releasing a loaded golem works like its owner's Release: it becomes an ordinary golem, drops its cores, runes, Masterwork Heart, and carried items, and returns its stored essence as experience. A missing, packed, or shattered golem leaves the roster at once: a released missing golem's body turns ordinary without drops if it shows up later, and a Dormant Golem or Shattered Core crumbles the next time it is used. An active golem that is not loaded is refused; release it once its chunk is loaded or it shows as missing. Waking never lifts `serverMaxActiveGolems`; golems beyond it stay asleep until room frees. See [Skill - Golemancy](/adapt/34-skill-golemancy).
+
+`returns` lists unresolved node-item deliveries discovered when their chunks load; known returns stay listed after the chunk unloads. Copy the complete return id from the list. Use `outcome=delivered` to acknowledge an item already received. Use `outcome=missing` only after checking the owner's inventory and the ground at both the owner and the node; it schedules another delivery. The node's world must be loaded to confirm either outcome. Another delivery waits until its chunk is available, gives the item to its owner when possible, and otherwise drops it beside the node.
+{.is-warning}
 
 `give` hands out Golemancy items for testing. `item` is one of these ids, and tab completion lists them:
 
@@ -98,7 +103,7 @@ Most command permissions default to operators. `adapt.effects`, `adapt.language.
 | `adapt.cheatitem` | Give XP and knowledge orbs |
 | `adapt.determine` | Set skills and adaptations |
 | `adapt.clear` | Clear or reset profiles |
-| `adapt.golemancy.admin` | List, release, and wake other players' golems, and give Golemancy items |
+| `adapt.golemancy.admin` | List, release, and wake other players' golems, give Golemancy items, and manage node returns; node returns also require operator status |
 | `adapt.effects` | Toggle personal effects |
 | `adapt.debug` | Use debug mode |
 | `adapt.debugdump` | Save and optionally upload diagnostic reports; default `op` |

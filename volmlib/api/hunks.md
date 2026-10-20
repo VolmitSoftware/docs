@@ -2,7 +2,7 @@
 title: "Hunks and coordinate math"
 description: "Shared three-dimensional storage, views, parallel computation, and integer coordinates."
 published: true
-date: 2026-09-24T00:35:24.000Z
+date: 2026-10-20T18:42:05.167Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -19,6 +19,12 @@ dateCreated: 2026-09-11T20:00:00.000Z
 Mapped hunks retain full-coordinate traversal through `iterateSync(...)` and `iterateSyncIO(...)`, including cells with no stored value. Their `empty(value)` operation fills all coordinates with that value. Use `iterateEntriesSync(...)` or `iterateEntriesSyncIO(...)` to visit only stored entries, `clear()` to discard all entries, and `getEntryCount()` to inspect the number stored. Mantle slices use these explicit sparse operations internally.
 
 `util.hunk.bits.DataContainer<T>.copyTo(int[] positions, T[] destination)` copies logical linear positions into the corresponding destination entries, preserving null values, repeated positions, and request order. Both arrays must have equal lengths, and every position must be within the container's bounds; these checks finish before any destination entry changes. Callers requiring a consistent snapshot must coordinate concurrent value mutations themselves.
+
+## Persistent regions
+
+`util.mantle.Mantle` stores typed values in region files through a section adapter and region IO implementation. A missing region is created on demand. An unreadable existing region fails the access and keeps its stored bytes; callers must handle that unavailable state without substituting empty data. Repeated reads of an unavailable region retry at most once every five seconds, and healthy regions remain accessible.
+
+`util.mantle.io.IOWorkerRuntimeSupport.writeAtomically(name, tempPrefix, tempSuffix, value, writer)` writes and forces a complete temporary file, atomically replaces the named file, and closes cached readers of its previous contents. The filesystem must support atomic replacement. A failed encoding or replacement raises the IO failure and leaves the prior file intact. Keep region IO off gameplay tick paths.
 
 ## Parallel computation
 

@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-10-20T06:00:00.000Z
+date: 2026-10-20T16:47:13.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -107,6 +107,16 @@ modelKey = "minecraft:empty"
 | `gui.preferences.adaptation.<id>.<preference>.<state>` | Adaptation control choices; state is the lowercase enum value or `locked` |
 | `gui.preferences.skill.<id>.enabled.<state>` | Skill enable control; state is `on`, `off`, or `locked` |
 | `gui.background.<role>` | Menu background: `header-even`, `header-odd`, `separator`, `body-even`, or `body-odd` |
+| `gui.golemancy.background` | Solid black background for Golemancy menus, including release confirmation |
+| `gui.golemancy.slots.rune_empty` | Empty rune slots in golem and Bone Lattice menus; magenta panes |
+| `gui.golemancy.slots.rune_locked` | Locked rune slots; black panes with unlock requirements |
+| `gui.golemancy.slots.equipment_empty` | Empty bone golem equipment slots; cyan panes |
+| `gui.golemancy.slots.core_empty` | Empty second-core slot; orange pane |
+| `gui.golemancy.masterwork_empty` | Empty Masterwork slot; yellow pane |
+| `gui.golemancy.slots.filter_empty` | Empty node filter slots; lime panes |
+| `gui.golemancy.slots.filter_locked` | Locked node filter slots; black panes |
+| `gui.golemancy.fetch.amount_available` | Unselected Fetch Items amounts; white panes |
+| `gui.golemancy.fetch.amount_selected` | Selected Fetch Items amount; lime pane with an enchantment glint |
 
 `model` is a custom model data number, `0` meaning none. `modelKey` is an item-model namespaced key, defaulting to `minecraft:empty`.
 
