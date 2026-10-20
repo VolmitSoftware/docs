@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T02:15:00.000Z
+date: 2026-10-20T04:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -175,7 +175,7 @@ Sneak-right-click with a compass in the main hand to point it at the nearest sel
 
 5 levels · 2 knowledge
 
-With [Gloss entity overlays](/gloss/20-entity-overlays) enabled, look directly at a creature to inspect it. Insight adds hovering species, movement speed, jump strength, armor toughness, knockback resistance, and detection range, when those attributes exist, plus Stable Hand state on affected animals. Looking at another creature moves the Insight details to that target; looking away clears those details. Gloss supplies the name, health bar, hit response, attack, armor, and React stack count. Looking at one of your bound golems or skeletal servants while you hold the Crook, a Node, a Core, or a Dormant Golem adds its [Golemancy status](/adapt/34-skill-golemancy#names-and-status) above the Insight details: health, cores, mode, channel, and Masterwork mark for a golem, or health, seconds left, and channel for a servant, while the golem's own name stays in the Gloss overlay. Hiding golem status labels in your Animus Binding settings leaves it out. Without a Gloss build that has the entity-overlay API there is no display and no inspection XP, an older Gloss is reported once and Insight stays unavailable until that server is updated and restarted, and `restrictGlossToInsight` does not turn a disabled Gloss feature on.
+With [Gloss entity overlays](/gloss/20-entity-overlays) enabled, look directly at a creature to inspect it. Insight adds hovering species, movement speed, jump strength, armor toughness, knockback resistance, and detection range, when those attributes exist, plus Stable Hand state on affected animals. Looking at another creature moves the Insight details to that target; looking away clears those details. Gloss supplies the name, health bar, hit response, attack, armor, and React stack count. Looking at a bound golem adds the golem's name as the first line of the Insight details, because a bound golem shows no nametag while Gloss entity overlays are on. Looking at one of your bound golems or skeletal servants while you hold the Crook, a Node, a Core, or a Dormant Golem also adds its [Golemancy status](/adapt/34-skill-golemancy#names-and-status) above the Insight details: health, cores, mode, channel, and Masterwork mark for a golem, or health, seconds left, and channel for a servant. Hiding golem status labels in your Animus Binding settings leaves the status out and keeps the name. Without a Gloss build that has the entity-overlay API there is no display and no inspection XP, an older Gloss is reported once and Insight stays unavailable until that server is updated and restarted, and `restrictGlossToInsight` does not turn a disabled Gloss feature on.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
