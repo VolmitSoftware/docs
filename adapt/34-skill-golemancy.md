@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T03:00:00.000Z
+date: 2026-10-20T03:30:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -1386,6 +1386,18 @@ The extra slots, health, aura, second core, and stronger runes follow your Maste
 | `tierThreeBoost` | `0.25` | Fraction added to the values of a tier 3 rune in a masterwork golem once its runes act one tier higher, from 0 to 4. 0.25 is 25% more. Values outside that range load as the nearest limit. |
 | `heartDeathDropChance` | `1.0` | Chance a masterwork golem drops its Masterwork Heart when it dies, from 0 to 1. A golem that leaves a Shattered Core keeps its Heart instead. |
 | `auraIntervalTicks` | `40` | Ticks between the gold sparkles around your awake masterwork golems, at least 1. |
+
+## Commands
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/adapt golem roster` | `adapt.main` | Open your golem roster |
+| `/adapt golem list [player]` | `adapt.golemancy.admin` | List a player's golems |
+| `/adapt golem release <id> [player]` | `adapt.golemancy.admin` | Release one of a player's golems |
+| `/adapt golem wake [player]` | `adapt.golemancy.admin` | Wake a player's loaded golems |
+| `/adapt golem give <item> [amount=1] [player]` | `adapt.golemancy.admin` | Give a Golemancy item for testing, or one of each with `all`; the owner-bound Dormant Golem and Shattered Core are not offered. Players need Adapt debug mode on, toggled by `/adapt debug mode`; the console does not |
+
+Item ids, the amount range, and what each command does: [04 - Commands & Permissions](/adapt/04-commands-permissions#golems).
 
 ## Reference
 
