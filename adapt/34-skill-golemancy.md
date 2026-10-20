@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T03:00:00.000Z
+date: 2026-10-20T03:10:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -392,7 +392,7 @@ The Node GUI shows the node type and its block, and holds these controls:
 - **Channel**: left-click for the next color, right-click for the previous one.
 - **Priority** (level 3): left-click raises it and right-click lowers it, from 1 to 5.
 - **Redstone** (level 4): cycles Ignored, Works while powered, and Works while unpowered. A node set to work while powered does no work while its block receives no redstone power, and a node set to work while unpowered does no work while its block is powered.
-- **X, Y, and Z radius**: left-click grows the work area by 1 block on that axis and right-click shrinks it, from 0 up to your level's largest radius.
+- **X, Y, and Z radius**: left-click grows the work area by 1 block on that axis and right-click shrinks it, from 0 up to your level's largest radius. Shift-left-click grows it by 4 blocks, stopping at your level's largest radius, and shift-right-click shrinks it by 4, stopping at 0.
 - **Filter slots**: pick up an item in your inventory and click an empty slot to add it or a filled slot to replace that entry, or right-click a slot to clear it. Your level sets how many slots you have. A slot keeps one of the item as you set it, with its name, enchantments, and potion type but without the contents of shulker boxes, bundles, or other containers, so two different potions take two slots and the same item never takes two. Golems match filter entries by item type, and Sorters with enough Sorter Core levels also tell enchanted books and potions apart, as described under Sorter Core.
 - **Whitelist or Blacklist** (level 5): a whitelist lets golems use only matching items, and a blacklist lets them use everything except matching items. An empty filter matches every item, except on a Filter Node, as described under Sorter Core.
 - **Add Tag** (level 5): closes the GUI and asks you to type an item tag, such as `#logs` or `#minecraft:saplings`, in chat. A tag without a namespace means `minecraft`. Typing a tag the filter already holds removes it, and typing `cancel` stops. Each tag uses one filter slot, and the prompt ends after 45 seconds.
@@ -405,11 +405,11 @@ Nodes are stored with their chunk and appear again with their settings when the 
 
 | Level | Node cap | Max area radius | Filter slots | Unlocks |
 |---|---|---|---|---|
-| 1 | 4 | 2 | 3 | Node placement and configuration, whitelist filters |
-| 2 | 8 | 3 | 6 | |
-| 3 | 12 | 4 | 6 | Node priority 1-5 |
-| 4 | 18 | 6 | 9 | Redstone gating |
-| 5 | 24 | 8 | 18 | Blacklist filters and `#tag` filter entries |
+| 1 | 4 | 8 | 3 | Node placement and configuration, whitelist filters |
+| 2 | 8 | 12 | 6 | |
+| 3 | 12 | 16 | 6 | Node priority 1-5 |
+| 4 | 18 | 24 | 9 | Redstone gating |
+| 5 | 24 | 32 | 18 | Blacklist filters and `#tag` filter entries |
 
 | Recipe | Pattern | Keys | Yield |
 |---|---|---|---|
@@ -421,7 +421,7 @@ Nodes are stored with their chunk and appear again with their settings when the 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `nodeCapByLevel` | `[4, 8, 12, 18, 24]` | Most nodes you can own at once, from level 1 upward. |
-| `maxAreaRadiusByLevel` | `[2, 3, 4, 6, 8]` | Largest work area radius in blocks a node can be set to, from level 1 upward. Each value is capped at 32. |
+| `maxAreaRadiusByLevel` | `[8, 12, 16, 24, 32]` | Largest work area radius in blocks a node can be set to, from level 1 upward. Each value is clamped to 1 through 32. |
 | `filterSlotsByLevel` | `[3, 6, 6, 9, 18]` | Filter entries a node can hold, from level 1 upward. Each value is capped at 18. |
 | `firstNodeXp` | `200` | Golemancy XP paid the first time you place each type of node. |
 | `blankNodeRecipe` | `CRC` / `RAR` / `CRC`, yields 4 | Blank Node recipe. |
@@ -1457,7 +1457,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies without leaving a Shattered Core. |
 | `brainIntervalTicks` | `5` | Ticks between bound golem decisions, clamped to 2-20. Lower values make golems react faster. |
 | `followTeleportDistance` | `32` | Blocks from its owner, in the same world, at which a following golem teleports to them instead of walking. The minimum is 8. |
-| `leashRadius` | `32` | Blocks a fighting golem may stray from its owner, home, or stay spot before it drops the fight and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. |
+| `leashRadius` | `48` | Blocks a fighting or working golem may stray from its owner, home, or stay spot before it drops the fight or job and walks back. It is also the farthest a linked home chest may be from the golem's home. The minimum is 8. Keep it at least `baseWorkRadius` plus the largest Tide rune bonus so golems can finish jobs at the edge of their reach. |
 | `idleReturnSeconds` | `8` | Seconds a working golem stands idle away from home before it walks back. |
 | `copperRepathTicks` | `10` | Ticks between path refreshes for a moving copper golem, clamped to 2-20. |
 | `revealRange` | `32.0` | Blocks around you within which your golems glow in their channel color and show you their status, your skeletal servants glow with Bone Frame, and your nodes appear while you hold the Crook, a Node, a Core or a Dormant Golem. |
@@ -1469,7 +1469,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `maxOpenTasksPerNode` | `16` | Most unfinished jobs one node can hand out to golems at once, clamped to 1-256. |
 | `nodeVisibility` | `"OWNER"` | Who sees nodes while holding the Crook, a Node, a Core or a Dormant Golem. `OWNER` shows each player only their own nodes; `ANY_GOLEMANCER` also shows every node to players who have learned Node Weaving. |
 | `taskLeaseSeconds` | `20` | Seconds a golem keeps its claim on a node job without making progress before another golem may take it, clamped to 5-600. |
-| `baseWorkRadius` | `24` | Blocks around its home within which a working golem takes node jobs, finds Deposit Nodes, and defends Guard Nodes, clamped to 4-128. |
+| `baseWorkRadius` | `32` | Blocks around its home within which a working golem takes node jobs, finds Deposit Nodes, and defends Guard Nodes, clamped to 4-128. |
 | `stuckTimeoutSeconds` | `4` | Seconds a golem walking to a job or a container may go without getting half a block closer before it gives up and skips that job or container for 10 seconds, clamped to 1-60. |
 | `stuckReleasesBeforePause` | `3` | Jobs or containers in a row a golem may give up because it got stuck before it rests for `stuckPauseSeconds`, clamped to 1-100. |
 | `stuckPauseSeconds` | `15` | Seconds a trapped golem rests without looking for jobs or containers, clamped to 0-600. 0 never rests it. |
