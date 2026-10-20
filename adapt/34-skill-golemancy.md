@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T20:42:18.000Z
+date: 2026-10-19T22:30:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -51,7 +51,7 @@ Golemancy items keep what they hold through drops, chests, and restarts, and nev
 
 Animus Binding level 1 unlocks the Crook and Blank Animus Core recipes:
 
-![Crafting grid for the Artificer's Crook. Top row: amethyst shard in the middle. Middle row: redstone dust, iron hoe, redstone dust. Bottom row: copper ingot in the middle](/adapt-assets/golemancy/recipes/golemancy-crook.png =352x) ![Crafting grid for the Blank Animus Core. Top row: amethyst shard, redstone dust, amethyst shard. Middle row: redstone dust, ender pearl, redstone dust. Bottom row: amethyst shard, redstone dust, amethyst shard; tithe 1 level](/adapt-assets/golemancy/recipes/golemancy-blank-core.png =352x)
+![Crafting grid for the Artificer's Crook. Top row: amethyst shard in the middle. Middle row: redstone dust, iron hoe, redstone dust. Bottom row: copper ingot in the middle](/adapt-assets/golemancy/recipes/golemancy-crook.png =352x) ![Crafting grid for the Blank Animus Core. Top row: amethyst shard, redstone dust, amethyst shard. Middle row: redstone dust, ender pearl, redstone dust. Bottom row: amethyst shard, redstone dust, amethyst shard](/adapt-assets/golemancy/recipes/golemancy-blank-core.png =352x)
 
 Holding the Crook, a Node (not a Blank Node), a Core (a Blank Animus Core or a role core), or a Dormant Golem in either hand reveals your nodes and your bound golems' status labels, as described under Animus Binding and Node Weaving. A Dormant Golem or Shattered Core belongs to the player whose golem it holds, and only that player can use it. The Shattered Core a golem leaves where it dies, and a Dormant Golem that drops because your inventory is full when you pack a golem, can be picked up only by that player. Any other Dormant Golem or Shattered Core on the ground, such as one a player throws, can be picked up by anyone. Hoppers never pick up a Dormant Golem or Shattered Core from the ground. Cores, nodes, runes, and Masterwork Hearts carry no owner and can be traded.
 
@@ -63,10 +63,9 @@ Each adaptation lists the crafting recipes it unlocks, and [Infusion recipes](/a
 | `keys` | The ingredient for each symbol: a material name, an item tag such as `#planks`, or a Golemancy item such as `golemancy:blank_core`. |
 | `result` | The item the recipe makes. |
 | `amount` | Items made by one craft, from 1 to 64. |
-| `tithe` | Experience levels charged for each craft. 0 makes the recipe free. |
 | `enabled` | Set to `false` to remove the recipe. |
 
-Players without the tithe levels see no result until they change the grid after gaining the levels, shift-crafting stops at the crafts their levels cover, creative players craft free, and crafter blocks never craft a recipe with a tithe. Recipe changes apply after a restart.
+Crafting an unlocked recipe costs no experience levels. Recipe changes apply after a restart.
 
 ## Bound golems
 
@@ -303,10 +302,10 @@ While you hold the Crook, a Node, a Core, or a Dormant Golem, your bound golems 
 
 A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Artificer's Crook | ` A ` / `RHR` / ` C ` | H `IRON_HOE`, A `AMETHYST_SHARD`, R `REDSTONE`, C `COPPER_INGOT` | 1 | 0 |
-| Blank Animus Core | `ARA` / `RPR` / `ARA` | A `AMETHYST_SHARD`, R `REDSTONE`, P `ENDER_PEARL` | 1 | 1 level |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Artificer's Crook | ` A ` / `RHR` / ` C ` | H `IRON_HOE`, A `AMETHYST_SHARD`, R `REDSTONE`, C `COPPER_INGOT` | 1 |
+| Blank Animus Core | `ARA` / `RPR` / `ARA` | A `AMETHYST_SHARD`, R `REDSTONE`, P `ENDER_PEARL` | 1 |
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -317,8 +316,8 @@ A Companion golem, bound with a Blank Animus Core, follows you by default. Its G
 | `titheIronByLevel` | `[3, 3, 2, 2, 1]` | Experience levels to bind an iron golem, from level 1 upward. |
 | `builderExclusiveSeconds` | `300` | Seconds after a golem is built during which only its builder can bind it. 0 lets anyone bind it at once. |
 | `allowBindingVillageGolems` | `false` | Lets players bind iron golems that no player built. |
-| `crookRecipe` | ` A ` / `RHR` / ` C `, tithe 0 | Artificer's Crook recipe. |
-| `blankCoreRecipe` | `ARA` / `RPR` / `ARA`, tithe 1 | Blank Animus Core recipe. |
+| `crookRecipe` | ` A ` / `RHR` / ` C ` | Artificer's Crook recipe. |
+| `blankCoreRecipe` | `ARA` / `RPR` / `ARA` | Blank Animus Core recipe. |
 
 ### Node Weaving (`golem-node-weaving`)
 
@@ -385,10 +384,10 @@ Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its b
 | 4 | 18 | 6 | 9 | Redstone gating |
 | 5 | 24 | 8 | 18 | Blacklist filters and `#tag` filter entries |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Blank Node | `CRC` / `RAR` / `CRC` | C `CLAY_BALL`, R `REDSTONE`, A `AMETHYST_SHARD` | 4 | 0 |
-| Deposit Node | ` X ` / ` B ` / `   ` | X `CHEST`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Blank Node | `CRC` / `RAR` / `CRC` | C `CLAY_BALL`, R `REDSTONE`, A `AMETHYST_SHARD` | 4 |
+| Deposit Node | ` X ` / ` B ` / `   ` | X `CHEST`, B `golemancy:blank_node` | 1 |
 
 ![Crafting grid for the Blank Node. Top row: clay ball, redstone dust, clay ball. Middle row: redstone dust, amethyst shard, redstone dust. Bottom row: clay ball, redstone dust, clay ball; makes 4](/adapt-assets/golemancy/recipes/golemancy-blank-node.png =352x) ![Crafting grid for the Deposit Node. Top row: chest in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-deposit-node.png =352x)
 
@@ -592,12 +591,12 @@ With `guardWhileOwnerOffline` on in the skill configuration, your Guardians stay
 | 4 | 20 | Bulwark Presence: 15% less damage within 4 blocks of an awake Guardian |
 | 5 | 24 | Last Stand: Resistance II for 5 s below 20% health, at most once per 60 s per Guardian |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Guardian Core | ` X ` / `YBY` / ` Z ` | X `IRON_SWORD`, Y `IRON_INGOT`, Z `SHIELD`, B `golemancy:blank_core` | 1 | 2 levels |
-| Guard Node | ` X ` / ` B ` / `   ` | X `IRON_SWORD`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Guardian Core | ` X ` / `YBY` / ` Z ` | X `IRON_SWORD`, Y `IRON_INGOT`, Z `SHIELD`, B `golemancy:blank_core` | 1 |
+| Guard Node | ` X ` / ` B ` / `   ` | X `IRON_SWORD`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Guardian Core. Top row: iron sword in the middle. Middle row: iron ingot, Blank Animus Core, iron ingot. Bottom row: shield in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-guardian-core.png =352x) ![Crafting grid for the Guard Node. Top row: iron sword in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-guard-node.png =352x)
+![Crafting grid for the Guardian Core. Top row: iron sword in the middle. Middle row: iron ingot, Blank Animus Core, iron ingot. Bottom row: shield in the middle](/adapt-assets/golemancy/recipes/golemancy-guardian-core.png =352x) ![Crafting grid for the Guard Node. Top row: iron sword in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-guard-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -617,7 +616,7 @@ With `guardWhileOwnerOffline` on in the skill configuration, your Guardians stay
 | `lastStandAmplifier` | `1` | Resistance amplifier Last Stand gives. 0 is Resistance I and 1 is Resistance II. Values above 3 count as 3. |
 | `lastStandCooldownMillis` | `60000` | Milliseconds after Last Stand triggers before it can trigger again on the same Guardian. |
 | `sentryRange` | `10.0` | Blocks within which frost Guardians shoot, from 1 to 10, the snow golem's throwing range. Values outside that range load as the nearest limit. |
-| `guardianCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Guardian Core recipe. |
+| `guardianCoreRecipe` | ` X ` / `YBY` / ` Z ` | Guardian Core recipe. |
 | `guardNodeRecipe` | ` X ` / ` B ` / `   ` | Guard Node recipe. |
 
 ### Gatherer Core (`golem-gatherer-core`)
@@ -657,12 +656,12 @@ Higher levels add these perks:
 | 4 | 10 | Magnet: pulls items within 3 blocks |
 | 5 | 12 | Instant pickup within 1.5 blocks; carries 50% more items |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Gatherer Core | ` X ` / `YBY` / ` Z ` | X `BUNDLE`, Y `STRING`, Z `HOPPER`, B `golemancy:blank_core` | 1 | 2 levels |
-| Collection Node | ` X ` / ` B ` / `   ` | X `BUNDLE`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Gatherer Core | ` X ` / `YBY` / ` Z ` | X `BUNDLE`, Y `STRING`, Z `HOPPER`, B `golemancy:blank_core` | 1 |
+| Collection Node | ` X ` / ` B ` / `   ` | X `BUNDLE`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Gatherer Core. Top row: bundle in the middle. Middle row: string, Blank Animus Core, string. Bottom row: hopper in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-gatherer-core.png =352x) ![Crafting grid for the Collection Node. Top row: bundle in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-collection-node.png =352x)
+![Crafting grid for the Gatherer Core. Top row: bundle in the middle. Middle row: string, Blank Animus Core, string. Bottom row: hopper in the middle](/adapt-assets/golemancy/recipes/golemancy-gatherer-core.png =352x) ![Crafting grid for the Collection Node. Top row: bundle in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-collection-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -678,7 +677,7 @@ Higher levels add these perks:
 | `deathSiteRadius` | `8.0` | Blocks around the spot where a player died within which Gatherers pick up nothing, from 0 to 64. |
 | `deathSiteSeconds` | `300` | Seconds after a player dies during which Gatherers leave items and experience orbs near that spot alone, from 0 to 3600. 0 turns the protection off. |
 | `workXpPerStack` | `0.5` | Golemancy work XP a Gatherer earns you for each item stack it picks up. |
-| `gathererCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Gatherer Core recipe. |
+| `gathererCoreRecipe` | ` X ` / `YBY` / ` Z ` | Gatherer Core recipe. |
 | `collectionNodeRecipe` | ` X ` / ` B ` / `   ` | Collection Node recipe. |
 
 ### Harvester Core (`golem-harvester-core`)
@@ -712,12 +711,12 @@ Each harvested crop pays `workXpPerCrop` work XP, as described in Earning XP; ti
 | 4 | 0.9 s | 3 | Tilling: re-tills dirt and plants empty farmland from carried seeds |
 | 5 | 0.6 s | 4 | Bountiful: 10% chance to roll a harvest's drops again |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Harvester Core | ` X ` / `YBY` / ` Z ` | X `IRON_HOE`, Y `WHEAT`, Z `COMPOSTER`, B `golemancy:blank_core` | 1 | 2 levels |
-| Harvest Node | ` X ` / ` B ` / `   ` | X `IRON_HOE`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Harvester Core | ` X ` / `YBY` / ` Z ` | X `IRON_HOE`, Y `WHEAT`, Z `COMPOSTER`, B `golemancy:blank_core` | 1 |
+| Harvest Node | ` X ` / ` B ` / `   ` | X `IRON_HOE`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Harvester Core. Top row: iron hoe in the middle. Middle row: wheat, Blank Animus Core, wheat. Bottom row: composter in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-harvester-core.png =352x) ![Crafting grid for the Harvest Node. Top row: iron hoe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-harvest-node.png =352x)
+![Crafting grid for the Harvester Core. Top row: iron hoe in the middle. Middle row: wheat, Blank Animus Core, wheat. Bottom row: composter in the middle](/adapt-assets/golemancy/recipes/golemancy-harvester-core.png =352x) ![Crafting grid for the Harvest Node. Top row: iron hoe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-harvest-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -731,7 +730,7 @@ Each harvested crop pays `workXpPerCrop` work XP, as described in Earning XP; ti
 | `bountifulLevel` | `5` | Level at which harvests can roll their drops a second time with Bountiful. |
 | `bountifulChance` | `0.1` | Chance, from 0 to 1, that a Bountiful harvest rolls its drops a second time. 0.1 is 10%. Values outside that range load as the nearest limit. |
 | `workXpPerCrop` | `0.4` | Golemancy work XP paid for each crop a Harvester harvests. Values below 0 load as 0. |
-| `harvesterCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Harvester Core recipe. |
+| `harvesterCoreRecipe` | ` X ` / `YBY` / ` Z ` | Harvester Core recipe. |
 | `harvestNodeRecipe` | ` X ` / ` B ` / `   ` | Harvest Node recipe. |
 
 ### Lumber Core (`golem-lumber-core`)
@@ -775,12 +774,12 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 | 4 | 3 | 64 / 192 | Fells spruce, jungle, dark oak, and pale oak trees with a full 2x2 trunk |
 | 5 | 4 | 96 / 256 | Fells huge crimson and warped fungi with their wart blocks and shroomlights, and replants fungus |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Lumber Core | ` X ` / `YBY` / ` Z ` | X `IRON_AXE`, Y `#logs`, Z `#saplings`, B `golemancy:blank_core` | 1 | 2 levels |
-| Lumber Node | ` X ` / ` B ` / `   ` | X `IRON_AXE`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Lumber Core | ` X ` / `YBY` / ` Z ` | X `IRON_AXE`, Y `#logs`, Z `#saplings`, B `golemancy:blank_core` | 1 |
+| Lumber Node | ` X ` / ` B ` / `   ` | X `IRON_AXE`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Lumber Core. Top row: iron axe in the middle. Middle row: any log, Blank Animus Core, any log. Bottom row: any sapling in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-lumber-core.png =352x) ![Crafting grid for the Lumber Node. Top row: iron axe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-lumber-node.png =352x)
+![Crafting grid for the Lumber Core. Top row: iron axe in the middle. Middle row: any log, Blank Animus Core, any log. Bottom row: any sapling in the middle](/adapt-assets/golemancy/recipes/golemancy-lumber-core.png =352x) ![Crafting grid for the Lumber Node. Top row: iron axe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-lumber-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -792,7 +791,7 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 | `megaTreeLevel` | `4` | Level at which Lumber golems fell spruce, jungle, dark oak, and pale oak trees with a full 2x2 trunk. |
 | `netherLevel` | `5` | Level at which Lumber golems fell huge crimson and warped fungi. |
 | `workXpPerLog` | `0.6` | Golemancy work XP paid for each log or stem a Lumber golem fells. Values below 0 load as 0. |
-| `lumberCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Lumber Core recipe. |
+| `lumberCoreRecipe` | ` X ` / `YBY` / ` Z ` | Lumber Core recipe. |
 | `lumberNodeRecipe` | ` X ` / ` B ` / `   ` | Lumber Node recipe. |
 
 ### Breaker Core (`golem-breaker-core`)
@@ -827,12 +826,12 @@ Each broken block pays `workXpPerBlock` work XP, as described in Earning XP. Gol
 | 4 | 0.75 s | 10 | Diamond | |
 | 5 | 0.5 s | 50 (obsidian) | Netherite | Fortune I toggle |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Breaker Core | ` X ` / `YBY` / ` Z ` | X `IRON_PICKAXE`, Y `REDSTONE`, Z `PISTON`, B `golemancy:blank_core` | 1 | 2 levels |
-| Breaker Node | ` X ` / ` B ` / `   ` | X `IRON_PICKAXE`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Breaker Core | ` X ` / `YBY` / ` Z ` | X `IRON_PICKAXE`, Y `REDSTONE`, Z `PISTON`, B `golemancy:blank_core` | 1 |
+| Breaker Node | ` X ` / ` B ` / `   ` | X `IRON_PICKAXE`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Breaker Core. Top row: iron pickaxe in the middle. Middle row: redstone dust, Blank Animus Core, redstone dust. Bottom row: piston in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-breaker-core.png =352x) ![Crafting grid for the Breaker Node. Top row: iron pickaxe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-breaker-node.png =352x)
+![Crafting grid for the Breaker Core. Top row: iron pickaxe in the middle. Middle row: redstone dust, Blank Animus Core, redstone dust. Bottom row: piston in the middle](/adapt-assets/golemancy/recipes/golemancy-breaker-core.png =352x) ![Crafting grid for the Breaker Node. Top row: iron pickaxe in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-breaker-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -843,7 +842,7 @@ Each broken block pays `workXpPerBlock` work XP, as described in Earning XP. Gol
 | `fortuneLevel` | `5` | Level at which Breaker Nodes can turn on Fortune I. |
 | `blacklist` | `["BEDROCK", "BARRIER", "COMMAND_BLOCK", "CHAIN_COMMAND_BLOCK", "REPEATING_COMMAND_BLOCK", "STRUCTURE_BLOCK", "STRUCTURE_VOID", "JIGSAW", "SPAWNER", "TRIAL_SPAWNER", "VAULT", "END_PORTAL_FRAME", "REINFORCED_DEEPSLATE", "BUDDING_AMETHYST", "#beds", "#doors"]` | Blocks Breakers never break, by block name or `#` block tag. Unknown names and tags are ignored. Blocks with a block entity, the block any node is placed on, and the blocks of an Animus Plinth are never broken either. |
 | `workXpPerBlock` | `0.4` | Golemancy work XP paid for each block a Breaker breaks. Values below 0 load as 0. |
-| `breakerCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Breaker Core recipe. |
+| `breakerCoreRecipe` | ` X ` / `YBY` / ` Z ` | Breaker Core recipe. |
 | `breakerNodeRecipe` | ` X ` / ` B ` / `   ` | Breaker Node recipe. |
 
 ### Rancher Core (`golem-rancher-core`)
@@ -883,12 +882,12 @@ A Rancher delivers what it carries to a Deposit Node or its home chest like any 
 | 4 | Culling: iron Ranchers cull adults above the keep count |
 | 5 | Husbandry: half the breeding cooldown for parents it fed, and one extra loot roll for each cull |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Rancher Core | ` X ` / `YBY` / ` Z ` | X `SHEARS`, Y `WHEAT`, Z `LEAD`, B `golemancy:blank_core` | 1 | 2 levels |
-| Pasture Node | ` X ` / ` B ` / `   ` | X `LEAD`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Rancher Core | ` X ` / `YBY` / ` Z ` | X `SHEARS`, Y `WHEAT`, Z `LEAD`, B `golemancy:blank_core` | 1 |
+| Pasture Node | ` X ` / ` B ` / `   ` | X `LEAD`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Rancher Core. Top row: shears in the middle. Middle row: wheat, Blank Animus Core, wheat. Bottom row: lead in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-rancher-core.png =352x) ![Crafting grid for the Pasture Node. Top row: lead in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-pasture-node.png =352x)
+![Crafting grid for the Rancher Core. Top row: shears in the middle. Middle row: wheat, Blank Animus Core, wheat. Bottom row: lead in the middle](/adapt-assets/golemancy/recipes/golemancy-rancher-core.png =352x) ![Crafting grid for the Pasture Node. Top row: lead in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-pasture-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -905,7 +904,7 @@ A Rancher delivers what it carries to a Deposit Node or its home chest like any 
 | `workXpPerShear` | `2.0` | Golemancy work XP paid for each sheep a Rancher shears. Values below 0 load as 0. |
 | `workXpPerMilk` | `1.0` | Golemancy work XP paid for each bucket or bowl a Rancher fills. Values below 0 load as 0. |
 | `workXpPerCull` | `1.0` | Golemancy work XP paid for each animal a Rancher culls. Values below 0 load as 0. |
-| `rancherCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Rancher Core recipe. |
+| `rancherCoreRecipe` | ` X ` / `YBY` / ` Z ` | Rancher Core recipe. |
 | `pastureNodeRecipe` | ` X ` / ` B ` / `   ` | Pasture Node recipe. |
 
 ### Sorter Core (`golem-sorter-core`)
@@ -959,13 +958,13 @@ Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` wor
 | 4 | 20 | 2 | Enchantment and potion matching, shulker boxes, restock amounts |
 | 5 | 24 | 4 | Index and Fetch Items |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Sorter Core | ` X ` / `YBY` / ` Z ` | X `COMPARATOR`, Y `QUARTZ`, Z `COPPER_CHEST`, B `golemancy:blank_core` | 1 | 2 levels |
-| Input Node | ` X ` / ` B ` / `   ` | X `COPPER_CHEST`, B `golemancy:blank_node` | 1 | 0 |
-| Filter Node | ` X ` / ` B ` / `   ` | X `ITEM_FRAME`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Sorter Core | ` X ` / `YBY` / ` Z ` | X `COMPARATOR`, Y `QUARTZ`, Z `COPPER_CHEST`, B `golemancy:blank_core` | 1 |
+| Input Node | ` X ` / ` B ` / `   ` | X `COPPER_CHEST`, B `golemancy:blank_node` | 1 |
+| Filter Node | ` X ` / ` B ` / `   ` | X `ITEM_FRAME`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Sorter Core. Top row: redstone comparator in the middle. Middle row: nether quartz, Blank Animus Core, nether quartz. Bottom row: copper chest in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-sorter-core.png =352x) ![Crafting grid for the Input Node. Top row: copper chest in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-input-node.png =352x) ![Crafting grid for the Filter Node. Top row: item frame in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-filter-node.png =352x)
+![Crafting grid for the Sorter Core. Top row: redstone comparator in the middle. Middle row: nether quartz, Blank Animus Core, nether quartz. Bottom row: copper chest in the middle](/adapt-assets/golemancy/recipes/golemancy-sorter-core.png =352x) ![Crafting grid for the Input Node. Top row: copper chest in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-input-node.png =352x) ![Crafting grid for the Filter Node. Top row: item frame in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-filter-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -984,7 +983,7 @@ Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` wor
 | `fetchTimeoutSeconds` | `120` | Seconds a fetch request waits for a Sorter before it ends, from 10 to 3600. |
 | `maxServedContainers` | `128` | Most containers one Input Node serves, nearest first, from 1 to 1024. Containers beyond the limit are left alone. |
 | `workXpPerStack` | `0.3` | Golemancy work XP paid for each stack a Sorter puts away or brings you. Values below 0 load as 0. |
-| `sorterCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Sorter Core recipe. |
+| `sorterCoreRecipe` | ` X ` / `YBY` / ` Z ` | Sorter Core recipe. |
 | `inputNodeRecipe` | ` X ` / ` B ` / `   ` | Input Node recipe. |
 | `filterNodeRecipe` | ` X ` / ` B ` / `   ` | Filter Node recipe, unlocked at level `filterLevel`. |
 
@@ -1023,12 +1022,12 @@ Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including 
 | 4 | 32 s | 1 | 25% shorter catch time in the rain |
 | 5 | 25 s | 2 | 10% chance of a double catch |
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Angler Core | ` X ` / `YBY` / ` Z ` | X `FISHING_ROD`, Y `PRISMARINE_SHARD`, Z `DRIED_KELP`, B `golemancy:blank_core` | 1 | 2 levels |
-| Fishing Node | ` X ` / ` B ` / `   ` | X `FISHING_ROD`, B `golemancy:blank_node` | 1 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Angler Core | ` X ` / `YBY` / ` Z ` | X `FISHING_ROD`, Y `PRISMARINE_SHARD`, Z `DRIED_KELP`, B `golemancy:blank_core` | 1 |
+| Fishing Node | ` X ` / ` B ` / `   ` | X `FISHING_ROD`, B `golemancy:blank_node` | 1 |
 
-![Crafting grid for the Angler Core. Top row: fishing rod in the middle. Middle row: prismarine shard, Blank Animus Core, prismarine shard. Bottom row: dried kelp in the middle; tithe 2 levels](/adapt-assets/golemancy/recipes/golemancy-angler-core.png =352x) ![Crafting grid for the Fishing Node. Top row: fishing rod in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-fishing-node.png =352x)
+![Crafting grid for the Angler Core. Top row: fishing rod in the middle. Middle row: prismarine shard, Blank Animus Core, prismarine shard. Bottom row: dried kelp in the middle](/adapt-assets/golemancy/recipes/golemancy-angler-core.png =352x) ![Crafting grid for the Fishing Node. Top row: fishing rod in the middle. Middle row: Blank Node in the middle](/adapt-assets/golemancy/recipes/golemancy-fishing-node.png =352x)
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -1051,7 +1050,7 @@ Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including 
 | `treasure` | `["NAME_TAG:1", "SADDLE:1", "BOW:1", "FISHING_ROD:1", "ENCHANTED_BOOK:1", "NAUTILUS_SHELL:1"]` | Treasure catches, in the same format as `fish`. `ENCHANTED_BOOK` and items with durability, such as bows and fishing rods, are enchanted with `treasureEnchantLevels`. |
 | `treasureEnchantLevels` | `30` | Enchantment levels for treasure enchanted books and durable treasure, as at an enchanting table, treasure enchantments included. Values load between 1 and 30. |
 | `workXpPerCatch` | `6` | Golemancy work XP paid for each catch, including junk the filter throws back. Values below 0 load as 0. |
-| `anglerCoreRecipe` | ` X ` / `YBY` / ` Z `, tithe 2 | Angler Core recipe. |
+| `anglerCoreRecipe` | ` X ` / `YBY` / ` Z ` | Angler Core recipe. |
 | `fishingNodeRecipe` | ` X ` / ` B ` / `   ` | Fishing Node recipe. |
 
 ### Runic Augments (`golem-runic-augments`)
@@ -1101,9 +1100,9 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 - **Order** adds channels. With an Order rune slotted, the channel button in the Golem GUI opens a channel picker: click a dye to select it, up to the golem's channel count, and click a selected dye to drop it. The golem takes jobs from and delivers to nodes on any of its channels. A golem with more channels selected than it can use uses the first ones in dye order, starting with white. A golem that gives up a job skips it for a shorter time.
 - **Entropy** doubles each drop that wins its roll.
 
-| Recipe | Pattern | Keys | Yield | Tithe |
-|---|---|---|---|---|
-| Blank Rune | ` A ` / `ASA` / ` A ` | A `AMETHYST_SHARD`, S `SMOOTH_STONE` | 2 | 0 |
+| Recipe | Pattern | Keys | Yield |
+|---|---|---|---|
+| Blank Rune | ` A ` / `ASA` / ` A ` | A `AMETHYST_SHARD`, S `SMOOTH_STONE` | 2 |
 
 ![Crafting grid for the Blank Rune. Top row: amethyst shard in the middle. Middle row: amethyst shard, smooth stone, amethyst shard. Bottom row: amethyst shard in the middle; makes 2](/adapt-assets/golemancy/recipes/golemancy-blank-rune.png =352x)
 
