@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T03:00:00.000Z
+date: 2026-10-20T04:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -108,8 +108,10 @@ While you hold the Crook, a Node, a Core, or a Dormant Golem, your golems within
 
 | Server | Golem name | Your golem's status |
 |---|---|---|
-| [Gloss entity overlays](/gloss/20-entity-overlays) on | In the golem's Gloss overlay | In the Gloss overlay of the golem you look at within `labelRange` blocks, or in your [Discovery Insight](/adapt/18-skill-discovery) readout of it |
+| [Gloss entity overlays](/gloss/20-entity-overlays) on | No nametag. The first detail line of any player's [Discovery Insight](/adapt/18-skill-discovery) readout of the golem | Below the name in the Gloss overlay of the golem you look at within `labelRange` blocks, or in your Insight readout of it |
 | Gloss entity overlays off | The golem's nametag, as on any named mob | A floating label only you see, without the name |
+
+With Gloss entity overlays on, a golem shows no nametag. A player without Discovery Insight sees Gloss's ordinary overlay for the golem's creature type, and a golem's owner sees the name and status in the overlay while holding one of the items above. A name tag on your golem still renames it: the tag is used up, the new name replaces the stored one, and the Insight readout shows it. Bone golems follow the same rules.
 
 Setting golem status labels to hidden in the Animus Binding settings (`status-labels`) hides the status of your golems and skeletal servants in every case. The name and the channel glow stay.
 

@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin integrations and their runtime behavior"
 published: true
-date: 2026-10-20T02:00:00.000Z
+date: 2026-10-20T04:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,7 +37,7 @@ Adapt registers `IntegrationServiceContract` with Bukkit and advertises `metric-
 
 ## Gloss
 
-With [Gloss entity overlays](/gloss/20-entity-overlays) on, [Discovery Insight](/adapt/18-skill-discovery) shows its readout in the overlay of the creature you look at, bound golems show their names in their overlays, and a golem owner holding the Crook, a Node, a Core, or a Dormant Golem sees the status of the golem they look at there. Adapt checks whether Gloss entity overlays run at startup, when Gloss is enabled or disabled, when Discovery Insight is enabled or disabled, and when the Golemancy configuration reloads. Where golem names and status show without Gloss: [Names and status](/adapt/34-skill-golemancy#names-and-status).
+With [Gloss entity overlays](/gloss/20-entity-overlays) on, [Discovery Insight](/adapt/18-skill-discovery) shows its readout in the overlay of the creature you look at, bound golems carry no nametag and show their names in the Insight readout, and a golem owner holding the Crook, a Node, a Core, or a Dormant Golem sees the status of the golem they look at in its overlay. Adapt checks whether Gloss entity overlays run at startup, when Gloss is enabled or disabled, when Discovery Insight is enabled or disabled, and when the Golemancy configuration reloads. Where golem names and status show without Gloss: [Names and status](/adapt/34-skill-golemancy#names-and-status).
 
 ## PlaceholderAPI
 
