@@ -1398,6 +1398,18 @@ The extra slots, health, aura, second core, and stronger runes follow your Maste
 | `heartDeathDropChance` | `1.0` | Chance a masterwork golem drops its Masterwork Heart when it dies, from 0 to 1. A golem that leaves a Shattered Core keeps its Heart instead. |
 | `auraIntervalTicks` | `40` | Ticks between the gold sparkles around your awake masterwork golems, at least 1. |
 
+## Commands
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/adapt golem roster` | `adapt.main` | Open your golem roster |
+| `/adapt golem list [player]` | `adapt.golemancy.admin` | List a player's golems |
+| `/adapt golem release <id> [player]` | `adapt.golemancy.admin` | Release one of a player's golems |
+| `/adapt golem wake [player]` | `adapt.golemancy.admin` | Wake a player's loaded golems |
+| `/adapt golem give <item> [amount=1] [player]` | `adapt.golemancy.admin` | Give a Golemancy item for testing, or one of each with `all`; the owner-bound Dormant Golem and Shattered Core are not offered. Players need Adapt debug mode on, toggled by `/adapt debug mode`; the console does not |
+
+Item ids, the amount range, and what each command does: [04 - Commands & Permissions](/adapt/04-commands-permissions#golems).
+
 ## Reference
 
 ### Skill configuration defaults
