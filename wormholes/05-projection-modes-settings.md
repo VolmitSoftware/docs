@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-20T04:23:58.000Z
+date: 2026-10-20T19:52:10.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -522,7 +522,7 @@ Destination chunks remain held while a view needs them and release after the idl
 
 On Bukkit servers, a matching Wormholes client can prepare destination terrain before the ordinary teleport while `chunk-pre-send-enabled` is true. This works with either client renderer while ClientView is enabled. Server chunk preparation remains active with ClientView off. For linked frame portals, preparation starts as the player approaches while `arrival-prewarm-on-interest` is true. When portals are close together, client terrain preparation prefers the nearest linked frame portal. Crossing a frame portal proceeds without waiting for the client to finish preparation. Changed or incomplete preparations use ordinary chunk delivery. Dimensional-door and RTP transitions can wait up to 10 server ticks for preparation after their destination is selected.
 
-The client uses completed terrain only for the matching destination and closes the terrain loading screen when that arrival is ready. Same-world travel retains loaded chunks that overlap the destination view, including on return trips between nearby portals. Prepared terrain shares `resident-level-memory-mb` with resident worlds. Server anti-xray, packet-transforming integrations, an incompatible Minecraft protocol, or differing shader terrain settings can disable preparation. Ordinary chunk delivery remains available. With an active Iris shader pack, prepared terrain requires the current dimension's shaders to finish loading and a destination in that same Iris dimension. A different shader dimension uses ordinary chunk delivery.
+The client uses completed terrain only for the matching destination and closes the terrain loading screen when that arrival is ready. Same-world travel retains loaded chunks that overlap the destination view, including on return trips between nearby portals. With Sodium, overlapping terrain remains available to render beyond the prepared landing area. Prepared terrain shares `resident-level-memory-mb` with resident worlds. Server anti-xray, packet-transforming integrations, an incompatible Minecraft protocol, or differing shader terrain settings can disable preparation. Ordinary chunk delivery remains available. With an active Iris shader pack, prepared terrain requires the current dimension's shaders to finish loading and a destination in that same Iris dimension. A different shader dimension uses ordinary chunk delivery.
 
 Related transition mask: `arrival-transition-mask` default **true**,
 `arrival-transition-mask-ticks` default **25**. Chunk send rate tuner
