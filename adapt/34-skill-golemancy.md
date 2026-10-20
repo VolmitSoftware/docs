@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T12:00:00.000Z
+date: 2026-10-20T13:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -94,7 +94,7 @@ A bone golem is one of your own TragOul skeletal servants, bound with Bone Frame
 | Iron | An iron golem a player built | Iron Frame | `bodyScaleIron`, 0.36 | `bodyCarryIron`, 64 items | `ironSlots`, 3 | `allowedCoresIron` |
 | Bone | One of your own TragOul skeletal servants | Bone Frame | `bodyScaleBone`, 0.49, under one block tall | Nothing | `boneSlots`, 2 | Blank Animus Core or Guardian Core |
 
-Rune slots are the base count before Runic Augments and Masterwork add more.
+Rune slots are the base count before Runic Augments and Masterwork add more. Every body can become a masterwork.
 
 ### Awake and asleep
 
@@ -596,7 +596,7 @@ A bone golem works like your other bound golems, with these differences:
 
 - The ritual shrinks the skeleton to the skill's `bodyScaleBone`, 0.49 by default, so it stands under one block tall. It keeps that size through chunk unloads and restarts.
 - It leaves your servant pack: it never expires, takes no slot of your Skeletal Servant cap, and shows a golem label instead of a servant label. It stays in the world, counts toward your golem cap, sleeps while you are offline, and answers Crook signals as a golem.
-- It keeps the gear and the Skeletal Servant bonuses it was summoned with, and loses the lattice effects. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It cannot become a masterwork.
+- It keeps the gear and the Skeletal Servant bonuses it was summoned with, and loses the lattice effects. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It can become a masterwork like your other golems, as described under [Masterwork](/adapt/34-skill-golemancy#masterwork-golem-masterwork).
 - Skeletal Servant's `healthCostPerMinion` maximum health cost stays on you for as long as the bone golem lives, including after you rejoin and after a restart, and never counts twice for the same skeleton. The cost also stays while the bone golem shows as Missing in your roster, until you release it there.
 - When it dies, it drops its core at the skill's `deathDropCoreChance`, each rune at `deathDropRuneChance`, and none of a skeleton's own loot or experience, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
 - Releasing it from its Golem GUI crumbles the skeleton, drops its core and runes, and ends its health cost.
@@ -1370,19 +1370,18 @@ Turns one of your golems into a masterwork with a Masterwork Heart infused at th
 To designate a masterwork, open the golem's Golem GUI, pick up a Masterwork Heart, and click the Masterwork slot in the bottom row. One Heart from the stack goes into the golem. The slot shows how many masterworks you have and how many your level allows. A designation needs all of the following:
 
 - You have Masterwork level 1.
-- The golem is a snow, copper, or iron golem.
 - You have fewer masterworks than your level's `maxMasterworksByLevel`. Every masterwork in your roster counts: golems in unloaded chunks, packed golems, and shattered golems too.
 
 A masterwork golem gains:
 
 - `extraRuneSlots` more open rune slots on top of its body's slots and your Runic Augments slots. With the defaults, a masterwork iron golem at Runic Augments level 3 has 5 open slots.
-- `healthBonusFraction` more maximum health, 25% by default. The bonus multiplies the golem's whole maximum health, frame bonuses included, and the golem heals by any gain above the highest maximum health it has had.
+- `healthBonusFraction` more maximum health, 25% by default. The bonus multiplies the golem's whole maximum health, frame bonuses included, and the golem heals by any gain above the highest maximum health it has had. On a bone golem it raises the skeleton's maximum health and leaves the maximum health cost the golem takes from you unchanged.
 - A gold ✦ on each side of its name on the status label only you see. The label of a golem with two cores names both.
 - A ring of gold sparkles every `auraIntervalTicks` ticks while it is awake.
 
 Its size stays the same.
 
-- **Second core** (level `dualCoreLevel`): the Golem GUI of a masterwork shows a second core slot in its top row, beside the core. Pick up a role core and click the slot to put it in. The second core must be a role core the golem does not hold yet, allowed for that body by the skill's `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron`, and its Core adaptation must be learned; a Blank Animus Core never fits. The golem then works the nodes and jobs of both cores. With a Guardian Core as either core, it picks its targets as a Guardian, and fighting comes before work. A Companion golem with a second role core can also be set to Work mode. Click the second core to take it back. Below level `dualCoreLevel`, a second core that is still slotted does nothing.
+- **Second core** (level `dualCoreLevel`): the Golem GUI of a masterwork shows a second core slot in its top row, beside the core. Pick up a role core and click the slot to put it in. The second core must be a role core the golem does not hold yet, allowed for that body by the skill's `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron`, and its Core adaptation must be learned; a Blank Animus Core never fits. A bone body allows only Blank and Guardian cores, so a bone golem bound with a Blank Animus Core can take a Guardian Core as its second core, and one bound with a Guardian Core has nothing to add. The golem then works the nodes and jobs of both cores. With a Guardian Core as either core, it picks its targets as a Guardian, and fighting comes before work. A Companion golem with a second role core can also be set to Work mode. Click the second core to take it back. Below level `dualCoreLevel`, a second core that is still slotted does nothing.
 - **Runes one tier higher** (level `tierUpLevel`): a masterwork's runes act one tier higher. A tier 1 rune uses the tier 2 values, a tier 2 rune the tier 3 values, and a tier 3 rune the tier 3 values plus `tierThreeBoost`, 25% more by default. Whole-number values, such as burn seconds, channels, and Weakness levels, round to the nearest whole number. Fire immunity, lava immunity, and water breathing follow the rune's own tier, and a rune above your Runic Augments `maxTierByLevel` stays inert.
 
 Click the Masterwork Heart in the Golem GUI to take the designation back. The Heart, the second core, and each rune beyond the slots the golem has without the masterwork bonus go into your inventory, or drop at your feet when your inventory is full. A Companion golem in Work mode that loses its second core goes back to Follow.
