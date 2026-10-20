@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T22:30:00.000Z
+date: 2026-10-19T23:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -1285,7 +1285,7 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 |---|---|---|
 | 1 | 2 s channel | Pack your golems into Dormant Golems and place them to awaken |
 | 2 | Instant | Packed golems heal 1 health for every 10 s spent packed |
-| 3 | Instant | Pocket Roster: recall loaded golems in your world from the Roster GUI, once per 120 s |
+| 3 | Instant | Pocket Roster: recall loaded golems in your world from the Roster GUI, once per 60 s |
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -1295,7 +1295,7 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 | `packedHealAmount` | `1.0` | Health a packed golem heals for each `packedHealIntervalSeconds` it spent packed, added when it awakens and never above its maximum health. Values below 0 load as 0. |
 | `packedHealIntervalSeconds` | `10` | Seconds a golem must stay packed for each `packedHealAmount` of healing. Values below 1 load as 1. |
 | `recallLevel` | `3` | Level at which Pocket Roster lets you recall a loaded golem in your world from the Roster GUI. |
-| `recallCooldownSeconds` | `120` | Seconds after a Pocket Roster recall before you can recall another golem. Values below 0 load as 0. |
+| `recallCooldownSeconds` | `60` | Seconds after a Pocket Roster recall before you can recall another golem. Values load clamped to 0 through 60. |
 | `awakenRiseTicks` | `20` | Ticks an awakened golem takes to rise from a tenth of its normal size to its bound size. 0 skips the rise. |
 
 ### Masterwork (`golem-masterwork`)
