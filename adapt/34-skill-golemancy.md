@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T23:00:00.000Z
+date: 2026-10-19T23:45:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -85,6 +85,15 @@ Snow, iron, and copper golems are built from these blocks:
 
 ![Front views of the three golem builds: a snow golem of two snow blocks with a carved pumpkin on top, an iron golem of four iron blocks in a T with a carved pumpkin above the middle, and a copper golem of one copper block with a carved pumpkin on top](/adapt-assets/golemancy/diagrams/golem-builds.png =960x)
 
+A bone golem is one of your own TragOul skeletal servants, bound with Bone Frame.
+
+| Body | Bound from | Binding also needs | Bound size | Carries | Cores |
+|---|---|---|---|---|---|
+| Frost | A snow golem a player built | Animus Binding alone | `bodyScaleFrost`, 0.5 | `bodyCarryFrost`, 8 items | `allowedCoresFrost` |
+| Copper | A copper golem a player built | Copper Frame | `bodyScaleCopper`, 1.0 | `bodyCarryCopper`, 16 items | `allowedCoresCopper` |
+| Iron | An iron golem a player built | Iron Frame | `bodyScaleIron`, 0.36 | `bodyCarryIron`, 64 items | `allowedCoresIron` |
+| Bone | One of your own TragOul skeletal servants | Bone Frame | `bodyScaleBone`, 0.49, under one block tall | Nothing | Blank Animus Core or Guardian Core |
+
 ### Awake and asleep
 
 A bound golem sleeps while you are offline, while you are online but your Adapt data has not finished loading, and while the server already has `serverMaxActiveGolems` bound golems awake. It wakes as soon as the reason clears, and golems kept asleep by the server limit wake in turn as room frees. With `guardWhileOwnerOffline` on in the skill configuration, golems bound with a Guardian Core stay awake while you are offline, as described under Guardian Core.
@@ -118,7 +127,7 @@ The bottom row holds:
 - **Masterwork** slot, described under Masterwork.
 - **Essence** on Gatherers and on golems that hold essence, described under Gatherer Core.
 - **Pack**, with Stasis, described under Stasis.
-- **Release**: after you confirm, the golem turns back into an ordinary golem at its normal size, drops its cores, runes, Masterwork Heart, and carried items, gives you its stored essence as experience, and leaves your roster.
+- **Release**: after you confirm, the golem drops its cores, runes, Masterwork Heart, and carried items, gives you its stored essence as experience, and leaves your roster. A snow, copper, or iron golem turns back into an ordinary golem at its normal size; a bone golem crumbles away, and its maximum health cost on you ends.
 
 ### Golem roster
 
@@ -276,19 +285,22 @@ Arrows point from each prerequisite to the adaptations it unlocks; unlabelled ar
 
 Binds a golem to you as a companion and unlocks the Artificer's Crook and Blank Animus Core recipes at level 1.
 
-Hold an Animus Core in your main hand, sneak, and right-click a snow, copper, or iron golem. The golem freezes and shrinks toward its bound size while the ritual runs. Moving more than 4 blocks from the golem, switching your held item, or the golem being attacked, set on fire, caught in lava, or caught in an explosion breaks the ritual, and the golem returns to its normal size. Rain and melting do not break it. When the ritual finishes, the core and the tithe levels are used up and the golem becomes "*Owner*'s *Body* Golem". A Companion golem starts following you; a golem bound with a role core starts working. Creative players pay no levels.
+Hold an Animus Core in your main hand, sneak, and right-click a snow, copper, or iron golem, or one of your own TragOul skeletal servants. The core leaves your hand as the ritual starts, and the golem freezes and shrinks toward its bound size while the ritual runs. Moving more than 4 blocks from the golem, logging out, the golem dying, the server stopping, or the golem being attacked, set on fire, caught in lava, or caught in an explosion breaks the ritual: the golem returns to its normal size and the core comes back to your inventory, or drops at your feet for you alone when your inventory is full. Switching your held item, rain, and melting do not break it. When the ritual finishes, the tithe levels are used up and the golem becomes "*Owner*'s *Body* Golem"; a binding refused at that moment gives the core back. A Companion golem starts following you; a golem bound with a role core starts working. Creative players pay no levels, but the core is still used.
 
 A binding needs all of the following:
 
 - The golem is not bound already.
+- A skeletal servant is yours; someone else's servant is refused.
 - A player built the golem. Iron golems that no player built, such as village iron golems, bind only when `allowBindingVillageGolems` is on.
 - For `builderExclusiveSeconds` after a golem is built, only the player who built it can bind it.
-- Frost golems bind with this adaptation alone. Copper golems also need Copper Frame and iron golems Iron Frame.
-- The core is allowed for that body by `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron` in the skill configuration. A Blank Animus Core binds a Companion; a role core also needs that role's Core adaptation.
+- Frost golems bind with this adaptation alone. Copper golems also need Copper Frame, iron golems Iron Frame, and skeletal servants Bone Frame.
+- The core is allowed for that body by `allowedCoresFrost`, `allowedCoresCopper`, or `allowedCoresIron` in the skill configuration. A skeletal servant takes only a Blank Animus Core or a Guardian Core. A Blank Animus Core binds a Companion; a role core also needs that role's Core adaptation.
 - You own fewer golems than your level allows. `hardCapPerPlayer` caps every level.
 - The chunk holds fewer than `maxBoundGolemsPerChunk` bound golems.
 - Region protection lets you interact with the golem and build where it stands.
-- You have the tithe levels for that body.
+- You have the tithe levels for that body. Skeletal servants cost no levels.
+
+Binding a skeletal servant turns it into a bone golem, as described under Bone Frame.
 
 | Level | Golem cap | Ritual | Bind tithe (frost / copper / iron) |
 |---|---|---|---|
@@ -300,7 +312,7 @@ A binding needs all of the following:
 
 While you hold the Crook, a Node, a Core, or a Dormant Golem, your bound golems within `revealRange` blocks show a status label only you see and glow for you in their first channel's color, or white when they have no channel.
 
-A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs and iron golems fight in melee. Copper golems never fight.
+A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs, iron golems fight in melee, and bone golems use the sword or bow they carry. Copper golems never fight.
 
 | Recipe | Pattern | Keys | Yield |
 |---|---|---|---|
@@ -544,7 +556,17 @@ Bone Frame works on the servants you summon with Skeletal Servant. Servants neve
 - **Bone Lattice** (level 2): pick up a rune from your inventory and click an empty slot in the servant menu to set it. Only the aspects in `latticeAspects` fit, and the lattice holds one rune of each aspect. Click a slotted rune to take it back; it goes into your inventory, or drops at your feet when your inventory is full. A rune in a slot your level does not open does nothing, but you can still take it back.
 - **Lattice runes on summon:** each servant you summon wears the lattice runes for its lifetime, each at the lower of the rune's tier and the highest tier your Runic Augments level allows, with the Runic Augments values for that tier. Swiftness adds movement speed, Might adds attack damage, Bulwark adds armor, armor toughness, and knockback resistance, and Ember sets what the servant hits on fire. At the tiers where Runic Augments makes golems immune to fire, an Ember rune gives the servant Fire Resistance. Without Runic Augments, lattice runes do nothing. Changes to the lattice apply to servants you summon afterwards.
 - **Servant kill XP** (level 1): your servants' kills of hostile mobs pay Golemancy XP, as described in [Earning XP](/adapt/34-skill-golemancy#earning-xp).
-- When the skill's `bodyScaleBone` is not 1.0, servants you summon grow or shrink to that size.
+- **Bone golems** (level 1): bind one of your own servants with Animus Binding and a Blank Animus Core or a Guardian Core to make it a Companion or Guardian bone golem, as described under [Animus Binding](/adapt/34-skill-golemancy#animus-binding-golem-animus-binding).
+
+A bone golem works like your other bound golems, with these differences:
+
+- The ritual shrinks the skeleton to the skill's `bodyScaleBone`, 0.49 by default, so it stands under one block tall. It keeps that size through chunk unloads and restarts.
+- It leaves your servant pack: it never expires, takes no slot of your Skeletal Servant cap, and shows a golem label instead of a servant label. It stays in the world, counts toward your golem cap, sleeps while you are offline, and answers Crook signals as a golem.
+- It keeps the gear, the Skeletal Servant bonuses, and the lattice runes it was summoned with. It has no rune slots and cannot become a masterwork.
+- Skeletal Servant's `healthCostPerMinion` maximum health cost stays on you for as long as the bone golem lives, including after you rejoin and after a restart, and never counts twice for the same skeleton. The cost also stays while the bone golem shows as Missing in your roster, until you release it there.
+- When it dies, it drops its core at the skill's `deathDropCoreChance` and none of a skeleton's own loot or experience, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
+- Releasing it from its Golem GUI crumbles the skeleton, drops its core, and ends its health cost.
+- Stasis cannot pack it or recall it.
 
 | Level | Lattice slots | Servant kill XP | Unlocks |
 |---|---|---|---|
@@ -570,7 +592,7 @@ Bone Frame works on the servants you summon with Skeletal Servant. Servants neve
 
 Makes golems bound with a Guardian Core defend their home, you, or a Guard Node's area, and unlocks the Guardian Core and Guard Node recipes at level 1.
 
-Bind a golem with a Guardian Core through Animus Binding. Snow and iron golems take the core by default; `allowedCoresFrost` and `allowedCoresIron` in the skill configuration decide which bodies can. A new Guardian starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home.
+Bind a golem with a Guardian Core through Animus Binding. Snow and iron golems take the core by default, and `allowedCoresFrost` and `allowedCoresIron` in the skill configuration decide whether they can; with Bone Frame, your skeletal servants always take it. A new Guardian starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home.
 
 A Guardian guards the area within your level's `perceptionByLevel` blocks of its guard point, plus its Tide rune's bonus, up to `leashRadius` blocks: you while it follows you, the spot where it was told to stay while it stays, and its home in Home and Work mode. In Work mode it also guards the work area of each of your Guard Nodes that lies within `baseWorkRadius` blocks of its home, plus its Tide rune's bonus, has a channel the golem matches, and is not switched off by redstone. A Guard Node's area only counts within `leashRadius` blocks of the Guardian's home, so a Guardian never chases a mob past its leash. Inside its guarded area a Guardian attacks the nearest hostile mob, or the nearest mob that is targeting you or the Guardian, and lets go of a mob that leaves the area. Guardians never attack your pets or Adapt minions, and while you are online they never attack mobs that region protection shields from you. Creepers are left alone unless `targetCreepers` is on, and mobs with a custom name unless `ignoreNamedMobs` is off. Iron Guardians fight in melee. Frost Guardians are sentries: they throw snowballs only at mobs within `sentryRange` blocks of themselves and never chase mobs farther away.
 
@@ -1204,13 +1226,13 @@ Right-click one of your bound golems or servants with its healing item to heal i
 |---|---|---|
 | Copper ingot | Your bound copper golems | `copperIngotHeal` |
 | Snow block | Your bound frost golems | `snowBlockHeal` |
-| Bone meal | Your TragOul skeletal servants | `boneMealHeal` |
+| Bone meal | Your TragOul skeletal servants and bone golems | `boneMealHeal` |
 
 Each heal restores its base health plus your level's `healBonusByLevel` fraction of it, never above the maximum health, and uses up one item unless you are in creative mode. A golem or servant at full health refuses the item, and an action-bar message says so. Heals on golems count toward repair XP as described in Earning XP. While you are online, an iron ingot repair of one of your bound iron golems, by anyone, also heals your level's `healBonusByLevel` fraction of the vanilla 25 health, on top of the vanilla repair and any Iron Frame bonus.
 
 - **Regeneration near you** (level `ownerRegenLevel`): your awake golems heal `ownerRegenAmount` health every `regenIntervalSeconds` seconds while they are within `ownerRegenRadius` blocks of you in the same world.
 - **Regeneration at home** (level `homeRegenLevel`): a golem with no job and no target heals `homeRegenAmount` health every `regenIntervalSeconds` seconds while it is within `homeRegenRadius` blocks of its home. When both regenerations apply, the golem heals the larger amount, not both. Sleeping golems never regenerate.
-- **Shattered Core** (level `shatterLevel`): when one of your bound golems dies while you are online, it still drops the items it carries and its essence as experience, but instead of dropping cores and runes at the skill's `deathDropCoreChance` and `deathDropRuneChance`, it leaves a Shattered Core where it died, and an action-bar message tells you. The Shattered Core keeps the golem's cores, runes, Masterwork Heart, channels, mode, home, home chest, name, and record of kills, damage, jobs, and items moved. Only you can pick it up; hoppers and other mobs cannot take it. It never despawns, and damage such as fire, lava, cactus, and explosions cannot destroy it. When a golem dies below the bottom of the world, its Shattered Core appears at the lowest block height, where it can still fall into the void and be lost. The golem stays in your roster as shattered and still counts toward your golem cap. A golem that dies before you reach `shatterLevel` drops its cores and runes as usual. A golem that dies while you are offline drops none of its cores, runes, Masterwork Heart, carried items, or essence, only the loot the mob drops on its own, and its roster entry shows as Missing once the chunk it died in loads while you are online; release it from your roster.
+- **Shattered Core** (level `shatterLevel`): when one of your bound golems dies while you are online, it still drops the items it carries and its essence as experience, but instead of dropping cores and runes at the skill's `deathDropCoreChance` and `deathDropRuneChance`, it leaves a Shattered Core where it died, and an action-bar message tells you. The Shattered Core keeps the golem's cores, runes, Masterwork Heart, channels, mode, home, home chest, name, and record of kills, damage, jobs, and items moved. Only you can pick it up; hoppers and other mobs cannot take it. It never despawns, and damage such as fire, lava, cactus, and explosions cannot destroy it. When a golem dies below the bottom of the world, its Shattered Core appears at the lowest block height, where it can still fall into the void and be lost. The golem stays in your roster as shattered and still counts toward your golem cap. A golem that dies before you reach `shatterLevel`, and every bone golem, drops its cores and runes as usual. A golem that dies while you are offline drops none of its cores, runes, Masterwork Heart, carried items, or essence, only the loot the mob drops on its own, and its roster entry shows as Missing once the chunk it died in loads while you are online; release it from your roster.
 - **Reborn** (level `rebornLevel`): a rebuilt copper golem keeps the oxidation stage and wax it had when it died, and every rebuilt golem gets Resistance with amplifier `rebornResistanceAmplifier`, Resistance II by default, for `rebornResistanceSeconds` seconds.
 
 To rebuild a shattered golem, hold its Shattered Core in your main hand, sneak, and right-click a freshly built golem of the same body within 3 blocks. The golem is bound to you at once with everything the Shattered Core kept, at full health, and the Shattered Core is used up. A rebuilt golem that has to sleep because the server is at its limit of awake golems wakes at full health. A rebuild has no ritual, costs no tithe, pays no bind XP, and earns no first-bind challenge. It needs all of the following:
@@ -1238,7 +1260,7 @@ Shift-right-click a shattered golem in the Roster GUI to release it for good. It
 | `healBonusByLevel` | `[0.2, 0.4, 0.6, 0.8, 1.0]` | Fraction added to every heal you give your golems and servants with items, from level 1 upward. 0.2 heals 20% more. An iron ingot repair of a bound iron golem gains this fraction of the vanilla 25. |
 | `copperIngotHeal` | `4.0` | Health a copper ingot restores to your bound copper golem before the level bonus. Values below 0 load as 0. |
 | `snowBlockHeal` | `2.0` | Health a snow block restores to your bound frost golem before the level bonus. Values below 0 load as 0. |
-| `boneMealHeal` | `2.0` | Health bone meal restores to your TragOul skeletal servant before the level bonus. Values below 0 load as 0. |
+| `boneMealHeal` | `2.0` | Health bone meal restores to your TragOul skeletal servant or bone golem before the level bonus. Values below 0 load as 0. |
 | `ownerRegenLevel` | `2` | Level at which your awake golems regenerate while you are near them. |
 | `ownerRegenAmount` | `0.5` | Health your golems regenerate every `regenIntervalSeconds` while they are within `ownerRegenRadius` blocks of you. Values below 0 load as 0. |
 | `ownerRegenRadius` | `16.0` | Blocks from you, in the same world, within which your golems regenerate. Values below 0 load as 0. |
@@ -1262,7 +1284,7 @@ Shift-right-click a shattered golem in the Roster GUI to release it for good. It
 
 Packs one of your bound golems into a Dormant Golem block that you carry and place to wake the golem again, with its loadout, cargo, and health.
 
-Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound frost, copper, or iron golems to pack it. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem, and the golem holds still. You or the golem ending up more than `channelAbortDistance` blocks apart, switching your held item away from the Crook, or the golem taking any damage breaks the channel, and an action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
+Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound frost, copper, or iron golems to pack it. Bone golems cannot be packed or recalled; trying shows an action-bar message. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem, and the golem holds still. You or the golem ending up more than `channelAbortDistance` blocks apart, switching your held item away from the Crook, or the golem taking any damage breaks the channel, and an action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
 
 The packed golem leaves the world without dropping anything and becomes a Dormant Golem in your inventory: a snow block for a frost golem, an iron block for an iron golem, and for a copper golem the copper block of its oxidation stage, waxed when the golem was waxed. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, Masterwork Heart, channels, mode, home, home chest, name, record of kills, damage, jobs, and items moved, the items it carries, its stored essence, its health, and its copper oxidation stage and wax. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up; hoppers and other mobs cannot take it, it never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
 
@@ -1409,7 +1431,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `bodyScaleFrost` | `0.50` | Size of a bound frost golem as a multiple of its normal size. |
 | `bodyScaleCopper` | `1.00` | Size of a bound copper golem as a multiple of its normal size. |
 | `bodyScaleIron` | `0.36` | Size of a bound iron golem as a multiple of its normal size. |
-| `bodyScaleBone` | `1.00` | Size of the TragOul skeletal servants you summon with Bone Frame, as a multiple of their normal size. |
+| `bodyScaleBone` | `0.49` | Size of a bound bone golem as a multiple of its normal size. |
 | `bodyCarryFrost` | `8` | Items a bound frost golem can carry at once. |
 | `bodyCarryCopper` | `16` | Items a bound copper golem can carry at once before Copper Frame raises it. |
 | `bodyCarryIron` | `64` | Items a bound iron golem can carry at once. |
