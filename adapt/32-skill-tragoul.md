@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-10-19T23:45:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -218,6 +218,8 @@ Sneak-right-click air or a block with bones in the main hand to raise a skeleton
 
 Your Golemancy skill level raises the servant cap by one for every `golemancyCapBonusEveryLevels` levels, up to `golemancyCapBonusMax` extra servants and never past 16, and lengthens servant lifetime by `golemancyDurationBonusPerLevel` per level, up to `golemancyDurationBonusMax`; each extra servant still costs `healthCostPerMinion` maximum health. With Golemancy's [Bone Frame](/adapt/34-skill-golemancy#bone-frame-golem-bone-frame), your servants also answer Crook signals, show status labels, wear a Bone Lattice of runes, and pay Golemancy XP for their kills, and with [Golem Mending](/adapt/34-skill-golemancy#golem-mending-golem-mending), bone meal heals them.
 
+With Bone Frame, you can bind one of your servants with Animus Binding into a bone golem. A bound servant leaves your pack and your servant cap and never expires, and its `healthCostPerMinion` maximum health cost stays on you until it dies or you release it.
+
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `boneCostBase` | `8` | Bones per summon at level percent 0. |
@@ -238,8 +240,8 @@ Your Golemancy skill level raises the servant cap by one for every `golemancyCap
 | `retargetIntervalTicks` | `20` | Ticks between retarget pulses, floored at 10. |
 | `targetSearchRadius` | `12` | Blocks a servant scans for hostile mobs, capped at 24. |
 | `xpPerSummon` | `30` | TragOul XP per summon. |
-| `healthCostEnabled` | `true` | True applies the owner max-health upkeep while servants live. |
-| `healthCostPerMinion` | `2.0` | Health points removed from your max health per living servant. |
+| `healthCostEnabled` | `true` | True applies the owner max-health upkeep while servants and bone golems live. |
+| `healthCostPerMinion` | `2.0` | Health points removed from your max health per living servant or bone golem. |
 | `minimumOwnerMaxHealth` | `4.0` | Lowest max health the upkeep can push you to. |
 | `golemancyCapBonusEveryLevels` | `20` | Golemancy skill levels for each extra living servant on top of the level cap. 0 turns the bonus off. |
 | `golemancyCapBonusMax` | `2` | Most extra living servants Golemancy levels can add, still within the hard cap of 16. |
