@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T23:45:00.000Z
+date: 2026-10-20T01:50:05.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -357,7 +357,7 @@ A new node starts with no channel, priority 3, a whitelist filter with no entrie
 
 ![A node attached to the front face of a chest, with its work area drawn as a dashed box centered on the block in front of that face, labelled Node, Chest, and Work area](/adapt-assets/golemancy/diagrams/node-on-chest.png =720x)
 
-Nodes are hidden until you hold the Crook, a Node (not a Blank Node), a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: Full while a Deposit or Filter Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
+Nodes are hidden until you hold the Crook, a Node (not a Blank Node), a Core, or a Dormant Golem in either hand. You then see your own nodes within `revealRange` blocks. With `nodeVisibility` set to `ANY_GOLEMANCER`, players who have learned Node Weaving see every player's nodes. A node shows its icon flat on the face, glowing in its channel color, and a label with its type, channel, priority, filter count, and status. The status changes at each node check: No container while a Deposit, Input, or Filter Node has no container on its block, Full while a Deposit or Filter Node's container has no empty slot, Blocked for 10 seconds after region protection stops one of your golems there, Working while a golem holds one of the node's jobs and for 10 seconds after a golem works or delivers there, and Idle otherwise. A node switched off by redstone shows Idle. Labels draw within `labelRange` blocks.
 
 Click one of your revealed nodes to configure it. Only the node's owner can configure it, and its label updates after each change.
 
@@ -369,6 +369,8 @@ Click one of your revealed nodes to configure it. Only the node's owner can conf
 | Right-click with any other item, Crook in your off hand | Adds that item to the filter while a slot is free, or removes it when the filter already holds the same item |
 | Sneak + right-click with the Crook in your main hand | Raises the priority by 1, from 5 back to 1 (level 3) |
 | Sneak + left-click with the Crook in your main hand | Removes the node and gives its item back |
+
+A node stays on its face when the block it is attached to is broken, replaced, or removed by anything, including a golem, an explosion, a piston, fire, or decay. The Crook's sneak and left-click is the only way to remove a node, with or without the block behind it.
 
 While a node is revealed, looking at it from within 6 blocks outlines its work area in its channel color, or in white when it has no channel. Only the owner sees the outline.
 
@@ -386,7 +388,7 @@ Golems bound with a role core work their owner's nodes while in Work mode. A gol
 
 A Deposit Node accepts the items your working golems carry. A golem carrying items delivers them when it can carry no more, or when it has no job to do. It walks to the highest-priority Deposit Node, then the nearest, within `baseWorkRadius` blocks of its home, plus its Tide rune's bonus, whose channel it matches, whose filter accepts at least one of its items, and whose container has room. A Deposit Node switched off by redstone takes nothing. Items no Deposit Node takes go to the golem's linked home chest. With neither, the golem keeps its items; a golem carrying as many items as it can hold takes no new jobs and shows an angry particle above its head every 3 seconds until it can deliver. A Deposit Node or home chest that is a shulker box never takes shulker boxes, so the golem keeps them for another container. A container that cannot take the rest of a golem's items is skipped for 10 seconds. A double chest counts as one container, and region protection must let the golem's owner open the container. A copper golem opens the container's lid while it delivers.
 
-Every `nodeScanIntervalTicks`, and whenever its chunk loads, a node checks its block. If the block is gone, or a Deposit, Input, or Filter node's container is replaced by a block that is not a container, the node drops as an item.
+Nodes are stored with their chunk and appear again with their settings when the chunk loads, whether or not the block behind them is still there. Guard, Collection, Harvest, Lumber, Breaker, Pasture, and Fishing nodes keep working from their face and work area with no block behind them; a Fishing Node still needs the open water in front of it. Every `nodeScanIntervalTicks`, a Deposit, Input, or Filter node checks that its block is a container. While the block is not a chest, trapped chest, copper chest, barrel, or shulker box, the node shows No container, hands out no jobs, and takes no items from or delivers none to a golem. It resumes by itself when one of those containers stands on its block again.
 
 | Level | Node cap | Max area radius | Filter slots | Unlocks |
 |---|---|---|---|---|
@@ -829,7 +831,7 @@ Makes golems bound with a Breaker Core break the blocks a Breaker Node's filter 
 
 Bind an iron golem with a Breaker Core through Animus Binding. Only iron golems take the core by default; `allowedCoresIron` and the other `allowedCores` lists in the skill configuration decide which bodies can, and iron golems bind only after you learn Iron Frame. A new Breaker starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Breakers work only in Work mode and only on Breaker Nodes, so place a Breaker Node with Node Weaving and set its work area over the blocks to mine. Its channel, priority, work area, and redstone setting work like any other node's.
 
-A Breaker Node needs a whitelist filter: it breaks only the blocks its filter lists, and a node with an empty filter or a blacklist breaks nothing. A filter entry matches a block by its block or by the item that places it, so `REDSTONE` matches redstone wire, and an item tag such as `#minecraft:coal_ores` matches each block whose item the tag holds, here both coal ores. At each node check, a Breaker Node looks over part of its work area and hands out a break job for each listed block your level can mine: one no harder than your level's `maxHardnessByLevel`, that your level's pickaxe in `toolByLevel` can harvest, and that is not water or lava. Breakers never break the blocks in `blacklist`, blocks with a block entity, such as chests, furnaces, signs, beds, and spawners, the block any node is placed on, including the Breaker Node's own block, or the blocks of an Animus Plinth.
+A Breaker Node needs a whitelist filter: it breaks only the blocks its filter lists, and a node with an empty filter or a blacklist breaks nothing. A filter entry matches a block by its block or by the item that places it, so `REDSTONE` matches redstone wire, and an item tag such as `#minecraft:coal_ores` matches each block whose item the tag holds, here both coal ores. At each node check, a Breaker Node looks over part of its work area and hands out a break job for each listed block your level can mine: one no harder than your level's `maxHardnessByLevel`, that your level's pickaxe in `toolByLevel` can harvest, and that is not water or lava. Breakers never break the blocks in `blacklist`, blocks with a block entity, such as chests, furnaces, signs, beds, and spawners, or the blocks of an Animus Plinth. A Breaker breaks the block a node is placed on like any other block, including its own node's block, when the filter lists it and it lies in the work area; the node stays in place.
 
 A Breaker walks to its job, works for its level's `intervalTicksByLevel` ticks, then breaks the block and carries the drops. The drops are rolled as if your level's pickaxe broke the block, with Silk Touch or Fortune I when the node turns them on. Breaking a block updates its neighbors as mining does, so water and lava flow back into a generator and sand or gravel above the block falls, and a waterlogged block leaves its water behind. Region protection must let you break the block; otherwise it stays and the node shows Blocked. A Breaker delivers what it carries to a Deposit Node or its home chest like any other working golem, and drops it cannot carry fall to the ground. Swiftness runes shorten the time per block. An Entropy rune doubles each drop that wins its own roll, except on blocks a player placed and for drops of the broken block itself, such as cobblestone from cobblestone or stone mined with Silk Touch.
 
@@ -1449,7 +1451,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `labelRange` | `8.0` | Blocks within which revealed golem and node labels are drawn on screen. |
 | `revealPollTicks` | `10` | Ticks between checks that reveal or hide golems and nodes as you move while holding the Crook, a Node, a Core or a Dormant Golem. |
 | `maxNodesPerChunk` | `16` | Most nodes allowed in one chunk, counting every player's nodes. |
-| `nodeScanIntervalTicks` | `40` | Ticks between checks of each node, clamped to 5-1200. Each check confirms the node's block is still there. |
+| `nodeScanIntervalTicks` | `40` | Ticks between checks of each node, clamped to 5-1200. Each check hands out the node's jobs and refreshes its label status. |
 | `blocksPerNodeScan` | `64` | Most blocks of a node's work area looked at in one check, clamped to 1-4096. |
 | `maxOpenTasksPerNode` | `16` | Most unfinished jobs one node can hand out to golems at once, clamped to 1-256. |
 | `nodeVisibility` | `"OWNER"` | Who sees nodes while holding the Crook, a Node, a Core or a Dormant Golem. `OWNER` shows each player only their own nodes; `ANY_GOLEMANCER` also shows every node to players who have learned Node Weaving. |
