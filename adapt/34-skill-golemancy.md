@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T06:00:00.000Z
+date: 2026-10-20T08:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -800,22 +800,24 @@ Makes golems bound with a Lumber Core fell the natural trees in a Lumber Node's 
 
 Bind a golem with a Lumber Core through Animus Binding. Copper and iron golems take the core by default; `allowedCoresCopper` and `allowedCoresIron` in the skill configuration decide which bodies can. A new Lumber golem starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Lumber golems work only in Work mode and only on Lumber Nodes, so place a Lumber Node with Node Weaving and set its work area over the bottom of your trees. Its channel, priority, work area, and redstone setting work like any other node's.
 
-At each node check, a Lumber Node looks over part of its work area and hands out a felling job for each natural tree whose trunk starts there. Only the bottom of the trunk has to be inside the work area. A tree is natural when all of these hold:
+At each node check, a Lumber Node looks over part of its work area and hands out a felling job for each natural tree whose trunk starts there. Only the bottom of the trunk has to be inside the work area.
 
-- Its bottom log stands on dirt, a grass block, podzol, coarse dirt, rooted dirt, mycelium, a moss block, a pale moss block, mud, muddy mangrove roots, or farmland. A mangrove may also stand on its own mangrove roots, and a huge fungus stands on crimson or warped nylium.
-- Leaves that no player placed grow within 2 blocks of its top logs. For a huge fungus, wart blocks or shroomlights take the place of leaves.
-- No player placed any of its logs, however long ago, apart from the logs that grew where you planted saplings or fungi: the bottom log of a one-block trunk, or all four bottom logs of a 2x2 trunk whose four columns all continue upward. A 2x2 trunk with only some of its bottom logs placed, a 2x2 trunk with a bottom log that has no log of the same tree above it, such as logs placed around the base of a one-block trunk, and a wide fungus stem with any placed bottom stem are never cut.
-- None of its logs touches a block that does not grow around trees, such as planks, glass, stairs, fences, torches, wool, cobblestone, stripped logs, wood blocks, or leaves a player placed.
+A tree is every log, wood block, and stripped log or wood block joined to it, side by side or only at an edge or corner, whatever its species. Crooked and diagonal branches, bark rings, flared roots, and the trees of world generators such as poplars are felled whole. Its trunk is the tallest column of logs rising from the ground; every other column rising from the ground that is at least 3 blocks and at least half as tall counts as another trunk. A huge fungus is made of its stems instead. A tree is natural when all of these hold:
 
-Trees that break any of these rules, including houses and other builds made of logs, are never cut. Logs of another kind of tree touching the trunk are allowed and left standing. A tree that is turned down is looked at again a minute later, so a tree you fix, for example by removing a block built against it, is offered within a minute.
+- Its trunk stands on dirt, a grass block, podzol, coarse dirt, rooted dirt, mycelium, a moss block, a pale moss block, mud, muddy mangrove roots, farmland, stone, andesite, diorite, granite, tuff, calcite, deepslate, gravel, clay, sand, red sand, a snow block, ice, packed ice, blue ice, or terracotta of any color. A mangrove may also stand on mangrove roots, and a huge fungus stands on crimson or warped nylium.
+- Leaves that no player placed grow within 2 blocks of its top logs, including leaves that never decay, which world generators often place. For a huge fungus, wart blocks or shroomlights take the place of leaves.
+- No player placed any of its logs, however long ago, apart from the bottom logs of its trunks, where planted saplings and fungi grow. A tree with several trunks may have none or all of their bottom logs placed. A placed log beside a trunk, and a wide fungus stem with any placed bottom stem, are never cut.
+- None of its logs touches a building block: planks, glass and glass panes, doors, trapdoors, stairs, slabs, fences, fence gates, walls, torches, lanterns, wool, carpet, concrete, bricks, tiles, cobblestone, polished, smooth, cut or chiseled stone, signs, banners, beds, buttons, pressure plates, ladders, rails, chains, bars, candles, chests, barrels, shelves, crafting tables, furnaces and other workstations, glazed terracotta, or leaves a player placed. Soil, stone, ores, plants, vines, cocoa, snow, moss, mushrooms, and bee nests are not building blocks.
+
+Trees that break any of these rules, including houses and other builds made of logs, are never cut. A tree that is turned down is looked at again a minute later, so a tree you fix, for example by removing a block built against it, is offered within a minute.
 
 A tree may have at most your level's `copperTreeCapByLevel` logs for a copper golem, or `ironTreeCapByLevel` logs for an iron golem; golems of any other body use the copper limit. A Lumber Node offers each tree only to the golems that can fell it, and trees too big for every golem are left standing.
 
-A Lumber golem walks to the bottom of the trunk, works for a second, then fells the tree from the top down at your level's `logsPerSecondByLevel` and carries the logs. It fells only as many logs at a time as it has room for. Region protection must let you break every block it fells in that second; otherwise none of them is felled and the node shows Blocked. If something is built against the tree while it is being felled, the golem stops felling it. A Lumber golem that fills up delivers what it carries to a Deposit Node or its home chest like any other working golem. The felling stays open while the Lumber Node keeps working, and the next Lumber golem to take the job finishes the same tree. A felling is dropped a minute after its node stops working, for example when the node is broken, switched off by redstone, or unloaded. Leaves left behind decay as usual. Swiftness runes and Copper Frame's Static Overdrive speed up felling, and an Entropy rune can double each drop.
+A Lumber golem walks to the bottom of the trunk, works for a second, then fells the tree from the top down at your level's `logsPerSecondByLevel` and carries the logs. It fells only as many logs at a time as it has room for. Region protection must let you break every block it fells in that second; otherwise none of them is felled and the node shows Blocked. If something is built against the tree while it is being felled, the golem stops felling it. A Lumber golem that fills up delivers what it carries to a Deposit Node or its home chest like any other working golem. The felling stays open while the Lumber Node keeps working, and the next Lumber golem to take the job finishes the same tree. A felling is dropped a minute after its node stops working, for example when the node is broken, switched off by redstone, or unloaded. Leaves left behind decay as usual; leaves that never decay stay until Leaf Sweep or a player breaks them. Swiftness runes and Copper Frame's Static Overdrive speed up felling, and an Entropy rune can double each drop.
 
 - **Replanting** (level `replantLevel`): after felling a tree, the golem plants a matching sapling where the trunk stood, as long as the spot is empty and stands on soil the sapling grows on. The sapling comes from what the golem carries, then from its linked home chest. A tree with a 2x2 trunk is replanted with four saplings when four are at hand; otherwise one sapling replants it, except dark oaks and pale oaks, which need all four. Azalea trees are replanted with an azalea, or a flowering azalea when at least half of the azalea leaves near the top are flowering. A mangrove standing on its roots is not replanted. Region protection must let you build where the sapling goes.
-- **Leaf Sweep** (level `leafSweepLevel`): 2 seconds after the last log falls, the golem breaks the felled tree's leaves that have started to decay and carries their saplings, sticks, and apples. It looks at up to 64 leaves a second and pauses while it has no room left. Leaves still held up by another tree's logs and leaves a player placed stay where they are, and leaves region protection does not let you break are left to decay as usual.
-- **Mega trees** (level `megaTreeLevel`): Lumber golems also fell spruce, jungle, dark oak, and pale oak trees with a full 2x2 trunk. Any other overworld trunk wider than one block, such as two trunks that touch or a log placed beside a trunk, is always left standing. Thick fungus stems are covered under Nether fungi.
+- **Leaf Sweep** (level `leafSweepLevel`): 2 seconds after the last log falls, the golem breaks the felled tree's leaves that no log holds up any more, including leaves that never decay, and carries their saplings, sticks, and apples. It looks at up to 64 leaves a second and pauses while it has no room left. Leaves still held up by another tree's logs and leaves a player placed stay where they are, and leaves region protection does not let you break are left to decay as usual.
+- **Mega trees** (level `megaTreeLevel`): Lumber golems also fell trees with more than one trunk, felling them as one tree: trunks wider than one block, such as a 2x2 spruce, jungle, dark oak, or pale oak, and trees whose trunks are joined by roots or branches. Thick fungus stems are covered under Nether fungi.
 - **Nether fungi** (level `netherLevel`): Lumber golems also fell huge crimson and warped fungi, including thick-stemmed ones once mega trees are unlocked. They take the fungus's wart blocks and shroomlights from the top down along with the stems, without counting them against the logs per second, and Replanting plants a matching fungus on the nylium.
 
 Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP; leaves, wart blocks, shroomlights, and replanting pay none. Golem felling never pays Axes or any other skill.
@@ -825,7 +827,7 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 | 1 | 1 | 24 / 64 | Fells natural trees from the top down and carries the logs |
 | 2 | 1.5 | 32 / 96 | Replanting: plants a sapling where the trunk stood |
 | 3 | 2 | 48 / 128 | Leaf Sweep: breaks decaying leaves and carries their saplings, sticks, and apples |
-| 4 | 3 | 64 / 192 | Fells spruce, jungle, dark oak, and pale oak trees with a full 2x2 trunk |
+| 4 | 3 | 64 / 192 | Fells mega trees: wide trunks and trunks joined by roots or branches |
 | 5 | 4 | 96 / 256 | Fells huge crimson and warped fungi with their wart blocks and shroomlights, and replants fungus |
 
 | Recipe | Pattern | Keys | Yield |
@@ -842,7 +844,7 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 | `ironTreeCapByLevel` | `[64, 96, 128, 192, 256]` | Most logs a tree can have for an iron golem to fell it, from level 1 upward. Values below 1 count as 1. |
 | `replantLevel` | `2` | Level at which Lumber golems use Replanting. |
 | `leafSweepLevel` | `3` | Level at which Lumber golems use Leaf Sweep. |
-| `megaTreeLevel` | `4` | Level at which Lumber golems fell spruce, jungle, dark oak, and pale oak trees with a full 2x2 trunk. |
+| `megaTreeLevel` | `4` | Level at which Lumber golems fell mega trees: trunks wider than one block and trunks joined by roots or branches. |
 | `netherLevel` | `5` | Level at which Lumber golems fell huge crimson and warped fungi. |
 | `workXpPerLog` | `0.6` | Golemancy work XP paid for each log or stem a Lumber golem fells. Values below 0 load as 0. |
 | `lumberCoreRecipe` | ` X ` / `YBY` / ` Z ` | Lumber Core recipe. |
