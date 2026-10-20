@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T02:25:00.000Z
+date: 2026-10-20T03:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -120,7 +120,7 @@ Setting golem status labels to hidden in the Animus Binding settings (`status-la
 <video aria-label="Third-person demonstration of Golem GUI tour" src="/adapt-assets/demos/golemancy/golemancy-golem-gui-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
-Hold the Artificer's Crook in your main hand and right-click one of your bound golems to open its Golem GUI; with Stasis, a sneaking right-click packs the golem instead. Only the golem's owner can open it, whether the golem is awake or asleep.
+Hold the Artificer's Crook in your main hand and right-click one of your bound golems to open its Golem GUI; with Stasis, a sneaking right-click packs the golem instead. Only the golem's owner can open it, whether the golem is awake or asleep. While it is open, the GUI keeps up with the golem: carried items, health, essence, mode, cores, runes and statistics change in place, and the GUI closes if the golem dies, unloads, is packed or is released. The Roster and Node GUIs also update while open.
 
 The top row holds:
 
