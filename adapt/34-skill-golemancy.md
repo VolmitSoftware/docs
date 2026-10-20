@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T06:00:00.000Z
+date: 2026-10-20T12:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -87,12 +87,14 @@ Snow, iron, and copper golems are built from these blocks:
 
 A bone golem is one of your own TragOul skeletal servants, bound with Bone Frame.
 
-| Body | Bound from | Binding also needs | Bound size | Carries | Cores |
-|---|---|---|---|---|---|
-| Frost | A snow golem a player built | Animus Binding alone | `bodyScaleFrost`, 0.5 | `bodyCarryFrost`, 8 items | `allowedCoresFrost` |
-| Copper | A copper golem a player built | Copper Frame | `bodyScaleCopper`, 1.0 | `bodyCarryCopper`, 16 items | `allowedCoresCopper` |
-| Iron | An iron golem a player built | Iron Frame | `bodyScaleIron`, 0.36 | `bodyCarryIron`, 64 items | `allowedCoresIron` |
-| Bone | One of your own TragOul skeletal servants | Bone Frame | `bodyScaleBone`, 0.49, under one block tall | Nothing | Blank Animus Core or Guardian Core |
+| Body | Bound from | Binding also needs | Bound size | Carries | Rune slots | Cores |
+|---|---|---|---|---|---|---|
+| Frost | A snow golem a player built | Animus Binding alone | `bodyScaleFrost`, 0.5 | `bodyCarryFrost`, 8 items | `frostSlots`, 1 | `allowedCoresFrost` |
+| Copper | A copper golem a player built | Copper Frame | `bodyScaleCopper`, 1.0 | `bodyCarryCopper`, 16 items | `copperSlots`, 2 | `allowedCoresCopper` |
+| Iron | An iron golem a player built | Iron Frame | `bodyScaleIron`, 0.36 | `bodyCarryIron`, 64 items | `ironSlots`, 3 | `allowedCoresIron` |
+| Bone | One of your own TragOul skeletal servants | Bone Frame | `bodyScaleBone`, 0.49, under one block tall | Nothing | `boneSlots`, 2 | Blank Animus Core or Guardian Core |
+
+Rune slots are the base count before Runic Augments and Masterwork add more.
 
 ### Awake and asleep
 
@@ -586,7 +588,7 @@ Bone Frame works on the servants you summon with Skeletal Servant. Servants neve
 - **Servant channel and labels** (level 1): while you hold the Crook, a Node, a Core, or a Dormant Golem, your servants within the skill's `revealRange` blocks glow for you alone in your servant channel's color, or white when you have none, and those within `servantLabelRange` blocks show you a status with the servant's name, health, seconds left, and channel. The status is a floating label only you see; with Gloss entity overlays on, it shows in the Gloss overlay of the servant you look at, or in your Discovery Insight readout of it, instead.
 - **Servant menu** (level 1): open your golem roster and click Bone Lattice at the bottom. The lower rows hold the 16 dye channels; click one to set your servant channel, or click Servant Channel: None to clear it. The top row holds your lattice slots, and each locked slot names the Bone Frame level that opens it.
 - **Bone Lattice** (level 2): pick up a rune from your inventory and click an empty slot in the servant menu to set it. Only the aspects in `latticeAspects` fit, and the lattice holds one rune of each aspect. Click a slotted rune to take it back; it goes into your inventory, or drops at your feet when your inventory is full. A rune in a slot your level does not open does nothing, but you can still take it back.
-- **Lattice runes on summon:** each servant you summon wears the lattice runes for its lifetime, each at the lower of the rune's tier and the highest tier your Runic Augments level allows, with the Runic Augments values for that tier. Swiftness adds movement speed, Might adds attack damage, Bulwark adds armor, armor toughness, and knockback resistance, and Ember sets what the servant hits on fire. At the tiers where Runic Augments makes golems immune to fire, an Ember rune gives the servant Fire Resistance. Without Runic Augments, lattice runes do nothing. Changes to the lattice apply to servants you summon afterwards.
+- **Lattice runes on summon:** each servant you summon wears the lattice runes for its lifetime, each at the lower of the rune's tier and the highest tier your Runic Augments level allows, with the Runic Augments values for that tier. Swiftness adds movement speed, Might adds attack damage, Bulwark adds armor, armor toughness, and knockback resistance, and Ember sets what the servant hits on fire. At the tiers where Runic Augments makes golems immune to fire, an Ember rune gives the servant Fire Resistance. Without Runic Augments, lattice runes do nothing. Changes to the lattice apply to servants you summon afterwards. The lattice applies only to unbound servants: binding a servant removes its lattice effects, and from then on the runes in the bone golem's own slots drive its stats.
 - **Servant kill XP** (level 1): your servants' kills of hostile mobs pay Golemancy XP, as described in [Earning XP](/adapt/34-skill-golemancy#earning-xp).
 - **Bone golems** (level 1): bind one of your own servants with Animus Binding and a Blank Animus Core or a Guardian Core to make it a Companion or Guardian bone golem, as described under [Animus Binding](/adapt/34-skill-golemancy#animus-binding-golem-animus-binding).
 
@@ -594,10 +596,10 @@ A bone golem works like your other bound golems, with these differences:
 
 - The ritual shrinks the skeleton to the skill's `bodyScaleBone`, 0.49 by default, so it stands under one block tall. It keeps that size through chunk unloads and restarts.
 - It leaves your servant pack: it never expires, takes no slot of your Skeletal Servant cap, and shows a golem label instead of a servant label. It stays in the world, counts toward your golem cap, sleeps while you are offline, and answers Crook signals as a golem.
-- It keeps the gear, the Skeletal Servant bonuses, and the lattice runes it was summoned with. It has no rune slots and cannot become a masterwork.
+- It keeps the gear and the Skeletal Servant bonuses it was summoned with, and loses the lattice effects. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It cannot become a masterwork.
 - Skeletal Servant's `healthCostPerMinion` maximum health cost stays on you for as long as the bone golem lives, including after you rejoin and after a restart, and never counts twice for the same skeleton. The cost also stays while the bone golem shows as Missing in your roster, until you release it there.
-- When it dies, it drops its core at the skill's `deathDropCoreChance` and none of a skeleton's own loot or experience, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
-- Releasing it from its Golem GUI crumbles the skeleton, drops its core, and ends its health cost.
+- When it dies, it drops its core at the skill's `deathDropCoreChance`, each rune at `deathDropRuneChance`, and none of a skeleton's own loot or experience, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
+- Releasing it from its Golem GUI crumbles the skeleton, drops its core and runes, and ends its health cost.
 - Stasis cannot pack it or recall it.
 
 | Level | Lattice slots | Servant kill XP | Unlocks |
@@ -1118,7 +1120,7 @@ Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including 
 
 Lets you infuse runes at the Animus Plinth and slot them into your bound golems for speed, carrying, fire, reach, channels, yield, and armor. Level 1 unlocks loading and using the Animus Plinth, tier 1 rune infusions, and the Blank Rune recipe. The level screen lists the levels it costs to infuse each tier your level unlocks, as a range when the aspects of a tier cost different amounts.
 
-Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` for a copper golem, or `ironSlots` for an iron golem, plus your level's `extraSlotsByLevel`. With the defaults, frost golems have 1, 2, and 3 slots at levels 1, 3, and 5, copper golems 2, 3, and 4, and iron golems 3, 4, and 5. A masterwork golem has Masterwork's `extraRuneSlots` more. The Golem GUI shows the slots in its second row; a locked slot names the Runic Augments level that opens it.
+Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` for a copper golem, `ironSlots` for an iron golem, or `boneSlots` for a bone golem, plus your level's `extraSlotsByLevel`. With the defaults, frost golems have 1, 2, and 3 slots at levels 1, 3, and 5, copper and bone golems 2, 3, and 4, and iron golems 3, 4, and 5. A masterwork golem has Masterwork's `extraRuneSlots` more. The Golem GUI shows the slots in its second row; a locked slot names the Runic Augments level that opens it.
 
 - **Slotting a rune:** with the Golem GUI open, pick up a rune from your inventory and click an empty slot. One rune from the stack moves into the golem.
 - **Taking a rune back:** click a slotted rune. It goes into your inventory, or drops at your feet when your inventory is full.
@@ -1153,6 +1155,7 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 - **Tide** adds to `baseWorkRadius` for the jobs, Deposit Nodes, Collection Nodes, and Guard Nodes the golem considers, to the pickup radius of a Gatherer without a Collection Node, to the range in which a Companion or Guardian golem attacks mobs, up to `leashRadius`, and to its follow range, which sets how far it notices mobs. Breathing underwater protects the golem from drowning and, for frost golems, from water damage.
 - **Order** adds channels. With an Order rune slotted, the channel button in the Golem GUI opens a channel picker: click a dye to select it, up to the golem's channel count, and click a selected dye to drop it. The golem takes jobs from and delivers to nodes on any of its channels. A golem with more channels selected than it can use uses the first ones in dye order, starting with white. A golem that gives up a job skips it for a shorter time.
 - **Entropy** doubles each drop that wins its roll.
+- **Bone golems** take every aspect. Swiftness adds movement speed, Might adds melee attack damage, Ember sets what it hits on fire, with its arrows too, and gives fire and lava immunity at the tiers above, Tide adds the range in which it notices and attacks mobs and gives water breathing, Order adds channels, Entropy applies Weakness, and Bulwark adds armor, armor toughness, and knockback resistance. A bone golem never carries items, works jobs, or gathers drops, so the carry capacity, work speed, work radius, and bonus yield of Swiftness, Might, Tide, and Entropy do nothing for it.
 
 | Recipe | Pattern | Keys | Yield |
 |---|---|---|---|
@@ -1165,6 +1168,7 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 | `extraSlotsByLevel` | `[0, 0, 1, 1, 2]` | Extra rune slots every bound golem you own gets on top of its body's slots, from level 1 upward. |
 | `maxTierByLevel` | `[1, 1, 2, 2, 3]` | Highest rune tier your bound golems can use, from level 1 upward. Slotted runes above it stay in place but do nothing. |
 | `frostSlots` | `1` | Rune slots a bound frost golem has before Runic Augments adds extra slots, from 0 to 9. |
+| `boneSlots` | `2` | Rune slots a bound bone golem has before Runic Augments adds extra slots, from 0 to 9. |
 | `copperSlots` | `2` | Rune slots a bound copper golem has before Runic Augments adds extra slots, from 0 to 9. |
 | `ironSlots` | `3` | Rune slots a bound iron golem has before Runic Augments adds extra slots, from 0 to 9. |
 | `runeBodyBlocks` | `["ember:frost"]` | Runes a golem body cannot use, as `aspect:body` entries. Listed runes cannot be slotted into that body, and any already slotted do nothing. Unknown entries are ignored with a console warning. |
