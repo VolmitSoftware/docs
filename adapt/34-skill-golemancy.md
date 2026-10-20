@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T13:00:00.000Z
+date: 2026-10-20T14:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -137,6 +137,8 @@ The top row holds:
 
 The second row holds the rune slots described under Runic Augments. The two rows below it show the items the golem carries; click a stack to take it into your inventory, or onto the ground at your feet when your inventory is full. A golem carrying more than 18 stacks shows 17 of them and the count of the rest.
 
+A bone golem carries nothing, so its third row is an equipment row with six slots: Helmet, Chestplate, Leggings, Boots, Main Hand, and Off Hand. Pick up an item and click an empty slot to put one of it on the skeleton. Each armor piece fits only its own slot, a carved pumpkin or a mob head fits the Helmet slot, and either hand takes any item. Click a worn item to take it back; it goes into your inventory, or onto the ground at your feet when your inventory is full. The skeleton wears or holds what you equip and never drops it on its own, and the equipment stays on it through chunk unloads and restarts.
+
 The bottom row holds:
 
 - **Statistics**: the golem's kills, damage dealt, tasks completed, and items moved.
@@ -144,7 +146,7 @@ The bottom row holds:
 - **Masterwork** slot, described under Masterwork.
 - **Essence** on Gatherers and on golems that hold essence, described under Gatherer Core.
 - **Pack**, with Stasis, described under Stasis.
-- **Release**: after you confirm, the golem drops its cores, runes, Masterwork Heart, and carried items, gives you its stored essence as experience, and leaves your roster. A snow, copper, or iron golem turns back into an ordinary golem at its normal size; a bone golem crumbles away, and its maximum health cost on you ends.
+- **Release**: after you confirm, the golem drops its cores, runes, Masterwork Heart, and carried items, gives you its stored essence as experience, and leaves your roster. A snow, copper, or iron golem turns back into an ordinary golem at its normal size; a bone golem crumbles away, its equipment goes into your inventory or onto the ground at your feet when your inventory is full, and its maximum health cost on you ends.
 
 ### Golem roster
 
@@ -344,7 +346,7 @@ Starting a binding without the tithe levels is refused with a red action-bar mes
 
 While you hold the Crook, a Node, a Core, or a Dormant Golem, your bound golems within `revealRange` blocks glow for you in their first channel's color, or white when they have no channel, and show you their status as described under [Names and status](/adapt/34-skill-golemancy#names-and-status).
 
-A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs, iron golems fight in melee, and bone golems use the sword or bow they carry. Copper golems never fight.
+A Companion golem, bound with a Blank Animus Core, follows you by default. Its Golem GUI cycles Follow, Stay, and Home. Bound frost golems leave no snow trail, with or without Frost Frame; turn on Snow Trail in a frost golem's Golem GUI to let it leave snow again. A Companion golem attacks mobs that target you or it within 12 blocks, plus its Tide rune's bonus, up to `leashRadius` blocks: snow golems throw snowballs, iron golems fight in melee, and bone golems use the sword or bow in their main hand. Copper golems never fight.
 
 | Recipe | Pattern | Keys | Yield |
 |---|---|---|---|
@@ -596,9 +598,9 @@ A bone golem works like your other bound golems, with these differences:
 
 - The ritual shrinks the skeleton to the skill's `bodyScaleBone`, 0.49 by default, so it stands under one block tall. It keeps that size through chunk unloads and restarts.
 - It leaves your servant pack: it never expires, takes no slot of your Skeletal Servant cap, and shows a golem label instead of a servant label. It stays in the world, counts toward your golem cap, sleeps while you are offline, and answers Crook signals as a golem.
-- It keeps the gear and the Skeletal Servant bonuses it was summoned with, and loses the lattice effects. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It can become a masterwork like your other golems, as described under [Masterwork](/adapt/34-skill-golemancy#masterwork-golem-masterwork).
+- Binding strips the gear it was summoned with, which vanishes without dropping, and the lattice effects, and it keeps the Skeletal Servant bonuses. It starts with nothing equipped; you equip it from the equipment row of its Golem GUI, as described under [Golem GUI](/adapt/34-skill-golemancy#golem-gui). Unbound servants keep their summon gear. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It can become a masterwork like your other golems, as described under [Masterwork](/adapt/34-skill-golemancy#masterwork-golem-masterwork).
 - Skeletal Servant's `healthCostPerMinion` maximum health cost stays on you for as long as the bone golem lives, including after you rejoin and after a restart, and never counts twice for the same skeleton. The cost also stays while the bone golem shows as Missing in your roster, until you release it there.
-- When it dies, it drops its core at the skill's `deathDropCoreChance`, each rune at `deathDropRuneChance`, and none of a skeleton's own loot or experience, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
+- When it dies, it drops its core at the skill's `deathDropCoreChance`, each rune at `deathDropRuneChance`, and none of a skeleton's own loot or experience, it drops the items it wears and holds where it dies, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
 - Releasing it from its Golem GUI crumbles the skeleton, drops its core and runes, and ends its health cost.
 - Stasis cannot pack it or recall it.
 
