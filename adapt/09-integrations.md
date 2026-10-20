@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin integrations and their runtime behavior"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-20T02:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -13,6 +13,7 @@ Every integration is optional. Install, remove, enable, or disable one, then res
 | Plugin | What it adds |
 |---|---|
 | PlaceholderAPI | `%adapt_...%` placeholders |
+| Gloss | Entity overlays for Discovery Insight readouts and for bound golem names and status |
 | WorldGuard | Region flags, region policy, and a protector |
 | Factions | Claim protector. Off unless `protectorSupport.factionsClaim` is true |
 | ChestProtect | Container protector |
@@ -33,6 +34,10 @@ Protector names and defaults: [Protection and region policy](/adapt/08-protectio
 Adapt registers `IntegrationServiceContract` with Bukkit and advertises `metric-snapshots-v1`. Consumers using `IntegrationSnapshotProvider.snapshotMetrics(keys)` receive an immutable publication and register those keys for collection every 20 server ticks. The first request can return no samples until collection completes. Repeated reads retain the publication generation and capture times; requesting a key again keeps its demand active for 30 seconds.
 
 `integrationSnapshotMaxMetrics` bounds retained demand and each request. Requests above the configured limit are rejected; when distinct requests fill the limit, least recently requested keys are evicted. Changing the limit or disabling Adapt clears cached publications. `sampleMetrics(keys)` is also available. See [Configuration](/adapt/01-installation-configuration) for the limit.
+
+## Gloss
+
+With [Gloss entity overlays](/gloss/20-entity-overlays) on, [Discovery Insight](/adapt/18-skill-discovery) shows its readout in the overlay of the creature you look at, bound golems show their names in their overlays, and a golem owner holding the Crook, a Node, a Core, or a Dormant Golem sees the status of the golem they look at there. Adapt checks whether Gloss entity overlays run at startup, when Gloss is enabled or disabled, when Discovery Insight is enabled or disabled, and when the Golemancy configuration reloads. Where golem names and status show without Gloss: [Names and status](/adapt/34-skill-golemancy#names-and-status).
 
 ## PlaceholderAPI
 
