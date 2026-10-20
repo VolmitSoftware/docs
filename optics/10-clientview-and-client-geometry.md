@@ -2,7 +2,7 @@
 title: "ClientView and Client Geometry"
 description: "Optics wire protocol, sessions, capabilities, plates, mesh sections and client helpers"
 published: true
-date: 2026-10-18T20:00:00.000Z
+date: 2026-10-20T04:05:04.911Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -189,7 +189,7 @@ Serverbound headers use one byte. Clientbound headers use six bytes. `ViewStream
 
 The codec writes a definition-presence byte after each biome palette key, followed by the 27-byte visual definition when present. Biome visual definitions participate in mesh hashes, so a definition change invalidates reuse even when the biome key and blocks remain the same.
 
-`MeshLocal` reports available resident sections and entity ids. `MeshCached` reports hash claims, and `MeshReuse` selects cached content. These reports require their negotiated capability and current generation/sequence.
+`MeshLocal` reports available resident sections and entity ids. `MeshCached` reports hash claims, and `MeshReuse` selects cached content. These reports require their negotiated capability and current generation/sequence. If selected content is unavailable, the client withdraws its claim with `MeshCached(available=false)`. The server sends the section contents again.
 
 ## Entity and environment frames
 
