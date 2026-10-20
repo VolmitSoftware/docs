@@ -384,7 +384,7 @@ Hold a node in your main hand, sneak, and right-click a block face. The node att
 - The chunk holds fewer than `maxNodesPerChunk` nodes, counting every player's nodes.
 - You own fewer nodes than your level allows.
 
-A new node starts with no channel, priority 3, a whitelist filter with no entries, and a work area radius of 2 blocks, or your level's largest radius when that is smaller. The work area is centered on the block in front of the face.
+A node's work area is a box of blocks around its area center, the block in front of the face. Each side of the box can sit at a different distance from the center, as long as the box holds the center block. A new node starts with no channel, priority 3, a whitelist filter with no entries, and a work area that reaches 2 blocks from the center on every side, or your level's max area radius when that is smaller.
 
 ![A node attached to the front face of a chest, with its work area drawn as a dashed box centered on the block in front of that face, labelled Node, Chest, and Work area](/adapt-assets/golemancy/diagrams/node-on-chest.png =720x)
 
@@ -410,10 +410,24 @@ The Node GUI shows the node type and its block, and holds these controls:
 - **Channel**: left-click for the next color, right-click for the previous one.
 - **Priority** (level 3): left-click raises it and right-click lowers it, from 1 to 5.
 - **Redstone** (level 4): cycles Ignored, Works while powered, and Works while unpowered. A node set to work while powered does no work while its block receives no redstone power, and a node set to work while unpowered does no work while its block is powered.
-- **X, Y, and Z radius**: left-click grows the work area by 1 block on that axis and right-click shrinks it, from 0 up to your level's largest radius. Shift-left-click grows it by 4 blocks, stopping at your level's largest radius, and shift-right-click shrinks it by 4, stopping at 0.
+- **X, Y, and Z Area**: each shows how far the work area reaches on that axis, from its low side to its high side, counted from the area center; `X Area: -2 to +5` covers 2 blocks west and 5 blocks east of the center. Left-click moves both sides on that axis 1 block outward and right-click moves both 1 block inward. Shift-left-click moves them 4 blocks outward and shift-right-click 4 blocks inward. A side stops at your level's max area radius when it grows and at the center block when it shrinks, and a side already beyond the max radius only shrinks.
+- **Select Area with the Crook**: closes the GUI and starts area selection for this node, as described below. While you are selecting, the button reads Stop Selecting the Area and ends the selection.
 - **Filter slots**: pick up an item in your inventory and click an empty slot to add it or a filled slot to replace that entry, or right-click a slot to clear it. Your level sets how many slots you have. A slot keeps one of the item as you set it, with its name, enchantments, and potion type but without the contents of shulker boxes, bundles, or other containers, so two different potions take two slots and the same item never takes two. Golems match filter entries by item type, and Sorters with enough Sorter Core levels also tell enchanted books and potions apart, as described under Sorter Core.
 - **Whitelist or Blacklist** (level 5): a whitelist lets golems use only matching items, and a blacklist lets them use everything except matching items. An empty filter matches every item, except on a Filter Node, as described under Sorter Core.
 - **Add Tag** (level 5): closes the GUI and asks you to type an item tag, such as `#logs` or `#minecraft:saplings`, in chat. A tag without a namespace means `minecraft`. Typing a tag the filter already holds removes it, and typing `cancel` stops. Each tag uses one filter slot, and the prompt ends after 45 seconds.
+
+#### Selecting an area with the Crook
+
+Area selection marks a node's work area from two corner blocks, so the box can sit off-center. Only the node's owner can select its area, and you select for one node at a time; starting on another node ends the first selection.
+
+1. Open the Node GUI and click **Select Area with the Crook**.
+2. With the Crook in your main hand, left-click a block to set corner 1 and right-click a block to set corner 2. Each click shows the corner's coordinates above your hotbar, and a click on a node or golem sets the corner at the block you are looking at. Click again to move a corner.
+3. Once both corners are set, the box between them is outlined for you alone, in green when it is valid and in red when it is not.
+4. Sneak and right-click to apply. A valid box becomes the node's work area and the selection ends. Sneak and left-click to cancel and leave the work area as it was.
+
+The box is valid when it holds the area center, the block in front of the node, and each of its sides sits at most your level's max area radius from the center. Applying an invalid box names the limit it breaks, such as the side that reaches too far, and keeps the selection open so you can move a corner.
+
+While you select, your Crook clicks only set corners, apply, or cancel. They break no blocks, till no soil, and send no Overseer signals, and they open neither the roster, the Golem GUI, nor the Node GUI. The selection ends without changes after 120 seconds without a click, when you hold something other than the Crook in your main hand for more than 2 seconds, when you leave the node's world, when the node is removed or its chunk unloads, and when you log out.
 
 Golems bound with a role core work their owner's nodes while in Work mode. A golem takes jobs only from nodes whose work lies within `baseWorkRadius` blocks of its home, plus its Tide rune's bonus, and only from the node types its core works. A node with no channel hands jobs to every one of your golems; a node with a channel hands them only to golems on that channel, and a golem with no channel works only nodes with no channel. A golem has one channel, or more with an Order rune. A golem takes the highest-priority job first, then the nearest one. It keeps its claim on a job for `taskLeaseSeconds` seconds, renewed while it gets closer or keeps working; if it gets less than half a block closer within `stuckTimeoutSeconds` seconds, it gives the job up and skips it for 10 seconds, or less with an Order rune, while other golems may take it. A golem that gives up `stuckReleasesBeforePause` jobs or containers in a row rests for `stuckPauseSeconds` seconds before it looks for work again. A node switched off by redstone hands out no jobs, and the jobs it already handed out are cancelled. A golem with no job stands where it is. One that stands idle more than 5.5 blocks from home for `idleReturnSeconds` seconds, or strays beyond `leashRadius` blocks of home, walks back and stands at home until it has a job. Iron golems in Colossus Form take no jobs.
 
@@ -439,7 +453,7 @@ Nodes are stored with their chunk and appear again with their settings when the 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `nodeCapByLevel` | `[4, 8, 12, 18, 24]` | Most nodes you can own at once, from level 1 upward. |
-| `maxAreaRadiusByLevel` | `[8, 12, 16, 24, 32]` | Largest work area radius in blocks a node can be set to, from level 1 upward. Each value is clamped to 1 through 32. |
+| `maxAreaRadiusByLevel` | `[8, 12, 16, 24, 32]` | Farthest, in blocks, that any side of a node's work area can sit from its area center, from level 1 upward. Each value is clamped to 1 through 32. |
 | `filterSlotsByLevel` | `[3, 6, 6, 9, 18]` | Filter entries a node can hold, from level 1 upward. Each value is capped at 18. |
 | `firstNodeXp` | `200` | Golemancy XP paid the first time you place each type of node. |
 | `blankNodeRecipe` | `CRC` / `RAR` / `CRC`, yields 4 | Blank Node recipe. |
