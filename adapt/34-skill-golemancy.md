@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T06:00:00.000Z
+date: 2026-10-20T08:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -190,7 +190,9 @@ Loading and using a plinth needs Runic Augments level 1:
 - These clicks always work the plinth, even while you hold a node; nodes never attach to the blocks of a complete plinth.
 - Breaking a pedestal or the lodestone, or moving it with a piston, drops the item on that block. Items on the other blocks stay where they are.
 
-To start an infusion, place its center item on the lodestone and its four pedestal items on the pedestals, then right-click the lodestone with the Artificer's Crook. The pedestal items rise, streams of dust flow to the center, and the center item spins faster. When the ritual ends, the items and the essence levels are used up and the result pops out above the lodestone. Creative players pay no levels.
+To start an infusion, place its center item on the lodestone and its four pedestal items on the pedestals, then right-click the lodestone with the Artificer's Crook. The pedestal items rise and bob, and a stream of particles leaves each one and circles the lodestone. The four streams spiral in around the center item, which spins faster as they close in, and when the ritual ends they collide in a flash and a ring that sweeps across the plinth. The items and the essence levels are used up and the result pops out above the lodestone. Creative players pay no levels.
+
+The streams take the color of the rune being made: pale cyan for Swiftness, iron grey for Might, flame orange for Ember, deep blue with bubbles for Tide, gold for Order, purple for Entropy, and obsidian violet for Bulwark. The Masterwork Heart's streams are prismatic.
 
 Your action bar shows what an infusion costs before you commit to it. When loading an item makes the items on a complete plinth match an infusion you can perform, and again when you start the ritual, it shows the result and its level cost. A rune's name includes its tier. The line is aqua, for example "Swiftness Rune (Tier 2) costs 5 levels", when you have enough levels. It is red and adds how many levels you have when you do not, for example "Swiftness Rune (Tier 2) costs 5 levels and you have 3". It reads "is free" in Creative and for an infusion whose `essenceLevels` is 0. Taking an item off the plinth, an infusion you have not unlocked, and items that match no infusion show no cost, and a line that has not changed does not repeat within a second.
 
@@ -203,7 +205,7 @@ An infusion starts only when all of the following hold:
 
 Starting an infusion without enough levels is refused with a red action-bar message that gives the cost and the levels you have, such as "Not enough experience: this infusion costs 5 levels and you have 3", and a deny sound. The levels are taken only when the ritual completes. If you no longer have them then, the infusion is refused the same way, nothing is used up, and the items stay on the plinth.
 
-The ritual stops when you move more than 8 blocks from the lodestone, log out, or change worlds, when any block of the plinth breaks, or when an item is taken off or placed on the plinth. Nothing is used up when a ritual stops, and the items stay on the plinth.
+The ritual stops when you move more than 8 blocks from the lodestone, log out, or change worlds, when any block of the plinth breaks, or when an item is taken off or placed on the plinth. When a ritual stops, its streams scatter outward and fade, nothing is used up, and the items stay on the plinth.
 
 ### Infusion recipes
 
