@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-10-12T01:16:47.000Z
+date: 2026-10-20T06:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ Material names are trimmed, stripped of any namespace before `:`, uppercased, an
 
 `models.toml` overrides a material icon when `customModels` is true and the entry names a real model. A generated placeholder does not.
 
-`skillOrder` and `adaptationOrder` pin listed registry names first. Matching is case-insensitive. Blank entries are skipped. A repeated name keeps its first position. Several differently cased keys for one skill are concatenated. Unknown names are ignored. Disabled entries can be ordered and are not drawn. Order does not change who can use a skill.
+`skillOrder` and `adaptationOrder` pin listed registry names first. Matching is case-insensitive. Blank entries are skipped. A repeated name keeps its first position. Several differently cased keys for one skill are concatenated. Unknown names are ignored. Disabled entries can be ordered and are not drawn. Order does not change who can use a skill. A skill that groups its adaptations in rows, such as [Golemancy](/adapt/34-skill-golemancy#adaptations), applies `adaptationOrder` inside each row, and adaptations the skill does not place in a row follow in a final row.
 
 `skillsGuiRows` of `0` sizes each page from the cards on that page. `2` through `6` fix the height, and one of those rows is navigation. Right-click Previous or Next jumps five pages. `/adapt configure` edits `skillsGuiRows`. Icon and order maps are read-only there.
 
