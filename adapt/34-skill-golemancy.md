@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T03:10:00.000Z
+date: 2026-10-20T03:30:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -842,7 +842,7 @@ Each felled log or stem pays `workXpPerLog` work XP, as described in Earning XP;
 
 Makes golems bound with a Breaker Core break the blocks a Breaker Node's filter lists inside its work area, such as the output of a cobblestone or basalt generator or the ice of an ice farm, and unlocks the Breaker Core and Breaker Node recipes at level 1.
 
-Bind an iron golem with a Breaker Core through Animus Binding. Only iron golems take the core by default; `allowedCoresIron` and the other `allowedCores` lists in the skill configuration decide which bodies can, and iron golems bind only after you learn Iron Frame. A new Breaker starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Breakers work only in Work mode and only on Breaker Nodes, so place a Breaker Node with Node Weaving and set its work area over the blocks to mine. Its channel, priority, work area, and redstone setting work like any other node's.
+Bind a golem with a Breaker Core through Animus Binding. Copper and iron golems take the core by default and share the level table below; `allowedCoresCopper` and `allowedCoresIron` in the skill configuration decide which bodies can, and copper and iron golems bind only after you learn Copper Frame or Iron Frame. A new Breaker starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Breakers work only in Work mode and only on Breaker Nodes, so place a Breaker Node with Node Weaving and set its work area over the blocks to mine. Its channel, priority, work area, and redstone setting work like any other node's.
 
 A Breaker Node needs a whitelist filter: it breaks only the blocks its filter lists, and a node with an empty filter or a blacklist breaks nothing. A filter entry matches a block by its block or by the item that places it, so `REDSTONE` matches redstone wire, and an item tag such as `#minecraft:coal_ores` matches each block whose item the tag holds, here both coal ores. At each node check, a Breaker Node looks over part of its work area and hands out a break job for each listed block your level can mine: one no harder than your level's `maxHardnessByLevel`, that your level's pickaxe in `toolByLevel` can harvest, and that is not water or lava. Breakers never break the blocks in `blacklist`, blocks with a block entity, such as chests, furnaces, signs, beds, and spawners, or the blocks of an Animus Plinth. A Breaker breaks the block a node is placed on like any other block, including its own node's block, when the filter lists it and it lies in the work area; the node stays in place.
 
@@ -1451,7 +1451,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `bodyCarryCopper` | `16` | Items a bound copper golem can carry at once before Copper Frame raises it. |
 | `bodyCarryIron` | `64` | Items a bound iron golem can carry at once. |
 | `allowedCoresFrost` | `["BLANK", "GUARDIAN", "GATHERER", "HARVESTER"]` | Cores a frost golem can be bound with. |
-| `allowedCoresCopper` | `["BLANK", "GATHERER", "HARVESTER", "LUMBER", "RANCHER", "SORTER", "ANGLER"]` | Cores a copper golem can be bound with. |
+| `allowedCoresCopper` | `["BLANK", "GATHERER", "HARVESTER", "LUMBER", "BREAKER", "RANCHER", "SORTER", "ANGLER"]` | Cores a copper golem can be bound with. |
 | `allowedCoresIron` | `["BLANK", "GUARDIAN", "GATHERER", "LUMBER", "BREAKER", "RANCHER", "ANGLER"]` | Cores an iron golem can be bound with. |
 | `deathDropCoreChance` | `0.5` | Chance that each core drops when a bound golem dies without leaving a Shattered Core. |
 | `deathDropRuneChance` | `0.5` | Chance that each rune drops when a bound golem dies without leaving a Shattered Core. |
