@@ -2,7 +2,7 @@
 title: "Items, Orbs & Bound Objects"
 description: "Experience orbs, backpacks, bound items, and stored item data"
 published: true
-date: 2026-10-19T20:42:18.000Z
+date: 2026-10-20T08:08:27.094Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -61,7 +61,7 @@ Item data survives drops, chests, and restarts. Trigger, cooldown, range, and re
 | Blank Rune | `SCRAPE_POTTERY_SHERD` | Golemancy: Runic Augments | Item kind |
 | Rune | By aspect: Swiftness `GUSTER_POTTERY_SHERD`, Might `ARMS_UP_POTTERY_SHERD`, Ember `BURN_POTTERY_SHERD`, Tide `ANGLER_POTTERY_SHERD`, Order `SHEAF_POTTERY_SHERD`, Entropy `DANGER_POTTERY_SHERD`, Bulwark `SHELTER_POTTERY_SHERD` | Golemancy: Runic Augments, infused at the Animus Plinth | Item kind, aspect, and tier |
 | Shattered Core | `FIREWORK_STAR` | Golemancy: Golem Mending | Item kind, golem id, owner, and the fallen golem's cores, runes, settings, name, and record |
-| Dormant Golem | `SNOW_BLOCK`, `IRON_BLOCK`, or the copper block of the golem's oxidation stage, waxed when the golem was waxed | Golemancy: Stasis | Item kind, golem id, owner, and the packed golem's cores, runes, settings, name, record, carried items, essence, health, and copper state |
+| Dormant Golem | `SNOW_BLOCK`, `BONE_BLOCK`, `IRON_BLOCK`, or the copper block of the golem's oxidation stage, waxed when the golem was waxed | Golemancy: Stasis | Item kind, golem id, owner, and the packed golem's cores, runes, settings, name, record, carried items, equipment and durability, essence, health, and copper state |
 | Masterwork Heart | `HEART_OF_THE_SEA` | Golemancy: Masterwork, infused at the Animus Plinth | Item kind |
 
 The bound redstone torch and bound eye of ender use their own cooldown groups.

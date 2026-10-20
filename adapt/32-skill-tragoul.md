@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-19T23:45:00.000Z
+date: 2026-10-20T08:08:27.094Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -218,7 +218,9 @@ Sneak-right-click air or a block with bones in the main hand to raise a skeleton
 
 Your Golemancy skill level raises the servant cap by one for every `golemancyCapBonusEveryLevels` levels, up to `golemancyCapBonusMax` extra servants and never past 16, and lengthens servant lifetime by `golemancyDurationBonusPerLevel` per level, up to `golemancyDurationBonusMax`; each extra servant still costs `healthCostPerMinion` maximum health. With Golemancy's [Bone Frame](/adapt/34-skill-golemancy#bone-frame-golem-bone-frame), your servants also answer Crook signals, show status labels, wear a Bone Lattice of runes, and pay Golemancy XP for their kills, and with [Golem Mending](/adapt/34-skill-golemancy#golem-mending-golem-mending), bone meal heals them.
 
-With Bone Frame, you can bind one of your servants with Animus Binding into a bone golem. A bound servant leaves your pack and your servant cap and never expires, and its `healthCostPerMinion` maximum health cost stays on you until it dies or you release it.
+With Bone Frame, you can bind one of your servants with Animus Binding into a bone golem. A bound servant leaves your pack and your servant cap and never expires. Its `healthCostPerMinion` maximum health cost stays reserved while it lives or remains packed. Death, release, or unlearning Skeletal Servant ends that cost.
+
+Unlearning Skeletal Servant dismisses your ordinary servants and bound bone golems. Bound golems drop their cores, runes, and supplied equipment. Packed bone golems in your inventory return their contents immediately. A packed bone golem stored elsewhere returns its contents when you next place it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

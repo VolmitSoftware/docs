@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T20:00:00.000Z
+date: 2026-10-20T16:14:20.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -44,7 +44,7 @@ Golemancy items keep what they hold through drops, chests, and restarts, and nev
 | Blank Node | 64 | Crafted with Node Weaving level 1 | The base of every node |
 | Nodes | 16 | Crafted with Node Weaving or the Core adaptation that works them | Attach to a block face to mark work for your golems |
 | Blank Rune | 16 | Crafted with Runic Augments level 1 | The center item of every tier 1 rune infusion |
-| Runes | 16 | Infused at the Animus Plinth with Runic Augments | Slot into golems for speed, carrying, fire, reach, channels, yield, or armor |
+| [Runes](/adapt/34-skill-golemancy#runes) | 16 | Infused at the Animus Plinth with Runic Augments | Improve movement, carrying, combat, work, or channel routing. See each rune's effects and tiers below. |
 | Masterwork Heart | 1 | Infused at the Animus Plinth with Masterwork level 1 | Turns one of your golems into a masterwork |
 | Dormant Golem | 1 | Packing one of your golems with Stasis | Place it to awaken the golem |
 | Shattered Core | 1 | Left where your bound golem dies while you are online, with Golem Mending level 4 | Rebuilds the golem on a freshly built body |
@@ -134,11 +134,11 @@ The top row holds:
 - **Combat**: left-click to turn the golem's combat off or on; it starts on. A golem with combat off never targets or attacks anything: it ignores hostile mobs, does not hit back at what hurts it, does not defend you, takes no Sic from the Overseer, and throws no snowballs. Fights never pull it from its work, and it earns no combat XP. A golem with a Guardian Core, or a masterwork golem with a Guardian Core in either core slot, cannot turn combat off: its button reads Combat: On (Locked) and does nothing when clicked. The setting stays with the golem through chunk unloads, restarts, Stasis packing, and Shattered Core rebuilds. Copper golems never fight, so it changes nothing for them.
 - **Channel**: left-click for the next dye color, then no channel, and right-click for the previous one. With an Order rune slotted, it opens the channel picker described under Runic Augments.
 - **Set Home Here**: makes the spot where you stand the golem's home. A golem's home starts where it stood when you bound it.
-- **Link Home Chest**: shows the golem's home chest, if it has one. Click it, then within 30 seconds right-click a container with the Crook in your main hand to make that container the home chest. Region protection must let you open the container, and the container must be in the golem's world within the skill's `leashRadius` blocks of the golem's home. Working golems put the items no Deposit Node takes into their home chest, and some roles take supplies and tools from it, as their Core adaptations and [Tools](/adapt/34-skill-golemancy#tools) describe. Below the chest's position, the button shows the tool the golem holds, or in red the tool its work needs and its home chest lacks.
+- **Link Home Chest**: shows the golem's home chest, if it has one. Click it, then within 30 seconds right-click a container with the Crook in your main hand to make that container the home chest. Region protection must let you open the container, and the container must be in the golem's world within the skill's `leashRadius` blocks of the golem's home. Working golems deliver items to their home chest when no Deposit Node accepts them. Some roles take supplies and tools from it. Their Core adaptations and [Tools](/adapt/34-skill-golemancy#tools) describe these requirements. Below the chest's position, the button shows the tool the golem holds, or in red the tool its work needs and its home chest lacks. Bone golems have no home chest button. Their Home mode still uses their home position.
 
 The second row holds the rune slots described under Runic Augments. The two rows below it show the items the golem carries; click a stack to take it into your inventory, or onto the ground at your feet when your inventory is full. A golem carrying more than 18 stacks shows 17 of them and the count of the rest.
 
-A bone golem carries nothing, so its third row is an equipment row with six slots: Helmet, Chestplate, Leggings, Boots, Main Hand, and Off Hand. Pick up an item and click an empty slot to put one of it on the skeleton. Each armor piece fits only its own slot, a carved pumpkin or a mob head fits the Helmet slot, and either hand takes any item. Click a worn item to take it back; it goes into your inventory, or onto the ground at your feet when your inventory is full. The skeleton wears or holds what you equip and never drops it on its own, and the equipment stays on it through chunk unloads and restarts.
+A bone golem carries nothing, so its third row is an equipment row with six slots: Helmet, Chestplate, Leggings, Boots, Main Hand, and Off Hand. Pick up an item and click an empty slot to put one of it on the skeleton. Each armor piece fits only its own slot, a carved pumpkin or a mob head fits the Helmet slot, and either hand takes any item. Click a worn item to take it back. It goes into your inventory, or onto the ground at your feet when your inventory is full. The skeleton wears or holds what you equip. Weapons lose durability on attacks, bows on shots, and armor on hits that armor can absorb. Unbreaking and unbreakable items follow Minecraft rules. Broken items disappear. Equipment and its remaining durability stay with the golem through chunk unloads, restarts, and Stasis packing.
 
 The bottom row holds:
 
@@ -151,7 +151,7 @@ The bottom row holds:
 
 ### Tools
 
-Anglers and Breakers work with real tools from their home chest: an Angler fishes with a fishing rod, and a Breaker needs a pickaxe for Silk Touch, Fortune, and blocks above iron tier, as their Core adaptations describe. When a job needs a tool the golem does not hold, the golem walks to its home chest, opens it, and takes the cheapest tool that suits the job, putting the tool it held into the emptied slot. Region protection must let you open the chest. A golem holds one tool at a time, and a copper golem shows it in its hand. Each use wears the tool as it would wear in your hand, and Unbreaking lowers the wear; Mending has no effect, since golem work drops no experience orbs. A tool that breaks disappears with the break sound, and the golem fetches the next suitable one.
+Anglers and Breakers use tools from their home chest. An Angler needs a fishing rod. A Breaker needs a pickaxe for Silk Touch, Fortune, and blocks above iron tier. Their Core adaptations describe the requirements. When a job needs a different tool, the golem walks to its home chest and opens it. It takes the cheapest suitable tool and puts its previous tool into the emptied slot. Region protection must let you open the chest. A golem holds one tool at a time, and a copper golem shows it in its hand. Right-clicking a bound copper golem with an empty hand leaves its tool equipped. Each use wears the tool as it would wear in your hand, and Unbreaking lowers the wear. Mending has no effect because golem work drops no experience orbs. A tool that breaks disappears with the break sound, and the golem fetches the next suitable one.
 
 A golem whose home chest holds no suitable tool, or that has no home chest, skips the jobs that need one for 30 seconds before it checks again, or until you link a different home chest, and its Golem GUI shows the tool it needs in red under Link Home Chest. The tool stays with the golem through unloads, restarts, and packing into a Dormant Golem. Releasing the golem gives the tool back to you, and a golem that dies drops its tool with the items it carries.
 
@@ -622,10 +622,11 @@ A bone golem works like your other bound golems, with these differences:
 - The ritual shrinks the skeleton to the skill's `bodyScaleBone`, 0.49 by default, so it stands under one block tall. It keeps that size through chunk unloads and restarts.
 - It leaves your servant pack: it never expires, takes no slot of your Skeletal Servant cap, and shows a golem label instead of a servant label. It stays in the world, counts toward your golem cap, sleeps while you are offline, and answers Crook signals as a golem.
 - Binding strips the gear it was summoned with, which vanishes without dropping, and the lattice effects, and it keeps the Skeletal Servant bonuses. It starts with nothing equipped; you equip it from the equipment row of its Golem GUI, as described under [Golem GUI](/adapt/34-skill-golemancy#golem-gui). Unbound servants keep their summon gear. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It can become a masterwork like your other golems, as described under [Masterwork](/adapt/34-skill-golemancy#masterwork-golem-masterwork).
-- Skeletal Servant's `healthCostPerMinion` maximum health cost stays on you for as long as the bone golem lives, including after you rejoin and after a restart, and never counts twice for the same skeleton. The cost also stays while the bone golem shows as Missing in your roster, until you release it there.
+- Skeletal Servant's `healthCostPerMinion` maximum health cost stays reserved while the bone golem lives, including after you rejoin or restart. Each skeleton counts once. The cost also stays while the bone golem is packed or shows as Missing in your roster, until you release it there.
 - When it dies, it drops its core at the skill's `deathDropCoreChance`, each rune at `deathDropRuneChance`, and none of a skeleton's own loot or experience, it drops the items it wears and holds where it dies, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
 - Releasing it from its Golem GUI crumbles the skeleton, drops its core and runes, and ends its health cost.
-- Stasis cannot pack it or recall it.
+- Stasis packs it into a bone block and can recall it. Its equipped items, their durability, and its daylight immunity remain with it. Packing keeps its maximum health cost reserved.
+- Unlearning Skeletal Servant dismisses your servants and bone golems and restores their reserved maximum health. Bound golems drop their cores, runes, and supplied equipment. Packed bone golems in your inventory return their contents immediately. Packed bone golems stored elsewhere return their contents when you next place them.
 
 | Level | Lattice slots | Servant kill XP | Unlocks |
 |---|---|---|---|
@@ -842,7 +843,7 @@ A tree may have at most your level's `copperTreeCapByLevel` logs for a copper go
 
 A Lumber golem walks to the bottom of the trunk, works for a second, then fells the tree from the top down at your level's `logsPerSecondByLevel` and carries the logs. It fells only as many logs at a time as it has room for. Region protection must let you break every block it fells in that second; otherwise none of them is felled and the node shows Blocked. If something is built against the tree while it is being felled, the golem stops felling it. A Lumber golem that fills up delivers what it carries to a Deposit Node or its home chest like any other working golem. The felling stays open while the Lumber Node keeps working, and the next Lumber golem to take the job finishes the same tree. A felling is dropped a minute after its node stops working, for example when the node is broken, switched off by redstone, or unloaded. Leaves left behind decay as usual; leaves that never decay stay until Leaf Sweep or a player breaks them. Swiftness runes and Copper Frame's Static Overdrive speed up felling, and an Entropy rune can double each drop.
 
-- **Replanting** (level `replantLevel`): after felling a tree, the golem plants a matching sapling where the trunk stood, as long as the spot is empty and stands on soil the sapling grows on. The sapling comes from what the golem carries, then from its linked home chest. A tree with a 2x2 trunk is replanted with four saplings when four are at hand; otherwise one sapling replants it, except dark oaks and pale oaks, which need all four. Azalea trees are replanted with an azalea, or a flowering azalea when at least half of the azalea leaves near the top are flowering. A mangrove standing on its roots is not replanted. Region protection must let you build where the sapling goes.
+- **Replanting** (level `replantLevel`): after felling a tree, the golem plants a matching sapling where the trunk stood. The spot must be empty and have suitable soil. The sapling comes from what the golem carries, then its linked home chest, then eligible matching drops around the felled tree. The golem takes only the saplings it needs. When none are available, the node remembers the stump for five minutes and offers another replant attempt every five seconds. The golem can deliver logs and take other jobs between attempts. Protected items, pickup delays, and canceled pickup events still apply. A tree with a 2x2 trunk uses four saplings when four are available. Otherwise, the golem plants one sapling. Dark oaks and pale oaks require all four. Azalea trees are replanted with an azalea, or a flowering azalea when at least half of the azalea leaves near the top are flowering. A mangrove standing on its roots is not replanted. Region protection must let you build where the sapling goes.
 - **Leaf Sweep** (level `leafSweepLevel`): 2 seconds after the last log falls, the golem breaks the felled tree's leaves that no log holds up any more, including leaves that never decay, and carries their saplings, sticks, and apples. It looks at up to 64 leaves a second and pauses while it has no room left. Leaves still held up by another tree's logs and leaves a player placed stay where they are, and leaves region protection does not let you break are left to decay as usual.
 - **Mega trees** (level `megaTreeLevel`): Lumber golems also fell trees with more than one trunk, felling them as one tree: trunks wider than one block, such as a 2x2 spruce, jungle, dark oak, or pale oak, and trees whose trunks are joined by roots or branches. Thick fungus stems are covered under Nether fungi.
 - **Nether fungi** (level `netherLevel`): Lumber golems also fell huge crimson and warped fungi, including thick-stemmed ones once mega trees are unlocked. They take the fungus's wart blocks and shroomlights from the top down along with the stems, without counting them against the logs per second, and Replanting plants a matching fungus on the nylium.
@@ -1083,6 +1084,8 @@ Each stack a Sorter puts away, restocks, or brings you pays `workXpPerStack` wor
 
 Makes golems bound with an Angler Core fish the open water in front of a Fishing Node with a fishing rod from their home chest and deliver the catch, with more luck, a junk filter, faster catches in the rain, and double catches at higher levels, and unlocks the Angler Core and Fishing Node recipes at level 1.
 
+Your Anglers catch fish only while you have Angler Core learned. Unlearning it prevents further catches, including a pending catch, without consuming rod durability. The golem keeps its installed core, rod, and cargo, and its Fishing Node stays in place. Relearning Angler Core lets the same setup resume.
+
 Bind a golem with an Angler Core through Animus Binding. Copper and iron golems take the core by default; `allowedCoresCopper` and `allowedCoresIron` in the skill configuration decide which bodies can. A new Angler starts in Work mode, and its Golem GUI cycles Work, Follow, Stay, and Home. Anglers work only in Work mode and only at Fishing Nodes, so place a Fishing Node with Node Weaving on the side of a block, facing the water. Fishing Nodes go only on the side of a block; placing one on the top or bottom of a block is refused with an action-bar message and keeps the node. A Fishing Node's channel, priority, and redstone setting work like any other node's; its work area setting has no effect.
 
 A Fishing Node fishes the water in front of its face: a patch 5 blocks wide that starts at the face and reaches 5 blocks out, centered on the node. The water is open, as it is for a fishing bobber, when four layers of that patch, from one block below the node to two blocks above it, hold nothing but water source blocks and air. The lowest layer must be all water, every layer above it must be all water or all air, and no water layer may sit above an air layer, so a node at the waterline or one block above it suits most ponds, rivers, and oceans. Seagrass, kelp, and bubble columns count as water and lily pads count as air; flowing water, waterlogged blocks, and every other block close the water. A node without open water hands out no jobs and shows Blocked, and changes to the water are noticed within 10 seconds.
@@ -1169,22 +1172,61 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 
 #### Runes
 
+Each rune has an aspect, which determines its effect, and a tier from I to III, which determines its strength. A golem can hold one rune of each aspect. The values below use the default configuration and apply to bound golems. [Masterwork](/adapt/34-skill-golemancy#masterwork-golem-masterwork) can strengthen these effects.
+
 | Rune | Tier 1 | Tier 2 | Tier 3 |
 |---|---|---|---|
-| Swiftness | +10% movement speed, 10% less time between work actions | +20% speed, 20% less time | +30% speed, 30% less time |
-| Might | +50% carry capacity, +2 attack damage | +100% capacity, +4 attack | +150% capacity, +6 attack |
-| Ember | Hits set the target on fire for 2 s | Fire for 4 s, immune to fire | Fire for 6 s, immune to fire and lava |
-| Tide | +4 blocks of work radius and mob detection range | +8 blocks, breathes underwater | +12 blocks, moves through water as fast as on land |
-| Order | +1 channel | +2 channels, retries a skipped job after half the wait | +3 channels, retries after a quarter of the wait |
-| Entropy | 5% chance to double each drop of Harvester, Lumber, Breaker, and Angler work | 10% chance, hits apply Weakness I for 3 s | 15% chance, hits apply Weakness II for 3 s |
-| Bulwark | +4 armor | +8 armor, +2 armor toughness | +12 armor, +4 armor toughness, +0.5 knockback resistance |
+| [Swiftness](/adapt/34-skill-golemancy#swiftness-rune) | +10% movement speed, 10% less time between work actions | +20% speed, 20% less time | +30% speed, 30% less time |
+| [Might](/adapt/34-skill-golemancy#might-rune) | +50% carry capacity, +2 melee attack damage | +100% capacity, +4 melee damage | +150% capacity, +6 melee damage |
+| [Ember](/adapt/34-skill-golemancy#ember-rune) | Hits set the target on fire for 2 s | Fire for 4 s, immune to fire | Fire for 6 s, immune to fire and lava |
+| [Tide](/adapt/34-skill-golemancy#tide-rune) | +4 blocks of work radius and mob detection range | +8 blocks, breathes underwater | +12 blocks, breathes underwater, moves through water as fast as on land |
+| [Order](/adapt/34-skill-golemancy#order-rune) | 2 channels total | 3 channels total, 50% shorter retry wait | 4 channels total, 75% shorter retry wait |
+| [Entropy](/adapt/34-skill-golemancy#entropy-rune) | 5% chance to double each eligible work drop | 10% chance, hits apply Weakness I for 3 s | 15% chance, hits apply Weakness II for 3 s |
+| [Bulwark](/adapt/34-skill-golemancy#bulwark-rune) | +4 armor | +8 armor, +2 armor toughness | +12 armor, +4 armor toughness, +0.5 knockback resistance |
 
-- **Swiftness** shortens the time between a working golem's actions and its waits at containers.
-- **Ember** sets on fire whatever the golem hits. Fire immunity covers fire, burning, magma blocks, and campfires.
-- **Tide** adds to `baseWorkRadius` for the jobs, Deposit Nodes, Collection Nodes, and Guard Nodes the golem considers, to the pickup radius of a Gatherer without a Collection Node, to the range in which a Companion or Guardian golem attacks mobs, up to `leashRadius`, and to its follow range, which sets how far it notices mobs. Breathing underwater protects the golem from drowning and, for frost golems, from water damage.
-- **Order** adds channels. With an Order rune slotted, the channel button in the Golem GUI opens a channel picker: click a dye to select it, up to the golem's channel count, and click a selected dye to drop it. The golem takes jobs from and delivers to nodes on any of its channels. A golem with more channels selected than it can use uses the first ones in dye order, starting with white. A golem that gives up a job skips it for a shorter time.
-- **Entropy** doubles each drop that wins its roll.
-- **Bone golems** take every aspect. Swiftness adds movement speed, Might adds melee attack damage, Ember sets what it hits on fire, with its arrows too, and gives fire and lava immunity at the tiers above, Tide adds the range in which it notices and attacks mobs and gives water breathing, Order adds channels, Entropy applies Weakness, and Bulwark adds armor, armor toughness, and knockback resistance. A bone golem never carries items, works jobs, or gathers drops, so the carry capacity, work speed, work radius, and bonus yield of Swiftness, Might, Tide, and Entropy do nothing for it.
+##### Swiftness rune
+
+Swiftness makes the golem move faster and shortens its work delays, including waits at containers. With only Swiftness III, a two-second work delay becomes 1.4 seconds. The movement bonus also applies to fighting golems.
+
+##### Might rune
+
+Might increases the number of items a working golem can carry and adds melee attack damage. For a golem that carries 16 items, Might I, II, and III give capacities of 24, 32, and 40 items. This example assumes no other capacity bonuses. Bone golems use the melee damage bonus but carry no items.
+
+##### Ember rune
+
+Ember sets living targets on fire when the golem hits them, including hits from its projectiles. Higher tiers also protect the golem itself. Tier II covers fire, burning, magma blocks, and campfires. Tier III adds lava immunity. Frost golems cannot use Ember under the default body restrictions.
+
+##### Tide rune
+
+Tide extends the golem's reach from home when it selects jobs, Deposit Nodes, Collection Nodes, and Guard Nodes. It also expands a Gatherer's pickup radius when it works without a Collection Node. The selected area of each node stays the same.
+
+Companions and Guardians gain more range to notice and engage mobs, limited by `leashRadius`. Tiers II and III prevent drowning and protect frost golems from water damage. Tier III also improves movement through water.
+
+##### Order rune
+
+Order lets one golem use several dye channels at once. Click the channel button in the Golem GUI to open the channel picker. Click a dye to select it, or click a selected dye to remove it. The golem can take jobs from and deliver to nodes on any selected channel.
+
+Tiers II and III also shorten the wait before retrying a job the golem abandoned. The usual 10-second wait becomes 5 seconds with Order II or 2.5 seconds with Order III. If the golem loses channel capacity, it keeps the first selected channels in dye order, starting with white.
+
+##### Entropy rune
+
+Entropy gives Harvester, Lumber, Breaker, and Angler output a chance to double. Each eligible dropped stack gets its own roll. A successful roll adds another stack of the same items. Items collected from the ground and combat loot receive no bonus.
+
+Breaker bonuses exclude player-placed blocks and drops that reproduce the broken block, including Silk Touch output. Harvester bonuses exclude player-placed columns, gourds, and torchflowers. At tiers II and III, melee and projectile hits also apply Weakness, which reduces the target's melee damage.
+
+##### Bulwark rune
+
+Bulwark increases the golem's armor, helping it absorb damage that armor protects against. Higher tiers add armor toughness for stronger hits, and tier III adds knockback resistance. These bonuses protect the golem itself. The separate Guardian Core ability, Bulwark Presence, protects its owner.
+
+##### Rune effects by body
+
+Copper golems use movement, work, carrying, channel, and defensive bonuses. They never attack, so melee damage and effects applied on hit have no use for them.
+
+Bone golems can use every aspect. They receive movement, combat, defensive, and channel bonuses, but their lack of work and cargo makes work speed, carrying, and bonus yield irrelevant. Their arrows can apply Ember's fire and Entropy's Weakness.
+
+Unbound Skeletal Servants use the separate [Bone Lattice rules](/adapt/34-skill-golemancy#bone-frame-golem-bone-frame). Its default aspects are Swiftness, Might, Ember, and Bulwark.
+
+#### Blank Rune recipe
 
 | Recipe | Pattern | Keys | Yield |
 |---|---|---|---|
@@ -1349,9 +1391,9 @@ Shift-right-click a shattered golem in the Roster GUI to release it for good. It
 
 Packs one of your bound golems into a Dormant Golem block that you carry and place to wake the golem again, with its loadout, cargo, and health.
 
-Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound frost, copper, or iron golems to pack it. Bone golems cannot be packed or recalled; trying shows an action-bar message. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem, and the golem holds still. You or the golem ending up more than `channelAbortDistance` blocks apart, switching your held item away from the Crook, or the golem taking any damage breaks the channel, and an action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
+Hold the Artificer's Crook in your main hand, sneak, and right-click one of your bound golems to pack it. Without Stasis, the same click opens the Golem GUI. With Stasis, the Golem GUI also shows a Pack button next to Release, which packs the golem the same way. At level 1, packing is a `channelSecondsByLevel` channel while particles spiral into the golem, and the golem holds still. Moving more than `channelAbortDistance` blocks from the golem breaks the channel. Switching away from the Crook or damage to the golem also breaks it. An action-bar message tells you. From level 2, golems pack at once. You pack one golem at a time, and only while you are online.
 
-The packed golem leaves the world without dropping anything and becomes a Dormant Golem in your inventory: a snow block for a frost golem, an iron block for an iron golem, and for a copper golem the copper block of its oxidation stage, waxed when the golem was waxed. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, Masterwork Heart, channels, mode, home, home chest, name, record of kills, damage, jobs, and items moved, the items it carries, the tool it holds, its stored essence, its health, and its copper oxidation stage and wax. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up; hoppers and other mobs cannot take it, it never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
+The packed golem leaves the world without drops and becomes a Dormant Golem in your inventory. Frost, bone, and iron golems become snow, bone, and iron blocks respectively. A copper golem becomes a copper block with its oxidation stage and wax. The item lists the golem's cores, runes, and health. It keeps the golem's cores, runes, Masterwork Heart, channels, mode, home, home chest, and name. Its statistics, carried items, held tool, equipped items and their durability, essence, health, oxidation, and wax also remain intact. When your inventory is full, the Dormant Golem drops at your feet. Only you can pick it up. Hoppers and other mobs cannot take it. It never despawns, and damage cannot destroy it. The golem stays in your roster as packed and still counts toward your golem cap.
 
 To awaken the golem, place its Dormant Golem like a block. No block appears: the golem rises at that spot from a tenth of its normal size to its bound size over `awakenRiseTicks` ticks, facing you, and the Dormant Golem is used up. It wakes with everything the Dormant Golem kept. An awakened iron golem keeps whether a player built it. Awakening pays no build or bind XP. An awakening needs all of the following; otherwise an action-bar message names the reason and you keep the Dormant Golem:
 

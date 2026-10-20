@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-10-20T03:30:00.000Z
+date: 2026-10-20T08:42:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -47,6 +47,8 @@ Boosts stack. The final XP multiplier is limited to `0.01`–`1000`.
 | `/adapt reset confirm [player]` | Permanently reset an online or offline profile after a second confirmation within 30 seconds |
 
 These commands require `adapt.clear`. `clear` targets online players; `reset confirm` also accepts offline players.
+
+Clearing learned adaptations dismisses Skeletal Servants and bound bone golems and restores their reserved maximum health. Bound bone golems return their cores, runes, and supplied equipment as described under [Bone Frame](/adapt/34-skill-golemancy#bone-frame-golem-bone-frame).
 
 ## Configuration
 
