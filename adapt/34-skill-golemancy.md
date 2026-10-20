@@ -192,12 +192,16 @@ Loading and using a plinth needs Runic Augments level 1:
 
 To start an infusion, place its center item on the lodestone and its four pedestal items on the pedestals, then right-click the lodestone with the Artificer's Crook. The pedestal items rise, streams of dust flow to the center, and the center item spins faster. When the ritual ends, the items and the essence levels are used up and the result pops out above the lodestone. Creative players pay no levels.
 
+Your action bar shows what an infusion costs before you commit to it. When loading an item makes the items on a complete plinth match an infusion you can perform, and again when you start the ritual, it shows the result and its level cost. A rune's name includes its tier. The line is aqua, for example "Swiftness Rune (Tier 2) costs 5 levels", when you have enough levels. It is red and adds how many levels you have when you do not, for example "Swiftness Rune (Tier 2) costs 5 levels and you have 3". It reads "is free" in Creative and for an infusion whose `essenceLevels` is 0. Taking an item off the plinth, an infusion you have not unlocked, and items that match no infusion show no cost, and a line that has not changed does not repeat within a second.
+
 An infusion starts only when all of the following hold:
 
 - An infusion recipe matches: the item on the lodestone matches its center, and the four pedestal items match its pedestals in any order.
 - You have the recipe's unlocking adaptation at its level.
 - Region protection lets you interact with and place blocks at the lodestone.
 - You have the recipe's essence levels.
+
+Starting an infusion without enough levels is refused with a red action-bar message that gives the cost and the levels you have, such as "Not enough experience: this infusion costs 5 levels and you have 3", and a deny sound. The levels are taken only when the ritual completes. If you no longer have them then, the infusion is refused the same way, nothing is used up, and the items stay on the plinth.
 
 The ritual stops when you move more than 8 blocks from the lodestone, log out, or change worlds, when any block of the plinth breaks, or when an item is taken off or placed on the plinth. Nothing is used up when a ritual stops, and the items stay on the plinth.
 
@@ -325,6 +329,8 @@ A binding needs all of the following:
 - You have the tithe levels for that body. Skeletal servants cost no levels.
 
 Binding a skeletal servant turns it into a bone golem, as described under Bone Frame.
+
+Starting a binding without the tithe levels is refused with a red action-bar message that gives the cost and the levels you have, such as "Not enough experience: binding this golem costs 2 levels and you have 1", and a deny sound; the core stays in your hand. The tithe is taken only when the ritual finishes. If you no longer have the levels then, the binding is refused the same way, nothing is used up, and the core comes back to you. The Animus Binding level screen lists the levels each body costs at that level.
 
 | Level | Golem cap | Ritual | Bind tithe (frost / copper / iron) |
 |---|---|---|---|
@@ -1110,7 +1116,7 @@ Each catch pays `workXpPerCatch` work XP, as described in Earning XP, including 
 
 5 levels · 2 knowledge, then 4 per level · requires Animus Binding level 2
 
-Lets you infuse runes at the Animus Plinth and slot them into your bound golems for speed, carrying, fire, reach, channels, yield, and armor. Level 1 unlocks loading and using the Animus Plinth, tier 1 rune infusions, and the Blank Rune recipe.
+Lets you infuse runes at the Animus Plinth and slot them into your bound golems for speed, carrying, fire, reach, channels, yield, and armor. Level 1 unlocks loading and using the Animus Plinth, tier 1 rune infusions, and the Blank Rune recipe. The level screen lists the levels it costs to infuse each tier your level unlocks, as a range when the aspects of a tier cost different amounts.
 
 Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` for a copper golem, or `ironSlots` for an iron golem, plus your level's `extraSlotsByLevel`. With the defaults, frost golems have 1, 2, and 3 slots at levels 1, 3, and 5, copper golems 2, 3, and 4, and iron golems 3, 4, and 5. A masterwork golem has Masterwork's `extraRuneSlots` more. The Golem GUI shows the slots in its second row; a locked slot names the Runic Augments level that opens it.
 
@@ -1355,7 +1361,7 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 
 3 levels · 2 knowledge, then 4 per level · requires Runic Augments level 3 and Animus Binding level 5
 
-Turns one of your golems into a masterwork with a Masterwork Heart infused at the Animus Plinth. A masterwork has an extra rune slot, more health, a gold frame on its label, and a gold aura, and at higher levels a second core and stronger runes. Level 1 unlocks the Masterwork Heart infusion.
+Turns one of your golems into a masterwork with a Masterwork Heart infused at the Animus Plinth. A masterwork has an extra rune slot, more health, a gold frame on its label, and a gold aura, and at higher levels a second core and stronger runes. Level 1 unlocks the Masterwork Heart infusion, and the level screen lists the levels it costs.
 
 To designate a masterwork, open the golem's Golem GUI, pick up a Masterwork Heart, and click the Masterwork slot in the bottom row. One Heart from the stack goes into the golem. The slot shows how many masterworks you have and how many your level allows. A designation needs all of the following:
 
