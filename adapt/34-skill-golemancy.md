@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T04:00:00.000Z
+date: 2026-10-20T06:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -284,6 +284,15 @@ Frost Frame, Breaker Core, Rancher Core, Sorter Core, Angler Core, Runic Augment
 ## Adaptations
 
 Golemancy's adaptations unlock golem binding, frames that strengthen each golem body and your TragOul skeletal servants, nodes, runes, signals sent with the Crook, ways to heal and rebuild your golems, packing them into blocks you carry, and masterwork golems.
+
+The Golemancy skill screen draws four centered rows, one per group, on a single page:
+
+1. Foundation: Animus Binding and Node Weaving.
+2. Frames: Frost, Copper, Iron, and Bone Frame.
+3. Cores: Guardian, Gatherer, Harvester, Lumber, Breaker, Rancher, Sorter, and Angler Core.
+4. Augments: Runic Augments, Masterwork, Overseer, Golem Mending, and Stasis.
+
+`gui.adaptationOrder` for `golemancy` reorders adaptations inside their own row and never moves one to another row. An adaptation you cannot use is left out without a gap, and a row with nothing left takes no space.
 
 Arrows point from each prerequisite to the adaptations it unlocks; unlabelled arrows need level 1.
 
