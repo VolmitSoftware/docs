@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-18T01:43:50.244Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -377,9 +377,9 @@ Open **Settings → More settings → Transit** to control movement through this
 
 All four modes apply on teleport and seamless crossings. With `[transit] gravity-flip-enabled = true` (default `false`), `frame`, `snap`, and `mirror` arrivals from a wall portal through a floor or ceiling turn upright. Forward and screen-up turn together. Floor-to-ceiling crossings retain the mapped look, including looking straight up or down during repeated falls. `look` ignores the flip.
 
-With world-down gravity, a twisted portal pair can leave a camera tilt, which the client mod eases upright over `camera-roll-ease-seconds` (default `0.35`). Rapid crossings retain any tilt that is still easing. Directional gravity keeps the camera aligned with its persistent gravity frame. See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
+With world-down gravity, a twisted portal pair can leave a camera tilt, which the client mod eases upright over `camera-roll-ease-seconds` (default `0.35`). Rapid crossings retain any tilt that is still easing. Directional gravity keeps the camera aligned with its persistent gravity frame. Leaving and reopening a singleplayer world or rejoining a server restores the saved gravity orientation. See [`[transit]`](/wormholes/01-installation-configuration#transit) and the [client mod](/wormholes/01-installation-configuration#client-mod) settings.
 
-**Directional gravity** applies on Fabric, Forge, NeoForge and singleplayer with matching server and client mods. Toggle it with the **Directional gravity** control in the Transit menu. The saved per-portal setting is `transit.gravityRotation`, default `false`. It applies when a traveller enters that portal. Enabling it turns on Settings sync at both linked ends and copies the gravity setting to the counterpart. Disabling it also copies to the counterpart. Directional gravity requires active native ClientView. Turning ClientView off restores world-down gravity and keeps the current world-facing look.
+**Directional gravity** applies on Fabric, Forge, NeoForge and singleplayer with matching server and client mods. Toggle it with the **Directional gravity** control in the Transit menu. The saved per-portal setting is `transit.gravityRotation`, default `false`. It applies when a traveller enters that portal. Enabling it turns on Settings sync at both linked ends and copies the gravity setting to the counterpart. Disabling it also copies to the counterpart. Directional gravity requires active native ClientView. Players stand and crouch relative to the gravity direction; low passages still force crawling. Turning ClientView off restores world-down gravity and keeps the current world-facing look.
 
 The portal pair rotates the traveler's complete cardinal gravity frame in exact 90-degree increments. A wall can become the floor. Movement, jumping, collision bounds, eye position, the camera and character model follow the resulting frame. Creative flight uses the same controls and movement as world-down gravity: jump ascends, sneak descends, released input settles into hover, and forward, strafe and sprint follow the new floor. Double-tapping jump toggles flight, and landing turns it off. There are six down directions and four possible turns around each direction. Arbitrary-angle gravity is unsupported.
 
@@ -393,7 +393,7 @@ With `frame` orientation, local view, body and head angles stay relative to the 
 | `motion` | Position and velocity are multiplied by the pair's size ratio: a 3×3 portal into a 9×9 is ×3, and the way back is ×1/3. The traveller's size is unchanged. |
 | `ratio` | As `motion`, and the traveller's size is multiplied by the ratio as well, through a `wormholes:portal_scale` modifier on the scale attribute, clamped to the minimum and maximum. Crossing back restores the original size when neither crossing reached a clamp. |
 
-The ratio is exit size divided by entry size. A `50%` ratio halves the current size, and `200%` doubles it. Ratio mode compounds the current scale, then applies its bounds. Crossing back restores the original size when neither crossing reached a clamp. Travellers must fit the destination opening at their resulting size, including any applied clamp.
+The ratio is exit size divided by entry size. A `50%` ratio halves the current size, and `200%` doubles it. Ratio mode compounds the current scale, then applies its bounds. Crossing back restores the original size when neither crossing reached a clamp. Travellers must fit the destination opening at their resulting size, including any applied clamp. Traveller size survives disconnects, world reloads, and server restarts in Wormholes data. Paper, Purpur, Folia, and native loaders apply it as a temporary attribute modifier, so removing Wormholes leaves the vanilla size attributes unchanged.
 
 The client mod draws destination terrain and character models at the inverse ratio in `motion` and `ratio` modes. A 4×4 entrance into a 2×2 exit shows the destination at twice its size. The reverse direction shows it at half size.
 

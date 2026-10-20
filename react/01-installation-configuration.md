@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install React, configure automatic reloads, connect React Web, and uninstall React"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-17T14:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -145,7 +145,7 @@ Use `/react language` (alias `/react languages`) for a personal choice or `/reac
 
 ## Uninstalling
 
-React keeps its configuration, metric history, React Web pairings, and per-player settings in `plugins/React/`. Mob stacks and paused mobs also leave state on entities in your worlds, so let React restore them before you remove it.
+React keeps its configuration, metric history, React Web pairings, and per-player settings in `plugins/React/`. Mob stacks leave state on entities in your worlds, so let React expand them before you remove it. React restores the AI and awareness it disabled before entities unload and during normal shutdown, preserving states that were already disabled.
 
 > Deleting `plugins/React/` erases saved metric history, incident records, and React Web pairings. Copy `history/` and `diagnostics/profiles/` first if you want to keep them.
 {.is-warning}
@@ -161,7 +161,7 @@ React keeps its configuration, metric history, React Web pairings, and per-playe
 | `dynamic-activation-range.toml` | Wakes the mobs this feature paused |
 | `random-tick-governor.toml` | Restores each world's random tick speed |
 
-2. Keep React running while players visit the areas they use. React does not force chunks to load. Stacks and paused mobs in unloaded chunks are restored when their chunk next loads with React installed.
+2. Keep React running while players visit the areas they use. React does not force chunks to load. Stacks in unloaded chunks expand when their chunk next loads with React installed. Saved pause and sleep markers from an interrupted shutdown are also cleared as their entities load.
 3. In every browser that paired with this server, open React Web **Settings** and **Remove** the server. React Web keeps server profiles and credentials in the browser.
 
 ### Remove React
@@ -176,8 +176,8 @@ React keeps its configuration, metric history, React Web pairings, and per-playe
 | Leftover | Without React |
 |---|---|
 | Mob stacks (`react:react-stack-count`) | Each stack is one mob, and the rest of its count is gone. A stack label React applied stays as the mob's name |
-| Paused mobs (`react:react-paused`) | Their AI stays off. Use the first command below |
-| Sleeping mobs (`react:react-dozing`) | They stay unaware of their surroundings. Use the second command below |
+| Pause markers (`react:react-paused`) saved during an interrupted shutdown | AI remains disabled if React cannot restore the entity before removal. Use the first command below |
+| Sleep markers (`react:react-dozing`) saved during an interrupted shutdown | Awareness remains disabled if React cannot restore the entity before removal. Use the second command below |
 | Purge countdown names (`react:react-killer-countdown`) | The countdown stays as the mob's name. Use the third command below |
 | React map items, including copies in item frames | Ordinary filled maps that no longer show React data. Discard them |
 | Dropped-item bundles with the lore `REACT SUPER STACK` | Ordinary bundles that hold the merged items. Pick them up and empty them like any bundle |

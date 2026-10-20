@@ -2,7 +2,7 @@
 title: "Features - Entity Systems"
 description: "Entity stacking, sleeping, trimming, item, spawn, vehicle, portal, and explosion features"
 published: true
-date: 2026-10-07T13:21:29.919Z
+date: 2026-10-17T14:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -62,6 +62,8 @@ This feature puts distant living entities into sleep or pause under load. Its sa
 | `dutyCycleStartDistance` | double | `24` | Distance where duty-cycling begins (blocks). |
 | `dutyCycleSlots` | int | `4` | Rotating awareness slots. |
 | `dutyCycleMinTickMs` | double | `42` | Tick ms required before duty-cycling engages. |
+
+React restores the AI and awareness it disabled when this feature stops, before affected entities unload, and during normal shutdown. AI and awareness that were already disabled remain unchanged. After an interrupted shutdown, React restores saved pause and sleep markers as entities load.
 
 ### `entity-trimmer`
 

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, quality profiles, and uninstalling"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T17:14:07.554Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,7 +34,7 @@ Fabric, Forge, and NeoForge servers store the same settings, portal records, doo
 
 The Fabric, Forge, and NeoForge jars also run on the client. Put the jar for the client's Minecraft version and loader in the client's `mods/` folder; it is the same jar a native server uses. A player with the mod receives [ClientView](/wormholes/05-projection-modes-settings#clientview) from any server that offers it: a Paper, Purpur, or Folia server with the Bukkit plugin, or a Fabric, Forge, or NeoForge server with the mod. Singleplayer worlds use the same jar.
 
-ClientView requires matching Wormholes releases on channel `wormholes:v11` and the same Minecraft version. Optics stream messages use wire version 9 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.1.2, 26.2, and 26.3. A client requires a server on the same Minecraft version. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
+ClientView requires matching Wormholes releases on channel `wormholes:v11` and the same Minecraft version. Optics stream messages use wire version 10 within that channel. An incompatible client shows `Wormholes: Mismatch` and keeps the standard projection. Client jars are available for Minecraft 26.1.2, 26.2, and 26.3. A client requires a server on the same Minecraft version. Servers offer ClientView by default. `[client-view] enabled = false` turns it off. Players without the mod, Bedrock players, and clients that decline keep the standard projection.
 
 The mod also shows every Wormholes menu as a native Minecraft screen instead of a chest menu. This works on Fabric, Forge, and NeoForge servers, in singleplayer, and on Paper, Purpur, and Folia servers running the plugin (and Spigot where the plugin runs). Players without the mod use chest menus, and `[menus] native-screens = false` gives every player chest menus. See [Native menus and chest menus](/wormholes/04-portal-types-menus-settings#native-menus-and-chest-menus).
 
@@ -270,11 +270,11 @@ the runtime does not use.
 | `traversal-api-provider-failure-policy` | `allow` | `allow` treats a provider fault as a free pass; `deny` rejects only that traversal attempt |
 | `traversal-api-provider-fault-limit` | `5` | Faults before provider quarantine. `0` disables quarantine |
 | `traversal-api-slow-provider-millis` | `5` | Warn when a provider call meets or exceeds this ms. `0` disables |
-| `chunk-pre-send-enabled` | `true` | Before a local, RTP, or dimensional-door teleport, pre-send already-loaded destination chunks to the player. Cross-world and cross-server travel skip it |
-| `chunk-pre-send-radius-chunks` | `3` | Radius of pre-send |
-| `chunk-pre-send-max-chunks` | `32` | Hard ceiling per traversal |
-| `chunk-pre-send-budget-micros` | `2000` | Microseconds the pre-teleport send may use before stopping with a partial result |
-| `arrival-prewarm-on-interest` | `true` | Pre-warm arrival chunks when observers show interest |
+| `chunk-pre-send-enabled` | `true` | Prepare local, RTP, and dimensional-door arrival chunks, including client-assisted terrain on Bukkit servers. Bukkit servers deliver ordinary prepared chunks after the teleport, including travel between worlds; modded servers use a same-world pre-teleport burst. Cross-server travel uses its separate transfer path |
+| `chunk-pre-send-radius-chunks` | `3` | Destination radius in chunks, limited by the player’s view distance |
+| `chunk-pre-send-max-chunks` | `32` | Maximum chunks processed per arrival-delivery tick on Bukkit servers, or per pre-teleport burst on modded servers |
+| `chunk-pre-send-budget-micros` | `2000` | Microsecond work budget. Bukkit arrival delivery continues on later ticks until the destination area is processed; modded-server pre-teleport bursts stop at this budget |
+| `arrival-prewarm-on-interest` | `true` | Prepare destination chunks when observers show interest or players approach linked frame portals. Approach preparation works with ClientView on or off |
 | `arrival-warm-radius-chunks` | `4` | Warm radius |
 | `arrival-warm-max-radius-chunks` | `10` | Max warm radius |
 | `arrival-warm-hold-millis` | `5000` | Hold warm state |
@@ -533,7 +533,7 @@ Use `/volmit plugins updates` for the shared Director report across registered p
 
 ## Uninstalling
 
-Wormholes keeps its settings and records in its data folder and its pocket rooms in the `wormholes:pockets` dimension of the main world. Removing it also leaves converted vanilla portals without portal blocks and can leave resized entities; see [What stays in the world](#what-stays-in-the-world).
+Wormholes keeps its settings and records in its data folder and its pocket rooms in the `wormholes:pockets` dimension of the main world. Removing it leaves converted vanilla portals without portal blocks; see [What stays in the world](#what-stays-in-the-world).
 
 > Deleting the data folder and the pocket dimension permanently erases every portal, door, pocket room and its contents, network link, and backup. Stop the server and back up the server folder and its worlds first.
 {.is-danger}
@@ -542,7 +542,7 @@ While Wormholes is still installed:
 
 1. To keep a copy of your portals, run `/wormholes admin backup export` (`wormholes.admin.backup`) and move the bundle out of `plugins/Wormholes/backups/`, or `config/wormholes/backups/` on Fabric, Forge, and NeoForge.
 2. Ask players to leave their pocket rooms.
-3. Restore entities that kept a portal scale with `/wormholes admin scale reset`, or `/wh scale reset` on Fabric, Forge, and NeoForge. See [Commands and permissions](/wormholes/09-commands-permissions).
+3. To discard saved traveller sizes before a future reinstall, restore them with `/wormholes admin scale reset`, or `/wh scale reset` on Fabric, Forge, and NeoForge. Portal size is stored as Wormholes data and applied while Wormholes is installed; vanilla attributes do not retain it after removal. See [Commands and permissions](/wormholes/09-commands-permissions).
 4. On every server linked to this one, run `/wormholes server remove <name>` with this server's name from `/wormholes server list`. That server deletes its route and trusted key for this one and drops this server's portals from its lists.
 
 Then remove it:
@@ -571,7 +571,7 @@ Portal views, skins, and particle effects are not saved in the world. These rema
 |---|---|---|
 | Vanilla Nether portals that Wormholes converted, and the counterparts it built | Obsidian frames with no portal blocks | Relight a frame with flint and steel. An irregular Shaped Portals frame relights only while [Shaped Portals](/shapedportals) is installed |
 | End portals that Wormholes converted | Eyed End Portal Frames with no portal blocks | Fill the 3×3 interior at the frame's height: `/fill <x1> <y> <z1> <x2> <y> <z2> minecraft:end_portal` |
-| Portal scale on players and mobs | Attribute modifier `wormholes:portal_scale` on `minecraft:scale`. The entity keeps its size | `/attribute <entity> minecraft:scale modifier remove wormholes:portal_scale` |
+| Saved traveller size on players and mobs | Wormholes data (`wormholes:portal_scale` on Bukkit, `wormholesScale` on native loaders), ignored without Wormholes | Inert. Reset sizes while Wormholes is installed to discard them before reinstalling |
 | Entities that were crossing to another server when Wormholes stopped | Invulnerable, silent, and without gravity, with the data key `wormholes:entity_transit_state` | Wormholes restores them when their chunk loads. After removal, run `/data merge entity <uuid> {Invulnerable:0b,Silent:0b,NoGravity:0b}` |
 | Portal Wands, runes, Dimensional Door items, and portal keys | Ordinary items with Wormholes names and `wormholes:` data keys | Inert. Discard them if unwanted |
 | Placed Dimensional Doors and trapdoors | Ordinary doors and trapdoors | Inert |

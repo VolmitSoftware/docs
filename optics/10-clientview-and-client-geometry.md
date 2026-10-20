@@ -2,7 +2,7 @@
 title: "ClientView and Client Geometry"
 description: "Optics wire protocol, sessions, capabilities, plates, mesh sections and client helpers"
 published: true
-date: 2026-10-13T16:00:00.000Z
+date: 2026-10-18T20:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -12,7 +12,7 @@ ClientView streams portal geometry and captured content to a compatible consumer
 
 ## Client and renderer requirements
 
-The current wire version is **9**, from `ViewStreamLimits.WIRE_VERSION`. The handshake requires matching wire and Minecraft data versions. A client brand identifies a handshake category, but does not establish renderer compatibility.
+The current wire version is **10**, from `ViewStreamLimits.WIRE_VERSION`. The handshake requires matching wire and Minecraft data versions. A client brand identifies a handshake category, but does not establish renderer compatibility.
 
 An unmodified Minecraft client does not decode ClientView messages. A host can use ordinary server output for blocks, entities or display geometry without this protocol. A compatible client must negotiate capabilities before the host sends their content.
 
@@ -183,7 +183,11 @@ Serverbound headers use one byte. Clientbound headers use six bytes. `ViewStream
 
 `MeshSection` combines one brick, backing state, coordinates, revision and `SectionBiomes`. `MeshHash.hash` uses a dictionary identity. `MeshHash.resolved` hashes resolved state strings with a supplied epoch for reuse across dictionaries.
 
-`SectionBiomes` stores an optional palette and an 8×8×8 biome grid. Multi-entry palettes use 1024 bytes of little-endian 16-bit indices. `cell(x, y, z)` includes eight blocks of padding around a section. `biome(cell)` resolves a key, and `NONE` identifies unavailable biome content.
+`SectionBiomes` stores an optional palette, an 8×8×8 biome grid and a map of biome keys to `BiomeVisual` definitions. Definition keys must belong to the palette. Multi-entry palettes use 1024 bytes of little-endian 16-bit indices. `cell(x, y, z)` includes eight blocks of padding around a section. `biome(cell)` resolves a key, and `NONE` identifies unavailable biome content.
+
+`BiomeVisual` carries finite temperature and downfall values, precipitation, the `NONE` or `FROZEN` temperature modifier, water color, optional foliage/dry-foliage/grass colors, and the `NONE`, `DARK_FOREST` or `SWAMP` grass modifier. Colors are RGB integers from `0` through `0xFFFFFF`; optional colors use `-1` when absent. Consumers can reconstruct destination terrain tinting from these definitions without requiring matching biome registry entries.
+
+The codec writes a definition-presence byte after each biome palette key, followed by the 27-byte visual definition when present. Biome visual definitions participate in mesh hashes, so a definition change invalidates reuse even when the biome key and blocks remain the same.
 
 `MeshLocal` reports available resident sections and entity ids. `MeshCached` reports hash claims, and `MeshReuse` selects cached content. These reports require their negotiated capability and current generation/sequence.
 

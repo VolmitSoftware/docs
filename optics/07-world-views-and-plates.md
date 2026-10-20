@@ -2,7 +2,7 @@
 title: "World Views and Plates"
 description: "Optics world access, section caches, destination plates, chunk leases and claim output"
 published: true
-date: 2026-10-13T16:00:00.000Z
+date: 2026-10-18T20:00:00.000Z
 tags: "optics, api"
 editor: markdown
 dateCreated: 2026-10-11T16:00:00.000Z
@@ -15,11 +15,13 @@ World views expose host content without platform types. Plates retain sampled de
 | Interface | Host responsibility |
 |---|---|
 | `BlockView<B>` | Supply height limits, block samples, chunk readiness/request and content revision |
-| `ContentView<B, M>` | Add world id, material, biome, block entity, light, sky darkness and optional buried depth |
+| `ContentView<B, M>` | Add world id, material, biome keys and visual definitions, block entity, light, sky darkness and optional buried depth |
 | `BlockStates<B, M>` | Define air/occluded values, materials, opacity, orientation rewriting and property conversion |
 | `SectionSource<B, M>` | Capture sections into a builder, report available columns and release captures |
 
 `ContentView.LIGHT_UNAVAILABLE` identifies missing light. Its default `blockEntitiesComplete` returns true. Override it when captures can omit block entities that still exist in the source.
+
+`ContentView.biomeVisual(x, y, z)` supplies the destination biome's `BiomeVisual` definition. The default returns `null`, leaving resolution of the biome key to the consumer. Supply definitions for biomes that the consumer may not have in its registry. Snapshot views must retain these definitions with their captured content before worker access.
 
 `BlockStates.transform` receives an `AxisPermutation`. `properties` and `withProperties` bridge host block values to [state rules](/optics/09-fidelity-and-block-states#block-state-orientation).
 
@@ -71,7 +73,7 @@ The writer reuses ordinary entries by source state within its kind buckets, with
 
 A plate tracks world id, tracker version and affected chunk bounds. `refreshDirt`, `collectDirt`, `dirty`, `dirtyChunks` and `cleanCell` let a host preserve clean content while replacing affected captures. `ChangeRegion` exposes the associated change query.
 
-`PlateEnvironment.capture(box, transform, view)` captures environment data. It implements `BrickLightSource` for streamed light and supplies `SectionBiomes` for mesh content.
+`PlateEnvironment.capture(box, transform, view)` captures environment data, including supplied biome visual definitions. It implements `BrickLightSource` for streamed light and supplies `SectionBiomes` for mesh content. Captured definitions remain available without reading the destination world again.
 
 ## Building plates
 

@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-17T14:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,7 +37,7 @@ This feature scales down per-world Spigot entity activation ranges under sustain
 
 ### `dynamic-activation-range`
 
-This feature lowers the activation radius when tick time rises, pausing distant living entities. It honors `SLEEP` protection, wakes the entities it paused when they take damage, target something, or are targeted, and does not re-enable AI disabled by another plugin.
+This feature lowers the activation radius when tick time rises, pausing distant living entities. It honors `SLEEP` protection, wakes the entities it paused when they take damage, target something, or are targeted, and does not re-enable AI disabled by another plugin. React releases its pause when the feature stops, before the entity unloads, and during normal shutdown.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
