@@ -2,7 +2,7 @@
 title: "API - Recipes, FX, Telemetry & Utilities"
 description: "Recipe, effect, telemetry, projectile, item, and HUD APIs"
 published: true
-date: 2026-10-20T19:34:00.000Z
+date: 2026-10-20T20:05:45.663Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,6 +20,8 @@ Some types listed here are Java-public for use across Adapt's own packages and a
 `AdaptRecipe` builds Bukkit recipes with an Adapt level requirement attached. Static factories cover shaped, shapeless, smithing, stonecutting, smoking, blasting, furnace, and campfire forms. Every recipe carries a key, a result, and a required level. It answers `register`, `unregister`, and `is(Recipe)`. Registration mutates Bukkit's global recipe registry. Run it on the server thread. `MaterialChar` is the character-to-material, tag, or item-choice mapping the shaped builder uses.
 
 `AdaptRecipeBook` is the discovery half. `plan(...)` is pure. Give it your `Unlock` bindings and a function that resolves a player's level for an adaptation. It returns an immutable `Plan` of recipe keys to discover and keys to undiscover. Any key in both lists is resolved in favor of discovery. `synchronize(player, plan)` applies that plan on the player's owning thread.
+
+`ConfiguredRecipeParser` accepts material, tag, and namespaced custom-item ingredients. For each custom ingredient, `ExactItemResolver.ingredient(id)` supplies its required material and matcher, and `result(id)` supplies the item shown in the recipe book. The representative item must be non-air and use that material; the parser clones it with an amount of one. Paper 26.2 and 26.3 use the matcher as well as the material check; 26.1.2 requires the complete representative item data to match.
 
 `BrewingRecipe` describes an Adapt brewing recipe. `PotionBuilder` builds the potion item stacks, including vanilla base potions, custom color, effects, and Adventure names and lore. `AdaptBrewCompleteEvent` is the observation event. It is documented in [45 - API - Events](/adapt/45-api-events). The rest of the potion package belongs to Adapt. `BrewingManager` owns the global recipe list and the brew and click listeners. `BrewingTask` owns one live brewing-stand transaction. `AdaptPotionRegistry` tracks and removes effects Adapt applied.
 

@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-20T19:52:10.000Z
+date: 2026-10-20T20:25:11.911Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -370,7 +370,7 @@ ClientView draws each portal view in one of two ways:
 - **World views** draw the destination from a world the client has loaded, using the game's own world renderer, Sodium, and Iris Shaders exactly as for the main view. On Fabric, Forge, and NeoForge servers and in singleplayer, every frame portal and dimensional door the player may travel through is a world view while the server streams its destination for [travel](#travel-with-the-client-mod), so the view shows the same world the player arrives in, with its own lighting, fog, sky, entities, and block entities. Right after a crossing, the portal behind the player shows the world they left at once. Mirrors the client draws itself are world views of the current world on every server; see [Mirrors](#mirrors). World views nest inside one another up to each portal's recursion depth while `client-recursion` is on in the client file, and an entity standing in an opening is drawn on both sides of it.
 - **Streamed views** are built from destination sections and entities the server sends for that view. Paper, Purpur, and Folia servers use them for every linked portal. On every server they show random teleport portals, cross-server gateways, portals the player may not travel through, destinations beyond the `remote-view-routes` limit, and every portal while `[client-view] seamless-travel = false` or while the game does not render with OpenGL. [Streamed views](#streamed-views) describes how they load and update.
 
-Portal views stay with the world containing their source opening. After travel, only openings in the arrival world appear there. The return view belongs to the exact portal crossed, including adjacent openings on the same plane.
+Portal views stay with the world containing their source opening. After travel, only openings in the arrival world appear there. The return view belongs to the exact portal crossed, including adjacent openings on the same plane. Native portal views rebuild when you rejoin a world or reload game resources.
 
 Floor and ceiling portals visible through a linked portal or mirror show their own destinations. Each nested opening follows its destination viewpoint and the recursion limits of its enclosing portals. A nested destination without a resident world uses its available streamed view inside the parent opening.
 
@@ -422,7 +422,7 @@ With `show-debug-overlay = true` in the client file, detail lines follow, with l
 
 ### Shaped apertures
 
-A portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape) is drawn clipped to the shape itself, with a smooth edge. The mesh also covers edge cells the shape only touches, so a sliver narrower than half a cell still shows the destination although it admits no crossing.
+A portal with an [aperture shape](/wormholes/04-portal-types-menus-settings#aperture-shape) is drawn clipped to the shape itself, with a smooth edge. The view includes edge slivers narrower than half a cell, including on shapes stretched to wide or tall frames. These slivers show the destination but do not admit crossing.
 
 `portal-shape-subdivisions` in the client file (default `8`, 1–16) sets how finely the edge is subdivided per block; very large shaped portals use fewer subdivisions so the mesh stays within its budget, and the client log notes the reduction.
 

@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, quality profiles, and uninstalling"
 published: true
-date: 2026-10-18T17:14:07.554Z
+date: 2026-10-20T20:25:11.910Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -466,6 +466,7 @@ Projection behavior detail:
 | `entity-candidate-cache-ticks` | `3` | Candidate cache TTL |
 | `max-spoofed-entities` | `24` | Cap per view |
 | `capture-zone-radius` | `8.0` | Capture zone radius. Applies on reload (every local portal rebuilds its capture AABB) |
+| `block-entities` | `true` | Project supported block-entity contents, including sign text and banner patterns. Turning this off keeps terrain and entity views active and omits block-entity contents. Turning it on captures current contents |
 | `rtp-rim-interval-ticks` | `5` | Ticks between RTP rim particle refreshes while the rim color is unchanged. Color and phase changes refresh at once |
 | `entity-velocity-epsilon` | `0.005` | Smallest per-axis velocity change that sends a projected entity a new velocity packet. Stopping always sends |
 | `ambient-particle-interval-ticks` | `1` | Ticks between `SPARKS` ambient bursts. Each burst carries the sparks of every skipped tick, so average density is unchanged |

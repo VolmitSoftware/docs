@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T19:21:18.650Z
+date: 2026-10-20T20:03:38.173Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -59,7 +59,9 @@ Each adaptation lists the crafting recipes it unlocks, and [Infusion recipes](/a
 | `amount` | Items made by one craft, from 1 to 64. |
 | `enabled` | Set to `false` to remove the recipe. |
 
-Crafting an unlocked recipe costs no experience levels. Recipe changes apply after a restart.
+Crafting an unlocked recipe costs no experience levels. The recipe book shows the named custom ingredients and fills the grid with matching items from your inventory. Role cores require a Blank Animus Core, and typed nodes require a Blank Node; ordinary firework stars or clay balls cannot replace them. Redstone Crafters use the same ingredients. Recipe changes apply after a restart.
+
+On Paper 26.2 and 26.3, custom ingredients keep their recipe identity when their names or lore differ. On 26.1.2, custom ingredients must match the configured item’s full name, lore, and other item data.
 
 ## Bound golems
 
