@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-10-21T11:21:55.828Z
+date: 2026-10-21T17:07:55.373Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -130,19 +130,31 @@ Mohist creation offers persistent Mods/Plugins source subscriptions. Other isola
 
 ## Project builds
 
-Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Build & tuning, or run `./start.sh projects dashboard`. The project view groups Gradle targets beneath expandable project rows beside the focused target's live log. Check a project to include all its targets, or check individual targets across projects. A project checkbox shows `[-]` when only some of its targets are checked. The header shows the checked count and configured build limits.
+Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Build & tuning, or run `./start.sh projects dashboard`. A project with one target appears as one direct checkbox row. Projects with multiple targets start collapsed. Expand one to see its targets; two or more targets for the same Fabric, Forge, or NeoForge loader share a collapsible platform row with versions underneath. Single loader targets remain directly under the project. Indentation and connectors show the hierarchy.
+
+Library-only projects such as VolmLib are omitted from dashboard build choices; mixed projects retain all their targets. Required source dependencies are included automatically, and standalone library builds remain available through the CLI. Saved library jobs remain inspectable in run history.
+
+Check a project or platform to include all its buildable descendants, or check individual targets across projects. Checkboxes show `[ ]` for none, `[-]` for some, and `[X]` for all checked. Collapsed descendants count toward selection. The header shows the checked count, configured build limits, and whole-run elapsed time. The live output pane starts visible; press `t` to hide or show the focused target's output.
+
+The project tree uses the space its visible rows need, leaving the remaining area for output. At 120 columns or wider, the tree and output sit beside each other, with the tree width following its labels. Narrower terminals stack them; collapsing a small tree gives more rows to output. Log lines wrap within the output pane.
+
+The run timer measures elapsed time since submission, including queuing and preparation across parallel targets. It freezes when the run succeeds, fails, or is cancelled; an interrupted run stops at its last recorded heartbeat. Run history shows each run's duration when the menu opens.
 
 | Key | Action |
 |---|---|
-| `↑`, `↓`, wheel, `Home`, `End` | Focus a project or target |
-| `←`, `→` | Collapse or expand a project; Left on a target focuses its project |
-| `Space`, left checkbox | Toggle one target or every target in a project |
-| `a` | Check every registered target, including collapsed projects and offscreen rows |
-| All checkbox | Check every registered target; click again to clear |
+| `↑`, `↓`, wheel, `Home`, `End` | Focus a project, platform, or target |
+| `←`, `→` | Collapse or expand a branch; Left on a leaf or collapsed branch focuses its parent |
+| `Enter`, disclosure click | Expand or collapse a project or platform; Enter on a target opens actions |
+| `Space`, left checkbox | Toggle a target or all buildable descendants of a project or platform, including collapsed rows |
+| `a` | Check every listed buildable target, including collapsed projects and offscreen rows |
+| All checkbox | Check every listed buildable target; click again to clear |
 | `x` | Clear all checked targets |
-| `Page Up`, `Page Down` | Scroll the selected log |
-| `Enter`, **MORE** | Open actions, including destinations and build limits |
+| `e`, `z` | Expand all branches or collapse all branches |
+| `t` | Show or hide the live output pane |
+| `Page Up`, `Page Down` | Scroll the selected log when the output pane is visible |
+| `m`, **MORE** | Open actions at any tree level, including destinations and build limits |
 | `s` | Scan a source directory |
+| `i`, **CONVERT** | Convert an existing Gradle project, review the file changes, then confirm to write and scan |
 | `b`, **BUILD** | Choose a build scope; defaults to checked targets when any are checked |
 | `p`, **LIMITS** | Configure concurrent jobs, total memory in MiB, and total Gradle workers |
 | `o`, **LOCATIONS** | List, add, edit, or remove destination configurations; preview delivery |
@@ -153,13 +165,19 @@ Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Bu
 | `Shift+R` | Repaint |
 | `q`, **BACK**, `Esc`, `Ctrl-C` | Return to the previous view; active builds continue |
 
-The bottom action bar keeps **BACK**, **BUILD**, **LIMITS**, and **LOCATIONS** visible at 48 columns. **MORE** appears when space permits; Enter opens the same menu. Buttons activate on matching left-button release, and dragging away cancels the click. Projects menus include **Back** (`q`); Back or Esc returns to the parent menu.
+The bottom action bar keeps **BACK**, **BUILD**, **LIMITS**, and **LOCATIONS** visible at 48 columns. **CONVERT** and **MORE** appear when space permits; `i` opens conversion and `m` opens actions at any tree level. Enter toggles a branch or opens a target's actions. Buttons activate on matching left-button release, and dragging away cancels the click. Projects menus include **Back** (`q`); Back or Esc returns to the parent menu.
 
-With checks, the build menu defaults to **Build N checked targets**; required dependency targets are included automatically. Without checks, choose one target, every target in its project, or all registered targets. **Reuse verified artifacts** starts enabled and rebuilds targets whose inputs or saved artifacts differ. **Packaging** starts at **Local**; choose **Compact** for maximum compression. Both retain the declared checks. Collapsing a project preserves its checks. Checks follow target identities across refreshes, row reordering, and run-history changes. Targets removed from the catalog lose their checks; targets shown only in run history cannot be checked. Checks affect build scope only.
+With checks, the build menu defaults to **Build N checked targets**; required dependency targets are included automatically. Without checks, choose one target, every target in its project, or **Every listed project and target**. The last choice includes only dashboard build choices. **Reuse verified artifacts** starts enabled and rebuilds targets whose inputs or saved artifacts differ. **Packaging** starts at **Local**; choose **Compact** for maximum compression. Both retain the declared checks. Collapsing any branch preserves its checks. Checks follow target identities across refreshes, row reordering, and run-history changes. Targets removed from the dashboard build catalog lose their checks; targets shown only in run history cannot be checked. Checks affect build scope only.
 
 Press `p`, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Memory controls scheduling reservations, not an operating-system limit. See [Build isolation and limits](/servermultiplexor/13-project-builds#build-isolation-and-limits) for how target requirements use the budget.
 
-**LOCATIONS** lists each destination's path, platform, and Minecraft compatibility. Choose a destination to edit it, remove its configuration, or preview delivery from the displayed run. Edits retain the destination name and current values as defaults. Removing configuration requires confirmation and leaves all destination files unchanged. **Add destination** creates a named export directory, managed instance, or shared drop-ins destination. The destination kind, platform, and Minecraft compatibility menus include **Back** (`q`). Back or Esc from an unfinished destination form discards its edits and returns to the menu that opened the form. In text fields, `q` remains ordinary text; use Esc to discard the form.
+**LOCATIONS** shows the saved location selector and destination fields together. At 96 columns or wider, saved locations also appear in a list on the left; at 48 columns, use the compact selector above the fields. Up/Down or Tab moves focus. Left/Right cycles the selected location, kind, or platform. Enter or a field click edits text inline; Enter accepts the text, and Esc cancels that field edit. Existing location names remain fixed. For an export directory, click **[...]** beside **Path**, or press `f` outside a text edit, to open the desktop folder picker. It starts at the current path or its nearest existing parent. Selecting a folder updates the draft; **Save** applies it. Cancel keeps the current path. SSH and desktop sessions without a picker support manual path entry.
+
+**Minecraft version** filters which compatible artifacts are delivered. Export directories allow **Any version (optional)**. A blank instance value uses its server metadata; an entered version must match the instance. Shared drop-ins require an exact version, such as `26.3`. Focus the field for its kind-specific guidance.
+
+Use `a` **New**, `s` **Save**, `r` **Remove**, `p` **Preview**, or `q` **Back**. Leaving or switching locations with unsaved changes asks whether to discard them. Removal asks for confirmation and deletes configuration only, leaving destination files unchanged. Preview requires a saved location without unsaved edits and a selected build run. While editing text, shortcut letters remain ordinary text. A saved location can name an export directory, a managed instance, or shared drop-ins.
+
+Press `i` or **CONVERT**, or choose **Convert Gradle project** from actions. Enter the project root containing `gradlew` and `build.gradle` or `build.gradle.kts`. Conversion displays detected targets and exact file changes before asking to write the declaration and scan the project. See [Declare a Gradle project](/servermultiplexor/13-project-builds#declare-a-gradle-project) for supported source layouts and custom declarations.
 
 Press `d` to choose a saved destination, review the delivery preview, and confirm before applying it. With no destinations, choose **Add destination** or **Back**. Adding a destination saves its configuration; delivery remains a separate action.
 

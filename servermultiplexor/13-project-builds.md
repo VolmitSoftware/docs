@@ -2,7 +2,7 @@
 title: "Multiplexor: Project builds"
 description: "Discover Gradle targets, build isolated source snapshots, and deliver verified artifacts"
 published: true
-date: 2026-10-21T12:13:31.764Z
+date: 2026-10-21T17:07:55.373Z
 tags: servermultiplexor, development, builds
 editor: markdown
 dateCreated: 2026-10-21T00:00:00.000Z
@@ -35,6 +35,7 @@ Use `--targets <project:target,...>` to select exact targets across projects, su
 
 | Command | Form |
 |---|---|
+| Set up | `projects init <path> [--id <id>] [--name <name>] [--java <major>] [--apply] [--json]` |
 | Plan | `projects plan [project] [--all] [--target <id,...>] [--all-targets] [--targets <project:target,...>] [--json]` |
 | Build | `projects build [project] [--all] [--target <id,...>] [--all-targets] [--targets <project:target,...>] [--changed] [--packaging <local\|compact>] [--jobs <count>] [--memory <total-MiB>] [--workers <total-count>] [--wait] [--json]` |
 | Scan | `projects scan <path> [--json]` |
@@ -139,7 +140,11 @@ The destination list shows saved names, kinds, paths, platforms, and Minecraft c
 
 A directory can receive all runtime artifacts or filter them with `--platform` and `--mc`. A managed instance supplies its platform and Minecraft version from server metadata; it must be stopped and unlocked, including for preview. Drop-ins require a platform and exact Minecraft version. Their usual subscriptions and watcher behavior apply when jars change.
 
-In the dashboard, **LOCATIONS** (`o`) lists saved destinations with their paths and filters. Select one for **Edit destination**, **Preview delivery from current run**, or **Remove configuration**. The editor keeps the name fixed and preselects current values. Use **Any Minecraft version** to clear an export's version filter, or **Read instance metadata** to take the instance version. Removal requires confirmation. **Add destination** saves a destination without delivering artifacts.
+In the dashboard, **LOCATIONS** (`o`) shows the saved location selector and editable fields on one screen. Wide terminals also show the saved list on the left; compact terminals keep the selector above the fields. Use Up/Down or Tab to move focus, Left/Right to cycle locations, kinds, or platforms, and Enter or a field click to edit text inline. Enter accepts a text edit; Esc cancels it. Existing location names remain fixed. **Minecraft version** is the delivery compatibility filter. An export directory may use **Any version (optional)**. A blank instance value uses server metadata, and an entered value must match the instance. Shared drop-ins require an exact version, such as `26.3`.
+
+For an export directory, click **[...]** to the right of **Path**, or press `f` outside a text edit, to choose a folder. The native macOS or Windows dialog starts at the current path or its nearest existing parent; Linux desktop sessions use Zenity or KDialog when available. A choice changes the draft until **Save**. Cancel retains the path. Enter paths manually over SSH or when no desktop picker is available.
+
+The editor actions are `a` **New**, `s` **Save**, `r` **Remove**, `p` **Preview**, and `q` **Back**. Leaving or selecting another location with unsaved edits asks whether to discard them. Removal requires confirmation and deletes configuration only. Preview requires a saved location without unsaved changes and a selected run; it uses the same delivery review and confirmation as the dashboard's delivery action. Saving a location does not deliver artifacts. Shortcut letters are ordinary characters while editing a text field.
 
 Preview a delivery, then run it without `--preview` to apply those actions:
 
@@ -157,6 +162,37 @@ Delivery selects successful `runtime` artifacts, checks their saved hashes, and 
 The preview lists installs, replacements, removals, and skipped incompatible artifacts. Delivery preserves unrelated files and refuses to overwrite an unmanaged jar or a managed jar changed outside Multiplexor. It replaces the recorded artifacts for the selected project or target, retaining other targets in an export directory. The destination's `.multiplexor-project-artifacts.json` tracks ownership and checksums. Gradle itself writes build output only; export and server delivery are explicit manager actions.
 
 ## Declare a Gradle project
+
+Set up an existing Gradle root by previewing its declaration, applying it, and scanning it:
+
+```sh
+./start.sh projects init /path/to/Example --id example --name Example --java 25
+./start.sh projects init /path/to/Example --id example --name Example --java 25 --apply
+./start.sh projects scan /path/to/Example
+```
+
+The root must contain a Gradle wrapper and exactly one `build.gradle` or `build.gradle.kts`. Without `--apply`, initialization reads source files and reports candidate targets, exact file changes, and settings to review. It does not run Gradle or write files. `--apply` creates `gradle/multiplexor.gradle` and appends the appropriate Groovy or Kotlin apply statement to the root build file, preserving its existing content. Existing Multiplexor declarations are not overwritten. The CLI writes configuration only; run `projects scan` separately to register it. Add `--json` for the structured preview or result.
+
+In **Projects**, press `i` or **CONVERT**, or choose **Convert Gradle project** from actions. Enter the root containing `gradlew` and `build.gradle` or `build.gradle.kts` to see the same preview. Confirming writes the declaration and then scans the project. Cancelling leaves its files unchanged.
+
+Initialization recognizes these resource descriptors within a root or module:
+
+| Descriptor under `src/main/resources/` | Platform |
+|---|---|
+| `plugin.yml`, `paper-plugin.yml` | Bukkit/Paper plugin |
+| `fabric.mod.json` | Fabric |
+| `META-INF/mods.toml` | Forge |
+| `META-INF/neoforge.mods.toml` | NeoForge |
+| `bungee.yml` | Bungee |
+| `velocity-plugin.json` | Velocity |
+
+Modules with Java, Kotlin, Scala, or Groovy sources and no runtime descriptor become library targets. Nested projects with their own wrapper are set up separately. Target declarations retain candidate directories; scanning keeps only directories belonging to configured Gradle projects and resolves their actual project paths, including renamed paths. Unincluded example and source folders are omitted from the registered targets.
+
+Generated declarations use a separate sandbox for each target and allow targets to run in parallel within the build budget. During scanning, Gradle supplies the configured Java toolchain or source compatibility, the enabled archive task, and its exact output path. `--java <major>` supplies an explicit Java requirement. Each target includes its available `check` task and archive task: `remapJar` for Fabric, or `shadowJar`/`jar` for other modules, with the matching Forge reobfuscation task when present. Targets reserve 4096 MiB and two workers; edit their declarations to change those requirements.
+
+Literal exact Minecraft versions from Fabric descriptors are retained. Other compatibility values require review in `minecraftVersions`; an empty list permits any version during delivery. Projects with custom packaging, version matrices, multiple runtime platforms in one module, local composite dependencies, or additional source inputs require explicit declarations for those settings. Use pure build/check tasks and keep delivery separate from Gradle tasks.
+
+### Custom declarations
 
 Apply the declaration from the root `build.gradle`:
 
@@ -216,15 +252,21 @@ For example, a consumer can pair `dependsOn: ['wormholes:api']` with `artifactPr
 
 ## Dashboard and storage
 
-Open **PROJECTS** from the workspace card, choose **Projects dashboard** in Build & tuning, or run `./start.sh projects dashboard`. Projects form a tree with their targets underneath. Use Right to expand a project and Left to collapse it; Left on a target focuses its project. Focus a target to see its status and live log.
+Open **PROJECTS** from the workspace card, choose **Projects dashboard** in Build & tuning, or run `./start.sh projects dashboard`. A project with one target appears as one direct checkbox row. Projects with multiple targets start collapsed in a tree with indentation and connectors. Two or more Fabric, Forge, or NeoForge targets for the same loader share a collapsible platform row with versions underneath; single loader targets stay directly under the project.
 
-Press Space or click a left checkbox to select one target or every target in a project. A project shows `[-]` when some of its targets are checked. Press `a` or click the all checkbox to check every registered target, including collapsed projects and offscreen rows. Press `x`, or click the checked all checkbox, to clear the checks. The header shows the checked count and configured build limits.
+The dashboard omits a project from build choices when every target declares at least one artifact and every artifact has `role: 'library'`. Mixed projects retain all their targets. Required source dependencies, including VolmLib, are still captured and compiled automatically with their consumers. Standalone library builds remain available through the CLI; saved library jobs appear as inspectable history-only rows.
 
-Press `b` and choose **Build N checked targets** to build the checked targets and their required dependencies. This is the default build choice when targets are checked. With no checks, the menu offers the focused target, its entire project, or all registered targets. **Reuse verified artifacts** starts enabled; turn it off to run Gradle for every selected target. **Packaging** toggles between **Local** and **Compact**, starting at **Local**. Choose these options before the build scope. Collapsing a project preserves its checks. Checks survive refreshes, row reordering, and run-history changes. Removed catalog targets lose their checks, and targets shown only in run history cannot be checked.
+Use Right to expand a branch and Left to collapse it; Left on a leaf or collapsed branch focuses its parent. Enter or a disclosure click toggles a project or platform, while Enter on a target opens its actions. Press `m` or **MORE** to open actions at any tree level. Press `e` to expand all branches or `z` to collapse them all. The live output pane starts visible and follows the focused target. Press `t` to hide or show the pane. Tree width follows its labels when the panes sit side by side; in stacked layouts, a small tree leaves more rows for output. Log lines wrap within the pane.
 
-Press `p`, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Target requirements and the [run budget](/servermultiplexor/13-project-builds#build-isolation-and-limits) determine which targets can run together.
+Press Space or click a left checkbox to select one target or every buildable descendant of a project or platform, including collapsed rows. Checkboxes show `[ ]` for none, `[-]` for some, and `[X]` for all checked. Press `a` or click the all checkbox to check every listed buildable target, including collapsed branches and offscreen rows. Press `x`, or click the checked all checkbox, to clear the checks. The header shows the checked count, configured build limits, and whole-run elapsed time.
 
-Checkboxes control build scope only. Builds do not deliver artifacts automatically; manage named destinations through **LOCATIONS** (`o`), then select one when delivering artifacts. **BACK**, `q`, or `Esc` returns to the previous view while builds continue. Build, limits, and location menus provide the same Back controls. The dashboard also offers source scanning, build limits, run history, retry, cancellation, and delivery preview. See [Dashboard controls](/servermultiplexor/02-dashboard#project-builds).
+Elapsed time starts at submission, falling back to the start time if the submission time is unavailable, and includes queuing and preparation. Parallel jobs share one run timer. The total freezes on success, failure, or cancellation; interrupted runs use the last recorded heartbeat. The history menu shows the same duration when opened.
+
+Press `b` or **BUILD**, then choose **Build N checked targets** to build the checked targets and their required dependencies. This is the default build choice when targets are checked. With no checks, the menu offers the focused target, its entire project, or **Every listed project and target**. The last choice selects only the dashboard's build catalog, excluding library-only projects. **Reuse verified artifacts** starts enabled; turn it off to run Gradle for every selected target. **Packaging** toggles between **Local** and **Compact**, starting at **Local**. Choose these options before the build scope. Collapsing any branch preserves its checks. Checks survive refreshes, row reordering, and run-history changes. Targets removed from the dashboard build catalog lose their checks, and targets shown only in run history cannot be checked.
+
+Press `p` or **LIMITS**, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Target requirements and the [run budget](/servermultiplexor/13-project-builds#build-isolation-and-limits) determine which targets can run together.
+
+Checkboxes control build scope only. Builds do not deliver artifacts automatically; manage named destinations through **LOCATIONS** (`o`), then select one when delivering artifacts. **BACK**, `q`, or `Esc` returns to the previous view while builds continue. Build, limits, and location controls provide a Back action. Press `s` to scan a source folder or `i` / **CONVERT** to convert a Gradle project. The dashboard also offers run history, retry, cancellation, and delivery preview. See [Dashboard controls](/servermultiplexor/02-dashboard#project-builds).
 
 Catalogs, build defaults, destinations, and run records live under `.manager-state/project-builds/` in the Multiplexor workspace. Source snapshots, target copies, artifacts, logs, and Gradle caches live under `~/.multiplexor/project-builds/<workspace-id>/`. Set `MULTIPLEXOR_BUILD_HOME` to choose the parent directory; the workspace-specific subdirectory is retained.
 
