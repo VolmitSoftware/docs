@@ -2,7 +2,7 @@
 title: "Multiplexor: Project builds"
 description: "Discover Gradle targets, build isolated source snapshots, and deliver verified artifacts"
 published: true
-date: 2026-10-21T10:05:02.281Z
+date: 2026-10-21T10:13:59.368Z
 tags: servermultiplexor, development, builds
 editor: markdown
 dateCreated: 2026-10-21T00:00:00.000Z
@@ -98,7 +98,7 @@ A target starts when a job slot, its declared memory reservation, and its worker
 
 Local packaging passes `-PcompactRelease=false`; compact packaging passes `-PcompactRelease=true`. Local mode uses faster compression for the supported Volmit targets. A packed jar that exceeds its size limit also tries compact ZIP compression before enforcing that limit. Compact mode spends more work compressing release jars. Both run the declared tests, shrinking, and artifact-size checks. The mode applies to every target in the run and is recorded with the run.
 
-Gradle task caching is enabled for builds in either packaging mode. Targets share a local task-output cache while retaining separate writable Gradle homes. Completed local builds supply reusable wrapper distributions and a read-only dependency-cache snapshot for later targets. Turning artifact reuse off still allows Gradle to reuse valid task outputs when it runs.
+Gradle task caching is enabled for builds in either packaging mode. Targets share a local task-output cache while retaining separate writable Gradle homes. Completed local builds supply reusable wrapper distributions and a read-only dependency-cache snapshot for later targets. Iris Forge targets retain their Minecraft dependency cache in their private Gradle homes across sandbox builds. Turning artifact reuse off still allows Gradle to reuse valid task outputs when it runs.
 
 Only one project run is active per Multiplexor workspace. Its worker continues when the dashboard or invoking terminal closes. A failed target blocks its dependents while independent targets continue.
 
