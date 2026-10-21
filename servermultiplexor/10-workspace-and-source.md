@@ -2,7 +2,7 @@
 title: "Multiplexor: Workspace and source"
 description: "Workspace layout, source builds, validation, and release behavior"
 published: true
-date: 2026-09-25T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: servermultiplexor, development
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -20,6 +20,7 @@ A workspace separates server instances, cached builds, shared content, and local
 - **Isolated instance**: opts out of all shared state: no dropin sync, no Iris pack symlink, no shared `ops.json` merge. Created with `server create --isolated` or toggled later with `instance isolated <name> true`.
 - **Shared plugin data**: `consumers/plugin-consumers/shared-plugin-data/` holds Iris packs and a merged `ops.json` for non-isolated plugin instances.
 - **Build cache**: `consumers/<profile>/builds/<type>/` holds versioned server jars. `server create --type ...` resolves jars from here; `--auto-build` refreshes from upstream first.
+- **Project build**: a run of registered Gradle targets from captured source files. Each target has isolated writable project and dependency copies, a log, and verified artifacts. Delivery uses an explicit named destination. See [Project builds](/servermultiplexor/13-project-builds).
 - **Content lockfile**: `consumers/<profile>/state/content-lock.yaml` tracks jars installed by `content install` so they can be updated, removed, and re-synced through the existing dropin pipeline.
 - **Backup**: `consumers/<profile>/backups/<instance>/<backup-id>/` stores a restorable snapshot with checksums and a manifest. Backups are used manually and by `instance safe-update`.
 - **Gameplay test**: a Mineflayer scenario run against an actual instance. Built-ins cover connection, command responses, and status effects; custom `.mjs` scenarios can assert any protocol-visible player behavior. Reports stay under ignored per-consumer state.
@@ -51,9 +52,12 @@ consumers/<profile>/              # plugin-consumers, forge-mod-consumers, ...
 .multiplexor/workspace.yaml         # workspace marker
 .multiplexor/pterodactyl-profiles.yaml # non-secret remote panel metadata
 .manager-state/pterodactyl/         # remote monitor trend history
+.manager-state/project-builds/      # project catalog, destinations, run records
 MultiplexorApp/tool/mineflayer/      # pinned Mineflayer harness and scenarios
 active-instance                   # symlink to the active instance
 ```
+
+Project build working data lives outside the source checkout under `~/.multiplexor/project-builds/<workspace-id>/`: source snapshots, target working copies, collected artifacts, logs, and per-target Gradle user homes. `MULTIPLEXOR_BUILD_HOME` changes the parent directory.
 
 ## Build and run
 
@@ -95,5 +99,7 @@ The checked-in version remains the release baseline; CI adds no version commits.
 ## Parallel operations
 
 Independent builds, repository syncs, addon preparation, Remote fleet polling, Drive checks, and transfer-file hashes use rolling pools of up to four workers. A completed operation frees its slot immediately. Port allocation and shared-watcher startup are coordinated; addon/transfer commit and rollback keep their required order. All started operations finish before failure cleanup.
+
+Project builds have separate limits for concurrent targets, total memory reservations, and total Gradle workers. Their [Gradle declarations](/servermultiplexor/13-project-builds#declare-a-gradle-project) control whether targets from one project can overlap.
 
 [All Multiplexor documentation](/servermultiplexor)

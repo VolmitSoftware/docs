@@ -2,7 +2,7 @@
 title: "Builds and content"
 description: "Server build caches, shared drop-ins, addons, and managed downloads"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "servermultiplexor"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -32,6 +32,12 @@ BuildTools checks the Java selected in consumer runtime settings before compilin
 ```bash
 ./start.sh --consumer plugin build paper --mc 26.3
 ```
+
+## Source project builds
+
+Use `projects scan <source-directory>` to register Gradle projects, then `projects plan <project>` or `projects build <project> --all-targets` to select their declared plugin, mod, API, and library targets. Builds capture local source changes and run targets in separate working copies with job, memory, and worker budgets.
+
+A successful build retains its artifacts in the run. Register a named destination with `projects destination`, inspect `projects deploy <run> --to <name> --preview`, and omit `--preview` to deliver. Destinations can be export directories, stopped managed instances, or consumer drop-ins. The manager selects compatible runtime artifacts and tracks the jars it owns. See [Project builds](/servermultiplexor/13-project-builds) for commands and the Gradle declaration.
 
 ## Upstream repositories
 

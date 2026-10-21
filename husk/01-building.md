@@ -2,7 +2,7 @@
 title: "Husk - Building"
 description: "Java requirements, supported targets, Gradle commands, and distribution names"
 published: true
-date: 2026-10-15T20:56:52.181Z
+date: 2026-10-21T00:00:00.000Z
 tags: "husk, building"
 editor: markdown
 dateCreated: 2026-10-15T03:00:00.000Z
@@ -48,7 +48,7 @@ Use `build` or the root loader tasks for distributable jars. Fabric 1.20.1/1.21.
 
 Each loader stores its outputs under `adapters/<loader>/build/<minecraft>/`. Bukkit outputs are under `bukkit/build/libs/`. The artifact names follow the Volmit convention:
 
-```text
+```none
 Husk v0.1.0 [CraftBukkit] 1.20.1-26.3.jar
 Husk v0.1.0 [Forge] 1.20.1+47.4.28.jar
 Husk v0.1.0 [NeoForge] 1.21.1+21.1.262.jar
@@ -57,7 +57,7 @@ Husk v0.1.0 [Forge] 26.3+66.0.8.jar
 Husk v0.1.0 [NeoForge] 26.3+26.3.0.33.jar
 ```
 
-`buildAllToOut` copies the full set to the sibling `PluginOuts` directory. Override that destination with `-PpluginOutDirectory=/path/to/output`. Build commands do not install artifacts into servers.
+Build commands retain artifacts in the project's build directories. After registering the source workspace, run `projects build husk --all-targets` from Multiplexor to build the targets in separate source copies. Select `--target fabric-26.3` to build one target. Export and server delivery use named destinations with a preview; see [Project builds](/servermultiplexor/13-project-builds).
 
 ## VolmLib dependency
 
