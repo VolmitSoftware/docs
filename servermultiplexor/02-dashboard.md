@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-10-21T15:00:00.000Z
+date: 2026-10-21T16:00:00.000Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -145,7 +145,7 @@ Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Bu
 | `s` | Scan a source directory |
 | `b`, **BUILD** | Choose a build scope; defaults to checked targets when any are checked |
 | `p`, **LIMITS** | Configure concurrent jobs, total memory in MiB, and total Gradle workers |
-| `o`, **LOCATIONS** | Configure a named export, instance, or drop-ins destination |
+| `o`, **LOCATIONS** | List, add, edit, or remove destination configurations; preview delivery |
 | `h` | Select a run from history |
 | `l` | Open logs |
 | `r`, `c` | Retry or cancel the selected run |
@@ -155,9 +155,13 @@ Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Bu
 
 The bottom action bar keeps **BACK**, **BUILD**, **LIMITS**, and **LOCATIONS** visible at 48 columns. **MORE** appears when space permits; Enter opens the same menu. Buttons activate on matching left-button release, and dragging away cancels the click.
 
-With checks, the build menu defaults to **Build N checked targets**; required dependency targets are included automatically. Without checks, choose one target, every target in its project, all registered targets, or changed targets. Collapsing a project preserves its checks. Checks follow target identities across refreshes, row reordering, and run-history changes. Targets removed from the catalog lose their checks; targets shown only in run history cannot be checked. Checks affect build scope only. Delivery still requires a named destination and confirmation.
+With checks, the build menu defaults to **Build N checked targets**; required dependency targets are included automatically. Without checks, choose one target, every target in its project, or all registered targets. **Reuse verified artifacts** starts enabled and rebuilds targets whose inputs or saved artifacts differ. **Packaging** starts at **Local**; choose **Compact** for maximum compression. Both retain the declared checks. Collapsing a project preserves its checks. Checks follow target identities across refreshes, row reordering, and run-history changes. Targets removed from the catalog lose their checks; targets shown only in run history cannot be checked. Checks affect build scope only.
 
 Press `p`, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Memory controls scheduling reservations, not an operating-system limit. See [Build isolation and limits](/servermultiplexor/13-project-builds#build-isolation-and-limits) for how target requirements use the budget.
+
+**LOCATIONS** lists each destination's path, platform, and Minecraft compatibility. Choose a destination to edit it, remove its configuration, or preview delivery from the displayed run. Edits retain the destination name and current values as defaults. Removing configuration requires confirmation and leaves all destination files unchanged. **Add destination** creates a named export directory, managed instance, or shared drop-ins destination. Back or Esc returns to the parent menu; Esc from an unfinished form discards its edits.
+
+Press `d` to choose a saved destination, review the delivery preview, and confirm before applying it. With no destinations, choose **Add destination** or **Back**. Adding a destination saves its configuration; delivery remains a separate action.
 
 The worker retains run state and logs when the view closes. Open the view again or use `projects status` to follow it. See [Project builds](/servermultiplexor/13-project-builds) for source snapshots, dependency ordering, artifact reuse, and delivery rules.
 
