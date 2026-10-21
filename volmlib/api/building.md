@@ -2,35 +2,40 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
 ---
 
-The workspace `build-psycho-lt.sh` builds VolmLib first, then runs the plugin builds concurrently. It uses each project's Gradle wrapper and current local VolmLib sources. Java 25, Python 3.10 or newer, and `rsync` are required.
+[Multiplexor](/servermultiplexor/13-project-builds) discovers each project's Gradle targets and builds them from captured local sources. It gives each target separate writable project and dependency copies, including VolmLib, so compatible targets can compile concurrently. Use Java 25 and the additional toolchains required by the selected platform.
 
-## Build and stage the plugins
+## Build workspace projects
 
-Run from the VolmitSoftware workspace:
+Run from the Multiplexor workspace:
 
-```bash
-./build-psycho-lt.sh
+```sh
+./start.sh projects scan /path/to/VolmitSoftware
+./start.sh projects plan --all --all-targets
+./start.sh projects build --all --all-targets --jobs 4 --memory 16384 --workers 8
+./start.sh projects build adapt --target bukkit --wait
 ```
 
-By default, the script includes Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes. Iris runs `build buildAll buildAllToOut`; Wormholes runs `apiJar build buildAll buildAllToOut`, including its compile-time API jar. Other plugins run `test buildPsychoLT`. Successful output tasks stage the plugin jars in the managed `[Minecraft Server]/consumers/` dropin directories and the workspace `PluginOuts/` directory.
+The declarations cover Adapt, BileTools, Gloss, HiddenOre, Husk, Iris, React, ShapedPortals, VolmLib, and Wormholes. Iris, Husk, and Wormholes expose loader and Minecraft targets individually. VolmLib's library and native adapter targets can be built independently. Each declaration selects the final verified artifact, including remapping and packed runtime jars.
 
-Repeat `--project <name>` to build selected plugins. Names are case-sensitive and use the names listed above; use `Wormholes` for the `WormholesPlugin/` checkout. VolmLib is always included. Selecting Adapt also includes Iris and HiddenOre; selecting ShapedPortals also includes Wormholes. Repeated selections build each project once, and all included projects retain their normal tasks and tests.
+Source snapshots include uncommitted changes and untracked source files. The manager captures declared local dependencies with each target: Adapt includes Iris and HiddenOre as well as VolmLib. ShapedPortals waits for `wormholes:api` and receives its verified compile-time artifact. A failed target blocks dependents while independent targets continue.
 
-To build these seven plugins serially:
+`projects status` shows run IDs and results; `projects logs <run> --target adapt:bukkit --follow` follows a target. `projects retry <run>` uses the captured sources from that run. Start another build to include source edits, or add `--changed` to reuse successful artifacts only when their sources, declarations, toolchain, dependencies, and hashes match.
 
-```bash
-./build-psycho-lt.sh --jobs 1 --project Adapt --project Iris --project Wormholes --project React --project HiddenOre --project Gloss --project BileTools
+Gradle writes artifacts under its build directories. To export runtime jars, register a named destination and preview the delivery:
+
+```sh
+./start.sh projects destination plugins-out --path /path/to/pluginsOut
+./start.sh projects deploy <run> --to plugins-out --preview
+./start.sh projects deploy <run> --to plugins-out
 ```
 
-This selection excludes Rift and ShapedPortals. Add `--tests-only` to run only the selected projects' tests and their required dependencies.
-
-VolmLib must pass its build before plugins start. Other project failures are reported while the remaining projects continue. ShapedPortals starts after Wormholes finishes so it can compile against the current Wormholes API jar. Adapt starts after Iris and HiddenOre finish because its build includes those checkouts. A failure in an Iris loader does not prevent Adapt from attempting its own build. Iris runs independent modules in parallel and retains its internal loader ordering.
+Managed instances and consumer drop-ins are also available as explicit destinations. See [Project builds](/servermultiplexor/13-project-builds) for destination filters, resource limits, and the `ext.multiplexor` declaration.
 
 ## Native Billow artifacts
 
@@ -72,7 +77,7 @@ Each build compares the complete ordinary package with its XZ package and writes
 
 When XZ wins, startup verifies and extracts the bundled runtime into the plugin's writable `cache/runtime/` directory. Later starts verify and reuse that cache. The ordinary format loads directly without extraction. Required external libraries retain their normal download and cache behavior.
 
-`assemble` and `build` also produce the selected artifact. Exports for Adapt, BileTools, Gloss, HiddenOre, Iris, React, ShapedPortals, and Wormholes use `<Name> v<version> [CraftBukkit] <supported Minecraft range>.jar`. The plugin version is separate from the supported game range. BileTools and Gloss use the same exported jar on Velocity; the game range describes their server edition. Iris and Wormholes mod exports name their specific game and loader versions. Maven and API artifacts remain ordinary jars for compile-time use. Test fixtures and Iris mod jars are not packed. Install only one artifact for each plugin.
+`assemble` and `build` also produce the selected artifact in `build/libs/`. Multiplexor captures the exact final path declared by the project and exports only artifacts with the `runtime` role. BileTools and Gloss use the same combined jar on their supported servers and Velocity. Mod jars identify their loader and Minecraft target. Maven and API artifacts remain ordinary jars for compile-time use. Test fixtures and Iris mod jars are not packed. Install only one artifact for each plugin.
 
 Enable automatic package selection on the final runtime artifact in the shared packaging configuration:
 
@@ -113,50 +118,24 @@ Declarations must be qualified Java package names with at least three segments. 
 
 Keep these declarations limited to implementation packages. Public contracts and gameplay logic must retain portable types; declaring the whole gameplay package would defeat that separation. For a multi-module plugin, include every runtime module's sources and class outputs in the verification tasks.
 
-## Parallelism
+## Parallel builds and tests
 
-| Option | Default | Meaning |
-|---|---|---|
-| `--jobs` | Up to 4, capped at the logical CPU count | Concurrent plugin builds |
-| `--max-workers` | Iris: logical CPU count; other projects: CPU count divided by jobs, minimum 1 | Gradle worker limit per build |
-| `--test-forks` | Iris: half the logical CPUs, maximum 8; other projects: 2; React: 1 | Separate JVMs per test task, capped by the worker limit |
+Multiplexor's `--jobs`, `--memory`, and `--workers` limits apply across selected targets. Each target declares its memory and worker requirements. Set `sandbox: 'per-target'` and `parallelTargets: true` in its project declaration to permit targets from that project to overlap. Local composite build outputs and Gradle user homes remain separate for each target. See [Build isolation and limits](/servermultiplexor/13-project-builds#build-isolation-and-limits).
 
-On a machine with 16 logical CPUs, the defaults are four plugin builds. Iris receives sixteen Gradle workers and up to eight test JVMs per task; other projects receive four workers and two test JVMs, except React, which uses one. The worker limit also reaches Iris's nested loader builds. Gradle workers cover build tasks and test processes; these limits do not cap every thread created by compiler plugins or application code.
+Use an individual project's wrapper for standalone tasks:
 
-Iris automatically uses all logical CPUs as its Gradle worker limit and half the logical CPUs, capped at eight, as its test JVM limit. Its Bukkit test modules use at most two JVMs and its probe module uses at most four. Explicit `--test-forks` and `--max-workers` values override the automatic overall limits; the Bukkit and probe module limits still apply. React uses one test JVM because its jqwik property tests share a replay database. Other suites honor `--test-forks`, capped by `--max-workers`; `--test-forks 1` runs one JVM per test task. This does not enable JUnit concurrency inside a JVM.
-
-```bash
-./build-psycho-lt.sh --jobs 4 --max-workers 4 --test-forks 2
-./build-psycho-lt.sh --jobs 2 --max-workers 4
-./build-psycho-lt.sh --jobs 1 --test-forks 1 --no-parallel
+```sh
+./gradlew test
+./gradlew build
 ```
 
-Other arguments are forwarded to each top-level Gradle invocation, including `--no-parallel` when serial execution is needed. The runner controls the local dependency paths and worker limit. Use an individual project's wrapper for a build with different dependency resolution.
-
-From the Iris checkout, its Gradle test tasks use the same automatic test JVM limit. Set `-PtestForks=<count>` to override it, capped by Gradle’s `--max-workers` limit and the Bukkit/probe module limits. Artifact copies default to `../PluginOuts/`; `-PpluginOutDirectory=<directory>` overrides that destination. `-Plocation=<consumer-root>` sets the consumer dropin root.
-
-## Run only tests
-
-```bash
-./build-psycho-lt.sh --tests-only
-./build-psycho-lt.sh --tests-only --rerun
-```
-
-These commands run `test` in VolmLib and every selected plugin, or all plugins when `--project` is omitted. They do not request plugin staging tasks or Iris loader artifacts. Compilation and dependency jars required by the tests still run, including the Wormholes API jar consumed by ShapedPortals. Project ordering, concurrency limits, and failure reporting are the same as for the full build.
-
-Add `--rerun` to execute the tests again even when their previous results are up to date, without forcing all compilation tasks to rerun.
-
-Iris's `moddedTest` is part of `check`, so `--tests-only` does not run the `adapters/modded-common` suite. Run `./gradlew moddedTest` or `./gradlew build` from `Iris/` to include it.
-
-Iris defaults to Minecraft 26.3 for mod builds. Add `-PminecraftVersion=1.21.1` to `fabricJar`, `forgeJar`, `neoforgeJar`, or `moddedTest` to select 1.21.1. The target pins are in `gradle/mod-targets.json`; jars are written to `adapters/<loader>/build/<minecraft-version>/libs/`. `./gradlew verifyModdedMatrix` builds and checks all six mod jars and runs the shared mod tests for both Minecraft versions. Gradle runs on Java 25; the 1.21.1 build also requires a Java 21 toolchain.
+For Iris's shared mod tests, use `./gradlew moddedTest`. Its `verifyModdedMatrix` task builds and checks the loader targets declared in `gradle/mod-targets.json`; each jar is written to `adapters/<loader>/build/<minecraft-version>/libs/`. Gradle runs on Java 25, with a Java 21 toolchain also required for the 1.21.1 target.
 
 ## Local dependencies and logs
 
-Each plugin receives a separate temporary VolmLib source copy, including the shared packaging module. The runner removes these copies after the build. Gradle can reuse its shared build cache. No Maven publication or remote VolmLib artifact is required.
+Standalone plugin builds locate VolmLib by walking up from their project root. Set `-PlocalVolmLibDirectory=/path/to/VolmLib` or `VOLMLIB_DIR` to select a checkout explicitly. Use `-PuseLocalVolmLib=false` only when remote dependency resolution is intended.
 
-Each invocation prints its log directory under `.buildlogs/<run>/`. That directory contains one log per project and a `summary.json` with results, exit codes, and durations. A failed build prints the end of its log and makes the script exit nonzero. Only one invocation of the workspace script can run at a time; an interrupt cancels its active builds and releases the lock.
-
-Both `.build-work/` and `.buildlogs/` are local, ignored output.
+Managed builds use the captured local dependencies and retain per-target logs, exit codes, durations, and artifact hashes with the run. Source snapshots, working copies, logs, artifacts, and Gradle caches live under Multiplexor's [project build storage](/servermultiplexor/13-project-builds#dashboard-and-storage).
 
 ## Automatic jar thinning
 
@@ -214,29 +193,29 @@ Compilation omits local-variable debug tables while retaining source locations a
 
 ### Size gate
 
-Every final non-modded plugin distribution must fit the Spigot upload cap of 7,600,000 bytes. A non-modded profile cannot declare `max_bytes` above that cap; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive, so plugins with tighter budgets keep them. Intermediate archives receive size warnings and retain all content checks. Fabric, Forge, and NeoForge distributions have no size restriction. Their profiles use `"modded": true` and omit `max_bytes`. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent staging tasks.
+Every final non-modded plugin distribution must fit the Spigot upload cap of 7,600,000 bytes. A non-modded profile cannot declare `max_bytes` above that cap; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive, so plugins with tighter budgets keep them. Intermediate archives receive size warnings and retain all content checks. Fabric, Forge, and NeoForge distributions have no size restriction. Their profiles use `"modded": true` and omit `max_bytes`. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent build targets and artifact collection.
 
 Canonical budgets, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Use `authoritativeShrinkLibraries.from(...)` when a separately shipped library contains patched definitions that replace inherited compile-classpath definitions. These jars resolve first; unrelated inherited types remain available. Missing authority, overlap with program classes, or competing authoritative definitions fails the build. An authority generated inside the archive task must be registered as that task’s output and produced before shrinking. Review a size increase before changing its budget.
 
 Reports under `build/reports/packaging/` record before/after sizes, removed classes, package sizes, resource bytes, and archive overhead; `<artifact>.json` identifies the jar in its `artifact` field by file name rather than by absolute path, so a report restored from the build cache in another checkout still names the archive sitting beside it. `<artifact>.json` carries a `shrink` block with the applied state or skip reason, bytes before and after, the removed class count, the restored advice classes, and the tolerated warnings. `<artifact>-shrink-rules.txt`, `-seeds.txt`, `-usage.txt`, `-configuration.txt`, and `-warnings.txt` hold the generated rules, the ProGuard seeds, everything ProGuard removed, the effective configuration, and the classified warnings. Reports are local build output.
 
-To build and check a plugin without staging, run from its project directory:
+To build and check a plugin, run from its project directory:
 
 ```bash
 ./gradlew verifyPluginJars
 ```
 
-For Iris, that command covers Bukkit. Use `verifyBukkitArtifact verifyModdedArtifacts` to assemble and check all four platform jars without staging.
+For Iris, that command covers Bukkit. Use `verifyBukkitArtifact verifyModdedArtifacts` to assemble and check all four platform jars in their build directories.
 
 Adapt, BileTools, Gloss, HiddenOre, Iris Bukkit, React, and ShapedPortals release builds enable stronger compression by default.
 
 Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. Verified results are reused from `caches/volmit-packaging/compression/` under the Gradle user home, including across temporary source copies. An empty cache requires the full compression pass. Decompressed contents are verified before reuse and before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. Development packaging skips stronger compression by default in these projects. Set `-PcompactRelease=true` or `false` to override the choice. Compression is an archive-task input, so changing it rebuilds the jar. Reports record both metadata stripping and release compression.
 
-To inspect an existing jar without building or modifying it, run from the workspace:
+To inspect an ordinary jar without building or modifying it, run from the workspace:
 
 ```bash
-python3 gradle/jar_audit.py "PluginOuts/Gloss v3.2.2 [CraftBukkit] 26.1.2-26.3.jar" \
-  --report .buildlogs/jar-audit-gloss.json
+python3 gradle/jar_audit.py "Gloss/build/libs/Gloss-<version>.jar" \
+  --report Gloss/build/reports/packaging/standalone-audit.json
 ```
 
 The standalone audit uses the same policy catalog and also lists the SlimJar runtime dependency coordinates. Runtime downloads reduce the distributed jar size but still require library files on the server.

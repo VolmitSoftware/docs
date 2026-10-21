@@ -2,13 +2,13 @@
 title: Multiplexor
 description: Local and Pterodactyl Minecraft servers, remote profiling, and gameplay tools
 published: true
-date: 2026-09-22T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: servermultiplexor, tools
 editor: markdown
 dateCreated: 2026-09-10T02:40:32.975Z
 ---
 
-Multiplexor manages local Minecraft servers and Pterodactyl fleets from one terminal dashboard or command line. It provides builds, backups, content management, Velocity networks, remote JProfiler captures, and automated gameplay tools.
+Multiplexor manages local Minecraft servers and Pterodactyl fleets from one terminal dashboard or command line. It provides server builds, isolated project builds, artifact delivery, backups, content management, Velocity networks, remote JProfiler captures, and automated gameplay tools.
 
 | | |
 |---|---|
@@ -37,6 +37,7 @@ Multiplexor manages local Minecraft servers and Pterodactyl fleets from one term
 - [10 - Workspace and source *Storage layout, source builds, and validation commands*](/servermultiplexor/10-workspace-and-source)
 - [11 - Scenario suites *Plugin fixtures, acceptance modules, and coverage*](/servermultiplexor/11-scenario-suites)
 - [12 - Session observer *Optional Paper, Folia, and Velocity measurements*](/servermultiplexor/12-session-observer)
+- [13 - Project builds *Gradle targets, isolated parallel builds, live logs, and named destinations*](/servermultiplexor/13-project-builds)
 {.links-list}
 
 ## Downloads and source

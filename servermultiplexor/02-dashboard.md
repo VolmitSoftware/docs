@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-10-13T14:43:35.541Z
+date: 2026-10-21T00:00:00.000Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -102,7 +102,7 @@ Wizard forms suspend the monitor and return when complete or cancelled. Esc work
 |---|---|
 | Local server card | Lifecycle, console, **BACKUPS**, **RUNTIME**, **UPDATE**, **Addons**, port, isolation, and locks |
 | Group **+ New** / **Create first server** | Platform and Minecraft version selection within that group; Fabric and NeoForge already have their platform selected |
-| Workspace card | Build & tuning, Pull latest builds, Create many, Start all stopped, Stop all running, Wipe everything, Diagnostics |
+| Workspace card | Projects, Build & tuning, Pull latest builds, Create many, Start all stopped, Stop all running, Wipe everything, Diagnostics |
 | Plugin workspace **NETWORKS** (`v` in the card) | [Velocity networks](/servermultiplexor/09-proxy-networks) |
 | Isolated server **Copy drop-ins** | One-time per-artifact copy without subscribing to future syncs |
 | Isolated server **RUNTIME** | [Bot swarms and persistent player sessions](/servermultiplexor/08-swarms-and-sessions) |
@@ -127,6 +127,26 @@ Ordinary creates and updates reuse cached builds younger than 24 hours; older or
 Local setup offers an **Addons** checklist before first launch. For an existing server, stop it and open **Addons**. Space, Enter, or click toggles entries; Done downloads and applies the saved per-instance selection. Minecraft versions come from metadata or recognized jar filenames, including Leaf; unknown custom-jar versions are requested inline. ViaBackwards selects ViaVersion automatically. Cancellation or failed installation leaves a new server stopped.
 
 Mohist creation offers persistent Mods/Plugins source subscriptions. Other isolated servers offer one-time artifact copies. See [Builds and content](/servermultiplexor/04-builds-and-content) for sync behavior and catalog configuration.
+
+## Project builds
+
+Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Build & tuning, or run `./start.sh projects dashboard`. The project view lists registered Gradle targets beside the selected target's live log. Build scopes include one target, every target in a project, or all registered projects. Build limits control simultaneous targets, total reserved memory, and total Gradle workers.
+
+| Key | Action |
+|---|---|
+| `↑`, `↓`, wheel, `Home`, `End` | Select a target |
+| `Page Up`, `Page Down` | Scroll the selected log |
+| `Enter` | Open actions, including destinations and build limits |
+| `s` | Scan a source directory |
+| `b` | Choose a build scope |
+| `h` | Select a run from history |
+| `l` | Open logs |
+| `r`, `c` | Retry or cancel the selected run |
+| `d` | Preview delivery to a named destination, then confirm to apply it |
+| `Shift+R` | Repaint |
+| `q`, `Esc`, `Ctrl-C` | Leave the view; active builds continue |
+
+The worker retains run state and logs when the view closes. Open the view again or use `projects status` to follow it. See [Project builds](/servermultiplexor/13-project-builds) for source snapshots, dependency ordering, artifact reuse, and delivery rules.
 
 ## Remote accounts and console
 

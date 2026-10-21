@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, quality profiles, and uninstalling"
 published: true
-date: 2026-10-20T20:25:11.910Z
+date: 2026-10-21T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -84,13 +84,11 @@ The client creates this file in its `config/` folder on first launch and reads i
 
 ## Build distributions
 
-Build with Java 25 from the repository root. `./gradlew buildAllToOut` exports the Bukkit jar and every supported Minecraft version for Fabric, Forge, and NeoForge to the sibling `PluginOuts/` directory. Set `-PpluginOutDirectory=/path/to/output` to choose the output directory. Minecraft versions declared under `gradle/minecraft-versions/` join this build automatically. Fabric, Forge, and NeoForge build at the same time, and each loader builds its game versions one after another.
+Build with Java 25 from the repository root. `./gradlew buildAll` builds and checks Bukkit, the proxy plugin, the API, and every supported Minecraft version for Fabric, Forge, and NeoForge. Minecraft versions declared under `gradle/minecraft-versions/` join the mod matrix automatically. Artifacts remain in their project or adapter build directories.
 
-Repeated builds reuse unchanged verified targets. Changes to sources, test fixtures, dependencies, build settings, or the Java toolchain rebuild the affected targets and run their checks. Use `--rerun-tasks` to force every requested gate to run again.
+Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Native single-platform builds use the selected Minecraft version, for example `./gradlew buildFabric -PminecraftVersion=26.2`. Version-specific tasks append the version with underscores, such as `buildFabric26_2`. `buildModdedVersions` builds every native target.
 
-`buildAll`, `buildPsychoLT`, and the workspace `build-psycho-lt.sh` also compile and export every supported game version. Consumer dropins receive the selected Minecraft version's jar, which defaults to 26.3. Use `-PminecraftVersion=26.2` or `-PminecraftVersion=26.1.2` to select another version for those dropins.
-
-Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Native single-platform builds use the selected Minecraft version, for example `./gradlew buildFabric -PminecraftVersion=26.2`. Every other declared version has its own task with the version appended, for example `./gradlew buildFabric26_2` while 26.3 is selected. `./gradlew buildModdedVersionsToOut` exports all native game versions without building Bukkit or deploying jars. Each native export replaces older Wormholes jars for that loader and game version while retaining other game versions. NeoForge filenames omit the loader's trailing `-beta` suffix, for example `Wormholes v2.2.0 [NeoForge] 26.3+26.3.0.33.jar`.
+Multiplexor exposes each platform and Minecraft version as an isolated target. After registering the source workspace, run `projects build wormholes --all-targets`, or select one with `projects build wormholes --target fabric-26.3`. It also exposes `bukkit`, `api`, and `proxy`. Named destinations handle export and server delivery with a preview; see [Project builds](/servermultiplexor/13-project-builds).
 
 `./gradlew apiJar` creates the Bukkit compile dependency. Native integrations compile against their loader distribution; see [API](/wormholes/20-api-getting-started).
 

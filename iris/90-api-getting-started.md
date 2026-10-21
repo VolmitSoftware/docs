@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Iris documentation: API - Getting Started"
 published: true
-date: 2026-10-12T15:30:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -102,4 +102,4 @@ Call `Engine.requestSave()` from the world-owning thread. It returns `false` whe
 
 ## Build an API artifact
 
-Run `./gradlew irisApi` from the Iris repository to generate the API jar and a Maven repository under `build/api`. Set `DEPLOY_DIR` to choose another local output directory.
+Run `./gradlew irisApi` from the Iris repository to generate the API jar under `build/api/`. Multiplexor exposes the same artifact through `projects build iris --target api`; it records this compile-time artifact with the run and excludes it from runtime delivery. See [Project builds](/servermultiplexor/13-project-builds).

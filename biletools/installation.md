@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Building from source
 
-Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically.
+Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically. The selected `build/libs/BileTools-<version>-packed.jar` contains the server and Velocity editions. After registering the source workspace, `projects build biletools --target bukkit` in Multiplexor builds the same artifact in an isolated source copy. See [Project builds](/servermultiplexor/13-project-builds) for named export and deployment destinations.
 
 ## Platform support
 
@@ -39,7 +39,7 @@ Install the selected distribution jar as the only BileTools jar. Each build auto
 1. Copy `BileTools v<version> [CraftBukkit] 1.20.1-26.3.jar` into `plugins/`.
 2. Restart the server. BileTools writes `plugins/BileTools/biletools.yml` and
    `languages/en_US.toml` on first run.
-3. Build a plugin into `plugins/`.
+3. Copy a built plugin jar into `plugins/`.
 4. Watch the console for the reload.
 
 ## Velocity proxies
