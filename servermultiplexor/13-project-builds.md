@@ -58,7 +58,7 @@ The wrapper uses the inherited `JAVA_HOME`, and Gradle resolves each project's c
 
 ## Build isolation and limits
 
-Each run captures current source files, including uncommitted changes and untracked source files. Build output, Gradle caches, Git metadata, environment files, and local tooling output are excluded. A source symlink must resolve inside the registered source root. Keep sources stable while capture is in progress.
+Each run captures current source files, including uncommitted changes and untracked source files. Git-ignored files, build output, Gradle caches, Git metadata, environment files, and local tooling output are excluded. A source symlink must resolve inside the registered source root. Keep sources stable while capture is in progress.
 
 Each target receives a writable copy of its project and the full set of declared local source dependencies. Local VolmLib, Iris, and HiddenOre composite paths point into that copy. Targets use separate Gradle user homes, retained for later runs, so their writable build directories and Gradle locks do not overlap. These are source working copies on the host, not containers or a security boundary.
 
