@@ -2,7 +2,7 @@
 title: "Multiplexor: Project builds"
 description: "Discover Gradle targets, build isolated source snapshots, and deliver verified artifacts"
 published: true
-date: 2026-10-21T10:13:59.368Z
+date: 2026-10-21T11:20:42.679Z
 tags: servermultiplexor, development, builds
 editor: markdown
 dateCreated: 2026-10-21T00:00:00.000Z
@@ -64,6 +64,8 @@ Use `--targets <project:target,...>` to select exact targets across projects, su
 
 The wrapper uses the inherited `JAVA_HOME`, and Gradle resolves each project's compilation toolchains. The target's `java` metadata declares its requirement; it does not select the wrapper's Java executable.
 
+Builds expose installed JDKs as `JAVA_HOME_<major>` for dependency tools such as Forge's Mavenizer. Discovery uses `JAVA_HOME`, the macOS Java installation list, and `/usr/lib/jvm` on Linux. A discovered home must contain Java, the Java compiler, and version metadata from its release file or macOS bundle. Explicit `JAVA_HOME_<major>` values take precedence. Selected JDK version metadata and explicit overrides participate in artifact reuse checks.
+
 ## Build isolation and limits
 
 Each run captures current source files, including uncommitted changes and untracked source files. Git-ignored files, build output, Gradle caches, Git metadata, environment files, and local tooling output are excluded. A source symlink must resolve inside the registered source root. Keep sources stable while capture is in progress.
@@ -92,7 +94,7 @@ Save workspace defaults or inspect the current limits:
 
 Each supplied setting replaces its saved value; omitted settings remain unchanged. New builds use the saved limits, with command-line build flags taking precedence. Retry retains the original run's limits.
 
-A target starts when a job slot, its declared memory reservation, and its worker allocation fit. The worker allocation is capped by the run's total and passed to Gradle through `--max-workers`. Test-fork limits preserve lower project settings and are capped by the allocated Gradle workers. Memory reservations govern scheduling; they are not an operating-system memory limit.
+A target starts when a job slot, its declared memory reservation, and its worker allocation fit. The worker allocation is capped by the run's total and passed to Gradle through `--max-workers`. Iris mod targets divide that allocation among concurrent nested builds and use each share for the nested JVM's processor count. Test-fork limits preserve lower project settings and are capped by the allocated Gradle workers. Memory reservations govern scheduling; they are not an operating-system memory limit.
 
 `--changed` compares captured project and local dependency sources, additional source inputs, the target declaration, packaging mode, toolchain and host details, and dependency artifact hashes. Reuse also requires the saved artifact files to pass their recorded size and SHA-256 checks. A changed or missing input causes a build.
 
@@ -216,7 +218,7 @@ Press `b` and choose **Build N checked targets** to build the checked targets an
 
 Press `p`, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Target requirements and the [run budget](/servermultiplexor/13-project-builds#build-isolation-and-limits) determine which targets can run together.
 
-Checkboxes control build scope only. Builds do not deliver artifacts automatically; manage named destinations through **LOCATIONS** (`o`), then select one when delivering artifacts. **BACK** (`q`) returns to the previous view while builds continue. The dashboard also offers source scanning, build limits, run history, retry, cancellation, and delivery preview. See [Dashboard controls](/servermultiplexor/02-dashboard#project-builds).
+Checkboxes control build scope only. Builds do not deliver artifacts automatically; manage named destinations through **LOCATIONS** (`o`), then select one when delivering artifacts. **BACK**, `q`, or `Esc` returns to the previous view while builds continue. Build, limits, and location menus provide the same Back controls. The dashboard also offers source scanning, build limits, run history, retry, cancellation, and delivery preview. See [Dashboard controls](/servermultiplexor/02-dashboard#project-builds).
 
 Catalogs, build defaults, destinations, and run records live under `.manager-state/project-builds/` in the Multiplexor workspace. Source snapshots, target copies, artifacts, logs, and Gradle caches live under `~/.multiplexor/project-builds/<workspace-id>/`. Set `MULTIPLEXOR_BUILD_HOME` to choose the parent directory; the workspace-specific subdirectory is retained.
 
