@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T20:03:38.173Z
+date: 2026-10-21T03:11:44.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -726,7 +726,7 @@ Gatherers leave these items alone:
 
 Higher levels add these perks:
 
-- **Essence** (from level 2 with the default `essenceCapByLevel`): Gatherers also collect experience orbs in their gathering area and store the experience as essence, up to your level's cap. The Golem GUI of a Gatherer, or of any golem that still holds essence, shows an Essence button with the stored experience points; click it to take them all as experience. Releasing a golem gives you its essence as experience, or drops it as an experience orb when you are offline, and a bound golem that dies drops its essence as experience.
+- **Essence** (from level 2 with the default `essenceCapByLevel`): Gatherers also collect experience orbs in their gathering area and store the experience as essence, up to your level's cap. The Golem GUI of a Gatherer, or of any golem that still holds essence, shows an Essence button with the stored experience points; click it to take them all as experience. Releasing a golem gives you its essence as experience, or drops it as an experience orb when you are offline, and a bound golem that dies drops its essence as experience. Claimed and released essence qualifies for Discovery XP, Experimental Unity, and Echo of Knowledge when their requirements are met.
 - **Magnet** (level `magnetLevel`): items within `magnetRadius` blocks of a Gatherer that it can pick up fly toward it while the Gatherer stands inside its gathering area and has room to carry them. Region protection must let you interact and break blocks both where the Gatherer stands and where the item lies.
 - **Instant pickup** (level `instantPickupLevel`): a Gatherer picks up items and absorbs experience orbs within `instantPickupRadius` blocks without walking to them.
 - **Carry bonus** (level `carryBonusLevel`): Gatherers carry `carryBonusFraction` more items. The bonus adds to other carry bonuses, such as a Might rune's.

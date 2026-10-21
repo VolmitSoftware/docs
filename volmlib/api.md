@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T03:11:44.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -19,7 +19,7 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `util.scheduling` | Paper/Folia-safe global, region, and entity tasks |
 | `util.parallel` | Batched background work and executor lifecycle |
 | `util.event` | Shared permission-check interaction events |
-| `util.bukkit` | Inventory-view access and entity initialization |
+| `util.bukkit` | Inventory-view access, experience awards, and entity initialization |
 | `util.bukkit.papi` | PlaceholderAPI expansions and snapshot stores |
 | `util.director` | Commands, help, and completion |
 | `util.localization` | Message catalogs, on-demand translations, and player language preferences |
@@ -34,12 +34,21 @@ For the shared build script, concurrency controls, and tests-only runs, see [Wor
 | `util.noise` / `util.interpolation` / `util.stream` | Seeded procedural fields and interpolation |
 | `util.hunk` / `util.math` | Three-dimensional storage, coordinates, and rarity selection |
 | `integration` | Cooperative plugin reload, integration metrics, and Vault economy operations |
+| `projection` | Active virtual viewpoints shared by portal renderers and presentation plugins |
 
 For the canonical procedural APIs, see [Noise and procedural streams](/volmlib/api/noise) and [Hunks and coordinate math](/volmlib/api/hunks).
 
 ## Cooperative plugin reload
 
 `ReloadAware` lets Bukkit plugins report asynchronous readiness, refuse an unload, resume cancelled preparation, and complete committed cleanup before BileTools tears down their registrations. The explicit contract works across separate classloaders and relocated VolmLib packages. See [Cooperative plugin reload](/volmlib/api/reloading) for signatures and scheduling rules.
+
+## Projection viewpoints
+
+Create one `ProjectionViewRegistry(plugin)` for a portal renderer. Call `publish(viewerId, viewId, destinationWorldId, eyeX, eyeY, eyeZ)` with the virtual destination viewpoint of each active, admitted view. Renew it while the view remains active; entries expire after two seconds. Call `removeView(viewerId, viewId)` when a view closes, `removeViewer(viewerId)` when the viewer leaves, and `close()` when the plugin stops.
+
+Presentation plugins create one `ProjectionViewAccess(plugin)` and close it when their service stops. `viewers(worldId, x, y, z, range)` returns each nearby viewer UUID mapped to its closest squared distance. `distanceSquared(viewerId, worldId, x, y, z)` returns the closest active virtual distance, or positive infinity when none exists. Queries use immutable coordinate snapshots and can run outside the viewer's owning thread; evaluate player conditions and change visibility on the viewer's owning thread. Apply existing audience conditions and budgets to virtual viewers.
+
+`ProjectionViewProvider` is registered with Bukkit's service manager. Access discovers providers once and follows service registration events, including providers shaded into other plugin classloaders. Its methods exchange only JDK types.
 
 ## Startup splash helpers
 
@@ -184,6 +193,10 @@ Call economy operations from the correct gameplay thread. A successful withdrawa
 `transfer(player, new TransferRequest(direction, amount, context))` accepts `DEPOSIT` or `WITHDRAW` and a finite positive amount. It checks the captured registration, account existence and, for withdrawals, available funds before invoking the payment method. The result is `SUCCESS` only for a successful response reporting the exact requested amount, `REJECTED` for validation failures or a failed response reporting zero transferred, and `UNKNOWN` for missing, malformed, partial or inconsistent responses or exceptions during the payment call.
 
 The transfer API supplies no persistence, scheduling, precision policy, retry or compensation. Callers must persist intent before payment, run the transfer on the correct owner thread, retain uncertain outcomes for reconciliation and avoid automatically repeating them. The charge/refund API behaves independently of transfers.
+
+## Experience awards
+
+Call `BukkitExperience.award(player, points)` on the player's owning thread to grant positive vanilla experience. It publishes one `PlayerExpChangeEvent`, then grants and returns its final positive amount. Zero or negative inputs publish no event; a listener that sets the amount to zero or below suppresses the grant. The helper does not schedule work or apply Mending. Use ordinary balance setters and deduction or refund methods for bookkeeping, so restoring a balance does not publish a reward.
 
 ## Entity initialization
 

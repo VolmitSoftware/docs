@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T03:11:44.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -147,7 +147,7 @@ Offers gain `max(1, round(powerBase + levelPercent * powerFactor))` virtual book
 
 5 levels · 4 knowledge
 
-Taking a completed grindstone result can return one random enchantment from an enchanted input as a book, plus `round(min(maximumBonusXp, bonusXpBase + levelPercent * bonusXpFactor))` vanilla XP on top of the usual grindstone payout, then starts a `GRINDSTONE` cooldown of `max(minimumCooldownTicks, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks at chance `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Sneaking lets Curse Cleansing take the click instead, and the book level is clamped to the enchantment maximum.
+Taking a completed grindstone result can return one random enchantment from an enchanted input as a book, plus `round(min(maximumBonusXp, bonusXpBase + levelPercent * bonusXpFactor))` vanilla XP on top of the usual grindstone payout, then starts a `GRINDSTONE` cooldown of `max(minimumCooldownTicks, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks at chance `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Sneaking lets Curse Cleansing take the click instead, and the book level is clamped to the enchantment maximum. The bonus XP also qualifies for Discovery XP, Experimental Unity, and Echo of Knowledge when their requirements are met.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

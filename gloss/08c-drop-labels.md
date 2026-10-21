@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-10-20T20:01:15.000Z
+date: 2026-10-21T03:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -128,6 +128,8 @@ The document has one complete fallback `presentation`, zero or more complete con
 
 The highest-priority matching variant wins; ties use the lexicographically smallest ID. Variants are complete presentations and do not inherit from the fallback. `audience.when` decides which nearby players see the Gloss presentation; other players see the vanilla item.
 
+Wormholes portal views into worlds on the same server include real-drop models within the configured viewing range of the destination view. Audience conditions, Bedrock restrictions, and display budgets still apply. An explicit condition such as `viewer.world == drop.world` restricts the audience to players physically in the item's world.
+
 Selection conditions can read `drop.*`, item `subject.*`, source identity, event, world, server, time, and metrics. Audience conditions also have a live `viewer` role and can check permissions, groups, regions, and PlaceholderAPI. See [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 The table below uses paths relative to `presentation`; the same fields exist inside every variant presentation.
@@ -139,7 +141,7 @@ The table below uses paths relative to `presentation`; the same fields exist ins
 | `limits.settledPollIntervalTicks` | `20` | Grounded state and stack check; 2 – 200 |
 | `limits.maxVisualsPerStack` | `3` | Item models per stack; 1 – 5 |
 | `limits.maxVisualsPerChunk` | `128` | Gloss-owned item and text displays per chunk; 8 – 1024 |
-| `limits.viewRange` | `32.0` | Item-model tracking range; 4 – 128 blocks |
+| `limits.viewRange` | `32.0` | Item-model tracking range from the player or an active portal destination view; 4 – 128 blocks |
 | `limits.spread` | `0.18` | Separation of additional stack models; 0 – 1 block |
 | `scale.defaultScale` | `0.4` | Ordinary three-dimensional block models; 0.05 – 2 |
 | `scale.flatItems` | `0.65` | Non-block ItemDisplay models; 0.05 – 2 |

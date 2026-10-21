@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-20T20:25:11.911Z
+date: 2026-10-21T03:25:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -353,7 +353,7 @@ client-side display panes. Opaque skins suppress through-projection.
 Transparent skins can remain in front of it.
 
 Entity projection covers players, living entities, and supported non-living
-entities, including dropped items and world-backed ItemDisplay, BlockDisplay, and TextDisplay entities. Native ClientView shows their contents, transforms, and billboard orientation even when the destination lies outside locally loaded chunks. Enhanced dropped-item visuals from Gloss use these display entities and retain their configured viewer visibility. Projection carries position, pose, velocity, metadata, equipment, passengers,
+entities, including dropped items and world-backed ItemDisplay, BlockDisplay, and TextDisplay entities. Native ClientView shows their contents, transforms, and billboard orientation even when the destination lies outside locally loaded chunks. Enhanced dropped-item visuals from Gloss use these display entities and retain their configured viewer visibility. Gloss measures their viewing range from the destination viewpoint of an active portal, including scaled and nested views; audience conditions and display budgets still apply. Projection carries position, pose, velocity, metadata, equipment, passengers,
 leash relationships, animations, hurt state, item-frame contents, and map data
 where the platform supports them. Range, refresh cadence, and the entity cap come from `[render]`. Partially exposed entities remain visible. Entities also remain visible during world entry and spawning. Local entities behind a standard projection are hidden only when their full bounds are covered by the aperture view; gaps and holes in irregular openings keep them visible. Each resident world keeps its own entities, and singleplayer entities continue to simulate normally while projections are active.
 

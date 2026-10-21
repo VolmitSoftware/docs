@@ -2,7 +2,7 @@
 title: "Tweaks Catalog"
 description: "Event and NMS tweaks with configuration defaults"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T03:11:44.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -66,7 +66,7 @@ This tweak collapses bamboo, sugar cane, cactus, and kelp columns on break or ph
 
 ### `fast-drops`
 
-This tweak sends eligible item drops and XP directly to the player. Each setting controls only its named source.
+This tweak sends eligible item drops and XP directly to the player. Each setting controls only its named source. Direct XP awards notify XP listeners and honor their adjusted point amounts, including zero. They qualify for Adapt Discovery XP, Experimental Unity, and Echo of Knowledge when their requirements are met. Direct awards go to the experience bar; natural orb pickups retain their Mending behavior. On Folia, a kill whose player belongs to another region retains its natural drops and XP.
 
 For block drops, Fast Drops claims individual entries from `BlockDropItemEvent` before transfer. It does not cancel the whole event. It ignores an event another plugin already canceled. This lets another drop-routing plugin own the event first. Adapt Drop-To-Inventory adaptations are one such plugin. Duplicate transfers and deleted items do not occur. Block XP is transferred only for block breaks that no other plugin canceled, so breaks denied by protection plugins never grant XP. With `allowContainerDrops = false`, drops from container blocks such as chests, barrels, and shulker boxes stay on the ground; the check uses the block as it was before it broke.
 
