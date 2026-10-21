@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-10-21T16:00:00.000Z
+date: 2026-10-21T11:21:55.828Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -153,13 +153,13 @@ Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Bu
 | `Shift+R` | Repaint |
 | `q`, **BACK**, `Esc`, `Ctrl-C` | Return to the previous view; active builds continue |
 
-The bottom action bar keeps **BACK**, **BUILD**, **LIMITS**, and **LOCATIONS** visible at 48 columns. **MORE** appears when space permits; Enter opens the same menu. Buttons activate on matching left-button release, and dragging away cancels the click.
+The bottom action bar keeps **BACK**, **BUILD**, **LIMITS**, and **LOCATIONS** visible at 48 columns. **MORE** appears when space permits; Enter opens the same menu. Buttons activate on matching left-button release, and dragging away cancels the click. Projects menus include **Back** (`q`); Back or Esc returns to the parent menu.
 
 With checks, the build menu defaults to **Build N checked targets**; required dependency targets are included automatically. Without checks, choose one target, every target in its project, or all registered targets. **Reuse verified artifacts** starts enabled and rebuilds targets whose inputs or saved artifacts differ. **Packaging** starts at **Local**; choose **Compact** for maximum compression. Both retain the declared checks. Collapsing a project preserves its checks. Checks follow target identities across refreshes, row reordering, and run-history changes. Targets removed from the catalog lose their checks; targets shown only in run history cannot be checked. Checks affect build scope only.
 
 Press `p`, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Memory controls scheduling reservations, not an operating-system limit. See [Build isolation and limits](/servermultiplexor/13-project-builds#build-isolation-and-limits) for how target requirements use the budget.
 
-**LOCATIONS** lists each destination's path, platform, and Minecraft compatibility. Choose a destination to edit it, remove its configuration, or preview delivery from the displayed run. Edits retain the destination name and current values as defaults. Removing configuration requires confirmation and leaves all destination files unchanged. **Add destination** creates a named export directory, managed instance, or shared drop-ins destination. Back or Esc returns to the parent menu; Esc from an unfinished form discards its edits.
+**LOCATIONS** lists each destination's path, platform, and Minecraft compatibility. Choose a destination to edit it, remove its configuration, or preview delivery from the displayed run. Edits retain the destination name and current values as defaults. Removing configuration requires confirmation and leaves all destination files unchanged. **Add destination** creates a named export directory, managed instance, or shared drop-ins destination. The destination kind, platform, and Minecraft compatibility menus include **Back** (`q`). Back or Esc from an unfinished destination form discards its edits and returns to the menu that opened the form. In text fields, `q` remains ordinary text; use Esc to discard the form.
 
 Press `d` to choose a saved destination, review the delivery preview, and confirm before applying it. With no destinations, choose **Add destination** or **Back**. Adding a destination saves its configuration; delivery remains a separate action.
 
