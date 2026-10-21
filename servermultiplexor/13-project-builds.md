@@ -2,7 +2,7 @@
 title: "Multiplexor: Project builds"
 description: "Discover Gradle targets, build isolated source snapshots, and deliver verified artifacts"
 published: true
-date: 2026-10-21T11:52:46.091Z
+date: 2026-10-21T12:13:31.764Z
 tags: servermultiplexor, development, builds
 editor: markdown
 dateCreated: 2026-10-21T00:00:00.000Z
@@ -95,6 +95,8 @@ Save workspace defaults or inspect the current limits:
 Each supplied setting replaces its saved value; omitted settings remain unchanged. New builds use the saved limits, with command-line build flags taking precedence. Retry retains the original run's limits.
 
 A target starts when a job slot, its declared memory reservation, and its worker allocation fit. The worker allocation is capped by the run's total and passed to Gradle through `--max-workers`. Iris mod targets divide that allocation among concurrent nested builds and use each share for the nested JVM's processor count. Test-fork limits preserve lower project settings and are capped by the allocated Gradle workers. Memory reservations govern scheduling; they are not an operating-system memory limit.
+
+Iris Forge targets declare 8 Gradle workers and a 16384 MiB scheduling reservation. They use up to 4 test JVMs, capped by the allocated workers.
 
 `--changed` compares captured project and local dependency sources, additional source inputs, the target declaration, packaging mode, toolchain and host details, and dependency artifact hashes. Reuse also requires the saved artifact files to pass their recorded size and SHA-256 checks. A changed or missing input causes a build.
 
