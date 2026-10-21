@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-21T15:00:00.000Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -130,21 +130,34 @@ Mohist creation offers persistent Mods/Plugins source subscriptions. Other isola
 
 ## Project builds
 
-Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Build & tuning, or run `./start.sh projects dashboard`. The project view lists registered Gradle targets beside the selected target's live log. Build scopes include one target, every target in a project, or all registered projects. Build limits control simultaneous targets, total reserved memory, and total Gradle workers.
+Open **PROJECTS** from the workspace card, choose **Projects dashboard** from Build & tuning, or run `./start.sh projects dashboard`. The project view groups Gradle targets beneath expandable project rows beside the focused target's live log. Check a project to include all its targets, or check individual targets across projects. A project checkbox shows `[-]` when only some of its targets are checked. The header shows the checked count and configured build limits.
 
 | Key | Action |
 |---|---|
-| `↑`, `↓`, wheel, `Home`, `End` | Select a target |
+| `↑`, `↓`, wheel, `Home`, `End` | Focus a project or target |
+| `←`, `→` | Collapse or expand a project; Left on a target focuses its project |
+| `Space`, left checkbox | Toggle one target or every target in a project |
+| `a` | Check every registered target, including collapsed projects and offscreen rows |
+| All checkbox | Check every registered target; click again to clear |
+| `x` | Clear all checked targets |
 | `Page Up`, `Page Down` | Scroll the selected log |
-| `Enter` | Open actions, including destinations and build limits |
+| `Enter`, **MORE** | Open actions, including destinations and build limits |
 | `s` | Scan a source directory |
-| `b` | Choose a build scope |
+| `b`, **BUILD** | Choose a build scope; defaults to checked targets when any are checked |
+| `p`, **LIMITS** | Configure concurrent jobs, total memory in MiB, and total Gradle workers |
+| `o`, **LOCATIONS** | Configure a named export, instance, or drop-ins destination |
 | `h` | Select a run from history |
 | `l` | Open logs |
 | `r`, `c` | Retry or cancel the selected run |
 | `d` | Preview delivery to a named destination, then confirm to apply it |
 | `Shift+R` | Repaint |
-| `q`, `Esc`, `Ctrl-C` | Leave the view; active builds continue |
+| `q`, **BACK**, `Esc`, `Ctrl-C` | Return to the previous view; active builds continue |
+
+The bottom action bar keeps **BACK**, **BUILD**, **LIMITS**, and **LOCATIONS** visible at 48 columns. **MORE** appears when space permits; Enter opens the same menu. Buttons activate on matching left-button release, and dragging away cancels the click.
+
+With checks, the build menu defaults to **Build N checked targets**; required dependency targets are included automatically. Without checks, choose one target, every target in its project, all registered targets, or changed targets. Collapsing a project preserves its checks. Checks follow target identities across refreshes, row reordering, and run-history changes. Targets removed from the catalog lose their checks; targets shown only in run history cannot be checked. Checks affect build scope only. Delivery still requires a named destination and confirmation.
+
+Press `p`, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Memory controls scheduling reservations, not an operating-system limit. See [Build isolation and limits](/servermultiplexor/13-project-builds#build-isolation-and-limits) for how target requirements use the budget.
 
 The worker retains run state and logs when the view closes. Open the view again or use `projects status` to follow it. See [Project builds](/servermultiplexor/13-project-builds) for source snapshots, dependency ordering, artifact reuse, and delivery rules.
 
