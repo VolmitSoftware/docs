@@ -2,13 +2,15 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, quality profiles, and uninstalling"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
 Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration. Players can also install the Fabric, Forge, or NeoForge jar on their client to receive [ClientView](/wormholes/05-projection-modes-settings#clientview) and native menu screens.
+
+Download stable mod jars from [Wormholes releases](https://github.com/VolmitSoftware/Wormholes/releases), or use [Modded Beta](https://github.com/VolmitSoftware/Wormholes/releases/tag/modded-beta) for the current beta. Versioned mod releases use `v<version>` tags; Modded Beta is a rolling prerelease whose assets are replaced with each beta. Both channels contain only Fabric, Forge, and NeoForge jars, labeled by Minecraft version and loader. Use the release list to find stable mod releases rather than GitHub's Latest link.
 
 ## Requirements
 

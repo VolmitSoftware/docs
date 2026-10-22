@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, find every setting, and uninstall"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -20,6 +20,8 @@ Install the plugin, open its in-game editor, or edit the TOML file directly. Eve
 {.grid-list}
 
 ## Install
+
+Download the CraftBukkit jar from the [latest stable release](https://github.com/VolmitSoftware/ShapedPortals/releases/latest), or choose the [current beta](https://github.com/VolmitSoftware/ShapedPortals/releases/tag/beta). Stable releases use `v<version>` tags. The beta is a rolling prerelease whose jar is replaced with each beta; both release channels publish CraftBukkit builds.
 
 Install one ShapedPortals distribution jar. The build selects the smaller ordinary or XZ package. XZ packages verify and extract their bundled runtime into the writable `plugins/ShapedPortals/cache/runtime/` directory, then reuse that cache on later starts. Extraction works offline; dependency and language downloads are separate.
 

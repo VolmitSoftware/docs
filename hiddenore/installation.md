@@ -2,7 +2,7 @@
 title: "HiddenOre: Installation"
 description: "Requirements, first-run setup, and uninstalling"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "hiddenore, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,9 +18,11 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Install
 
+Download the CraftBukkit jar from the [latest stable release](https://github.com/VolmitSoftware/HiddenOre/releases/latest), or choose the [current beta](https://github.com/VolmitSoftware/HiddenOre/releases/tag/beta). Stable releases use `v<version>` tags. The beta is a rolling prerelease whose jar is replaced with each beta; both release channels publish CraftBukkit builds.
+
 Install the selected distribution jar as the only HiddenOre jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/HiddenOre/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
-1. Put `HiddenOre v<version> [CraftBukkit] 26.1.2-26.3.jar` in `plugins/`.
+1. Put `HiddenOre-<version>-bukkit.jar` in `plugins/`.
 2. Start the server once.
 3. Edit `plugins/HiddenOre/hiddenore.toml`.
 4. Save, and check the console for validation errors.

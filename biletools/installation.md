@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Building from source
 
-Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically. The selected `build/libs/BileTools-<version>-packed.jar` contains the server and Velocity editions. After registering the source workspace, `projects build biletools --target bukkit` in Multiplexor builds the same artifact in an isolated source copy. See [Project builds](/servermultiplexor/13-project-builds) for named export and deployment destinations.
+Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically. The selected `build/libs/BileTools-<version>-packed.jar` contains the server and Velocity editions. Use `./gradlew prepareRelease` to build only the CraftBukkit distribution for publication. After registering the source workspace, `projects build biletools --target bukkit` in Multiplexor builds the universal artifact in an isolated source copy. See [Project builds](/servermultiplexor/13-project-builds) for named export and deployment destinations.
 
 ## Platform support
 
@@ -34,9 +34,11 @@ Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibl
 
 ## Install
 
+Download the CraftBukkit jar from the [latest stable release](https://github.com/VolmitSoftware/BileTools/releases/latest), or choose the [current beta](https://github.com/VolmitSoftware/BileTools/releases/tag/beta). Stable releases use `v<version>` tags. The beta is a rolling prerelease whose jar is replaced with each beta; both release channels publish CraftBukkit builds.
+
 Install the selected distribution jar as the only BileTools jar. Each build automatically selects the smaller ordinary or XZ package. If it selects XZ, startup verifies and extracts the bundled runtime to `plugins/BileTools/cache/runtime/`, which must be writable. Later starts reuse the verified cache. Extraction needs no network access. Downloads for other libraries and language files still apply.
 
-1. Copy `BileTools v<version> [CraftBukkit] 1.20.1-26.3.jar` into `plugins/`.
+1. Copy `BileTools-<version>-bukkit.jar` into `plugins/`.
 2. Restart the server. BileTools writes `plugins/BileTools/biletools.yml` and
    `languages/en_US.toml` on first run.
 3. Copy a built plugin jar into `plugins/`.
@@ -44,7 +46,7 @@ Install the selected distribution jar as the only BileTools jar. Each build auto
 
 ## Velocity proxies
 
-The same jar runs on a Velocity proxy 3.4 or newer, including 4.x. Copy it into the proxy's `plugins/` directory and start the proxy. Proxy settings live in `plugins/biletools/biletools.json`, not `biletools.yml`, and the proxy edition uses the libraries Velocity already provides. See [Velocity proxy](/biletools/velocity).
+The universal jar from `./gradlew build` runs on a Velocity proxy 3.4 or newer, including 4.x. Use that jar for a proxy; the stable and beta release downloads contain only the CraftBukkit edition. Copy the universal jar into the proxy's `plugins/` directory and start the proxy. Proxy settings live in `plugins/biletools/biletools.json`, not `biletools.yml`, and the proxy edition uses the libraries Velocity already provides. See [Velocity proxy](/biletools/velocity).
 
 ## Runtime libraries
 
