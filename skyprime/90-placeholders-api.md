@@ -2,58 +2,60 @@
 title: SkyPrime - Placeholders and API
 description: Optional PlaceholderAPI values and island service boundaries
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, placeholders, api
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
 ---
 
-SkyPrime registers its expansion only when PlaceholderAPI is enabled. Resolution uses the player's cached island snapshot and performs no disk I/O. A player without an island receives an empty island value; `%skyprime_favorites_count%` remains available independently of island membership.
+SkyPrime registers its PlaceholderAPI expansion whenever PlaceholderAPI is enabled, including when PlaceholderAPI loads after SkyPrime. Values come from cached island and social state; resolving a placeholder performs no disk I/O and loads no world. Keys are lowercase and dotted. Any value that cannot be produced reads `---`.
 
-| Placeholder | Value |
-| --- | --- |
-| `%skyprime_id%` | Permanent island UUID |
-| `%skyprime_name%` | Island name |
-| `%skyprime_owner%` | Owner UUID |
-| `%skyprime_owner_name%` | Owner name observed since plugin startup, falling back to the UUID when unknown |
-| `%skyprime_members%` | Team size including the owner |
-| `%skyprime_members_max%` | Current team capacity including upgrades |
-| `%skyprime_homes%` / `%skyprime_homes_max%` | Saved home count / current home capacity |
-| `%skyprime_upgrade_expansion%` | Purchased island-size levels |
-| `%skyprime_upgrade_team%` | Purchased team-capacity levels |
-| `%skyprime_upgrade_homes%` | Purchased home-capacity levels |
-| `%skyprime_upgrade_generator%` | Purchased generator levels |
-| `%skyprime_upgrade_speed%` | Purchased movement-speed levels |
-| `%skyprime_upgrade_jump%` | Purchased jump levels |
-| `%skyprime_upgrade_crop%` | Purchased crop-growth levels |
-| `%skyprime_upgrade_fly%` | Purchased island-flight unlock |
-| `%skyprime_upgrade_drops%` | Purchased mob-resource-drop levels |
-| `%skyprime_upgrade_spawner%` | Purchased spawner-delay levels |
-| `%skyprime_generator_boost%` | Extra generator tiers from upgrades |
-| `%skyprime_nether_unlocked%` / `%skyprime_end_unlocked%` | Whether the island has a persisted unlock for that dimension |
-| `%skyprime_nether_available%` / `%skyprime_end_available%` | Global enablement combined with an unrequired unlock or a persisted purchase |
-| `%skyprime_value%` | Last reconciled value of placed blocks and directly stored block-inventory items |
-| `%skyprime_level%` | Integer value divided by the configured level divisor |
-| `%skyprime_peak_level%` | Highest recorded island level, retained through reset and transfer |
-| `%skyprime_milestones_claimed%` | Number of persisted milestone claim IDs, including removed definitions |
-| `%skyprime_milestones_available%` | Configured, unclaimed milestones whose required level is at or below the recorded peak |
-| `%skyprime_milestone_next_level%` | Lowest configured unclaimed milestone level, or zero when none remain |
-| `%skyprime_milestone_next_remaining%` | Levels still needed for that milestone, based on the recorded peak and floored at zero |
-| `%skyprime_size%` | Current square width, `2 × radius + 1` |
-| `%skyprime_size_max%` | Configured maximum square width |
-| `%skyprime_bank%` | Internal credit balance |
-| `%skyprime_votes%` | Vote count |
-| `%skyprime_favorites_count%` | Personal saved-island count, excluding deleted islands; available without island membership |
-| `%skyprime_rating%` | Island average stars with two decimal places, or `0.00` without contributing ratings |
-| `%skyprime_rating_count%` | Number of contributing visitor ratings |
-| `%skyprime_popular_score%` | `(star total + 15) / (rating count + 5)`, with two decimal places |
-| `%skyprime_favorited%` | Whether the requesting player has favorited this island (`true` or `false`) |
-| `%skyprime_state%` | Current lifecycle state |
-| `%skyprime_rank%` | Cached one-based material-value ranking position, or zero when unranked |
-| `%skyprime_bank_rank%` | Cached one-based bank-balance ranking position, or zero when unranked |
-| `%skyprime_votes_rank%` | Cached one-based vote ranking position, or zero when unranked |
+| Placeholder | Type | Example | Reads `---` when |
+| --- | --- | --- | --- |
+| `%skyprime_available%` | boolean | `true` | never; `false` while SkyPrime is starting, reloading or stopped |
+| `%skyprime_player.favorites%` | count | `4` | SkyPrime is not ready; counts saved islands that still exist, with or without an island of the player's own |
 
-Prefix any island suffix with `current_` to read the island the player is physically visiting, for example `%skyprime_current_name%` or `%skyprime_current_owner_name%`. Ranking variants are `%skyprime_current_rank%`, `%skyprime_current_bank_rank%` and `%skyprime_current_votes_rank%`. Presence updates on player movement, travel and joining. These placeholders read the cached presence and island records without accessing another region's player location. They return an empty value outside active islands.
+`%skyprime_island.<key>%` describes the requesting player's island. `%skyprime_current.<key>%` describes the island the player is standing on, which updates on movement, travel and joining without reading another region's player location. Both read `---` while SkyPrime is not ready, when the player has no island or is not on an active island, and for an unknown key.
+
+| Key | Type | Example | Value |
+| --- | --- | --- | --- |
+| `id` | text | `0f6c…` | Permanent island UUID |
+| `name` | text | `Garden Market` | Island name |
+| `owner` | text | `8d21…` | Owner UUID |
+| `owner-name` | text | `Steve` | Owner name observed since startup, falling back to the UUID |
+| `state` | text | `ACTIVE` | Lifecycle state |
+| `value` | count | `10450` | Last reconciled value of placed blocks and directly stored block-inventory items |
+| `level` | count | `104` | Value divided by `runtime.levelDivisor` |
+| `peak-level` | count | `120` | Highest recorded level, kept through reset and transfer |
+| `milestones.claimed` | count | `2` | Claimed milestone IDs, including removed definitions |
+| `milestones.available` | count | `1` | Enabled, unclaimed milestones at or below the peak level |
+| `milestones.next-level` | count | `50` | Lowest enabled unclaimed milestone level, or `0` when none remain |
+| `milestones.next-remaining` | count | `30` | Levels still needed for that milestone, never below `0` |
+| `size` | count | `97` | Current square width, `2 × radius + 1` |
+| `size-max` | count | `385` | Width at `islands.maxRadius` |
+| `members` | count | `3` | Team size including the owner |
+| `members-max` | count | `4` | Team capacity including upgrades |
+| `homes` | count | `1` | Saved homes |
+| `homes-max` | count | `2` | Home capacity including upgrades |
+| `upgrade.<track>` | count | `2` | Purchased levels for `expansion`, `team`, `homes`, `generator`, `speed`, `jump`, `crop`, `fly`, `drops` or `spawner` |
+| `generator-boost` | count | `1` | Extra generator tiers from upgrades |
+| `nether.unlocked`, `end.unlocked` | boolean | `true` | The island holds a saved unlock for that dimension |
+| `nether.available`, `end.available` | boolean | `false` | The dimension is enabled server-wide and unlocked, or needs no unlock |
+| `specialization.id` | text | `builder` | Selected path ID; a removed definition keeps its ID |
+| `specialization.name` | text | `Builder` | Path display name; `---` when none is selected or the definition was removed |
+| `specialization.active` | boolean | `true` | The path's bonuses currently apply |
+| `specialization.cooldown-seconds` | count | `3600` | Seconds until the path can change, rounded up |
+| `bank` | count | `25000` | Internal credit balance |
+| `votes` | count | `12` | Vote count |
+| `rating` | number | `4.25` | Average stars to two decimals, `0.00` without ratings |
+| `rating-count` | count | `8` | Contributing visitor ratings |
+| `popular-score` | number | `3.85` | `(star total + 15) / (rating count + 5)` to two decimals |
+| `favorited` | boolean | `false` | The requesting player has favorited the island |
+| `rank` | count | `3` | Material-value ranking position, or `0` when unranked |
+| `bank-rank` | count | `5` | Bank-balance ranking position, or `0` when unranked |
+| `votes-rank` | count | `1` | Vote ranking position, or `0` when unranked |
+
+For example, `%skyprime_island.level%` shows the player's island level and `%skyprime_current.owner-name%` names the owner of the island they are visiting.
 
 ## Java API
 
@@ -89,11 +91,11 @@ Reward states are `QUEUED`, `DELIVERING` and `REVIEW`. `beginRewardDelivery`, `c
 
 `SkyPrime.events()` exposes the event service. `effects(UUID islandId)` returns immutable `EventEffects`; `active(UUID islandId)` returns immutable applicable `ActiveEvent` records with `MANUAL`, `SCHEDULED`, `PURCHASE` or `TOKEN` source. Pass `null` for server-only effects. `definitions()` returns the current immutable catalog, and `nextStart(id, islandId)` returns an optional scheduled start in epoch milliseconds. Reads perform no disk I/O or world loading. `start(id, islandId)` and `stop(id, islandId)` return futures that complete after durable writes; these are privileged operations, so integrations must authorize the caller and validate island existence/state themselves. `stop` affects manual timers only. `healthy()` exposes storage availability. `IslandService.eventEffects(UUID)` delegates the configured effect supplier. There are no event-specific PlaceholderAPI keys.
 
-`IslandService.quoteBooster(actor, id, BoosterScope, token)` validates island membership, `UPGRADES`, the configured purchase/redemption path, cooldown, current activation and funds or tokens. `activateBooster(actor, quote)` revalidates and publishes the bank/token debit, timer and cooldown together; await `flush()` before acknowledging durability. Integrations must separately enforce Bukkit buy/redeem and server-scope permissions. `grantBoosterTokens(islandId, id, scope, amount, actor)` and `stopBooster(id, islandId, actor)` are privileged domain operations requiring caller authorization and a subsequent flush. A null stop target removes matching server-sponsored activations. `boostersSnapshot()` supplies immutable indexed sources; no world loading is required. `allActive()` on the event service includes all effective scopes for announcement consumers. The command stop flow combines manual and wallet stops; `EventService.stop` itself remains manual-only. Paid/token sources remain reserved but ineffective until their save succeeds. `MissionRewardDelivery.validateItem` and `createItem` provide the shared mission/fishing item contract; build or deliver Bukkit items on the appropriate owning thread.
+`IslandService.quoteBooster(actor, id, BoosterScope, token)` validates island membership, `UPGRADES`, the configured purchase/redemption path, cooldown, current activation and funds or tokens. `activateBooster(actor, quote)` revalidates and publishes the bank/token debit, timer and cooldown together; await `flush()` before acknowledging durability. Integrations must separately enforce Bukkit buy/redeem and server-scope permissions. `grantBoosterTokens(islandId, id, scope, amount, actor)` and `stopBooster(id, islandId, actor)` are privileged domain operations requiring caller authorization and a subsequent flush. A null stop target removes matching server-sponsored activations. `boostersSnapshot()` supplies immutable indexed sources; no world loading is required. `allActive()` on the event service includes all effective scopes for announcement consumers. The command stop flow combines manual and wallet stops; `EventService.stop` itself remains manual-only. A paid or token activation takes effect only after its save succeeds. `MissionRewardDelivery.validateItem` and `createItem` provide the shared mission/fishing item contract; build or deliver Bukkit items on the appropriate owning thread.
 
 The source API is part of this project version. No stable binary compatibility contract is promised for future releases.
 
-`SkyPrime.environment().difficulty(islandId)` reads the cached `DifficultyMode` preference. `setDifficulty(actor, mode)` requires the actor to own or manage an active island and returns a future that completes after persistence. Modes are `SERVER`, `PEACEFUL`, `EASY`, `NORMAL` and `HARD`. The environment service applies the selected native difficulty to loaded dimensions on its scheduled refresh; completion of the save future does not mean that world application has already run. `SERVER` follows the primary `minecraft:overworld` difficulty.
+`SkyPrime.environment().difficulty(islandId)` reads the cached `DifficultyMode` preference. `setDifficulty(actor, mode)` requires the actor to hold the `ENVIRONMENT` action on an active island and returns a future that completes after persistence. Modes are `SERVER`, `PEACEFUL`, `EASY`, `NORMAL` and `HARD`. The environment service applies the selected native difficulty to loaded dimensions on its scheduled refresh; completion of the save future does not mean that world application has already run. `SERVER` follows the primary `minecraft:overworld` difficulty.
 
 `SkyPrime.gamerules().selection(islandId, rule)` returns the durable `GameRuleValue`; `effectiveSelection` resolves operator defaults and bounds, while `effectiveValue` also uses the cached primary-world value. Values have `SERVER`, `BOOLEAN` or `INTEGER` kind and factories `server()`, `bool(boolean)` and `integer(int)`. `IslandGameRule.parse(String)` validates command syntax and catalog bounds. `policy()` exposes configured rule policies and `supported(rule)` reports native capability. `set(actor, rule, value)` requires an active teammate with `ENVIRONMENT`, rechecks policy and returns a persistence future. `compareAndSet(actor, rule, value, expectedSelection, expectedPolicyRule)` also rejects changed policies or pending/durable preference changes. World application follows separately every 40 ticks. `remove(islandId)` clears deleted-island choices; `healthy()` reports storage health. See [Island gamerules](/skyprime/14-gamerules).
 
@@ -138,7 +140,7 @@ Low-level `beginContractDelivery`, `completeContractDelivery`, `cancelContractDe
 
 `SkyPrime.visitorPresence().rate(Player, UUID, int)` checks the qualified current visit before delegating to social storage and returns `CompletableFuture<RatingSummary>`. Call it on the player-owning thread. `remainingSeconds(Player, UUID)` is a nonmutating, whole-second remaining-time read on that same thread. Progress is continuous and memory-only; reading it does not advance the timer. `healthy()` on social storage reports availability; `flush()` waits for previously queued social operations.
 
-The rating, rating-count, popularity-score and favorited placeholders also accept `current_`, for example `%skyprime_current_rating%` and `%skyprime_current_favorited%`. `favorites_count` is a player-level key without a `current_` variant. Popularity score is a numeric value independent of whether the island meets the configured minimum count for the leading directory group.
+The `rating`, `rating-count`, `popular-score` and `favorited` placeholder keys work under both `island.` and `current.`, for example `%skyprime_current.rating%`. `%skyprime_player.favorites%` is player-level and has no island variant. Popularity score is a numeric value independent of whether the island meets the configured minimum count for the leading directory group.
 
 ## Island activity API
 
@@ -152,6 +154,6 @@ Privileged recovery and deletion APIs require an explicit actor: `IslandService.
 
 ## Specialization API
 
-`%skyprime_specialization_id%`, `%skyprime_specialization_name%`, `%skyprime_specialization_active%` and `%skyprime_specialization_cooldown_seconds%` describe the member island; `current_` variants describe the current island. A removed definition retains its ID but has an empty name and inactive benefits. Cooldown seconds round remaining time upward.
+`%skyprime_island.specialization.id%`, `%skyprime_island.specialization.name%`, `%skyprime_island.specialization.active%` and `%skyprime_island.specialization.cooldown-seconds%` describe the member island; the `current.` forms describe the current island. A removed definition keeps its ID, reads `---` for its name and has inactive benefits. Cooldown seconds round remaining time upward.
 
 `IslandService` exposes `specializationPolicy()`, `specializationView(Island)`, `specializationActive(Island)`, `specializationCost(Island, String)`, `specializationAvailableAt(Island)` and `specializationCooldownMillis(Island)`. Call `specializationQuote(UUID, String)` and `specialize(UUID, SpecializationQuote)` for validated changes, then await `flush()` before acknowledging durability. `effectiveUpgradeLevel(Island, UpgradeTrack)` includes eligible temporary levels; `eventEffects(UUID)` combines event/booster effects with specialization effects. `IslandService.Options` takes a specialization-policy supplier after its contract-policy supplier.

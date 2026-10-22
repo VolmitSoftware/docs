@@ -2,7 +2,7 @@
 title: SkyPrime - Operations and recovery
 description: Persistence, interrupted jobs and diagnostics
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, operations, recovery
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -16,15 +16,15 @@ SkyPrime persists island identity, membership and progression in one versioned a
 
 ## Runtime library cache
 
-Required VolmLib classes remain bundled in the plugin jar, minimized and relocated. SlimJar loads Gson, TOML and Adventure before SkyPrime enables, downloading missing libraries into `plugins/SkyPrime/.libs/`. If startup cannot download a required library, check repository access and the startup exception before retrying.
+Required VolmLib classes remain bundled in the plugin jar, minimized and relocated. SlimJar loads Gson, TOML and Adventure before SkyPrime enables, downloading missing libraries into `plugins/SkyPrime/.libs/`. Startup stops with a console error when a required library cannot be downloaded.
 
 Packed distributions also extract their embedded plugin runtime into `plugins/SkyPrime/cache/runtime/<sha256>.jar`. This directory is separate from downloaded libraries and island storage.
 
-Preserve `.libs/` for offline restarts or server moves. Removing it requires downloading those libraries again, and upgrading the plugin may introduce a dependency version that is not cached. Include the cache when preparing an offline installation. It contains runtime libraries; island recovery still requires matching metadata and terrain backups.
+Preserve `.libs/` for offline restarts or server moves. Removing it requires downloading those libraries again, and a plugin version that needs a library missing from the cache downloads it on startup. Include the cache when preparing an offline installation. It contains runtime libraries; island recovery still requires matching metadata and terrain backups.
 
 ## Storage and backups
 
-`storage/islands.json` is the authoritative island aggregate, using schema version 9. Writes use a serialized worker and atomic replacement; `storage/islands.json.backup` retains the previous committed aggregate. Bursts retain one write in progress and one coalesced latest snapshot. Success replies for persisted player changes wait for the corresponding snapshot to become durable; invitations, ownership offers and temporary guest access remain in memory. Owner creation/reset history survives island deletion. Permanent guests, mission periods/completions, upgrade levels, purchased dimension unlocks, highest recorded levels, milestone claim IDs, research completion IDs with frozen exclusive groups and timestamps, and the bounded credit ledger are part of the aggregate. Mission progress stores named objective counters with their type and target signatures, the schedule identity, current window and lifetime completions.
+`storage/islands.json` is the authoritative island aggregate, using schema version 9. Writes replace the file atomically; `storage/islands.json.backup` retains the previous committed aggregate. Success replies for persisted player changes wait for the corresponding snapshot to become durable; invitations, ownership offers and temporary guest access remain in memory. Owner creation/reset history survives island deletion. Permanent guests, mission periods/completions, upgrade levels, purchased dimension unlocks, highest recorded levels, milestone claim IDs, research completion IDs with frozen exclusive groups and timestamps, and the bounded credit ledger are part of the aggregate. Mission progress stores named objective counters with their type and target signatures, the schedule identity, current window and lifetime completions.
 
 Loading validates the current schema, numeric ranges, UUIDs, unique membership and island identities. Corrupt current data stops initialization instead of silently loading a backup. An I/O failure stops subsequent domain mutations and is visible in `/sky debug status`.
 
@@ -67,13 +67,19 @@ Use `/sky admin inspect <UUID>` to inspect persisted state. `/sky admin resume <
 
 Generation applies blocks through scheduled chunk tasks. Reset and deletion evacuate players, unload the owned worlds and remove their files before regeneration or final deletion. At most two world jobs run concurrently; `runtime.blocksPerTick` applies to each job. One value reconciliation runs at a time. `/sky debug status` lists active job counts and failed job details.
 
+Stopping the server waits up to 10 seconds for queued world work. A world job interrupted by shutdown logs one warning and keeps its reservation; its saved job retries on the next startup. Value scans and world loads cancelled by shutdown are not reported as failures.
+
 ## Diagnostics
 
-Library bootstrap and the cyan/white startup splash use SkyPrime's plugin logger. The splash pairs block lettering with startup metadata and follows `general.splashScreen`. Library loading completes before services enable.
+Before downloading libraries, SkyPrime checks the server version and Java runtime and refuses to load outside Minecraft 26.1 through 26.3 or below Java 25, naming both values in the console. Library loading completes before services enable.
 
-`/sky debug version` shows the installed version. `/sky version` is the hidden shortcut; both require `skyprime.use`. `/sky debug status` and `/sky debug dump` require `skyprime.debug`.
+When startup finishes, the console prints the cyan and white splash with the version, server, supported Minecraft range, Java version and date, followed by one ready line with the startup time and island count. `presentation.splashScreen` turns the splash off, and `presentation.alternateSplashes = false` keeps the standard design. A failed startup always prints the standard splash, followed by the failure and its stack trace.
 
-`/sky debug dump` creates a local shared-format report containing server and plugin diagnostics plus island counts, persistence health, managed worlds and scheduling information. Upload requires both `general.debugUploadEnabled = true` and an explicit `upload=true` request. Local reporting works without upload access.
+`/sky status` summarizes the configuration toggles, island and world counts, compatibility, PlaceholderAPI and Vault state, and storage health. It requires `skyprime.command`. `/sky debug version` shows the installed version, and `/sky version` is its hidden shortcut; both require `skyprime.command`. `/sky debug status` and `/sky debug dump` require `skyprime.debug`.
+
+`/sky debug dump` creates a local shared-format report containing server and plugin diagnostics, SkyPrime's service states, island counts, persistence health, managed worlds, scheduling information and the effective configuration. Upload requires both `debug.uploadEnabled = true` and an explicit `upload=true` request. Local reporting works without upload access.
+
+BileTools can hot-reload SkyPrime while no island world job is running; SkyPrime refuses the reload while a creation, reset or deletion is in progress.
 
 ## Custom role storage
 
@@ -89,7 +95,7 @@ Library bootstrap and the cyan/white startup splash use SkyPrime's plugin logger
 
 ## Starter preview recovery
 
-Preview worlds use `<worlds.directory>/previews/<session UUID>/<dimension>` under the current server world layout. They are separate from live island ownership indexes and retain owned-world journals under `plugins/SkyPrime/preview-worlds/`. Session cleanup unloads and removes preview terrain; chunk tickets remain until safe unloading so unsaved terrain cannot disappear during a session. Startup processes retained journals after an interruption. Previewing does not change island aggregate schema 9.
+Preview worlds use `<worlds.directory>/previews/<session UUID>/<dimension>` under the current server world layout. They are separate from live island ownership indexes and retain owned-world journals under `plugins/SkyPrime/preview-worlds/`. Session cleanup unloads and removes preview terrain; chunk tickets remain until safe unloading so unsaved terrain cannot disappear during a session. Startup processes retained journals after an interruption.
 
 A player persistent-data marker, `skyprime:starter_preview`, records the return location, game mode and flight state before entry. Inventory and experience remain with the player; recovery does not replay a copied inventory. Leaving, timeout, permission loss, quitting and shutdown attempt restoration. Reconnect recovery uses a saved marker when a previous session was interrupted. Returns to island locations recheck current access and island state; an unsafe island destination uses the configured safe fallback. Normal leave and reconnect recovery can load the saved island for safe return. Quit or shutdown may use the fallback when the original island world is unloaded. If safe restoration cannot complete, the marker remains and the player is disconnected with a recovery message so an administrator can investigate the logged failure.
 
@@ -108,9 +114,9 @@ Use `/sky admin bank pending` to identify the transfer, check the external provi
 
 Recounts combine currently loaded chunks with saved region allocation headers. Terrain discovery covers allocated chunks intersecting the claim; entity-region discovery covers the owned world. Only generated, globally enabled island dimensions participate, protected by the existing accounting world lease. The recount does not generate empty claim chunks merely to count them. Native storage-layout checks select the dimension locations used by the current Spigot or Paper server.
 
-At most 128 islands can queue, with one chunk snapshot/census active at a time. Counting runs on a worker and skips empty chunk sections. A census has a 20-minute deadline, a total discovery bound of 1,000,000 chunks and a 100,000-entry bound per region directory. Exceeding a bound or encountering a census failure blocks capped additions until an operator successfully recounts or disables caps. Failures retain full console diagnostics without an automatic retry loop.
+At most 128 islands can wait for a count, and one island is counted at a time. A count has a 20-minute deadline, a total discovery bound of 1,000,000 chunks and a 100,000-entry bound per region directory. Counting waits while the island is being created, reset or deleted. Exceeding a bound or encountering a census failure blocks capped additions until a count succeeds. A failed count retries after 30 seconds, doubling the delay up to 15 minutes; `/sky admin recountlimits` retries immediately. The first failure logs its full stack trace and later attempts log one line each.
 
-Debug output reports whether limits are enabled, the queue size, tracked islands and active scanning state. These fields describe accounting state rather than a performance profile.
+Debug output reports whether limits are enabled, the queue size, tracked islands, islands waiting to retry and active scanning state.
 
 ## Contract delivery recovery
 
@@ -122,13 +128,13 @@ Pending receipts block bank changes, further deliveries and destructive/team lif
 
 ## Favorites and ratings storage
 
-`storage/social.json` version 1 stores favorites, star ratings, withdrawn-rating cooldown records and per-player UTC daily counters. It does not change island schema 9. Include it in stopped-server backups. Social mutations use a bounded serial writer and atomic replacement, and publish their new read snapshot only after the save succeeds. Invalid current bytes prevent initialization; save failures are logged with their cause and suspend social reads and mutations. Correct the storage fault before restarting.
+`storage/social.json` version 1 stores favorites, star ratings, withdrawn-rating cooldown records and per-player UTC daily counters. Include it in stopped-server backups. Social changes are saved atomically and become visible only after the save succeeds. Invalid current bytes prevent initialization; save failures are logged with their cause and suspend social reads and mutations. Correct the storage fault before restarting.
 
 Reset and ownership transfer preserve records under the permanent island UUID. Deleted islands are hidden from social reads, and loading prunes missing-island references. Withdrawal preserves the original same-island cooldown and consumed daily budget. Current teammates' ratings are excluded from aggregates but remain saved, so they can contribute again after leaving. Continuous visitor qualification exists only in memory and starts over after restart. See [Favorites and ratings](/skyprime/11-favorites-ratings).
 
 ## Activity history storage
 
-`storage/activity.json` version 1 stores ordered per-island activity records and the next sequence. Island schema 9 is unchanged. Activity participates in the canonical version 2 `island-state.pending.json` journal alongside island, custom-role, transfer and reward snapshots. A record becomes readable only after its complete transaction succeeds. A failed transaction suspends domain writes and history reads; preserve its journal, correct the storage fault and restart to replay it. Invalid current activity bytes prevent initialization.
+`storage/activity.json` version 1 stores ordered per-island activity records and the next sequence. Activity participates in the canonical version 2 `island-state.pending.json` journal alongside island, custom-role, transfer and reward snapshots. A record becomes readable only after its complete transaction succeeds. A failed transaction suspends domain writes and history reads; preserve its journal, correct the storage fault and restart to replay it. Invalid current activity bytes prevent initialization.
 
 Back up activity and any pending transaction with the rest of the stopped-server island data. Reset and ownership transfer retain history; deleted-island history remains available through `/is admin history <UUID>` while retained. `config/activity.toml` defaults to 90 days, 1000 entries per island and 100,000 total entries. Oldest records are evicted at count or encoded-content limits. Disabling recording preserves reads and retention processing; retention deletions cannot be reversed by raising the limits. See [Activity history](/skyprime/12-activity-history) for the precise event scope.
 

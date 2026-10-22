@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-10-15T03:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -98,6 +98,19 @@ Pick a project to open its documentation.
           <span>
             <strong class="title">Foundation</strong>
             <span class="d-block text--secondary">Homes, moderation, utilities, kits, and economy</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/bytecompanions" class="d-flex align-center">
+          <img src="/home-assets/bytecompanions.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
+          <span>
+            <strong class="title">ByteCompanions</strong>
+            <span class="d-block text--secondary">Animated companions, outfits, and particles</span>
           </span>
         </a>
       </li>

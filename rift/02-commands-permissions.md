@@ -2,13 +2,15 @@
 title: "Rift: Commands and Permissions"
 description: "Command syntax, aliases, and permission nodes"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "rift, commands, permissions, help"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
 Use `/rift` or `/rft`. The Director help menu shows command descriptions and argument completion. Supply optional arguments as `argument=value`, such as `/rift debug dump upload=false`.
+
+Rift accepts abbreviated and slightly misspelled subcommands, such as `/rift delet lobby`. The permission checked is always that of the command the input runs, and tab completion suggests commands and arguments only for commands you have permission to use.
 
 ## World commands
 

@@ -2,7 +2,7 @@
 title: 12 - Island Activity History
 description: Searchable island membership, permissions, progression and administrative records
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, history, administration, storage
 editor: markdown
 dateCreated: 2026-10-09T13:05:37.155Z
@@ -74,7 +74,7 @@ Queries immediately hide expired records and apply the current per-island limit.
 
 ## Persistence and recovery
 
-`storage/activity.json` version 1 stores the sequence and per-island records. The canonical `storage/island-state.pending.json` version 2 transaction journal coordinates activity with island, role, bank-transfer and reward state. Island schema 9 includes specialization selections. The serial writer coalesces saves, and history publishes a new read snapshot only after the entire transaction succeeds. Queries use immutable memory snapshots and never load worlds or read files.
+`storage/activity.json` version 1 stores the sequence and per-island records. The canonical `storage/island-state.pending.json` version 2 transaction journal coordinates activity with island, role, bank-transfer and reward state. Island schema 9 includes specialization selections. Records become readable only after the entire transaction succeeds. Queries never load worlds or read files.
 
 Startup validates record shapes, identities, sequence ordering and storage bounds. Invalid current storage prevents initialization. A transaction failure suspends domain writes and history reads; its pending journal remains available for startup recovery after the storage fault is corrected. Include activity and any pending journal in a stopped-server backup alongside the other island metadata and terrain. See [Operations and recovery](/skyprime/04-operations-recovery#activity-history-storage).
 

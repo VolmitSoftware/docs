@@ -2,7 +2,7 @@
 title: 13 - Island Specializations
 description: Configurable island paths, benefits, requirements and switching rules
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, progression, specializations
 editor: markdown
 dateCreated: 2026-10-10T09:47:33.780Z
@@ -56,5 +56,5 @@ Disabling the feature, disabling the selected path or removing its definition su
 
 Island schema 9 stores the specialization ID, selection time and revision in `storage/islands.json`. Reset and ownership transfer retain them; island deletion removes the selection with the island. A successful change creates a `specialization` progression activity entry, and paid changes add a specialization transaction to the credit ledger. The shared transaction journal coordinates island state and history. Back up metadata together with terrain as described in [Operations and recovery](/skyprime/04-operations-recovery).
 
-PlaceholderAPI exposes `specialization_id`, `specialization_name`, `specialization_active` and `specialization_cooldown_seconds`, with the normal `current_` variants for the player's current island. See [Placeholders and API](/skyprime/90-placeholders-api).
+PlaceholderAPI exposes `%skyprime_island.specialization.id%`, `.name`, `.active` and `.cooldown-seconds`, with matching `%skyprime_current.specialization.<key>%` forms for the island the player is standing on. See [Placeholders and API](/skyprime/90-placeholders-api).
 

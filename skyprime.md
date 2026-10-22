@@ -2,7 +2,7 @@
 title: SkyPrime
 description: Independent island worlds, teams, protection and progression
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, skyblock, islands
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -13,7 +13,7 @@ SkyPrime provides separate island worlds with teams, visitor protection and conf
 | | |
 |---|---|
 | Server software | Spigot and Paper, Minecraft 26.1 through 26.3; stock Folia is unsupported |
-| Java | 25 |
+| Java | 25 or newer |
 | Main command | `/skyprime` (`/sky`, `/is`, `/island`) |
 | Config file | `plugins/SkyPrime/config.toml` |
 | PlaceholderAPI | Optional |

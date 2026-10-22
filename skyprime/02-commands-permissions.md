@@ -2,7 +2,7 @@
 title: SkyPrime - Commands and permissions
 description: Island commands, confirmation flows and operator permissions
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, commands, permissions
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -10,11 +10,13 @@ dateCreated: 2026-09-05T04:30:00.000Z
 
 The root command is `/skyprime`, with `/sky`, `/is` and `/island` aliases. The root without arguments shows command help; `/sky menu` opens the island menu. `/sky help`, `/sky admin` and `/sky debug` show Director command help. Descriptions follow the selected language, with built-in English as fallback.
 
+Every subcommand needs `skyprime.command`. `help`, `version`, `status`, `debug`, `language` and `config` need nothing more to start, although `debug` and `config` check their own permissions. Every other subcommand also needs `skyprime.use`, and tab completion offers only what the sender can run.
+
 Island-management inventory actions belong to the viewer's current team; if membership changes while a menu is open, the next queued management action opens the current island menu without applying the old action. Rankings and personal reward receipts remain accessible across membership changes.
 
 Island action permissions are separate from Bukkit permission nodes. Owners and managers retain their built-in actions. Custom roles replace a member’s action set; only the owner may create, edit, delete or assign roles. See [Team roles](/skyprime/03-islands-progression#team-roles).
 
-Event viewing uses `skyprime.events` (default everyone). Manual activation/stopping and token grants use `skyprime.events.admin` (default operators). Buying and redeeming require `UPGRADES` plus `skyprime.events.buy` or `skyprime.events.redeem` (default everyone). Server-wide activation additionally requires `skyprime.events.server` (default operators). See [Events and boosters](/skyprime/09-events-boosters) for timing and scope rules.
+Event viewing uses `skyprime.events` (default everyone). Manual activation/stopping and token grants use `skyprime.events.admin` (default operators). Buying and redeeming require `UPGRADES` plus `skyprime.events.buy` or `skyprime.events.redeem` (default everyone). Buying or redeeming a server-wide booster additionally requires `skyprime.events.server` (default operators); `/sky event start <id> server` needs only `skyprime.events.admin`. See [Events and boosters](/skyprime/09-events-boosters) for timing and scope rules.
 
 Contract viewing and delivery permissions default to everyone; contract administration defaults to operators. `CONTRACTS` is included in the default member action set. Inputs must be ordinary storage-inventory items, and a confirmation consumes the whole order. See [Island contracts](/skyprime/10-contracts).
 
@@ -91,8 +93,8 @@ Prefix each command below with `/sky`. Angle brackets mark required arguments, s
 | `top [type=value] [limit=10]` | Show `value`, `bank` or `votes` rankings; limit is clamped to 1–20; also available to console |
 | `rankings [type=value]` | Open paginated `value`, `bank` or `votes` rankings; island membership is not required |
 | `vote <island>` | Vote once for another public island |
-| `bank` | Open the credit balance and paginated transaction history |
-| `research [id]` | Browse research branches or inspect a node; teammates with `UPGRADES` review and confirm research within 30 seconds |
+| `bank` / `bank menu` | Open the credit balance and paginated transaction history |
+| `research [node]` | Browse research branches or inspect a node; teammates with `UPGRADES` review and confirm research within 30 seconds |
 | `upgrade [expansion\|team\|homes\|generator\|speed\|jump\|crop\|fly\|drops\|spawner]` | Open upgrade choices, or preview the next purchase for a selected track; teammates with `UPGRADES` confirm in the menu within 30 seconds |
 | `fly` | Toggle purchased flight while inside your team's active island claim in survival/adventure; requires `skyprime.use` and `skyprime.fly` |
 | `missions` | Open categorized one-time, daily, weekly and custom-interval progress; alias `challenges` |
@@ -128,10 +130,11 @@ Time, weather and difficulty commands target the player's own island, including 
 
 | Command | Permission |
 | --- | --- |
-| `/sky config` | `skyprime.config` |
+| `/sky status` | `skyprime.command`; configuration, island and world counts, Java and Minecraft support, PlaceholderAPI and Vault state, and storage health |
+| `/sky config` | `skyprime.config`; opens the configuration editor |
 | `/sky debug status` | `skyprime.debug` |
-| `/sky debug version` | `skyprime.use`; installed version |
-| `/sky version` | `skyprime.use`; hidden shortcut for `debug version` |
+| `/sky debug version` | `skyprime.command`; installed version |
+| `/sky version` | `skyprime.command`; hidden shortcut for `debug version` |
 | `/sky debug dump [upload=false]` | `skyprime.debug` |
 | `/sky admin history <island UUID> [category=all] [actor=all] [search=*] [page=1]` | `skyprime.history.admin`; includes retained records for deleted islands and supports console |
 | `/sky admin inspect <island UUID>` | `skyprime.admin` |
@@ -141,13 +144,13 @@ Time, weather and difficulty commands target the player's own island, including 
 | `/sky admin credit <island UUID> <positive amount>` | `skyprime.admin` |
 | `/sky template pos1`, `pos2`, `origin` | `skyprime.admin` |
 | `/sky template capture <id> <normal\|nether\|end>` | `skyprime.admin` |
-| `/sky template reload` | `skyprime.admin` |
+| `/sky template reload` | `skyprime.config` |
 
-`skyprime.use`, `skyprime.create`, `skyprime.preview` and `skyprime.fly` default to all players. Preview entry also checks the selected custom starter permission. The flight permission does not replace the island's purchased Fly unlock or membership requirement. Research browsing uses `skyprime.use`; completing a research node also requires the `UPGRADES` island action. Other upgrade benefits have no additional permission node; purchase access uses `skyprime.use` and the `UPGRADES` island action; teammates can inspect the menu. `skyprime.config`, `skyprime.debug`, `skyprime.admin`, `skyprime.update` and `skyprime.bypass` default to operators. `skyprime.update` permits GitHub release notifications. The bypass permission allows protected-world interaction; it does not grant island ownership for team mutations.
+`skyprime.command`, `skyprime.use`, `skyprime.create`, `skyprime.preview` and `skyprime.fly` default to all players. Preview entry also checks the selected custom starter permission. The flight permission does not replace the island's purchased Fly unlock or membership requirement. Research browsing uses `skyprime.use`; completing a research node also requires the `UPGRADES` island action. Other upgrade benefits have no additional permission node; purchase access uses `skyprime.use` and the `UPGRADES` island action; teammates can inspect the menu. `skyprime.config`, `skyprime.debug`, `skyprime.admin`, `skyprime.update` and `skyprime.bypass` default to operators. `skyprime.update` permits GitHub release notifications. The bypass permission allows protected-world interaction; it does not grant island ownership for team mutations.
 
-Personal language selection needs `skyprime.language.self`; changing the server default needs `skyprime.config` or `volmit.language.admin`. See [Languages](/languages).
+Personal language selection needs both `skyprime.language.self` and `volmit.language.self`, which default to everyone; changing the server default needs `skyprime.config` or `volmit.language.admin`. See [Languages](/languages).
 
-Operator credit grants go into the island ledger and the console audit log. Diagnostic uploads are off by default and also need `general.debugUploadEnabled = true`.
+Operator credit grants go into the island ledger and the console audit log. Diagnostic dumps stay local unless the request includes `upload=true` and `debug.uploadEnabled` is `true`.
 
 ## Resource cap commands
 

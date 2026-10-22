@@ -45,7 +45,7 @@ Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, an
 
 The registry at `plugins/ShapedPortals/portals.json` stores each portal's UUID, world, axis, anchor, interior and frame coordinates, frame-material snapshot, creation time, and creator. Axis `Y` identifies horizontal End portals.
 
-> Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store stops the plugin from enabling and is preserved for recovery rather than overwritten.
+> Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store, or one with overlapping records, stops the plugin from enabling and is preserved for recovery rather than overwritten. Individual records that cannot be read, such as one with a frame material the server no longer has, are skipped with a console warning, and the original file is copied to `portals.json.unreadable-<time>.bak` first.
 {.is-warning}
 
 ## Portal listing and navigation
@@ -58,7 +58,9 @@ Teleportation fails if the portal or world is unavailable, no safe landing exist
 
 ## Ignition and protection plugins
 
-Cancelled ignition events are ignored. For standalone creation, before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A cancelled event or changed frame stops creation.
+Cancelled ignition events are ignored, and a Nether attempt stops if the ignition fire is gone by the time the frame is checked, as happens when a protection plugin cancels the fire placement. For a player, each proposed interior block is then checked through `BlockCanBuildEvent` before Wormholes is offered the shape. For standalone creation, before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A denied block, a cancelled event, or a changed frame stops creation.
+
+Fire charges from dispensers have no player, so they use the separate `DISPENSER` ignition cause. It is off by default; add it to `portal.ignitionCauses` to let dispensers light portals without a `shapedportals.create` check.
 
 Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces ask `BlockCanBuildEvent` about each proposed cell before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
 

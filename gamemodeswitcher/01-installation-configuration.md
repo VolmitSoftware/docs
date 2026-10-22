@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Installation and configuration"
 description: "Install the plugin and configure gestures, switch feedback, languages, and diagnostics"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "gamemodeswitcher, configuration, languages"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -43,14 +43,16 @@ Missing settings use their defaults and appear in the editor. Saving one adds it
 
 Disabled Worlds opens a world picker. It lists every loaded world by its dimension key and folder name; click a world to turn switching off or back on there. Disabled worlds that are not loaded stay in the list until you click them to remove them.
 
-The setting stores dimension keys, not folder names:
+The picker stores dimension keys:
 
 ```toml
 [restrictions]
 disabled-worlds = ["minecraft:the_nether", "minecraft:the_end"]
 ```
 
-The default worlds are `minecraft:overworld`, `minecraft:the_nether`, and `minecraft:the_end`. Worlds added by other plugins use the key that plugin gives them; the picker shows it. Letter case does not matter. Use `disabled-worlds = []` for no world restrictions. A value that is not a `namespace:path` key is rejected and the previous settings stay active.
+The default worlds are `minecraft:overworld`, `minecraft:the_nether`, and `minecraft:the_end`. Worlds added by other plugins use the key that plugin gives them; the picker shows it. World folder names from older configurations, such as `"world_nether"`, still work; clicking that world in the picker replaces the folder name with its key. Letter case does not matter. Use `disabled-worlds = []` for no world restrictions. A blank value, or a value with a colon that is not a valid `namespace:path` key, is rejected.
+
+An invalid `config.toml` during a hot reload keeps the previous settings active. At startup there are no previous settings, so GamemodeSwitcher logs the error and stays disabled until the file is fixed and the server restarts.
 
 | Setting | Default | Behavior |
 | --- | --- | --- |
@@ -68,7 +70,7 @@ The default worlds are `minecraft:overworld`, `minecraft:the_nether`, and `minec
 | `spectator.restore-previous-mode` | `false` | Remembers the previous mode for triple-Sneak and `/gsw return` |
 | `spectator.return-to-origin` | `false` | Returns to the saved entry location before leaving a tracked session through GSW |
 | `spectator.allow-unsafe-return` | `true` | Allows returns without solid ground or clear space and outside the world border; disable for conservative safety checks |
-| `restrictions.disabled-worlds` | `[]` | Dimension keys, such as `minecraft:the_nether`, where all plugin mode changes are blocked |
+| `restrictions.disabled-worlds` | `[]` | Dimension keys, such as `minecraft:the_nether`, or world folder names where all plugin mode changes are blocked |
 | `feedback.auto-fly-creative` | `true` | Starts creative flight if the server allows flight after the mode change |
 | `feedback.chat-enabled` | `true` | Shows successful switches and the Spectator exit hint in chat; when off, failure reasons use the action bar |
 | `feedback.action-bar-enabled` | `true` | Shows the new mode above the hotbar |
