@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -94,9 +94,7 @@ To give one surface biome tight, dense tunnels while the rest of the world keeps
 }
 ```
 
-Iris blends profiles across the biome edge instead of cutting them off, so a strong profile fades out over roughly three blocks rather than ending on a chunk-shaped seam.
-
-At most **two** blended profiles run per chunk. When more than two are present, the lowest-weight ones are folded into whichever kept profile dominates each column. Profiles pulled in by dimension `carving` entries are added on top of that limit and are not subject to it.
+Iris blends profiles over roughly three blocks at biome edges. Each column retains its locally contributing profiles, including where three or more cave biomes meet. Cave shapes can overlap through these transitions. Profiles selected by dimension `carving` entries also shape caves within their configured height bands.
 
 ## Walkthrough: paint the inside of a cave
 

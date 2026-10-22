@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -185,6 +185,8 @@ Iris refuses surface objects that roof over, bridge, or overhang a carved openin
 
 Natural scatter also rejects a surface placement whose support columns intersect accepted river water or lava. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` **do not** bypass that river exclusion; only an explicit-Y call such as `/iris object paste` can build in a river.
 
+Native structures reserve their piece bounds and the surface cut area of `FLATTEN` terrain adjustments. An object intersecting that reserved area is skipped as a whole, including forced placements. This keeps trees from relying on ground that a village or other native structure removes. Objects beneath the cut area remain eligible.
+
 Procedural trees check the trunk base and root footprint. Their roots fill short gaps to solid terrain within the configured reach, and unsupported cliff placements are skipped. See [Procedural Trees](/iris/17b-procedural-trees#ground-contact) for root settings.
 
 ```json
@@ -268,6 +270,8 @@ Jigsaw structure pieces are excluded from `allObjectScaleFactor` and retain thei
 ```
 
 `size` is a fixed multiplier and overrides the range when it is not 1. With `size: 1` and a min/max spread, each placement uses one of `variations` evenly spaced sizes across the range. `interpolation` only matters when scaling up. `NONE` gives blocky output. `TRILINEAR` smooths it. `TRICUBIC` and `TRIHERMITE` provide additional smoothing.
+
+At fractional sizes, each output block takes the material of the source block with the greatest volume overlap. A mushroom stem keeps its material where it occupies more of the resized block than the cap; organic stilts use the resulting bottom material.
 
 `heightmap` replaces terrain height sampling with a noise generator, so the object seats against a virtual surface. Surface support still samples the real terrain.
 

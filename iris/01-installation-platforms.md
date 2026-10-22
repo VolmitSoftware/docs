@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-21T07:31:37.738Z
+date: 2026-10-22T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -114,6 +114,8 @@ Use `/iris download pack=overworld`, `/iris download pack=underworld`, or `/iris
 Create your first world with [02 - Getting Started](/iris/02-getting-started).
 
 ## Mod install (Fabric / Forge / NeoForge)
+
+Download a stable mod release from [Iris releases](https://github.com/VolmitSoftware/Iris/releases), or use [Modded Beta](https://github.com/VolmitSoftware/Iris/releases/tag/modded-beta) for the current beta. Versioned mod releases use `v<version>` tags; Modded Beta is a rolling prerelease whose assets are replaced with each beta. Both channels contain only Fabric, Forge, and NeoForge jars. Select the asset matching your Minecraft version and loader; use the release list to find stable mod releases rather than GitHub's Latest link.
 
 1. Drop the matching mod jar into `mods/`.
 2. Start the dedicated server, or a client if you want singleplayer.

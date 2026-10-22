@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -152,6 +152,8 @@ NativeTerrainAccess terrain = NativeAdapters.require(NativeTerrainAccess.class);
 `terrain.RegistryClientNames.register(registryKey, physicalKey, clientKey)` assigns a client-visible registry name. Register names before players connect. Biome registry synchronization applies these names on Bukkit 26.2/26.3 and the modded terrain bindings; entry order and definition data are preserved. Server lookups and saved palettes continue using their physical keys. `resolve(registryKey, physicalKeys)` returns the corresponding names in the supplied order, retaining unmapped entries and assigning numbered namespaces to conflicting client names.
 
 Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `NativeBlockState` and `NativeBiome` at interface boundaries. Keep your generator's dimension settings, terrain decisions, and feature selection in your plugin.
+
+`NativeStructureVolume` describes a native piece and its optional `surfaceAdjustment`. Supply `null` for pieces without surface grading, or `SurfaceAdjustment(anchors, horizontalPadding, range)` for a `FLATTEN` reservation. Each `SurfaceAnchor` supplies inclusive X/Z bounds, a ground Y in world coordinates, and its strength. `contains`, `intersects`, and `intersectsRect` test the literal piece bounds; `intersectsInfluenceRect` also includes surface grading. `surfaceCutY(volumes, x, z, originalY)` combines the reserved anchors for a column. Keep objects that require ground support out of a lowered band, including the first block above the original surface.
 
 `NativeBlockProperties.canPlaceOnto` checks substrate compatibility. It accepts crimson and warped roots on soul soil or either nylium type, and Nether sprouts on either nylium type. Placement code must also enforce its clearance and surface-support rules.
 

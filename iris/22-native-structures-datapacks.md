@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-18T02:23:31.381Z
+date: 2026-10-21T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -377,9 +377,9 @@ Among the vertical placement controls, three structures honor only `yShift`. `mi
 
 Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding` (0..64, where 0 preserves the floor). ERODED adds `erosionStrength` (default 0.8), `erosionFrequency` (0.07), `lobeFrequency`, and `lobeStrength` (0.85).
 
-For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Support beneath projected solid path columns uses the same `flattenRange` limit and stops at fluids.
+For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Foundation support fills open space directly beneath the fitted surface, stops at solid terrain or fluids, and leaves caves beneath that terrain intact. Support beneath projected solid path columns uses the same `flattenRange` limit.
 
-When terrain fitting lowers ground, it clears contiguous decorations above the old surface, including solid clutter such as slabs. Trees follow the structure vegetation rules.
+When terrain fitting lowers ground, it clears contiguous decorations above the old surface, including solid clutter such as slabs. Iris objects that intersect the reserved `FLATTEN` surface cut area are skipped before placement, including trees whose bases would lose support. Other trees follow the structure vegetation rules.
 
 Dimension stacks supply the original layer surface to native height queries, so igloos, swamp huts, and terrain-matching village paths can retain their original projected elevations after `FLATTEN`.
 
