@@ -2,7 +2,7 @@
 title: SkyPrime - Islands and progression
 description: Starter terrain, teams, protection, material value and internal credits
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, islands, protection, progression
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -54,7 +54,7 @@ Difficulty refreshes with the other environment settings and persists separately
 
 A selection applies across the entire dimension at every height, without replacing terrain or blocks. Loaded chunks update gradually; other chunks receive the selection when loaded. This does not generate or load additional chunks. Selecting the same biome again reapplies it and retries failed work. The menu shows queued loaded chunks and any recorded failure; its queue count excludes overflow waiting for rediscovery.
 
-The shared worker processes at most 2,048 biome cells and completes at most one chunk per tick. Its queue holds at most 4,096 chunks, with overflow rediscovered every 40 ticks. Completed chunks refresh clients currently viewing them, retrying at most 20 times at one attempt per tick without repainting. Unviewed chunks skip this refresh and deliver the selected biome data when later sent to a client. Client presentation can vary. Selection persistence completes before all chunk updates, so a saved selection does not imply painting has finished.
+Painting runs in small batches each tick. Players viewing a changed chunk receive the update; other chunks show the selected biome when a client next loads them. Client presentation can vary. Selection persistence completes before all chunk updates, so a saved selection does not imply painting has finished.
 
 Selections survive restart, island reset and ownership transfer. Deleting an island removes its selections. There is no menu option to restore the original generated biomes, and no original-biome snapshot is retained.
 
@@ -63,7 +63,7 @@ Selections survive restart, island reset and ownership transfer. Deleting an isl
 | Role | Responsibilities |
 | --- | --- |
 | Owner | All island actions; exclusive role management, ownership offers, reset and deletion |
-| Manager | All 19 island actions; cannot edit or assign roles, reset, delete or transfer ownership |
+| Manager | All 22 island actions; cannot edit or assign roles, reset, delete or transfer ownership |
 | Member | Default actions: building, containers, block/entity interactions, pickup, mob kills, mission claims and contract deliveries; a custom role replaces these actions |
 | Visitor | Enter public islands within the configured access restrictions |
 | Trusted/temporary guest | Enter the granting island, including private islands, with only the selected extra actions |
@@ -87,6 +87,7 @@ A new role allows no actions. Its exact allowlist replaces the default member ac
 | `ENVIRONMENT` | Time, weather, difficulty, game rules and biomes |
 | `HISTORY` | Read the island activity history; owners/managers have access, ordinary members require an explicit custom-role grant |
 | `UPGRADES`, `DIMENSIONS`, `MILESTONES`, `MISSIONS`, `CONTRACTS` | Upgrade purchases, dimension unlocks, milestone claims, mission claims and contract deliveries |
+| `SPECIALIZATION` | Select or change the island specialization; owners/managers have access, ordinary members require an explicit custom-role grant |
 
 The GUI confirms permission edits, assignments and deletion and rechecks its displayed island, roles and membership. Explicit role commands apply directly. For example, `/sky roles create builder`, `/sky roles permission builder BUILD true`, then `/sky role <player> builder` grants building without the other default member actions.
 
@@ -114,7 +115,7 @@ Bans override guest and allowlist access. Administrative bypass still applies. T
 
 The visitor limit accepts 0–1000, with zero meaning unlimited. It counts nonteam visitors, including trusted and co-op guests, across all three island dimensions together. Moving between dimensions does not create a second visitor. Lowering the limit prevents new arrivals without evicting current visitors solely because the island is over capacity. Revoking entry access removes affected current visitors. Directory results and travel still recheck current access.
 
-Policy and allowlist settings persist through restart, island reset and ownership transfer; deleting the island removes its policy. These settings do not change the island aggregate format. See [Operations and recovery](/skyprime/04-operations-recovery) for their separate storage file.
+Policy and allowlist settings persist through restart, island reset and ownership transfer; deleting the island removes its policy. See [Operations and recovery](/skyprime/04-operations-recovery) for their separate storage file.
 
 ## Protection
 
@@ -128,7 +129,7 @@ Only enabled island dimensions participate in island travel. A private island is
 
 The `[materials]` table in `config/values.toml` assigns unit values to placed blocks and directly stored container items inside the claim. Item stack quantities contribute the same material value as placed units. Each half of a double chest counts once, including chests crossing chunk boundaries. Player inventories, ender chests, entity inventories and contents nested inside items such as carried shulker boxes do not contribute. A placed shulker box's direct inventory does contribute. Unlisted materials contribute zero; item names, enchantments and other metadata do not change the configured material value.
 
-`/sky value` recounts your island. One scan runs at a time. Level is the island's value divided by `runtime.levelDivisor`. Supported block and inventory changes queue bounded reconciliation work, batched every 40 ticks. Container contents are copied on the server thread and counted with chunk snapshots. Movement during capture discards that publication and queues a retry, so continuously moving contents can delay an updated total. Direct changes by other plugins may require an explicit recount.
+`/sky value` recounts your island. One scan runs at a time. Level is the island's value divided by `runtime.levelDivisor`. Supported block and inventory changes queue bounded reconciliation work, batched every 40 ticks. Queued work waits while the island is being created, reset or deleted. A failed reconciliation stays queued and retries after 30 seconds, doubling the delay up to 15 minutes; the first failure logs its full stack trace and later attempts log one line each. Movement during capture discards that publication and queues a retry, so continuously moving contents can delay an updated total. Direct changes by other plugins may require an explicit recount.
 
 `/sky valuebreakdown`, or Material values in the main island menu, opens the most recent completed scan for your active island. Each material entry shows its combined placed-block and stored-item count, unit value and contribution to the total. Entries use canonical material names and are ordered by contribution, highest first, then material name. Pages hold up to 45 materials; the summary shows the cached total and scan time in UTC.
 
@@ -241,7 +242,7 @@ When active island flight is revoked, the player receives protection from at mos
 
 ### Mob resource drops
 
-Drops applies to ordinary mob resource loot, including mobs produced by spawners. The credited killer must be a survival/adventure teammate inside the same active island claim as the mob. A positive, uncancelled damage event must have captured equipment before death; that capture expires on the next entity tick and is consumed by the death event. Deaths without that capture, including programmatic health changes without a corresponding recent damage event, receive no bonus. Each eligible existing stack independently has the configured chance to produce one extra copy. The existing loot list and experience remain unchanged apart from those added copies. The first 64 stacks are considered; invalid amounts, oversized stacks and item metadata are excluded, and each bonus stays within the item's maximum stack size.
+Drops applies to ordinary mob resource loot, including mobs produced by spawners. The credited killer must be a survival/adventure teammate inside the same active island claim as the mob. The mob must die from recent player damage; deaths without it, including programmatic health changes, receive no bonus. Each eligible existing stack independently has the configured chance to produce one extra copy. The existing loot list and experience remain unchanged apart from those added copies. The first 64 stacks are considered; invalid amounts, oversized stacks and item metadata are excluded, and each bonus stays within the item's maximum stack size.
 
 Players, unsupported mobs, named mobs, tamed animals and mobs with persistent custom data receive no bonus. Resource materials recorded in carried hands or armor are excluded even when the server clears equipment before the death event; matching equipment still present at death is also excluded. Block drops, equipment, skulls and Wither/Ender Dragon rewards are outside the feature. Plain items inserted by another plugin cannot be distinguished from ordinary loot when they match the allowlist; this is a material/type filter, not loot-origin tracking.
 

@@ -2,7 +2,7 @@
 title: 11 - Favorites and Ratings
 description: Personal island bookmarks, qualified visitor ratings and popularity browsing
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, visitors, favorites, ratings
 editor: markdown
 dateCreated: 2026-10-09T12:38:43.057Z
@@ -22,7 +22,7 @@ Both commands and menus require `skyprime.use` and `skyprime.social.favorites`; 
 
 Before rating, remain inside another active island's claim for the configured continuous visit, 60 seconds by default. The island must have public access enabled and use the DEFAULT visitor policy. Team members cannot rate their own island. Allowlisted or trusted access to a private island does not qualify.
 
-The visitor must be online, alive, in Survival or Adventure, outside a starter preview and permitted by current entry and dimension rules. `skyprime.use` and `skyprime.social.rate` are required; both default to true. The service checks the player's actual position on the owning entity thread every 20 ticks and credits at most two seconds per sample. Server stalls do not add an unlimited amount of visit time.
+The visitor must be online, alive, in Survival or Adventure, outside a starter preview and permitted by current entry and dimension rules. `skyprime.use` and `skyprime.social.rate` are required; both default to true. Visit time is sampled once per second and each sample credits at most two seconds, so server stalls cannot inflate it.
 
 Leaving the claim, changing islands, teleporting, changing game mode, dying, disconnecting or becoming ineligible resets the visit. A successful teleport resets it even when the destination belongs to the same island. Cancelled teleports do not reset it. Visit progress is held only in memory: separate visits do not combine, and restarting requires a new visit. The rating menu shows the remaining whole seconds; refresh it to update the display.
 

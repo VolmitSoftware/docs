@@ -8,21 +8,21 @@ editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 
-Rift supports Paper for Minecraft 26.1 through 26.3, including patch releases, on Java 25 only. Folia has the lifecycle restrictions below.
+Rift supports Paper for Minecraft 26.1 through 26.3, including patch releases, on Java 25 or newer. Folia has the lifecycle restrictions below.
 
 ## Requirements and installation
 
 | Component | Requirement |
 |---|---|
 | Server | Paper 26.1, 26.2, or 26.3, including patch releases |
-| Java | 25 |
+| Java | 25 or newer |
 | VolmLib | Included in the Rift distribution; no separate plugin required |
 | External generator | Optional; required when a world uses its generator |
 | PlaceholderAPI | Optional separate plugin for `%rift_...%` values; no expansion download required |
 | Filesystem | Writable plugin data folder and world container |
 | Network | Dependency downloads; optional language, update, metrics, and debug-upload requests |
 
-Rift checks the Minecraft release and Java major version before library downloads or world initialization. Other Minecraft release lines, previews, and Java majors are unsupported. An older JVM can reject the Java 25 bytecode before Rift displays a message.
+Rift checks the Minecraft release and Java major version before library downloads or world initialization. Other Minecraft release lines, previews, and Java majors older than 25 are unsupported. An older JVM can reject the Java 25 bytecode before Rift displays a message.
 
 1. Stop the server and back up worlds and `plugins/Rift/`.
 2. Place the Rift distribution jar in `plugins/`.

@@ -2,17 +2,15 @@
 title: SkyPrime - Installation and configuration
 description: Runtime requirements, world provisioning and SkyPrime's TOML files
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-21T00:00:00.000Z
 tags: skyprime, installation, configuration
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
 ---
 
-SkyPrime requires Java 25 and supports Minecraft 26.1 through 26.3 on Spigot and Paper. The build targets Java 25 bytecode and checks the supported 26.x APIs. Required VolmLib classes are bundled, minimized and relocated into SkyPrime's packages; PlaceholderAPI is optional. Startup accepts Minecraft 26.1.x, 26.2.x and 26.3.x.
+SkyPrime supports Minecraft 26.1 through 26.3 on Java 25 or newer, on Spigot and Paper. PlaceholderAPI and Vault are optional. Startup refuses other Minecraft versions and Java releases older than 25.
 
 ## Install
-
-Build the independent `SkyPrime/` project with JDK 25 using `.\gradlew.bat build` in PowerShell. The build writes `SkyPrime.jar` to the workspace's `BUILDS` directory. `-PbuildsDirectory=<path>` changes that staging directory.
 
 Place the jar in the intended server's `plugins/` directory and restart. SlimJar downloads Gson, TOML and Adventure before SkyPrime enables, so first startup needs access to the library repositories. Downloads and their relocated copies are cached in `plugins/SkyPrime/.libs/` for later starts. Keep this directory when moving the installation to a server without internet access; offline startup requires the cached libraries needed by that plugin version.
 
@@ -86,10 +84,12 @@ plugins/SkyPrime/
     island-state.pending.json
     visitor-policy.json
     island-returns.json
+    bank-transfers.json
   world-jobs/
     <island UUID>.json
   island-worlds/
     <island UUID>.json
+  preview-worlds/
   templates/
     <starter id>.json
 ```
@@ -100,10 +100,7 @@ Island terrain belongs to the server's world storage beneath `worlds.directory`.
 | --- | --- |
 | `.libs/` | Downloaded runtime libraries and their relocated copies, reused on later starts |
 | `cache/runtime/` | Extracted embedded runtime for packed distributions, named by its SHA-256 digest |
-| `config.toml` / `general` | Default language, splash, update notifications, metrics, creation and diagnostic upload settings |
-| `worlds` | Island-world directory, enabled dimensions, fallback world and starter height |
-| `islands` | Radii, automatic growth, base member/home capacity, island cap, invite expiry and transfer expiry |
-| `runtime` | Block application budget, teleport warmup, void rescue, level divisor, hot-reload polling and idle-world unload delay |
+| `config.toml` | Shared plugin settings, worlds, island limits, runtime budgets and the Vault bridge; see [Main settings](#main-settings) |
 | `config/values.toml` | `[materials]` assigns nonnegative unit values to placed blocks and directly stored container items |
 | `config/generators.toml` | Named level tiers and positive relative material weights |
 | `config/missions.toml` | Multi-objective challenges, repeat schedules, prerequisites, presentation, island credits and personal item/XP/command rewards |
@@ -127,6 +124,49 @@ COBBLESTONE = 100
 ```
 
 At least one tier must start at level zero, and minimum levels must be distinct. Weights do not need to total 100; an output's chance is its weight divided by the tier's total weight.
+
+## Main settings
+
+`config.toml` starts with the five sections every Volmit plugin shares, followed by SkyPrime's own sections. Every key below reloads live except the three world keys marked as restart-only.
+
+| Key | Default | Accepted values | Effect |
+| --- | --- | --- | --- |
+| `general.enabled` | `true` | `true`, `false` | `false` blocks new island creation; existing islands, teams and commands keep working |
+| `general.language` | `en_US` | a locale listed under [Languages](#languages) | Server default language |
+| `general.updateNotifications` | `true` | `true`, `false` | Release notices for holders of `skyprime.update` |
+| `metrics.enabled` | `true` | `true`, `false` | SkyPrime's bStats reporting; see [Usage statistics](#usage-statistics) |
+| `presentation.splashScreen` | `true` | `true`, `false` | Console splash when SkyPrime finishes starting |
+| `presentation.alternateSplashes` | `true` | `true`, `false` | Lets roughly one start in ten use an alternate splash design |
+| `presentation.commandSounds` | `true` | `true`, `false` | Success and error sounds in the configuration editor |
+| `hotReload.enabled` | `true` | `true`, `false` | Applies file edits while the server runs |
+| `hotReload.pollIntervalMillis` | `1000` | 250 to 60,000 | How often the files are checked for changes |
+| `hotReload.cooldownMillis` | `1500` | 250 to 60,000 | Quiet period after the last change before a reload, so a save in progress is not read half-written |
+| `hotReload.notifyOperators` | `true` | `true`, `false` | Action-bar notice to holders of `skyprime.config` when a file reload applies or is rejected |
+| `debug.uploadEnabled` | `true` | `true`, `false` | Allows `/sky debug dump` to upload; `false` keeps every dump local |
+
+With `hotReload.enabled = false`, file edits apply through `/sky config` or on the next start. The console always records file reloads; a rejected reload also records the full validation failure.
+
+| Key | Default | Accepted values | Effect |
+| --- | --- | --- | --- |
+| `worlds.directory` | `skyprime/islands` | relative path of lowercase letters, digits, `_`, `-` and `/` | Island world directory; restart-only |
+| `worlds.fallbackName` | `""` | empty, or a world name of 1 to 64 letters, digits, `_` or `-` | Evacuation and void-rescue world; restart-only |
+| `worlds.baseY` | `96` | 32 to 192 | Starter height; restart-only |
+| `worlds.netherEnabled` | `false` | `true`, `false` | Allows island Nether worlds |
+| `worlds.endEnabled` | `false` | `true`, `false` | Allows island End worlds |
+| `islands.initialRadius` | `48` | 16 to 8,192 | Starting border radius |
+| `islands.maxRadius` | `192` | `initialRadius` to 8,192 | Largest radius from growth and upgrades |
+| `islands.maxMembers` | `2` | 1 to 100 | Base team size, including the owner |
+| `islands.maxHomes` | `1` | 1 to 100 | Base home count, including `main` |
+| `islands.maxIslands` | `10000` | 1 to 1,000,000 | Server-wide island cap |
+| `islands.invitationTtlMillis` | `120000` | 1,000 to 86,400,000 | Invitation expiry |
+| `islands.transferTtlMillis` | `60000` | 1,000 to 86,400,000 | Ownership transfer confirmation expiry |
+| `runtime.blocksPerTick` | `512` | 1 to 8,192 | Starter and reset block budget per tick |
+| `runtime.teleportWarmupTicks` | `60` | 0 to 1,200 | Warmup before island teleports |
+| `runtime.voidRescue` | `true` | `true`, `false` | Returns players who fall into the void |
+| `runtime.levelDivisor` | `100` | 1 to 1,000,000,000 | Island level is value divided by this number |
+| `runtime.idleUnloadSeconds` | `300` | 10 to 86,400 | Idle time before an empty island world unloads |
+
+`islands.growth` and `economy` are described in [Material values and border growth](#material-values-and-border-growth) and [External economy](#external-economy).
 
 ## Material values and border growth
 
@@ -159,9 +199,11 @@ The growth divisor accepts finite numbers from 0.000001 through 1,000,000,000,00
 
 ## Editing and reload
 
-`/sky config` opens eight categories: General, Worlds, Limits, Progression, Economy, Community, Presentation and Operations. Each category lists up to 45 settings per page. The bottom row contains navigation and the language-editor shortcut; Back returns to the category screen.
+`/sky config` opens the shared configuration editor, which requires `skyprime.config`. The first page lists one section per `config.toml` table and one per file under `config/`, each naming the file it saves to, plus a Languages shortcut to the language selector. Sections list up to 45 settings per page.
 
-Select a setting and enter its new value in chat within 60 seconds, or type `cancel`. Saves validate the complete candidate before atomically replacing its file. A changed value invalidates an older prompt, and a successful edit returns to its category and page.
+Click a true or false setting to toggle it. Numeric settings with a fixed range show their step: left click adds it, right click subtracts it, shift multiplies it by ten, and Q asks for an exact value in chat. Other settings ask for a value in chat; reply within 60 seconds or type `cancel`. Lists use TOML syntax, such as `["STONE", "DEEPSLATE"]`.
+
+Each save validates the complete candidate before atomically replacing the owning file, and the chat confirmation shows the old and new value. A save is rejected when any configuration file changed on disk after the editor opened; reopen the editor and repeat the change.
 
 | Setting | Editor path |
 | --- | --- |
@@ -173,7 +215,7 @@ Select a setting and enter its new value in chat within 60 seconds, or type `can
 
 Existing scalar array entries are editable, including objective targets, descriptions, item lore and commands. Add or remove definitions and array elements in TOML. The main menu mission slot is `missions`.
 
-Automatic reload watches configuration and installed language files. A malformed candidate retains the previous runtime settings and records the full failure in the console. `/sky template reload` validates and reloads custom starter files. Template files require this explicit reload; they are not part of automatic configuration polling. The world-directory, fallback-world and starter-height settings require a restart.
+Automatic reload watches configuration and installed language files, using the `hotReload` settings above. A malformed candidate retains the previous runtime settings and records the full failure in the console. `/sky template reload` validates and reloads custom starter files. Template files require this explicit reload; they are not part of automatic configuration polling. The world-directory, fallback-world and starter-height settings require a restart.
 
 ## Progression settings
 
@@ -272,9 +314,9 @@ See [Languages](/languages).
 
 ## Usage statistics
 
-SkyPrime initializes the official bStats Bukkit single-file runtime, version 3.2.1, under project ID `34482`. It uses the upstream default statistics without custom charts. The source is bundled in SkyPrime’s private package with only its package declaration changed; the jar includes the upstream license at `META-INF/LICENSE-bStats.txt`. It does not add a downloaded dependency.
+SkyPrime initializes the official bStats Bukkit single-file runtime, version 3.2.1, under project ID `34482`. It uses the upstream default statistics without custom charts. The jar includes the upstream license at `META-INF/LICENSE-bStats-Metrics.txt`.
 
-`general.metricsEnabled = true` enables SkyPrime reporting by default and reloads live. Set it to `false` to stop SkyPrime's metrics runtime. The shared `plugins/bStats/config.yml` also controls collection: set `enabled: false` there and restart to opt out globally. Enabling the SkyPrime setting does not override the global choice. Startup failures are logged without preventing the plugin from enabling; shutdown stops the metrics scheduler.
+`metrics.enabled = true` enables SkyPrime reporting by default and reloads live. Set it to `false` to stop SkyPrime's metrics runtime. The shared `plugins/bStats/config.yml` also controls collection: set `enabled: false` there and restart to opt out globally. Enabling the SkyPrime setting does not override the global choice. Startup failures are logged without preventing the plugin from enabling; shutdown stops the metrics scheduler.
 
 ## Update notifications
 

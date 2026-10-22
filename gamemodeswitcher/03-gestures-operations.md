@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Gestures and operations"
 description: "Default key gestures, event handling, and troubleshooting"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-18T00:00:00.000Z
 tags: "gamemodeswitcher, gestures, operations, folia"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -40,7 +40,9 @@ Enable `spectator.restore-previous-mode` to remember the previous mode, `spectat
 
 Sessions survive reconnects and restarts in `data/spectator-sessions.toml`. Death or an external mode change ends the session. Changes to the two session settings affect new sessions. `spectator.allow-unsafe-return` defaults to `true` and applies to existing sessions immediately; set it to `false` to require clear air, solid ground, and a destination inside the world border. These checks are conservative and can reject slabs, stairs, or vegetation.
 
-A missing world, blocked world, cancelled teleport, or failed safety check keeps the player in Spectator with the session available to retry. Return attempts recheck permissions before changing mode. A failure after teleporting may leave the player at the origin in Spectator.
+A blocked world, cancelled teleport, or failed safety check keeps the player in Spectator with the session available to retry. If the entry world is no longer loaded, for example after it was deleted or regenerated, the player changes mode where they are and the session ends.
+
+`data/player-preferences.toml` and `data/spectator-sessions.toml` are written by the plugin. If one cannot be read at startup, it is renamed with a `.broken-<timestamp>` suffix, the console logs the error, and the plugin starts with no saved entries in that file. Return attempts recheck permissions before changing mode. A failure after teleporting may leave the player at the origin in Spectator.
 
 ## Other plugins
 

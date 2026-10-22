@@ -74,8 +74,10 @@ By default, changes to `config.toml` and installed `languages/*.toml` files load
 
 - Invalid edits keep the last working settings and log the error.
 - Changes from `/sp config` apply immediately.
+- `/sp config` refuses to save while `config.toml` holds changes that have not been applied, so an in-game edit never overwrites a file edit. Fix the file or wait for it to reload, then edit again.
 - Watcher timing changes preserve pending edits to the same files.
-- If hot reload is disabled, restart the server after editing files on disk. Changes saved through `/sp config` still apply immediately.
+- If hot reload is disabled, restart the server after editing files on disk. Until then, `/sp config` refuses to save over the edited file.
+- If `config.toml` cannot be read at startup, the file is left unchanged, portal creation is paused, and existing portals are maintained with default settings until the file is fixed.
 
 ## Settings
 
@@ -107,7 +109,7 @@ Set `updateNotifications = false` under `[general]`, or use the General menu tog
 | `portal.maximumHeight` | `64` | Largest vertical interior span; range 1 to 512 blocks |
 | `portal.frameMaterials` | `OBSIDIAN`, `CRYING_OBSIDIAN` | Complete boundary materials accepted for new Nether portals |
 | `portal.interiorMaterials` | air variants, `FIRE`, `SOUL_FIRE` | Replaceable Nether creation and repair cells |
-| `portal.ignitionCauses` | `FLINT_AND_STEEL`, `FIREBALL`, `PLACED_FIRE` | Accepted Bukkit ignition causes |
+| `portal.ignitionCauses` | `FLINT_AND_STEEL`, `FIREBALL`, `PLACED_FIRE` | Accepted Bukkit ignition causes. `PLACED_FIRE` covers direct fire placement and `DISPENSER` covers dispensed fire charges |
 | `portal.allowedWorlds` | empty | Optional case-insensitive allow-list |
 | `portal.deniedWorlds` | empty | Case-insensitive deny-list; takes priority |
 | `portal.deduplicationMillis` | `1500` | Coalesces duplicate events at one block; range 0 to 60,000 ms |
