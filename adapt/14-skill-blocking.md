@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Blocking gains XP when damage is taken while a shield is raised. Its 14 adaptati
 
 ## Earning XP
 
-Each hit taken while blocking pays a flat XP award on a shared cooldown. The hit records blocked hits, blocked damage, projectile versus melee, and a heavy hit when one blow is more than 5 damage. If `passiveXpForUsingShield` is above zero, each skill tick also pays that amount for a shield in either hand, scaled by elapsed time, and the award is silent.
+A shield must actually prevent damage for the hit to earn XP or advance blocked-hit milestones. Eligible hits pay a flat XP award on the shared cooldown and record the damage prevented; more than five credited damage counts as a heavy block. Each attacker supplies up to your maximum health in blocked-damage credit over ten minutes. If `passiveXpForUsingShield` is above zero, silent pulse XP requires an actively raised shield and a qualifying block within the last 2500 ms.
 
 ## Player preferences
 
@@ -348,11 +348,11 @@ Written to `plugins/Adapt/skills/blocking.toml` on first load.
 |-----|--------------|--------------|
 | `enabled` | `true` | Turns the whole Blocking skill off when false. |
 | `skillColor` | `"&8"` | Legacy ampersand color code used for this skill in menus and text. |
-| `xpOnBlockedAttack` | `25` | Flat XP paid for each hit taken while blocking, subject to the cooldown below. |
+| `xpOnBlockedAttack` | `25` | Flat XP paid for a qualifying hit whose damage the shield prevents, subject to the cooldown below. |
 | `challengeBlock1kReward` | `500` | XP paid by the smaller tier of each Blocking milestone pair, and by `challenge_block_5k`. |
 | `challengeBlock5kReward` | `2000` | XP paid by the larger tier of each Blocking milestone pair. |
 | `cooldownDelay` | `1500` | Milliseconds between blocked-hit XP awards. |
-| `passiveXpForUsingShield` | `0` | XP per skill interval just for holding a shield in either hand. 0 turns it off. Awarded silently under the `blocking:shield-hold` source tag. |
+| `passiveXpForUsingShield` | `0` | Silent XP per skill interval while actively blocking after a qualifying block within 2500 ms. 0 turns it off. |
 
 ### Challenges
 

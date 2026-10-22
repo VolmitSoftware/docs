@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,6 +28,8 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 Food reserves retain eight food points for Bee Shepherd, Hungry Shield and Rooted Footing; Growth Aura can retain sixteen instead of its normal ten-point floor. Compost Cascade’s reserve keeps eight items in each consumed stack, and its drop and inventory sources can be disabled independently. Seed Sower can retain eight held seeds. Plant filters select all supported plants or one crop/material family. Replant’s pickup integration also respects Drop to Inventory’s material filter. Hungry Shield exclusions remain within learned damage coverage. Spore Bloom can independently suppress soil conversion or flower conversion, and smaller spread presets never reduce an accepted action’s catalyst or food cost.
 
 Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
+
+Harvesting advances crop milestones only when the harvest has positive XP integrity. A harvest excluded by the server's bone-meal policy provides no milestone credit.
 
 ## Adaptations
 

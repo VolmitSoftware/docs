@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Agility gains XP from movement, sprinting, swimming, airtime, and climbing. Its 
 
 ## How you earn Agility XP
 
-Every movement credits `move` and pays `moveXp passive` per block. That same distance is credited to exactly one of `move.sneak`, `move.fly`, `move.swim`, or `move.sprint`, checked in that order. Those four stats are what the challenge milestones count. Every 975 ms a pulse pays `sprintXp passive` for sprinting, `swimXp passive` for swimming, `jumpXp passive` while off the ground, and `climbXp passive` while climbing, scaled by elapsed time. Sneaking or flying blocks all four. Sprinting and swimming exclude each other.
+Movement on foot credits `move` and pays `moveXpPassive` per block. Sneaking, swimming, or sprinting also credits the matching distance milestone. Flying and gliding credit `move` and `move.fly` milestones without per-block or pulse XP. Teleports, vehicles, and individual movement changes above eight blocks earn no movement credit. Every 975 ms a pulse checks for at least a quarter block of displacement, then pays the matching sprinting, swimming, upward airborne movement, or climbing award; remaining stationary earns none. Sneaking blocks those four pulse awards, and sprinting and swimming exclude each other.
 
 ## Adaptations
 
@@ -329,9 +329,9 @@ Written to `plugins/Adapt/skills/agility.toml` on first load.
 | `challengeSprintMarathonReward` | `6500` | Skill XP paid for `challenge_sprint_marathon`. |
 | `sprintXpPassive` | `0.35` | Skill XP per pulse while sprinting, scaled by elapsed time. |
 | `swimXpPassive` | `0.4` | Skill XP per pulse while swimming, scaled by elapsed time. |
-| `jumpXpPassive` | `0.15` | Skill XP per pulse while off the ground, scaled by elapsed time. |
+| `jumpXpPassive` | `0.15` | Skill XP per pulse while moving upward off the ground, scaled by elapsed time. |
 | `climbXpPassive` | `0.4` | Skill XP per pulse while climbing, scaled by elapsed time. |
-| `moveXpPassive` | `0.05` | Skill XP per block travelled, paid on every movement. |
+| `moveXpPassive` | `0.05` | Skill XP per eligible block travelled on foot. |
 
 ### Challenges
 

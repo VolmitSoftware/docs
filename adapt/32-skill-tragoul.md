@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-20T08:08:27.094Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ TragOul gains XP from taking damage and awards extra XP for surviving at low hea
 
 ## How you earn TragOul XP
 
-When an entity damages you, the skill adds 1 to `trag.hitsrecieved` and the raw damage to `trag.damage`, then pays `damageReceivedXpMultiplier` times that damage. XP awards wait on `cooldownDelay`; those two stat counters still increment during the cooldown.
+When an entity damages you, qualifying hits add 1 to `trag.hitsrecieved` and the credited final damage to `trag.damage`, then pay `damageReceivedXpMultiplier` times that damage. Credited damage is capped at your remaining health, and each attacker supplies up to your maximum health in credit over ten minutes. XP and those milestone counters share `cooldownDelay`; self-inflicted and fully prevented hits provide no credit.
 
 A survived hit that leaves you at 4 hearts or less also pays `lowHealthSurvivalXP`.
 

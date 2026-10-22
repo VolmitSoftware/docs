@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -351,12 +351,14 @@ A kill while crouched restores hunger and, if Invisibility is already active, ex
 
 ## Reference
 
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
+
 ### Skill XP sources
 
 | Trigger | Award | Notes |
 |---------|-------|-------|
-| Passive sneak pulse (every `1412` ms) | `sneakXP` scaled by elapsed time over the interval | Requires sneaking and not swimming, sprinting, flying, or gliding, in survival or adventure mode. |
-| Damaging any valid living entity while sneaking | Damage dealt times `sneakCombatXPMultiplier` | Rate-limited by `sneakCombatXpCooldown`. The `stealth.damage.sneaking` stat is added before the rate limit, so the stat always counts. Parrots and the invalid-damageable entity listing are excluded. |
+| Passive sneak pulse (every `1412` ms) | `sneakXP` scaled by elapsed time over the interval | Requires at least a quarter block of displacement between pulses while sneaking, without riding, swimming, sprinting, flying, or gliding, in survival or adventure mode. |
+| Damaging any valid living entity while sneaking | Damage dealt times `sneakCombatXPMultiplier` | Rate-limited by `sneakCombatXpCooldown`. Damage milestones count only qualifying credited hits. Parrots and invalid targets are excluded. |
 | Killing while sneaking | `sneakKillXP` | Tragoul skeletal servants and Excavation grave mobs are excluded. |
 | Launching a projectile while sneaking | No XP | Adds `stealth.arrows.sneaking` only. |
 

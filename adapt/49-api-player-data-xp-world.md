@@ -2,7 +2,7 @@
 title: "API - Player Data, XP & World"
 description: "Read player data, award XP, and work with world data"
 published: true
-date: 2026-10-20T18:42:05.167Z
+date: 2026-10-22T22:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,14 +24,18 @@ On `AdaptPlayer`, read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAda
 | Call | Novelty | Region policy | Telemetry |
 |---|---|---|---|
 | `Skill.xp`, `Skill.xpS` | yes | yes | yes |
-| `Skill.xpSilent` | no | no | yes |
-| `XP.xp`, `XP.xpSilent` | no | no | no |
+| `Skill.xpSilent` | yes | yes | yes |
+| `XP.xp`, `XP.xpSilent` | yes | yes | yes |
 
-`Skill.xpS` keeps the XP visuals. `Skill.xpSilent` still applies the line multiplier and monotony. `XP.xp` is the raw call under both. It applies the player multiplier, monotony, and pooled payout, and skips location checks. Use it only when that bypass is intentional.
+`Skill.xpS` keeps the XP visuals. Silent calls change presentation only. Gameplay rewards pass skill eligibility, region policy, novelty, pressure, boosts, and the player's earning allowances. Use a stable reward key for each productive activity; omitting one uses `skill:<name>:general`.
 
 `Adaptation.xp` and `Adaptation.xpSilent` forward to the owning skill with reward key `adaptation:<id>:<key>`, or `adaptation:<id>:use` when no key is passed. Novelty treats one key as one activity.
 
-`XP` also has `knowledge`, `wisdom`, `boostXP`, and `spatialXP`. Boost durations are milliseconds. `XpNovelty` and `XpProvenance` return the same multipliers the award path uses. Do not register `XpNoveltyListener` or `XpProvenanceListener`. Adapt already does.
+`XP` also has `knowledge`, `wisdom`, `boostXP`, and `spatialXP`. Boost durations are milliseconds. `XpProvenance` supplies the block-origin multipliers used by supported source handlers. Do not register `XpProvenanceListener`; Adapt owns it. Novelty helpers mutate reward history and must not be called a second time before submitting an ordinary reward.
+
+Use `XP.award(player, skill, new XpAward(source, amount, location, notifyPlayer, kind))` for an explicit award context. `source` is a nonblank key of at most 160 characters, and `amount` must be positive and finite. A null location uses the player's location. `GAMEPLAY` applies the complete reward policy. `CONSUMABLE` and `ADMINISTRATIVE` represent deliberate face-value grants without gameplay multipliers or earning allowances; reserve them for authorized redemption and administration. All kinds are accounted for and honor pooled payout.
+
+Read `PlayerData.getXpEarnings().snapshot()` for per-source requested, contextual, boosted, eligible, and credited totals. Contextual XP includes region and novelty adjustments; eligible XP additionally includes boosts and pressure. Credited XP is the amount accepted into progression or its pending pool. `budget(skill)` reports saved allowance usage. `PlayerSkillLine.getXp()` reports committed XP, while `getPooledXp()` reports accepted XP awaiting settlement. Telemetry counts credited awards once.
 
 ## Player preferences
 
@@ -64,13 +68,13 @@ On `AdaptPlayer`, read `getPlayer()`, `getData()`, `getSkillLine(name)`, `hasAda
 |------|---------|------------------|-----------|
 | `Skill.xp(Player, double[, key])`, `Skill.xp(Player, Location, double[, key])` | yes | yes | yes |
 | `Skill.xpS(Player, Location, double[, key])`, silent but keeps visuals | yes | yes | yes |
-| `Skill.xpSilent(Player, double[, key])` | no | no | yes |
+| `Skill.xpSilent(Player, double[, key])` | yes | yes | yes |
 | `Adaptation.xp(...)` / `Adaptation.xpSilent(...)`, keyed `adaptation:<id>:<key>` | as the `Skill` call it forwards to | | |
-| `XP.xp(...)`, `XP.xpSilent(...)` | no | no | no |
+| `XP.xp(...)`, `XP.xpSilent(...)` | yes | yes | yes |
 
 Other rewards: `Skill.knowledge(Player, long)`, `Skill.xp(Location, double, int radius, long duration)` and `XP.spatialXP(Location, Skill, double, int radius, long duration)` for a spatial pulse, and `XP.knowledge(...)` / `XP.wisdom(...)` / `XP.boostXP(...)`. Player-targeted application is inert unless the exact current session has a ready Adapt runtime.
 
-Every path applies the player's XP multiplier (permission multipliers plus global and per-skill boosts) and the monotony multiplier inside `PlayerSkillLine.giveXP`. It honors pooled payout batching when `xpIntegrity.pooledPayoutEnabled` is on.
+Every gameplay path applies the player's XP multiplier (permission multipliers plus global and per-skill boosts), pressure, and earning allowances. It honors pooled payout batching when `xpIntegrity.pooledPayoutEnabled` is on. Successful adaptation rewards share a persisted baseline-use cooldown; reading an adaptation's active level never earns XP.
 
 ### Curves, multipliers and integrity helpers
 
@@ -80,8 +84,8 @@ Every path applies the player's XP multiplier (permission multipliers plus globa
 | `NewtonCurve` | Low-level curve conversion. Adapt's public `XP.getXpForLevel` and `XP.getLevelForXp` helpers clamp every curve family to `experienceMaxLevel` and fall back to the balanced curve if a configured curve produces a non-finite result |
 | `XPMultiplier` | Mutable timed multiplier record stored inside player data. `XPMultiplier.owned(source, bonus, durationMillis)` retains its source through persistence. Add it with `PlayerData.globalXPMultiplier(multiplier)` and remove only that source with `removeGlobalXPMultipliers(source)` on the player owner thread. Unowned multipliers and other sources remain intact. |
 | `SpatialXP` | Adapt-owned pending spatial reward. Create it through `XP.spatialXP`, never by constructing one and offering it to `AdaptServer` |
-| `XpNovelty` | `noveltyMultiplier(player, location, rewardKey)`, `adjacencyBonusMultiplier(player, placedBlock)`, `fieldCycleMultiplier(player, cropBlock)`, `clear(uuid)`. Owning region thread only |
-| `XpProvenance` | Records placed, broken, piston-moved, replaced and bonemealed blocks and returns `placeXpMultiplier`, `breakXpMultiplier`, `harvestXpMultiplier` from that history. Owning region thread only |
+| `XpNovelty` | `noveltyMultiplier(player, location, rewardKey)`, `adjacencyBonusMultiplier(player, placedBlock)`, `fieldCycleMultiplier(player, cropBlock)`. Mutates profile-owned history that survives reconnects. Owning region thread only |
+| `XpProvenance` | Records placed, broken, piston-moved, falling, replaced and bonemealed blocks and returns `placeXpMultiplier`, `breakXpMultiplier`, `harvestXpMultiplier` from that history. Owning region thread only |
 
 ### WorldData
 

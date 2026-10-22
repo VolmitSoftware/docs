@@ -2,7 +2,7 @@
 title: "Skill - Ranged"
 description: "Ranged XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,8 @@ Ranged gains XP from firing arrows, spectral arrows, or tridents and from projec
 ## Earning XP
 
 Firing an arrow, spectral arrow, or trident pays flat XP and counts a shot. A projectile hit on a valid target pays XP from damage dealt plus distance traveled. Snowballs and fishing hooks do not count as hits. Shots and hits share one cooldown. Hits over 30 blocks count as longshots and use their own challenge chain. A kill counts when a bow or crossbow is in hand as the target dies. In addition, Ricochet Bolt pays per bounce, Fetch Shot pays per item, Floaters and Pinning Shot pay per proc, and Heartseeker pays per seeking shot and per hit.
+
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit. A hit needs positive damage credit to earn distance XP or advance hit, damage, and longshot milestones.
 
 ## Player preferences
 

@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,10 +15,12 @@ Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, 
 
 - Taming an animal pays `tameSuccessXP` and counts toward `taming.tamed`.
 - Breeding pays `tameXpBase` and counts toward `taming.bred`.
-- A tamed pet damaging something pays damage times `tameDamageXPMultiplier` and adds the raw damage to `taming.pet.damage`.
+- A tamed pet damaging an eligible target pays credited damage times `tameDamageXPMultiplier` and adds that credited damage to `taming.pet.damage`.
 - A mob killed by your pet pays `petKillXP` and counts toward `taming.pet.kills`. The credit only fires when no player is the mob's killer, and TragOul skeletal servants and Excavation grave mobs are excluded.
 
 Breeding XP and pet damage XP share one `cooldownDelay` millisecond cooldown. Tame and pet-kill XP have no cooldown.
+
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
 ## Player preferences
 

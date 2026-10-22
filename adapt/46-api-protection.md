@@ -2,7 +2,7 @@
 title: "API - Protection"
 description: "Register protection and region policy services"
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -58,5 +58,7 @@ Before Adapt performs container or item work that vanilla would route through a 
 |---|---|---|
 | `Skill.xp(player, ...)` | yes, the player's own position | yes |
 | `Skill.xp(player, at, ...)` / `xpS(player, at, ...)` | yes, the given position | yes |
-| `Skill.xpSilent(player, xp)` | no | no |
-| `Skill.xp(at, xp, rad, duration)` spatial pulses | the pulse has one, the award does not use it | no |
+| `Skill.xpSilent(player, xp)` | yes, resolved from the player's position | yes |
+| `Skill.xp(at, xp, rad, duration)` spatial pulses | yes, the collecting player's position | yes |
+
+Gameplay awards without an explicit location resolve the player's position before checking region policy. A failed or quarantined provider blocks gameplay XP while power bonuses and adaptation grants use their defaults. An absent provider allows the default XP policy. Re-enabling Adapt reinstalls the provider and clears quarantine. See [Protection & Region Policy](/adapt/08-protection-region-policy).

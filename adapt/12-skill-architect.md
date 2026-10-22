@@ -2,7 +2,7 @@
 title: "Skill - Architect"
 description: "Architect XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Architect gains XP from placing blocks, scaled by material value. Breaking block
 
 ## How you earn Architect XP
 
-Placing a block credits `blocks.placed` by one and `blocks.placed.value` by the block's value times `xpValueMultiplier`. Storage blocks are skipped and pay nothing. A placement above Y 128 also credits `architect.builds.high`. Skill XP pays once per `cooldownDelay`, from `xpBase` plus the scaled block value, then multiplied by placement integrity and an adjacency bonus. A break credits `blocks.broken` and `architect.demolish.value` only.
+Placing a block credits `blocks.placed` by one and `blocks.placed.value` by the block's value times `xpValueMultiplier`. Storage blocks are skipped and pay nothing. A placement above Y 128 also credits `architect.builds.high`. Skill XP pays once per `cooldownDelay`, from `xpBase` plus the scaled block value, then multiplied by placement integrity and an adjacency bonus. A qualifying break credits `blocks.broken` and `architect.demolish.value` only. Placement and break provenance checks apply before their milestone counters: repeated replacements and player-placed block breaks provide no milestone credit.
 
 ## Adaptations
 
@@ -266,7 +266,7 @@ Written to `plugins/Adapt/skills/architect.toml` on first load.
 | `skillColor` | `"&b"` | Legacy ampersand color code used for Architect in menus and text. |
 | `challengePlace1kReward` | `1750` | Skill XP paid for every Architect challenge. The larger tier of the demolish, value-placed, demolish-value, and high-build pairs pays double this. |
 | `xpValueMultiplier` | `1.5` | Multiplier applied to a placed block's value before it is added to `blocks.placed.value` and folded into the XP payout. |
-| `cooldownDelay` | `1000` | Minimum milliseconds between placement XP awards. Stats are still credited on every placement. |
+| `cooldownDelay` | `1000` | Minimum milliseconds between placement XP awards. Stats count every provenance-eligible placement. |
 | `xpBase` | `3` | Flat skill XP added to the scaled block value before integrity and adjacency multipliers. |
 
 ### Challenges

@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-21T03:11:44.000Z
+date: 2026-10-22T22:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,7 +41,7 @@ Toggle defaults preserve the standard behavior. Size and rate presets default to
 
 7 levels · 3 knowledge, then 2 per level
 
-Each positive vanilla XP award grants 5 Discovery XP, then grants one existing skill line `amount * xpGainedMultiplier * levelPercent` XP, where `amount` is a random integer from 1 to 3. Eligible awards include experience-orb pickups, React Fast Drops, claimed or released golem essence, and Grindstone Recovery bonuses. Each direct award triggers Unity once, regardless of its point total. XP spending, balance restoration, and cost refunds do not trigger it.
+Each positive vanilla XP award requests 5 Discovery XP, then requests `amount * xpGainedMultiplier * levelPercent` XP for one existing skill line, where `amount` is a random integer from 1 to 3. Both rewards follow skill eligibility, region policy, novelty, pressure, boosts, and earning allowances. Eligible awards include experience-orb pickups, React Fast Drops, claimed or released golem essence, and Grindstone Recovery bonuses. Each direct award triggers Unity once, regardless of its point total. XP spending, balance restoration, and cost refunds do not trigger it.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

@@ -2,7 +2,7 @@
 title: "Skill - Swords"
 description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -324,11 +324,13 @@ Renaming a sword in an anvil stamps Heirloom Edge lore on that item, and kills w
 
 Adapt treats `WOODEN_SWORD`, `STONE_SWORD`, `COPPER_SWORD`, `IRON_SWORD`, `GOLDEN_SWORD`, `DIAMOND_SWORD`, and `NETHERITE_SWORD` as swords.
 
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
+
 ### Skill XP sources
 
 | Trigger | Award | Notes |
 |---------|-------|-------|
-| Damaging a valid living entity with a sword in the main hand | `damageXPMultiplier` times the damage dealt | Rate-limited by `cooldownDelay`. Stats are added before the rate limit, so `sword.hits` and `sword.damage` always count. Parrots and the invalid-damageable entity listing are excluded. |
+| Damaging a valid living entity with a sword in the main hand | `damageXPMultiplier` times the damage dealt | Rate-limited by `cooldownDelay`. Hit, damage, critical, and heavy-hit milestones count only qualifying credited hits. Parrots and invalid targets are excluded. |
 | Killing with a sword in the main hand | No XP | Adds `sword.kills` only. |
 
 A hit counts as critical for `sword.critical` when the attacker's fall distance is above 0 and the attacker is not on the ground. A hit counts as heavy for `sword.heavy.hits` when the event damage is above 8.

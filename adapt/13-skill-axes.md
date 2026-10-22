@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,9 @@ Axes gains XP by breaking logs, wood, mushroom blocks, or mangrove roots with an
 
 ## Earning XP
 
-Breaking a log, wood, mushroom block, mangrove roots, or muddy mangrove roots block with an axe pays XP from that block's material value plus hardness and blast resistance, up to the configured caps. Damaging a living entity with an axe pays XP scaled to the damage dealt. Both share one cooldown. Blocks with zero hardness pay nothing, and blocks already paid by XP provenance do not pay again. Breaking leaves with an axe only increments `axes.leaves` and does not pay XP. `leavesMultiplier` does not change earnings.
+Breaking a log, wood, mushroom block, mangrove roots, or muddy mangrove roots block with an axe pays XP from that block's material value plus hardness and blast resistance, up to the configured caps. Damaging a living entity with an axe pays XP scaled to the damage dealt. Both share one cooldown. Blocks with zero hardness pay nothing, and blocks already paid by XP provenance do not pay again. Breaking provenance-eligible leaves with an axe only increments `axes.leaves` and does not pay XP. Placed blocks and rejected replacements do not advance block milestones. `leavesMultiplier` does not change earnings.
+
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
 ## Player preferences
 

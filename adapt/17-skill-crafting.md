@@ -2,12 +2,18 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Crafting gains XP from crafted output and nearby furnaces, scaled by material value, and both paths use cooldowns. Its 13 adaptations add recipes, salvage, bulk crafting, portable workstations, a bound compactor, backpacks, material refunds, equipment improvements, and food bonuses, five of which are permanent by default.
+
+## Earning XP
+
+Crafting XP and crafting milestones count the output actually taken from the result slot, including completed shift-click output. Cancelled clicks, clicks that produce no output, and cancelled furnace operations earn nothing.
+
+Reversible resource conversions earn neither crafting skill XP, crafting milestones, Bulk Artisan bonus XP or milestones, nor the Crafting XP adaptation's vanilla orb: iron, gold, and copper nugget/ingot/block conversions; netherite and raw-metal storage blocks; diamond, emerald, lapis, redstone, and coal blocks; wheat/hay, dried-kelp blocks, slime balls/blocks, honey bottles/blocks, and bone meal/blocks. Equipment, tools, and other recipes retain their normal rewards.
 
 ## Player controls
 
@@ -48,7 +54,7 @@ Sneak-right-click a pickup-allowed dropped item with shears in the main hand to 
 
 7 levels · 3 knowledge, then 2 per level
 
-Taking a committed craft whose result fits the player's storage can spawn one vanilla XP orb of `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)` points, which is 1 through 7 on the defaults. The amount does not scale with crafted stack size.
+Taking the delivered result of an eligible committed craft can spawn one vanilla XP orb of `min(maximumXpPerCraft, vanillaXpAtLevelOne + (level - 1) * vanillaXpPerAdditionalLevel)` points, which is 1 through 7 on the defaults. The amount does not scale with crafted stack size.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -140,7 +146,7 @@ A completed shift-click craft pulls matching ingredients from the inventory and 
 |-----|--------------|------------------|
 | `batchCapBase` | `32` | Bonus items a shift-craft can add at level 1. |
 | `batchCapFactor` | `96` | Additional bonus items unlocked across the level range. |
-| `xpPerBatchItem` | `0.5` | Skill XP per bonus item produced. |
+| `xpPerBatchItem` | `0.5` | Skill XP per bonus item from an eligible recipe. Reversible resource conversions still produce their batch but earn no XP or batch milestone credit. |
 | `throttleMs` | `250` | Minimum milliseconds between bulk batches for one player. |
 
 ### Thrifty Hands (`crafting-thrifty-hands`)

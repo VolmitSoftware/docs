@@ -2,12 +2,16 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Excavation gains XP from breaking blocks or dealing damage with a shovel, and block XP scales with material value, hardness, and blast resistance. Its 12 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, and OMNI - T.O.O.L.
+
+Player-placed blocks and rejected replacements earn neither base digging XP nor digging milestone credit.
+
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
 ## Player controls
 

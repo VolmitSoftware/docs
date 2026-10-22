@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T17:14:24.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Rift (`rift`) gains XP from teleporting, throwing ender pearls or eyes of ender,
 
 ## Earning XP
 
-Every teleport increments `rift.teleports`. Teleport XP is cooldown-gated. Throwing an ender pearl or an eye of ender pays immediately, with no cooldown. Damage to endermen, endermites, and the ender dragon pays per point of damage, capped at the target's base health. Destroying an end crystal pays flat XP. Enderman kills and ender-dragon damage feed their own challenge chains.
+Every teleport increments `rift.teleports`. Teleport XP is cooldown-gated. Throwing an ender pearl or an eye of ender pays immediately, with no cooldown. Damage to endermen, endermites, and the ender dragon pays per point of final damage after mitigation, capped at remaining health. Each target supplies up to its maximum health in Rift damage credit over ten minutes. Destroying an end crystal pays flat XP. Enderman kills and ender-dragon damage feed their own challenge chains.
 
 ## Adaptations
 
@@ -196,7 +196,7 @@ The health cost does not knock the affected player back.
 
 1 level · 7 knowledge
 
-With an empty main hand, right-clicking a block, or right-clicking or left-clicking air at the block looked at within 5 blocks, pulls that block from the ender chest; while placing, a low stack refills up to `buildRefillAmount` or the item's max stack, whichever is smaller. A sneak-drop stores the item in the ender chest instead of dropping it.
+With an empty main hand, right-clicking a block, or right-clicking or left-clicking air at the block looked at within 5 blocks, pulls that block from the ender chest; while placing, a low stack refills up to `buildRefillAmount` or the item's max stack, whichever is smaller. A sneak-drop stores the item in the ender chest instead of dropping it. Storage XP and its milestone credit share an allowance of one stack per material, replenished gradually over `transferXpWindowMillis`; the allowance survives reconnects. The item's actual stack limit applies, including 16-item and unstackable materials.
 
 Personal controls: Pull on click (on/off); Refill building stack (on/off); Store sneak-dropped items (on/off); Item selection (All eligible items/Blocks only/Food only).
 
@@ -204,7 +204,8 @@ Personal controls: Pull on click (on/off); Refill building stack (on/off); Store
 |-----|--------------|------------------|
 | `buildRefillAmount` | `64` | Items pulled from the ender chest to top up the held stack while building. |
 | `rightClickPullAmount` | `64` | Items pulled per right-click on a block. |
-| `xpPerTransferredItem` | `0.08` | Rift XP granted per item stored into the ender chest by a sneak-drop. Pulls and build refills award no XP. |
+| `xpPerTransferredItem` | `0.08` | Rift XP per storage-credit item, subject to the per-material allowance. Pulls and build refills award no XP. |
+| `transferXpWindowMillis` | `600000` | Milliseconds to replenish one stack of storage credit per material. Clamped to 1000–86400000. |
 
 ### Void Magnet (`rift-void-magnet`)
 
@@ -215,7 +216,7 @@ Personal controls: Pull on click (on/off); Refill building stack (on/off); Store
 
 5 levels · 4 knowledge
 
-Sneaking pulls nearby item drops into the ender chest on a repeating pulse. Radius is capped at 16 blocks, items per pulse at 32, and the pulse delay floors at 2 ticks; an item the player could not pick up by hand stays on the ground.
+Sneaking pulls nearby item drops into the ender chest on a repeating pulse. Radius is capped at 16 blocks, items per pulse at 32, and the pulse delay floors at 2 ticks; an item the player could not pick up by hand stays on the ground. Player-thrown drops can be collected but earn no magnet XP or item-pull milestone credit.
 
 Personal controls: Collection control (While sneaking/Automatic collection); Pickup destination (Ender chest then inventory/Inventory then ender chest/Ender chest only/Inventory only); Item selection (All eligible items/Blocks only/Food only). Automatic collection stays armed until its mode or Enabled control is changed. Server destination restrictions still apply.
 
@@ -228,7 +229,7 @@ Personal controls: Collection control (While sneaking/Automatic collection); Pic
 | `maxItemsFactor` | `22` | Item drops per pulse added at max level. |
 | `pulseTicksBase` | `20` | Ticks between pulses before the level reduction. |
 | `pulseTicksFactor` | `12` | Ticks removed from the pulse delay at max level. |
-| `xpPerMovedItem` | `0.7` | Rift XP granted per item moved. |
+| `xpPerMovedItem` | `0.7` | Rift XP per collected item that was not thrown by a player. |
 
 ### Void Skin (`rift-void-skin`)
 

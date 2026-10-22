@@ -2,7 +2,7 @@
 title: "Protection & Region Policy"
 description: "WorldGuard flags, claim protection, and region policy"
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,7 +12,7 @@ WorldGuard flags and claim protectors gate Adapt. A protector allows or denies a
 
 Flags are registered when Adapt enables. Install or remove WorldGuard, then restart. `protectorSupport.worldguard = false` removes WorldGuard from the default set. A per-adaptation override of `WorldGuard = true` adds it back, and that protector still reads `use-adaptations`.
 
-A missing plugin, a missing location, or a protector error uses the default policy: XP allowed, multiplier 1.0, no power bonus, no unlocks. A WorldGuard error stops flag use for the rest of the session and revokes grants on the next tick.
+With no region-policy provider, gameplay XP uses multiplier 1.0 and players receive no region power bonus or grants. A provider error blocks gameplay XP until Adapt is restarted or re-enabled. Power bonuses and region grants return to their defaults on the next tick.
 
 ## Flags
 
@@ -26,7 +26,7 @@ A missing plugin, a missing location, or a protector error uses the default poli
 
 `use-adaptations deny` forces active level 0 in that region. WorldGuard bypass applies to this flag.
 
-`adapt-xp deny` zeroes awards that carry a location. The location is the one the skill passed, often the block. No location uses the default policy and the award is paid. Bypass applies to `adapt-xp` only. `adapt-xp-multiplier` applies after novelty and before the skill-line multipliers. Overlapping regions do not compound. `0` zeroes the award. Bypass does not apply to the multiplier, the power bonus, or unlocks. Where the multiplier sits in the award is in [Configuration math](/adapt/05-configuration-math).
+`adapt-xp deny` zeroes gameplay awards, including silent and spatial XP. The location is the one the skill passed, often the block; awards without an explicit location use the player's current position. Bypass applies to `adapt-xp` only. `adapt-xp-multiplier` applies before novelty and the skill-line multipliers. Overlapping regions do not compound. `0` zeroes the award. Bypass does not apply to the multiplier, the power bonus, or unlocks. Where the multiplier sits in the award is in [Configuration math](/adapt/05-configuration-math).
 
 `adapt-power-bonus` is added to max power on the one-second tick from the player's position. It is not saved. The next tick outside a region that sets it clears the bonus. If used power then exceeds max power, learned levels are removed with no refund, lowest first. Levels that no other learned adaptation requires go before prerequisite levels, and lowering a prerequisite also removes the adaptations whose requirement it breaks. Moving to an equal or higher bonus does not remove levels. Region grants are exempt. `/adapt debug mode` skips that removal.
 
@@ -59,7 +59,7 @@ On Folia, an adaptation whose targets span more than one region is skipped. Air-
 | Flag | Type | Default | Effect |
 |---|---|---|---|
 | `use-adaptations` | State | unset | `deny` makes every adaptation inert inside the region |
-| `adapt-xp` | State | `allow` | `deny` zeroes all location-carrying XP earned in the region |
+| `adapt-xp` | State | `allow` | `deny` zeroes gameplay XP earned in the region |
 | `adapt-xp-multiplier` | Double | unset (`1.0`) | Scales XP earned in the region, clamped to `[0, 1000]` |
 | `adapt-power-bonus` | Integer | unset (`0`) | Extra max power while standing in the region, clamped to `[-4096, 4096]` |
 | `adapt-unlock-adaptations` | Set of String | unset (empty) | Temporarily grants the named adaptations at level 1. `*` grants all |
@@ -70,15 +70,15 @@ A non-finite multiplier resolves to `1.0`. Max power itself floors at `0`. A lar
 maxPower = max(0, (int)(masterLevel * powerPerLevel) + regionPowerBonus)
 ```
 
-### Default policy triggers
+### Policy defaults
 
 | Condition | Result |
 |---|---|
 | No installed policy source | Default policy |
-| Missing player or missing location | Default policy |
-| `protectorSupport.worldguard = false` | Default policy |
-| Folia cannot resolve the player's region in time | Default policy |
-| Source quarantined | Default policy, WorldGuard not called again |
+| Missing player or missing location with a healthy provider | Default policy |
+| `protectorSupport.worldguard = false` with a healthy provider | Default policy |
+| Provider error | Gameplay XP blocked; no region power bonus or grants |
+| Source quarantined | Gameplay XP blocked; other policy values use defaults; the provider is not queried until Adapt is re-enabled |
 
 ### Protector settings
 

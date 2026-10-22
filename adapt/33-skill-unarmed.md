@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,11 +11,13 @@ Unarmed gains XP from attacks with no melee tool in the main hand. Axes, pickaxe
 
 ## How you earn Unarmed XP
 
-Every hit with a non-melee main hand adds 1 to `unarmed.hits` and the raw damage to `unarmed.damage`, then pays `damageXPMultiplier` times that damage. Payouts wait on `cooldownDelay`.
+A qualifying hit with a non-melee main hand adds 1 to `unarmed.hits` and the credited damage to `unarmed.damage`, then pays `damageXPMultiplier` times that damage. XP and hit milestones share `cooldownDelay`.
 
 A hit while falling (fall distance above zero and not on the ground) adds to `unarmed.critical`. A hit above 6 damage adds to `unarmed.heavy`. A kill while not holding a melee tool adds to `unarmed.kills`.
 
 Nothing is credited when the victim is already dead or invulnerable, or when you are invulnerable.
+
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
 ## Player preferences
 

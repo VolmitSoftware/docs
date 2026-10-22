@@ -2,7 +2,7 @@
 title: "Skill - Seaborne"
 description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -334,16 +334,18 @@ In water, while swimming, or under open sky in a storm, Regeneration is applied 
 
 ## Reference
 
+Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
+
 ### Skill XP sources
 
 | Trigger | Award | Notes |
 |---------|-------|-------|
-| Passive swim pulse (every `2120` ms) | `swimXP` scaled by elapsed time over the interval | With Water Breathing or Conduit Power you must have moved in water within the last `2500` ms and the award is multiplied by `1 + waterBreathingSwimXpBonusMultiplier`. Without either effect you must be in water or swimming with air below maximum. |
+| Passive swim pulse (every `2120` ms) | `swimXP` scaled by elapsed time over the interval | You must have moved in water within the last `2500` ms without riding or flying. Water Breathing or Conduit Power multiplies the award by `1 + waterBreathingSwimXpBonusMultiplier`; without either effect, air must also be below maximum. |
 | `CAUGHT_FISH` | `fishCaughtXp` | Rate-limited by `fishXpCooldown`. The `seaborne.fish.caught` stat is added before the rate limit, so the stat always counts. |
 | `CAUGHT_ENTITY` | `entityCaughtXp` | Rate-limited by `fishXpCooldown`. |
-| Breaking a block while in water or swimming | `10` for a sea pickle broken while swimming with air below maximum, otherwise `3` | Rate-limited by `seaPickleCooldown`, which gates all underwater block XP, not only sea pickles. |
-| Damaging a drowned | `damagedrownxpmultiplier` times the damage dealt, capped at the victim's base max health | Rate-limited by `drownedDamageXpCooldown`. |
-| Damaging with a trident, thrown or held in the main hand | `tridentxpmultiplier` times the damage dealt, capped at the victim's base max health | Rate-limited by `tridentDamageXpCooldown`. |
+| Breaking a block while in water or swimming | `10` for a sea pickle broken while swimming with air below maximum, otherwise `3` | Rate-limited by `seaPickleCooldown`; player-placed blocks and rejected replacements earn neither XP nor underwater block milestone credit. |
+| Damaging a drowned | `damagedrownxpmultiplier` times final damage, capped at remaining health | Rate-limited by `drownedDamageXpCooldown`. |
+| Damaging with a trident, thrown or held in the main hand | `tridentxpmultiplier` times final damage, capped at remaining health | Rate-limited by `tridentDamageXpCooldown`. |
 | Killing a drowned, guardian, or elder guardian | No XP | Adds the kill stat and plays effects only. |
 
 ### Skill configuration defaults

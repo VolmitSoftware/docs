@@ -2,12 +2,14 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Nether gains XP from wither damage, damaging or killing the Wither, killing wither skeletons, and breaking wither roses. Its 14 adaptations add fire, ghast, wither, and magma protection, lava and soul-sand movement, strider control, netherrack mining, piglin barter bonuses, Nether foods, wither loot, fire-based recovery, and thrown wither skulls, and many of those actions pay XP of their own.
+
+Breaking a player-placed wither rose or a rejected replacement earns neither base rose XP nor rose milestone credit. Wither-hit XP requires positive final damage and uses a per-target damage allowance equal to the Wither's maximum health over ten minutes.
 
 ## Adaptations
 
