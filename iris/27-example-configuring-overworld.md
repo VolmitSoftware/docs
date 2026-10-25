@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -103,7 +103,7 @@ Append `"tutorial/meadow"` to `landBiomes` in `regions/temperate.json`. Then mer
 
 These are field excerpts. Merge them into the existing files; do not replace either file with the fragment. Validate again after both edits.
 
-**A biome file that no region lists never generates, and nothing warns you about it.** `regions/temperate.json` already carries 28 land biomes, so a new one would be rare enough to be annoying to find — the two focus fields force the entire world to that region and biome so you can confirm the biome is correct before worrying about selection frequency.
+**A biome file that no region lists never generates, and nothing warns you about it.** `regions/temperate.json` already carries 30 land biomes, so a new one would be rare enough to be annoying to find — the two focus fields force the entire world to that region and biome so you can confirm the biome is correct before worrying about selection frequency.
 
 ## 4. Preview the biome
 
@@ -144,7 +144,7 @@ From `dimensions/overworld.json`:
 | `carving` | one deep-dark band at world Y -250 to -175 | Depth-banded cave biome |
 | `mode` | omitted | Runs `OVERWORLD` |
 
-Also present: region/continental/biome noise styles, 11 terrain-band generators, 23 dimension deposits, the `deep_lava` and `deep_lava_small` deep-fluid profiles, and a large body of per-biome tuning. Non-flat terrain generators set `surfaceDetail: 0.5` to halve local surface roughness without touching generator seeds; mirror that into the paired Underworld generators if you fork both.
+Also present: region/continental/biome noise styles, 11 terrain-band generators, 23 dimension deposits, the `hydrology` block with its `water` and `lava` fluid profiles ([36 - Hydrology](/iris/36-rivers)), and a large body of per-biome tuning. Non-flat terrain generators set `surfaceDetail: 0.5` to halve local surface roughness without touching generator seeds; mirror that into the paired Underworld generators if you fork both.
 
 Ore passes set `surfaceReplaceableBlocks` to `minecraft:stone`, so buried and cave-wall candidates keep their full host lists but an exterior terrain-surface candidate cannot replace soil, themed stone, glass, ice, or decorative strata. A biome can widen that with `surfaceOreReplaceableBlocks` — `["minecraft:stone", "minecraft:sand"]` permits sand exposure in that biome only.
 
@@ -156,10 +156,11 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 
 `regions/temperate.json` is a representative region:
 
-- `landBiomes`: 29 keys including `temperate/plains`, `temperate/oak-forest`, `temperate/pale-denmyre`, `mountain/plains`, `vanilla/cherry_grove`
-- `shoreBiomes`: `temperate/shore/beach`, `ocean/shore/beach`, `vanilla/stony_shore`, others
-- `seaBiomes`: `ocean/deep`, `temperate/sea/ocean`, `temperate/sea/river`, others
+- `landBiomes`: 30 keys including `temperate/plains`, `temperate/oak-forest`, `temperate/pale-denmyre`, `mountain/plains`, `vanilla/cherry_grove`
+- `shoreBiomes`: `temperate/shore/beach`, `temperate/shore/oak-beach`, `ocean/shore/beach`
+- `seaBiomes`: `ocean/deep`, `temperate/sea/ocean`, `ocean/warm`, others
 - `caveBiomes`: `carving/rocky-cavebiome`, `carving/drip`, `carving/deep`, others
+- `hydrologyPolicy`: rainfall `1.44`, and the same three beaches listed as shore biomes; no `shoreBiomeWidth` is set, so the band along rivers and ponds is off
 - `loot`: mode `FALLBACK`, multiplier `0.5`, tables `temperate/clutter` and `temperate/food`
 - Per-category zooms (`landBiomeZoom` 3.5, `seaBiomeZoom` 6, `shoreBiomeZoom` 0.15, `caveBiomeZoom` 3.3) and its own enabled `caveProfile`
 
@@ -177,7 +178,11 @@ Do not invent region or biome keys. List the directories under `regions/` and `b
 
 ### Change sea level
 
-Set `fluidHeight` in `dimensions/my-overworld.json`. Default `50`, in world Y, and every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact; raising it drowns low biomes. Existing chunks are unchanged; a staged update blends new surface terrain from the frozen edge and starts new hydrology outside the protected band.
+Set `fluidHeight` in `dimensions/my-overworld.json`. Default `50`, in world Y, and every biome generator band is measured from it. Lowering it lowers the sea while leaving relative terrain heights intact; raising it drowns low biomes. Existing chunks are unchanged; a staged update blends the surface terrain of later chunks into the frozen edge, and their water is held back from the earlier chunks by a one-block earth wall.
+
+### Change the water
+
+Rivers, ponds and lakes come from `hydrology` in `dimensions/my-overworld.json` and from the `hydrologyPolicy` on the dimension, its regions and its biomes. To make one region wetter, raise `rainfall` and `pondDensity` in its policy. To keep a desert dry, set `"streams": "BLOCK"` and `"ponds": "BLOCK"` on it. To fill a biome's ponds and lakes with lava, give it `"fluid": "lava"`; the dimension's `hydrology.fluids` defines that profile. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings; any edit to the pack rebuilds them, and chunks generated earlier keep their water. See [36 - Hydrology](/iris/36-rivers) and [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ### Add a biome to a region
 

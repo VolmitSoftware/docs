@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -409,13 +409,16 @@ The engine-backed choices are:
 | `engineStreamValue` | Sampled engine field |
 |---|---|
 | `SLOPE` | Terrain slope |
+| `NATURAL_HEIGHT` | Terrain height before hydrology shaped it |
 | `HEIGHT` | Terrain height |
 | `HEIGHT_OR_FLUID` | Greater of terrain and fluid surface |
 | `OVERLAY_NOISE` | Surface-overlay noise |
 | `REGION_STYLE` | Region-selection style value |
 | `REGION_IDENTITY` | Region identity value |
+| `WATER_HEAD` | Water surface height: the river, stream or pond surface where water stands, otherwise the dimension fluid height |
+| `WATER_ROLE` | What hydrology made of the column, as a stable code: `0` dry, `1` channel, `2` bank, `3` shore, `4` pond, `5` pond shore, `6` dam, `7` mouth, `8` cascade, `9` waterfall, `10` sea inlet mouth. See [36 - Hydrology](/iris/36-rivers#engine-streams) |
 
-World and terrain variables require a loaded Iris world; they are unavailable in offline tools.
+An `engineStreamValue` outside this list fails the pack load, and the error names the known streams. World and terrain variables require a loaded Iris world; they are unavailable in offline tools.
 
 ### Function
 

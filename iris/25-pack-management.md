@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-10-16T13:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -181,7 +181,7 @@ Omitting the pack validates every visible pack and reports how many are broken. 
 | Dimension JSON integrity | As emitted |
 | Biome `terrain3D` profiles and `snippet/terrain-3d/` files: unknown fields, wrong types, out-of-range numbers, unknown noise styles, nesting past 32 levels, snippet references that escape the pack | Blocking. See [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Loot graph: every referenced loot table resolves | Blocking |
-| Rivers (`hydrology` and `riverPolicy`): routing, channel, bank, bed, flow, mouth, pool, grotto and deep-fluid bounds, unique profile and pool IDs, biome and profile references, dimension-height fit | Blocking. See [36 - Rivers](/iris/36-rivers) |
+| Hydrology (`hydrology` and `hydrologyPolicy`): the full settings compile, as a starting world runs it (tiers and their catchments, ranges, areas, bank bands, material palettes, fluid profiles, sea inlet and cave pool bounds, and the `fluid` of every tier, of `ponds` and of `cavePools`), plus whole-number ranges and every `hydrologyPolicy.fluid` | Blocking. See [36 - Hydrology](/iris/36-rivers#validation) |
 | Object surface support | Blocking |
 | `rotation` / `translate` / `scale` on surfaces that do not support them | Blocking |
 | Structure graph. Dimension, region and biome placements need exactly one non-empty backend; native placements allow only an omitted, null or `LEGACY` anchor | Errors blocking, warnings advisory |

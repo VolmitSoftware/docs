@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -126,7 +126,7 @@ Drag to pan and use the mouse wheel or trackpad to zoom.
 
 **Vision map** (`/iris studio map`) shows a render-mode selector, world coordinates, scale, render progress, and contextual Height and River legends. The `Entities` toggle beside `Grid` shows or hides red living-entity markers; player markers always stay. Clicking teleports the player who opened the map, deriving the landing Y from the authored terrain and fluid field. Manual pan or zoom disables Follow. Hover reads the same biome domain the map draws.
 
-The **River network** mode labels rivers, pools, cascades, waterfalls, sinkholes, grottos and mouths. Its diagnostic view also shows rejected candidates and their reasons. The **Biome** view includes river biomes. Vision can display named image-map layers.
+The **River network** mode draws streams, rivers, major rivers, cascades, waterfalls, mouths, ponds, lakes, dams and sea inlets at 16 blocks per pixel or closer, and the cave pools that generated chunks recorded. The **Biome** view includes the shore biomes placed along the water. Vision can display named image-map layers. See [36c - Water Inspection](/iris/36c-river-inspection).
 
 **Noise Explorer** (`/iris studio noise`) previews a selected pack generator. Enter a seed and click **Apply**, then choose a signed, terrain or grayscale palette. The status strip shows coordinates, scale, sampled range and render progress.
 
@@ -244,6 +244,6 @@ The workflow, commands, and marker rules are in [21 - Jigsaw Structures](/iris/2
 
 Pack JSON is shared across platforms. Install any content the pack requires on the destination server.
 
-Edit `hydrology` and `riverPolicy` through the dimension, region and biome schemas. Refresh schemas, validate the pack, then inspect rivers in Vision's **River network** mode. See [36 - Rivers](/iris/36-rivers).
+Edit `hydrology` on the dimension and `hydrologyPolicy` on the dimension, regions and biomes through their schemas. Refresh schemas, validate the pack, then inspect the water in Vision's **River network** mode. See [36 - Hydrology](/iris/36-rivers).
 
-Related: [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), [36 - Rivers](/iris/36-rivers).
+Related: [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), [36 - Hydrology](/iris/36-rivers).

@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,7 +33,7 @@ column (x, z)
   derivative / customDerivitives  ->  what Minecraft calls this biome (colours, mobs, structure eligibility)
 ```
 
-- **Height is relative to `fluidHeight`, not to Y=0.** `min: 4, max: 10` means "4 to 10 blocks above the water line". Negative values put the natural surface under water. See [36 - Rivers](/iris/36-rivers) for river channels.
+- **Height is relative to `fluidHeight`, not to Y=0.** `min: 4, max: 10` means "4 to 10 blocks above the water line". Negative values put the natural surface under water. See [36 - Hydrology](/iris/36-rivers) for rivers and ponds.
 - **A biome has no `type` field.** `carving/drip` is a cave biome only because a region put it in `caveBiomes`. The same file placed in `landBiomes` would generate as land.
 - **The role can be corrected after height is known.** If a land biome height lands below the water line, Iris swaps in a sea biome from the same region. If it lands in the shore band, a shore biome. A "land" biome with a negative generator will simply never render as itself.
 
@@ -224,7 +224,7 @@ That is why a sea biome with `vanillaDerivative: "minecraft:plains"` gets no oce
 | `childStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Shape of the child patches. Cellular styles give distinct blobs. Simplex gives soft gradients. |
 | `carvingBiome` | string | `""` | Registers the referenced biome as reachable so its custom identity and spawn mappings exist. It does **not** select a cave biome at runtime. Cave pick is region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
 | `caveMinDepthBelowSurface` | int 0-256 | `0` | When this biome is used as a cave biome, shallow columns fall back to the surface biome. The cutoff is this many blocks below the terrain surface. Raise it to keep a deep-cave palette out of shallow openings. |
-| `riverPolicy` | `IrisRiverPolicy` or null | inherit | Overrides the region and dimension hydrology policy wherever this biome is selected. Omitted members inherit; explicit empty biome/profile lists clear the inherited selection. See [11 - Dimensions](/iris/11-dimensions#terrain-first-hydrology). |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or null | inherit | Adjusts the region and dimension hydrology policy wherever this biome is selected: rainfall, pond density, stream and pond permissions, fluid, water plants and shore biomes. Unset values inherit; an explicitly empty `shoreBiomes` list clears the inherited list. See [36b - Hydrology Policy](/iris/36b-river-policy). |
 
 ### Height (`generators`)
 
@@ -354,9 +354,9 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 | `loot` | `IrisLootReference` | Loot tables for containers generated here. |
 | `blockDrops` | `IrisBlockDrops[]` | Custom drops for blocks broken here. |
 | `caveProfile` | `IrisCaveProfile` | Overrides the region cave profile for this biome. |
-| `riverPolicy` | `IrisRiverPolicy` or `null` | Final policy layer for source placement, transit/outlet admission, dimension-owned profiles, hydrology content pools, and local multipliers. Non-null fields override the selected region and dimension; see [36 - Rivers](/iris/36-rivers). |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | Final policy layer for rainfall, pond density, stream and pond permissions, fluid, water plants and shore biomes. Set fields override the selected region and dimension; see [36b - Hydrology Policy](/iris/36b-river-policy). |
 
-The managed Overworld and Underworld mountain roots use `PREFERRED_HEADWATER`, so source spacing and branch-length controls remain authoritative instead of forcing a source into every eligible tile.
+The managed Overworld and Underworld mountain roots raise `rainfall` and `pondDensity`, so mountains carry more streams and ponds than the regions around them, and the volcanic biomes set `fluid` to `lava`.
 
 Placements are gathered per chunk from the biome at the chunk center, the cave biome at the same point, the region and the dimension. A surface biome contributes all of its `structures[]`. The cave biome contributes only placements whose resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER` or `CAVE_ANY`. Surface and height-band placements written into cave-biome files are ignored. A placement own `caveBiomes` list is an additional allowlist rechecked at each candidate anchor. See [15 - Caves & Carving](/iris/15-caves-carving) and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 
@@ -366,7 +366,7 @@ A pack authored on a newer Minecraft can name blocks, entities, and vanilla biom
 
 | What is missing | Effect on the biome |
 |-----------------|---------------------|
-| A block in `layers`, `slab`/`wall` palettes, a decorator palette, a deposit, or any other block field on the biome | The biome is excluded. It does not generate on that version and is removed from every region land, sea, shore, and cave pool that listed it, and from `children`, `floatingChildBiomes`, carving entries, `riverPolicy` biome references, and structure-placement biome lists |
+| A block in `layers`, `slab`/`wall` palettes, a decorator palette, a deposit, or any other block field on the biome | The biome is excluded. It does not generate on that version and is removed from every region land, sea, shore, and cave pool that listed it, and from `children`, `floatingChildBiomes`, carving entries, `hydrologyPolicy.shoreBiomes`, and structure-placement biome lists |
 | `derivative` | The biome is excluded, exactly as for a block. `derivative` has no fallback of its own |
 | `vanillaDerivative` | The entry is dropped. Structure eligibility falls back to `derivative` and the biome keeps generating |
 | A `biomeScatter` or `biomeSkyScatter` entry | That entry is dropped from the list. Remaining entries still disperse; an emptied list falls through to `biomeScatter`, then to `derivative` |

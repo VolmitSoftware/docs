@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -13,17 +13,17 @@ For biome configuration, see [13 - Biomes](/iris/13-biomes). To edit the built-i
 
 ## Catalog scope
 
-The paired catalog contains 381 reachable biome identities:
+The paired catalog contains 369 reachable biome identities:
 
 | Kind | Count | Documentation treatment |
 |---|---:|---|
 | Direct land roots | 164 | One paired page per root |
-| Direct sea roots | 31 | One paired page per root |
+| Direct sea roots | 21 | One paired page per root |
 | Direct shore roots | 17 | Consolidated in [Shorelines](/iris/biomes/shorelines), with distinct variants called out |
 | Region-selected cave roots | 47 | One paired page per root, except the 16-color Prismatic family |
 | Dimension-carving roots | 1 | The global Deep Dark page includes its descendants |
 | Authored subterrain roots | 6 | One paired page per dimension-selected room biome |
-| Child-only and floating-only variants | 115 | Included with a parent root rather than given an orphan page |
+| Child-only and floating-only variants | 113 | Included with a parent root rather than given an orphan page |
 
 `mountain/shore/beach` and `vanilla/stony_shore` are available in both packs but are not selected by the built-in region lists. See [Shorelines](/iris/biomes/shorelines) for their materials and settings.
 
@@ -33,20 +33,20 @@ The paired catalog contains 381 reachable biome identities:
 |---|---:|---:|---|
 | [Carving](/iris/biomes/carving) | 54 | 49 | Region cave selectors, six authored room roots and the dimension-level Deep Dark band |
 | [Estranged](/iris/biomes/estranged) | 15 | 1 | Surreal woodlands, wetlands, and sculptural terrain |
-| [Frozen](/iris/biomes/frozen) | 21 | 8 | Snow, ice, spruce, mountains, cold water, and shores |
-| [Hot](/iris/biomes/hot) | 10 | 2 | Dunes, desert mountains, oases, warm water, and shores |
+| [Frozen](/iris/biomes/frozen) | 19 | 7 | Snow, ice, spruce, mountains, cold water, and shores |
+| [Hot](/iris/biomes/hot) | 9 | 2 | Dunes, desert mountains, oases, warm water, and shores |
 | [Magnetics](/iris/biomes/magnetics) | 6 | 1 | Metallic, glassy, frozen, fungal, and noise-driven terrain |
-| [Mesa](/iris/biomes/mesa) | 7 | 7 | Plateaus, valleys, badlands, rivers, and shores |
-| [Mountain](/iris/biomes/mountain) | 11 | 5 | Mountains, cliffs, highlands, forests, rivers, and shores |
+| [Mesa](/iris/biomes/mesa) | 6 | 7 | Plateaus, valleys, badlands, and shores |
+| [Mountain](/iris/biomes/mountain) | 9 | 5 | Mountains, cliffs, highlands, forests, and shores |
 | [Mushroom](/iris/biomes/mushroom) | 8 | 2 | Fungal land, water, and shoreline biomes |
 | [Ocean](/iris/biomes/ocean) | 5 | 1 | Shared deep, dark, rich, warm, and shoreline roots |
 | [Prismatics](/iris/biomes/prismatics) | 18 | 0 | Sixteen color families plus shared sea and shore roots |
 | [Savanna](/iris/biomes/savanna) | 5 | 2 | Acacia, savanna, plateau, forest, and shore roots |
 | [Swamp](/iris/biomes/swamp) | 13 | 7 | Marshes, mangroves, forests, lakes, oceans, and shores |
-| [Temperate](/iris/biomes/temperate) | 32 | 12 | Plains, meadows, forests, waters, and shared shores |
+| [Temperate](/iris/biomes/temperate) | 31 | 12 | Plains, meadows, forests, waters, and shared shores |
 | [Terralost](/iris/biomes/terralost) | 5 | 0 | Alpine, amethyst, and ancient-sand terrain |
-| [Tropical](/iris/biomes/tropical) | 20 | 7 | Rainforests, islands, volcanoes, waters, and distinct shores |
-| [Tundra](/iris/biomes/tundra) | 17 | 11 | Taiga, redwoods, alpine terrain, mountains, water, and shores |
+| [Tropical](/iris/biomes/tropical) | 18 | 7 | Rainforests, islands, volcanoes, waters, and distinct shores |
+| [Tundra](/iris/biomes/tundra) | 16 | 10 | Taiga, redwoods, alpine terrain, mountains, water, and shores |
 | [Vanilla](/iris/biomes/vanilla) | 19 | 0 | Vanilla-compatible roots mixed into Iris selectors |
 
 The [Sulfur Galleries and Hollows](/iris/biomes/carving/sulfur) require Minecraft 26.2. The cave root and its child contain short sulfur spikes, taller clusters, mineral pools, banded spires and short hanging mineral drips. Rare dimension-selected sulfur chambers surround shallow lava basins with irregular mineral banks. Overworld uses native sulfur cubes and water pools with occasional geysers; Underworld keeps the same geometry with lava pools and Nether ecology.
@@ -70,7 +70,7 @@ An atlas page lists every region and selection role that can choose the root. Re
 
 ## What counts as in use
 
-Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, authored `subterrainFeatures`, children, floating targets, carving references, and hydrology biome references. River policies can select surface, mouth, shore, bank, and flooded-cave biomes. A file outside this graph is omitted even if it parses successfully.
+Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, authored `subterrainFeatures`, children, floating targets, carving references, and the `hydrologyPolicy.shoreBiomes` of the dimension, regions and biomes while hydrology is enabled. A file outside this graph is omitted even if it parses successfully.
 
 This distinction matters when editing a pack. An authored biome can validate yet never generate because nothing selects it. Use [13 - Biomes](/iris/13-biomes) for the configuration contract and [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) for the editing workflow.
 

@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-10-16T18:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -65,6 +65,7 @@ Replacement is available on Paper, Purpur, Leaf and Folia and requires a manual 
 | Deliberately gated reads | — | `seed` and `accesslist` stay at gamemaster level even though `worlds` shows similar output without the seed field |
 | Tree feller | `iris.treefeller` (default `op`) | Fabric 26.1.2, 26.2 and 26.3 use `irisworldgen:treefeller`; Fabric 1.21.1, Forge, and NeoForge use `irisworldgen.treefeller`. All default to gamemaster level |
 | Help | Clickable command menu | Clickable help pages |
+| Find water | `/iris find river type=<type> [teleport=true]`; `teleport=false` prints the position | `/iris find river <type>`, always teleports |
 
 Full command tables: [04 - Commands & Permissions](/iris/04-commands-permissions).
 

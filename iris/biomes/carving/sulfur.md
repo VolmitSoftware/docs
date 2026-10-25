@@ -2,7 +2,7 @@
 title: "Sulfur Galleries — Cave Biome"
 description: "Sulfur Galleries and Sulfur Hollows, with sulfur pools, banded spires, short mineral drips and native cube ecology"
 published: true
-date: 2026-10-12T01:41:01.112Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biome-atlas, cave, sulfur"
 editor: markdown
 dateCreated: 2026-09-03T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-09-03T00:00:00.000Z
 
 `carving/sulfur` is a regional cave root in the Overworld and Underworld packs, with `carving/sulfur-hollows` as its child. Both require Minecraft 26.2.
 
-Both packs disable standalone cave aquifers in this family and its children. Mineral pool objects and contained hydrology use water in Overworld and lava in Underworld; the dimension-selected mineral chamber retains its own lava basin in both packs. The profiles retain their separate deep-lava permission.
+Both packs disable standalone cave aquifers in this family and its children. Mineral pool objects, cave pools and the surface water above the caves use water in Overworld and lava in Underworld; the dimension-selected mineral chamber retains its own lava basin in both packs. The profiles retain their separate deep-lava permission.
 
 ## Selection and shape
 

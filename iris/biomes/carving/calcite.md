@@ -2,7 +2,7 @@
 title: "Calcite Cavern — Cave Biome"
 description: "Paired Overworld and Underworld atlas entry for carving/calcite"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biome-atlas, cave"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 
 `carving/calcite` is a direct cave root in the Overworld and Underworld packs. The packs preserve its spatial identity while changing materials, registered biome effects and ecology for their respective dimensions.
 
-Both packs disable standalone cave aquifers in this family and its children. Contained hydrology uses water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
+Both packs disable standalone cave aquifers in this family and its children. Cave pools and the surface water above the caves are water in Overworld and lava in Underworld. The profiles retain their separate deep-lava permission.
 
 Amethyst clutter keeps its authored scale in both packs so each bud retains its solid support. Other clutter keeps its configured scale.
 

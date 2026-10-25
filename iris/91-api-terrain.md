@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,29 +73,23 @@ Terrain reads are thread-safe and return inline. Empty optionals mean the world 
 
 `IrisEngine.getBiomeEnvironmentAsync(x, internalY, z)` returns a `CompletableFuture<BiomeEnvironment>` with the biome, region, dimension, and pack data for that position. Convert an absolute world Y to `internalY` by subtracting `engine.getWorld().minHeight()`. Saved records load asynchronously; unrecoverable data errors complete the future exceptionally. Schedule Bukkit world, entity, inventory, and item operations on their owning thread after completion.
 
-## River fields
+## Water fields
 
-Columns inside an accepted river footprint carry the river plan as well as the terrain:
+Columns carry the water placed by hydrology as well as the terrain:
 
 | Field | Value |
 |---|---|
-| `NATURAL_HEIGHT` | Terrain height before the river valley was cut |
-| `RIVER_STATE` | `WET` for a channel with water, `DRY` for a dry bed, `NONE` outside a river |
-| `RIVER_DISTANCE` | `0` in the channel, `1` on the shore, `2` on the eroded bank, `NaN` outside a river |
-| `RIVER_FLOW` | `1` when the water has a flow direction, `0` for still water, `-1` when unavailable |
-| `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet channel |
+| `NATURAL_HEIGHT` | Terrain height before hydrology shaped it |
+| `RIVER_STATE` | `WET` where the column holds flowing or standing water, `NONE` elsewhere |
+| `RIVER_DISTANCE` | `0` in the water, `1` on a shore, `2` on a bank or dam, `NaN` elsewhere |
+| `RIVER_FLOW` | `1` for flowing water (channels, mouths, cascades and waterfalls), `0` for standing water (ponds, lakes and the open mouths of sea inlets), `-1` where there is no water |
+| `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet column |
 
-`surfaceKind` reports `RIVER`, `RIVER_SHORE`, or `DRY_CHANNEL` inside a footprint, and `surfaceHeight` under a river is the bed. A cold read may plan the river tile on the calling thread, so keep wide scans off tick threads. See [36 - Rivers](/iris/36-rivers).
+`surfaceKind` reports `RIVER` for every wet column, ponds, lakes and sea inlet mouths included, and `RIVER_SHORE` for shore columns; banks and dams report `LAND`. `surfaceHeight` under water is the bed. A read on the server thread for a chunk whose water is not planned reports the column without water, so read off the tick thread for complete answers, and run wide scans off the tick thread as well. See [36 - Hydrology](/iris/36-rivers).
 
 ## Volumetric terrain queries
 
-For biome [`terrain3D`](/iris/47-volumetric-terrain), natural-height queries return the highest solid block after volumetric shaping. `surfaceHeight` remains a single height per column. It does not enumerate lower ledges. River-owned columns report the accepted bed. Biome queries within a natural overhang gap and at its exposed floors retain the surface biome. A lower Y alone does not select a cave biome.
-
-## River policy resolution
-
-`RiverPolicyResolver.resolveWithStatus(dimension, region, biome)` returns the inherited policy and a `complete` flag. The flag is false if a declared river-biome reference returns null during that resolution. Filtering and inheritance match `resolve(...)`.
-
-`IrisRiverPolicy.compatBiomes(declared, data, field, onUnresolvedReference)` calls the callback for each reference that the loader cannot resolve.
+For biome [`terrain3D`](/iris/47-volumetric-terrain), natural-height queries return the highest solid block after volumetric shaping. `surfaceHeight` remains a single height per column. It does not enumerate lower ledges. Columns under water report the bed. Biome queries within a natural overhang gap and at its exposed floors retain the surface biome. A lower Y alone does not select a cave biome.
 
 ## Authored subterrain sampling and locate
 

@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -62,7 +62,7 @@ Dimension → regions[] → Region → land/sea/shore/cave biomes[] → Biome �
           → loot, entitySpawners, blockDrops
 ```
 
-Dimensions can name biomes directly through `focus`, `carving`, `subterrainFeatures` and hydrology content policies. Ordinary surface pools are reached through regions. Feature-owned biomes do not also need a region-list reference.
+Dimensions can name biomes directly through `focus`, `carving`, `subterrainFeatures` and `hydrologyPolicy.shoreBiomes`. Ordinary surface pools are reached through regions. Feature-owned biomes do not also need a region-list reference.
 
 ## Engine mode
 
@@ -254,76 +254,41 @@ Tune this group in Studio with a fixed seed. Compare the same coordinates betwee
 
 The feature biome owns only its air, water and lava volume. Solid rims, shelves, walkways and pillars remain protected against unrelated carving and placement. See [Authored Subterrain Features](/iris/15b-subterrain-features) for every field and a complete four-family configuration with biome and spawn resources.
 
-## Terrain-first hydrology
+## Hydrology
 
-`hydrology` owns physical surface rivers, underground rivers, grottos, mouths, and independent deep fluids for the dimension. Existing chunks do not change when this configuration reloads.
+`hydrology` turns on rivers, streams, ponds and lakes that follow the drainage of the terrain, plus sea inlets on cliff coasts and pools in carved caves: hollows fill until they spill, every column drains downhill to the sea, the flow gathers into channels sized by their catchment, and the ground is reshaped into beds, shores and banks. `hydrologyPolicy` on the dimension sets the rainfall, pond density, permissions, fluid and shore biomes that every region and biome inherits. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings, and rebuilt when any of those changes; chunks generated earlier keep their water.
 
 ```json
 {
   "hydrology": {
-    "rivers": {
-      "enabled": true,
-      "routing": {
-        "tileSize": 512,
-        "sampleSpacing": 64,
-        "refinementSpacing": 4,
-        "maximumRouteLength": 16384,
-        "maximumOutletsPerTile": 1,
-        "oceanOutlets": true
-      },
-      "surface": {
-        "enabled": true,
-        "sources": { "density": 3.0, "minimumElevation": 64, "minimumPerTile": 0 }
-      },
-      "underground": {
-        "enabled": true,
-        "sources": { "density": 1.5, "minimumPerTile": 0 }
-      },
-      "profiles": [
-        { "id": "water", "fluidPalette": { "palette": [{ "block": "minecraft:water" }] } }
-      ]
-    },
-    "deepFluids": []
+    "enabled": true,
+    "fluids": [
+      { "name": "water", "palette": { "palette": [{ "block": "minecraft:water" }] } }
+    ]
+  },
+  "hydrologyPolicy": {
+    "rainfall": 1.2,
+    "pondDensity": 1.5,
+    "shoreBiomes": ["temperate/shore/beach"],
+    "shoreBiomeWidth": 4
   }
 }
 ```
 
-Source `density` is the expected natural headwater count per qualifying planning tile, not a per-chunk chance. Surface and underground sources have independent budgets. `minimumPerTile` backfills required headwaters only while legal candidates and outlets remain. `maximumOutletsPerTile` limits selected drainage roots after source admission: lower values make more headwaters converge into longer shared trunks, while higher values produce more independent trees.
+| Key | What it controls |
+|-----|------------------|
+| `drainage` | How hollows fill and spill, how deep a hollow is breached instead of filled, how stream heads thin out in dry areas, and where catchment stops growing |
+| `tiers` | The size classes of flowing water, each with its catchment threshold, half-width, depth, inset, cascades and waterfall drop, bank band and bank style, deltas, materials, plants and fluid |
+| `ponds` | Natural ponds in hollows, seeded cups and the chains of cups along streams, dams, freeboard, climate drawdown, shore shape, materials and plants |
+| `lakes` | The area range of hollows that become single-level lakes |
+| `deformation` | How far ground is raised to hold water, the bank slopes and noise, and the cave mask under water |
+| `underground` | Sea inlets that run inland from cliff coasts at sea level, and pools on the floors of carved caves |
+| `fluids` | Named fluid profiles that tiers, ponds, cave pools and policies fill with |
+| `prefetchRings`, `persist` | Planning windows prepared ahead of generation, and whether plans are saved with the world |
 
-Surface water stays below natural terrain until its ocean apron, and head loss becomes pools, riffles, cascades, or graded waterfalls rather than a vertical falling-fluid throat; `geometry.drops.maximumFaceDrop` bounds every wetted face. Underground channels with `connectToExistingCaves: false` seal their own passage apart from explicit grotto and sinkhole openings; setting it true permits a connection to an observed cave only when the wet component stays contained.
+Every field, with its range and default, is on [36 - Hydrology](/iris/36-rivers). Falling water at waterfalls and cascades, sea inlets and cave pools are written through the mantle, so they need `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`; cave pools also need `carvingEnabled` with `CARVED` not disabled. Still surface water does not depend on the mantle.
 
-| River key | Runtime behavior |
-|-----------|------------------|
-| `routing.tileSize` | Planning-tile width in blocks, 256–8192. Smaller tiles evaluate source budgets more often |
-| `routing.sampleSpacing` | Terrain-graph sampling interval. This bounds drainage search cost; it is not the visible route step |
-| `routing.maximumRouteLength` | Hard route-length bound in blocks |
-| `routing.maximumOutletsPerTile` / `routing.maximumCoastalOutletsPerTile` | Maximum inland drainage roots and maximum sea outlets selected per tile, budgeted separately. Fewer roots favor long branching trunks |
-| `routing.oceanOutlets` / `routing.inlandOutlets` | Legal terminal families. A route is rejected when no configured contained outlet can be proven |
-| `routing.tributaries` | Extra surface courses an outlet may accept as tributaries of its main river |
-| `geometry.meanders` | Primary and detail Simplex wavelengths and strengths, lateral-offset bound, smoothing passes, and maximum retained turn angle |
-| `geometry.surface`, `geometry.underground`, `geometry.grottos` | Bed roundness, bed and wall roughness and wavelength, organic outline radial bounds and lobe strengths, ceiling roughness, and chamber plan aspect for each channel family |
-| `geometry.drops` | Cascade run and profile exponent, maximum underground face drop, descending flow width and depth, and receiving-basin width and depth |
-| `surface.sources` | Independent surface density, minimum source elevation, and required minimum quota |
-| `surface.channel` | Styled wet-channel width and depth, water sink below the bank, maximum legal cut below natural terrain, outline roughness and its bounds, station smoothing, and the headwater spring pool |
-| `surface.banks` | Shore bench width and rise, valley blend slope, base width and limits, exposed cut strata, and the optional shore and bank material palettes |
-| `surface.erosion` | Whether a valley is cut beyond the bench, how its width is smoothed, and the shape of the valley side and of the wet bed |
-| `surface.ponds` | The spring pond at a headwater and the pond a river that ends inland drains into |
-| `surface.bed` | Falling-block handling under and beside the water, and the optional channel bed material palette |
-| `surface.flow` | Cascade and waterfall thresholds, the carved throat bed, and the plunge basin scoured below a drop |
-| `surface.mouths` | Estuary flare, drowned inlet length, depth and share of the course, the approach ramp, and the ocean-apron limit |
-| `underground.sources` | Independent underground density and required minimum quota |
-| `underground.fluidLevel` | Styled world-Y terraces; accepted courses may descend rather than remaining globally flat |
-| `underground.channelWidth`, `depth`, `headroom` | Continuous irregular passage dimensions. Floors are arched and longitudinally varied rather than tiled circles |
-| `underground.connectToExistingCaves` | False keeps the generated channel self-contained without sampling neighboring caves; true permits observed-cave connections only when the completed wet component remains contained |
-| `underground.minimumRockCover`, `minimumFloorCover`, `wideningSources`, `bedMaterial` | Rock kept above and below a passage, the joined-source count at which it reaches full width, and the optional floor material palette |
-| `grottos` | Coastal and inland contained terminal shapes, the coastal cliff test that chooses a grotto over an open mouth, and standalone sea caves |
-| `profiles` | Reusable fluid palettes selected by the effective dimension, region, or biome `riverPolicy` |
-
-Every field in these sections, with its range and default, is documented in [36 - Rivers](/iris/36-rivers).
-
-Each `deepFluids` entry has its own `id`, palette, density, spacing, world-Y `height`, horizontal and vertical radii, depth, headroom, and pool/channel switches. Deep-fluid sources do not consume either river source budget. Contained pools form one connected irregular basin; enable `shortChannels` only when short contained offshoots are wanted.
-
-Automatic biome and region objects reject support footprints that intersect accepted surface fluid. An explicit-Y placement or `/iris object paste` remains available for deliberate river construction.
+Automatically placed biome and region objects never stand on water, shore or dam columns. An explicit-Y placement or `/iris object paste` remains available for deliberate construction in the water.
 
 ## Rock, fluid, and overlay noise
 
@@ -348,8 +313,8 @@ Automatic biome and region objects reject support footprints that intersect acce
 | `rockPalette` | `IrisMaterialPalette` | `stone` | Subsurface fill for every column that a biome layer does not claim. Change it for a themed world (deepslate planet, sandstone desert world). Biomes and regions can override it locally |
 | `fluidPalette` | `IrisMaterialPalette` | `water` | Blocks used for ocean columns and for cave aquifers that allow fluid. Set it to lava for a magma world |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` | empty | Extra height noise summed on top of the interpolated biome height, everywhere, ignoring biome boundaries. Use it for a global roughness or a world-wide swell that must not follow biome edges |
-| `hydrology` | `IrisHydrology` | rivers disabled, no deep fluids | Dimension-owned terrain-first surface and underground rivers plus independent `deepFluids`. See [36 - Rivers](/iris/36-rivers) |
-| `riverPolicy` | `IrisRiverPolicy` or `null` | `null` (runtime policy defaults) | Dimension policy for source placement, transit/outlet admission, profiles, river content, and local multipliers. Region and biome non-null fields override it |
+| `hydrology` | `IrisHydrology` or `null` | `null` (no hydrology) | Rivers, streams, ponds and lakes that follow the drainage of the terrain, sea inlets and cave pools, with their tiers, pond, lake and underground settings, terrain shaping and fluids. See [36 - Hydrology](/iris/36-rivers) |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | `null` (rainfall and pond density `1`, streams and ponds allowed, no shore biomes) | Dimension-wide rainfall, pond density, stream and pond permissions, pond and lake fluid, water plants, and shore biomes. Regions and biomes override the values they set. See [36b - Hydrology Policy](/iris/36b-river-policy) |
 
 ## Ores and deposits
 
@@ -419,7 +384,7 @@ Set `carvingEnabled: false` to disable cave carving throughout the dimension.
 | `caveProfile` | `IrisCaveProfile` | disabled default object | The dimension default 3D cave system: density styles, vertical range, threshold, surface clearance. Regions and biomes override it when they enable their own. Full field reference in [15 - Caves & Carving](/iris/15-caves-carving) |
 | `carving` | `IrisDimensionCarvingEntry[]` | empty | Cave-biome overrides keyed to absolute world-Y bands. Each has a stable `id`, a `biome`, a `worldYRange`, optional `children`, `childStyle`, `childShrinkFactor`, and `childRecursionDepth`. Use it for depth-banded cave themes such as a deep dark layer |
 | `useMantle` | boolean | `true` | When false, disables caves, objects, jigsaw structures, features, entities and deferred block updates. Terrain and decoration still run |
-| `disabledComponents` | mantle flag strings | empty | Disables selected features: `OBJECT` for objects, `JIGSAW` for Iris structures, `CARVED` for caves, `RIVER_HYDROLOGY` for rivers, and `FLOATING_OBJECT` for floating-biome objects |
+| `disabledComponents` | mantle flag strings | empty | Disables selected features: `OBJECT` for objects, `JIGSAW` for Iris structures, `CARVED` for caves, `RIVER_HYDROLOGY` for the falling water of waterfalls and cascades, sea inlets and cave pools, and `FLOATING_OBJECT` for floating-biome objects |
 
 ## Objects, decoration, and post-processing
 
@@ -719,7 +684,7 @@ Related:
 - [12 - Regions](/iris/12-regions)
 - [14 - Generators & Noise](/iris/14-generators-noise)
 - [15 - Caves & Carving](/iris/15-caves-carving)
-- [36 - Rivers](/iris/36-rivers)
+- [36 - Hydrology](/iris/36-rivers)
 - [37 - Image Maps](/iris/37-image-maps)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [18 - Structures Overview](/iris/18-structures-overview)

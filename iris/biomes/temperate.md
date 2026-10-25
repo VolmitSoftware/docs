@@ -2,7 +2,7 @@
 title: "Temperate Biomes"
 description: "Navigation for the built-in temperate biomes across Overworld and Underworld"
 published: true
-date: 2026-10-12T01:13:58.426Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, temperate"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -45,7 +45,6 @@ Overworld land and water biomes inherit native spawn tables from their configure
 | [Sakura Forest](/iris/biomes/temperate/sakura-forest) | `temperate/sakura-forest` | Land | Temperate |
 | [Sea / Ocean](/iris/biomes/temperate/sea/ocean) | `temperate/sea/ocean` | Sea | Estranged, Magnetics, Temperate |
 | [Sea / Ocean Deep](/iris/biomes/temperate/sea/ocean-deep) | `temperate/sea/ocean-deep` | Sea | Estranged, Magnetics, Temperate |
-| [Sea / River](/iris/biomes/temperate/sea/river) | `temperate/sea/river` | Sea | Estranged, Temperate |
 | [Shattered Plains](/iris/biomes/temperate/shattered-plains) | `temperate/shattered-plains` | Land | Temperate |
 | [Shorelines](/iris/biomes/shorelines) | `temperate/shore/beach` | Shore | Estranged, Forests, Magnetics, Temperate |
 | [Shorelines](/iris/biomes/shorelines) | `temperate/shore/oak-beach` | Shore | Estranged, Forests, Temperate |

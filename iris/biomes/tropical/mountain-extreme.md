@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Mountain Extreme"
 description: "Iris biome atlas entry for tropical/mountain-extreme in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -42,7 +42,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 ## Hydrology
 
-This biome inherits the tropical region’s denser surface river and lake policy. Hydrology cuts channels into its mountain terrain; there is no fluid-painted child biome. Overworld uses water and Underworld uses lava.
+This biome sets no hydrology policy of its own and inherits the tropical region’s rainfall `1.77` and pond density `2.5`. Streams and rivers cut their channels into its mountain terrain, and its hollows hold ponds. Overworld uses water and Underworld uses lava.
 
 ## Overworld treatment
 

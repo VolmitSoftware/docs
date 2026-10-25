@@ -2,7 +2,7 @@
 title: "Underworld"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -29,15 +29,15 @@ Both packs use `surfaceDetail: 0.5` on nonflat terrain generators to smooth smal
 
 ## 3D terrain
 
-The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes keep their height-based terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
+The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes keep their height-based terrain. Rivers, ponds and lakes come from hydrology, with the same settings in both packs and each dimension's own fluid.
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
 
-Underworld mirrors the paired regional-river and three-dimensional-bank settings, with both disabled. River excavation limits match Overworld, and river shores use two layers of blackstone in place of sand.
+Underworld uses the same hydrology tiers, pond and lake settings as Overworld, filled with lava. Beds, shores and banks keep each biome's own layers in both packs.
 
 ## Foundation and fluids
 
-The dimension rock palette is weighted toward netherrack, with blackstone, basalt, and soul soil mixed through a Simplex distribution. Lava replaces water as the dimension fluid. Both packs disable standalone cave aquifers and declare matching `deep_lava` and `deep_lava_small` contained-pool profiles. Underworld keeps lava for ambient rivers and surface fluids. Individual biomes can override their surface, wall, cave, and object materials; the paired atlas entries list those local treatments rather than reducing every biome to the dimension defaults.
+The dimension rock palette is weighted toward netherrack, with blackstone, basalt, and soul soil mixed through a Simplex distribution. Lava replaces water as the dimension fluid. Both packs disable standalone cave aquifers. Underworld defines a single `lava` hydrology fluid and fills every stream, river, pond and lake with it. Individual biomes can override their surface, wall, cave, and object materials; the paired atlas entries list those local treatments rather than reducing every biome to the dimension defaults.
 
 ## Biomes and ecology
 
@@ -51,6 +51,6 @@ Underworld does not copy Overworld ores, deposits, native structures, palettes, 
 
 Frozen surface decorations use compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Soul forms use soul soil and bone. Blackstone forms use blackstone and crying obsidian. Frozen cave rocks and Jungle cave trees use `scale.size: 0.375`. The tree placements in Jungle, Lush, Moss Pillars, and Swamp caves use `density: 2`, as do Mushroom cave fungi placements.
 
-The active biome keys, region display names, selector lists, and rarity weights match Overworld. Estranged uses the same shore heights, shore scale, and shore list. Coastal river geometry and Hot and Magnetics lava pools also match.
+The active biome keys, region display names, selector lists, and rarity weights match Overworld. Estranged uses the same shore heights, shore scale, and shore list. The hydrology settings and policies also match, apart from the fluid.
 
 Return to [44 - Biome Catalog](/iris/44-biome-catalog) or compare [Overworld](/iris/biomes/overworld).

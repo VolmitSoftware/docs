@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-10-15T23:58:26.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,7 +45,7 @@ Status reports the world, completed and total chunks, progress, generation rate,
 
 The desktop map includes generated and already-present chunks as the job reaches them, including starting-area chunks processed while the window opens. Hover over the map to read chunk coordinates. The sidebar shows the current generation rate, estimated time remaining, longer-term rates, elapsed time, and memory use. Failure details appear at the top of the sidebar and can be selected and copied.
 
-Slow generation tasks produce a warning and continue waiting for their required terrain data. River planning errors are logged and retried while the job remains active. Chunks wait for complete river plans; exceeding a warning interval does not discard a chunk or omit its rivers, caves, or objects.
+Slow generation tasks produce a warning and continue waiting for their required terrain data. Pregeneration prepares the water plans of the current region and the next one ahead of the chunks it generates. Chunks wait for complete water plans; exceeding a warning interval does not discard a chunk or omit its water, caves, or objects.
 
 A chunk generation error on a Paper-family server halts the server's chunk system, so the job aborts at once, reports the failing chunk, and counts its outstanding requests as failed instead of waiting for them. When the job is stopped or the server shuts down, requests that have not completed within 60 seconds are counted as failed and regenerate on the next run. Fix the reported error, then rerun the job.
 
