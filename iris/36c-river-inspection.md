@@ -2,17 +2,17 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
-Use `/iris find river` to reach the water of an Iris world, the Studio map's **River network** view to see it from above, and `/iris pack validate` to check the settings before a world is created. The settings are on [36 - Hydrology](/iris/36-rivers) and the per-area policy on [36b - Hydrology Policy](/iris/36b-river-policy).
+Use `/iris find river` to reach the water of an Iris world, the Studio map's **Rivers** view to see it from above, and `/iris pack validate` to check the settings before a world is created. The settings are on [36 - Hydrology](/iris/36-rivers) and the per-area policy on [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ## Workflow
 
 1. Edit `hydrology` or a `hydrologyPolicy`, then run `/iris pack validate`.
-2. Open the pack in Studio and switch the map (`/iris studio map`) to **River network**. Zoom in to 16 blocks per pixel or closer to see the water.
+2. Open the pack in Studio and switch the map (`/iris studio map`) to **Rivers**. Zoom in to 16 blocks per pixel or closer to see the water.
 3. Walk the water: `/iris find river pond`, `/iris find river waterfall`, `/iris find river sea_inlet`.
 
 ## Feature types
@@ -62,14 +62,16 @@ An unknown type is rejected before any search, with the list of accepted types. 
 
 ## Studio map
 
-The Studio map (`/iris studio map`) has a **River network** render mode. Its legend lists what the map draws: waterfall, cascade, mouth, major river, river, stream, sea inlet, lake, pond, dam and cave pool, each in its own color. Where several surface features share a pixel, the strongest one is drawn, in that order; cave pools are drawn beneath them.
+The Studio map (`/iris studio map`) has a **Rivers** view in the World group. Its legend lists what the map draws: waterfall, cascade, mouth, major river, river, stream, sea inlet, lake, pond, dam and cave pool, with the color used for each feature. Where several surface features share a pixel, the strongest one is drawn, in that order; cave pools are drawn beneath them.
 
 - At 2 blocks per pixel or closer, the map draws the planned water of each chunk, including the dam rings of dammed ponds and the open mouths of sea inlets.
 - Between 2 and 16 blocks per pixel, the map draws the channel center lines, pond outlines, lake outlines and the passages and chambers of sea inlets from the plans that are already in memory. Dam rings are not drawn at these zooms.
 - Beyond 16 blocks per pixel the map draws no water.
 - Cave pools are drawn only where generated chunks recorded them, at every zoom that draws water.
 
-A tile whose water plan is still being made shows dry and is drawn again when the plan is ready; wait a moment after panning. The **Biome** view shows the shore biomes a `hydrologyPolicy` places along the water.
+Previews can show incomplete water while plans are being prepared and refresh when those plans are available. The **3D world** terrain preview also refreshes as hydrology plans finish. Disabled hydrology leaves the water overlay empty.
+
+The **Biomes** view shows base biome colors. Its **Water** toggle is enabled by default and overlays the same hydrology, including recorded cave pools; press `W` to switch it off or on. The inspector's **Noise** and **Both** displays keep their selection visualizations clear of the water overlay.
 
 ## Validation
 

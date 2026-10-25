@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -76,7 +76,7 @@ Full command tables: [04 - Commands & Permissions](/iris/04-commands-permissions
 | Terrain / hydrology / biomes / objects / jigsaw | yes | yes | yes | yes |
 | Version content gating and `/iris pack compat` | yes | yes | yes | yes |
 | Typed image maps / validation / packaging | yes | yes | yes | yes |
-| Image-map desktop authoring and Vision layers | graphical host | graphical host | graphical host | graphical host |
+| Desktop Studio maps, 3D world, palettes, objects, noise and image maps | graphical host | graphical host | graphical host | graphical host |
 | Dimension `worldBoundary` | native border | native border | native border | native border |
 | Saved planar/spatial Iris jigsaws | yes | yes | yes | yes |
 | Jigsaw Studio (`/iris jigsaw` authoring tree) | yes | not registered | not registered | not registered |

@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Iris documentation: Configuration"
 published: true
-date: 2026-10-17T19:00:00.000Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -131,9 +131,10 @@ These windows open on the machine running the server. Set `useServerLaunchedGuis
 
 | Key | Default | Takes effect | Use |
 |-----|---------|--------------|-----|
-| `useServerLaunchedGuis` | `true` | Live | Allows the noise explorer, vision map and pregeneration viewer to open desktop windows |
+| `useServerLaunchedGuis` | `true` | Live | Allows the Studio window and pregeneration viewer to open on the server desktop |
 | `maximumPregenGuiFPS` | `false` | Next window open | Refreshes the local pregeneration preview more frequently |
-| `colorMode` | `true` | Next window open | Shows the noise explorer in color instead of grayscale |
+| `colorMode` | `true` | Next window open | Starts the Studio Noise view with the terrain palette instead of grayscale |
+| `theme` | `"auto"` | First Studio window after startup; immediately through the theme control | Studio appearance: `auto` follows the system, `light` or `dark` selects that theme. The window theme control saves this setting |
 
 ## `autoConfiguration`
 

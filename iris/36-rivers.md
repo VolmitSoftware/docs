@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -18,7 +18,7 @@ Turn the system on with `hydrology.enabled: true` in the dimension file. The def
 3. **Switch a biome to lava ponds.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava while the rest of the dimension keeps water; channels keep their tier's fluid. A cave biome with the same policy gets lava cave pools.
 4. **Shape and plant the banks.** Set `bankBand` and `bankStyle` per tier, and `deformation.bankSlope` for the base slope. Paint the water's surroundings with `tiers[].materials` and `ponds.materials`, and grow seagrass, lily pads and reeds with `tiers[].decorators` and `ponds.decorators`.
 5. **Tune the underground water.** Sea inlets and cave pools are on by default. `underground.seaInlets.spacing` and `minimumCliffHeight` decide how many coasts get an inlet, `underground.cavePools.density` how many pool sites each chunk tries, and either `enabled: false` turns the feature off.
-6. Run `/iris pack validate`, open Studio and look at the **River network** view, then walk the water with `/iris find river` ([36c - Water Inspection](/iris/36c-river-inspection)).
+6. Run `/iris pack validate`, open Studio and look at the **Rivers** view, then walk the water with `/iris find river` ([36c - Water Inspection](/iris/36c-river-inspection)).
 
 A complete dimension block is at the [end of this page](#complete-example).
 

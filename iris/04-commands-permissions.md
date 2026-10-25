@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -299,9 +299,9 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 | `package` | `pkg` | **Modded** | `[pack]` | Zip and package a pack. On Bukkit this node lives under `/iris pack pkg` instead |
 | `version` | | Both | **Bukkit:** `[dimension=default]`. **Modded:** `[pack]` | Pack version |
 | `regions` | | Both | **Bukkit:** `[radius=500]`, player origin. **Modded:** `[radius]`, default 500 | Nearby region distribution |
-| `noise` | `nmap` | Both | **Bukkit:** `[generator] [seed=12345]`. **Modded:** `[generator] [seed]` | Noise explorer GUI |
-| `map` | `render` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Vision map GUI |
-| `imagemap` | `imap` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Image-map studio GUI. Exports are written into that world's active pack |
+| `noise` | `nmap` | Both | **Bukkit:** `[generator] [seed=12345]`. **Modded:** `[generator] [seed]` | Desktop Studio on Noise; requires an active Iris world |
+| `map` | `render` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Desktop Studio on Biomes |
+| `imagemap` | `imap` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Desktop Studio on Image maps. Exports are written into that world's active pack |
 | `vscode` | `vsc` | Both | **Bukkit:** `[dimension=default]`. **Modded:** `[pack]` | Generate and open the code workspace |
 | `update` | | Both | same pack argument as `vscode` | Regenerate the workspace only |
 | `importvanilla` | `importv`, `iv` | **Bukkit**. Stub on modded | `<dimension> [variants=3] [structures=true]` | Import vanilla trees/objects/structures into a pack |
@@ -309,6 +309,8 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 | `loot` | | **Bukkit**. Stub on modded | `[fast=false] [add=true]` | Simulate chest loot in a GUI |
 | `spawn` | `summon` | **Bukkit**. Stub on modded | `<entity> <location>` (`location` is contextual) | Spawn an Iris entity |
 | `objects` | `find-objects` | **Bukkit**. Stub on modded | — | IGenData chunk report for nearby chunks |
+
+`map`, `noise` and `imagemap` open views in one desktop interface; use its view list to switch between them. These commands require a graphical server host with `gui.useServerLaunchedGuis` enabled.
 
 See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 

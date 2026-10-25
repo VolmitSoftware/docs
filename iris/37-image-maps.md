@@ -2,7 +2,7 @@
 title: "Image Maps"
 description: "Drive Iris generation from PNG data: the resource model, accepted source images, and the Image Map Studio workflow"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-24T00:00:00.000Z
@@ -113,9 +113,9 @@ Indexed palette PNGs and layouts outside this matrix are rejected rather than si
 
 ## Image Map Studio
 
-The guided desktop workflow writes canonical PNG assets, `image-maps` resources, and dimension bindings as one project update.
+The **Image maps** view in desktop Studio writes canonical PNG assets, `image-maps` resources, and dimension bindings as one project update.
 
-Use a graphical server host with `gui.useServerLaunchedGuis` enabled. Edit the authoring pack under the platform's `packs/` directory. On a headless server, edit the JSON described in [Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
+Use a graphical server host with `gui.useServerLaunchedGuis` enabled and an active Iris world. Run `/iris studio imagemap` (alias `imap`) or choose **Image maps** in the view list of `/iris studio map`. On Bukkit, `world=<world>` selects the Iris world explicitly. Exports use that world's active pack. For authoring, open a Studio world from the pack you want to edit. On a headless server, edit the JSON described in [Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates).
 
 1. Import the PNG to a key under `images/`.
 2. Inspect its dimensions, bit depth, channels, and alpha data.
@@ -126,7 +126,7 @@ Use a graphical server host with `gui.useServerLaunchedGuis` enabled. Edit the a
 7. Preview the interpreted heights, resource keys, or mask weights.
 8. Resolve the reported invalid pixels, ambiguous colors, and uncovered coordinates.
 9. Export the PNG, image-map resource, and dimension binding to the authoring pack.
-10. Open Vision and generate fresh chunks to view the result. Reopen Studio for a fresh world if you need to replace previously generated terrain.
+10. Switch to **Biomes**, **Height** or **3D world** in the same Studio window, and generate fresh chunks to view the result. Reopen Studio for a fresh world if you need to replace previously generated terrain.
 
 Export requires valid image maps and pack references. A failed export leaves the previous project intact.
 
