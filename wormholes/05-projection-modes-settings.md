@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-21T03:25:00.000Z
+date: 2026-10-25T18:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -369,6 +369,8 @@ ClientView draws each portal view in one of two ways:
 
 - **World views** draw the destination from a world the client has loaded, using the game's own world renderer, Sodium, and Iris Shaders exactly as for the main view. On Fabric, Forge, and NeoForge servers and in singleplayer, every frame portal and dimensional door the player may travel through is a world view while the server streams its destination for [travel](#travel-with-the-client-mod), so the view shows the same world the player arrives in, with its own lighting, fog, sky, entities, and block entities. Right after a crossing, the portal behind the player shows the world they left at once. Mirrors the client draws itself are world views of the current world on every server; see [Mirrors](#mirrors). World views nest inside one another up to each portal's recursion depth while `client-recursion` is on in the client file, and an entity standing in an opening is drawn on both sides of it.
 - **Streamed views** are built from destination sections and entities the server sends for that view. Paper, Purpur, and Folia servers use them for every linked portal. On every server they show random teleport portals, cross-server gateways, portals the player may not travel through, destinations beyond the `remote-view-routes` limit, and every portal while `[client-view] seamless-travel = false` or while the game does not render with OpenGL. [Streamed views](#streamed-views) describes how they load and update.
+
+Opaque blocks between the camera and an opening obscure its portal view or mirror reflection. A partially covered opening shows only its exposed area; a fully covered opening shows no destination view.
 
 Portal views stay with the world containing their source opening. After travel, only openings in the arrival world appear there. The return view belongs to the exact portal crossed, including adjacent openings on the same plane. Native portal views rebuild when you rejoin a world or reload game resources.
 
