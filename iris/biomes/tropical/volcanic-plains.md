@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Volcanic Plains"
 description: "Iris biome atlas entry for tropical/volcanic-plains in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,9 +43,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 ## Lava hydrology
 
-Both `tropical/volcanic-plains` and its `tropical/volcanoes` child select the `volcanic_lava` river profile and `volcanic_pool` standing pools. Their surface source density is 6 with 128-block spacing, two tributaries per outlet, and up to three inland outlets per fully covered tile. Coastal outlets are disabled. Courses require at least 128 blocks, may cut up to 24 blocks, and use half-width channels with a 1.25 depth multiplier.
-
-The shared profile keeps lava routes within volcanic terrain and separate from ambient river profiles. Volcanic channels retain the local basalt, blackstone, magma, and tuff treatment. Pools have 6–12-block radii and depth 3; they replace the fluid-painted lava child. Both packs use lava here.
+Both `tropical/volcanic-plains` and its `tropical/volcanoes` child set a `hydrologyPolicy` with rainfall `1.8`, pond density `3` and `fluid: lava`. Their ponds and lakes fill with lava in both packs, and the raised pond density seeds more cups in the volcanic terrain. Streams and rivers that cross them carry the dimension's tier fluid: water in Overworld, lava in Underworld. Volcanic channels retain the local basalt, blackstone, magma, and tuff treatment. See [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ## Overworld treatment
 

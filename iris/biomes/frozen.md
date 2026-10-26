@@ -2,14 +2,14 @@
 title: "Frozen Biomes"
 description: "Navigation for the built-in frozen biomes across Overworld and Underworld"
 published: true
-date: 2026-09-14T01:38:38.181Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, frozen"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 Snow, ice, spruce, frozen mountain, cold-water, and frozen-shore biomes selected by the Frozen region.
 
-This family has **8 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
+This family has **7 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
 Both packs use matching compact crooked spires, drift boulders, shard fans, frost blooms, and sprigs. Placement chances, variant seeds, dimensions, and support settings match. Large formations use continuous organic supports with a 96-block terrain scan. Underworld replaces ice with soul soil and bone, or blackstone and crying obsidian.
 
@@ -31,9 +31,7 @@ Both packs use matching compact crooked spires, drift boulders, shard fans, fros
 | [Pine Plains](/iris/biomes/frozen/pine-plains) | `frozen/pine-plains` | Land | Frozen |
 | [Pines](/iris/biomes/frozen/pines) | `frozen/pines` | Land | Frozen |
 | [Plains](/iris/biomes/frozen/plains) | `frozen/plains` | Land | Frozen |
-| [Sea / Frozen River Ice](/iris/biomes/frozen/sea/frozen-river-ice) | `frozen/sea/frozen-river-ice` | Sea | Frozen |
 | [Sea / Ocean](/iris/biomes/frozen/sea/ocean) | `frozen/sea/ocean` | Sea | Frozen |
-| [Sea / River](/iris/biomes/frozen/sea/river) | `frozen/sea/river` | Sea | Frozen |
 | [Shorelines](/iris/biomes/shorelines) | `frozen/shore/beach` | Shore | Frozen |
 | [Spruce Plains](/iris/biomes/frozen/spruce-plains) | `frozen/spruce-plains` | Land | Frozen |
 | [Tundra Winter](/iris/biomes/frozen/tundra-winter) | `frozen/tundra-winter` | Land | Frozen |

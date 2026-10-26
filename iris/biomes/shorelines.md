@@ -2,7 +2,7 @@
 title: "Shorelines"
 description: "Paired atlas reference for 17 direct shoreline roots and two unselected shoreline assets"
 published: true
-date: 2026-10-12T01:13:58.426Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biome-atlas, shore"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -118,7 +118,7 @@ The tundra roots distinguish cold sediment from a deliberately stony coast. Desp
 
 ## Child and floating variants
 
-None of the 19 shoreline assets declares `children` or `floatingChildBiomes`. Seventeen are directly selected; `mountain/shore/beach` and `vanilla/stony_shore` have no current regional or river-shore selection slots.
+None of the 19 shoreline assets declares `children` or `floatingChildBiomes`. Seventeen are directly selected; `mountain/shore/beach` and `vanilla/stony_shore` are selected by no region list or hydrology policy.
 
 ## Inspect shorelines in game
 
@@ -138,4 +138,4 @@ Shore biomes omit `terrain3D`. Adjacent land profiles reduce deformation near fl
 
 Underworld matches the Estranged shore list and shape settings in Overworld. Both select Sand Beach or Temperate Oak Beach, with shore heights 0.75 to 2.25, shore-height zoom 3.2, and shore-biome zoom 2.5.
 
-Both packs select `temperate/shore/beach`, `temperate/shore/oak-beach`, or `ocean/shore/beach` for Temperate shores and for the Temperate and Estranged river-shore policies. Underworld retains its Nether palettes.
+Both packs select `temperate/shore/beach`, `temperate/shore/oak-beach`, or `ocean/shore/beach` for Temperate shores, and the Temperate and Estranged `hydrologyPolicy.shoreBiomes` lists name the same three biomes ([36b - Hydrology Policy](/iris/36b-river-policy#shore-biomes)). Underworld retains its Nether palettes.

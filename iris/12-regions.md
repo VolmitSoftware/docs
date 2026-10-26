@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-10-15T23:05:25.062Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -149,29 +149,20 @@ List root parents only. Child biomes are declared on their parent via `children`
 
 A biome does not declare its own role. The role (`LAND`, `SEA`, `SHORE`, `CAVE`) comes from which list selected it. The same biome file can appear in more than one list. It then takes a different role in each.
 
-### River policy
+### Hydrology policy
 
-`riverPolicy` overrides the dimension policy anywhere this region is selected; a biome policy overrides it again. Omitted policy members inherit. An explicit empty biome or profile list clears the inherited list.
+`hydrologyPolicy` adjusts the water anywhere this region is selected; a biome policy overrides it again. Unset values inherit from the dimension. An explicitly empty `shoreBiomes` list clears the inherited list.
 
 | Policy field | What it controls |
 |--------------|------------------|
-| `placement` | `DISABLED`, `TRANSIT_ONLY`, `NATURAL`, `PREFERRED_HEADWATER`, or `REQUIRED_HEADWATER` source and transit admission |
-| `routing` | `BLOCK`, `AVOID`, or `ALLOW` terrain-routing treatment |
-| `outletAdmission` | Whether accepted river outlets may terminate in this region |
-| `profiles` | Preferred dimension-owned hydrology profile ids |
-| `surfaceBiomes`, `mouthBiomes`, `shoreBiomes` | Biomes selected for the wet channel, outlet, and shore bench |
-| `bankBiomes`, `floodedCaveBiomes` | Biomes selected for the eroded bank outside the bench and for flooded underground or grotto volume |
-| `surfacePools` | Standing pool ids from `hydrology.surfacePools` allowed in this region; an empty list disables them |
-| `widthMultiplier`, `depthMultiplier` | Accepted channel-size multipliers |
-| `incisionMultiplier` | Maximum terrain-incision multiplier; zero forbids incision |
-| `routingMultiplier` | Terrain-guided route-cost multiplier |
-| `bankMultiplier` | Multiplier on the eroded bank width outside the shore bench |
-| `shoreBiomeWidth` | Width in blocks of the `shoreBiomes` band beside the water; unset regions use `banks.shoreWidth` |
-| `shoreWidth` | Width in blocks of the flattened shore bench beside the water; unset regions use `banks.shoreWidth`, and `0` starts the eroded valley side at the waterline |
-| `erosion` | `false` stops rivers eroding a valley in this region, leaving only the channel and the bench; unset regions follow `surface.erosion.enabled` |
-| `confined` | `true` makes this region a closed drainage basin: a river born here keeps its whole route and its outlet inside it, and a river that flows in never leaves |
+| `rainfall` | Multiplier on the water that falls here, `0..16`: more and larger streams, fuller ponds |
+| `pondDensity` | Multiplier on how many ponds form here, `0..16` |
+| `streams`, `ponds` | `ALLOW` or `BLOCK` for streams starting here and ponds forming here |
+| `fluid` | Fluid profile from `hydrology.fluids` that fills the ponds and lakes here instead of `ponds.fluid`; channels keep their tier's fluid |
+| `decorators` | Plants for the water here, replacing the tier and pond decorator lists; an empty list grows none |
+| `shoreBiomes`, `shoreBiomeWidth` | Biomes placed along the water's edge, and the width of that band in blocks, `0..31` |
 
-The physical drainage graph, density, channel dimensions, and legal outlet families remain dimension-owned. See [11 - Dimensions](/iris/11-dimensions#terrain-first-hydrology) and [36 - Rivers](/iris/36-rivers).
+The drainage, tiers, pond and lake settings are dimension-owned. See [11 - Dimensions](/iris/11-dimensions#hydrology), [36 - Hydrology](/iris/36-rivers) and [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ### Zooms and the shore band
 
@@ -184,7 +175,7 @@ The physical drainage graph, density, channel dimensions, and legal outlet famil
 | `shoreHeightMin` | double >= 0 | `1.2` | Lower bound, in blocks above the water line, of the shore band. |
 | `shoreHeightMax` | double >= 0 | `3.2` | Upper bound of the shore band. Raise both to get taller, and therefore usually wider, beaches. |
 | `shoreHeightZoom` | double >= 0.0001 | `3.14` | Horizontal scale of the noise that picks the band height per column. Small values make the beach width vary rapidly along the coast. Large values make it uniform. |
-| `shoreMinimumWidth` | double 0-64 | `0` | Minimum beach width in blocks across the ground. `0` keeps the band purely vertical. Above zero the band also climbs with the local slope so a steep coast still gets a beach; the climb is capped at three blocks of height per block of width. Distinct from `riverPolicy.shoreWidth`, which is the river bench. |
+| `shoreMinimumWidth` | double 0-64 | `0` | Minimum beach width in blocks across the ground. `0` keeps the band purely vertical. Above zero the band also climbs with the local slope so a steep coast still gets a beach; the climb is capped at three blocks of height per block of width. Distinct from `hydrologyPolicy.shoreBiomeWidth`, which is the biome band along rivers, ponds and lakes. |
 
 ### Content attached to the region
 
@@ -203,7 +194,7 @@ Everything here applies anywhere this region is selected, on top of what the bio
 | `depositVariants` | deposit-variant array | empty | Remaps deposit blocks inside a Y band. Evaluated after the biome variants and before the dimension. First matching rule in this tier wins. |
 | `ores` | noise-ore array | empty | Vein-style ores. Use `generateSurface` to choose surface or underground placement. |
 | `caveProfile` | cave profile | default profile | Cave density, thresholds and surface behavior for this region. Biome profiles override this. See [15 - Caves & Carving](/iris/15-caves-carving). |
-| `riverPolicy` | river policy or null | inherit | Overrides the dimension hydrology policy for this region. See "River policy" above. |
+| `hydrologyPolicy` | hydrology policy or null | inherit | Adjusts the dimension hydrology policy for this region. See "Hydrology policy" above. |
 
 Deposit precedence across tiers: biome variants, then region variants, then dimension variants. First match wins within each tier.
 
@@ -215,10 +206,11 @@ Path in the bundled pack: `packs/overworld/regions/temperate.json`.
 |-------|-------|-----|
 | `name` / `color` | `Temperate` / `#9BEE61` | |
 | `rarity` | `1` | Most common region. The world default character. |
-| `landBiomes` | 28 keys, e.g. `temperate/plains`, `temperate/cherry-blossom-forest`, `vanilla/cherry_grove` | A large list keeps a single region visually varied without needing many regions. |
-| `seaBiomes` | 6 keys, e.g. `ocean/deep`, `temperate/sea/ocean` | Natural below-sea-level biome selection. Hydrology surface, mouth, shore, bank, and flooded-cave content comes from the effective `riverPolicy`. |
-| `shoreBiomes` | 5 keys, e.g. `temperate/shore/beach`, `vanilla/stony_shore` | |
-| `caveBiomes` | 5 keys, e.g. `carving/drip`, `carving/moss-pillars` | |
+| `landBiomes` | 30 keys, e.g. `temperate/plains`, `temperate/cherry-blossom-forest`, `vanilla/cherry_grove` | A large list keeps a single region visually varied without needing many regions. |
+| `seaBiomes` | 6 keys, e.g. `ocean/deep`, `temperate/sea/ocean` | Natural below-sea-level biome selection. Rivers and ponds keep the biome they cross unless a `hydrologyPolicy` places shore biomes along them. |
+| `hydrologyPolicy` | rainfall `1.44`, three shore biomes listed | A wetter region than the dimension default. It lists `temperate/shore/beach`, `temperate/shore/oak-beach` and `ocean/shore/beach` as shore biomes; with no `shoreBiomeWidth` set, the band is off. |
+| `shoreBiomes` | 3 keys: `temperate/shore/beach`, `temperate/shore/oak-beach`, `ocean/shore/beach` | |
+| `caveBiomes` | 6 keys, e.g. `carving/drip`, `carving/moss-pillars` | |
 | `landBiomeZoom` / `seaBiomeZoom` | `3.5` / `6` | Oceans stay recognisable across long swims. |
 | `shoreBiomeZoom` / `caveBiomeZoom` | `0.15` / `3.3` | Beaches change type often. Caves keep one character for a while. |
 | `shoreHeightMin` / `Max` / `Zoom` | `1` / `5.2` / `1.14` | Noticeably wide beaches with rapidly varying width. |

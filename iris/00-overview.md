@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -64,9 +64,9 @@ Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree f
 | Volumetric terrain | Biome `terrain3D` profiles, spans, and ledges | [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Noise atlas | All style previews, 3D slices, zoom and octave comparisons, PDF | [45 - Noise Atlas](/iris/45-noise-atlas) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
-| Rivers | River layout, waterfalls, caves, and deep fluids | [36 - Rivers](/iris/36-rivers) |
-| River policy | Where rivers start, transit and end, local budgets, and river content | [36b - River Policy](/iris/36b-river-policy) |
-| River inspection | Vision and `/iris find river` | [36c - River Inspection](/iris/36c-river-inspection) |
+| Hydrology | Rivers, streams, ponds, lakes, sea inlets and cave pools, terrain shaping, bank styles and materials | [36 - Hydrology](/iris/36-rivers) |
+| Hydrology policy | Rainfall, pond density, stream and pond permissions, fluid and shore biomes per area | [36b - Hydrology Policy](/iris/36b-river-policy) |
+| Water inspection | `/iris find river`, the Studio water view and validation | [36c - Water Inspection](/iris/36c-river-inspection) |
 | Image maps | Typed resources, applications, accepted PNG inputs, and the Image Map Studio workflow | [37 - Image Maps](/iris/37-image-maps) |
 | Image-map encodings | Grayscale and RGB heights, color legends, tolerance, alpha, and mask composition | [38 - Image Map Encodings](/iris/38-image-map-encodings) |
 | Image-map reference | Complete JSON, axes, transforms, sampling, and `worldBoundary` | [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates) |

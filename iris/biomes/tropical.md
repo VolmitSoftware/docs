@@ -2,7 +2,7 @@
 title: "Tropical Biomes"
 description: "Navigation for the built-in tropical biomes across Overworld and Underworld"
 published: true
-date: 2026-10-12T01:13:58.426Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, tropical"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -34,8 +34,6 @@ Overworld tropical land, water, and shore biomes inherit their configured Minecr
 | [Rainforest Island](/iris/biomes/tropical/rainforest-island) | `tropical/rainforest-island` | Land | Tropical |
 | [Rainforest Wicked](/iris/biomes/tropical/rainforest-wicked) | `tropical/rainforest-wicked` | Land | Tropical |
 | [Sea / Ocean](/iris/biomes/tropical/sea/ocean) | `tropical/sea/ocean` | Sea | Tropical |
-| [Sea / River Soft](/iris/biomes/tropical/sea/river-soft) | `tropical/sea/river-soft` | Hydrology channel | Tropical river policy |
-| [Sea / River Steep](/iris/biomes/tropical/sea/river-steep) | `tropical/sea/river-steep` | Hydrology channel | Tropical river policy |
 | [Submerged Volcanic](/iris/biomes/tropical/submerged-volcanic) | `tropical/submerged-volcanic` | Sea | Tropical |
 | [Volcanic Plains](/iris/biomes/tropical/volcanic-plains) | `tropical/volcanic-plains` | Land | Tropical |
 | [Wilds](/iris/biomes/tropical/wilds) | `tropical/wilds` | Land | Tropical |
@@ -48,8 +46,6 @@ The paired packs explicitly configure 17 terrain identities in this family: 2 cl
 
 ## Hydrology
 
-The regional surface policy uses density 8, source spacing 160 blocks, three tributaries per outlet, three inland outlets, and four coastal outlets per fully covered tile. Budgets shrink with the area covered in mixed tiles; route length, terrain, and containment still decide which candidates survive. Courses may be as short as 64 blocks and cut up to 32 blocks into terrain. Channel width is multiplied by 0.65 and depth by 1.15; bank blend uses 1.0 with a 1-block shore bench.
+The tropical region's `hydrologyPolicy` sets pond density `2.5`, the highest of any region in either pack, and rainfall `1.77`, near the top (only Swamp is higher), so tropical terrain carries more seeded cups than any other region and its ponds stay full. It lists `tropical/island-beach`, `tropical/beach`, `tropical/beach-bamboo` and `tropical/beach-charred` as shore biomes; no `shoreBiomeWidth` is set, so the band is off. Overworld fills the water with water and Underworld with lava.
 
-`tropical_lake` adds standing pools with 8–16-block radii, depth 3, density 8, and 160-block candidate spacing. Overworld fills tropical channels and lakes with water; Underworld uses lava with matching shape settings. Mountain rivers use the regional policy instead of a fluid-painted child.
-
-[Volcanic Plains](/iris/biomes/tropical/volcanic-plains) and its volcano child override this policy with separate lava courses and pools.
+[Volcanic Plains](/iris/biomes/tropical/volcanic-plains) and its volcano child set rainfall `1.8`, pond density `3` and `fluid: lava`, so their ponds and lakes are lava in both packs. See [36b - Hydrology Policy](/iris/36b-river-policy).

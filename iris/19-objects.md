@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,6 +28,14 @@ Prerequisites: a writable pack, operator access on a Bukkit-family server, and s
    Expected result: a chat line naming the pack and the object, and a new file at `<data>/packs/<dimension load key>/objects/tutorial/lookout.iob`.
 4. **Verify it loads.** `/iris object analyze tutorial/lookout` reads the file back and reports width x height x depth, total block count, and the ten most common materials. If those numbers match what you selected, the file is good.
 5. **Verify it pastes.** `/iris object paste tutorial/lookout edit=true` stamps a copy where you are looking and hands you a wand already fitted to it. Walk the copy. Check the orientation. Check that chests still have contents and signs still have text. Fix anything wrong in place. Then re-save the same key with `overwrite=true`. `/iris object undo` removes the pasted copy.
+
+## Inspect objects on the desktop
+
+On a graphical server host, open an Iris world from the pack and run `/iris studio map`. Choose **Objects** in the Studio view list, then select an object from its folder tree. The preview shows its dimensions, block count, block types and filled volume. Minecraft textures load automatically; unavailable textures use plain colors.
+
+Drag to orbit, right-drag or middle-drag to pan, and scroll to zoom. Page Up and Page Down move the layer cut so you can inspect the interior. Click a block type in the inspector to see through it; **Show all solid** restores the complete view. `R` resets the camera.
+
+Choose **Procedural** to inspect the procedural placements declared by pack biomes and regions. Change the preview seed, step through variants with `[` and `]`, or use **All variants** (`G`) to compare them. Trying a seed changes the preview; save the desired seed in the pack to use it for generation. Accepted pack hotloads reload the object catalog and selected preview.
 
 ## 1. What an object is
 

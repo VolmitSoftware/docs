@@ -2,7 +2,7 @@
 title: "Hot Biomes"
 description: "Navigation for the built-in hot biomes across Overworld and Underworld"
 published: true
-date: 2026-09-08T07:09:46.981Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, hot"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -21,7 +21,6 @@ This family has **2 child-only reachable variants**. Those variants are document
 | [Mountain Plains](/iris/biomes/hot/mountain-plains) | `hot/mountain-plains` | Land | Hot |
 | [Oasis](/iris/biomes/hot/oasis) | `hot/oasis` | Land | Hot |
 | [Sea / Ocean](/iris/biomes/hot/sea/ocean) | `hot/sea/ocean` | Sea | Hot |
-| [Sea / River](/iris/biomes/hot/sea/river) | `hot/sea/river` | Sea | Hot |
 | [Shorelines](/iris/biomes/shorelines) | `hot/shore/beach` | Shore | Hot |
 | [Shorelines](/iris/biomes/shorelines) | `hot/shore/beach-grass` | Shore | Hot |
 | [Small Valley](/iris/biomes/hot/small-valley) | `hot/small-valley` | Land | Hot |

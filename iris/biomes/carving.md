@@ -2,7 +2,7 @@
 title: "Carving Biomes"
 description: "Navigation for the built-in carving biomes across Overworld and Underworld"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, carving"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -11,7 +11,7 @@ Underground cave roots, authored rooms and the dimension-level Deep Dark carving
 
 This family has **49 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
-Both packs disable standalone aquifers in their dimension and region cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Authored rooms retain their configured water or lava, including Overworld ochre hollows and sulfur chambers. Deep lava retains its separate controls.
+Both packs disable standalone aquifers in their dimension and region cave profiles. Cave pools on the cave floors, and the rivers, ponds and lakes above the caves, are water in Overworld and lava in Underworld. Authored rooms retain their configured water or lava, including Overworld ochre hollows and sulfur chambers. Deep lava retains its separate controls.
 
 ## Direct roots
 

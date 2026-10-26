@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -163,7 +163,7 @@ A biome used by an enabled dimension `carving` band does not also need to appear
 
 Aquifers and deep lava are two independent mechanisms. Neither changes cave geometry.
 
-Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
+Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Cave pools on the cave floors, and the rivers, ponds and lakes above the caves, are water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
 **Deep lava** fills profile-carved space at or below `caveLavaHeight`, measured above the build floor (default `8`). Set the profile's `allowLava` to false to keep those caves dry. This setting does not prevent other features, such as structure boring, from creating lava-filled openings below that height.
 
@@ -171,9 +171,34 @@ Both packs disable standalone aquifers in dimension, region, and biome cave prof
 
 Caves preserve the seabed and the solid boundaries of generated surface water. They can continue below those boundaries or open above the waterline.
 
-Underground rivers, grottos and deep-fluid bodies remain contained and protected from object and structure placements. Their settings are separate from cave aquifers. See [36 - Rivers](/iris/36-rivers).
-
 Set `allowFluid: false` to disable generated cave aquifers. It does not remove natural surface bodies or player-placed fluid. Combine it with `allowLava: false` when the generated cave interior itself must contain neither aquifers nor deep lava.
+
+## Caves under water
+
+With `hydrology.deformation.caveMask` on (the default), caves stay at least two solid blocks below every river bed, pond floor and open sea inlet mouth, and the same ceiling applies to every column within two blocks of the water, so no cave opens sideways into a stream, pond or lake. The ore pass keeps a bed or floor it would otherwise clear, and the orphan sweep leaves solid pockets above that ceiling alone. Authored subterrain features and the `CENOTE`, `LAVA_TUBE` and other room families keep the same distance from the water. Cave floors and ceilings under a river or pond are decorated as normal.
+
+`caveMask` covers only the surface water: rivers, ponds, lakes and the open mouths of sea inlets. With `caveMask: false`, or with hydrology disabled, caves carve as if that water were not there. The seal around a sea inlet passage and the cave pools below are written with the caves themselves and ignore `caveMask`. See [36 - Hydrology](/iris/36-rivers).
+
+## Cave pools
+
+With `hydrology.underground.cavePools.enabled` on (the default, with hydrology enabled, `carvingEnabled` on and `CARVED` not disabled), the low points of carved caves collect standing water. Pools form after the caves of a chunk and its neighbors are carved:
+
+1. Each chunk tries `cavePools.density` sites. Around each site column lies a square box of `radius` blocks (at most 15), and everything about the pool happens inside it.
+2. The site settles downhill to the lowest floor that water poured on it would reach inside the box.
+3. The pool rises from that floor, level by level up to `maxDepth`, as long as the surrounding rock holds it, it stays inside the box, covers no more than `maxArea` columns, keeps three blocks under the surface and never opens to the sky or drains into a lower cave.
+4. The surface sits `freeboard` blocks below the highest held level, and a pool needs at least `minArea` columns.
+
+The fluid is `cavePools.fluid`, or the `hydrologyPolicy.fluid` set on the cave biome at the site; the Underworld pack uses lava. A pool never mixes fluids: a dip that spans two cave fluids, or that touches cave lava, an aquifer or a room's fluid, gets no pool.
+
+Every solid block touching the pool at or below its level is sealed and keeps the column's host rock, so the cave wall palette, deposits, objects and later carving leave the pool and its walls alone. Pools stay out of sea inlet space, and chunks generated earlier are off limits to them. `/iris find river cave_pool` searches generated chunks only; see [36c - Water Inspection](/iris/36c-river-inspection).
+
+## Sea inlets
+
+With `hydrology.underground.seaInlets.enabled` on (the default), the sea runs inland through cliff coasts as flooded passages that end in a chamber pool, with the water held at sea level the whole way. The mouth is an open cove about 16 to 24 blocks long, and the covered passage keeps at least `roofClearance` blocks of rock to the surface.
+
+The seal around an inlet is independent of `caveMask`. It turns every block within two blocks of the passage below sea level into rock where it was air, loose or not solid, so caves stay at least two blocks from the inlet water. Cave air may meet the air above the water.
+
+Authored rooms never take an inlet cell, and room fluid within two blocks of the inlet air is sealed as rock. The settings and the 512-block extent are on [36 - Hydrology](/iris/36-rivers#undergroundseainlets).
 
 ## Surface openings
 

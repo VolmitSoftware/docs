@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,7 +128,7 @@ Dimension-level palettes:
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `rockPalette` | stone | Fills every land cell below the biome layer stack. Swap it for deepslate or a stone/granite/andesite blend to change the entire underground |
-| `fluidPalette` | water | Ocean columns and cave aquifers when `allowFluid` is on. River and deep-fluid material comes from the accepted hydrology profile `fluidPalette` |
+| `fluidPalette` | water | Ocean columns and cave aquifers when `allowFluid` is on. Rivers use the `hydrology.fluids` profile of their tier; ponds and lakes use `ponds.fluid` or the `hydrologyPolicy.fluid` of their area |
 
 ### Block data and reusable `blocks/*.json`
 
@@ -239,8 +239,8 @@ Vines get their attachment faces recomputed, and stacked weeping and twisting vi
 | Value | Pass, and exactly when it fires |
 |-------|--------------------------------|
 | `NONE` | The ordinary surface pass, on every column. Also reused by the carve modifier for cave floors |
-| `SHORE_LINE` | Only where terrain equals the column's solved fluid head and at least one cardinal neighbor is below its own head. Ordinary coasts use `fluidHeight`; an accepted wet hydrology layer uses its exact `fluidHeadY`. Dry footprints never run this part |
-| `SEA_SURFACE` | Where terrain is below the column's solved fluid head and connected fluid is directly above the floor. Places at local head `+ 1`, so lily pads sit on oceans or accepted river pools but not dry grades or non-water profiles |
+| `SHORE_LINE` | Only where terrain equals the column's solved fluid head and at least one cardinal neighbor is below its own head. Ordinary coasts use `fluidHeight`; the shores of rivers, ponds and lakes use their own water surface |
+| `SEA_SURFACE` | Where terrain is below the column's solved fluid head and connected fluid is directly above the floor. Places at local head `+ 1`, so lily pads sit on oceans, at river mouths and in the open mouths of sea inlets. Biome decorators skip river, pond, cascade and waterfall columns; plants there come from the hydrology decorator lists ([36 - Hydrology](/iris/36-rivers#water-plants)) |
 | `SEA_FLOOR` | Same gate as `SEA_SURFACE`, but writes into the first water block above the seafloor, replacing it. Use it for kelp, seagrass, and coral fans |
 | `CEILING` | Applied by the carve modifier at cave and overhang ceilings, stacking downward |
 

@@ -2,7 +2,7 @@
 title: "Volumetric Terrain"
 description: "Iris documentation: Volumetric Terrain"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-08T12:00:00.000Z
@@ -100,7 +100,7 @@ The modded `/iris studio package` export copies the entire `snippet/` tree so te
 
 **Object placement.** Objects and structures treat shaped openings as empty space. On floating islands, placement checks use the island's surfaces and openings.
 
-**Hydrology.** River channels keep their continuous bed without volumetric shaping. See [36 - Rivers](/iris/36-rivers).
+**Hydrology.** Water columns, and every column within two blocks of water, are solid below their surface: volumetric openings do not form there, so a bank or rim never opens sideways into a river or pond. See [36 - Hydrology](/iris/36-rivers).
 
 **Dimension stack and upper dimensions.** Stacked overhangs use the same two-block ceiling palette and surface precedence described above. Each stacked layer and the referenced upper terrain carry their own column, so stack top heights, solidity and surface lookups follow the spans, and each exposed face draws its palette from its own source height and slope. See [11 - Dimensions](/iris/11-dimensions).
 
@@ -152,5 +152,5 @@ Related:
 - [16 - Surfaces, Decorators & Deposits](/iris/16-surfaces-decorators-deposits)
 - [24 - Snippets](/iris/24-pack-mods-snippets)
 - [25 - Pack Management](/iris/25-pack-management)
-- [36 - Rivers](/iris/36-rivers)
+- [36 - Hydrology](/iris/36-rivers)
 - [Biome Terrain Shaping](/iris/biomes/terrain-shaping)

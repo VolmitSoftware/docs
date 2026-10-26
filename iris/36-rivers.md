@@ -1,733 +1,534 @@
 ---
-title: "Rivers"
-description: "Surface rivers, shaped valleys, underground rivers, grottos, deep fluids, and standing pools: the physical configuration"
+title: "Hydrology"
+description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-26T02:45:59.200Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
 ---
-Iris hydrology adds surface rivers in eroded valleys, underground rivers, coastal and inland grottos, and deep-fluid bodies. Enable rivers with `hydrology.rivers.enabled`; the default is `false`.
+Iris hydrology places water where rain would collect. Every hollow in the terrain fills until it spills, every column drains downhill to the sea, and the flow gathers into streams, rivers and major rivers that step down through every elevation. Hollows become ponds and lakes at their own height, streams link ponds into chains, the ground is reshaped into beds, shores and banks that hold the water in, and below the surface the sea runs inland through cliff coasts as flooded inlets while carved caves collect pools on their floors. The dimension owns the settings under `hydrology`, described on this page; regions and biomes adjust them with [`hydrologyPolicy`](/iris/36b-river-policy), and [36c - Water Inspection](/iris/36c-river-inspection) covers `/iris find river`, the Studio water view and validation.
 
-Surface rivers cut high ground and can fill low banks within the configured terrain limits, then blend into the surrounding terrain. `channel.sink` sets the water level below the shaped banks. Rivers do not alter ocean terrain or raise ocean water.
+## Workflow
 
-Water flows downhill in one-block steps. Faster descents create rapids, and sufficiently tall cliffs create waterfalls. Rivers reach the sea through drowned inlets. Underground rivers, grottos, and deep fluids must remain contained within the carved terrain.
+Turn the system on with `hydrology.enabled: true` in the dimension file. The defaults give a dimension streams, rivers and major rivers filled with water, natural and seeded ponds, lakes, banks reshaped around the water, sea inlets on its cliff coasts and pools in its caves. Then adjust:
 
-This page describes the dimension's physical river settings. Related river guides:
+1. **Make a pond-heavy biome.** Give the biome a `hydrologyPolicy` with `"pondDensity": 2.5` and `"rainfall": 1.6`. More cups are seeded in it, along its streams and elsewhere, and its ponds stay full. Natural hollows already keep their ponds at the default `ponds.natural.keep` of `1`; lower `keep`, or a `pondDensity` below `1`, thins them. Nothing in `hydrology` itself changes.
+2. **Add a chained-pond valley.** Keep `ponds.seeded.alongChannels: true` and shorten `ponds.seeded.channelSpacing` to `[64, 128]`. Streams in that dimension then pass through a cup every 64 to 128 blocks, each one spilling into the next at a lower level. Give one region a higher `pondDensity` in its policy to concentrate the chains there; `ponds.seeded.density` adds free-standing cups, not chain cups.
+3. **Switch a biome to lava ponds.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava while the rest of the dimension keeps water; channels keep their tier's fluid. A cave biome with the same policy gets lava cave pools.
+4. **Shape and plant the banks.** Set `bankBand` and `bankStyle` per tier, and `deformation.bankSlope` for the base slope. Paint the water's surroundings with `tiers[].materials` and `ponds.materials`, and grow seagrass, lily pads and reeds with `tiers[].decorators` and `ponds.decorators`.
+5. **Tune the underground water.** Sea inlets and cave pools are on by default. `underground.seaInlets.spacing` and `minimumCliffHeight` decide how many coasts get an inlet, `underground.cavePools.density` how many pool sites each chunk tries, and either `enabled: false` turns the feature off.
+6. Run `/iris pack validate`, open Studio and look at the **Rivers** view, then walk the water with `/iris find river` ([36c - Water Inspection](/iris/36c-river-inspection)).
 
-- [36b - River Policy](/iris/36b-river-policy) — `riverPolicy`, which decides where rivers may start, transit, and end, and what content they carry.
-- [36c - River Inspection](/iris/36c-river-inspection): locate rivers, view them in Vision, and validate pack settings.
+A complete dimension block is at the [end of this page](#complete-example).
 
-The dimension owns the physical system under `hydrology` and supplies the default `riverPolicy`. Region and biome files may contain only their own `riverPolicy` overrides. A [complete worked example](#complete-hydrology-example) is at the end of this page.
+Set `hydrology.density` to control how many eligible water features are placed across the dimension. `0.5` keeps half the candidate sources, ponds, lakes, sea inlets and cave-pool sites after local placement probabilities; retained rivers continue downstream. This controls feature frequency, so the resulting water-covered area varies with terrain and connected waterways. The built-in Overworld and Underworld packs both use `0.5`, with their configured widths, depths, rainfall and fluids preserved.
 
-For fields with `min` and `max`, set the allowed range. The optional `style` controls how values vary across the terrain.
-
-## `hydrology.rivers.routing`
-
-| Field | Default | Contract |
-|-------|---------|----------|
-| `tileSize` | `2048` | Accepted-plan tile width in blocks, `256..8192` |
-| `sampleSpacing` | `64` | Coarse terrain and policy lattice spacing; one of `8`, `16`, `32`, `64`, and it must divide `tileSize` |
-| `maximumRouteLength` | `16384` | Maximum source-to-outlet route length, `256..32768` blocks |
-| `minimumSurfaceCourseLength` | `384` | Minimum exposed length of a complete surface course, `0..32768` and no greater than `maximumRouteLength` |
-| `minimumUndergroundCourseLength` | `192` | Minimum complete underground route, `0..32768` and no greater than `maximumRouteLength` |
-| `maximumOutletsPerTile` | `4` | Maximum inland drainage roots (sinkhole grottos) selected in one plan tile, `1..256`; unused when no inland outlet kind is enabled |
-| `maximumCoastalOutletsPerTile` | `2` | Maximum sea outlets (mouths and coastal grottos) selected in one plan tile, `0..64`, budgeted separately from the inland roots; taken by type in turn (the best mouth, the best coastal grotto, the next mouth, ...), each at least two sample spacings from the others, with the tile's own coast ranked ahead of a neighbour's |
-| `oceanOutlets` | `true` | Allows direct sea mouths; qualifying coastal cliffs select an enabled coastal grotto instead, and the coastal budget alternates between the two kinds so a coast with both cliffs and beaches gets both |
-| `inlandOutlets` | empty | Allowed inland terminal types; the only type is `SINKHOLE_GROTTO` |
-| `valleyPreference` | `1.5` | Weight on natural height when routing, `0..8`; higher values pull routes into the lowest ground |
-| `uphillPenalty` | `24` | Cost added per block of climb between lattice samples, `0..128` |
-| `slopePenalty` | `2` | Cost multiplied by the local terrain slope, `0..16`; higher values keep routes off hillsides |
-| `confluenceAttraction` | `0.2` | Discount for joining ground another route already drains, `0..1` |
-| `lengthPreference` | `1` | How strongly longer source-to-outlet routes win when sources are chosen, `0..8`; `0` ranks sources by elevation alone |
-| `tributaries` | `1` | Extra surface courses an outlet may accept as tributaries of its main river, `0..4`, budgeted on top of `sources.density`. See [Tributaries](#tributaries) |
-
-Enable at least one outlet family: direct ocean outlets or an inland outlet type.
-
-### Tributaries
-
-Set `routing.tributaries` for surface tributaries and `underground.tributaries` for underground tributaries. Each adds tributaries to a main river within the configured limit. Their water levels meet the main river at the junction, and their flow contributes to the main river downstream.
-
-## `hydrology.rivers.geometry`
-
-Geometry shapes the routes and sizes selected by the routing, surface, and underground settings:
-
-- `meanders` controls how far a centerline wanders from its solved route.
-- `surface`, `underground`, and `grottos` share cross-section fields with separate values for waterfall throats, contained passages, and chambers.
-- `drops` shapes descending flow and the basin that receives it.
-
-### `geometry.meanders`
+## `hydrology`
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `primaryWavelength` | `64` | Broad meander wavelength in blocks, `8..512` |
-| `detailWavelength` | `12` | Fine worm wavelength in blocks, `4..128`; smaller values change direction more often |
-| `primaryStrength` | `0.34` | Strength of the broad meanders, `0..2` |
-| `detailStrength` | `0.42` | Strength of the fine worm movement, `0..2` |
-| `maximumOffsetRatio` | `0.48` | Largest lateral displacement from the solved route as a fraction of one drainage edge, `0..1` |
-| `smoothingPasses` | `1` | Terrain-safe centerline smoothing passes after route solving, `0..4` |
-| `maximumTurnDegrees` | `82` | Largest retained centerline turn angle in degrees, `10..150` |
+| `enabled` | `false` | Turns rivers, streams, ponds, lakes and underground water on for this dimension |
+| `density` | `1` | Fraction of eligible water-feature candidates retained after local placement probabilities, `0..1`; `0.5` halves candidate frequency and `0` places no hydrology features |
+| `drainage` | defaults below | How water drains across the terrain before rivers and ponds are placed |
+| `tiers` | stream, river, major (below) | Size classes of flowing water, from the smallest stream to the largest river; at least one |
+| `ponds` | defaults below | Standing water above sea level: natural hollows, seeded cups and dams |
+| `lakes` | defaults below | Large lakes that fill the biggest hollows in the terrain |
+| `deformation` | defaults below | How the ground around water is reshaped |
+| `underground` | defaults below | Water below the surface: flooded sea inlets and cave pools |
+| `fluids` | one profile, `water` | Named fluids that tiers, ponds, cave pools and hydrology policies fill their water with; at least one |
+| `prefetchRings` | `1` | Rings of 512-block planning windows prepared ahead around each window that chunk generation asks for, `0..4` |
+| `persist` | `true` | Saves finished water plans with the world, so they are not planned again after a restart |
 
-Meanders remain within the permitted terrain cut and containment limits.
-
-### `geometry.surface`, `geometry.underground` and `geometry.grottos`
-
-The three sections share one set of fields. The three roughness fields of `geometry.surface` are nullable and fall back to `surface.channel`; the underground and grotto sections always carry a value.
-
-| Field | Surface default | Underground and grotto default | Purpose |
-|-------|-----------------|--------------------------------|---------|
-| `bedRoundness` | `2` | `2.4` | Cross-section exponent of the bed, `1..6`; larger values broaden the rounded U-shaped bed |
-| `bedRoughness` | `surface.channel.roughness` | `0.28` | Coherent vertical variation of the bed as a fraction of the depth, `0..1` |
-| `wallRoughness` | `surface.channel.roughness` | `0.24` | Coherent radial variation of the carved walls, `0..1` |
-| `roughnessWavelength` | `surface.channel.roughnessWavelength` | `11` | Wavelength in blocks of the bed and wall variation, `3..128` |
-| `radialBase` | `0.86` | `0.86` | Base radial scale of the organic outline before the lobes are added, `0.4..1.2`; `1` keeps the nominal radius and lower values carve a narrower passage |
-| `radialMinimum` | `0.58` | `0.58` | Narrowest the outline may pinch after the lobes, as a fraction of the nominal radius, `0.2..1` |
-| `radialMaximum` | `1.18` | `1.18` | Widest the outline may bulge after the lobes, as a fraction of the nominal radius, `1..2` |
-| `primaryLobeStrength` | `0.08` | `0.08` | Strength of the broad lobes that bulge and pinch the outline along its length, `0..0.5`; `0` leaves the outline circular |
-| `detailLobeStrength` | `0.06` | `0.06` | Strength of the fine lobes layered over the broad ones for small-scale wall detail, `0..0.5` |
-| `ceilingRoughness` | `0` | `0` | Coherent variation of the carved ceiling height as a fraction of the headroom, `0..1`; `0` keeps the ceiling smooth and evaluates no extra noise |
-| `aspectMinimum` | `0.62` | `0.62` | Narrowest plan aspect of a chamber, the short axis as a fraction of the long axis, `0.2..1`; `1` makes every chamber circular in plan |
-| `aspectRange` | `0.2` | `0.2` | How far the plan aspect may vary above `aspectMinimum` from one chamber to the next, `0..0.8`; `0` gives every chamber the same aspect |
-
-The surface section carries every field so the three sections share one shape, but an exposed river has no carved roof and no chamber plan, so `ceilingRoughness`, `aspectMinimum` and `aspectRange` do nothing there.
-
-### `geometry.drops`
+### `hydrology.drainage`
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `cascadeRunPerBlock` | `2` | Preferred horizontal cascade run per block of head loss, `1..16` |
-| `cascadeExponent` | `1.4` | Exponent of the graded cascade profile, `0.25..6`; above `1` it accelerates toward the receiver |
-| `maximumCascadeStep` | `2` | Largest head loss between adjacent underground drop faces, `1..4`; exposed cascades always use one-block steps |
-| `flowWidthRatio` | `0.45` | Drop-flow width as a fraction of the connected channel width, `0.25..1` |
-| `maximumFlowDepth` | `2` | Largest wetted depth along a descending flow path, `1..16` |
-| `basinWidthRatio` | `1.8` | Receiving-basin width as a fraction of the descending flow width, `1..4` |
-| `maximumBasinDepth` | `8` | Largest receiving-basin depth after drop-scaled erosion, `1..32` |
-| `undergroundCascadeRunPerBlock` | `0` | Horizontal run in blocks an underground drop spreads over per block of head loss, `0..16`, so a tall drop becomes a long cascade instead of a single face; `0` keeps every underground drop at its shortest run |
+| `fillEpsilon` | `0.001` | Height step in blocks added across filled flats, so water on level ground still has a downhill path, `0.00001..0.1` |
+| `breachDepth` | `24` | Hollows deeper than this many blocks are drained by a cut through their lowest rim instead of filling with water, `0..256` |
+| `wetnessThinning` | `true` | Removes some stream heads in dry areas, so dry biomes have fewer streams than wet ones |
+| `minimumHeadKeep` | `0.25` | Smallest share of stream heads kept in the driest areas when wetness thinning is on, `0..1` |
+| `headRelief` | `1` | A stream only starts where the ground falls by at least this many blocks within 64 blocks downhill, so level ground does not sprout streams; `0` lets streams start anywhere, `0..64` |
+| `saturationCatchment` | `4194304` | Catchment in square blocks at which flow stops growing, which caps the width of rivers far downstream, `1024..1073741824` |
 
-## `hydrology.rivers.surface`
+### `hydrology.tiers[]`
 
-`surface.enabled` controls only exposed, terrain-following courses. It does not control the independent underground or deep-fluid budgets.
-
-### `surface.sources`
+Each tier is one size class of flowing water. The tiers are ranked by `minCatchment`, and every tier needs its own `minCatchment`. The lowest tier is what `/iris find river stream`, the Studio map and history call a stream, the highest tier is the major river, and every tier between them is a river.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `density` | `0.5` | Expected surface sources per plan tile, `0..64` |
-| `minimumElevation` | `88` | Minimum absolute world Y for a surface source, `-2048..2048` and below the dimension maximum |
-| `minimumPerTile` | `0` | Source quota enforced only when a qualifying `REQUIRED_HEADWATER` policy candidate can reach a legal outlet, `0..64` |
-| `minimumSpacing` | `384` | Minimum separation between natural surface headwaters, `0..8192`; required headwaters may override it |
+| `name` | `"stream"` | Label for this tier in configuration error messages; locate, maps and history rank tiers by `minCatchment` and do not use it |
+| `minCatchment` | `1500` | Upstream catchment in square blocks a channel needs to belong to this tier, `0..1073741824` |
+| `halfWidth` | `[0.5, 2]` | Smallest and largest half-width of the water surface in blocks, written as `[min, max]`; the smallest is above `0` and the largest is at most `64` |
+| `widthFactor` | `1` | How fast the half-width grows from its smallest value, per unit of the square root of catchment divided by 2500, `0..16` |
+| `depthRatio` | `0.4` | Water depth at the middle of the channel as a fraction of the half-width, `0.05..2`; every channel is at least one block deep |
+| `inset` | `1` | Blocks the water surface sits below the ground it flows through, `0..16` |
+| `cascades` | `true` | Keeps drops shorter than a waterfall as stepped cascades. When false, drops are spread into a gentler slope where the terrain allows; drops that cannot be spread stay as small cascades below the waterfall minimum |
+| `waterfallMinimumDrop` | `6` | Smallest drop in blocks that becomes a waterfall, `2..64` |
+| `bankBand` | `0` | Width in blocks of the band beside the water where the ground is reshaped into banks, `0..64`; `0` leaves the ground beside the channel as it is |
+| `bankStyle` | `SMOOTH` | Shape of the banks inside the bank band; see [bank styles](#bank-styles) |
+| `deltas` | `false` | Spreads the channel into a delta where it reaches the sea |
+| `materials` | all unset | Blocks painted on the bed, shore and banks of this tier; see [materials](#materials) |
+| `decorators` | empty | Plants for this tier's channels and their banks and shores; see [water plants](#water-plants) |
+| `fluid` | `"water"` | Name of the fluid profile that fills this tier's channels |
 
-### `surface.channel`
+The default tiers:
 
-The channel is the wet part of the river. Its cross-section is a broad bowl: nearly level across the middle of the width, then curving up into the banks. Local and regional rivers widen and narrow gradually within the configured width range, combining the authored style with coherent variation along the course. Setting equal width endpoints disables this additional variation; biome multipliers, source widening, and mouth flaring still apply.
+| Tier | `minCatchment` | `halfWidth` | `depthRatio` | `inset` | `bankBand` | `deltas` |
+|------|---------------:|-------------|-------------:|--------:|-----------:|----------|
+| `stream` | `1500` | `[0.5, 2]` | `0.4` | `1` | `0` | `false` |
+| `river` | `20000` | `[2, 8]` | `0.45` | `2` | `32` | `false` |
+| `major` | `320000` | `[8, 16]` | `0.5` | `3` | `48` | `true` |
 
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `width` | `4..8` | Wet channel width in blocks, endpoints in `1..64`; resolved along the course, so a river widens and narrows as it goes |
-| `depth` | `2..4` | Water depth at the channel center, endpoints in `1..32` |
-| `sink` | `0` | How far the water surface sits below the shaped bank top, `0..3`; `0` keeps water flush with its banks |
-| `maximumIncision` | `10` | Maximum channel cut below natural terrain, `1..32`; also limits bank fill together with `banks.excavation.maximumDepth` |
-| `roughness` | `0.25` | Strength of the coherent wobble applied to the channel outline, `0..1`; `0` gives a perfectly smooth outline |
-| `roughnessWavelength` | `16` | Wavelength of that wobble in blocks, `4..64` |
-| `springWidthRatio` | `2.5` | Peak spring-pool width relative to the channel width, reached near the first quarter of `springLength`, `1..4`; `1` keeps the source at normal channel width |
-| `springLength` | `24` | Blocks over which the source opens into its spring pool and narrows back to the channel, `4..96` |
-| `smoothingRadius` | `16` | Stations along the course the varied width and sampled depth are averaged over, `0..64`; `0` retains their unsmoothed values at each station |
-| `outlineMinimumRatio` | `0.6` | Narrowest the roughened waterline may pinch, as a fraction of the channel half-width, `0.2..1`; `1` stops the outline from ever narrowing below the nominal width |
-| `outlineMaximumRatio` | `1.4` | Widest the roughened waterline may bulge, as a fraction of the channel half-width, `1..3`; `1` stops the outline from ever widening beyond the nominal width |
-| `springExtraDepth` | `1` | Extra bed depth in blocks at the headwater spring, fading to nothing over `springLength`, `0..8`; `0` keeps the spring pool as deep as the channel |
+Every other field of the default tiers keeps the value in the table above.
 
-### `surface.banks`
+### Bank styles
 
-The banks are everything the river erodes outside the wet channel. Their shape follows the depth of the cut, so a river crossing flat ground makes a shallow dip and a river crossing a hillside makes a real valley.
+`bankStyle` shapes the ground between the water's edge and the natural ground, across the tier's `bankBand`.
 
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `shoreWidth` | `1.5` | Width of the flattened shore bench beside the water, cut level with the bank top, `0..16` blocks; it is also the default width of the shore biome band, and `0` removes the bench so the eroded valley side begins at the waterline |
-| `shoreRise` | `0` | Blocks the bench rises from the waterline to its landward edge, `0..4`, so the beach climbs instead of lying level; `0` keeps a flat bench, and the valley side starts from the raised edge |
-| `blendSlope` | `3` | Horizontal blend per block of terrain cut or fill from the bank top back to surrounding terrain, `0.5..12` |
-| `blendBaseWidth` | `0` | Blocks added to every valley width before the blend limits apply, `0..32`, so even a shallow cut erodes this far beyond the shore; `0` leaves the width proportional to the cut alone |
-| `minimumBlendWidth` | `4` | Narrowest blend band even for a shallow cut, `1..maximumBlendWidth` |
-| `maximumBlendWidth` | `32` | Widest blend band even for a deep cut, up to `64`; this also bounds how far a river can affect terrain from its centerline |
-| `exposeCutStrata` | `true` | Show the biome's deeper layers on eroded banks instead of repeating the surface layer, so a cut through grassland shows dirt and stone |
-| `shoreMaterial` | enabled, sand, depth 2 | Palette painted over the shore bench columns instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
-| `bankMaterial` | disabled | Palette painted over the eroded bank columns outside the bench instead of the biome's own layers; same three fields |
+| Style | Shape |
+|-------|-------|
+| `SMOOTH` | An eased curve from the water's edge up to the natural ground, flat at both ends and steepest across the middle of the band |
+| `LINEAR` | A straight slope from the water's edge to the natural ground, with a sharp shoulder at the shore and a sharp lip at the top |
+| `CONCAVE` | A hollowed bank that climbs fast beside the water and flattens out toward the natural ground |
+| `TERRACED` | The eased curve cut into level steps between the water's edge and the natural ground |
+| `CLIFF` | A level bench beside the water, then a steep wall up to the natural ground |
 
-> Increasing `channel.sink` lowers the head and leaves less of `channel.maximumIncision` available for the bed, so a route near that limit can disappear when sink increases. A wider `shoreWidth` expands the shaped shore but does not guarantee more accepted rivers. **Accepted river counts need not increase with either setting.**
-{.is-info}
+### Materials
 
-`shoreMaterial` and `bankMaterial` paint over the layers the shore and bank biomes would otherwise supply, down `depth` blocks from the surface, and change nothing while `enabled` is `false`. The bed padding rule still runs after the paint, so a falling block from one of these palettes is replaced by `bed.paddingPalette` unless `bed.allowGravityBlocks` is set. Content that should vary with the surrounding terrain belongs in policy `shoreBiomes` or `bankBiomes` instead; these palettes are for one fixed material along every river in the dimension.
-
-Per-area overrides for `blendSlope` and `shoreWidth` live on [36b - River Policy](/iris/36b-river-policy).
-
-### `surface.erosion`
-
-Erosion shapes the valley the banks describe. The reach of the valley comes from `banks.blendSlope` and the blend widths; these fields shape what happens inside that reach.
+`tiers[].materials` and `ponds.materials` share one shape. A palette left unset keeps the biome's own layers. The bed and bank palettes paint one layer; the shore palette paints `shoreDepth` layers. A palette that is set must list at least one block, written as `{ "palette": [{ "block": "minecraft:sand" }] }`; a palette whose `palette` list is missing, misspelled or empty is rejected.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `enabled` | `true` | Erode the ground beyond the shore band into a valley; `false` keeps only the wet channel, the shore band and the bank that holds the water |
-| `smoothingRadius` | `12` | Stations along the course the blend width is averaged over, `0..64`, so the valley widens and narrows gradually; `0` follows the local cut exactly |
-| `thalwegFraction` | `0.45` | Share of the channel half-width that stays at full bed depth before the bed rises to the edge, `0..0.95`; higher is a flatter, broader bed |
-| `blendCurve` | `1` | Exponent on the blend from the bank top out to natural terrain, `0.25..4`; below `1` hollows the valley sides, above `1` keeps them steep near the shore and eases them out further away |
-| `bedNoise` | `0.5` | Share of `channel.roughness` applied to the bed as depth variation, `0..2`; `0` leaves a smooth bed |
-| `style` | `SMOOTH` | Shape of the valley side between the shore bench and natural terrain; `SMOOTH`, `LINEAR`, `CONCAVE`, `TERRACED` or `CLIFF`, described below |
-| `terraceSteps` | `4` | Number of level steps the valley side is cut into when `style` is `TERRACED`, `2..16`; ignored by every other style |
-| `cliffFraction` | `0.5` | Share of the eroded band kept level at the bank top before the vertical wall when `style` is `CLIFF`, `0..1`; ignored by every other style |
-| `bedProfile` | `BOWL` | Cross-section of the wet channel bed from the centerline out to the waterline; `BOWL`, `FLAT`, `V` or `U`, described below |
-
-`erosion.style` decides the shape of the valley side across the blend band. `SMOOTH` is an eased S-curve, flat at the shore and at the top and steepest across the middle. `LINEAR` is a straight slope with a sharp shoulder at the shore and a sharp lip at the top. `CONCAVE` climbs fast beside the shore and flattens toward natural terrain, hollowing the valley. `TERRACED` cuts the eased curve into `terraceSteps` level steps. `CLIFF` holds the band level at the bank top for `cliffFraction` of its width and then rises in one vertical wall. `blendCurve` skews all of them except `CLIFF`.
-
-`erosion.bedProfile` decides the cross-section of the wet bed. `BOWL` holds full depth over `thalwegFraction` of the half-width and eases up to a one-block edge. `FLAT` holds full depth to the waterline, so the channel edge drops straight to the bed. `V` slopes straight from full depth at the centerline to one block at the edge and ignores `thalwegFraction`. `U` holds the thalweg deep almost to the edge and then rises steeply, giving a trough with steep sides.
-
-To turn the valley off for one area without touching the rest of the dimension, use `riverPolicy.erosion` on [36b](/iris/36b-river-policy).
-
-### `surface.ponds`
-
-Surface rivers can rise from a source pond and end in an inland pond. These bowls follow the direction of the channel, with elongated outlines and an offset basin that joins the river. They hold the river's water level and use the same shore band and eroded rim as the channel. The radius is chosen per river within the configured range and sets the pond's length scale; its width and rough shoreline vary. The pond shrinks where surrounding ground cannot hold the water. Where even the smallest radius does not fit, the river starts or ends as a channel. A river that reaches the ocean gets no terminal pond.
-
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `source.enabled` | `true` | Dig the spring pond at the headwater |
-| `source.minimumRadius` | `6` | Smallest spring pond radius in blocks, `1..32` |
-| `source.maximumRadius` | `12` | Largest spring pond radius in blocks, `1..32` |
-| `source.depth` | `3` | Depth of the spring pond below its water surface at the centre, `1..8` |
-| `terminal.enabled` | `true` | Dig the pond a river that ends inland drains into |
-| `terminal.minimumRadius` | `4` | Smallest terminal pond radius in blocks, `1..32` |
-| `terminal.maximumRadius` | `7` | Largest terminal pond radius in blocks, `1..32` |
-| `terminal.depth` | `3` | Depth of the terminal pond below its water surface at the centre, `1..8` |
-
-### `surface.bed`
-
-The bed is what sits under and beside the water. Falling blocks under a river collapse when a cave, a player or a fluid update touches them, so by default they are replaced.
-
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `allowGravityBlocks` | `true` | Keep sand, gravel and concrete powder from the biome layers in the bed, shore and eroded banks; set it to `false` when those blocks should use `paddingPalette` instead |
-| `padding` | `2` | Blocks below the bed surface that are also kept free of falling blocks, `0..8` |
-| `paddingPalette` | clay and dirt | Blocks used in place of falling blocks; any solid palette |
-| `material` | disabled | Palette painted over the wet channel bed under the water instead of the biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
-
-Without an explicit `material` or `banks.bankMaterial`, the channel keeps the layers of the channel biome (`surfaceBiomes`) and the eroded bank keeps `bankBiomes`, with the default shore palette supplying two sand layers before the biome continues below. Biome overrides make a river bottom or beach follow the terrain it crosses; the material palettes give every river in the dimension the same blocks regardless of biome. Both may be used together — the palette wins for its top `depth` layers and the biome supplies everything below.
-
-### `surface.flow`
-
-Water heads only ever descend. Each step downstream is at most one block unless the terrain forms a cliff.
-
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `cascadeRun` | `2` | Horizontal blocks per one-block head drop before a reach is labelled rapids rather than a pool, `1..8` |
-| `waterfallMinimumDrop` | `6` | Smallest natural cliff, in blocks between adjacent stations, that produces a single-step waterfall drop, `2..32` |
-| `waterfallThalwegFraction` | `0.65` | Share of the half-width that stays at full bed depth in the carved throat of a waterfall or cascade before the bed rises to the edge, `0..0.95`; higher is a flatter, broader throat |
-| `plungeBasinMinimumDrop` | `2` | Smallest drop in blocks that scours a plunge basin into the bed below it, `1..8`; shorter drops leave the bed untouched |
-| `plungeBasinLengthRatio` | `2` | Length of the basin downstream of a drop as a multiple of the channel half-width, `0..8`, never shorter than two stations |
-| `plungeBasinDepth` | `1` | Extra bed depth in blocks scoured inside a plunge basin, `0..8`; `0` marks the basin without deepening it |
-
-### `surface.mouths`
-
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `flareRatio` | `1.6` | Channel width at the coast relative to the width upstream, reached over the inlet, `1..4` |
-| `maximumOceanApron` | `8` | Maximum non-owning accepted connection apron in ocean columns, `0..32` |
-| `inletLength` | `64` | Blocks of river before the coast held at sea level and widened toward `flareRatio`; `0` ends the river at the shoreline with no inlet, `0..256`, never more than `routing.minimumSurfaceCourseLength` |
-| `inletDepth` | `3` | Extra bed depth reached at the shoreline over the inlet, so the estuary is deeper than the river above it, `0..16` |
-| `maximumIncision` | `32` | Deepest cut allowed in the inlet and its approach ramp, replacing `channel.maximumIncision` there, so the coast may be cut down to sea level through a rise of this height; a taller rise ends the inlet where it starts, `0..128` |
-| `inletCourseFraction` | `0.5` | Largest share of the river's exposed course the drowned inlet may occupy, `0.05..1`, so a short river keeps most of its length above sea level; the inlet is the shorter of `inletLength` and this share |
-| `inletRampSlope` | `1` | Blocks of head gained per station on the approach ramp climbing from the inlet back to the river's natural profile, `0.1..4`; `1` climbs one block per station and higher values grade the approach faster |
-
-The inlet reaches inland only as far as the ground can be cut to sea level within `maximumIncision`: on a low coast it runs the full `inletLength`, against a bluff it stops at the foot of the bluff, and on a cliff coast there is no inlet and the river falls into the sea. Above it the water grades down `inletRampSlope` blocks per station over half the inlet length wherever that cut fits, so a river on a coastal plateau reaches the estuary through rapids rather than a wall. Lower `mouths.maximumIncision` where that approach cuts a deeper gorge than the coast should show. An ocean apron owns no writes — it records the accepted connection for rendering and inspection while the ocean reservoir stays authoritative.
-
-## `hydrology.rivers.underground`
-
-Underground courses use their own `enabled`, `sources.density`, and `sources.minimumPerTile`. Their minimum is likewise a `REQUIRED_HEADWATER` quota, and a rejected or absent surface source does not consume the underground budget.
-
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `sources.density` | `0.25` | Expected underground sources per plan tile, `0..64` |
-| `sources.minimumSpacing` | `512` | Minimum separation between natural underground sources, `0..8192` |
-| `fluidLevel` | `-48..50` | Absolute world-Y range for underground heads; each endpoint is within `-2048..2048` and the optional style chooses locally |
-| `channelWidth` | `3..8` | Contained channel width; endpoints in `1..64` |
-| `depth` | `1..3` | Bed depth below the local head; endpoints in `1..32` |
-| `headroom` | `6..14` | Dry space above the local head; endpoints in `1..128` |
-| `connectToExistingCaves` | `true` | Lets accepted dry headroom open into suitable existing cave matter where the two touch; the course does not require a pre-existing cave |
-| `mouthLevelingDistance` | `64` | Landward distance over which an underground mouth levels into the sea, `16..512` and no greater than the route length |
-| `tributaries` | `1` | Extra underground courses an outlet may accept as tributaries joining its main passage, `0..4`, budgeted on top of `sources.density`. See [Tributaries](#tributaries) |
-| `minimumRockCover` | `1` | Blocks of solid rock kept between the top of a passage's headroom and the surface above it, `1..64`; a passage that cannot keep this much cover is lowered, and rejected if it cannot be lowered far enough |
-| `minimumFloorCover` | `1` | Blocks of solid rock kept between the bottom of a passage's bed and the world floor below it, `1..32` |
-| `wideningSources` | `8` | Number of joined tributary sources at which a passage reaches its full sampled width, `1..64`; fewer contributing sources carve a proportionally narrower passage, and `1` gives every passage its full width |
-| `bedMaterial` | disabled | Palette painted over the floor layers under an underground river instead of the cave biome's own layers; `enabled`, a `palette` of solid blocks and a `depth` of `1..8` layers |
-
-Fluid level, depth, basin depth, and headroom must fit strictly inside `dimensionHeight`. Underground heads are non-rising downstream, but each routed point resolves its preferred fluid level before that constraint is applied, so a course can occupy several level terraces rather than one globally flattened height. Drops become narrow graded `UNDERGROUND_DROP` features with receiving basins; level runs become `UNDERGROUND_POOL`. `geometry.underground` and `geometry.grottos` set the bed, wall and outline shape of passages and chambers, and `geometry.drops` shapes underground drops, sinkholes and receiving basins.
-
-## Grottos
-
-Configure coastal and inland grottos separately with `grottos.coastal` and `grottos.inland`:
-
-| Field | Coastal default | Inland default | Contract |
-|-------|-----------------|----------------|----------|
-| `enabled` | `true` | `true` | Allows this outlet chamber type |
-| `poolLevel` | `SEA_LEVEL` | not present | Coastal value must be `SEA_LEVEL` |
-| `connectSurfaceRivers` | not present | `false` | Lets eligible surface courses continue through an explicit falling sinkhole into the contained pool; requires the inland grotto and `SINKHOLE_GROTTO` routing outlet |
-| `horizontalRadius` | `12` | `10` | `1..128` |
-| `verticalRadius` | `7` | `6` | `1..64` |
-| `headroom` | `10` | `10` | `1..63` and less than the full chamber height |
-| `maximumVolume` | `8192` | `8192` | `1..1048576` distinct accepted mutation positions owned by that grotto segment |
-| `cliffMinimumHeight` | unset | not present | Blocks the coast must stand above the sea at the outlet for a river to end in a coastal grotto instead of an open mouth, `0..128`; unset uses the larger of `4` and `verticalRadius` |
-| `cliffSlopeFactor` | `0.5` | not present | Share of `cliffMinimumHeight` the coast's slope must reach at the outlet before a grotto is chosen over an open mouth, `0..4`; `0` ignores the slope and decides on height alone |
-
-A coastal grotto is admitted only at a proven coastal land/ocean boundary, either as a river outlet or as a standalone sea cave. Its pool is at sea level and its ocean face is the only opening — the chamber is roofed and walled by the coast everywhere else. An inland grotto is available only when `routing.inlandOutlets` includes `SINKHOLE_GROTTO`, and an underground course whose maximum head is below sea level gets an inland grotto plan rather than being routed to an impossible coastal outlet.
-
-With `grottos.inland.connectSurfaceRivers` set to `true`, an eligible surface source keeps one course through a `SINKHOLE` falling throat into its terminal `INLAND_GROTTO` receiving pool, with fluid and carving continuous into the chamber. With it `false`, surface sources cannot route to inland grotto outlets while independently sourced underground courses still can.
-
-`maximumVolume` bounds the grotto segment itself; an attached underground course or surface sinkhole belongs to the same all-or-nothing containment transaction without counting its non-grotto positions against that cap.
-
-### Sea caves
-
-`grottos.coastal.seaCaves` plans coastal grottos that need no river: the sea itself opens into the coast. Sites are ranked by how high the coast stands over the sea, so cliffs are taken before low shores, and each accepted site becomes its own `COASTAL_GROTTO` course — a chamber swept `depth` blocks inland from the shoreline with the water at sea level, `verticalRadius` of flooded floor below it, `headroom` of air above it, and the open sea as its mouth. Sea caves keep clear of every river mouth and grotto already planned on the tile, and need `grottos.coastal.enabled` as well as `seaCaves.enabled`.
-
-| Field | Default | Contract |
-|-------|---------|----------|
-| `enabled` | `true` | Plan sea caves along the coast |
-| `maximumPerTile` | `3` | Maximum sea caves per tile, `0..64` |
-| `minimumSpacing` | `160` | `16..8192` blocks between two sea caves, and at least twice `horizontalRadius` |
-| `minimumCoastHeight` | `8` | `1..128`; the coast must stand this many blocks above the sea at the shoreline, at the back of the chamber and along its flanks |
-| `depth` | `12` | `0..128` blocks the chamber is swept inland from the shoreline; `0` leaves a single chamber at the shore |
-| `sweepJitterDegrees` | `25` | `0..90`, the largest angle the inland sweep may turn away from straight inland, chosen per cave; `0` sweeps every sea cave straight in from the shore |
-
-## River profiles
-
-`hydrology.rivers.profiles` is an array of at most 64 objects:
+| `bed` | unset | Palette painted on the ground under the water |
+| `shore` | unset | Palette painted on the strip of ground along the water's edge, and on the rim of a dammed pond |
+| `shoreDepth` | `2` | Layers of the shore palette painted downward from the surface, in blocks, `1..8` |
+| `bank` | unset | Palette painted on the reshaped banks beyond the shore |
+| `allowGravityBlocks` | `true` | Allows sand, gravel and other falling blocks in the bed, shore and banks. When false, falling blocks in every column with a water role (bed, shore, bank and dam) are replaced by the column's rock, so nothing can collapse into the water |
 
 ```json
 {
-  "profiles": [
+  "materials": {
+    "bed": { "palette": [{ "block": "minecraft:gravel" }] },
+    "shore": { "palette": [{ "block": "minecraft:sand" }] },
+    "shoreDepth": 2,
+    "allowGravityBlocks": false
+  }
+}
+```
+
+### Water plants
+
+`tiers[].decorators` plants a tier's channels and their banks and shores; `ponds.decorators` plants ponds and lakes and their shores. Both lists are written exactly like biome decorators ([16 - Surfaces](/iris/16-surfaces-decorators-deposits#decorators)), snippet references included, and both are empty by default. A `hydrologyPolicy.decorators` list on a biome, region or dimension replaces both lists for every water column in that area ([36b - Hydrology Policy](/iris/36b-river-policy#decorators)). `partOf` chooses where a decorator grows:
+
+| `partOf` | Where | Rules |
+|----------|-------|-------|
+| `SEA_FLOOR` | The bed under the water of channels, cascades, waterfalls, ponds and lakes | Only where the water is at least two blocks deep. The stack is clamped to the depth minus one, so the top water cell stays water. Every block must hold water (seagrass, kelp, coral, sea pickles, waterlogged blocks), and a two-block plant such as tall seagrass needs room for both halves |
+| `SEA_SURFACE` | The air cell directly above still water on channel, pond and lake columns | Never on falls, cascades, waterfalls or flowing water: the top cell must be a still source with air above it and every neighboring water cell at the same height |
+| `SHORE_LINE` | The dry bank, shore and pond shore columns beside the water | Into air on solid ground, never into a cell with water beside it. Sugar cane needs water beside its ground, across chunk edges too |
+
+- No vegetation grows in lava: floor and surface plants need water sources.
+- Surface and shore palettes, `topPalette` included, may not contain blocks that hold water (water, lava, waterlogged states, seagrass, kelp, sea pickles, coral); those parts grow in air.
+- Every decorator needs a written `palette`. A missing or misspelled palette is rejected rather than growing the default `grass`; name grass as `minecraft:short_grass`.
+- `forceBlock` is not allowed, `chance` stays within `0..1`, and `1 <= stackMin <= stackMax`.
+- Dam, mouth and inlet-mouth columns get no water plants; mouths keep the sea biome's decoration.
+- Changing the plant lists does not rebuild the stored hydrology plans.
+
+```json
+{
+  "tiers": [
     {
-      "id": "water",
-      "fluidPalette": {
-        "palette": [{"block": "minecraft:water"}]
-      }
+      "name": "river",
+      "minCatchment": 20000,
+      "decorators": [
+        { "partOf": "SEA_FLOOR", "chance": 0.25, "palette": [{ "block": "minecraft:seagrass" }] },
+        { "partOf": "SEA_FLOOR", "chance": 0.08, "stackMin": 2, "stackMax": 8,
+          "palette": [{ "block": "minecraft:kelp_plant" }], "topPalette": [{ "block": "minecraft:kelp" }] },
+        { "partOf": "SEA_FLOOR", "chance": 0.05, "palette": [{ "block": "minecraft:tall_seagrass", "data": { "half": "lower" } }] },
+        { "partOf": "SEA_SURFACE", "chance": 0.05, "palette": [{ "block": "minecraft:lily_pad" }] },
+        { "partOf": "SHORE_LINE", "chance": 0.1, "stackMin": 1, "stackMax": 3, "palette": [{ "block": "minecraft:sugar_cane" }] },
+        { "partOf": "SHORE_LINE", "chance": 0.15, "palette": [{ "block": "minecraft:fern" }, { "block": "minecraft:short_grass" }] }
+      ]
     }
+  ],
+  "ponds": {
+    "decorators": [
+      { "partOf": "SEA_FLOOR", "chance": 0.3, "palette": [{ "block": "minecraft:seagrass" }] },
+      { "partOf": "SEA_SURFACE", "chance": 0.15, "palette": [{ "block": "minecraft:lily_pad" }] },
+      { "partOf": "SHORE_LINE", "chance": 0.2, "stackMin": 1, "stackMax": 3, "palette": [{ "block": "minecraft:sugar_cane" }] }
+    ]
+  }
+}
+```
+
+### `hydrology.ponds`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `natural` | defaults below | Ponds that fill hollows already present in the terrain |
+| `seeded` | defaults below | Ponds cut into the terrain as bowls where the land has few hollows of its own |
+| `dams` | defaults below | Raised rims that hold ponds above their natural spill height |
+| `freeboard` | `[1, 3]` | Blocks the pond surface sits below its spill point, written as `[min, max]`, not below `0`; each pond picks a value in this range |
+| `climateDrawdown` | `6` | Extra blocks a pond surface drops in the driest climate, `0..32`; ponds in wet areas stay full |
+| `shore` | defaults below | Shape of pond shores and floors |
+| `materials` | all unset | Blocks painted on pond floors and shores; see [materials](#materials) |
+| `decorators` | empty | Plants for ponds and lakes and their shores; see [water plants](#water-plants) |
+| `fluid` | `"water"` | Name of the fluid profile that fills ponds and lakes |
+
+#### `ponds.natural`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `true` | Fills natural hollows with water |
+| `keep` | `1` | Share of qualifying hollows that become ponds, before the area's pond density multiplier, `0..1` |
+| `minArea` | `256` | Smallest pond surface in square blocks, `16..16777216` |
+| `maxArea` | `65536` | Largest pond surface in square blocks, `16..16777216`; larger hollows become lakes or are drained |
+| `minDepth` | `2` | Smallest hollow depth in blocks that holds a pond, `0.5..64`; lakes use the same floor |
+
+#### `ponds.seeded`
+
+On a slope the bowl spills downhill, so the pond sits perched above the ground below it.
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `true` | Cuts seeded cups into the terrain |
+| `density` | `4` | Expected free-standing cups per 512 by 512 block window, before the area's pond density multiplier, `0..64` |
+| `radius` | `[6, 24]` | Cup radius in blocks, written as `[min, max]`, above `0` |
+| `depth` | `[3, 8]` | Cup depth in blocks, written as `[min, max]`, above `0` |
+| `maxSlope` | `0.6` | Steepest ground slope, as rise over run, that accepts a cup, `0..4` |
+| `alongChannels` | `true` | Places chains of cups along streams, each one spilling into the next one downstream at a lower level |
+| `channelSpacing` | `[96, 256]` | Distance in blocks between chained cups along a stream, written as `[min, max]`, above `0` |
+
+#### `ponds.dams`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `false` | Raises the downhill rim of ponds to hold more water |
+| `maxRaise` | `4` | Most blocks a dam raises a pond rim, `1..16` |
+
+#### `ponds.shore`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `roundness` | `0.5` | Strength of the noise that rounds and roughens pond outlines, `0..4`; `0` follows the terrain exactly |
+| `shelf` | `6` | Width in blocks of the shallow shelf along the shore before the floor reaches full depth, `0..64` |
+| `taper` | `14` | Width in blocks of the ground outside the shore that slopes down to the water, `0..64` |
+| `maxDepth` | `8` | Deepest pond floor below the water surface, in blocks, `1..64` |
+
+### `hydrology.lakes`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `true` | Turns large hollows into lakes |
+| `minArea` | `65536` | Smallest lake surface in square blocks, `1024..134217728` |
+| `maxArea` | `4194304` | Largest lake surface in square blocks, `1024..134217728`; larger hollows are drained by a cut through their rim |
+
+A hollow becomes a lake only when it is also at least `ponds.natural.minDepth` deep and no more than 2,048 blocks across. A wider hollow is drained, whatever its area, so a very high `minDepth` removes lakes as well as ponds.
+
+### `hydrology.deformation`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `maxFill` | `6` | Most blocks the ground may be raised to hold water in, such as a berm beside a perched stream, `0..32` |
+| `bankSlope` | `0.2` | Base slope of banks, as rise over run, `0..4` |
+| `bankSteepFactor` | `3.5` | How much steeper banks become on steep terrain, `0..16` |
+| `bankNoise` | `0.2` | Strength of the noise that roughens bank edges, `0..2` |
+| `caveMask` | `true` | Keeps caves from opening under water, so rivers and ponds never drain into them |
+
+### `hydrology.underground`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `seaInlets` | defaults below | Flooded passages at sea level that run inland from coastal cliffs |
+| `cavePools` | defaults below | Standing water on the floors of carved caves |
+
+#### `underground.seaInlets`
+
+An inlet, its chamber and its seal stay within 512 blocks of the coast: `length` max plus 12, plus the larger of `halfWidth` max (rounded up) and `chamberRadius` max, plus 3 must not exceed 512. The defaults reach 283.
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `true` | Cuts sea inlets into coastal cliffs |
+| `spacing` | `192` | Size in blocks of the square cells of the site grid, `32..4096`; each cell holds at most one inlet, and inlets in neighboring cells can lie closer than this |
+| `minimumCliffHeight` | `8` | Height in blocks the coastal land must rise above sea level to be a site, `1..128`; the passage also needs ground at least `headroom` min plus `roofClearance` plus 2 blocks above sea level within about 16 blocks of the coast, so gentle coasts hold no inlets |
+| `length` | `[64, 256]` | Length of an inlet in blocks, written as `[min, max]`, above `0` |
+| `halfWidth` | `[2, 5]` | Half-width of the passage in blocks, written as `[min, max]`, each from `1` to `16`; the passage narrows toward its inland end |
+| `depth` | `[2, 5]` | Water depth below sea level in blocks, written as `[min, max]`, each from `1` to `16` |
+| `headroom` | `[4, 10]` | Air space above the water in blocks, written as `[min, max]`, each from `0` to `32`; it varies smoothly along the passage and shrinks where the ground above is thin |
+| `roofClearance` | `6` | Least solid ground in blocks kept between the passage roof and the surface, `1..64` |
+| `chamberRadius` | `[6, 12]` | Radius in blocks of the pool chamber at the inland end, written as `[min, max]`, each from `1` to `32` |
+
+#### `underground.cavePools`
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `true` | Fills dips in cave floors with standing water |
+| `density` | `0.15` | Candidate pool sites per chunk, `0..8` |
+| `minArea` | `6` | Smallest pool surface in square blocks, `1..4096` |
+| `maxArea` | `400` | Largest pool surface in square blocks, `1..65536` |
+| `maxDepth` | `4` | Deepest pool in blocks, `1..16` |
+| `radius` | `15` | Half-size in blocks of the square box, centered on the site column, inside which a pool settles and spreads, `1..15`, so a pool stays within one chunk of the chunk that holds its site |
+| `freeboard` | `[0, 1]` | Blocks the pool surface sits below the highest level the cave holds, written as `[min, max]`, not below `0` |
+| `fluid` | `"water"` | Name of the fluid profile that fills cave pools; a cave biome's `hydrologyPolicy.fluid` replaces it |
+
+### `hydrology.fluids[]`
+
+Tiers, ponds, cave pools and hydrology policies pick a fluid by its name. Every name must be unique, every palette needs at least one block, and every `fluid` reference in the dimension must name a profile in this list.
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `name` | `"water"` | Name that tiers, ponds, cave pools and hydrology policies use to pick this fluid |
+| `palette` | `minecraft:water` | Blocks that fill the water feature |
+
+```json
+{
+  "fluids": [
+    { "name": "water", "palette": { "palette": [{ "block": "minecraft:water" }] } },
+    { "name": "lava", "palette": { "palette": [{ "block": "minecraft:lava" }] } }
   ]
 }
 ```
 
-Each `id` is unique and each `fluidPalette` must resolve to at least one fluid block. Policies reference profile IDs. A surface route requires one common permitted profile along the complete route and outlet, and tributaries retain their stem's profile, so disjoint profile lists separate drainage networks, including at coasts. An empty effective policy profile list selects the first configured profile.
+## How water is placed
 
-> Omitting `hydrology.rivers` still materializes an implicit `default` profile, so **a deep-fluid entry cannot use `default` as its ID.**
-{.is-warning}
+Hydrology works in 512-block planning windows on the natural terrain, before caves, objects and decoration; cave pools alone are placed after the caves are carved.
 
-## `hydrology.deepFluids`
+1. **Drainage.** Hollows fill until they spill (`drainage.fillEpsilon` keeps a downhill path across the filled flats). Hollows deeper than `drainage.breachDepth` are drained by a cut through their lowest rim instead of filling. Every column then drains downhill to the sea, and the flow accumulates with the rainfall of the area it crosses.
+2. **Channels.** A stream starts where the accumulated catchment reaches the lowest tier's `minCatchment`, the ground falls by `drainage.headRelief` within 64 blocks downhill and the area's policy allows streams. `drainage.wetnessThinning` removes some heads in dry areas. Each channel takes the highest tier whose `minCatchment` it reaches, so a stream becomes a river and then a major river as tributaries join it. Catchment stops growing at `drainage.saturationCatchment`.
+3. **Ponds and lakes.** A hollow whose surface is within `ponds.natural.minArea` to `maxArea` and at least `minDepth` deep becomes a pond. A hollow within `lakes.minArea` to `maxArea`, at least `minDepth` deep and no more than 2,048 blocks across becomes a lake with one level across its whole surface; larger hollows are drained. Where the land has few hollows, `ponds.seeded` cuts bowls into the terrain, and `alongChannels` places chains of them down a stream. A pond's surface sits `ponds.freeboard` blocks below its spill point, lower still in dry climates (`climateDrawdown`). `ponds.dams` raises the downhill rim to hold more water.
+4. **Terrain shaping.** Channel beds and pond floors are cut, banks are sloped across the tier's `bankBand` in its `bankStyle`, low edges are raised by up to `deformation.maxFill` to hold the water, and `deformation.caveMask` keeps caves out from under the water.
+5. **Sea inlets.** Each `spacing` cell of the coast with land at least `minimumCliffHeight` above the sea tries one inlet. The passage runs inland from the sea, up the valleys where the drainage allows and onward under higher ground, as long as enough rock stays above it, and ends in a chamber. Its water is held at sea level the whole way.
+6. **Cave pools.** After the caves are carved, each chunk tries `cavePools.density` sites. Inside a square box of `radius` blocks around the site column, the site settles downhill to the lowest floor that water poured on it would reach, and the pool rises from there, level by level up to `maxDepth`, as long as the surrounding rock holds it and it stays inside the box.
 
-Deep fluids are independent of both river source budgets and do not join the surface drainage graph. Each entry has:
+## What appears in the world
 
-| Field | Purpose |
-|-------|---------|
-| `id` | Unique deep-fluid profile ID; it cannot duplicate a river profile ID or a built-in locator selector |
-| `fluidPalette` | Fluid-only palette for this deep feature |
-| `height` | Styled absolute world-Y range; endpoints in `-2048..2048` |
-| `density` | Expected sites per tile, `0..64` |
-| `spacing` | Site lattice spacing, `16..8192` |
-| `horizontalRadius` / `verticalRadius` | Contained pool envelope, respectively `2..128` and `2..64` |
-| `channelWidth` / `depth` / `headroom` | Short-channel and interior geometry, respectively `1..32`, `1..32`, and `1..63` |
-| `containedPools` | Enables `DEEP_POOL` features |
-| `shortChannels` | Enables `DEEP_CHANNEL` features |
+**Channels.** The water surface of a channel sits `inset` blocks below the ground it flows through. Its half-width grows with the square root of the catchment between the tier's `halfWidth` bounds, and its depth is `depthRatio` times the half-width, at least one block. Channels descend in one-block steps. Where a step turns a corner, the corner column becomes a dry rim ledge instead of water, so the flow stays in its bed.
 
-Spacing must contain the complete horizontal footprint, depth plus headroom must fit inside the vertical diameter, and the height envelope must fit inside the dimension. A short channel has no authored length: its maximum is `spacing / 3`, capped to half `routing.tileSize`, and its derived containment-volume bound may shorten it further.
+**Cascades and waterfalls.** A drop of two or more blocks that is smaller than the tier's `waterfallMinimumDrop` is a cascade of steps when `cascades` is true, and is spread into a gentler slope where the terrain allows when it is false. A drop of `waterfallMinimumDrop` or more is a waterfall. In both cases the upper water pours over a one-block lip: the column above the drop holds water only in its top block, and falling water fills the face from the lower surface up to the upper one. Falling water is written through the mantle, so it needs `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`. Still surface water does not depend on the mantle.
 
-## `hydrology.surfacePools`
+**Mouths and deltas.** A channel that reaches the sea ends in a mouth. A tier with `deltas: true` spreads its channel into a delta there.
 
-Standing pools are bowls cut into open ground and filled with their own fluid: lava pools in a badland, a tar pit, a hot spring. They are independent of the river budgets and never touch a river.
+**Ponds, chains and lakes.** Each pond has its own level. Chained cups along a stream sit at descending heights, each spilling into the next. Lakes fill the largest hollows at one level. A dammed pond has a raised rim on its downhill side.
 
-| Field | Default | Purpose |
-|-------|---------|---------|
-| `id` | `lava_pool` | Unique pool id; policies opt in with it and `/iris find river type=<id>` locates it |
-| `fluidPalette` | lava | Fluid filling the pool |
-| `density` | `0.75` | Expected pools per tile where the policy allows them, `0..64` |
-| `spacing` | `384` | Candidate site spacing in blocks, `32..8192`; sites are jittered inside their cell |
-| `minimumRadius` / `maximumRadius` | `4` / `7` | Pool radius range in blocks, `2..16` |
-| `depth` | `2` | Fluid depth at the centre, `1..8` |
-| `biome` | empty | Biome applied to the bowl and its rim; empty keeps the surrounding biome |
+**Banks and shores.** The bank band is reshaped in the tier's `bankStyle`, steeper on steep ground (`deformation.bankSteepFactor`) and roughened by `deformation.bankNoise`. Pond shores have a shallow shelf, a sloped taper outside the water and a floor no deeper than `ponds.shore.maxDepth`. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut.
 
-```json
-{
-  "surfacePools": [
-    {
-      "id": "lava_pool",
-      "fluidPalette": {"palette": [{"block": "minecraft:lava"}]},
-      "density": 0.75,
-      "spacing": 384,
-      "minimumRadius": 4,
-      "maximumRadius": 7,
-      "depth": 2
-    }
-  ]
-}
-```
+**Materials.** `tiers[].materials` and `ponds.materials` paint the bed under the water, the shore strip along the water's edge and on dam rims (to `shoreDepth` layers) and the reshaped banks. A palette left unset keeps the biome's own layers. With `allowGravityBlocks: false`, sand, gravel and other falling blocks in every bed, shore, bank and dam column are replaced by the column's rock.
 
-A pool is shaped like a river reach with no course: the fluid sits `channel.sink` below the lowest ground around the bowl, the rim holds it level with the ground beside it, and the cut blends back out to natural ground the same way a river bank does. A site is skipped where the ground falls away more than `channel.maximumIncision` allows, on or below sea level, where the policy does not list the pool, or within one river width plus the bank blend of an accepted course. The bed padding rule applies to pools as well.
+**Sea inlets.** An inlet forms only on a cliff coast. Its mouth is an open cove cut down to the sea through the cliff, about 16 to 24 blocks long. From there the passage runs covered, inland and under higher ground, narrowing toward a domed chamber at its end. The water is the dimension's sea fluid and stays at sea level the whole way, with `depth` blocks of water below it, `headroom` blocks of air above it and at least `roofClearance` blocks of rock to the surface.
 
-Use the [river locator commands](/iris/36c-river-inspection) to find pools in a world.
+A seal keeps the inlet watertight. Every block within two blocks of the passage below sea level, from two blocks under the bed, becomes rock where it was air, loose or not solid, so beds and walls hold. The sea floor in the open mouth keeps its sand, on two blocks of sealed rock.
 
-## Surface appearance
+Caves stay at least two blocks from the inlet water, though cave air may meet the air above it. Authored subterrain rooms never take an inlet cell, and room fluid within two blocks of the inlet air is sealed as rock. The open mouth is painted and decorated like the sea floor of its biome, and no surface object stands on it.
 
-Use `channel.width` and `channel.depth` to size the channel, `channel.roughness` to vary its outline, and `erosion.bedProfile` to choose the bed shape. `springWidthRatio` and `springLength` control the wider source pool. Mouth width and depth are controlled by `mouths.flareRatio`, `mouths.inletLength`, and `mouths.inletDepth`.
+**Cave pools.** A pool settles into a low point of a carved cave and fills it up to the highest level the surrounding rock holds, at most `maxDepth` deep and inside a square box of `radius` blocks around its site column, with its surface `freeboard` blocks below that level. A dip that would open to the sky, drain into a lower cave, come within three blocks of the surface or spread past `maxArea` columns gets no pool, and a pool needs at least `minArea` columns.
 
-Set `channel.sink` to `0` for water level with its banks. `banks.shoreWidth` and `banks.shoreRise` size the shore bench; `banks.blendSlope`, `banks.blendBaseWidth`, and the blend-width limits control how far the valley extends into surrounding ground. Rivers cut or fill their banks within the configured terrain limits and require contained water.
+The fluid is `cavePools.fluid`, or the `hydrologyPolicy.fluid` set on the cave biome at the site. A pool never mixes fluids: a dip that spans two cave fluids, or touches cave lava, an aquifer or a room's fluid, gets no pool. Pools stay out of sea inlet space. Every solid block touching the pool at or below its level is sealed and shows the column's rock, and deposits, objects and later carving leave the pool and its walls alone.
 
-`flow.cascadeRun` controls the spacing of descending steps. `flow.waterfallMinimumDrop` sets the minimum cliff height for a waterfall. A course that would require a cut deeper than `channel.maximumIncision` is rejected; the inlet uses `mouths.maximumIncision`.
+**Decoration and objects.** Biome decorators skip channel, pond, cascade and waterfall columns; the plants in and beside the water come from the hydrology decorator lists ([water plants](#water-plants)), which run on every water column before the biome's own decorators. Mouth columns and the open mouths of sea inlets are decorated like the sea they join. Shore columns also run the biome's `SHORE_LINE` decorators ([16 - Surfaces](/iris/16-surfaces-decorators-deposits)). Automatically placed surface objects never stand on water, shore, dam or inlet-mouth columns; banks are open to them. Use an explicit placement such as `/iris object paste` to build in the water.
 
-With `banks.exposeCutStrata: true`, eroded banks reveal deeper biome layers. After the deepest authored layer is reached, its material repeats through the remaining layer stack. Below that stack, the dimension's rock and ore settings apply.
+**Caves.** Caves stay at least two solid blocks below river beds and pond floors, under the open mouths of sea inlets, and never open within two blocks of water sideways. Authored subterrain features keep the same distance. Cave decoration under the water continues as normal. See [15 - Caves & Carving](/iris/15-caves-carving#caves-under-water).
 
-## Terrain, oceans, caves, and decoration
+**Shore biomes.** A `hydrologyPolicy` can place biomes along the water's edge once it sets a `shoreBiomeWidth`; see [36b - Hydrology Policy](/iris/36b-river-policy#shore-biomes).
 
-### Surface shaping and banks
+## Engine streams
 
-Surface rivers can cut high terrain and fill low banks to contain their planned water level. Bank fill is limited by both `surface.channel.maximumIncision` and `surface.banks.excavation.maximumDepth`, including local incision-policy limits. A course that cannot be contained within these limits is rejected. Existing natural depressions under the channel can remain deeper than the configured bed profile.
+Expressions can read the water through two engine streams ([14 - Generators & Noise](/iris/14-generators-noise#variable)):
 
-Automatic surface objects cannot overlap river channels or shores, including with `forcePlace`, `underwater`, or `onwater`. Use explicit-Y placement, such as `/iris object paste`, to place an object there.
+| Stream | Value |
+|--------|-------|
+| `WATER_HEAD` | The height of the water surface: the river, stream, pond or inlet-mouth surface where water stands, otherwise the dimension fluid height |
+| `WATER_ROLE` | What hydrology made of the column, as a number |
 
-### Ocean boundary
+`WATER_ROLE` values are stable codes:
 
-Surface rivers end where they reach the ocean without changing ocean terrain or sea level. `maximumOceanApron` controls the connection footprint beyond the shoreline. Set `inletLength` to `0` for an abrupt drop to sea level at the final station. Underground mouths use `underground.mouthLevelingDistance` to reach sea level.
+| Code | Role | Column |
+|-----:|------|--------|
+| `0` | `NONE` | Dry ground that hydrology left alone |
+| `1` | `CHANNEL` | Flowing water of a stream or river |
+| `2` | `BANK` | The reshaped bank band beside a channel, or the sloped ground that tapers down to a pond or lake |
+| `3` | `SHORE` | The strip of ground along a channel's edge |
+| `4` | `POND` | Standing water of a pond or lake |
+| `5` | `POND_SHORE` | The strip of ground along a pond or lake |
+| `6` | `DAM` | The raised rim of a dammed pond |
+| `7` | `MOUTH` | Where a channel meets the sea |
+| `8` | `CASCADE` | A stepped drop in a channel |
+| `9` | `WATERFALL` | A drop of `waterfallMinimumDrop` or more |
+| `10` | `INLET` | The open mouth of a sea inlet, with water at sea level |
 
-Underground rivers and deep-fluid features can generate below sea level when enclosed by terrain.
+The covered passage and chamber of a sea inlet, and cave pools, lie under the surface and have no column role. An engine stream name that Iris does not know fails the pack load, and the error lists the known names.
 
-### Mantle and cave containment
+## Plans and existing worlds
 
-Any active river or deep-fluid configuration requires:
+Hydrology plans are stored per world under `<world>/iris/hydrology/<dimension>/`. They are keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings, and rebuilt when any of those changes, so editing any biome, generator or policy starts a fresh set of plans. The two most recent sets are kept. With `persist: false` the plans stay in memory and are planned again after a restart. Sea inlets are part of the plans; cave pools are not planned ahead, because they follow the carved caves of each chunk.
 
-- `useMantle: true`
-- `carvingEnabled: true`
-- `CARVED` absent from `disabledComponents`
-- `RIVER_HYDROLOGY` absent from `disabledComponents`
+Chunks generated earlier keep their water. Where a chunk generated later meets one generated earlier, water is held back by a one-block earth wall, and the ground blends into the older terrain as in any other pack update ([06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)). Cave pools read chunks generated earlier as off limits, so a pool never reaches into them.
 
-Underground rivers, sinkhole continuations, grottos, and deep-fluid bodies must fit within their containment limits. A feature is rejected if it would spill into an unapproved opening, cross the world boundary, or conflict with another fluid or river. A sinkhole and its receiving pool are accepted or rejected together.
+## Validation
 
-A complete feature may affect at most 262,144 blocks; larger candidates receive `VOLUME_LIMIT`. A grotto must also fit its configured `maximumVolume`.
+Invalid hydrology settings are rejected by `/iris pack validate` and again when a world or Studio starts, where a failure makes the engine refuse to start with the same message.
 
-With `connectToExistingCaves` enabled, a planned dry boundary may open into suitable cave air without exposing the wet volume. Objects and structures cannot replace river fluids or the blocks that contain them. Dry headroom above an underground river uses the `floodedCaveBiomes` content of the course.
+`/iris pack validate` first checks the settings it can read without compiling them, and reports every failure of this kind at once:
 
-### Decorators and freezing
+- a range (`halfWidth`, `freeboard`, `radius`, `depth`, `channelSpacing`, `length`, `headroom`, `chamberRadius`) that is not written as `[min, max]` of two finite numbers with `min` at or below `max`, that holds fractions where whole numbers are required, a `freeboard` or `headroom` below `0`, or another range that starts at `0` or below;
+- a tier `halfWidth` above `64`;
+- a `fluid` on a tier, on `ponds`, on `cavePools` or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `fluids` does not define.
 
-Shore-line and sea-surface decorator passes use the accepted local head for a wet river column and the dimension sea level for an ordinary ocean. A non-water river profile clears waterlogging instead of introducing water into that fluid.
+When those pass, the validator compiles the settings exactly as a starting world does. The compile stops at its first problem and names the field, so one compile error is reported per dimension; fix it and run the validator again. The compile rejects:
 
-Exposed water is published as ordinary water, and the standard freezing pass decides where ice forms after hydrology, so frozen rivers carry no prebuilt surface pattern.
+- `hydrology` with no tier, or two tiers sharing a `minCatchment`;
+- a `bankBand` outside `0..64`;
+- a `minArea` above its `maxArea`, on `ponds.natural`, `lakes` or `cavePools`;
+- a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
+- a fluid profile name that is duplicated, or a profile with an empty palette;
+- `seaInlets.halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, an inlet floor and seal that would lie below the world bottom, or an inlet reach above 512 blocks;
+- `cavePools.radius` outside `1..15` or `maxDepth` below `1` while cave pools are enabled;
+- a `decorators` entry, on a tier, on `ponds` or on a policy, with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block name, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order.
 
-## Adding rivers to a pack
+A starting world runs the same compile, and also checks the `fluid` of every tier, of `ponds` and of `cavePools`. It also resolves every plant block in the tier, pond and policy decorator lists, so an unknown block, a fluid, a `SEA_FLOOR` block that cannot stand in water, or a `SEA_SURFACE` or `SHORE_LINE` block that holds water stops the engine; `/iris pack validate` resolves the same blocks. A `hydrologyPolicy.fluid` that `fluids` does not define is caught at start for biomes while cave pools are enabled; set on the dimension or a region, or on a biome with cave pools off, it fails generation when the first chunk that resolves to it is made. A known field with the wrong type fails the pack load even when `enabled` is `false`. See [36c - Water Inspection](/iris/36c-river-inspection#validation).
 
-1. Enable `hydrology.rivers` on the dimension and set `routing.tileSize`, `sampleSpacing`, and at least one outlet family. Start from the [complete example](#complete-hydrology-example).
-2. Give the dimension a `riverPolicy` with `placement: NATURAL`, `routing: ALLOW`, a profile, and the content pools you want everywhere by default.
-3. In regions and biomes, override only what differs. See [36b - River Policy](/iris/36b-river-policy).
-4. Run `/iris pack validate`, then inspect the rivers in Studio with Vision and the [river locator commands](/iris/36c-river-inspection).
-5. Create a new world, or stage an existing-world pack update and restart. Existing chunks keep their generated terrain.
+## Managed packs
 
-## Managed pack profiles
-
-Both managed packs disable regional rivers and three-dimensional river banks, use matching local geometry and excavation limits, and allow gravity blocks in river beds. River shores get two layers of sand in Overworld and blackstone in Underworld.
+The Overworld and Underworld packs share one hydrology configuration. Underworld names a single `lava` profile and fills every tier, pond and cave pool with it; Overworld defines `water` and `lava` and fills the tiers, ponds and cave pools with water, with lava in the ponds and lakes of the volcanic biomes through their policies. Sea inlets carry each dimension's sea fluid.
 
 | Setting | Managed value |
 |---|---|
-| `tileSize` / `sampleSpacing` | 1024 / 64 |
-| Course minima (surface, underground) | 384 / 384 blocks |
-| Source density (surface, underground) | `1.75` / `1.5`, both minima zero |
-| Source spacing (surface, underground) | 384 / 640 blocks |
-| Outlet budgets | 1 inland, 2 coastal per tile |
-| Meanders | 192/48-block wavelengths, strengths `0.55`/`0.18`, `0.45` offset ratio, 20-degree turn limit |
-| Channel | 4–8 wide, 2–4 deep, 16-block incision cap, `sink` `0` |
-| Banks | 1.5-block shore bench, blend 3 per block of cut within 4–32 blocks, `exposeCutStrata` on |
-| Flow | Rapids past one block in two; waterfall at a six-block cliff |
-| Mouths | 64-block inlet, `2.5` flare, 32-block incision cap, eight-block ocean apron; underground mouths level over 128 blocks |
-| Grottos | Coastal, inland, and surface sinkholes all enabled, 10 blocks of dry headroom |
-| `deep_lava` | density `0.5`, spacing 1024, contained pools, no channels |
-| `deep_lava_small` | density `1.5`, spacing 320, Y `-160..40`, radii 6/4, depth 1, headroom 4, no channels |
+| `drainage.minimumHeadKeep` | `0.6` |
+| `stream` tier | catchment `900`, half-width `[0.5, 2.5]`, width factor `1.2`, inset `1`, bank band `8` |
+| `river` tier | catchment `5000`, half-width `[2.5, 9]`, width factor `1.2`, depth ratio `0.45`, inset `2`, bank band `32` |
+| `major` tier | catchment `200000`, half-width `[9, 18]`, width factor `1.2`, depth ratio `0.5`, inset `3`, waterfall drop `8`, bank band `48`, deltas |
+| `ponds.natural` | min area `128`, min depth `1.5` |
+| `ponds.seeded` | density `10`, radius `[6, 22]`, max slope `0.7`, chain spacing `[80, 192]` |
+| `ponds.freeboard` / `climateDrawdown` | `[1, 2]` / `3` |
+| `underground.seaInlets` | spacing `160`, every other field at its default |
+| `underground.cavePools` | density `0.3`, radius `15`, fluid `water` (Overworld) or `lava` (Underworld), every other field at its default |
+| `lakes`, `deformation`, `prefetchRings`, `persist` | defaults |
 
-Local policies replace those defaults: tropical regions use density `8`, spacing `160`, three tributaries, three inland and four coastal outlets, a 64-block course minimum and a 32-block incision cap; volcanic biomes use density `6`, spacing `128`, two tributaries, three inland and no coastal outlets, a 128-block course minimum and a 24-block incision cap. Mixed tiles scale local budgets by eligible area.
+The dimension policies set rainfall `1.2` and pond density `1.5`, and list the temperate beaches as shore biomes without a `shoreBiomeWidth`, so the shore biome band is off. The per-region and per-biome policies are listed on [36b - Hydrology Policy](/iris/36b-river-policy#managed-pack-policies).
 
-Ambient profiles differ: Overworld policies reference a `water` profile, Underworld policies a `lava` one, and volcanic policies in both packs reference `volcanic_lava`.
+## Complete example
 
-```json
-{
-  "profiles": [
-    {
-      "id": "water",
-      "fluidPalette": {"palette": [{"block": "minecraft:water"}]}
-    }
-  ]
-}
-```
-
-## Complete hydrology example
-
-The managed Overworld shape with every physical section written explicitly:
+The managed Overworld settings, written explicitly:
 
 ```json
 {
   "hydrology": {
-    "rivers": {
-      "enabled": true,
-      "routing": {
-        "tileSize": 1024,
-        "sampleSpacing": 64,
-        "maximumRouteLength": 16384,
-        "minimumSurfaceCourseLength": 384,
-        "minimumUndergroundCourseLength": 384,
-        "maximumOutletsPerTile": 1,
-        "maximumCoastalOutletsPerTile": 2,
-        "oceanOutlets": true,
-        "inlandOutlets": ["SINKHOLE_GROTTO"],
-        "valleyPreference": 1.5,
-        "uphillPenalty": 24,
-        "slopePenalty": 2,
-        "confluenceAttraction": 0.2,
-        "lengthPreference": 1,
-        "tributaries": 1
-      },
-      "geometry": {
-        "meanders": {
-          "primaryWavelength": 192,
-          "detailWavelength": 48,
-          "primaryStrength": 0.55,
-          "detailStrength": 0.18,
-          "maximumOffsetRatio": 0.45,
-          "smoothingPasses": 2,
-          "maximumTurnDegrees": 20
-        },
-        "surface": {
-          "bedRoundness": 2.0,
-          "bedRoughness": 0.25,
-          "wallRoughness": 0.25,
-          "roughnessWavelength": 16
-        },
-        "underground": {
-          "bedRoundness": 3.0,
-          "bedRoughness": 0.36,
-          "wallRoughness": 0.32,
-          "roughnessWavelength": 9,
-          "radialBase": 0.86,
-          "radialMinimum": 0.58,
-          "radialMaximum": 1.18,
-          "primaryLobeStrength": 0.08,
-          "detailLobeStrength": 0.06,
-          "ceilingRoughness": 0.0
-        },
-        "grottos": {
-          "bedRoundness": 3.2,
-          "bedRoughness": 0.38,
-          "wallRoughness": 0.34,
-          "roughnessWavelength": 11,
-          "radialBase": 0.86,
-          "radialMinimum": 0.58,
-          "radialMaximum": 1.18,
-          "primaryLobeStrength": 0.08,
-          "detailLobeStrength": 0.06,
-          "ceilingRoughness": 0.0,
-          "aspectMinimum": 0.62,
-          "aspectRange": 0.2
-        },
-        "drops": {
-          "cascadeRunPerBlock": 2,
-          "cascadeExponent": 1.4,
-          "maximumCascadeStep": 2,
-          "flowWidthRatio": 0.45,
-          "maximumFlowDepth": 2,
-          "basinWidthRatio": 1.8,
-          "maximumBasinDepth": 8,
-          "undergroundCascadeRunPerBlock": 0
-        }
-      },
-      "surface": {
-        "enabled": true,
-        "sources": {
-          "density": 1.75,
-          "minimumElevation": 64,
-          "minimumPerTile": 0,
-          "minimumSpacing": 384
-        },
-        "channel": {
-          "width": {
-            "min": 4,
-            "max": 8,
-            "style": {"style": "IRIS", "zoom": 384}
-          },
-          "depth": {
-            "min": 2,
-            "max": 4,
-            "style": {"style": "IRIS", "zoom": 320, "exponent": 2}
-          },
-          "sink": 0,
-          "maximumIncision": 16,
-          "roughness": 0.25,
-          "roughnessWavelength": 16,
-          "springWidthRatio": 2.5,
-          "springLength": 24,
-          "smoothingRadius": 16,
-          "outlineMinimumRatio": 0.6,
-          "outlineMaximumRatio": 1.4,
-          "springExtraDepth": 1.0
-        },
-        "banks": {
-          "shoreWidth": 1.5,
-          "shoreRise": 0.0,
-          "blendSlope": 3,
-          "blendBaseWidth": 0.0,
-          "minimumBlendWidth": 4,
-          "maximumBlendWidth": 32,
-          "exposeCutStrata": true,
-          "shoreMaterial": {"enabled": true, "palette": {"palette": [{"block": "minecraft:sand"}]}, "depth": 2},
-          "bankMaterial": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1}
-        },
-        "erosion": {
-          "enabled": true,
-          "smoothingRadius": 12,
-          "thalwegFraction": 0.45,
-          "blendCurve": 1.0,
-          "bedNoise": 0.5,
-          "style": "SMOOTH",
-          "terraceSteps": 4,
-          "cliffFraction": 0.5,
-          "bedProfile": "BOWL"
-        },
-        "ponds": {
-          "source": {"enabled": true, "minimumRadius": 6, "maximumRadius": 12, "depth": 3},
-          "terminal": {"enabled": true, "minimumRadius": 4, "maximumRadius": 7, "depth": 3}
-        },
-        "bed": {
-          "allowGravityBlocks": true,
-          "padding": 2,
-          "paddingPalette": {
-            "palette": [{"block": "minecraft:clay"}, {"block": "minecraft:dirt"}]
-          },
-          "material": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1}
-        },
-        "flow": {
-          "cascadeRun": 2,
-          "waterfallMinimumDrop": 6,
-          "waterfallThalwegFraction": 0.65,
-          "plungeBasinMinimumDrop": 2,
-          "plungeBasinLengthRatio": 2.0,
-          "plungeBasinDepth": 1
-        },
-        "mouths": {
-          "flareRatio": 2.5,
-          "maximumOceanApron": 8,
-          "inletLength": 64,
-          "inletDepth": 3,
-          "maximumIncision": 32,
-          "inletCourseFraction": 0.5,
-          "inletRampSlope": 1.0
-        }
-      },
-      "underground": {
-        "enabled": true,
-        "sources": {
-          "density": 1.5,
-          "minimumPerTile": 0,
-          "minimumSpacing": 640
-        },
-        "fluidLevel": {
-          "min": -48,
-          "max": 32,
-          "style": {"style": "IRIS", "zoom": 512}
-        },
-        "channelWidth": {
-          "min": 3,
-          "max": 8,
-          "style": {"style": "IRIS", "zoom": 384}
-        },
-        "depth": {
-          "min": 1,
-          "max": 3,
-          "style": {"style": "IRIS", "zoom": 320}
-        },
-        "headroom": {
-          "min": 6,
-          "max": 14,
-          "style": {"style": "IRIS", "zoom": 384}
-        },
-        "connectToExistingCaves": true,
-        "mouthLevelingDistance": 128,
-        "tributaries": 1,
-        "minimumRockCover": 1,
-        "minimumFloorCover": 1,
-        "wideningSources": 8,
-        "bedMaterial": {"enabled": false, "palette": {"palette": [{"block": "minecraft:stone"}]}, "depth": 1}
-      },
-      "grottos": {
-        "coastal": {
-          "enabled": true,
-          "poolLevel": "SEA_LEVEL",
-          "horizontalRadius": 12,
-          "verticalRadius": 7,
-          "headroom": 10,
-          "maximumVolume": 16384,
-          "cliffMinimumHeight": 7,
-          "cliffSlopeFactor": 0.5,
-          "seaCaves": {
-            "enabled": true,
-            "maximumPerTile": 3,
-            "minimumSpacing": 160,
-            "minimumCoastHeight": 8,
-            "depth": 12,
-            "sweepJitterDegrees": 25.0
-          }
-        },
-        "inland": {
-          "enabled": true,
-          "connectSurfaceRivers": true,
-          "horizontalRadius": 10,
-          "verticalRadius": 6,
-          "headroom": 10,
-          "maximumVolume": 16384
-        }
-      },
-      "profiles": [
-        {
-          "id": "water",
-          "fluidPalette": {
-            "palette": [{"block": "minecraft:water"}]
-          }
-        }
-      ]
+    "enabled": true,
+    "drainage": {
+      "fillEpsilon": 0.001,
+      "breachDepth": 24,
+      "wetnessThinning": true,
+      "minimumHeadKeep": 0.6,
+      "headRelief": 1,
+      "saturationCatchment": 4194304
     },
-    "deepFluids": [
+    "tiers": [
       {
-        "id": "deep_lava",
-        "fluidPalette": {
-          "palette": [{"block": "minecraft:lava"}]
-        },
-        "height": {
-          "min": -192,
-          "max": 32,
-          "style": {"style": "IRIS", "zoom": 1024}
-        },
-        "density": 0.5,
-        "spacing": 1024,
-        "horizontalRadius": 12,
-        "verticalRadius": 5,
-        "channelWidth": 3,
-        "depth": 1,
-        "headroom": 6,
-        "containedPools": true,
-        "shortChannels": false
+        "name": "stream",
+        "minCatchment": 900,
+        "halfWidth": [0.5, 2.5],
+        "widthFactor": 1.2,
+        "depthRatio": 0.4,
+        "inset": 1,
+        "cascades": true,
+        "waterfallMinimumDrop": 6,
+        "bankBand": 8,
+        "bankStyle": "SMOOTH",
+        "deltas": false,
+        "fluid": "water"
+      },
+      {
+        "name": "river",
+        "minCatchment": 5000,
+        "halfWidth": [2.5, 9],
+        "widthFactor": 1.2,
+        "depthRatio": 0.45,
+        "inset": 2,
+        "cascades": true,
+        "waterfallMinimumDrop": 6,
+        "bankBand": 32,
+        "bankStyle": "SMOOTH",
+        "deltas": false,
+        "fluid": "water"
+      },
+      {
+        "name": "major",
+        "minCatchment": 200000,
+        "halfWidth": [9, 18],
+        "widthFactor": 1.2,
+        "depthRatio": 0.5,
+        "inset": 3,
+        "cascades": true,
+        "waterfallMinimumDrop": 8,
+        "bankBand": 48,
+        "bankStyle": "SMOOTH",
+        "deltas": true,
+        "fluid": "water"
       }
-    ]
+    ],
+    "ponds": {
+      "natural": { "enabled": true, "keep": 1.0, "minArea": 128, "maxArea": 65536, "minDepth": 1.5 },
+      "seeded": {
+        "enabled": true,
+        "density": 10.0,
+        "radius": [6, 22],
+        "depth": [3, 8],
+        "maxSlope": 0.7,
+        "alongChannels": true,
+        "channelSpacing": [80, 192]
+      },
+      "dams": { "enabled": false, "maxRaise": 4 },
+      "freeboard": [1, 2],
+      "climateDrawdown": 3,
+      "shore": { "roundness": 0.5, "shelf": 6, "taper": 14, "maxDepth": 8 },
+      "fluid": "water"
+    },
+    "lakes": { "enabled": true, "minArea": 65536, "maxArea": 4194304 },
+    "deformation": {
+      "maxFill": 6,
+      "bankSlope": 0.2,
+      "bankSteepFactor": 3.5,
+      "bankNoise": 0.2,
+      "caveMask": true
+    },
+    "underground": {
+      "seaInlets": {
+        "enabled": true,
+        "spacing": 160,
+        "minimumCliffHeight": 8,
+        "length": [64, 256],
+        "halfWidth": [2.0, 5.0],
+        "depth": [2, 5],
+        "headroom": [4, 10],
+        "roofClearance": 6,
+        "chamberRadius": [6, 12]
+      },
+      "cavePools": {
+        "enabled": true,
+        "density": 0.3,
+        "minArea": 6,
+        "maxArea": 400,
+        "maxDepth": 4,
+        "radius": 15,
+        "freeboard": [0, 1],
+        "fluid": "water"
+      }
+    },
+    "fluids": [
+      { "name": "water", "palette": { "palette": [{ "block": "minecraft:water" }] } },
+      { "name": "lava", "palette": { "palette": [{ "block": "minecraft:lava" }] } }
+    ],
+    "prefetchRings": 1,
+    "persist": true
   },
-  "riverPolicy": {
-    "placement": "NATURAL",
-    "routing": "ALLOW",
-    "outletAdmission": true,
-    "profiles": ["water"],
-    "surfaceBiomes": ["temperate/sea/river"],
-    "mouthBiomes": ["temperate/sea/ocean"],
-    "shoreBiomes": ["temperate/shore/beach"],
-    "bankBiomes": ["temperate/plains"],
-    "floodedCaveBiomes": ["carving/rocky-cavebiome"],
-    "widthMultiplier": 1.0,
-    "depthMultiplier": 1.0,
-    "routingMultiplier": 1.0,
-    "bankMultiplier": 1.0
+  "hydrologyPolicy": {
+    "rainfall": 1.2,
+    "pondDensity": 1.5,
+    "shoreBiomes": ["temperate/shore/beach", "temperate/shore/oak-beach"]
   }
 }
 ```
+
+The policy lists shore biomes but sets no `shoreBiomeWidth`, so the band is off; add `"shoreBiomeWidth": 4` to place the beaches along the water.
 
 Related:
 
@@ -737,3 +538,5 @@ Related:
 - [13 - Biomes](/iris/13-biomes)
 - [15 - Caves & Carving](/iris/15-caves-carving)
 - [25 - Pack Management](/iris/25-pack-management)
+- [36b - Hydrology Policy](/iris/36b-river-policy)
+- [36c - Water Inspection](/iris/36c-river-inspection)

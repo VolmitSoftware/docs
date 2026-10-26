@@ -2,7 +2,7 @@
 title: "Overworld"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-26T02:45:59.200Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -26,13 +26,13 @@ Overworld is the normal-environment half of the paired biome atlas. It supplies 
 
 All 19 subterranean ore passes retain 70% of their configured clump attempts. Across dimension, region, and Rough Plains biome deposits, ore on exterior terrain surfaces may replace only exact `minecraft:stone`; buried and cave-wall ore retains each pass's broader host rules. Individual surface biomes can override the exterior host list. Underworld ore configuration remains independent.
 
-Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Contained hydrology and natural surface fluids remain active, using water in Overworld and lava in Underworld. Deep lava retains its separate controls.
+Both packs disable standalone aquifers in dimension, region, and biome cave profiles. Cave pools on the cave floors, and the rivers, ponds and lakes above the caves, are water in Overworld and lava in Underworld. Deep lava retains its separate controls.
 
 Both packs use `surfaceDetail: 0.5` on nonflat terrain generators to smooth small surface variations.
 
 ## 3D terrain
 
-The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes keep their height-based terrain. Tropical rivers and volcanic lava courses use hydrology, with matching geometry and separate fluid palettes in the paired packs.
+The paired packs configure 197 active biome profiles and 23 explicit protected identities. Mountain and cliff profiles add shelves, undercuts, and fissures. Wetlands, water basins, and loose dunes keep their height-based terrain. Rivers, ponds and lakes come from hydrology, with the same settings in both packs and each dimension's own fluid. Both dimensions use `hydrology.density: 0.5` to retain half the eligible water-feature candidates without changing their configured sizes.
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
 

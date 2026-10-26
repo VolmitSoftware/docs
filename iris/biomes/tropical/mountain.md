@@ -2,7 +2,7 @@
 title: "Biome Atlas — Extreme mountains"
 description: "Iris biome atlas entry for tropical/mountain in Overworld and Underworld"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,7 +43,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 ## Hydrology
 
-Mountain sources retain preferred headwater placement and forbid local outlets. Width, depth, routing cost, source budgets, and standing pools inherit the tropical region’s policy.
+The biome sets no hydrology policy of its own and inherits the tropical region’s `hydrologyPolicy`: rainfall `1.77` and pond density `2.5`. The region also lists the tropical beaches as shore biomes, but no `shoreBiomeWidth` is set, so no shore band is placed. See [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ## Overworld treatment
 

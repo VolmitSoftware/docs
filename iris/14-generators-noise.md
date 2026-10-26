@@ -2,7 +2,7 @@
 title: "Generators, Noise & Expressions"
 description: "Iris documentation: Generators, Noise & Expressions"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -23,6 +23,14 @@ Generators are never embedded in biome JSON. A biome links them:
 ```json
 { "generators": [{ "generator": "plain", "min": 4, "max": 14 }] }
 ```
+
+## Preview a generator in Studio
+
+Open an Iris world from the pack on a graphical server host, then run `/iris studio noise generator=plain seed=1337` on Bukkit or `/iris studio noise plain 1337` on Fabric, Forge or NeoForge. The command opens the desktop Studio window on **Noise**. `/iris studio nmap` is an alias; the view list also opens Noise from the other Studio views.
+
+Choose a pack generator or a built-in style from the source list, enter the seed and click **Apply**. Select a terrain, signed or grayscale palette and switch between **2D** and **3D**. Drag the 2D preview to pan and scroll to zoom. In 3D, drag to orbit, right-drag to pan and press `R` to reset the camera. The height control changes the displayed terrain scale.
+
+The selected source and its seed control this preview. Use **3D world** to inspect the terrain after the pack combines biome height bands and other generation settings. Accepted Studio hotloads refresh the available pack sources and previews. All Noise views use an active Iris world's generation context, including built-in styles.
 
 ## How a noise number becomes a block height
 
@@ -409,13 +417,16 @@ The engine-backed choices are:
 | `engineStreamValue` | Sampled engine field |
 |---|---|
 | `SLOPE` | Terrain slope |
+| `NATURAL_HEIGHT` | Terrain height before hydrology shaped it |
 | `HEIGHT` | Terrain height |
 | `HEIGHT_OR_FLUID` | Greater of terrain and fluid surface |
 | `OVERLAY_NOISE` | Surface-overlay noise |
 | `REGION_STYLE` | Region-selection style value |
 | `REGION_IDENTITY` | Region identity value |
+| `WATER_HEAD` | Water surface height: the river, stream or pond surface where water stands, otherwise the dimension fluid height |
+| `WATER_ROLE` | What hydrology made of the column, as a stable code: `0` dry, `1` channel, `2` bank, `3` shore, `4` pond, `5` pond shore, `6` dam, `7` mouth, `8` cascade, `9` waterfall, `10` sea inlet mouth. See [36 - Hydrology](/iris/36-rivers#engine-streams) |
 
-World and terrain variables require a loaded Iris world; they are unavailable in offline tools.
+An `engineStreamValue` outside this list fails the pack load, and the error names the known streams. World and terrain variables require a loaded Iris world; they are unavailable in offline tools.
 
 ### Function
 

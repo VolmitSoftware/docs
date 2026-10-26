@@ -2,7 +2,7 @@
 title: "Biome Terrain Shaping"
 description: "Shared 3D terrain profiles and protected terrain in the built-in Iris packs"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, terrain, overworld, underworld"
 editor: markdown
 dateCreated: 2026-09-08T07:14:15.291Z
@@ -85,8 +85,8 @@ The following land or floating identities explicitly set `enabled` to false. An 
 ## Paired geometry and materials
 
 Both packs use identical terrain profiles, height generators, biome weights, ordinary children, and floating geometry. Each pack keeps its own surface materials, objects, decoration, ecology, and ore settings.
-Underworld keeps lava river profiles and its own deep-fluid configuration. Its cave profile disables ordinary cave-fluid admission. These are intentional environmental differences.
-Both packs share Estranged rarity and shore selection, river incision, coastal outlets, coastal grottos, sea-cave geometry, and mouth width.
-Hot and Magnetics select the shared lava-pool geometry in both packs. The pools use lava in each pack.
+Underworld fills its rivers, ponds and lakes with lava. Its cave profile disables ordinary cave-fluid admission. These are intentional environmental differences.
+Both packs share Estranged rarity and shore selection, and the same hydrology tiers, pond and lake settings.
+Hot and Magnetics set rainfall `0.9` in both packs, so they carry fewer streams than the wetter regions.
 
 Return to [Biome Catalog](/iris/44-biome-catalog), [Overworld](/iris/biomes/overworld), or [Underworld](/iris/biomes/underworld).

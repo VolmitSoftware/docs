@@ -2,7 +2,7 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-10-15T23:58:26.000Z
+date: 2026-10-26T02:47:43.587Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -43,9 +43,11 @@ The command root also accepts `/iris pregenerate`.
 
 Status reports the world, completed and total chunks, progress, generation rate, elapsed time, estimated time remaining, and pause state. Failed chunks are reported separately when present. Check the final console summary for the completed and failed counts.
 
-The desktop map includes generated and already-present chunks as the job reaches them, including starting-area chunks processed while the window opens. Hover over the map to read chunk coordinates. The sidebar shows the current generation rate, estimated time remaining, longer-term rates, elapsed time, and memory use. Failure details appear at the top of the sidebar and can be selected and copied.
+The desktop monitor uses Studio's map toolbar, theme selector and floating progress sidebar. It includes generated and already-present chunks as the job reaches them, including starting-area chunks processed while the window opens. Hover over the map to read chunk coordinates. The sidebar shows the current generation rate, estimated time remaining, longer-term rates, elapsed time, and memory use. Failure details appear at the top of the sidebar and can be selected and copied.
 
-Slow generation tasks produce a warning and continue waiting for their required terrain data. River planning errors are logged and retried while the job remains active. Chunks wait for complete river plans; exceeding a warning interval does not discard a chunk or omit its rivers, caves, or objects.
+Drag the map or use the arrow keys to pan. Scroll to zoom around the pointer, or use **+** and **−**. **Reset view**, **R**, or **Backslash** fits the generation area beside the sidebar. **G** toggles the chunk and region grid; **/** opens shortcut help and **Escape** dismisses it. Resize the sidebar to make room for the map, and use **Theme** to choose **Match system**, **Light**, or **Dark**. Completed map coverage stays available while navigating and reopening the monitor.
+
+Slow generation tasks produce a warning and continue waiting for their required terrain data. Pregeneration prepares the water plans of the current region and the next one ahead of the chunks it generates. Chunks wait for complete water plans; exceeding a warning interval does not discard a chunk or omit its water, caves, or objects.
 
 A chunk generation error on a Paper-family server halts the server's chunk system, so the job aborts at once, reports the failing chunk, and counts its outstanding requests as failed instead of waiting for them. When the job is stopped or the server shuts down, requests that have not completed within 60 seconds are counted as failed and regenerate on the next run. Fix the reported error, then rerun the job.
 

@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-10-13T15:56:40.754Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -98,8 +98,9 @@ Root: `/iris studio`, aliases `std` and `s`. Keyed arguments. The first column s
 | `pkg [dimension=default] [obfuscate=false] [minify=true]` | `package` | Compiles the pack into a distributable archive |
 | `importvanilla <dimension> [variants=3] [structures=true]` | `importv`, `iv` | Captures vanilla features and structures into the pack |
 | `scoreboard` | `board`, `sidebar`, `sb` | Toggles the studio debug scoreboard. Player must be in the studio world |
-| `noise [generator=<key>] [seed=12345]` | `nmap` | Opens the external noise explorer GUI |
-| `map [world=<world>]` | `render` | Opens the external biome/terrain map GUI for an Iris world |
+| `noise [generator=<key>] [seed=12345]` | `nmap` | Opens the desktop Studio window on Noise; requires an active Iris world |
+| `map [world=<world>]` | `render` | Opens the desktop Studio window on Biomes for an Iris world |
+| `imagemap [world=<world>]` | `imap` | Opens the same window on Image maps; exports to the world's active pack |
 | `regions [radius=500]` | | Samples region rarity over a chunk spiral. Player must be in an Iris world |
 | `loot [fast=false] [add=true]` | | Opens a virtual chest showing loot tables for the block under the player |
 | `spawn` | `summon` | Spawns a pack entity definition at the player |
@@ -112,25 +113,55 @@ The Studio scoreboard shows the region and biome under you, including cave and f
 
 ## Commands (Modded)
 
-`/iris studio` on Fabric, Forge and NeoForge uses positional arguments. Supported: `create`/`+`, `package`/`pkg`, `version`, `regions`, `open`/`o`, `close`/`x`, `tpstudio`/`stp`, `status`, `vscode`/`vsc`, `update`, `noise`/`nmap`, `map`/`render`.
+`/iris studio` on Fabric, Forge and NeoForge uses positional arguments. Supported: `create`/`+`, `package`/`pkg`, `version`, `regions`, `open`/`o`, `close`/`x`, `tpstudio`/`stp`, `status`, `vscode`/`vsc`, `update`, `noise`/`nmap`, `map`/`render`, `imagemap`/`imap`.
 
 `create` with no arguments creates a project named `studio` from the `example` template. `create <name>` uses the same template. `create <name> <template>` picks another. `open <pack> [seed]` defaults the seed to `1337`.
 
 These subcommands are registered on modded but only report why they are unavailable: `importvanilla`/`importv`/`iv`, `loot`, `profile`, `spawn`/`summon`, and `objects`/`find-objects`. They all need Bukkit.
 
-## Desktop map and noise explorers
+## Desktop Studio
 
-The Vision map, Noise Explorer, and Image Map Studio open on the **server's own desktop**. On a headless server their commands report that no display is available and return. They never create a window on a remote player's computer. On macOS, Command-Q or Dock Quit closes every Iris desktop window but does not terminate the server JVM.
+Run `/iris studio map` in an Iris world to open the Studio window on the server's own desktop. Enable `gui.useServerLaunchedGuis` and use a host with a graphical display. `/iris studio noise` opens the same interface on **Noise**; `/iris studio imagemap` opens **Image maps**. The aliases `render`, `nmap`, and `imap` select the same views. An active Iris world supplies the pack and generation context, including when browsing built-in noise styles.
 
-Drag to pan and use the mouse wheel or trackpad to zoom.
+Use the view list to switch between these groups:
 
-**Vision map** (`/iris studio map`) shows a render-mode selector, world coordinates, scale, render progress, and contextual Height and River legends. The `Entities` toggle beside `Grid` shows or hides red living-entity markers; player markers always stay. Clicking teleports the player who opened the map, deriving the landing Y from the authored terrain and fluid field. Manual pan or zoom disables Follow. Hover reads the same biome domain the map draws.
+| Group | Views | Selection keys |
+|-------|-------|----------------|
+| World | Biomes, Regions, Height, Rivers, 3D world | `1` through `5` |
+| Biome layers | Land biomes, Sea biomes, Cave land | `6` through `8` |
+| Blocks | Palettes, Objects, Procedural | `P`, `O`, `T` |
+| Generators | Noise, Image maps | `N`, `I` |
+| Diagnostics | Object Load, Decorator Load, Layer Load | `F6`, `F7`, `F8` |
 
-The **River network** mode labels rivers, pools, cascades, waterfalls, sinkholes, grottos and mouths. Its diagnostic view also shows rejected candidates and their reasons. The **Biome** view includes river biomes. Vision can display named image-map layers.
+Land and Sea biomes show their respective selection fields across the map, including positions where the other terrain type occurs. **Cave land** shows the cave biome beneath each position. The Regions and Biomes inspectors can show the selected regions or biomes, their selection **Noise**, or **Both** together.
 
-**Noise Explorer** (`/iris studio noise`) previews a selected pack generator. Enter a seed and click **Apply**, then choose a signed, terrain or grayscale palette. The status strip shows coordinates, scale, sampled range and render progress.
+### Maps and water
 
-**Image Map Studio** imports PNGs, configures their coordinates and interpretation, and previews height, biome targets or masks. Export saves the image and its pack configuration. See [37 - Image Maps](/iris/37-image-maps).
+Drag to pan and scroll to zoom. **Grid** shows chunk and region borders; **Shading** adds terrain relief; **Borders** outlines regions. **Entities** controls living-entity markers while player markers stay visible. **Follow** centers a player marker and names the followed player in its status message; manual pan or zoom turns it off. Ctrl-click, or choose **Teleport here** from the context menu, to teleport the player who opened the window. Double-click opens the palettes at that position. Alt-click opens the associated biome or region file in the editor.
+
+**Biomes** includes a **Water** overlay, enabled by default; press `W` to toggle it. It draws surface hydrology and recorded cave pools over the base biome colors. The inspector's **Noise** and **Both** displays show their selection values without this overlay.
+
+**Rivers** provides the water legend and draws streams, rivers, falls, ponds, lakes, dams, sea inlets and recorded cave pools at 16 blocks per pixel or closer. Previews refresh as water plans become available. Accepted pack hotloads refresh the map and its 3D terrain preview. See [36c - Water Inspection](/iris/36c-river-inspection).
+
+### 3D and authoring views
+
+In **3D world**, inspect surface terrain colored by biome or region. This view shows the terrain surface without caves or placed objects. Drag to orbit, right-drag or middle-drag to pan, scroll to zoom and press `R` to reset. The same camera controls apply to 3D noise and object previews. A host without usable native graphics bindings uses software rendering.
+
+**Palettes** shows biome layers and their block textures. Small decorations use recognizable previews from the front and above; switching palettes keeps the previous preview visible while the selected layer loads, then crossfades into it. **Objects** browses pack objects in 3D; **Procedural** browses generated trees, formations and other procedural placements. Select a block type to see through it, or use Page Up and Page Down to reveal interior layers. Procedural entries support seed changes, variant selection and **All variants** comparison. See [19 - Objects](/iris/19-objects).
+
+**Noise** browses pack generators and built-in noise styles. Choose a source, enter a seed and click **Apply**, then select a palette and **2D** or **3D**. The status bar reports coordinates, sampled values and render progress. **Image maps** imports PNGs, configures their interpretation, previews their effect and exports them into the active pack. See [14 - Generators, Noise & Expressions](/iris/14-generators-noise) and [37 - Image Maps](/iris/37-image-maps).
+
+### Configuration estimates
+
+The Diagnostics views compare configured content across biomes. Their color intensity is relative to the world's maximum for that measure; they do not measure generation time or server performance.
+
+| View | Estimate |
+|------|----------|
+| Object Load | Sum of each object placement's `density × chance` |
+| Decorator Load | Sum of each decorator's `chance × min(1, stackMax) × 256` |
+| Layer Load | Number of configured biome layers |
+
+The theme control selects **Match system**, **Light** or **Dark** and saves `gui.theme` in `iris.json`. Closing the window stops its previews. Server shutdown closes Iris desktop windows; on macOS, Command-Q or Dock Quit closes those windows while leaving the server running.
 
 > On Paper-family servers, `/tp` into new Studio terrain waits for the destination chunks to load.
 {.is-info}
@@ -244,6 +275,6 @@ The workflow, commands, and marker rules are in [21 - Jigsaw Structures](/iris/2
 
 Pack JSON is shared across platforms. Install any content the pack requires on the destination server.
 
-Edit `hydrology` and `riverPolicy` through the dimension, region and biome schemas. Refresh schemas, validate the pack, then inspect rivers in Vision's **River network** mode. See [36 - Rivers](/iris/36-rivers).
+Edit `hydrology` on the dimension and `hydrologyPolicy` on the dimension, regions and biomes through their schemas. Refresh schemas, validate the pack, then inspect the water in Studio's **Rivers** view. See [36 - Hydrology](/iris/36-rivers).
 
-Related: [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), [36 - Rivers](/iris/36-rivers).
+Related: [04 - Commands & Permissions](/iris/04-commands-permissions), [05 - Concepts & Pack Layout](/iris/05-concepts-pack-layout), [02 - Getting Started](/iris/02-getting-started), [11 - Dimensions](/iris/11-dimensions), [21 - Jigsaw Structures](/iris/21-jigsaw-structures), [25 - Pack Management](/iris/25-pack-management), [30 - Platform Differences](/iris/30-platform-differences), [36 - Hydrology](/iris/36-rivers).

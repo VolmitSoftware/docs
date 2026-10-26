@@ -2,12 +2,12 @@
 title: "Mountain Biomes"
 description: "Navigation for the built-in mountain biomes across Overworld and Underworld"
 published: true
-date: 2026-09-16T03:11:58.172Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, mountain"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
-Mountain, cliff, highland, forest, river, and shore terrain shared across forested, temperate, tundra, Estranged, and Terralost selectors.
+Mountain, cliff, highland, forest, and shore terrain shared across forested, temperate, tundra, Estranged, and Terralost selectors.
 
 This family has **5 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
@@ -24,8 +24,6 @@ This family has **5 child-only reachable variants**. Those variants are document
 | [Mountain](/iris/biomes/mountain/mountain) | `mountain/mountain` | Land | Forests, Tundra |
 | [Pale Oak Highlands](/iris/biomes/mountain/pale-oak-highlands) | `mountain/pale-oak-highlands` | Land | Tundra |
 | [Plains](/iris/biomes/mountain/plains) | `mountain/plains` | Land | Forests, Temperate, Tundra |
-| [Sea / River](/iris/biomes/mountain/sea/river) | `mountain/sea/river` | Sea | Terralost, Tundra |
-| [Sea / River Soft](/iris/biomes/mountain/sea/river-soft) | `mountain/sea/river-soft` | Sea | Estranged, Temperate |
 
 `mountain/shore/beach` is not selected by either pack. Its material treatment remains listed in [Shorelines](/iris/biomes/shorelines).
 

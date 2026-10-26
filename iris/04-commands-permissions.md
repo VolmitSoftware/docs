@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-25T20:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -158,7 +158,7 @@ Use the Bukkit command names shown below.
 | `seed` | | **Modded** | — | Print world and engine seeds |
 | `wand` | | **Modded** root (+ `object`) | — | Give object wand |
 | `dust` | `d` | **Modded** root (+ `object`) | — | Give reveal dust |
-| `find` | `goto` | Both | see Find | Locate biome/region/object/structure/POI or an accepted hydrology feature |
+| `find` | `goto` | Both | see Find | Locate biome/region/object/structure/POI or a river, pond or lake |
 | `what` | | Both | see What | Inspect context |
 | `edit` | | Both | see Edit | Open pack JSON in the desktop editor |
 | `pregen` | `pregenerate` | Both | see Pregen | Pregeneration control |
@@ -203,14 +203,14 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `underground-biome` | **Bukkit:** `<biome> [radius=8192] [teleport=true]` | Find an occupied authored underground feature with this biome |
 | `region` | **Bukkit:** `<region> [teleport=true]`. **Modded:** `<key>` | Find an Iris region |
 | `object` | **Bukkit:** `<object> [teleport=true]`. **Modded:** `<key>` | Find an object placement (Bukkit may teleport to the object studio first) |
-| `river` | **Bukkit:** `type=<type> [teleport=true]`. **Modded:** `<type>` | Find an accepted hydrology feature. Use `surface`, `waterfall`, `sinkhole`, `underground`, `grotto`, `coastal_grotto`, `inland_grotto`, `mouth`, `deep`, `pool`, a deep-fluid ID, or a surface-pool ID |
+| `river` | **Bukkit:** `type=<type> [teleport=true]`. **Modded:** `<type>` | Find water. `type` is `stream`, `river`, `major_river`, `cascade`, `waterfall`, `mouth`, `pond`, `lake`, `dam`, `sea_inlet` or `cave_pool`; `cave_pool` searches generated chunks only. Modded always teleports. See [36c - Water Inspection](/iris/36c-river-inspection) |
 | `structure` | **Bukkit:** `<structure>`, runs sync. **Modded:** `<key>` | Find a vanilla/datapack/Iris structure |
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
 
 `goto biome` and `find biome` resolve cave and authored-room targets at their underground Y coordinate. Cave teleports load the destination and require two clear air blocks above a safe solid floor within the requested biome. Coordinate-only searches with `teleport=false` do not teleport the player.
 
-Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes every dimension, region, and biome `riverPolicy` content pool plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. River-type completion on both platforms combines the selectors in the table with the active dimension's configured deep-fluid and surface-pool IDs; `deep_lava` and `lava_pool` are pack-defined examples, not built-in selectors. Locators merge recorded facts from generated chunks with current-activation predictions in eligible ungenerated terrain. Hydrology search never reports a suppressed transition candidate or an unaccepted route, outlet, or deep-fluid feature. On Bukkit, a hydrology teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
+Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes the `hydrologyPolicy.shoreBiomes` of the dimension, its regions and its biomes while hydrology is enabled, plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. `find river` searches 7,168 blocks around the player, merging the water recorded in generated chunks with the water planned for ungenerated terrain for every type but `cave_pool`, which is found in generated chunks only; an unknown type is rejected with the accepted keys, and a planning failure is reported as an error rather than "not found". On Bukkit, a water teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
 
 ---
 
@@ -299,9 +299,9 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 | `package` | `pkg` | **Modded** | `[pack]` | Zip and package a pack. On Bukkit this node lives under `/iris pack pkg` instead |
 | `version` | | Both | **Bukkit:** `[dimension=default]`. **Modded:** `[pack]` | Pack version |
 | `regions` | | Both | **Bukkit:** `[radius=500]`, player origin. **Modded:** `[radius]`, default 500 | Nearby region distribution |
-| `noise` | `nmap` | Both | **Bukkit:** `[generator] [seed=12345]`. **Modded:** `[generator] [seed]` | Noise explorer GUI |
-| `map` | `render` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Vision map GUI |
-| `imagemap` | `imap` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Image-map studio GUI. Exports are written into that world's active pack |
+| `noise` | `nmap` | Both | **Bukkit:** `[generator] [seed=12345]`. **Modded:** `[generator] [seed]` | Desktop Studio on Noise; requires an active Iris world |
+| `map` | `render` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Desktop Studio on Biomes |
+| `imagemap` | `imap` | Both | **Bukkit:** contextual `world`, required. **Modded:** — | Desktop Studio on Image maps. Exports are written into that world's active pack |
 | `vscode` | `vsc` | Both | **Bukkit:** `[dimension=default]`. **Modded:** `[pack]` | Generate and open the code workspace |
 | `update` | | Both | same pack argument as `vscode` | Regenerate the workspace only |
 | `importvanilla` | `importv`, `iv` | **Bukkit**. Stub on modded | `<dimension> [variants=3] [structures=true]` | Import vanilla trees/objects/structures into a pack |
@@ -309,6 +309,8 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 | `loot` | | **Bukkit**. Stub on modded | `[fast=false] [add=true]` | Simulate chest loot in a GUI |
 | `spawn` | `summon` | **Bukkit**. Stub on modded | `<entity> <location>` (`location` is contextual) | Spawn an Iris entity |
 | `objects` | `find-objects` | **Bukkit**. Stub on modded | — | IGenData chunk report for nearby chunks |
+
+`map`, `noise` and `imagemap` open views in one desktop interface; use its view list to switch between them. These commands require a graphical server host with `gui.useServerLaunchedGuis` enabled.
 
 See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 

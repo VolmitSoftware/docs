@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -177,13 +177,13 @@ The default (`0` to `10`) is treated as "no condition" and skips the check entir
 
 Overlapping surface and cave objects on the main terrain use a repeatable placement order for the same pack and seed, including parallel chunk generation. Empty collision lists permit overlaps without making their result depend on which chunk generates first.
 
-**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the automatic surface-river veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
+**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the automatic water veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
 
 ## 4. Surface support
 
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
 
-Natural scatter also rejects a surface placement whose support columns intersect accepted river water or lava. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` **do not** bypass that river exclusion; only an explicit-Y call such as `/iris object paste` can build in a river.
+Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` **do not** bypass that water exclusion; only an explicit-Y call such as `/iris object paste` can build in the water.
 
 Native structures reserve their piece bounds and the surface cut area of `FLATTEN` terrain adjustments. An object intersecting that reserved area is skipped as a whole, including forced placements. This keeps trees from relying on ground that a village or other native structure removes. Objects beneath the cut area remain eligible.
 
@@ -283,7 +283,7 @@ At fractional sizes, each output block takes the material of the source block wi
 { "underwater": true, "waterloggable": true, "isDolphinTarget": true }
 ```
 
-`underwater: true` places on the terrain floor and ignores the fluid surface. It additionally rejects the placement if the resolved Y is at or above the solved head at that X/Z, so it really is an underwater-only switch. Ordinary columns use the dimension fluid height; an accepted wet hydrology layer uses its exact local head, and a dry footprint exposes no fluid. Structure placements invert this flag: `underwater: true` **allows** submerged starts, and `false` skips underwater columns. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). `onwater: true` places on the fluid surface instead, for boats and docks. `waterloggable: true` waterlogs any placed block that can be waterlogged and lands in actual water. Authored `waterlogged=true` states are cleared in dry space or lava, including ceiling-hung placements. `underwater` implies the same behavior. `isDolphinTarget: true` combined with `underwater` marks placed storage chests as buried-treasure points of interest so dolphins swim players to them.
+`underwater: true` places on the terrain floor and ignores the fluid surface. It additionally rejects the placement if the resolved Y is at or above the solved head at that X/Z, so it really is an underwater-only switch. Ordinary columns use the dimension fluid height; river, pond and lake columns use their own water surface. Structure placements invert this flag: `underwater: true` **allows** submerged starts, and `false` skips underwater columns. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough). `onwater: true` places on the fluid surface instead, for boats and docks, and only where the anchor column holds fluid; a dry anchor column is skipped. `waterloggable: true` waterlogs any placed block that can be waterlogged and lands in actual water. Authored `waterlogged=true` states are cleared in dry space or lava, including ceiling-hung placements. `underwater` implies the same behavior. `isDolphinTarget: true` combined with `underwater` marks placed storage chests as buried-treasure points of interest so dolphins swim players to them.
 
 **Snow.** `snow` caps the snow layer depth dripped over the top of every column the object writes.
 

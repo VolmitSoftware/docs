@@ -2,14 +2,14 @@
 title: "Tundra Biomes"
 description: "Navigation for the built-in tundra biomes across Overworld and Underworld"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, tundra"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
 ---
 Taiga, redwood, alpine, magical forest, mountain, cold-water, and rocky-shore biomes selected by the Tundra and forest selectors.
 
-This family has **11 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
+This family has **10 child-only reachable variants**. Those variants are documented with the parent pages that reach them.
 
 ## Direct roots
 
@@ -26,7 +26,6 @@ This family has **11 child-only reachable variants**. Those variants are documen
 | [Mountains Extended Cliffs](/iris/biomes/tundra/mountains-extended-cliffs) | `tundra/mountains-extended-cliffs` | Land | Tundra |
 | [Redwood Forest](/iris/biomes/tundra/redwood-forest) | `tundra/redwood-forest` | Land | Forests, Tundra |
 | [Sea / Lake](/iris/biomes/tundra/sea/lake) | `tundra/sea/lake` | Sea | Tundra |
-| [Sea / River](/iris/biomes/tundra/sea/river) | `tundra/sea/river` | Sea | Tundra |
 | [Sequia Redwoods](/iris/biomes/tundra/sequia-redwoods) | `tundra/sequia-redwoods` | Land | Tundra |
 | [Shorelines](/iris/biomes/shorelines) | `tundra/shore/beach` | Shore | Terralost, Tundra |
 | [Shorelines](/iris/biomes/shorelines) | `tundra/shore/beach-stone` | Shore | Tundra |
