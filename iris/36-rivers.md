@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-26T02:45:59.200Z
+date: 2026-10-26T19:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -98,6 +98,10 @@ Every other field of the default tiers keeps the value in the table above.
 
 `tiers[].materials` and `ponds.materials` share one shape. A palette left unset keeps the biome's own layers. The bed and bank palettes paint one layer; the shore palette paints `shoreDepth` layers. A palette that is set must list at least one block, written as `{ "palette": [{ "block": "minecraft:sand" }] }`; a palette whose `palette` list is missing, misspelled or empty is rejected.
 
+Submerged hydrology soil uses dirt for grass blocks, mycelium, dirt paths and farmland, including layers below the bed palette. Crimson and warped nylium use netherrack. Dry banks and shores keep their authored soils.
+
+Use a `SIMPLEX` palette style for material patches or `STATIC` for scattered blocks. Set the palette's `zoom` and its `style.zoom` to control patch size. These settings select materials without changing bed heights.
+
 | Field | Default | Purpose |
 |-------|---------|---------|
 | `bed` | unset | Palette painted on the ground under the water |
@@ -134,6 +138,8 @@ Every other field of the default tiers keeps the value in the table above.
 - Dam, mouth and inlet-mouth columns get no water plants; mouths keep the sea biome's decoration.
 - Changing the plant lists does not rebuild the stored hydrology plans.
 
+Set each decorator's `chance` to control its density. Use `stackMin` and `stackMax` for kelp height, with `kelp_plant` in `palette` and `kelp` in `topPalette`. Set the kelp top's `data.age` to `25` to stop further growth. Set `hydrologyPolicy.decorators` to `[]` on a biome, region or dimension to leave its water unplanted.
+
 ```json
 {
   "tiers": [
@@ -162,6 +168,8 @@ Every other field of the default tiers keeps the value in the table above.
 ```
 
 ### `hydrology.ponds`
+
+Connected ponds receive their upstream streams and spill into outlets at the same or a lower elevation. A pond that touches a lower channel settles to that channel's water level, including contact along the sides of a wide river. Its shoreline follows the surrounding terrain at the resulting level, and natural ponds retain only water enclosed by the terrain. Regional lakes retain their own water level.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
@@ -302,17 +310,17 @@ Hydrology works in 512-block planning windows on the natural terrain, before cav
 
 ## What appears in the world
 
-**Channels.** The water surface of a channel sits `inset` blocks below the ground it flows through. Its half-width grows with the square root of the catchment between the tier's `halfWidth` bounds, and its depth is `depthRatio` times the half-width, at least one block. Channels descend in one-block steps. Where a step turns a corner, the corner column becomes a dry rim ledge instead of water, so the flow stays in its bed.
+**Channels.** The water surface of a channel sits approximately `inset` blocks below the ground it flows through. Its half-width grows with the square root of the catchment between the tier's `halfWidth` bounds, and `depthRatio` sets its maximum carved depth relative to the half-width, at least one block. Bed depth and cross-section vary gradually along the channel. Surface levels descend in steps of at least two blocks, with water continuing through bends and outlets. Channel, pond and lake surfaces can sit one block below their planned elevation to align these steps with sea level; mouths meet the sea at its exact level.
 
-**Cascades and waterfalls.** A drop of two or more blocks that is smaller than the tier's `waterfallMinimumDrop` is a cascade of steps when `cascades` is true, and is spread into a gentler slope where the terrain allows when it is false. A drop of `waterfallMinimumDrop` or more is a waterfall. In both cases the upper water pours over a one-block lip: the column above the drop holds water only in its top block, and falling water fills the face from the lower surface up to the upper one. Falling water is written through the mantle, so it needs `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`. Still surface water does not depend on the mantle.
+**Cascades and waterfalls.** A drop of two or more blocks that is smaller than the tier's `waterfallMinimumDrop` is a cascade of steps when `cascades` is true, and is spread into a gentler slope where the terrain allows when it is false. A drop of `waterfallMinimumDrop` or more is a waterfall. Beds rise gradually toward shallow crests around drops and return to their deeper profiles beyond the transition. Water stays at least one block deep over each crest, and falling water fills the face from the lower surface up to the upper one. These shallow transitions also form where ponds meet lower channels. Falling water is written through the mantle, so it needs `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`. Still surface water does not depend on the mantle.
 
 **Mouths and deltas.** A channel that reaches the sea ends in a mouth. A tier with `deltas: true` spreads its channel into a delta there.
 
 **Ponds, chains and lakes.** Each pond has its own level. Chained cups along a stream sit at descending heights, each spilling into the next. Lakes fill the largest hollows at one level. A dammed pond has a raised rim on its downhill side.
 
-**Banks and shores.** The bank band is reshaped in the tier's `bankStyle`, steeper on steep ground (`deformation.bankSteepFactor`) and roughened by `deformation.bankNoise`. Pond shores have a shallow shelf, a sloped taper outside the water and a floor no deeper than `ponds.shore.maxDepth`. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut.
+**Banks and shores.** The bank band is reshaped in the tier's `bankStyle`, steeper on steep ground (`deformation.bankSteepFactor`) and roughened by `deformation.bankNoise`. Smooth, linear and concave banks vary gradually along the water; cliff and terraced styles retain their explicit benches and steps. Pond shores have a shallow shelf, a sloped taper outside the water and an uneven floor carved to at most `ponds.shore.maxDepth`. Shelf width, floor depth and the shore taper vary across each pond, while naturally deeper ground remains. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut.
 
-**Materials.** `tiers[].materials` and `ponds.materials` paint the bed under the water, the shore strip along the water's edge and on dam rims (to `shoreDepth` layers) and the reshaped banks. A palette left unset keeps the biome's own layers. With `allowGravityBlocks: false`, sand, gravel and other falling blocks in every bed, shore, bank and dam column are replaced by the column's rock.
+**Materials.** `tiers[].materials` and `ponds.materials` paint the bed under the water, the shore strip along the water's edge and on dam rims (to `shoreDepth` layers) and the reshaped banks. A palette left unset keeps the biome's layers, with submerged living soils replaced as described under [Materials](#materials). With `allowGravityBlocks: false`, sand, gravel and other falling blocks in every bed, shore, bank and dam column are replaced by the column's rock.
 
 **Sea inlets.** An inlet forms only on a cliff coast. Its mouth is an open cove cut down to the sea through the cliff, about 16 to 24 blocks long. From there the passage runs covered, inland and under higher ground, narrowing toward a domed chamber at its end. The water is the dimension's sea fluid and stays at sea level the whole way, with `depth` blocks of water below it, `headroom` blocks of air above it and at least `roofClearance` blocks of rock to the surface.
 
@@ -405,6 +413,17 @@ The Overworld and Underworld packs share one hydrology configuration. Underworld
 
 The dimension policies set rainfall `1.2` and pond density `1.5`, and list the temperate beaches as shore biomes without a `shoreBiomeWidth`, so the shore biome band is off. The per-region and per-biome policies are listed on [36b - Hydrology Policy](/iris/36b-river-policy#managed-pack-policies).
 
+Overworld beds use gravel, sand, clay and coarse dirt with weights `4`, `3`, `2` and `1`. Underworld beds use blackstone, basalt, netherrack and soul soil with the same weights. Both use `SIMPLEX` material patches with palette `zoom: 1` and `style.zoom: 0.125`. River and pond floors also have small-scale height variation within their depth limits.
+
+Overworld water grows seagrass, tall seagrass and short kelp. These are configurable `SEA_FLOOR` decorators on each tier and on `ponds`. Plants need enough depth and water sources, so the chances below do not guarantee the same share of planted columns. Underworld has no aquatic decorators.
+
+| Water feature | Seagrass chance | Tall seagrass chance | Kelp chance | Kelp stack range |
+|---|---|---|---|---|
+| Stream | `0.18` | `0.035` | `0.02` | `2..3` |
+| River | `0.22` | `0.05` | `0.035` | `2..4` |
+| Major river | `0.22` | `0.06` | `0.045` | `2..5` |
+| Pond or lake | `0.25` | `0.07` | `0.04` | `2..5` |
+
 ## Complete example
 
 The managed Overworld settings, written explicitly:
@@ -413,6 +432,7 @@ The managed Overworld settings, written explicitly:
 {
   "hydrology": {
     "enabled": true,
+    "density": 0.5,
     "drainage": {
       "fillEpsilon": 0.001,
       "breachDepth": 24,
@@ -434,7 +454,13 @@ The managed Overworld settings, written explicitly:
         "bankBand": 8,
         "bankStyle": "SMOOTH",
         "deltas": false,
-        "fluid": "water"
+        "fluid": "water",
+        "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
+        "decorators": [
+          {"partOf": "SEA_FLOOR", "chance": 0.18, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:seagrass"}]},
+          {"partOf": "SEA_FLOOR", "chance": 0.035, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:tall_seagrass", "data": {"half": "lower"}}], "topPalette": [{"block": "minecraft:tall_seagrass", "data": {"half": "upper"}}]},
+          {"partOf": "SEA_FLOOR", "chance": 0.02, "style": {"style": "STATIC"}, "stackMin": 2, "stackMax": 3, "heightVariance": {"style": "STATIC"}, "palette": [{"block": "minecraft:kelp_plant"}], "topPalette": [{"block": "minecraft:kelp", "data": {"age": "25"}}]}
+        ]
       },
       {
         "name": "river",
@@ -448,7 +474,13 @@ The managed Overworld settings, written explicitly:
         "bankBand": 32,
         "bankStyle": "SMOOTH",
         "deltas": false,
-        "fluid": "water"
+        "fluid": "water",
+        "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
+        "decorators": [
+          {"partOf": "SEA_FLOOR", "chance": 0.22, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:seagrass"}]},
+          {"partOf": "SEA_FLOOR", "chance": 0.05, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:tall_seagrass", "data": {"half": "lower"}}], "topPalette": [{"block": "minecraft:tall_seagrass", "data": {"half": "upper"}}]},
+          {"partOf": "SEA_FLOOR", "chance": 0.035, "style": {"style": "STATIC"}, "stackMin": 2, "stackMax": 4, "heightVariance": {"style": "STATIC"}, "palette": [{"block": "minecraft:kelp_plant"}], "topPalette": [{"block": "minecraft:kelp", "data": {"age": "25"}}]}
+        ]
       },
       {
         "name": "major",
@@ -462,7 +494,13 @@ The managed Overworld settings, written explicitly:
         "bankBand": 48,
         "bankStyle": "SMOOTH",
         "deltas": true,
-        "fluid": "water"
+        "fluid": "water",
+        "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
+        "decorators": [
+          {"partOf": "SEA_FLOOR", "chance": 0.22, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:seagrass"}]},
+          {"partOf": "SEA_FLOOR", "chance": 0.06, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:tall_seagrass", "data": {"half": "lower"}}], "topPalette": [{"block": "minecraft:tall_seagrass", "data": {"half": "upper"}}]},
+          {"partOf": "SEA_FLOOR", "chance": 0.045, "style": {"style": "STATIC"}, "stackMin": 2, "stackMax": 5, "heightVariance": {"style": "STATIC"}, "palette": [{"block": "minecraft:kelp_plant"}], "topPalette": [{"block": "minecraft:kelp", "data": {"age": "25"}}]}
+        ]
       }
     ],
     "ponds": {
@@ -480,7 +518,13 @@ The managed Overworld settings, written explicitly:
       "freeboard": [1, 2],
       "climateDrawdown": 3,
       "shore": { "roundness": 0.5, "shelf": 6, "taper": 14, "maxDepth": 8 },
-      "fluid": "water"
+      "fluid": "water",
+      "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
+      "decorators": [
+        {"partOf": "SEA_FLOOR", "chance": 0.25, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:seagrass"}]},
+        {"partOf": "SEA_FLOOR", "chance": 0.07, "style": {"style": "STATIC"}, "palette": [{"block": "minecraft:tall_seagrass", "data": {"half": "lower"}}], "topPalette": [{"block": "minecraft:tall_seagrass", "data": {"half": "upper"}}]},
+        {"partOf": "SEA_FLOOR", "chance": 0.04, "style": {"style": "STATIC"}, "stackMin": 2, "stackMax": 5, "heightVariance": {"style": "STATIC"}, "palette": [{"block": "minecraft:kelp_plant"}], "topPalette": [{"block": "minecraft:kelp", "data": {"age": "25"}}]}
+      ]
     },
     "lakes": { "enabled": true, "minArea": 65536, "maxArea": 4194304 },
     "deformation": {
