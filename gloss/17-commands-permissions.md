@@ -2,13 +2,15 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
 Gloss uses `/gloss`, with `/hologram` and `/board` as shortcuts. Optional arguments use `name=value`. Put multi-word values in brackets: `text=[Hello world]`.
+
+Commands that take `page=` show one page sized to fit the 20 chat lines visible with chat open at default settings. A page counts the lines the command prints around its entries, such as the title and page bar, and every line an entry wraps to at the default chat width. Pages hold fewer entries when entries wrap, and requested pages clamp to the first and last page.
 
 ## Language selection
 

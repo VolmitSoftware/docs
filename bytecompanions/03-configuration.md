@@ -2,7 +2,7 @@
 title: "ByteCompanions: Configuration"
 description: "Every config.toml setting with its default, the in-game editor controls, and hot reload"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, configuration"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -18,7 +18,7 @@ Keys are written as `section.key`. A TOML table `[general]` with `enabled = true
 |---|---|---|
 | `general.enabled` | `true` | Master switch for companion visuals and gameplay bonuses. When false every world behaves like a hidden and bonus-disabled world; saved selections, progression, and particles return when it is turned back on. |
 | `general.language` | `"en_US"` | Server default locale stored as the directly editable `languages/<locale>.toml` file. See [Languages](/bytecompanions/04-languages). |
-| `general.updateNotifications` | `true` | Notify operators and players with `bytecompanions.update` about newer GitHub releases on join. Checks run once per hour; nothing is downloaded. |
+| `general.updateNotifications` | `true` | Notify operators and players with `bytecompanions.update` about newer GitHub releases on join. Checks run once at startup; nothing is downloaded. |
 | `general.autoLoadCompanions` | `true` | Load the companion definitions from the `companions` folder when the runtime starts. When false nobody can equip a companion. |
 | `general.companionLimits.maxTotalPerPlayer` | `2` | Maximum companions one player may equip at once; `-1` removes the limit. Lowering it keeps companions already equipped. |
 | `general.companionLimits.perModel.fullBody` | `1` | Maximum full-body companions one player may equip at once; `-1` removes the limit. |

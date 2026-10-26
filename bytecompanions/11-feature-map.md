@@ -2,7 +2,7 @@
 title: "ByteCompanions: Feature map"
 description: "Implemented, partial, and planned work, each with its acceptance criterion"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, features, roadmap"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -14,7 +14,7 @@ This page records the state of each feature area in three groups. Each entry nam
 
 | Area | Acceptance criterion |
 |---|---|
-| Runtime gate | The constructor rejects any server outside Minecraft 26.1 through 26.3 or Java 25 before downloading libraries, naming the found version. |
+| Runtime gate | The constructor rejects any server outside Minecraft 26.1 through 26.3 or on Java older than 25 before downloading libraries, naming the found version. |
 | Native adapters | 26.1 and 26.2 share one Paper and one Spigot adapter; 26.3 has its own pair; the selected family appears in `status`. |
 | Companion runtime | Client-side head and full-body companions with equipment, overlays, animations, viewer tracking, and companion limits on all six server families. |
 | Collection and dashboard | 54-slot collection with favorite, access, and category filters; dashboards with equip, particles, bonuses, personalization, actions, trials, and viewer settings. |

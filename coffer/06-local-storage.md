@@ -2,7 +2,7 @@
 title: Coffer local storage
 description: Local vault records, write outcomes, retained generations, and recovery limits
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: coffer, storage, development
 editor: markdown
 dateCreated: 2026-10-17T18:36:21.000Z
@@ -40,9 +40,9 @@ Records use an independent versioned binary format with a SHA-256 checksum. Deco
 | `transferred/<vault UUID>.fence` | Permanent prohibition on vault-only history rollback after transfer preparation |
 | `resolution/<transaction UUID>.resolution` | Immutable reviewed recovery decision and original evidence retained for audit |
 
-The repository indexes canonical UUID paths. Owner queries use an in-memory metadata index rebuilt during startup; item payloads are not retained in that index. Loads and mutation checks refresh the observed state, including rejected mutations, so discovered corruption or deletion removes a vault from the live owner listing and updates statistics. Unknown files are ignored. Storage expects real directories and regular record files, and rejects symbolic record files. The directory is private application data, not a supported live-edit interface or a multi-server store.
+The repository indexes canonical UUID paths. Owner queries and the per-player list of vaults shared with that player use in-memory metadata indexes rebuilt during startup; item payloads are not retained in them. Owner summaries include each vault's share grants. Loads and mutation checks refresh the observed state, including rejected mutations, so discovered corruption or deletion removes a vault from the live owner listing and updates statistics. Unknown files are ignored. During startup, while holding the storage lock, Coffer deletes interrupted staging files named `.coffer-<digits>.tmp` from its own record, deletion, quarantine, transfer, receipt, fence, resolution, and per-vault history directories, and logs how many it removed. No other files are removed. Storage expects real directories and regular record files, and rejects symbolic record files. The directory is private application data, not a supported live-edit interface or a multi-server store.
 
-Only one process may open the storage root. A lock failure prevents storage initialization and schedules plugin disable. Initialization errors emit full stacktraces. The local debug report includes storage lifecycle state and queued operation count. `/coffer reload` continues to reload configuration/languages; it does not reopen storage or rewrite existing vault types.
+Only one process may open the storage root. A lock failure prevents storage initialization and schedules plugin disable. Initialization errors emit full stacktraces. `/coffer status` and the `/coffer debug dump` report include storage lifecycle state and queued operation count. Configuration and language reloads do not reopen storage or rewrite existing vault types.
 
 ## Writes and deletion
 
@@ -63,7 +63,7 @@ Removing storage files externally is unsupported. In particular, deleting a live
 | `CONFLICT` | The identity already exists, the expected revision is stale, or a recovery fingerprint no longer matches. |
 | `ABSENT`, `DELETED`, `CORRUPT`, `UNSUPPORTED` | The current record cannot undergo the requested mutation. No replacement was accepted. |
 
-Directory forcing is capability-dependent, including on Windows filesystems. When unavailable, Coffer logs the limitation at startup and published writes return `DURABILITY_UNCERTAIN`. File data is still forced and publication still requires atomic replacement. Statistics expose `directorySyncSupported`; callers must distinguish confirmed publication from guarantees about a host power failure.
+Directory forcing is capability-dependent, including on Windows filesystems. When unavailable, Coffer logs the limitation at startup with the underlying exception and published writes return `DURABILITY_UNCERTAIN`. File data is still forced and publication still requires atomic replacement. Statistics expose `directorySyncSupported`; callers must distinguish confirmed publication from guarantees about a host power failure.
 
 I/O errors complete the operation exceptionally and include context in the console. An atomic-move error may leave an ambiguous outcome; load the current state before deciding what to do next. Hardware, filesystem, and operating-system behavior still bound durability. This repository does not claim an atomic transaction spanning a player's server inventory and a vault file.
 
@@ -81,9 +81,9 @@ Retained generations aid recovery but are not independent off-machine backups. T
 
 ## Asynchronous access and shutdown
 
-`CofferPlugin.storage()` exposes `VaultStorage` for internal integration. It supplies readiness/shutdown stages and asynchronous create, load, save, delete, owner listing, history listing, recovery, and statistics operations. Transfer operations prepare, commit, finish, inspect pending journals, and read per-player recovery/receipt state. `StorageUnavailableException` distinguishes a full queue, closure, and failed storage. Accepted operations execute in order on one worker; there is no join-time background cache capable of publishing an older item snapshot over a newer write.
+`CofferPlugin.storage()` exposes `VaultStorage` for internal integration. It supplies readiness/shutdown stages and asynchronous create, load, save, delete, owner listing, history listing, recovery, and statistics operations. Transfer operations prepare, commit, finish, inspect pending journals, and read per-player recovery/receipt state. `StorageUnavailableException` distinguishes a full queue, closure, and failed storage. The queue holds up to 256 accepted operations. Accepted operations execute in order on one worker; there is no join-time background cache capable of publishing an older item snapshot over a newer write.
 
-`CofferPlugin.vaultPlayers()` exposes owner-scoped create, list, and open operations. Creation uses `createOwned(snapshot, maximumVaults)` to check the owner count and publish in a single repository operation. Reaching the configured limit returns a typed refusal without creating a record. The player service sorts owner listings by creation time then UUID and resolves a positive list number or full UUID without exposing another owner's record. Integrations using unrestricted repository creation remain responsible for their own quota policy.
+`CofferPlugin.vaultPlayers()` exposes owner-scoped create, list, and open operations. Creation uses `createOwned(snapshot, maximumVaults)` to check the owner count and publish in a single repository operation. The count includes corrupt or unsupported vaults whose owner is known from an earlier observation, a pending transfer journal, or the newest readable retained generation, so damaged vaults still occupy a slot even though `/coffer list` omits them. A damaged vault with no readable history has no known owner and does not count; deleted vaults release their slot. Reaching the configured limit returns a typed refusal without creating a record. The player service sorts owner listings by creation time then UUID and resolves a positive list number or full UUID without exposing another owner's record. Integrations using unrestricted repository creation remain responsible for their own quota policy.
 
 The repository is a trusted persistence boundary, not player authorization. The Bukkit session API validates permissions, preserves immutable vault identity, captures item bytes on the owning player context, and marshals opening completion through the player's entity scheduler. Direct repository integrations must enforce the same requirements. Completion callbacks may execute on the storage worker: they must remain short and must not block waiting for another queued storage operation. Cancelling a derived future does not cancel an accepted write.
 

@@ -2,7 +2,7 @@
 title: "ByteCompanions: Diagnostics"
 description: "The status entries, debug dump, report upload, bStats, update notices, and common failures"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, diagnostics"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -49,7 +49,7 @@ Credentials, JDBC URLs, player names, and configuration contents are not include
 
 ## Update notices
 
-`general.updateNotifications` (default `true`) checks the GitHub releases of `VolmitSoftware/ByteCompanions` once per hour. Operators and players with `bytecompanions.update` get one chat line on join when a newer release exists. Nothing is downloaded or installed. Until the first release is published the check reports `Version unknown`.
+`general.updateNotifications` (default `true`) checks the GitHub releases of `VolmitSoftware/ByteCompanions` once when the plugin starts. Operators and players with `bytecompanions.update` get one chat line on join when a newer release exists. Nothing is downloaded or installed. Until the first release is published the check reports `Version unknown`.
 
 `/volmit plugins [languages|debug|updates]` is shared by every Volmit plugin: it lists them, changes their server language together, writes one combined debug report, and shows the update report for all of them.
 
@@ -57,7 +57,7 @@ Credentials, JDBC URLs, player names, and configuration contents are not include
 
 | Console line | Cause and fix |
 |---|---|
-| `ByteCompanions requires Minecraft 26.1-26.3 (including patch releases) on Java 25; found Minecraft <version> on Java <major>.` | Unsupported server or Java version. Run a 26.1 through 26.3 server on Java 25. |
+| `ByteCompanions requires Minecraft 26.1-26.3 (including patch releases) on Java 25 or newer; found Minecraft <version> on Java <major>.` | Unsupported server or Java version. Run a 26.1 through 26.3 server on Java 25 or newer. |
 | A library download error on first start, naming the library and the network error | The server could not reach the download repository. Check connectivity or a proxy, then restart; the plugin resumes from the cache in `.libs/`. |
 | `storage.mysql.username must not be blank when backend is mysql` | `storage.backend` is `mysql` without credentials. Fill in `storage.mysql.host`, `database`, `username`, and `password`. |
 | `Rejected ByteCompanions file changes; the last known good settings remain active.` | A saved file failed validation. The lines above it name the file and the key; fix the file and save again. |

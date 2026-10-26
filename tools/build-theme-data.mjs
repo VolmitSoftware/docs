@@ -17,6 +17,7 @@ const projectMeta = new Map([
   ["react", { color: "#38bdf8", featured: true }],
   ["foundation", { color: "#a8a29e" }],
   ["hiddenore", { color: "#e7c15a" }],
+  ["impulse", { color: "#e69a68" }],
   ["rift", { color: "#e4e4e7" }],
   ["shapedportals", { color: "#e879f9" }],
   ["skyprime", { color: "#7dd3fc" }],

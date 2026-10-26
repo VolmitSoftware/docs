@@ -2,7 +2,7 @@
 title: "Hunks and coordinate math"
 description: "Shared three-dimensional storage, views, parallel computation, and integer coordinates."
 published: true
-date: 2026-10-20T18:42:05.167Z
+date: 2026-10-22T05:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-09-11T20:00:00.000Z
@@ -25,6 +25,8 @@ Mapped hunks retain full-coordinate traversal through `iterateSync(...)` and `it
 `util.mantle.Mantle` stores typed values in region files through a section adapter and region IO implementation. A missing region is created on demand. An unreadable existing region fails the access and keeps its stored bytes; callers must handle that unavailable state without substituting empty data. Repeated reads of an unavailable region retry at most once every five seconds, and healthy regions remain accessible.
 
 `util.mantle.io.IOWorkerRuntimeSupport.writeAtomically(name, tempPrefix, tempSuffix, value, writer)` writes and forces a complete temporary file, atomically replaces the named file, and closes cached readers of its previous contents. The filesystem must support atomic replacement. A failed encoding or replacement raises the IO failure and leaves the prior file intact. Keep region IO off gameplay tick paths.
+
+On Windows, replacement makes up to 50 attempts after access-denied failures, with 10-millisecond waits between attempts to allow brief reader locks to clear. Persistent denial or interruption raises an IO failure without falling back to a non-atomic write. The temporary file is forced before replacement on every platform; Windows omits the directory flush because Java cannot open a directory channel there.
 
 ## Parallel computation
 

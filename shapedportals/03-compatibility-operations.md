@@ -2,7 +2,7 @@
 title: "Shaped Portals: Compatibility and operations"
 description: "Server requirements, Folia limits, React integration, and server checks"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "shapedportals, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -52,9 +52,9 @@ Protection plugins can cancel creation through `PortalCreateEvent`, `BlockPlaceE
 
 ## Update notifications
 
-`general.updateNotifications` defaults to `true`. Shaped Portals checks [its GitHub releases](https://github.com/VolmitSoftware/ShapedPortals/releases) at startup and roughly hourly. When a newer release exists, operators and players with `shapedportals.update` receive a notice shortly after joining that shows the installed and newer versions with a clickable release link. The notice text is the `runtime.update.available` entry in the language files.
+`general.updateNotifications` defaults to `true`. Shaped Portals checks [its GitHub releases](https://github.com/VolmitSoftware/ShapedPortals/releases) once at startup; `/volmit plugins updates` checks again. When a newer release exists, operators and players with `shapedportals.update` receive a notice shortly after joining that shows the installed and newer versions with a clickable release link. The notice text is the `runtime.update.available` entry in the language files.
 
-Checks read release metadata from `api.github.com`; installing an update remains manual. Failed checks retry later and keep the last known release.
+Checks read the latest release page on `github.com`; installing an update remains manual. A failed check keeps the last known release and is not retried until the next startup or `/volmit plugins updates`.
 
 Only stable GitHub releases qualify. The check compares the numeric plugin version, ignoring a recognized Minecraft compatibility suffix. A stable release also supersedes an installed prerelease with the same numeric core, such as `2.0.0-rc.1`. Versions with unrecognized suffixes never produce a notice.
 

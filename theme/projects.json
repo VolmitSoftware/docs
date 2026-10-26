@@ -905,6 +905,92 @@
     ]
   },
   {
+    "name": "ByteCompanions",
+    "path": "bytecompanions",
+    "href": "/bytecompanions",
+    "description": "Animated companions, outfits, and particles",
+    "icon": "/home-assets/bytecompanions.png",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Start here",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/bytecompanions/00-overview"
+              },
+              {
+                "title": "Installation",
+                "href": "/bytecompanions/01-installation"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/bytecompanions/02-commands-permissions"
+              },
+              {
+                "title": "Configuration",
+                "href": "/bytecompanions/03-configuration"
+              },
+              {
+                "title": "Languages",
+                "href": "/bytecompanions/04-languages"
+              },
+              {
+                "title": "Shared language controls",
+                "href": "/languages"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Reference",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Companions and collections",
+                "href": "/bytecompanions/05-companions-and-collections"
+              },
+              {
+                "title": "Companion Studio",
+                "href": "/bytecompanions/06-companion-studio"
+              },
+              {
+                "title": "Progression and boosters",
+                "href": "/bytecompanions/07-progression-and-boosters"
+              },
+              {
+                "title": "Particles and features",
+                "href": "/bytecompanions/08-particles-and-features"
+              },
+              {
+                "title": "Integrations",
+                "href": "/bytecompanions/09-integrations"
+              },
+              {
+                "title": "Diagnostics",
+                "href": "/bytecompanions/10-diagnostics"
+              },
+              {
+                "title": "Feature map",
+                "href": "/bytecompanions/11-feature-map"
+              },
+              {
+                "title": "API getting started",
+                "href": "/bytecompanions/90-api-getting-started"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "HiddenOre",
     "path": "hiddenore",
     "href": "/hiddenore",
@@ -1277,6 +1363,133 @@
               {
                 "title": "Languages",
                 "href": "/languages"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Titles",
+    "path": "titles",
+    "href": "/titles",
+    "description": "Cosmetic titles, collections, and timed grants",
+    "mark": "TI",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Operator reference",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Installation and configuration",
+                "href": "/titles/01-installation-configuration"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/titles/02-commands-permissions"
+              },
+              {
+                "title": "Languages and catalog translations",
+                "href": "/titles/03-languages"
+              },
+              {
+                "title": "Compatibility and integrations",
+                "href": "/titles/04-compatibility-integrations"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Developer reference",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Public API and operation history",
+                "href": "/titles/05-public-api"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Impulse",
+    "path": "impulse",
+    "href": "/impulse",
+    "description": "Dispenser machines for farming, collection, and construction",
+    "mark": "I",
+    "color": "#e69a68",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Start here",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/impulse/00-overview"
+              },
+              {
+                "title": "Installation",
+                "href": "/impulse/01-installation"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/impulse/02-commands-permissions"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Configuration and use",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Configuration",
+                "href": "/impulse/03-configuration"
+              },
+              {
+                "title": "Languages",
+                "href": "/impulse/04-languages"
+              },
+              {
+                "title": "Machines",
+                "href": "/impulse/05-machines"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Reference",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Integrations",
+                "href": "/impulse/06-integrations"
+              },
+              {
+                "title": "Diagnostics",
+                "href": "/impulse/07-diagnostics"
+              },
+              {
+                "title": "Feature reference",
+                "href": "/impulse/08-feature-map"
               }
             ]
           }

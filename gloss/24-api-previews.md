@@ -1,8 +1,8 @@
 ---
 title: "API: Previews"
-description: "Add custom variables and access checks to container previews"
+description: "Container preview variables, access checks, and temporary item displays"
 published: true
-date: 2026-10-03T14:34:30.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -61,3 +61,22 @@ public void onPreview(GlossContainerPreviewAccessEvent event) {
 The event runs on the target's owning thread immediately before Gloss builds the preview.
 
 See [Container Previews](/gloss/15-container-previews) and [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+
+## Temporary item displays
+
+Use `GlossAPI.get().createTemporaryItem(owner, viewer, spec)` to show a cosmetic item to one player. The display uses packets; it does not create a collectible world entity or change an inventory.
+
+```java
+TemporaryItemSpec spec = new TemporaryItemSpec(location, item, 5000L, 16.0, 0.7F);
+TemporaryItem display = GlossAPI.get().createTemporaryItem(plugin, player, spec);
+```
+
+Read player inventory state and construct the preview on the player's owning scheduler. `TemporaryItemSpec` copies the item and location and normalizes the displayed stack to one item. Its location must have a world and finite coordinates; the item must not be air.
+
+| Parameter | Allowed values |
+|---|---|
+| `durationMs` | 100–30000 milliseconds |
+| `range` | 1–64 blocks |
+| `scale` | 0.1–2.0 |
+
+Call `display.destroy()` to remove the display early; `display.isClosed()` reports whether it has closed. Displays also close when they expire, the viewer disconnects, dies, changes world, or leaves range, the owning plugin disables, or Gloss stops. Creation requires an enabled owning plugin and available display capacity. Gloss accepts at most 256 active temporary item displays and applies its hologram visibility budget.

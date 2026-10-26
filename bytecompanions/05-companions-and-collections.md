@@ -2,7 +2,7 @@
 title: "ByteCompanions: Companions and collections"
 description: "The dashboard, collection, outfits, personalization, interactions, trials, viewer settings, and starter setup"
 published: true
-date: 2026-10-15T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, companions, collections"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -25,6 +25,25 @@ template = "mushroom"
 ```
 
 A player needs `bytecompanions.companion.<id>` to equip a companion. `general.companionLimits` caps how many companions, full-body models, and head-only models one player can equip at once. An `exclusive = true` companion cannot share the player with another companion.
+
+### Overlays
+
+An armor stand holds one item per slot. Overlays add more: each `overlays.<id>` table is an extra invisible stand that moves, turns, and poses with the companion and wears its own equipment, so one slot can show several items, such as a helmet over a player head.
+
+| Key | Default | Effect |
+|---|---|---|
+| `overlays.<id>.equipment.<SLOT>` | none | An item for that slot on the overlay. Slot names and item keys are the same as the companion's own `equipment` tables. |
+| `overlays.<id>.lock-head-yaw` | `false` | `true` holds the overlay's head straight ahead with no pitch or yaw, while the companion's head keeps turning. Body rotation and arm and leg poses always follow the companion. |
+
+An overlay never shows its own body, arms, base plate, or name; only its equipment is visible. It is small when the companion's `appearance.small` is `true` and uses the companion's `appearance.scale`. Companion Studio has no overlay fields, and saving a companion from Studio keeps its `overlays` tables.
+
+```toml
+[equipment.HEAD]
+material = "PLAYER_HEAD"
+
+[overlays.crown.equipment.HEAD]
+material = "GOLDEN_HELMET"
+```
 
 ## Dashboard and collection
 

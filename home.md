@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-22T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -194,7 +194,20 @@ Pick a project to open its documentation.
       </li>
     </ul>
   </div>
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/titles" class="d-flex align-center">
+          <span class="project-mark mr-4" aria-hidden="true">TI</span>
+          <span><strong class="title">Titles</strong><span class="d-block text--secondary">Cosmetic titles, collections, and timed grants</span></span>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
+
+- [Impulse *Dispenser machines for farming, collection, and construction*](/impulse)
+{.links-list}
 
 ## Shared across every plugin
 

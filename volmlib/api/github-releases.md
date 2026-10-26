@@ -2,7 +2,7 @@
 title: "Update notifications"
 description: "Shared GitHub release checks, join notices, /volmit plugins updates, per-plugin settings, and the release-check API"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "volmlib, api, github, updates"
 editor: markdown
 dateCreated: 2026-09-11T01:22:00.000Z
@@ -40,9 +40,15 @@ Operators always have access. A player receives join notices and report entries 
 
 ## Release checks
 
-When a plugin enables with its setting on, it requests the latest release of its repository from GitHub, then checks again about every hour. Drafts and prereleases are ignored.
+When a plugin enables with its setting on, it checks the latest release of its repository on GitHub once. It does not check again while the server runs; `/volmit plugins updates` starts a new check. Drafts and prereleases are ignored.
 
-After a failed check, the plugin retries after one minute and doubles the delay after each further failure, up to one hour. When GitHub answers with a rate limit or access restriction (HTTP 403 or 429), the next request waits at least until GitHub's reset time, up to seven days. The console prints one warning naming the repository and the retry delay; repeated failures stay quiet until a check succeeds. Available updates are not printed to the console; run `/volmit plugins updates` from the console to list them.
+A failed check keeps the last known release and is not retried on its own. When GitHub rate limits the request (HTTP 429) or refuses it (HTTP 403), the next manual check waits for the time in GitHub's `Retry-After` header when that is longer than 5 minutes, up to seven days. The console prints one line naming the repository, the reason, and when `/volmit plugins updates` can check again; repeated failures stay quiet until a check succeeds.
+
+```none
+Could not check GitHub releases for VolmitSoftware/Iris: GitHub rate limited the request (HTTP 429). /volmit plugins updates can check again in 5 minutes.
+```
+
+Available updates are not printed to the console; run `/volmit plugins updates` from the console to list them.
 
 Versions compare numerically by dot-separated parts, with an optional leading `v`. `2.10.0` is newer than `2.9.0`, and `2.0` equals `2.0.0`. A trailing Minecraft range is ignored, so `4.1.0-1.21.1-26.2` compares as `4.1.0`; a rebuild for a different Minecraft range is not an update. An installed prerelease such as `4.1.0-beta.2` is older than the `4.1.0` release. Other version formats are reported as **Version unknown** and never produce a notice.
 
@@ -61,7 +67,7 @@ The notice uses the latest stored results and does not start a new request.
 
 Players and console can run `/volmit plugins updates`. The `/volmit plugins` menu shows an **Updates** entry to anyone with access to at least one participating plugin. A sender without access to any plugin receives `No registered update providers are available to you.`
 
-The command requests a fresh check for each listed plugin unless a check finished within the last minute or a retry delay is still running; in those cases it shows the stored result. It waits up to 35 seconds for each plugin and lists slower checks under **Check failed**.
+The command requests a fresh check for each listed plugin unless that plugin checked within the last 5 minutes or a rate-limit wait is still running; in those cases it shows the stored result. It waits up to 35 seconds for each plugin and lists slower checks under **Check failed**.
 
 Results are grouped in this order:
 
@@ -106,7 +112,7 @@ All four options are required. Declare the plugin's own permission in `plugin.ym
 |---|---|
 | `setEnabled(boolean enabled)` | Enabling starts a check; disabling clears cached results, cancels scheduled work, and completes pending checks with `Optional.empty()` |
 | `CompletableFuture<Optional<Release>> check()` | Returns the cached update or a future for the current request; disabled or closed checkers return an already-completed empty result |
-| `CompletableFuture<Report> checkReport(boolean fresh)` | Returns the report after the current or cached check. `fresh` starts a new request unless one is pending or the request backoff has not elapsed |
+| `CompletableFuture<Report> checkReport(boolean fresh)` | Returns the report after the current or cached check. `fresh` starts a new request unless one is pending or the manual-check cooldown has not elapsed |
 | `Report snapshot()` | Returns the latest report without starting a request |
 | `Report(Status status, Release release, String error, long checkedMillis, long lastSuccessMillis)` | Result state, latest known release, failure message, and epoch-millisecond timestamps |
 | `Status` | `DISABLED`, `NO_RELEASE`, `CURRENT`, `UPDATE`, `UNKNOWN`, or `FAILED` |
@@ -115,11 +121,11 @@ All four options are required. Declare the plugin's own permission in `plugin.ym
 
 Repeatedly applying the current enabled state preserves the existing cache and schedule. Re-enabling after disabling starts a fresh request. Enabling a closed checker has no effect.
 
-The checker reads `https://api.github.com/repos/<owner>/<repository>/releases/latest`. Concurrent calls share the active request; cancelling one caller's future does not cancel the shared request. A successful request schedules the next refresh after one hour, plus up to 10% random spread. A forced `checkReport(true)` request is accepted one minute after a successful check.
+The checker sends a `HEAD` request to `https://github.com/<owner>/<repository>/releases/latest` and reads the release tag from the redirect GitHub returns. It does not use the GitHub REST API, so checks do not count against that API's hourly limit for unauthenticated requests. Concurrent calls share the active request; cancelling one caller's future does not cancel the shared request. The checker makes one request when enabled and schedules no further requests. A forced `checkReport(true)` request is accepted 5 minutes after the previous request finished, or after a rate-limit wait if that is longer.
 
-Requests use 10-second connection and read timeouts, a 30-second total deadline, a 1 MiB response limit, and no redirects. A returned release URL must use HTTPS on `github.com` and identify a release under the configured repository. The checker sends no authentication token and fetches no assets.
+Requests use 10-second connection and read timeouts and do not follow redirects. The redirect must use HTTPS on `github.com` and point to a release tag under the configured repository. The checker sends no authentication token and fetches no assets.
 
-A missing release (HTTP 404), draft, or prerelease produces `NO_RELEASE`. A release that is not newer produces `CURRENT`, and uncomparable versions produce `UNKNOWN`; `check()` returns `Optional.empty()` for all three. Network errors, HTTP failures, and invalid response data produce `FAILED` and keep the previously cached update and release. Failures retry after one minute, doubling up to one hour; HTTP 403 and 429 responses wait for `Retry-After` or `X-RateLimit-Reset`, up to seven days. The checker logs the first consecutive failure with its stack trace and retry delay, then suppresses repeated failures until a successful check.
+A missing repository (HTTP 404) or a redirect to the repository's release list produces `NO_RELEASE`; GitHub's latest release never names a draft or prerelease. A release that is not newer produces `CURRENT`, and uncomparable versions produce `UNKNOWN`; `check()` returns `Optional.empty()` for all three. Network errors, HTTP failures, and invalid redirects produce `FAILED`, keep the previously cached update and release, and are not retried automatically. HTTP 429 (rate limited) and HTTP 403 (refused) responses report separate reasons and hold manual checks for `Retry-After` when it exceeds the 5-minute cooldown, up to seven days. The checker logs the first consecutive failure as one warning line with the reason and the time until manual checks resume, then suppresses repeated failures until a successful check. Unexpected internal errors also include their stack trace.
 
 Versions accept an optional `v` or `V` prefix followed by dot-separated nonnegative integers, compared numerically with missing trailing components treated as zero. A comparable version may add a numeric Minecraft range (`-1.21.1-26.2`, with `.x` wildcards), a prerelease suffix beginning with `alpha`, `beta`, `rc`, `snapshot`, or `dev`, and `+` build metadata. Ranges and build metadata are ignored, and an installed prerelease is older than the equal stable version. Versions in other formats, or longer than 256 characters, cannot produce an update. The comparison does not verify that a release supports the consumer's server version.
 

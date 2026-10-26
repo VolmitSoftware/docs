@@ -2,7 +2,7 @@
 title: "ByteCompanions"
 description: "Companion collections, outfits, Companion Studio, progression, particles, and integrations"
 published: true
-date: 2026-10-15T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, companions, folia"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -14,7 +14,7 @@ ByteCompanions gives each player a collection of companions built from vanilla i
 |---|---|
 | Server software | Spigot, Paper, Purpur, Leaf, Folia, and Canvas |
 | Minecraft | 26.1 through 26.3, including patch releases |
-| Java | 25 |
+| Java | 25 or newer |
 | Main command | `/bytecompanions` (`/companions`, `/bc`) |
 | Config file | `plugins/ByteCompanions/config.toml` |
 | Starter companions | `bee`, `copper`, `lantern`, `mushroom`, `myself`, `rainbow`, `scout`, `warrior` |

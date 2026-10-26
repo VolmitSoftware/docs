@@ -2,13 +2,13 @@
 title: Coffer coordinated backup and restore
 description: Verified stopped-server snapshots and restoration into a new server directory
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: coffer, backups, recovery
 editor: markdown
 dateCreated: 2026-10-19T00:00:00.000Z
 ---
 
-Coffer 0.7.0 includes a Java 25 command-line tool in the plugin JAR. It snapshots a stopped server's complete directory and restores a verified copy into a new directory. World containers, entities, player data, plugin data, settings, and Coffer journals, receipts, fences, and recovery decisions travel together.
+The Coffer plugin JAR includes a command-line tool that runs on Java 25 or newer. It snapshots a stopped server's complete directory and restores a verified copy into a new directory. World containers, entities, player data, plugin data, settings, and Coffer journals, receipts, fences, and recovery decisions travel together.
 
 ## Supported scope
 
@@ -29,11 +29,11 @@ java -jar Coffer.jar backup verify --snapshot "C:\Minecraft\backups\snapshot-001
 
 Creation publishes `snapshot-001/snapshot`, containing `manifest.coffer` and the copied `server` tree. Verification checks the exact file/directory set, file lengths, and SHA-256 checksums against the bounded manifest. It rejects missing, extra, changed, or unsafe paths. Retain the reported `manifest-sha256` for restore confirmation; a checksum detects changes and is not an authenticity signature.
 
-The format accepts at most 100,000 entries, a 64 MiB manifest, 1 TiB per file, and 16 TiB total file content. Paths are bounded to 64 components, 255 characters per component, and 4,096 UTF-8 bytes overall, use normalized Unicode, and reject case collisions and Windows-reserved names. Copies preserve empty directories, modification times to millisecond precision, and POSIX permission bits where available; a destination unable to preserve recorded POSIX permissions is refused. Filesystem ACLs, owners, Windows hidden/system/read-only flags, extended attributes, and platform-specific alternate streams are outside this format; destination filesystem defaults apply.
+The format accepts at most 1,000,000 entries, a 256 MiB manifest, 1 TiB per file, and 16 TiB total file content. Paths are bounded to 64 components, 255 characters per component, and 4,096 UTF-8 bytes overall, use normalized Unicode, and reject case collisions and Windows-reserved names. Copies preserve empty directories, modification times to millisecond precision, and POSIX permission bits where available; a destination unable to preserve recorded POSIX permissions is refused. Filesystem ACLs, owners, Windows hidden/system/read-only flags, extended attributes, and platform-specific alternate streams are outside this format; destination filesystem defaults apply.
 
 Pending transactions and accepted recovery decisions are valid snapshot contents. They are preserved unchanged, and the normal join-recovery rules still apply after restoration. Creating a snapshot does not repair corrupt source records.
 
-Hard-linked aliases within the tree are refused. Where Java does not expose file identity keys, the tool compares files sharing size, creation time, and modification time with the filesystem's same-file check. That fallback allows at most 256 files per matching metadata group and 100,000 comparisons per tree scan; exceeding either limit refuses the operation.
+Hard-linked aliases within the tree are refused. Where Java does not expose file identity keys, the tool compares files sharing size, creation time, and modification time with the filesystem's same-file check. That fallback allows at most 256 files per matching metadata group and 1,000,000 comparisons per tree scan; exceeding either limit refuses the operation.
 
 ## Restore
 
@@ -59,7 +59,7 @@ Restoration rolls world and player progress back to the selected snapshot along 
 
 The tool reserves the destination container exclusively. Until staging and validation finish, the published `snapshot` or `server` child does not exist. Failures before publication leave staging evidence in that container and leave the original server untouched. An interruption after publication can leave a complete result even without a success message; verify the published snapshot or restore container before retrying. Use a fresh destination for another attempt; an incomplete staging directory is not a server to launch or a snapshot to restore.
 
-The final directory publication requires an atomic move on the destination filesystem. Copied files are flushed before publication. `DURABILITY_UNCERTAIN` means publication succeeded but directory flushing could not confirm host power-loss durability; verify the published result before deciding whether to retry. A successful process-interruption test does not prove power-loss safety.
+The final directory publication requires an atomic move on the destination filesystem. Copied files are flushed before publication. `DURABILITY_UNCERTAIN` means publication succeeded but directory flushing could not confirm host power-loss durability; the tool prints the first flush failure, with its stack trace, to standard error; verify the published result before deciding whether to retry. A successful process-interruption test does not prove power-loss safety.
 
 | Exit code | Meaning |
 | --- | --- |

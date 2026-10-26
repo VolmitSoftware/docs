@@ -2,7 +2,7 @@
 title: Coffer live transfers and recovery
 description: Journaled player-to-vault transfers, player checkpoints, and restart recovery
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: coffer, transfers, recovery, development
 editor: markdown
 dateCreated: 2026-10-18T00:00:00.000Z
@@ -12,11 +12,11 @@ Coffer records both inventories before and after each live player/vault transfer
 
 ## Transfer API
 
-`CofferPlugin.transfers()` exposes `BukkitVaultTransfers`. Call `transfer(player, vaultId, request, administrator)` from the player's owning Paper/Folia thread. `ItemTransferPlan.Request` specifies `DEPOSIT` or `WITHDRAW`, a player storage slot from 0 through 35, a vault slot within its saved capacity, and a positive quantity. The returned completion stage reports `APPLIED` or `DURABILITY_UNCERTAIN` with the transaction UUID.
+`CofferPlugin.transfers()` exposes `BukkitVaultTransfers`. Call `transfer(player, vaultId, request, administrator)` from the player's owning thread. `ItemTransferPlan.Request` specifies `DEPOSIT` or `WITHDRAW`, a player storage slot from 0 through 35, a vault slot within its saved capacity, and a positive quantity. The returned completion stage reports `APPLIED` or `DURABILITY_UNCERTAIN` with the transaction UUID.
 
 The source must contain enough items. An occupied destination must have matching item metadata and enough stack capacity; the source and destination's actual stack limits apply. The planner captures all 43 player inventory slots and preserves unselected storage, armor, offhand, body, and saddle slots. Only storage slots 0 through 35 can be selected for a move. There is no automatic slot selection, overflow drop, partial-success result, cursor transfer, or creative-mode operation.
 
-The player must be online, alive, persistent, and in survival or adventure mode, with only the personal crafting view open. The cursor and personal crafting grid must be empty. The player and vault must have no conflicting edit session or transfer. At most 16 live transfers or join recoveries are admitted simultaneously.
+The player must be online, alive, persistent, and in survival or adventure mode, with only the personal crafting view open. The cursor and personal crafting grid must be empty. The player and vault must have no conflicting edit session or transfer. At most 16 live transfers are admitted simultaneously. Join recovery checks do not count toward that limit, so players joining while 16 transfers are active are not disconnected.
 
 `transferFromMenu(player, MenuRequest, administrator)` accepts the exact `TransferMenu` inventory bound to that player and vault, together with the displayed revision and explicit-slot request. It rejects a different holder, inventory, actor, or vault, and checks the expected revision after reserving the saved vault but before journal preparation. The normal `transfer` entry point still requires the personal crafting view. After menu admission, closing to an empty personal crafting view is allowed while the accepted transfer finishes; switching to another container is rejected. The player menu passes `administrator=false`.
 
@@ -38,11 +38,11 @@ Native serialization runs on the player owner thread; checkpoint file operations
 
 That checkpoint represents the capture time. If the player disconnects while publication is pending, vanilla saving remains suspended for the retired player entity and the captured checkpoint is retained. Passive changes outside the inventory guard, such as experience gained after capture, can be lost in that window. Normal saving resumes after publication for a connected player.
 
-Publication requires a forced temporary file and atomic replacement in the playerdata directory. The checkpoint must be a regular file, and its directory path must contain no symbolic links. Coffer does not use `Player.saveData()` as proof of persistence: that method can suppress failures. Existing `.dat_old` files are not selected as checkpoints or rewritten by Coffer's publisher. Directory forcing remains platform-dependent; an unconfirmed directory flush produces an explicit durability-uncertain result rather than a claim about host power-loss safety.
+Publication requires a forced temporary file and atomic replacement in the playerdata directory. During enable, Coffer resolves the playerdata directory to its real path, so host-level symbolic links in the server path are followed once at startup. Enable fails, before any player can join, if that directory is missing or is not a directory. Each publication then requires the checkpoint to be a regular file and the resolved directory path to contain no symbolic links, so a link created later is refused. Coffer does not use `Player.saveData()` as proof of persistence: that method can suppress failures. Existing `.dat_old` files are not selected as checkpoints or rewritten by Coffer's publisher. Directory forcing remains platform-dependent; an unconfirmed directory flush produces an explicit durability-uncertain result rather than a claim about host power-loss safety.
 
 ## Interaction guard
 
-While a transfer or join recovery is active, Coffer blocks ordinary inventory clicks, drags, opening containers, drops, pickups, swaps, consumption, equipment changes, item damage, interaction, block placement/breaking, bucket use, shooting, commands, movement, teleportation, game-mode changes, damage, and death for that player. Entity-specific handlers leave unrelated entities unaffected.
+While a transfer or join recovery is active, Coffer blocks ordinary inventory clicks, drags, opening containers, drops, item and projectile pickups, swaps, recipe-book crafting, book edits, consumption, equipment changes, item damage, interaction, block placement/breaking, bucket use, shooting, commands, movement, teleportation, game-mode changes, damage, and death for that player. Entity-specific handlers leave unrelated entities unaffected.
 
 These event guards coordinate normal server gameplay. Other plugins must not mutate a guarded player's inventory or persistent data, call `saveData()` explicitly, change persistence, or replace player files during the transaction. Direct plugin writes bypass ordinary event cancellation. Coffer rechecks state and blocks detected divergence; it cannot provide an exclusive filesystem or inventory lease against arbitrary external code.
 
@@ -64,11 +64,11 @@ Join recovery checks the player's journal and completed receipt before releasing
 
 A completed receipt also applies when no journal remains. If vanilla loads an older `.dat_old` backup with a stale receipt, Coffer disconnects that player instead of allowing silent reuse of the old inventory. An already-completed receipt paired with an older player state is not automatically rolled forward. Receipt reset without a pending journal is not supported. The operator workflow below handles a readable pending transaction with valid vault and receipt evidence.
 
-Failed or ambiguous transfers retain their evidence and disconnect the affected player when possible. The localized `coffer.transfer.blocked` message directs them to an administrator. Console failures retain full exception context and transaction/player identifiers. `/coffer debug` includes the number of guarded transfers and recoveries.
+Failed or ambiguous transfers retain their evidence and disconnect the affected player when possible. The localized `transfer.blocked` message directs them to an administrator. Console failures retain full exception context and transaction/player identifiers. The `/coffer debug dump` report includes the number of guarded transfers and recoveries, and `/coffer status` shows active transfers.
 
 ## Reviewed operator recovery
 
-The [operator commands](/coffer/02-commands-permissions#operator-recovery) can arm an offline player's next join for a recovery hold. The same gameplay guard stays active while a different operator reviews and completes the pending transaction. Holds are process-local; disconnect clears the connection's review, and restart clears unused arms. Up to 16 unused arms can exist, separately from the limit of 16 active transfers/recoveries.
+The [operator commands](/coffer/02-commands-permissions#operator-recovery) can arm an offline player's next join for a recovery hold. The same gameplay guard stays active while a different operator reviews and completes the pending transaction. Holds are process-local; disconnect clears the connection's review, and restart clears unused arms. Up to 16 unused arms can exist, separately from the limit of 16 active transfers.
 
 `VaultStorage.inspectTransfer(transactionId)` returns a coherent `TransferInspection` from the storage worker: journal, evidence fingerprint, vault state, receipt state, and completion eligibility. `prepareRecovery(decision)` requires the exact reviewed evidence and publishes an immutable `RecoveryDecision` before player replacement. `recoveryDecision(transactionId)` reads that decision explicitly, including after completion. Ordinary storage operations remain unable to mutate a reserved vault.
 
@@ -90,6 +90,6 @@ Vault-only history rollback is prohibited once the permanent transfer fence exis
 
 Use the [coordinated backup tool](/coffer/09-backup-restore) to keep the complete stopped server together, including player data, world containers, and Coffer storage. Restoring only player/vault files while retaining newer world containers can recreate items outside Coffer; restoring only one transfer side can also produce blocked or divergent receipts. Do not delete journals, receipts, decisions, or fences to clear an error, and do not edit current files while the server is running. Operator completion refuses independently changed, deleted, missing, corrupt, or unsupported vaults, damaged journals, and invalid receipt/fence evidence; it does not replace a consistent backup or repair arbitrary contradictory files.
 
-Use normal server shutdown and restart. Coffer refuses to initialize while players are already online, so transfer recovery always begins through the normal join flow. Hot unloading/reloading the plugin while players are online is unsupported; disabling listeners during an unfinished transfer removes its gameplay guard. `/coffer reload` only reloads configuration/languages and leaves transaction services running. Checkpoint publication drains for up to 30 seconds during shutdown, and unconfirmed operations retain their journals. Process termination tests do not establish atomic recovery from host power loss, filesystem corruption, or unrelated plugins' writes.
+Use normal server shutdown and restart. Coffer refuses to initialize while players are already online, so transfer recovery always begins through the normal join flow. BileTools can reload Coffer only while no players are online and no transfers are active, and refuses otherwise; other plugin unloaders are unsupported, because disabling listeners during an unfinished transfer removes its gameplay guard. Disabling Coffer closes open vault menus on the player's owning thread when it can; on Folia a menu owned by another region may remain open until the player closes it. Configuration and language reloads leave transaction services running. Checkpoint publication drains for up to 30 seconds during shutdown, and unconfirmed operations retain their journals. Process termination tests do not establish atomic recovery from host power loss, filesystem corruption, or unrelated plugins' writes.
 
 The [feature map](/coffer/04-feature-map) records automated failure cases and the exact Paper/Folia runtime evidence.

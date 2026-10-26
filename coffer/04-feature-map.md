@@ -1,38 +1,92 @@
 ---
 title: Coffer feature map
-description: Implemented foundation, remaining features, and validation evidence
+description: Implemented, partial, and planned features with validation evidence
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: coffer, development, testing
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
 ---
 
-Coffer 0.7.0 adds complete stopped-server snapshots, manifest verification, and restore into a fresh server directory. Economy, sharing commands, administrator browsing, and cross-server storage remain planned.
+This page lists each Coffer feature as implemented, partial, or planned, with its acceptance criterion, followed by the validation evidence recorded for each version. Economy, community vaults, database storage, and import remain planned.
 
 | ID | Feature | State | Acceptance |
 | --- | --- | --- | --- |
-| CF-01 | Build and lifecycle | Implemented | Java 25 build, packaged reflection checks, isolated Paper/Folia startup, restart, shutdown |
-| CF-02 | Configuration | Implemented | Valid edits activate; invalid edits retain the previous snapshot; atomic writes and clean watcher shutdown |
-| CF-03 | Languages and help | Implemented | 18 catalogs, key/placeholder validation, persistent selections, editor conflict checks, filtered help |
+| CF-01 | Build and lifecycle | Implemented | Java 25 build, runtime gate for Minecraft 26.1 through 26.3 on Java 25 or newer, library download, startup on the supported platforms, restart, shutdown, and BileTools reload refusal while players are online or transfers are active |
+| CF-02 | Configuration and hot reload | Implemented | Reserved and `[vault]` sections; valid file edits apply after the cooldown; malformed files are rejected whole with the last known good settings kept; deleted `config.toml` regenerates; atomic writes; operator notices; clean watcher shutdown |
+| CF-03 | Languages and help | Partial | English written to `languages/en_US.toml` with its header, key and placeholder validation, operator-installed locale files, persistent selections, editor conflict checks, and filtered help are implemented; translation downloads wait for a published repository revision |
 | CF-04 | Vault domain | Implemented | Immutable UUID identity and access grants, limits, lock handling, founder provenance without authority |
 | CF-05 | Durable local vault repository | Implemented; failure tests passed | Bounded versioned records, atomic publication, explicit durability results, revision checks, corruption quarantine, retained generations, guarded history rollback, deletion fences, indexed owner queries |
 | CF-06 | Items, sessions, and player inventory transactions | Implemented for personal owner vaults | Bounded native encoding, exclusive sessions, create/list/open commands, quota checks, menu gestures, journaled transfers, player checkpoints, interaction guards, completed receipts, restart reconciliation, and reviewed operator recovery with retained evidence |
-| CF-07 | Shared vault access | Domain rules and live transfer authorization implemented; player sharing commands planned | Direction-specific grants and explicit administrator access are checked; sharing commands and revocation workflows remain pending |
-| CF-08 | Configuration GUI | Planned | Shared validation/install path, durable changes, concurrent-edit protection |
+| CF-07 | Shared vault access and management | Implemented for personal vaults | Share, unshare, and list grants with view/deposit/withdraw/full levels; shared listing and `owner:number` opening; direction checks in the menu and transfer service; reserved grant changes and empty-only deletion; open menus reload or close after changes; administrator list, view-only or edit opening, and deletion; `/pv` |
+| CF-08 | Configuration GUI | Implemented | `/coffer config` edits every key through the shared validation and install path, writes atomically, refuses a save after `config.toml` changed on disk, and opens the language tools |
 | CF-09 | Economy | Planned | Explicit charge outcomes, retry/recovery, refunds, recurring fees without duplicate charges |
 | CF-10 | Community vault | Planned | Explicit permissions and quotas, safe simultaneous access, audit history |
 | CF-11 | MySQL and cluster ownership | Planned | Atomic revision writes, exclusive edit ownership, disconnect/recovery and conflict tests |
 | CF-12 | Import and integrations | Planned | Offline import validation, independent schemas, optional providers and documented placeholders |
 | CF-13 | Coordinated backup and restore | Implemented for stopped server directories | Native/storage lock exclusion, complete world/player/plugin tree, bounded checksummed manifest, exact file verification, confirmed restore into a fresh directory, and atomic publication after staging |
+| CF-14 | Diagnostics, statistics, and integration | Partial | `/coffer status`, `/coffer debug dump` with optional mclo.gs upload, `/volmit plugins debug` registration, bStats under plugin ID 34915, and the VolmLib integration metrics are implemented; update notices report an unknown version until a public repository and release exist |
 
-Owner and founder UUIDs are distinct. Founder identity carries no access rights. Shared grants require open access and can independently grant deposits and withdrawals; they cannot grant management. Locks block ordinary item access while owners can manage the vault. Administrators bypass restrictions only through an explicit authorization request. Internal session and transfer APIs enforce these rules; player-facing sharing commands remain pending.
+Owner and founder UUIDs are distinct. Founder identity carries no access rights. Shared grants require open access and can independently grant deposits and withdrawals; they cannot grant management. Locks block ordinary item access while owners can manage the vault. Administrators bypass restrictions only through an explicit authorization request. Player sharing commands, administrator commands, and the internal session and transfer APIs enforce these rules.
 
-The next slices are shared access commands and vault management. Operator recovery can explicitly restore a conflicting player inventory to a pending journal's recorded outcome while the vault and durable receipt remain valid. Coordinated backup restores the complete selected server snapshot into a new directory; it does not repair individual corrupted records. Corrupt-record repair, independently changed vault repair, receipt reset without a pending journal, and database/cluster storage remain unimplemented. Vault-only history rollback is blocked for vaults that have entered live transfer preparation.
+Vault renaming and icons, per-permission vault tiers, and item restrictions are not implemented. Operator recovery can explicitly restore a conflicting player inventory to a pending journal's recorded outcome while the vault and durable receipt remain valid. Coordinated backup restores the complete selected server snapshot into a new directory; it does not repair individual corrupted records. Corrupt-record repair, independently changed vault repair, receipt reset without a pending journal, and database/cluster storage remain unimplemented. Vault-only history rollback is blocked for vaults that have entered live transfer preparation.
 
 The [PlayerVaultsX reference audit](/coffer/05-reference-audit) adds static evidence and acceptance cases. The [local storage reference](/coffer/06-local-storage) and [item/session reference](/coffer/07-items-sessions) describe the implemented APIs, limits, durability semantics, and recovery boundaries.
 
 ## Validation
+
+### Uniformity pass (0.7.0)
+
+Runtime checks used the staged `BUILDS/Coffer.jar` distribution on isolated servers, with Paper 26.1.2 build 74, Folia 26.1.2 build 8, Purpur 26.1.2 build 2592, Leaf 26.1.2 build 3, and Canvas 26.1.2 build 876.
+
+| Gameplay check on 26.1.2 | Paper | Folia | Purpur | Leaf | Canvas |
+| --- | --- | --- | --- | --- | --- |
+| Library download, splash, ready line, and graceful shutdown | Passed | Passed | Passed | Passed | Passed |
+| `/coffer version`, `/coffer status`, and `/coffer debug dump upload=false` respond | Passed | Passed | Passed | Passed | Passed |
+| A `config.toml` edit hot reloads without a command | Passed | Passed | Passed | Passed | Passed |
+| Create and deposit, share at deposit access, guest list and open by `owner:number`, withdrawal refused | Passed | Passed | Passed | Passed | Passed |
+| Guest deposit updates the owner's open menu; unshare closes the guest menu and removes access | Passed | Passed | Passed | Passed | Passed |
+| Administrator read-only view, delete refused until empty, `/pv` list and open | Passed | Passed | Passed | Passed | Passed |
+| Full-access share retained across a full restart and opened by the guest afterwards | Passed | Passed | Passed | Passed | Passed |
+
+Two Mineflayer scenarios per platform passed all 14 steps with bot protocol 26.1, with no protocol parse failures. On Paper 26.1.2, two consecutive `/bile reload Coffer` runs with no players online each printed the splash and the ready line, and Coffer answered `/coffer version` afterwards.
+
+| Boot check on 26.2 and 26.3 | Paper | Folia | Purpur | Leaf | Canvas |
+| --- | --- | --- | --- | --- | --- |
+| 26.2: library download, splash, ready line, `config.toml` hot reload, `/coffer version`, graceful shutdown | Passed | Passed | Passed | Passed | Passed |
+| 26.3: library download, splash, ready line, `config.toml` hot reload, `/coffer version`, graceful shutdown | Passed | Passed | Passed | Passed | Passed |
+
+Boot checks used Paper builds 123 and 205, Folia builds 7 and 3, Purpur builds 2633 and 2653, Leaf builds 100 and 8, and Canvas builds 940 and 991 for 26.2 and 26.3. Folia and Canvas report Folia region scheduling; the others report Bukkit main-thread scheduling. One Paper 26.3 attempt stalled at `Loading libraries...` during the first-start library download and passed on a rerun.
+
+Vault transfers, sharing, and menus are not gameplay-tested on 26.2 or 26.3: Mineflayer 4.38.0 only speaks protocol 26.1, and a 26.1 bot connected through ViaVersion and ViaBackwards was kicked for invalid player movement before the scenario began. Server logs show no Coffer errors or warnings beyond the expected Windows directory-flush warning. All instances were gracefully stopped, checked for zero owned processes, and deleted; the viewer feeds at `http://127.0.0.1:3151/`, `http://127.0.0.1:3152/`, and `http://127.0.0.1:3161/` through `http://127.0.0.1:3163/` are closed. Reports and logs are retained locally under ignored `qa/uniformity/`.
+
+### Sharing, administration, deletion, and /pv (0.7.0)
+
+`build` passes 1,180 automated tests with one POSIX-permission test skipped on Windows. Added coverage includes reserved grant changes and deletion against open sessions, the shared-vault index across restart, share limits and replacement, owner positions for shared listings, empty-only deletion, administrator deletion, shared direction checks, view-only and edit administrator menus, menu reload after changes or deletion, and the player, administrator, and `/pv` commands.
+
+| Runtime check | Paper 26.1.2 build 74 | Folia 26.1.2 build 8 |
+| --- | --- | --- |
+| Share with deposit access, `/coffer shares`, guest `/coffer shared`, and opening by `owner:number` | Passed | Passed |
+| Deposit-only guest refused a withdrawal; guest deposit appears in the owner's already-open menu | Passed | Passed |
+| Unshare closes the guest's open menu; the guest can no longer open or list the vault | Passed | Passed |
+| Administrator list and view-only open; read-only clicks refused; permission removal refuses the command | Passed | Passed |
+| Delete refused for a vault with items, accepted once empty; `/pv` lists and opens | Passed | Passed |
+| Full-access share retained across a full restart; guest opens it afterwards | Passed | Passed |
+| Full menu regression and damage cooldown from the fix pass, rerun on the same distribution | Passed | Passed |
+
+Two-bot Mineflayer scenarios passed all 12 sharing steps on each platform, and the menu regression passed all 28 steps, with bot protocol 26.1 and the process-local container-schema correction described in the 0.4.0 evidence. Server logs show no unexpected exceptions. All instances were gracefully stopped, checked for zero owned processes, and deleted; the viewer feeds at `http://127.0.0.1:3143/` through `http://127.0.0.1:3146/` are closed. Reports and logs are retained locally under ignored `qa/sharing/` and `qa/bugfix-pass/`.
+
+### Transfer, storage, and backup fixes (0.7.0)
+
+`build` passes 1,060 automated tests with one POSIX-permission test skipped on Windows. Added coverage includes arrow, trident, recipe-book, and book-edit guards; join admission beyond the transfer limit; the damage and falling cooldown; startup resolution of linked playerdata directories; corrupt-vault owner quotas; staging-file cleanup; one-million-entry backup manifests; forced configuration writes; and untranslated catalog detection.
+
+| Runtime check | Paper 26.1.2 build 74 | Folia 26.1.2 build 8 |
+| --- | --- | --- |
+| Full menu regression: deposits, withdrawals, nested metadata, refused gestures, stale views, capacity, permissions, quota, reload, reconnect | Passed | Passed |
+| Damage closes an open vault menu, `/coffer open` is refused during the 5-second cooldown, and the vault reopens afterwards with unchanged contents | Passed | Passed |
+| Full restart, recovery on join, post-restart withdrawal, and graceful shutdown | Passed | Passed |
+
+Two Mineflayer scenarios per platform passed all 28 steps with bot protocol 26.1 and the process-local container-schema correction described in the 0.4.0 evidence. Startup on this Windows host now logs the directory-flush exception with its stack trace; no other unexpected exceptions appeared. Projectile pickup, recipe-book, and join-admission behavior rely on automated tests, not gameplay runs. All instances were gracefully stopped, checked for zero owned processes, and deleted; the viewer feeds at `http://127.0.0.1:3143/` and `http://127.0.0.1:3144/` are closed. Reports and logs are retained locally under ignored `qa/bugfix-pass/`.
 
 ### Coordinated backup and restore (0.7.0)
 

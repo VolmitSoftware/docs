@@ -1,14 +1,23 @@
 ---
 title: Coffer
-description: Personal vault commands, storage, recovery, and development status
+description: Shareable personal vaults with journaled transfers, recovery, and backups
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: coffer, vaults
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
 ---
 
-Coffer 0.7.0 provides personal vault commands and a menu for journaled item transfers, operator recovery, and verified stopped-server backup and restore. It includes local storage, native item metadata, automatic join recovery, language selection, administration, and Java APIs. Shared-vault commands, economy, and cross-server storage remain planned.
+Coffer gives players personal vaults they can share, with journaled item transfers, administrator inspection and editing, operator recovery, and verified stopped-server backup and restore. Settings and messages reload from disk and can be edited in game. Economy, renaming, and cross-server storage are not implemented.
+
+| | |
+| --- | --- |
+| Server software | Paper, Purpur, Leaf, Folia, and Canvas (not Spigot) |
+| Minecraft | 26.1 through 26.3 |
+| Java | 25 or newer |
+| Main command | `/coffer` (alias `/cf`), plus `/pv` |
+| Config file | `plugins/Coffer/config.toml` |
+| Storage | `plugins/Coffer/storage/` |
 
 - [01 - Installation and compatibility](/coffer/01-installation-compatibility)
 - [02 - Commands and permissions](/coffer/02-commands-permissions)

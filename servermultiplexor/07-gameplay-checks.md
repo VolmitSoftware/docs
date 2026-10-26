@@ -2,7 +2,7 @@
 title: "07 - Gameplay checks"
 description: "Mineflayer setup, scenarios, viewer feeds, reports, and scenario APIs"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-25T07:51:09.130Z
 tags: "servermultiplexor, testing"
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -17,6 +17,10 @@ Run Mineflayer scenarios against managed instances to assert player-protocol beh
 The gameplay harness is pinned under `MultiplexorApp/tool/mineflayer/`; `gameplay setup` installs it locally with npm. Offline preparation is restricted to stopped, isolated instances: `gameplay prepare` binds the server to loopback, disables online authentication and whitelisting, and removes spawn protection. It never weakens a shared instance. `--start` starts a stopped target, while `--stop-after` only stops an instance that the gameplay command itself started.
 
 The harness package lock is checked in. Setup and launcher installs use `npm ci`; gameplay commands through either launcher refresh an installation when its installed lock is missing or older than the manifest or package lock. An installation failure stops the command with a nonzero exit code. Use `gameplay setup` to repair a damaged installation explicitly, then run `gameplay doctor --json`.
+
+Installation applies inventory corrections to the pinned Mineflayer and Prismarine Windows dependencies. Server cursor packets and full inventory updates for the current window synchronize the player and open-window cursor state. Closing a container retains its actual cursor item, including an empty cursor, and preserves component changes even when item type and count are unchanged. Updates for unrelated windows do not change the current cursor. Clicking an empty crafting result still sends the click but does not wait for a result-slot update that the server may omit; populated results and ingredient changes retain their normal waits.
+
+Smithing windows use the template, base item, addition, and result layout for Minecraft 1.20 and newer, with player storage starting after those four slots. Installation validates both dependency versions and expected source before applying corrections. Repeated installation accepts the same corrections; conflicting handlers or unexpected dependency contents stop installation for review.
 
 The harness pins [Mineflayer commit `f603758e`](https://github.com/PrismarineJS/mineflayer/commit/f603758e4228a7e61d1337526e6066e79308b976), which identifies itself as version 4.38.0 and requires Node 22+. Check a specific target with `gameplay doctor --version <version> --json`, then verify it with an actual connection and scenario assertions. Gameplay results prove protocol-visible behavior. They do not prove client rendering, resource packs, sound, camera behavior, client mods, or human feel.
 

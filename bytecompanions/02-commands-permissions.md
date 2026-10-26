@@ -2,7 +2,7 @@
 title: "ByteCompanions: Commands and permissions"
 description: "The /bytecompanions command tree, every permission node, and the shared /volmit plugins line"
 published: true
-date: 2026-10-15T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, commands, permissions"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -49,7 +49,7 @@ The command root is `/bytecompanions`. `/companions` and `/bc` are aliases. Runn
 
 The `particles` commands exist only while `features.particles` is on. `upgrades` and `progression` exist only while `features.progression` is on, `boosts` and `booster` only while `features.boosters` is on, and `transactions` while either is on. A disabled route disappears from help and tab completion; running it anyway reports that the feature is disabled.
 
-Help is a Director page with a fixed number of entries per page, sorted by name and filtered to the sender's permissions. `/bytecompanions help 2` opens the second page; players get clickable entries and console gets plain lines.
+Help is a Director page sized to fit 20 chat lines, sorted by name and filtered to the sender's permissions. `/bytecompanions help 2` opens the second page; players get clickable entries and console gets plain lines.
 
 ## Permissions
 

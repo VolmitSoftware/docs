@@ -2,7 +2,7 @@
 title: "ByteCompanions: Installation"
 description: "Requirements, platform notes, first start, file locations, updating, and uninstalling"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, installation"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -15,7 +15,7 @@ This page covers what ByteCompanions needs, what happens on the first start, whe
 | Item | Value |
 |---|---|
 | Minecraft | 26.1 through 26.3, including patch releases |
-| Java | 25 only |
+| Java | 25 or newer |
 | Server software | Spigot, Paper, Purpur, Leaf, Folia, Canvas |
 | Plugin `api-version` | `'26.1'` |
 | Folia | `folia-supported: true`; companions, menus, and storage callbacks run on entity and region schedulers |
@@ -84,7 +84,7 @@ Back up `storage/` to keep player state; it holds every collection for the json,
 
 Replacing or removing the jar always needs a restart. Hot reload covers the files under the data folder only.
 
-With `general.updateNotifications` on, the plugin checks the GitHub releases of `VolmitSoftware/ByteCompanions` once per hour and tells operators and players with `bytecompanions.update` on join when a newer release exists. Nothing is downloaded. `/volmit plugins updates` shows the shared report.
+With `general.updateNotifications` on, the plugin checks the GitHub releases of `VolmitSoftware/ByteCompanions` once when it starts and tells operators and players with `bytecompanions.update` on join when a newer release exists. Nothing is downloaded. `/volmit plugins updates` shows the shared report.
 
 ## Uninstalling
 

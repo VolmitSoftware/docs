@@ -2,7 +2,7 @@
 title: Coffer items and edit sessions
 description: Paper item encoding, exclusive detached sessions, and save failure handling
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-24T00:00:00.000Z
 tags: coffer, items, sessions, development
 editor: markdown
 dateCreated: 2026-10-18T00:00:00.000Z
@@ -31,7 +31,7 @@ All occupied slots pass bounded streaming NBT validation before any native item 
 
 `CofferPlugin.sessions()` exposes the Bukkit-independent `VaultSessions` engine. `CofferPlugin.playerSessions()` exposes `BukkitVaultSessions`, which performs player-context checks and item encoding. Both are trusted internal integration APIs. Direct storage access is not player authorization.
 
-Opening reserves both a vault UUID and a viewer UUID before loading. One viewer may hold one session, and one vault may have one session. Pending, open, and blocked reservations together are limited to 128. Handles contain a random token, vault UUID, and viewer UUID; stale handles cannot mutate a replacement session. The viewer never replaces the persisted owner or founder, including in administrator mode.
+Opening reserves both a vault UUID and a viewer UUID before loading. One viewer may hold one session, and one vault may have one session. Pending, open, and blocked reservations together are limited to 128. Handles contain a random token, vault UUID, and viewer UUID; stale handles cannot mutate a replacement session. The viewer never replaces the persisted owner or founder, including in administrator mode. Management operations (`update` for share grants and `delete` for empty vaults) reserve the vault UUID for their load and write without opening an edit session: a vault with a session or another management operation reports `RESERVED`, and opening a session during a management operation is refused the same way. They require management rights (the owner or explicit administrator mode), cannot change the vault type or ownership, and `delete` refuses a vault with any occupied slot.
 
 | State | Meaning |
 | --- | --- |
@@ -44,9 +44,9 @@ Opening reserves both a vault UUID and a viewer UUID before loading. One viewer 
 
 ## Player and thread checks
 
-Call the Bukkit bridge's `open`, `read`, `replace`, `save`, and session `close` methods from the player's owning Paper/Folia thread. They reject offline players, mismatched viewers, and use during shutdown. Loading occurs asynchronously; opening returns through the player's entity scheduler, where online state, saved type permission, and explicit administrator permission are checked again before decoding items and exposing the handle.
+Call the Bukkit bridge's `open`, `read`, `replace`, `save`, and session `close` methods from the player's owning thread. They reject offline players, mismatched viewers, and use during shutdown. Loading occurs asynchronously; opening returns through the player's entity scheduler, where online state, saved type permission, and explicit administrator permission are checked again before decoding items and exposing the handle.
 
-Administrator mode must be explicitly requested and requires `coffer.vault.admin.edit`, which defaults to operators and is included in `coffer.admin`. Ordinary calls do not gain administrator bypass merely because the player is an operator. The saved type's permission and current domain access rules govern ordinary edits. External metadata changes cause revision conflicts rather than being overwritten by a stale session.
+Administrator mode must be explicitly requested and requires `coffer.vault.admin.edit`, which defaults to operators and is included in `coffer.*`. Ordinary calls do not gain administrator bypass merely because the player is an operator. The saved type's permission and current domain access rules govern ordinary edits. External metadata changes cause revision conflicts rather than being overwritten by a stale session.
 
 Returned item arrays and stacks are defensive copies. Editing an array does not change the session until `replace` accepts it. Session and storage completion callbacks may run on a storage worker; callbacks that access player state must schedule back onto the owning context. Do not block that worker while waiting for another storage operation.
 

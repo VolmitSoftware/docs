@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-25T00:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -193,7 +193,7 @@ Compilation omits local-variable debug tables while retaining source locations a
 
 ### Size gate
 
-Every final non-modded plugin distribution must fit the Spigot upload cap of 7,600,000 bytes. A non-modded profile cannot declare `max_bytes` above that cap; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive, so plugins with tighter budgets keep them. Intermediate archives receive size warnings and retain all content checks. Fabric, Forge, and NeoForge distributions have no size restriction. Their profiles use `"modded": true` and omit `max_bytes`. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent build targets and artifact collection.
+Every final non-modded plugin distribution must fit the 7,500,000-byte upload cap. Plugin profiles and project builds set `max_bytes` to that cap. A non-modded profile cannot declare `max_bytes` above it; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive. Intermediate archives receive size warnings and retain all content checks. Fabric, Forge, and NeoForge distributions have no size restriction. Their profiles use `"modded": true` and omit `max_bytes`. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent build targets and artifact collection.
 
 Canonical budgets, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Use `authoritativeShrinkLibraries.from(...)` when a separately shipped library contains patched definitions that replace inherited compile-classpath definitions. These jars resolve first; unrelated inherited types remain available. Missing authority, overlap with program classes, or competing authoritative definitions fails the build. An authority generated inside the archive task must be registered as that task’s output and produced before shrinking. Review a size increase before changing its budget.
 

@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-10-08T00:27:49.396Z
+date: 2026-10-25T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -209,8 +209,8 @@ joined automatically and need no quotes.
 
 | Node | Arguments | Notes |
 |---|---|---|
-| `list` | `[page=1]` | Ids, root menus and revisions in id order, 15 per page |
-| `near` | `[radius=64]` `[page=1]` | Panels within a horizontal radius of the player, 15 per page. Player only |
+| `list` | `[page=1]` | Ids, root menus and revisions in id order, one page per 20 chat lines |
+| `near` | `[radius=64]` `[page=1]` | Panels within a horizontal radius of the player, one page per 20 chat lines. Player only |
 | `info` | `<panel>` | Identity, effective transform, visibility, ranges and follow state |
 | `create` | `<panel> [menu=<id>]` | Creates the panel at your feet. Player only |
 | `delete` (`remove`) | `<panel>` | Removes only the panel document |
