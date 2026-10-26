@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-25T20:00:00.000Z
+date: 2026-10-26T02:45:59.200Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -22,11 +22,14 @@ Turn the system on with `hydrology.enabled: true` in the dimension file. The def
 
 A complete dimension block is at the [end of this page](#complete-example).
 
+Set `hydrology.density` to control how many eligible water features are placed across the dimension. `0.5` keeps half the candidate sources, ponds, lakes, sea inlets and cave-pool sites after local placement probabilities; retained rivers continue downstream. This controls feature frequency, so the resulting water-covered area varies with terrain and connected waterways. The built-in Overworld and Underworld packs both use `0.5`, with their configured widths, depths, rainfall and fluids preserved.
+
 ## `hydrology`
 
 | Field | Default | Purpose |
 |-------|---------|---------|
 | `enabled` | `false` | Turns rivers, streams, ponds, lakes and underground water on for this dimension |
+| `density` | `1` | Fraction of eligible water-feature candidates retained after local placement probabilities, `0..1`; `0.5` halves candidate frequency and `0` places no hydrology features |
 | `drainage` | defaults below | How water drains across the terrain before rivers and ponds are placed |
 | `tiers` | stream, river, major (below) | Size classes of flowing water, from the smallest stream to the largest river; at least one |
 | `ponds` | defaults below | Standing water above sea level: natural hollows, seeded cups and dams |

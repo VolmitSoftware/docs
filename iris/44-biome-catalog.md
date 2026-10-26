@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-26T02:45:59.200Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-27T00:00:00.000Z
 Use this atlas to choose and configure biomes in the built-in Overworld and Underworld packs. Each entry lists its load key, selection weights, terrain settings, materials, decoration, and creatures. Paired entries show how the two packs use the same terrain with different materials and ecology.
 
 For biome configuration, see [13 - Biomes](/iris/13-biomes). To edit the built-in pack, see [27 - Configuring Overworld](/iris/27-example-configuring-overworld). The [terrain shaping reference](/iris/biomes/terrain-shaping) compares the shared 3D terrain profiles.
+
+Both packs set `hydrology.density` to `0.5`, retaining half the eligible water-feature candidates while keeping their shared rainfall policies and configured feature sizes. Overworld uses water and Underworld uses lava. See [Hydrology](/iris/36-rivers) for placement controls.
 
 ## Catalog scope
 

@@ -2,7 +2,7 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, where streams and ponds may form, the fluid of an area's ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-26T02:45:59.200Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -82,7 +82,7 @@ Listed shore biomes are reachable biomes while hydrology is enabled, whatever th
 
 ## Managed pack policies
 
-The Overworld and Underworld packs use the same policies. The dimension sets rainfall `1.2` and pond density `1.5`, and lists the temperate beaches (`temperate/shore/beach`, `temperate/shore/oak-beach`) as shore biomes.
+The Overworld and Underworld packs use the same policies. The dimension sets rainfall `1.2` and pond density `1.5`, and lists the temperate beaches (`temperate/shore/beach`, `temperate/shore/oak-beach`) as shore biomes. Both dimensions set `hydrology.density` to `0.5`, which halves eligible feature frequency after these local policies apply.
 
 | Region | `rainfall` | `pondDensity` | `shoreBiomes` |
 |--------|-----------:|--------------:|---------------|
