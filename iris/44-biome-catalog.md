@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-26T02:45:59.200Z
+date: 2026-10-26T18:35:44.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -11,7 +11,9 @@ Use this atlas to choose and configure biomes in the built-in Overworld and Unde
 
 For biome configuration, see [13 - Biomes](/iris/13-biomes). To edit the built-in pack, see [27 - Configuring Overworld](/iris/27-example-configuring-overworld). The [terrain shaping reference](/iris/biomes/terrain-shaping) compares the shared 3D terrain profiles.
 
-Both packs set `hydrology.density` to `0.5`, retaining half the eligible water-feature candidates while keeping their shared rainfall policies and configured feature sizes. Overworld uses water and Underworld uses lava. See [Hydrology](/iris/36-rivers) for placement controls.
+Both packs set `hydrology.density` to `0.5`, retaining half the eligible water-feature candidates while keeping their rainfall policies and configured sizes. Overworld river, pond, and lake beds mix gravel, sand, clay, and coarse dirt. Underworld beds mix blackstone, basalt, netherrack, and soul soil. Both palettes use `SIMPLEX` patches.
+
+Overworld water beds grow seagrass, tall seagrass, and short kelp where water depth permits. Underworld lava beds have no aquatic plants. See the [Overworld treatment](/iris/biomes/overworld#water-beds-and-plants), [Underworld treatment](/iris/biomes/underworld#foundation-and-fluids), and [Hydrology](/iris/36-rivers) for configuration.
 
 ## Catalog scope
 

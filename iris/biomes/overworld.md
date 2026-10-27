@@ -2,7 +2,7 @@
 title: "Overworld"
 description: "Dimension-wide context for the Iris Overworld biome atlas"
 published: true
-date: 2026-10-26T02:45:59.200Z
+date: 2026-10-26T18:35:44.000Z
 tags: "iris, biomes, overworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -41,6 +41,23 @@ Every reachable land root and ordinary child has an explicit setting. [Terrain s
 The dimension first chooses one of twelve regions. Each region supplies independent land, sea, shore, and cave pools. The chosen role selects a root biome by its effective rarity, then the biome may resolve through children or contribute a floating biome above the column.
 
 The global Deep Dark band is different from an ordinary regional cave. Between Y `-250` and `-175`, the dimension carving entry selects `carving/standard-deepdark`, whose family reaches City Basin and Dark Depths variants independently of the surface region.
+
+## Water beds and plants
+
+The stream, river, and major tiers and the pond settings use the same submerged bed palette. It mixes gravel, sand, clay, and coarse dirt with weights `4`, `3`, `2`, and `1`. The palette uses `SIMPLEX` with `style.zoom: 0.125` and `zoom: 1`. Shores and banks retain each biome's own layers.
+
+Each tier and `hydrology.ponds` has three `SEA_FLOOR` decorators with `STATIC` distribution:
+
+| Setting | Seagrass chance | Tall seagrass chance | Kelp chance | Kelp stack |
+|---|---:|---:|---:|---|
+| `tiers` stream | `0.18` | `0.035` | `0.02` | `2..3` |
+| `tiers` river | `0.22` | `0.05` | `0.035` | `2..4` |
+| `tiers` major | `0.22` | `0.06` | `0.045` | `2..5` |
+| `ponds` | `0.25` | `0.07` | `0.04` | `2..5` |
+
+The decorators compete for each bed column, so their chances do not add together. Plants need source water and enough depth. Kelp height follows `STATIC` noise and stays below the top water cell. Its top uses `age: 25` to keep the configured height. Lava pools do not grow these plants.
+
+Edit `materials.bed.palette` for block weights and `materials.bed.style` or `materials.bed.zoom` for the patch pattern. Edit each decorator's `chance` or kelp `stackMin` and `stackMax` for plant cover and height. Set `hydrologyPolicy.decorators` on a biome or region to replace these plants locally. An empty list disables them. See [Hydrology](/iris/36-rivers#water-plants).
 
 ## Regional ecology
 

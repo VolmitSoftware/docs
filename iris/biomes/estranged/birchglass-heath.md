@@ -2,7 +2,7 @@
 title: "Biome Atlas — Birchglass Heath"
 description: "Iris biome atlas entry for estranged/birchglass-heath in Overworld and Underworld"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-10-26T18:35:44.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,6 +43,12 @@ The table lists each profile’s density and crack noise. Active deformation sta
 Each pack retains its own materials, decoration, objects, and ores. Floating islands keep their separate shape settings.
 
 Both birchglass forms use buttress roots with `rootDepth: 2` and `rootFlare: 1.5`. Both packs use these root settings with their own tree materials.
+
+## Hydrology
+
+Birchglass Heath inherits the dimension's hydrology bed and plant settings. Submerged Overworld beds use gravel, sand, clay, and coarse dirt in `SIMPLEX` patches. Seagrass, tall seagrass, and short kelp grow where source water and depth permit. The grass-and-dirt layers below describe its dry terrain.
+
+Underworld beds use blackstone, basalt, netherrack, and soul soil beneath lava, without aquatic plants. Set `hydrologyPolicy.decorators` on this biome to override its water plants. See [water beds and plants](/iris/biomes/overworld#water-beds-and-plants) for the inherited chances and kelp heights.
 
 ## Overworld treatment
 

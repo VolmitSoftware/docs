@@ -2,7 +2,7 @@
 title: "Estranged Biomes"
 description: "Navigation for the built-in estranged biomes across Overworld and Underworld"
 published: true
-date: 2026-09-20T00:00:00.000Z
+date: 2026-10-26T18:35:44.000Z
 tags: "iris, biomes, overworld, underworld, estranged"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -12,6 +12,8 @@ Unusual woodland, wetland, and sculptural land biomes selected by the Estranged 
 This family has **1 child-only reachable variant**, Emberbark Poplar Grove, documented with [Emberbark Woods](/iris/biomes/estranged/emberbark-woods#emberbark-poplar-grove).
 
 Estranged cave decoration includes Frostspar with three to five tapered shards, each five to nine blocks long, on continuous organic supports. Overworld uses solid quartz and calcite. Underworld retains its separate base and crying-obsidian tips.
+
+River, pond, and lake beds use the dimension hydrology palettes. Overworld beds mix gravel, sand, clay, and coarse dirt, with seagrass, tall seagrass, and short kelp in suitable water depths. Underworld uses blackstone, basalt, netherrack, and soul soil beneath lava, without aquatic plants. See [water beds and plants](/iris/biomes/overworld#water-beds-and-plants) for the configurable chances and kelp heights.
 
 ## Direct roots
 
