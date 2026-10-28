@@ -2,7 +2,7 @@
 title: "Jigsaw Structures"
 description: "Iris documentation: Jigsaw Structures"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -54,7 +54,7 @@ objects/village/demo/{blank,end,straight,corner,tee,cross}.iob
 .iris/structure-manifests/key-<sha256>.json
 ```
 
-The start pool holds Cross Junction at weight `1`. The pieces pool holds End Cap, Hallway, L Junction, T Junction, and Cross Junction, and its direct fallback is the caps pool. The caps pool holds End Cap plus an empty termination entry. Their resource keys are `blank`, `end`, `straight`, `corner`, `tee`, and `cross`. Every default piece is rotatable with weight and chance `1`.
+The start pool holds Cross Junction at weight `3` and Blank at weight `1`. The pieces pool holds End Cap, Hallway, L Junction, T Junction, and Cross Junction, and its direct fallback is the caps pool. The caps pool holds End Cap plus an empty termination entry. Their resource keys are `blank`, `end`, `straight`, `corner`, `tee`, and `cross`. Every default piece is rotatable, and every other pool membership has weight `1`; every membership has chance `1`. Blank has no connectors, so nothing attaches to it: when the start pool picks Blank, the whole structure is that single cell.
 
 In an Iris-compatible project every piece belongs to theme `variant-1`, End Cap is terminal, mandatory caps are off, and an unresolved optional branch fails the whole assembly. A vanilla-compatible project omits Iris theme and terminal-rule metadata and terminates only the unresolved branch.
 
@@ -78,15 +78,28 @@ A planar Studio has six rotation-independent workcells in three columns by two r
 | 2 | T Junction | `workcell/tee` | north, east, and west |
 | 2 | Cross Junction | `workcell/cross` | north, east, south, and west |
 
-Each column is sized by its widest workcell and each row by its deepest, with one clear block between envelopes, so a small workcell can have extra open space beside it. Each floor is light-gray wool, the canonical connector path is red wool, and every canonical face-center socket is capped with a sea lantern. The Blank workcell has no path or cap. Rotations are solved at runtime, so there is no rotation gallery.
+Each column is sized by its widest workcell and each row by its deepest, with a one-block gap between capacities that neighbouring cages share, so a small workcell can have extra open space beside it. Rotations are solved at runtime, so there is no rotation gallery.
 
-Every workcell sits inside a white-concrete edge cage one block outside its editable capacity. Player-local particle trails outline the focused and nearby editable bounds and draw a 1.75-block direction line out of each focused connector: lime for complete metadata with no Iris channel, red for incomplete identity metadata, other colors deterministic per channel. `/iris jigsaw particles <true|false>` toggles all of them.
+The floor under every workcell, one block below its editable bounds, is a connector map of the loaded variant in both planar and spatial projects:
+
+| Floor block | Meaning |
+|---|---|
+| Light-gray wool | Workcell footprint |
+| Red wool | Line from the variant's center to a connector's column; a connector inside the piece continues the line out of the face it opens toward |
+| Sea lantern | Under a horizontal connector |
+| Verdant froglight | Under an upward connector |
+| Ochre froglight | Under a downward connector |
+| Pearlescent froglight | Under a column with both an upward and a downward connector |
+
+The map follows the saved connectors: it redraws when a variant loads, after each autosave, after a Connector Tool edit, and after a resize. A workcell with no connectors, or no loaded variant, shows plain light-gray wool. The floor is never part of a piece.
+
+Every workcell sits inside a white-concrete edge cage one block outside its editable capacity. Player-local particle trails outline the focused workcell (the one you stand in or hover just above) and nearby editable bounds, and draw a 1.75-block direction line out of each focused connector: lime for complete metadata with no Iris channel, red for incomplete identity metadata, other colors deterministic per channel. `/iris jigsaw particles <true|false>` toggles all of them.
 
 The Iris scoreboard switches to Jigsaw context automatically and reports the structure, workcell, variant, and one of Loading, Saving, Disabled, Read-only, Invalid, Unsaved, or Saved. `/iris studio scoreboard` toggles that sidebar.
 
 ### Step 3 — Make a piece
 
-Open the controls three ways: right-click the generated control chest with the main hand, run `/iris jigsaw menu`, or sneak three times within 1.5 seconds. The six-row GUI shows the six workcells and pages only the variants of the selected rotational archetype. Walking into a workcell selects it for your next menu open; left-clicking one in the GUI selects it, closes the menu, and teleports you to its horizontal center. Container previews never open Studio controls or mark the Studio edited.
+Open the controls three ways: right-click the generated control chest with the main hand, run `/iris jigsaw menu`, or sneak three times within 1.5 seconds. The six-row GUI shows the workcells along its top row and pages only the variants of the selected rotational archetype. A project with more than six workcells shows them five at a time, with arrows at both ends of the row. Walking into a workcell selects it for your next menu open; left-clicking one in the GUI selects it, closes the menu, and teleports you to its horizontal center. Container previews never open Studio controls or mark the Studio edited.
 
 Left-click **Hallway**, then click **New Blank Variant**. Iris clones the active piece's metadata and every pool membership into a new owned piece with an empty object of the same dimensions, then loads it into Hallway. Reopen the menu after the completion message.
 
@@ -94,17 +107,17 @@ Left-click **Hallway**, then click **New Blank Variant**. Iris clones the active
 
 Related actions on the same page:
 
-- **Rename This Variant** and **Rename This Workcell** use an anvil text input. Labels are author-facing only and never change piece keys, stable workcell IDs, or solver archetypes. At most 64 code points; control characters and section-sign formatting are rejected.
+- To rename a variant, right-click it for its details and left-click its name item; to rename a workcell, left-click the name item in **Workcell Settings**. Either gives you a rename stick: rename that stick in an anvil, then right-click it. Sneak-right-click resets the label. Labels are author-facing only and never change piece keys, stable workcell IDs, or solver archetypes. At most 64 code points; control characters and section-sign formatting are rejected.
 - **Duplicate This Cell's Variant** also copies the source object's bytes and label. Memberships are copied exactly: an End Cap clone keeps both its pieces- and caps-pool entries with their weight and chance.
 - Both actions need an active owned variant with at least one owned membership. For an empty or unassigned workcell, run `/iris jigsaw piece create <poolKey> <pieceKey>` so the pool is explicit. A non-owned variant cannot be duplicated or mutated.
 
 ### Step 4 — Build the piece and wire its connectors
 
-Walk into Hallway and build inside its white-concrete cage. Connector blocks are hidden by default; **Workcell Settings** toggles the real `minecraft:jigsaw` overlays back on when you need to edit markers, and **Reset Connector Blocks** restores every saved connector coordinate without touching your other edits.
+Walk into Hallway and build inside its white-concrete cage. Connector blocks are hidden by default; **Workcell Settings** toggles the real `minecraft:jigsaw` overlays back on when you need to edit markers, and **Reset Connector Blocks** restores every saved connector coordinate and clears jigsaw markers that were never saved, without touching your other edits.
 
 A planar piece authored facing another direction is rotated into canonical orientation automatically, and capture applies the inverse rotation so the source resources stay coherent.
 
-Configure each `minecraft:jigsaw` marker through Mojang's own block UI. A freshly generated Hallway variant already has north and south markers set to:
+Place, move, and remove connectors with the Connector Tool (below), and configure each `minecraft:jigsaw` marker's identity through Mojang's own block UI. A freshly generated Hallway variant already has north and south markers set to:
 
 | Mojang field | Generated planar value |
 |---|---|
@@ -120,6 +133,38 @@ The jigsaw block's `orientation` block state supplies its front and top directio
 
 Connector field meanings are in [21b - Jigsaw Resources](/iris/21b-jigsaw-resources).
 
+#### Placing connectors with the Connector Tool
+
+Open **Toolbox** and take **Connector Tool**, a stick bound to the open Studio. It works on any workcell, whether its connector blocks are shown or hidden.
+
+Every click aims at one cell of the loaded variant:
+
+- Clicking a block inside the variant targets that block, and the connector faces out of the face you clicked.
+- Clicking the studio floor or cage next to the variant targets the variant cell touching it, facing out of the piece; clicking the floor under the variant targets the bottom layer with a downward connector.
+- Pointing at open air targets the variant's outer cell where your line of sight crosses its boundary, facing out through that wall.
+- Sneak while clicking to face the connector into the clicked face instead.
+- An upward or downward connector takes its top from the direction you are facing.
+
+While you hold the tool, a white particle outline and direction line show the target; the outline turns orange over an existing connector, and a selected connector is outlined in yellow.
+
+In a spatial workcell:
+
+| Click | Result |
+|---|---|
+| Right-click an empty cell | Place a connector |
+| Right-click a connector | Select it |
+| Right-click an empty cell with a connector selected | Move the selected connector there |
+| Right-click the selected connector through another face | Turn it to face that way |
+| Right-click the selected connector through the same face | Deselect it |
+| Left-click a connector | Remove it |
+| Left-click anything else | Clear the selection |
+
+In a planar workcell, sockets stay on face centers and the workcell's topology is fixed. Right-click any face of a side, or the floor near it, to seat that side's socket at its face center: Iris moves an off-center connector of that side back to the center, removes extra connectors facing the same way, or adds the socket if it is missing. Sides outside the workcell's topology are refused. Left-click removes a stray connector but refuses a side's only socket.
+
+A new connector uses the generated defaults: name and target `iris:spatial` (planar `iris:planar`), the project's `<key>/pieces` pool, joint `ROLLABLE` (planar `ALIGNED`), no channel, and final state `minecraft:structure_void`. When the target cell already holds a built block, that block becomes the final state so the piece generates unchanged; a block entity cannot be replaced. A moved connector keeps its name, target, pool, channel, joint, and priorities.
+
+Each edit saves the piece immediately as one autosave iteration, so **Undo Last Autosave** can rewind it. If the workcell has edits waiting to autosave, the tool saves them first and then applies the click.
+
 #### Canonical planar sockets
 
 For a planar piece whose source object dimensions are `X x Y x Z`, every connector must be horizontal with top `UP_POSITIVE_Y`, and the canonically rotated object must fit its archetype workcell. Integer division is floor division.
@@ -133,11 +178,13 @@ For a planar piece whose source object dimensions are `X x Y x Z`, every connect
 
 New blank planar variants inherit the source variant's exact dimensions and use those for these positions. Workcell capacity changes never rewrite sockets or object bytes; **Variant Size** and `variant resize` move the canonical sockets to the new face centers.
 
+A planar piece is placed only where its sockets agree with every occupied neighbor cell: each neighbor socket that faces the cell needs a matching socket on the new piece, and each socket the new piece points at an occupied neighbor needs a matching socket there. A cell reached from two or three sides therefore receives an L, T, or Cross Junction open toward each of them, and rotatable pieces turn left or right as the layout requires. If no candidate in the primary or fallback pool agrees with every neighbor, the branch ends there under `TERMINATE_BRANCH`; under `FAIL_ASSEMBLY` Iris then tries candidates that match only the connector the branch grew from before it fails the assembly. Mandatory caps always require full agreement.
+
 Planar mode is a horizontal topology and validation contract, not a global wave-function-collapse solver. It does not backtrack across an entire map.
 
 #### Setting a connector channel
 
-Mojang's jigsaw UI has no field for the Iris `channel`. Let autosave capture the marker, look directly at it from within eight blocks in the loaded workcell, then run `/iris jigsaw connector channel <channel|none>`. `none` clears the channel. The command rejects a workcell with no active owned variant, a missing connector offset, whitespace inside a channel, and channels longer than 128 characters. It trims outer whitespace and keeps case. Reopen Studio to refresh the workcell and particles. A non-empty channel is rejected in `VANILLA_PORTABLE`.
+Mojang's jigsaw UI has no field for the Iris `channel`. Show the workcell's connector blocks from **Workcell Settings**, let autosave capture the marker, look directly at it from within eight blocks in the loaded workcell, then run `/iris jigsaw connector channel <channel|none>`. `none` clears the channel. The command rejects a workcell with no active owned variant, a missing connector offset, whitespace inside a channel, and channels longer than 128 characters. It trims outer whitespace and keeps case. The workcell and its particle colors refresh when the change is saved. A non-empty channel is rejected in `VANILLA_PORTABLE`.
 
 `finalState` must be a valid canonical Minecraft block state. Use `minecraft:structure_void` for an absent cell; a final state of air is retained explicitly and is not the same as an absent cell.
 
@@ -150,9 +197,9 @@ Change one block, then wait two seconds without another workcell update. Almost 
 /iris jigsaw save
 ```
 
-A failed or incomplete capture writes nothing.
+A failed or incomplete capture writes nothing. When autosave cannot capture a workcell, for example because a marker names a pool without the `iris:` namespace or an unparsable final state, Iris tells the owner why and retries with growing delays until the problem is fixed.
 
-**What connector order survives.** With connector blocks visible, autosave preserves the authored connector order and keeps every marker still at the same source-local position, including markers whose metadata or orientation changed. Removed markers disappear, and new or moved markers append in deterministic X/Y/Z order. With connector blocks hidden, connector identity and order stay fixed and the block state and tile NBT at that coordinate become the connector final state. Duplicate source or captured positions reject the save.
+**What connector order survives.** With connector blocks visible, autosave preserves the authored connector order and keeps every marker still at the same source-local position, including markers whose metadata or orientation changed. Removed markers disappear, and new or moved markers append in deterministic X/Y/Z order. With connector blocks hidden, connector identity and order stay fixed and the block state at that coordinate becomes the connector final state; block-entity data stays in the object. Use the Connector Tool to add, move, or remove connectors while they are hidden. Duplicate source or captured positions reject the save.
 
 **Rewinding.** The newest five committed iterations are retained per project, deduplicated by content. **Undo Last Autosave** restores and removes the newest one, so clicking it repeatedly rewinds up to five saves.
 
@@ -202,7 +249,7 @@ Piece themes, non-default chance, piece rules, and mandatory caps are Iris-only 
 
 Open **Workcell Settings** and stage capacity width, height, or depth by 1 or 8 without closing the menu, then click **Apply Cell Size**. Iris regenerates the layout live, moves the cages and active variants, rehydrates tile data, and moves you with the selected workcell. **Discard Size Changes** cancels the staged values without writing. Reopening Studio is only the recovery path if live regeneration fails.
 
-Each planar workcell persists its own capacity, and changing it never rewrites a variant object. Capacity is an upper bound: it cannot shrink below any variant already assigned to that cell. Planar capacity width and depth are `3..128`, spatial width and depth are `1..128`, height is `1..192`, and volume is at most `2,097,152`. Spatial mode persists one shared `cellSize` plus `spatialWorkcellDisplayName`.
+Each planar workcell persists its own capacity, and changing it never rewrites a variant object. Capacity is an upper bound: it cannot shrink below any variant already assigned to that cell. Planar capacity width and depth are `3..128`, spatial width and depth are `1..128`, height is `1..192`, and volume is at most `2,097,152`. Spatial mode persists one shared `cellSize` plus `spatialWorkcellDisplayName`. The shared spatial workcell grows to fit the largest variant, and a rotatable variant counts its larger horizontal side for both width and depth. A spatial variant resize or rotation toggle that would push the shared workcell past these limits is refused.
 
 **Variant Size** gives the selected variant its own exact width, height, and depth within that capacity. Growth adds air. A shrink is lossless only: any stored block (including explicit air) or tile outside the target, a connector destination collision, unsafe connector tile data, a read-only object, or an object shared by another piece rejects the transaction with no file written. **Resize This Variant to Capacity** is the one-click exact-size shortcut. Siblings keep their own dimensions and bytes.
 
@@ -210,7 +257,7 @@ Disabling a planar workcell removes all pieces of that archetype from assembly a
 
 ### Step 10 — Take Toolbox sticks for repeated actions
 
-Use the **Toolbox** page when you want an action available without reopening the chest. Clicking an entry gives you a named stick bound to the current Studio request and its workcell, variant, pool entry, or action. Right-click to use it. Resize, themes, and rules sticks open the relevant GUI context; other sticks run their bound action. A stick from a closed or replaced Studio is rejected. Destructive sticks need two right-clicks within 10 seconds.
+Use the **Toolbox** page when you want an action available without reopening the chest. Clicking an entry gives you a named stick bound to the current Studio request and its workcell, variant, pool entry, or action. Right-click to use it. Resize, themes, and rules sticks open the relevant GUI context; the **Connector Tool** is described in Step 4; other sticks run their bound action. A stick from a closed or replaced Studio is rejected, and a variant stick only acts while its variant is loaded. Destructive sticks need two separate right-clicks within 10 seconds; holding the button down does not confirm.
 
 ### Step 11 — Set expansion limits
 
@@ -303,13 +350,26 @@ Spatial projects use the same lifecycle without the planar cell constraints:
 /iris jigsaw create overworld stronghold/demo mode=spatial width=32 height=24 depth=32
 ```
 
-A new spatial project starts with seven owned 15x15x15 variants laid out left to right in one row: **0 Connectors**, then **1 Connector** through **6 Connectors**. The connector sequence is cumulative north, south, east, west, up, then down, so each adjacent cell adds one face-center socket. The first cell uses `workcell/spatial`; later cells use `workcell/spatial/<piece-key>`. Adding, deleting, or resizing variants regenerates the live row without reopening Studio.
+A new spatial project starts with 24 owned variants, one for every connector layout that stays distinct under cardinal Y rotation, laid out left to right in one row. The horizontal shapes match the planar archetypes, and each shape comes in four vertical forms:
 
-The start pool contains all seven variants. The pieces pool contains variants 1 through 6 plus an explicit empty terminator; the connectorless editing piece is excluded because nothing can reach it as a child. Each generated piece defaults to at most 16 placements, so seed `1337` renders a bounded connected blob in the elevated spatial preview instead of one isolated piece.
+| Horizontal shape | Canonical horizontal sockets | Keys |
+|---|---|---|
+| Blank | none | `blank`, `blank-up`, `blank-down`, `blank-up-down` |
+| End Cap | north | `end`, `end-up`, `end-down`, `end-up-down` |
+| Hallway | north and south | `straight`, `straight-up`, `straight-down`, `straight-up-down` |
+| L Junction | north and east | `corner`, `corner-up`, `corner-down`, `corner-up-down` |
+| T Junction | north, east, and west | `tee`, `tee-up`, `tee-down`, `tee-up-down` |
+| Cross Junction | north, east, south, and west | `cross`, `cross-up`, `cross-down`, `cross-up-down` |
+
+The row shows the six flat variants first, then the six `-up`, `-down`, and `-up-down` groups. Display names add ` + Up`, ` + Down`, or ` + Up/Down` to the shape name, for example **L Junction + Up/Down**. Every socket sits at a face center: horizontal sockets use top `UP_POSITIVE_Y`, up and down sockets use top `NORTH_NEGATIVE_Z`, and every generated connector is `ROLLABLE`, named `iris:spatial`, and targets the pieces pool. The first cell uses `workcell/spatial`; later cells use `workcell/spatial/<piece-key>`. Adding, deleting, or resizing variants regenerates the live row without reopening Studio.
+
+The start pool contains all 24 variants at weight `1`. The pieces pool contains the 23 variants with connectors plus an explicit empty terminator. Blank has no connectors, so nothing attaches to it: when the start pool picks Blank, the whole structure is that single cell. In an Iris-compatible project every generated piece belongs to theme `variant-1` and defaults to at most 4 placements, so seed `1337` renders a bounded connected blob in the elevated spatial preview. A vanilla-compatible project has no placement rules and uses `maxDepth` `4` to bound the assembly instead.
 
 Build inside a variant's dedicated cell and configure its doorway, stair, shaft, floor, or ceiling connectors. Spatial connectors may use all 12 front/top orientations the jigsaw block supports. Use `ROLLABLE` when the candidate's top direction should not constrain the join, and `ALIGNED` when it must match the source top after rotation. Iris tries only cardinal Y rotations. A piece with `rotatable: false` is tried only at its authored rotation; the control-chest details view toggles that, and vanilla-portable variants must stay rotatable.
 
-Studio sizes the shared capacity to contain every reachable object and the horizontal footprint of its cardinal rotations, while each variant keeps its own exact dimensions. Use **Resize to Capacity** or `/iris jigsaw piece expand` when only the selected object should become the full workcell size. Spatial workcell and variant labels are author metadata; `cellSize` and labels do not constrain runtime assembly.
+Studio sizes the shared capacity to contain every reachable object and the horizontal footprint of its cardinal rotations, while each variant keeps its own exact dimensions. Use **Resize to Capacity** or `/iris jigsaw piece expand` when only the selected object should become the full workcell size. Each spatial workcell is labelled by the variant it holds, so renaming the workcell renames that variant. Labels are author metadata; `cellSize` and labels do not constrain runtime assembly.
+
+Because every spatial workcell holds exactly one variant, the loaded variant itself can be deleted from its details view or the Toolbox, as long as another spatial variant remains. The row regenerates without that workcell.
 
 Create additional owned pools before targeting them from new spatial markers:
 
@@ -341,7 +401,7 @@ The create/open `<key>` is the root structure's internal lowercase resource path
 | `goto <workcell>` | Select and teleport above a stable workcell ID or name, case-insensitively. Alias `teleport` |
 | `particles <visible>` | Toggle player-local workcell-bound, connector, live-preview, and temporary assembly-preview particle trails |
 | `save [bay=selected]` | Flush automatic capture now for one dirty ready workcell. Ordinary block and container changes already schedule this |
-| `connector channel <channel\|none>` | Look at a saved marker in the active owned workcell within 8 blocks and set or clear its Iris-only channel. Reopen to refresh the workcell and particles |
+| `connector channel <channel\|none>` | Look at a visible saved marker in the active owned workcell within 8 blocks and set or clear its Iris-only channel |
 | `bounds <width> <height> <depth>` | Set the selected workcell capacity without rewriting any variant object. All variants must fit. Aliases `cell`, `resize` |
 | `workcell capacity <width> <height> <depth>` | Explicit nested form of `bounds`. Planar capacity belongs to one canonical archetype; spatial capacity is the shared envelope for its one-row variant cells |
 | `workcell label <displayName>` | Set the selected workcell's author-facing label. Quote spaces. Canonical solver identity is unchanged |
@@ -365,7 +425,7 @@ The create/open `<key>` is the root structure's internal lowercase resource path
 | `export [namespace=iris] [output=jigsaw-export] [format=zip] [replace=false]` | Start a background strict export of the clean on-disk graph as a directory or zip for Minecraft 26.3 on 26.3 servers, or Minecraft 26.2 on earlier supported servers |
 | `delete [confirm=false]` | With `confirm=true`, inspect reverse references, close Studio, and atomically remove the complete owned project. External references or changed ownership bytes block deletion. Alias `remove` |
 
-The control chest is the primary workflow. Its six-row GUI manages workcell capacities and labels, per-variant dimensions and labels, enabled states, rotation, pool-entry weights and chances, themes, piece rules, mandatory caps, preview navigation, toolbox sticks, and deletion. Accepted asynchronous actions close the GUI while work runs; wait for the player message, then reopen the chest.
+The control chest is the primary workflow. Its six-row GUI manages workcell capacities and labels, per-variant dimensions and labels, enabled states, rotation, pool-entry weights and chances, themes, piece rules, mandatory caps, preview navigation, toolbox sticks including the Connector Tool, and deletion. Accepted asynchronous actions close the GUI while work runs; wait for the player message, then reopen the chest.
 
 Rules with no in-game control (`branchFailurePolicy`, `placeMode`, structure `edit`, structure `loot`, pool `mandatoryFallback`, and empty entries) stay schema-backed JSON fields.
 

@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -33,7 +33,7 @@ Jigsaw markers are real `minecraft:jigsaw` blocks while you edit. Saving reads t
 | `channel` | `/iris jigsaw connector channel <channel\|none>` on a saved marker's exact local position | Values match exactly, including case and whitespace. Empty matches only empty, and any non-empty value blocks vanilla export |
 | `joint` | Mojang Joint | `ROLLABLE` ignores candidate top. `ALIGNED` requires it to match |
 | `finalState` | Mojang Final state | Canonical block state written into the `.iob` at the marker cell. `minecraft:structure_void` leaves the cell absent, while explicit air remains an authored block state |
-| `selectionPriority` | Mojang Selection priority | Signed integer. Higher-priority connectors within one piece are processed first, and ties keep authored order |
+| `selectionPriority` | Mojang Selection priority | Signed integer. Higher-priority connectors within one piece are processed first, and ties keep authored order. A rotatable candidate applies this order within each of its cardinal rotations, which it tries in random order |
 | `placementPriority` | Mojang Placement priority | Signed integer on the source connector. Higher-priority attached child pieces expand first, and ties keep attachment order |
 
 Runtime matching never trims either side, so whitespace in schema-authored data stays significant even though the `connector channel` command cannot author it.
@@ -71,9 +71,9 @@ Runtime matching never trims either side, so whitespace in schema-authored data 
 | Field | Default / range | What it does in world |
 |---|---|---|
 | `startPool` | required | Everything grows out of whatever piece this pool produces first |
-| `maxDepth` | `7`, range `1..30` | How many connector hops the assembler may chain outward before it stops adding rooms. Higher values allow larger settlements |
+| `maxDepth` | `7`, range `1..30`. Studio `create` writes `4` for a vanilla-compatible spatial project | How many connector hops the assembler may chain outward before it stops adding rooms. Higher values allow larger settlements |
 | `maxSizeChunks` | `8`, range `1..32` | A hard leash: no piece may sit further than this many chunks (times 16 blocks) from the start, no matter how much depth is left |
-| `mode` | Hand-authored schema fallback `SPATIAL_JIGSAW`. Studio `create` default `PLANAR_JIGSAW` | `PLANAR_JIGSAW` forces every piece onto a flat grid with face-center sockets and validates that shape. `SPATIAL_JIGSAW` lets pieces stack and branch in three dimensions |
+| `mode` | Hand-authored schema fallback `SPATIAL_JIGSAW`. Studio `create` default `PLANAR_JIGSAW` | `PLANAR_JIGSAW` forces every piece onto a flat grid with face-center sockets, validates that shape, and only places a piece whose sockets agree with every occupied neighbor cell. `SPATIAL_JIGSAW` lets pieces stack and branch in three dimensions and checks only the connector a piece attaches through |
 | `compatibility` | `IRIS_EXTENDED` | `VANILLA_PORTABLE` locks the graph down to what vanilla jigsaw resources can express, which is what makes datapack export possible |
 | `branchFailurePolicy` | `FAIL_ASSEMBLY` | Decides what a dead-end arm costs you. Throw away the whole structure, or leave a stub where that arm stopped. `TERMINATE_BRANCH` is required for vanilla portability |
 | `cellSize` | `15 x 15 x 15`. Studio X/Z `1..128`, Y `1..192`, volume `<=2,097,152` | The editing volume for spatial cells, and the uniform editing volume for a planar graph that has no `planarWorkcells`. It does not constrain runtime assembly |
@@ -165,9 +165,10 @@ Jigsaw pieces retain their authored size. The dimension's `allObjectScaleFactor`
 3. It chooses one positively weighted passing start entry and applies a random cardinal rotation when the piece is rotatable. A terminal start is placed but does not expand.
 4. It processes connectors on the current piece in descending `selectionPriority` order, filtering the primary pool by the same rules and trying passing entries in weighted random order. An eligible piece can still fail because its connectors are incompatible, it collides, or it exceeds bounds.
 5. Entries that still need their declared minimum placement count take precedence over other entries. After expansion, an unmet graph-wide minimum produces `FAILED_RULES` rather than silently accepting the assembly.
-6. A candidate connector is compatible when source `targetName` exactly equals candidate `name` and source `channel` exactly equals candidate `channel`, case and whitespace preserved. The faces must oppose after rotation, and an `ALIGNED` source also needs a matching top direction.
-7. Two pieces whose `collidable` values are both `true` may not overlap. A piece with `collidable: false` neither blocks nor is blocked, but every piece must still stay inside `maxSizeChunks x 16` blocks of the origin. Attached children are queued by the source connector's `placementPriority`, and Iris finishes one piece's connectors before expanding its children.
-8. Before maximum depth, Iris tries the primary pool and then that pool's one direct fallback; at maximum depth it skips the primary. An allowed explicit empty entry or an empty primary pool ends the branch immediately without continuing into the fallback. When `requireCaps` or `mandatoryFallback` is true, the fallback must place a compatible terminal piece and an empty entry cannot satisfy it. Otherwise primary-plus-fallback exhaustion returns `FAILED_UNCAPPED` under `FAIL_ASSEMBLY`, or ends only that branch under `TERMINATE_BRANCH`. A fallback's own fallback is never traversed in the same selection.
+6. A candidate connector is compatible when source `targetName` exactly equals candidate `name` and source `channel` exactly equals candidate `channel`, case and whitespace preserved. The faces must oppose after rotation, and an `ALIGNED` source also needs a matching top direction. A rotatable candidate tries its four cardinal rotations in random order and, within each rotation, its connectors in descending `selectionPriority` order, so an L or T piece can attach through any of its sockets and turn either way.
+7. In `PLANAR_JIGSAW`, and in any mode with `requireCaps`, a candidate must also agree with every occupied neighbor: each open neighbor connector pointing into the candidate needs a compatible candidate connector facing it, and each candidate connector pointing into a placed piece needs a compatible connector there. Agreeing connectors close together. A planar connector whose branch ended without a piece stays open, so a piece placed in front of it later must open toward it. Without `requireCaps`, a planar branch that no agreeing candidate can resolve ends under `TERMINATE_BRANCH`; under `FAIL_ASSEMBLY` it retries with candidates that agree only with the source connector before failing.
+8. Two pieces whose `collidable` values are both `true` may not overlap. A piece with `collidable: false` neither blocks nor is blocked, but every piece must still stay inside `maxSizeChunks x 16` blocks of the origin. Attached children are queued by the source connector's `placementPriority`, and Iris finishes one piece's connectors before expanding its children.
+9. Before maximum depth, Iris tries the primary pool and then that pool's one direct fallback; at maximum depth it skips the primary. An allowed explicit empty entry or an empty primary pool ends the branch immediately without continuing into the fallback. When `requireCaps` or `mandatoryFallback` is true, the fallback must place a compatible terminal piece and an empty entry cannot satisfy it. Otherwise primary-plus-fallback exhaustion returns `FAILED_UNCAPPED` under `FAIL_ASSEMBLY`, or ends only that branch under `TERMINATE_BRANCH`. A fallback's own fallback is never traversed in the same selection.
 
 The runtime hard cap is 512 pieces. The compiler reports missing resources, invalid workcells, bounds, connectors, themes, chances, and rules, plus fallback cycles, unreachable resources, uncappable required connectors, incompatible candidates, and sampled hard-cap failures. Studio reevaluates automatically after every committed mutation, so there is no separate validation action.
 
@@ -267,7 +268,7 @@ Output is written under `<Iris data>/packs/exports/`. Wait for the export's comp
 
 `output` is one direct artifact name: 1-128 characters, starting with a letter, number, `_`, or `-`, then only letters, numbers, `.`, `_`, or `-`. Whitespace, leading `.`, absolute paths, slashes, nested paths, and traversal names are rejected. `format=zip` adds `.zip` when needed. The destination is replaced atomically only when `replace=true`; an existing output is otherwise rejected.
 
-The command emits a datapack matching the running 26.2 or 26.3 server, with template pools, compressed structure-template NBT, one jigsaw worldgen structure, and one random-spread structure set. API exports on Minecraft 1.21.1 use pack format 48 and require equal horizontal and vertical maximum distances; that vanilla format cannot express separate limits. Iris native structure generation retains separate vertical limits on 1.21.1.
+The command emits a datapack matching the running 26.2 or 26.3 server, with template pools, compressed structure-template NBT, one jigsaw worldgen structure, and one random-spread structure set. On Minecraft 1.21.1 it uses pack format 48 and writes one maximum distance, `maxSizeChunks x 16`, for both axes, because that vanilla format cannot express separate limits; API exports on 1.21.1 must likewise pass equal horizontal and vertical maximum distances. Iris native structure generation retains separate vertical limits on 1.21.1.
 
 | Vanilla setting | Export default |
 |---|---|
@@ -276,7 +277,7 @@ The command emits a datapack matching the running 26.2 or 26.3 server, with temp
 | Generation step | `surface_structures` |
 | Terrain adaptation | `none` |
 | Expansion hack | `false` |
-| Maximum vertical distance | `4064` |
+| Maximum vertical distance | `4064`; `maxSizeChunks x 16` on 1.21.1 |
 | Structure-set placement | random spread: spacing `32`, separation `8`, salt `0`, frequency `1`, linear spread |
 
 Those defaults are fixed. Edit the emitted datapack afterward if they are not the vanilla placement you want.

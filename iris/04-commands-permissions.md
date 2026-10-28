@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-25T20:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -336,7 +336,7 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 | `goto` | `<bay>` | Select and teleport above a stable workcell ID. Alias `teleport` |
 | `particles` | `<visible>` | Toggle player-local workcell-bound, connector, and temporary assembly-preview particle trails |
 | `save` | `[bay=selected]` | Flush the selected dirty workcell's automatic capture now. Normal block and container updates already autosave |
-| `connector channel` | `<channel\|none>` | Look at a saved marker in the active owned workcell within 8 blocks and set or clear its Iris-only channel |
+| `connector channel` | `<channel\|none>` | Look at a visible saved marker in the active owned workcell within 8 blocks and set or clear its Iris-only channel |
 | `bounds` | `<width> <height> <depth>` | Set the selected workcell capacity without resizing any variant object. Every existing variant must fit, and the compact Studio layout regenerates in place. Aliases `cell`, `resize` |
 | `workcell capacity` | `<width> <height> <depth>` | Explicit nested form of `bounds` (group alias `cell`). Planar capacities are per canonical archetype and spatial capacity is the shared envelope for its one-row variant cells |
 | `workcell label` | `<displayName>` | Set the selected planar or spatial workcell's author label. Quote spaces. Solver identity remains canonical |
@@ -360,7 +360,7 @@ See [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas).
 | `export` | `[namespace=iris] [output=jigsaw-export] [format=zip] [replace=false]` | Start a background strict Minecraft 26.2 vanilla datapack export as one direct artifact under the Studio packs `exports/` folder |
 | `delete` | `[confirm=false]` | With `confirm=true`, close Studio and delete the complete owned project after checking its references. Alias `remove` |
 
-There is no Jigsaw Studio undo command, adoption rollback command, or mod-loader authoring command. **Undo Last Autosave** in Workcell Settings restores the newest of five previous saved graph iterations retained in one `.iris/jigsaw-history/key-<sha256>.json` file. **Reset Connector Blocks** restores the selected workcell's saved connector blocks without replacing its other edited blocks.
+There is no Jigsaw Studio undo command, adoption rollback command, or mod-loader authoring command. **Undo Last Autosave** in Workcell Settings restores the newest of five previous saved graph iterations retained in one `.iris/jigsaw-history/key-<sha256>.json` file. **Reset Connector Blocks** restores the selected workcell's saved connector blocks and clears jigsaw markers that were never saved, without replacing its other edited blocks. The Toolbox **Connector Tool** places, moves, and removes connectors directly, and the floor under each workcell maps its saved connectors.
 
 Planar Studio always has six independently capacitated/enabled canonical workcells. Spatial Studio places every variant in a dedicated one-row cell. A new project seeds seven 15×15×15 variants with 0 through 6 cumulative face-center connectors. All cells retain one clear block of separation and use physical white-concrete edge cages with player-local particle trails inside them. Jigsaw Studio spawns no display entities for workcell bounds. Every variant retains its own exact dimensions and optional display label. Workcell and variant rename tools are renamed in an anvil, right-clicked to apply, and sneak-right-clicked to reset. A catalog may contain at most 512 variants. Natural creature spawning is disabled in the transient Studio world.
 
