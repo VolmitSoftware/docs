@@ -2,7 +2,7 @@
 title: "BileTools: Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -80,16 +80,20 @@ Plugin authors must satisfy the [native Paper contract](/biletools/api#native-pa
 |---|---|---|
 | `remote-deploy.slave.slave-enabled` | `false` | Listen for incoming jar deployments |
 | `remote-deploy.slave.slave-port` | `9876` | Listener port |
-| `remote-deploy.slave.slave-payload` | `pickapassword` | Shared secret the master must present |
+| `remote-deploy.slave.slave-bind-address` | `0.0.0.0` | Interface the listener binds to |
+| `remote-deploy.slave.trusted-keys` | `[]` | Public keys of masters allowed to deploy |
+| `remote-deploy.slave.allowed-addresses` | `[]` | Master IPs or CIDR ranges allowed to connect. Empty allows any address |
 | `remote-deploy.master.master-enabled` | `false` | Push jars to configured targets |
-| `remote-deploy.master.master-deploy-to` | `["yourserver.com:9876:password"]` | Targets as `host:port:password` |
+| `remote-deploy.master.master-deploy-to` | `[]` | Targets as `host:port` |
+| `remote-deploy.master.trusted-keys` | `[]` | Public keys of receivers this master sends to |
 | `remote-deploy.master.master-deploy-signatures` | `["MyPlugin", "AnotherPlugin"]` | Which plugins get pushed |
 | `remote-deploy.socket-timeout-ms` | `15000` | Socket timeout. Minimum `1000` |
 | `remote-deploy.max-transfer-bytes` | `268435456` | 256 MiB cap per transfer. Minimum 1 MiB |
 {.dense}
 
-The master and the slave both default to off. Read
-[Remote Deploy](/biletools/remote-deploy) before you enable either half.
+The master and the receiver both default to off. Each server's key is not a
+configuration value: BileTools generates it in `plugins/BileTools/remote-deploy/`.
+Read [Remote Deploy](/biletools/remote-deploy) before you enable either half.
 
 ## Velocity proxy (biletools.json)
 
@@ -105,9 +109,9 @@ See [Languages](/languages).
 
 ## In-game settings editor
 
-`/bile config` exposes every current setting. Boolean, numeric, and non-secret list values are editable, and the language entry opens the language tools. Changes are validated, saved atomically, and applied live. Receiver changes restart the listener; metrics changes start or stop bStats.
+`/bile config` exposes every setting except the remote deploy trust settings. Boolean, numeric, and list values are editable, and the language entry opens the language tools. Changes are validated, saved atomically, and applied live. Receiver changes restart the listener; metrics changes start or stop bStats.
 
-`remote-deploy.slave.slave-payload` and `remote-deploy.master.master-deploy-to` are represented as redacted, file-only entries because they contain secrets. Edit them directly in `biletools.yml`, then reload BileTools or restart the server.
+`remote-deploy.slave.trusted-keys`, `remote-deploy.slave.allowed-addresses`, `remote-deploy.slave.slave-bind-address`, `remote-deploy.master.master-deploy-to`, and `remote-deploy.master.trusted-keys` never appear in the editor. Edit them directly in `biletools.yml`, then reload BileTools or restart the server. Enabling either half of remote deploy from the editor loads the server key, or generates it if it does not exist yet.
 
 The language entry opens `/bile language server edit`, which edits messages without changing anyone's selected language. It needs `biletools.config` or `volmit.language.admin`.
 

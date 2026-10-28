@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-26T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -154,7 +154,7 @@ On Paper, Purpur, Leaf, or Folia:
 /iris replace minecraft:overworld type=overworld seed=123456789
 ```
 
-Replacement requires a full restart. The target must already exist. Plain Spigot supports creating new Iris worlds but does not support this replacement command.
+Replacement requires a full restart. The target must already exist. Plain Spigot supports creating new Iris worlds but does not support this replacement command. If the server stops while a replacement is staging, shutdown waits for staging to finish, and a replacement started during shutdown is refused.
 
 | Parameter | Use |
 |---|---|
