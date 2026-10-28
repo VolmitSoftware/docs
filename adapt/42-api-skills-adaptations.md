@@ -2,7 +2,7 @@
 title: "API - Skills & Adaptations"
 description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,6 +42,8 @@ Everything else on these interfaces is first-party authoring code. That includes
 Override `isPlayerPreferenceVisible(AdaptPlayer, PlayerPreference<?>)` to hide a dependent control until its level and mode conditions hold. The menu reevaluates visibility when a preference changes and updates the settings row in place. Hiding a control does not clear its stored override or replace runtime eligibility checks.
 
 `Adaptation.getPlayerPreferences()` lists explicitly registered `PlayerPreference<E>` definitions. Each enum-backed definition has a stable ID, translated label, default value, and choices with an icon and minimum learned level. Register definitions only for behavior the adaptation actually consumes. `CommonPreferences.ENABLED` is included by default. Overrides must retain it and append their behavior-specific controls. `CommonPreferences.toggle` supplies ON/OFF choices, and `CommonPreferences.scale` supplies FULL/HALF/QUARTER caps through `Scale.multiplier()`.
+
+Override `getPlayerPreferenceGroups()` to place related ON/OFF controls behind one settings-row button. A `PreferenceToggleGroup` has a stable ID, translated label, button icon, and up to 45 entries, each pairing a `PlayerPreference<CommonPreferences.Toggle>` with the item shown in its submenu. Every grouped preference must still be listed by `getPlayerPreferences()`, which also sets where the group's button appears: at the position of its first member. Override `isPlayerPreferenceBlocked(PlayerPreference<?>)` to mark a control the server has made unavailable. The menu shows a blocked control as locked and `PlayerPreferences.set` rejects it, but runtime handlers must enforce the restriction themselves. Growth Aura groups its per-plant toggles this way and blocks a plant once `AdaptConfig.get().isGrowthBlacklisted(Material)` is true for every block it covers. Check `isGrowthBlacklisted` before any integration forces plant growth on Adapt's behalf.
 
 `CommonPreferences.DEATH_SAVE_PRIORITY` supplies `FIRST`, `NORMAL`, and `LAST`, with `NORMAL` as the default. Last Rites, Hourglass Guard, and Void Skin use it to select one eligible death save. Resolve it through the normal preference API so server defaults, allowed values, and locks apply.
 

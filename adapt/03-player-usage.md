@@ -2,7 +2,7 @@
 title: "Player Usage"
 description: "Open the Adapt menu and learn or remove adaptations"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,6 +40,8 @@ Passive adaptations run after purchase. Active adaptations use the trigger on th
 When the server permits personal settings, every adaptation has an enable switch and any additional personal controls along the bottom of its level screen. Each skill screen also has a master switch that suppresses your adaptations in that skill while preserving their individual choices. The skill pages list input modes, filters, personal limits, and other supported controls. When `playerSettingsEnabled` is `false`, these controls and resets are hidden and server defaults apply. You can still learn and unlearn under the normal rules.
 
 Left-click a control to cycle forward. Right-click to cycle backward. Glass panes show **On** in lime and **Off** in red. Mode items show the current choice in their lore. Controls update without closing the inventory.
+
+Some controls open a submenu of on/off entries. Growth Aura's **Growables** button, for example, lists each plant the aura can grow. Click an entry to toggle it; enabled entries glow, and entries the server has made unavailable appear as gray panes. Use Back or Escape to return to the level screen.
 
 Changes, resets, locked choices, and control-page navigation have distinct quiet sounds. Your effects preference and the server sound settings control whether you hear them.
 

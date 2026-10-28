@@ -2,7 +2,7 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -42,7 +42,7 @@ Toggle defaults preserve the standard behavior. Size and rate presets default to
 
 5 levels · 6 knowledge
 
-Shapeless recipe `chronos-time-bottle` is `CLOCK` + `POTION` + `GLASS_BOTTLE`, and the potion must be `SWIFTNESS`. Carried, the bottle charges. Right-click spends stored time on furnaces, smokers, blast furnaces, brewing stands, campfires, growable blocks, or Ageable entities. Furnaces and brewing stands need container access. Campfires and growables need block-place permission. A sapling generates a tree only when nothing protects the space that tree would fill.
+Shapeless recipe `chronos-time-bottle` is `CLOCK` + `POTION` + `GLASS_BOTTLE`, and the potion must be `SWIFTNESS`. Carried, the bottle charges. Right-click spends stored time on furnaces, smokers, blast furnaces, brewing stands, campfires, growable blocks, or Ageable entities. Furnaces and brewing stands need container access. Campfires and growables need block-place permission. A sapling generates a tree only when nothing protects the space that tree would fill. Blocks in the server's [`blacklistedGrowables`](/adapt/01-installation-configuration#growth-blacklist) list are not grown, and the bottle spends no stored time on them.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -390,7 +390,7 @@ Beneficial potion effects applied to the player gain extra duration. At max leve
 
 5 levels · 4 knowledge, then 5 per level
 
-An unaimed aura samples nearby blocks and advances crop growth or remaining cook and brew time on furnaces, smokers, blast furnaces, and brewing stands. Crops need block-place permission. Those stations need container access.
+An unaimed aura samples nearby blocks and advances crop growth or remaining cook and brew time on furnaces, smokers, blast furnaces, and brewing stands. Crops need block-place permission. Those stations need container access. Crops in the server's [`blacklistedGrowables`](/adapt/01-installation-configuration#growth-blacklist) list are not advanced.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|

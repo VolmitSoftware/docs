@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 |---|---|
 | Bee Shepherd (`herbalism-bee-shepherd`) | `growth-particles`: Growth particles; `bee-attraction`: Bee attraction; `growth`: Crop growth; `food-reserve`: Keep eight food points |
 | Compost Cascade (`herbalism-compost-cascade`) | `materials`: Allowed plant materials; `leaves`: Consume leaves; `dropped-items`: Consume dropped items; `inventory-items`: Consume inventory items; `item-reserve`: Keep eight items per stack |
-| Growth Aura (`herbalism-growth-aura`) | `materials`: Allowed plant materials; `surface-only`: Only surface crops; `food-reserve`: Keep sixteen food points; `radius`: Growth radius |
+| Growth Aura (`herbalism-growth-aura`) | Growables submenu with one `growable-<plant>` toggle per plant; `surface-only`: Only surface crops; `food-reserve`: Keep sixteen food points; `radius`: Growth radius |
 | Harvest & Replant (`herbalism-replant`) | `materials`: Allowed plant materials; `sneak`: Require sneak to replant |
 | Hoe Drop-To-Inventory (`herbalism-drop-to-inventory`) | `materials`: Allowed plant materials; `seeds-only`: Only collect planting items |
 | Hungry Shield (`herbalism-hungry-shield`) | `food-reserve`: Keep eight food points; `basics`: Environmental damage; `melee`: Melee damage; `fire`: Fire damage; `burst`: Projectile and explosion damage; `magic`: Magic damage |
@@ -25,7 +25,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 | Seed Sower (`herbalism-seed-sower`) | `materials`: Allowed plant materials; `radius`: Planting radius; `seed-reserve`: Keep eight held seeds |
 | Spore Bloom (`herbalism-spore-bloom`) | `flower-conversion`: Convert flowers to mushrooms; `soil-conversion`: Convert spread soil; `spread-limit`: Spread block limit |
 
-Food reserves retain eight food points for Bee Shepherd, Hungry Shield and Rooted Footing; Growth Aura can retain sixteen instead of its normal ten-point floor. Compost Cascade’s reserve keeps eight items in each consumed stack, and its drop and inventory sources can be disabled independently. Seed Sower can retain eight held seeds. Plant filters select all supported plants or one crop/material family. Replant’s pickup integration also respects Drop to Inventory’s material filter. Hungry Shield exclusions remain within learned damage coverage. Spore Bloom can independently suppress soil conversion or flower conversion, and smaller spread presets never reduce an accepted action’s catalyst or food cost.
+Food reserves retain eight food points for Bee Shepherd, Hungry Shield and Rooted Footing; Growth Aura can retain sixteen instead of its normal ten-point floor. Compost Cascade’s reserve keeps eight items in each consumed stack, and its drop and inventory sources can be disabled independently. Seed Sower can retain eight held seeds. Compost Cascade, Harvest & Replant, Drop to Inventory and Seed Sower plant filters select all supported plants or one crop/material family. Growth Aura's Growables button opens a submenu where each plant is toggled separately. Replant’s pickup integration also respects Drop to Inventory’s material filter. Hungry Shield exclusions remain within learned damage coverage. Spore Bloom can independently suppress soil conversion or flower conversion, and smaller spread presets never reduce an accepted action’s catalyst or food cost.
 
 Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
@@ -45,6 +45,33 @@ Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Ro
 7 levels · 12 knowledge, then 8 per level
 
 Each pulse samples `ceil(clamp(radius * radius, 3, 256))` blocks inside radius `levelPercent * radiusFactor` and, a second or two later, advances a crop that is not fully grown by `level * strengthFactor` age steps, capped by the crop's remaining age. Food per step interpolates from `maxFoodCost` at no progress to `minFoodCost` at full level.
+
+The Growables button in the settings row opens a submenu with one toggle per plant the aura grows. Every toggle starts on, and the aura skips any plant you switch off. A plant whose blocks are all in the server's [`blacklistedGrowables`](/adapt/01-installation-configuration#growth-blacklist) list shows as unavailable and is never grown.
+
+| Toggle | Blocks it covers |
+|---|---|
+| `growable-wheat` | `WHEAT` |
+| `growable-carrots` | `CARROTS` |
+| `growable-potatoes` | `POTATOES` |
+| `growable-beetroots` | `BEETROOTS` |
+| `growable-melons` | `MELON_STEM` |
+| `growable-pumpkins` | `PUMPKIN_STEM` |
+| `growable-nether-wart` | `NETHER_WART` |
+| `growable-sweet-berries` | `SWEET_BERRY_BUSH` |
+| `growable-glow-berries` | `CAVE_VINES` |
+| `growable-cocoa` | `COCOA` |
+| `growable-torchflowers` | `TORCHFLOWER_CROP` |
+| `growable-pitcher-plants` | `PITCHER_CROP` |
+| `growable-sugar-cane` | `SUGAR_CANE` |
+| `growable-cactus` | `CACTUS` |
+| `growable-bamboo` | `BAMBOO` |
+| `growable-kelp` | `KELP` |
+| `growable-nether-vines` | `WEEPING_VINES`, `TWISTING_VINES` |
+| `growable-chorus` | `CHORUS_FLOWER` |
+| `growable-mangrove-propagules` | `MANGROVE_PROPAGULE` |
+| `growable-other` | Any other block with a growth age |
+
+Each toggle has its own server policy under `[playerPreferences.growable-<plant>]` in `adaptations/herbalism-growth-aura.toml`, so a server can change a plant's default or lock it per adaptation.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -214,7 +241,7 @@ Sneak-right-click with wheat seeds, carrots, potatoes, beetroot seeds, melon see
 
 6 levels · 4 knowledge
 
-Sneak-right-click a composter, or one looked at within 5 blocks, to pull in nearby ground items, harvest and replant mature crops, strip leaves when `consumeLeaves` is true, feed compostable inventory items, spend the new compost on immature crops, drop bone meal at the composter, and roll a valuable drop only when the composter is full. The item budget is 40 percent field scan, 20 percent inventory, and the rest loose drops, and those drops are tagged so a later cascade ignores them; maturation attempts are `min(configuredAttempts, levelGains + overflowFills)`; bone meal is `baseBoneMeal + (itemsConsumed / itemsPerBoneMeal) + overflowBoneMeal`, plus the ready bonus the first time the composter reaches level 8, capped at a stack; full-composter weights are honeycomb 45 percent, glow berries 25, amethyst shards 18, emerald 9, and diamond 3; XP is `(itemsConsumed * xpPerItemConsumed) + (levelGains * xpPerLevelGain) + (cropsMatured * xpPerCropMatured)`.
+Sneak-right-click a composter, or one looked at within 5 blocks, to pull in nearby ground items, harvest and replant mature crops, strip leaves when `consumeLeaves` is true, feed compostable inventory items, spend the new compost on immature crops, drop bone meal at the composter, and roll a valuable drop only when the composter is full. Crops in the server's [`blacklistedGrowables`](/adapt/01-installation-configuration#growth-blacklist) list are harvested when ripe but never matured. The item budget is 40 percent field scan, 20 percent inventory, and the rest loose drops, and those drops are tagged so a later cascade ignores them; maturation attempts are `min(configuredAttempts, levelGains + overflowFills)`; bone meal is `baseBoneMeal + (itemsConsumed / itemsPerBoneMeal) + overflowBoneMeal`, plus the ready bonus the first time the composter reaches level 8, capped at a stack; full-composter weights are honeycomb 45 percent, glow berries 25, amethyst shards 18, emerald 9, and diamond 3; XP is `(itemsConsumed * xpPerItemConsumed) + (levelGains * xpPerLevelGain) + (cropsMatured * xpPerCropMatured)`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -277,7 +304,7 @@ Walking or jumping on `FARMLAND` does not trample it, and part of fall damage on
 
 5 levels · 3 knowledge
 
-Hold a flower in either hand to pulse crop growth while you have enough food. Each pulse pulls at most 8 nearby bees and clears their attack targets.
+Hold a flower in either hand to pulse crop growth while you have enough food. Each pulse pulls at most 8 nearby bees and clears their attack targets. Crops in the server's [`blacklistedGrowables`](/adapt/01-installation-configuration#growth-blacklist) list are not grown.
 
 Supported flowers include tulip, dandelion, poppy, blue orchid, allium, azure bluet, oxeye daisy, cornflower, lily of the valley, wither rose, sunflower, lilac, rose bush, peony, torchflower, and pink petals.
 

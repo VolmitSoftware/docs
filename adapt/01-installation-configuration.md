@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, settings, and uninstalling"
 published: true
-date: 2026-10-19T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -32,6 +32,22 @@ Set `ignorePassiveMobs = true` to exclude passive and neutral mobs from an adapt
 This setting applies to `axe-cleave`, `axe-ground-smash`, `axe-throwing-axe`, `sword-crimson-cyclone`, `excavation-earth-mover`, `ranged-heartseeker`, `nether-skull-toss`, `tragoul-thorns`, `tragoul-globe`, `tragoul-lance`, `tragoul-corpse-explosion`, and `tragoul-plague-bearer`.
 
 Skeletal servants, Shadow Decoys, and the attacker's tamed pets are excluded from those attacks regardless of this setting. Grave Digger's unearthed enemies stay valid targets.
+
+## Growth blacklist
+
+`blacklistedGrowables` lists block names that Adapt never grows, ages, or bone-meals. The default empty list grows every supported plant. Names are case-insensitive and may carry the `minecraft:` prefix. Names that are not blocks are ignored, and each load or reload logs one warning listing them.
+
+```toml
+blacklistedGrowables = ["CAVE_VINES", "CAVE_VINES_PLANT"]
+```
+
+This example stops Adapt from growing glow berries. The list applies to:
+
+- [Growth Aura](/adapt/21-skill-herbalism#growth-aura-herbalism-growth-aura), [Compost Cascade](/adapt/21-skill-herbalism#compost-cascade-herbalism-compost-cascade) crop maturing, and [Bee Shepherd](/adapt/21-skill-herbalism#bee-shepherd-herbalism-bee-shepherd) crop growth
+- [Accelerate](/adapt/16-skill-chronos#accelerate-chronos-accelerate) crop growth and [Time in a Bottle](/adapt/16-skill-chronos#time-in-a-bottle-chronos-time-bottle) crop, sapling, and tree growth
+- [Harvester Core](/adapt/34-skill-golemancy#harvester-core-golem-harvester-core) tending
+
+Listed blocks can still grow naturally and from bone meal a player applies, and Compost Cascade and Harvesters still harvest them when ripe. Growth Aura's Growables menu shows an entry as unavailable once every block it covers is listed; for glow berries that block is `CAVE_VINES`.
 
 ## SQL and Redis
 
@@ -118,6 +134,7 @@ plugins/Adapt/
 | `xpInCreative` | `false` | Allows skill XP while in creative or spectator |
 | `allowAdaptationsInCreative` | `false` | Allows adaptation effects while in creative |
 | `blacklistedWorlds` | two placeholder keys | Namespaced world keys where Adapt gameplay is off |
+| `blacklistedGrowables` | `[]` | Block names that no Adapt adaptation grows. See [Growth blacklist](#growth-blacklist). Hot-reloadable |
 | `hardcoreResetOnPlayerDeath` | `false` | Wipes progression when a player dies |
 | `hardcoreNoRefunds` | `false` | Suppresses knowledge and Vault refunds on unlearn |
 | `loginBonus` | `true` | Enables the login bonus |

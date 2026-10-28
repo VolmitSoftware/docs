@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-10-20T16:47:13.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -104,7 +104,8 @@ modelKey = "minecraft:empty"
 | `gui.navigation.<role>` | Navigation controls: `first`, `previous`, `next`, `last`, `page`, or `disabled`; the config editor also uses `page-info` and `empty` |
 | `gui.confirmation.<role>` | Confirmation screens: `message`, `confirm`, or `cancel` |
 | `gui.preferences.reset` | Personal settings reset buttons |
-| `gui.preferences.adaptation.<id>.<preference>.<state>` | Adaptation control choices; state is the lowercase enum value or `locked` |
+| `gui.preferences.adaptation.<id>.<preference>.<state>` | Adaptation control choices, including entries in a toggle submenu; state is the lowercase enum value or `locked` |
+| `gui.preferences.adaptation.<id>.<group>.group` | Settings-row button that opens a toggle submenu, such as Growth Aura's `growables` |
 | `gui.preferences.skill.<id>.enabled.<state>` | Skill enable control; state is `on`, `off`, or `locked` |
 | `gui.background.<role>` | Menu background: `header-even`, `header-odd`, `separator`, `body-even`, or `body-odd` |
 | `gui.golemancy.background` | Solid black background for Golemancy menus, including release confirmation |
@@ -161,6 +162,8 @@ stealth = ["stealth-shadowmeld", "stealth-cutpurse"]
 The adaptation level screen reserves a bottom row for registered player controls, with navigation above it. Level cards paginate within the remaining space and the inventory never exceeds six rows. `guiBackButton = false` hides Back without removing preference controls. Every adaptation includes Enabled; the skill screen has a separate bottom row with a skill-wide Enabled control and Reset. Turning a skill off preserves each adaptation's individual settings.
 
 Click a preference to update its item in the current window. Left-click advances and right-click reverses through permitted unlocked values. Names and lore show the effective value; red/lime panes indicate Off/On, and gray items indicate unavailable or server-controlled choices. Dependent controls appear only when applicable: Blink's Reactive direction is hidden below level 2 and in Manual mode. Changing activation adds or removes it in its reserved slot; other controls and Reset keep their positions, and its saved direction is retained while hidden. Reset clears the choices for that screen: resetting a skill does not reset its child adaptations. Large sets of controls have their own row pagination, separate from the level page.
+
+Some adaptations group related on/off controls behind one settings-row button, such as Growth Aura's Growables. The button shows how many entries are enabled; clicking it opens a submenu with one item per entry. Click an entry to toggle it: enabled entries show their item with an enchantment glint, disabled entries show the plain item, and gray panes mark entries the server controls or has made unavailable. Back, or Escape when `escClosesAllGuis = false`, returns to the adaptation's level screen.
 
 Accepted changes and resets play a quiet click for the viewing player. Locked or unavailable choices play a low note, and preference-page navigation plays a page-turn sound. These sounds honor the player's effects toggle, the skill or adaptation's `showSounds`, and global `effects.soundsEnabled`. Controls continue to work when sounds are disabled. After a skill registry reload, reopen its menu before changing preferences. Controls retained from the previous registry ignore clicks.
 

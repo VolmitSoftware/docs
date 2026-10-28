@@ -2,14 +2,14 @@
 title: "Pregeneration"
 description: "Iris documentation: Pregeneration"
 published: true
-date: 2026-10-26T02:47:43.587Z
+date: 2026-10-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 Pregeneration creates chunks before players explore them. Each job covers a square around a center coordinate, with the radius measured in blocks. Iris runs one pregeneration job at a time per server.
 
-Iris limits concurrent chunk requests and retained generation data according to the Java heap and any visible Linux container memory limit. Container budgets reserve 25% of the limit for memory outside the heap. When memory is under pressure, it pauses new requests while active work finishes and saved data is released. On Docker and other Linux containers, new requests also pause at 90% container working-memory usage and resume after it falls to 80%. Clean inactive file cache does not count toward that pressure. A larger requested area increases the work and disk space needed, rather than reserving memory for the whole area.
+Iris limits concurrent chunk requests and retained generation data according to the Java heap and any visible Linux container memory limit. Container budgets reserve 25% of the limit for memory outside the heap. When memory is under pressure, it pauses new requests while active work finishes and saved data is released. On Docker and other Linux containers, new requests also pause at 90% container working-memory usage and resume after it falls to 80%. Clean inactive file cache and Java heap the JVM has reserved but is not using do not count toward that pressure. A larger requested area increases the work and disk space needed, rather than reserving memory for the whole area.
 
 Asynchronous jobs can start chunks in the next MCA region while requests from the previous region are still finishing. Chunk concurrency and memory limits apply to the whole job across these regions.
 
