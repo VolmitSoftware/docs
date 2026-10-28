@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -65,9 +65,9 @@ Build for the target host with its Rust toolchain. wgpu selects an available sup
 
 ## Loader-neutral dependencies
 
-Use `com.github.VolmitSoftware.VolmLib:volmlib-localization:<version>` for language catalogs, validated message editing, locale downloads, and personal language preferences without a Bukkit dependency. Use `com.github.VolmitSoftware.VolmLib:volmlib-web:<version>` for `MclogsClient`. Keep these modules on the same VolmLib version as `shared` and the native modules.
+Use `com.github.VolmitSoftware.VolmLib:volmlib-localization:<version>` for language catalogs, validated message editing, locale downloads, and personal language preferences without a Bukkit dependency. Use `com.github.VolmitSoftware.VolmLib:volmlib-web:<version>` for `MclogsClient`. Use `com.github.VolmitSoftware.VolmLib:volmlib-crypto:<version>` for `Ed25519`, `Ed25519KeyFiles`, `Ed25519Tls`, and `IpRange` with no other dependencies; `shared` already contains these classes. Keep these modules on the same VolmLib version as `shared` and the native modules.
 
-Local composite builds substitute `volmlib-localization` with `:localization` and `volmlib-web` with `:web`. Builds using remote coordinates need those modules published at the selected revision. A dependency declared with `transitive = false` must list every module it bundles explicitly.
+Local composite builds substitute `volmlib-localization` with `:localization`, `volmlib-web` with `:web`, and `volmlib-crypto` with `:crypto`. Builds using remote coordinates need those modules published at the selected revision. A dependency declared with `transitive = false` must list every module it bundles explicitly.
 
 ## Build selected plugin jars
 

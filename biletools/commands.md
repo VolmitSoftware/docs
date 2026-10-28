@@ -2,7 +2,7 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -87,13 +87,11 @@ On a Velocity proxy BileTools registers a smaller command set. Every subcommand 
 
 ## Diagnostic reports
 
-`/biletools debug dump` saves a report under `plugins/BileTools/debug/` and uploads it to mclo.gs by default. Add `upload=false` for a local-only report. Secrets and target passwords are redacted. See [Shared diagnostic reports](/volmlib/api/diagnostics).
+`/biletools debug dump` saves a report under `plugins/BileTools/debug/` and uploads it to mclo.gs by default. Add `upload=false` for a local-only report. Remote deploy keys, addresses, and targets appear only as entry counts, and the server's private key is never included. See [Shared diagnostic reports](/volmlib/api/diagnostics).
 
 ## Configuration editor
 
-`/bile config` opens the settings editor. Changes are validated, saved to `biletools.yml`, and applied without a reload. Boolean, numeric, and non-secret list settings can be edited in game.
-
-The receiver secret and password-bearing deployment target list are deliberately read-only in the GUI. Edit those two values directly in `biletools.yml`, then reload BileTools or restart the server; they are never copied into inventory lore or chat prompts.
+`/bile config` opens the settings editor. Changes are validated, saved to `biletools.yml`, and applied without a reload. Boolean, numeric, and list settings can be edited in game. Remote deploy trust settings (trusted keys, allowed addresses, the bind address, and deployment targets) are file-only: the editor neither shows nor edits them. See [Remote Deploy](/biletools/remote-deploy).
 
 ## Language selection
 
