@@ -2,7 +2,7 @@
 title: "Inventory Menus"
 description: "Build item-slot menus with masks, actions, conditional layouts, and paged lists"
 published: true
-date: 2026-10-08T13:02:00Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-03T00:00:00.000Z
@@ -18,7 +18,7 @@ Reopening a menu after closing it starts a new window session with its configure
 
 <div class="gloss-demo" data-demo="inventory-editor">
 <p><strong>Inventory menu authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/inventory-editor.webm" aria-label="Inventory menu authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/inventory-editor.webm" aria-label="Inventory menu authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Save this example as `inventories/supplies.json`, then run `/gloss inventory open supplies`:
@@ -63,7 +63,7 @@ An unmapped mask character leaves an empty slot. Fewer mask rows are allowed; un
 
 <div class="gloss-demo" data-demo="inventory-menus-pov">
 <p><strong>Inventory menu interaction</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/inventory-menus-pov.webm" aria-label="Inventory menu interaction, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/inventory-menus-pov.webm" aria-label="Inventory menu interaction, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Buttons use their `icon` and `actions`. Decorations supply an item without click actions. A toggle compares its rendered `condition` and `expectedValue`, ignoring case, to choose `trueIcon` or `falseIcon`. Clicking the true state runs `falseActions`; clicking the false state runs `trueActions`. When the action chain continues, the toggle switches state. Dynamic conditions are checked again when slots refresh. Slider and field components belong to [hologram menus](/gloss/09-menus).

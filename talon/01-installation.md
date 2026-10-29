@@ -2,7 +2,7 @@
 title: "Talon: Installation"
 description: "Requirements, installation, downloaded files, and updates"
 published: true
-date: 2026-10-25T07:15:44.815Z
+date: 2026-10-28T00:00:00.000Z
 tags: "talon, installation"
 editor: markdown
 dateCreated: 2026-10-14T00:00:00.000Z
@@ -29,7 +29,7 @@ On region-threaded servers such as Folia and Canvas, book recipes register durin
 3. Start the server with an internet connection for its first library download.
 4. Run `/talon status`, then open `/talon config` in-game.
 
-The first start downloads the required libraries. Keep the library cache for later offline restarts.
+The first start downloads the required libraries. Keep the library cache for later offline restarts. If a required library is missing and its download fails, Talon cannot enable; restore download access and restart to populate the cache. A failed update check does not prevent Talon from enabling with a complete cache.
 
 ## Files
 

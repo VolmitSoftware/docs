@@ -2,7 +2,7 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,8 +29,8 @@ The seven struck buffs fire on most damage, but not on fall, void, lava, hot flo
 ### Adrenaline (`hunter-adrenaline`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Adrenaline" src="/adapt-assets/demos/hunter/hunter-adrenaline-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Adrenaline" src="/adapt-assets/demos/hunter/hunter-adrenaline-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Adrenaline" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-adrenaline-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Adrenaline" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-adrenaline-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -45,8 +45,8 @@ Melee damage, not bow damage, rises as health falls, from nothing at full health
 ### Hunter's Regen (`hunter-regen`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hunter&#x27;s Regen" src="/adapt-assets/demos/hunter/hunter-regen-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hunter&#x27;s Regen" src="/adapt-assets/demos/hunter/hunter-regen-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hunter&#x27;s Regen" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-regen-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hunter&#x27;s Regen" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-regen-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -69,8 +69,8 @@ Taking a hit applies Regeneration.
 ### Vanishing Step (`hunter-invis`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Vanishing Step" src="/adapt-assets/demos/hunter/hunter-invis-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Vanishing Step" src="/adapt-assets/demos/hunter/hunter-invis-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Vanishing Step" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-invis-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Vanishing Step" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-invis-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -93,8 +93,8 @@ Taking a hit applies Invisibility.
 ### Hunter's Heights (`hunter-jumpboost`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hunter&#x27;s Heights" src="/adapt-assets/demos/hunter/hunter-jumpboost-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hunter&#x27;s Heights" src="/adapt-assets/demos/hunter/hunter-jumpboost-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hunter&#x27;s Heights" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-jumpboost-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hunter&#x27;s Heights" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-jumpboost-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -117,8 +117,8 @@ Taking a hit adds jump strength `+0.1 * (level + 1)` and safe fall distance `+(l
 ### Hunter's Luck (`hunter-luck`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hunter&#x27;s Luck" src="/adapt-assets/demos/hunter/hunter-luck-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hunter&#x27;s Luck" src="/adapt-assets/demos/hunter/hunter-luck-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hunter&#x27;s Luck" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-luck-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hunter&#x27;s Luck" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-luck-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -141,8 +141,8 @@ Taking a hit adds Luck `+(level + 1)`, which affects fishing and chest loot roll
 ### Hunter's Speed (`hunter-speed`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hunter&#x27;s Speed" src="/adapt-assets/demos/hunter/hunter-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hunter&#x27;s Speed" src="/adapt-assets/demos/hunter/hunter-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hunter&#x27;s Speed" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-speed-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hunter&#x27;s Speed" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-speed-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -172,8 +172,8 @@ Taking a hit accelerates horizontal velocity toward `min(maxHorizontalSpeed, bas
 ### Hunter's Strength (`hunter-strength`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hunter&#x27;s Strength" src="/adapt-assets/demos/hunter/hunter-strength-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hunter&#x27;s Strength" src="/adapt-assets/demos/hunter/hunter-strength-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hunter&#x27;s Strength" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-strength-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hunter&#x27;s Strength" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-strength-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -196,8 +196,8 @@ Taking a hit adds attack damage `+3.0 * (level + 1)` unless a Strength effect is
 ### Hunter's Resistance (`hunter-resistance`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hunter&#x27;s Resistance" src="/adapt-assets/demos/hunter/hunter-resistance-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hunter&#x27;s Resistance" src="/adapt-assets/demos/hunter/hunter-resistance-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hunter&#x27;s Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-resistance-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hunter&#x27;s Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-resistance-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 8 knowledge, then 4 per level
@@ -220,8 +220,8 @@ Taking a hit applies Resistance.
 ### Items Drop-To-Inventory (`hunter-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Items Drop-To-Inventory" src="/adapt-assets/demos/hunter/hunter-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Items Drop-To-Inventory" src="/adapt-assets/demos/hunter/hunter-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Items Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Items Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 2 knowledge
@@ -231,8 +231,8 @@ Drops from any mob kill go to the inventory regardless of the held item; block d
 ### Trophy Skinner (`hunter-trophy-skinner`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Trophy Skinner" src="/adapt-assets/demos/hunter/hunter-trophy-skinner-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Trophy Skinner" src="/adapt-assets/demos/hunter/hunter-trophy-skinner-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Trophy Skinner" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-trophy-skinner-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Trophy Skinner" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-trophy-skinner-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -256,8 +256,8 @@ A kill is clean when the shot covered the minimum range or the killing blow was 
 ### Predator Focus (`hunter-predator-focus`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Predator Focus" src="/adapt-assets/demos/hunter/hunter-predator-focus-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Predator Focus" src="/adapt-assets/demos/hunter/hunter-predator-focus-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Predator Focus" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-predator-focus-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Predator Focus" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-predator-focus-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 6 knowledge, then 5 per level
@@ -275,8 +275,8 @@ Melee hits on the same target add `perStackBonus * (stacks - 1)` damage after th
 ### Big Game Hunter (`hunter-big-game`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Big Game Hunter" src="/adapt-assets/demos/hunter/hunter-big-game-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Big Game Hunter" src="/adapt-assets/demos/hunter/hunter-big-game-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Big Game Hunter" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-big-game-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Big Game Hunter" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-big-game-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 7 knowledge, then 6 per level
@@ -296,8 +296,8 @@ Melee damage increases against `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `END
 ### Blood Trail (`hunter-blood-trail`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Blood Trail" src="/adapt-assets/demos/hunter/hunter-blood-trail-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Blood Trail" src="/adapt-assets/demos/hunter/hunter-blood-trail-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Blood Trail" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-blood-trail-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Blood Trail" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-blood-trail-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 5 knowledge, then 4 per level
@@ -319,8 +319,8 @@ A melee hit that leaves a mob at or below `woundHealthFraction` of max health st
 ### Snare Line (`hunter-snare-line`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Snare Line" src="/adapt-assets/demos/hunter/hunter-snare-line-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Snare Line" src="/adapt-assets/demos/hunter/hunter-snare-line-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Snare Line" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-snare-line-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Snare Line" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-snare-line-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 6 knowledge, then 5 per level

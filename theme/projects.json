@@ -1,5 +1,96 @@
 [
   {
+    "name": "Axion",
+    "path": "axion",
+    "href": "/axion",
+    "description": "Sign-directed mining, harvesting, and item collection",
+    "mark": "A",
+    "color": "#f28c45",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Start here",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/axion/00-overview"
+              },
+              {
+                "title": "Installation",
+                "href": "/axion/01-installation"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/axion/02-commands-permissions"
+              },
+              {
+                "title": "Configuration",
+                "href": "/axion/03-configuration"
+              },
+              {
+                "title": "Languages",
+                "href": "/axion/04-languages"
+              },
+              {
+                "title": "Shared language guide",
+                "href": "/languages"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Reference",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Machines and routes",
+                "href": "/axion/05-machines-routes"
+              },
+              {
+                "title": "Integrations",
+                "href": "/axion/06-integrations"
+              },
+              {
+                "title": "Diagnostics",
+                "href": "/axion/07-diagnostics"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "GlacialRush",
+    "path": "glacialrush",
+    "href": "/glacialrush",
+    "description": "Three-faction conquest arenas, equipment kits, and combat tools",
+    "mark": "G",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Start here",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Operator guide",
+                "href": "/glacialrush/01-operator-guide"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Iris",
     "path": "iris",
     "href": "/iris",
@@ -137,15 +228,15 @@
                 "href": "/iris/biomes/carving/sulfur"
               },
               {
-                "title": "Rivers & Hydrology",
+                "title": "Hydrology",
                 "href": "/iris/36-rivers"
               },
               {
-                "title": "River Policy",
+                "title": "Hydrology Policy",
                 "href": "/iris/36b-river-policy"
               },
               {
-                "title": "River Inspection",
+                "title": "Water Inspection",
                 "href": "/iris/36c-river-inspection"
               }
             ]

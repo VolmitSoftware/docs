@@ -2,7 +2,7 @@
 title: "Building Portals"
 description: "Build portals with a wand or runes, apply skins, and replace vanilla portals"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -57,11 +57,11 @@ To supply nine runes for a 3×3 opening in survival, an administrator can run `/
 <div class="wormholes-demo" data-demo="wand-creation">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="Portal creation with the wand, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/wand-creation-standard-pov.webm" aria-label="Portal creation with the wand, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="Portal creation with the wand, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/wand-creation-clientview-pov.webm" aria-label="Portal creation with the wand, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -98,11 +98,11 @@ default and do not expose the linked destination.
 <div class="wormholes-demo" data-demo="rune-creation">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="Portal creation with runes, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rune-creation-standard-pov.webm" aria-label="Portal creation with runes, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="Portal creation with runes, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rune-creation-clientview-pov.webm" aria-label="Portal creation with runes, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

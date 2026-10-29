@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -80,7 +80,7 @@ Colors in menu and preview documents end up as MiniMessage tags, and the color s
 
 <div class="gloss-demo" data-demo="emoji-editor">
 <p><strong>Emoji authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/emoji-editor.webm" aria-label="Emoji authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/emoji-editor.webm" aria-label="Emoji authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 ### The emoji document
@@ -154,7 +154,7 @@ With `[emoji] tabComplete = true` (the default), Paper-family servers suggest en
 
 <div class="gloss-demo" data-demo="animation-editor">
 <p><strong>Text animation authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/animation-editor.webm" aria-label="Text animation authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/animation-editor.webm" aria-label="Text animation authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 An animation is a list of frame strings that advances on wall-clock time, exposed to the text pipeline as `|animation.<id>|`.

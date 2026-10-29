@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-27T00:14:36.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,11 +29,11 @@ Players running the Wormholes client mod can receive [ClientView](#clientview) i
 <p><strong>Projection on and off</strong> Toggle standard projection; native client views remain active.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/projection-toggle-standard-pov.webm" aria-label="Projection controls, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/projection-toggle-standard-pov.webm" aria-label="Projection controls, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/projection-toggle-clientview-pov.webm" aria-label="Projection controls, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/projection-toggle-clientview-pov.webm" aria-label="Projection controls, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -50,13 +50,13 @@ Toggle this from the portal home menu.
 <p><strong>PanOptic: full volume</strong> Standard projection is frozen for the rear comparison. ClientView remains clipped to the aperture and does not expose the block volume.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/render-panoptic-standard-pov.webm" aria-label="Panoptic projection, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-panoptic-standard-observer.webm" aria-label="Panoptic projection, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-panoptic-standard-pov.webm" aria-label="Panoptic projection, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-panoptic-standard-observer.webm" aria-label="Panoptic projection, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/render-panoptic-clientview-pov.webm" aria-label="Panoptic projection, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-panoptic-clientview-observer.webm" aria-label="Panoptic projection, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-panoptic-clientview-pov.webm" aria-label="Panoptic projection, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-panoptic-clientview-observer.webm" aria-label="Panoptic projection, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -64,13 +64,13 @@ Toggle this from the portal home menu.
 <p><strong>Venticular: culled surfaces</strong> Standard projection is frozen for the rear comparison. ClientView remains clipped to the aperture and does not expose the block volume.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/render-venticular-standard-pov.webm" aria-label="Venticular projection, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-venticular-standard-observer.webm" aria-label="Venticular projection, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-venticular-standard-pov.webm" aria-label="Venticular projection, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-venticular-standard-observer.webm" aria-label="Venticular projection, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/render-venticular-clientview-pov.webm" aria-label="Venticular projection, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/render-venticular-clientview-observer.webm" aria-label="Venticular projection, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-venticular-clientview-pov.webm" aria-label="Venticular projection, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/render-venticular-clientview-observer.webm" aria-label="Venticular projection, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -247,11 +247,11 @@ the raw config values on Bukkit, Fabric, Forge, and NeoForge. Saving another set
 <p><strong>Destination atmosphere</strong> Compare atmosphere modes with different destination colors, lighting, and weather.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/atmosphere-standard-pov.webm" aria-label="Destination atmosphere, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/atmosphere-standard-pov.webm" aria-label="Destination atmosphere, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/atmosphere-clientview-pov.webm" aria-label="Destination atmosphere, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/atmosphere-clientview-pov.webm" aria-label="Destination atmosphere, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -286,13 +286,13 @@ Dropping below 8 clears back to global (`0`).
 <p><strong>Nested portal views</strong> Look through a second portal at the destination, then cross both portals.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/nested-views-standard-pov.webm" aria-label="Nested portal views, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/nested-views-standard-observer.webm" aria-label="Nested portal views, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/nested-views-standard-pov.webm" aria-label="Nested portal views, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/nested-views-standard-observer.webm" aria-label="Nested portal views, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/nested-views-clientview-pov.webm" aria-label="Nested portal views, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/nested-views-clientview-observer.webm" aria-label="Nested portal views, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/nested-views-clientview-pov.webm" aria-label="Nested portal views, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/nested-views-clientview-observer.webm" aria-label="Nested portal views, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -337,13 +337,13 @@ Remote subscriptions, heartbeat, grace, and compression are in
 <p><strong>Live destination views</strong> A player at the destination lures a sheep with wheat while the other watches through the portal.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/live-views-standard-pov.webm" aria-label="Live destination views, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/live-views-standard-observer.webm" aria-label="Live destination views, no client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/live-views-standard-pov.webm" aria-label="Live destination views, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/live-views-standard-observer.webm" aria-label="Live destination views, no client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/live-views-clientview-pov.webm" aria-label="Live destination views, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/live-views-clientview-observer.webm" aria-label="Live destination views, client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/live-views-clientview-pov.webm" aria-label="Live destination views, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/live-views-clientview-observer.webm" aria-label="Live destination views, client mod, destination view demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

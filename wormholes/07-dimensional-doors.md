@@ -2,7 +2,7 @@
 title: "Dimensional Doors"
 description: "Pair, Personal, Public, OpenState, access, recipes, and transit"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,13 +18,13 @@ destinations.
 <p><strong>Paired doors</strong> Place, traverse, and relocate a linked pair.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/pair-doors-standard-pov.webm" aria-label="Paired doors, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/pair-doors-standard-observer.webm" aria-label="Paired doors, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/pair-doors-standard-pov.webm" aria-label="Paired doors, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/pair-doors-standard-observer.webm" aria-label="Paired doors, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/pair-doors-clientview-pov.webm" aria-label="Paired doors, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/pair-doors-clientview-observer.webm" aria-label="Paired doors, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/pair-doors-clientview-pov.webm" aria-label="Paired doors, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/pair-doors-clientview-observer.webm" aria-label="Paired doors, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -41,13 +41,13 @@ destinations.
 <p><strong>Paired trapdoors</strong> Fall through a trapdoor and arrive at its linked exit.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/trapdoor-travel-standard-pov.webm" aria-label="Trapdoor travel, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/trapdoor-travel-standard-observer.webm" aria-label="Trapdoor travel, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/trapdoor-travel-standard-pov.webm" aria-label="Trapdoor travel, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/trapdoor-travel-standard-observer.webm" aria-label="Trapdoor travel, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/trapdoor-travel-clientview-pov.webm" aria-label="Trapdoor travel, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/trapdoor-travel-clientview-observer.webm" aria-label="Trapdoor travel, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/trapdoor-travel-clientview-pov.webm" aria-label="Trapdoor travel, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/trapdoor-travel-clientview-observer.webm" aria-label="Trapdoor travel, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -65,13 +65,13 @@ Return doors are always `DOOR`.
 <p><strong>Door OpenState</strong> Compare open-door entry with the closed-door contact pad.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/door-open-state-standard-pov.webm" aria-label="Door open states, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/door-open-state-standard-observer.webm" aria-label="Door open states, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/door-open-state-standard-pov.webm" aria-label="Door open states, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/door-open-state-standard-observer.webm" aria-label="Door open states, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/door-open-state-clientview-pov.webm" aria-label="Door open states, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/door-open-state-clientview-observer.webm" aria-label="Door open states, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/door-open-state-clientview-pov.webm" aria-label="Door open states, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/door-open-state-clientview-observer.webm" aria-label="Door open states, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -184,11 +184,11 @@ cross-dimension travel is supported for eligible kinds.
 <p><strong>Crafting dimensional doors</strong> Craft a pair kit, a personal pocket door, and a public pocket door.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/door-crafting-standard-pov.webm" aria-label="Dimensional door crafting, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/door-crafting-standard-pov.webm" aria-label="Dimensional door crafting, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/door-crafting-clientview-pov.webm" aria-label="Dimensional door crafting, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/door-crafting-clientview-pov.webm" aria-label="Dimensional door crafting, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -72,23 +72,23 @@ Set document-level `"show": false` to hide the hologram, or use a boolean expres
 
 <div class="gloss-demo" data-demo="holograms-pov">
 <p><strong>Mixed hologram lines and pages</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/holograms-pov.webm" aria-label="Mixed hologram lines and pages, first person" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/gloss-assets/demos/holograms-observer.webm" aria-label="Mixed hologram lines and pages, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/holograms-pov.webm" aria-label="Mixed hologram lines and pages, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/holograms-observer.webm" aria-label="Mixed hologram lines and pages, third person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="native-object-bounds-pov">
 <p><strong>Heads and scaled entity lines</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/native-object-bounds-pov.webm" aria-label="Heads and scaled entity lines, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/native-object-bounds-pov.webm" aria-label="Heads and scaled entity lines, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="hologram-mixed-editor">
 <p><strong>Mixed hologram authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/hologram-mixed-editor.webm" aria-label="Mixed hologram authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/hologram-mixed-editor.webm" aria-label="Mixed hologram authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="hologram-editor">
 <p><strong>Hologram text and pages authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/hologram-editor.webm" aria-label="Hologram text and pages authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/hologram-editor.webm" aria-label="Hologram text and pages authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A line can be a string or an object with exactly one content key: `text`, `item`, `head`, `block`, or `entity`. Item content uses the [icon contract](/gloss/11-icons); the other object values are strings. Object lines accept `show` as a boolean or viewer expression and `scale` from `0.01` to `64`, default `1`.
@@ -239,12 +239,12 @@ Temporary holograms also accept particle layers through the API, and rendered-on
 
 <div class="gloss-demo" data-demo="markers-waypoints-pov">
 <p><strong>World markers and waypoints</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/markers-waypoints-pov.webm" aria-label="World markers and waypoints, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/markers-waypoints-pov.webm" aria-label="World markers and waypoints, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="marker-editor">
 <p><strong>Marker authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/marker-editor.webm" aria-label="Marker authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/marker-editor.webm" aria-label="Marker authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Marker parts use the `MARKER` limits in `[visibility]`, including every image row in an icon. Reduced detail keeps the label and icon; minimal detail keeps the label; culled detail hides the marker. Beams, edge arrows and particle trails require full detail. Native locator entries have no display-entity cost.
@@ -288,7 +288,7 @@ control visibility without pausing its lifetime.
 
 <div class="gloss-demo" data-demo="waypoint-editor">
 <p><strong>Waypoint authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/waypoint-editor.webm" aria-label="Waypoint authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/waypoint-editor.webm" aria-label="Waypoint authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Files in `waypoints/<id>.json` describe native locator-bar entries for Java clients from 1.21.6 onward. They use the same fixed, player-following, or entity-following anchor forms as world markers. Valid edits reload automatically, including icon colors and styles for connected viewers; deleting a file withdraws its locator entry.

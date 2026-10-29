@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -107,7 +107,7 @@ definition and logs the failure by filename; a broken file on first startup does
 
 <div class="gloss-demo" data-demo="world-panel-editor">
 <p><strong>World panel authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/world-panel-editor.webm" aria-label="World panel authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/world-panel-editor.webm" aria-label="World panel authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 In a menu flow map, use **Create world panel** to supply an id, root menu, world key and world UUID.
@@ -120,8 +120,8 @@ its settings, and applied edits support undo and redo.
 
 <div class="gloss-demo" data-demo="world-panels-pov">
 <p><strong>World panel placement</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/world-panels-pov.webm" aria-label="World panel placement, first person" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/gloss-assets/demos/world-panels-observer.webm" aria-label="World panel placement, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/world-panels-pov.webm" aria-label="World panel placement, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/world-panels-observer.webm" aria-label="World panel placement, third person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 `transform` stores `worldKey` and `worldUuid`, and both must match a loaded world before the panel

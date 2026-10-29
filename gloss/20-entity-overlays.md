@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-10-07T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -14,7 +14,7 @@ Gloss shows segmented health above nearby living entities by default.
 
 <div class="gloss-demo" data-demo="entity-overlays-pov">
 <p><strong>Entity overlays</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/entity-overlays-pov.webm" aria-label="Entity overlays, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/entity-overlays-pov.webm" aria-label="Entity overlays, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 **What you see.** A pane that follows the entity, with segmented health and, on a named entity, its
@@ -183,7 +183,7 @@ An Insight target can appear beyond the ordinary overlay radius, and the hologra
 
 <div class="gloss-demo" data-demo="entity-overlays-editor">
 <p><strong>Entity overlay authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/entity-overlays-editor.webm" aria-label="Entity overlay authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/entity-overlays-editor.webm" aria-label="Entity overlay authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Import, export, undo and live sync use the singleton id `default`, exported to
@@ -195,7 +195,7 @@ reproduce the client renderer. See [Web Editor & Sync](/gloss/18-web-editor).
 
 <div class="gloss-demo" data-demo="nametag-editor">
 <p><strong>Nametag authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/nametag-editor.webm" aria-label="Nametag authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/nametag-editor.webm" aria-label="Nametag authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Enable `nametags = true` under `[features]` in `gloss.toml`. Edit schema-1 `nametags/<id>.json` documents with `/gloss web edit nametags <id>`. A nametag controls the player's prefix, account-name color, suffix, vanilla label visibility, and collision rule.
@@ -247,12 +247,12 @@ The selected prefix, name color, and suffix also appear in rendered player-name 
 
 <div class="gloss-demo" data-demo="player-identities-pov">
 <p><strong>Nametag and nameplate live updates</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/player-identities-pov.webm" aria-label="Nametag and nameplate live updates, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/player-identities-pov.webm" aria-label="Nametag and nameplate live updates, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="nameplate-editor">
 <p><strong>Nameplate authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/nameplate-editor.webm" aria-label="Nameplate authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/nameplate-editor.webm" aria-label="Nameplate authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Enable `nameplates = true` under `[features]`; the hologram and entity-overlay engine must also be enabled. Nameplates are schema-1 documents under `nameplates/<id>.json`, opened with `/gloss web edit nameplates <id>`. They replace the vanilla overhead label with ordered text rows and shared Gloss display styling.

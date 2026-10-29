@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Select server and player languages and edit message files"
 published: true
-date: 2026-10-12T16:07:52.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -38,7 +38,7 @@ Use `command.help.*` to change command and parameter descriptions.
 
 <div class="gloss-demo" data-demo="strings-editor">
 <p><strong>Content string authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/strings-editor.webm" aria-label="Content string authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/strings-editor.webm" aria-label="Content string authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Use `strings/<locale>.json` for text shared by your own menus, holograms, and other documents. These catalogs are separate from Gloss's operator messages in `languages/*.toml`.

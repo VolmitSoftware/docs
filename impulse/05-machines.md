@@ -2,7 +2,7 @@
 title: "Impulse machines"
 description: "Action rules, storage, upgrades, and redstone"
 published: true
-date: 2026-10-23T16:24:03.218Z
+date: 2026-10-29T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -54,7 +54,17 @@ Column crops are harvested from the top down within the three searched layers. A
 
 Berry yields start at 2–3 items and can be changed by `PlayerHarvestBlockEvent`. Other crop drops use the server's block loot. Replanting checks and events are described under [Integrations](/impulse/06-integrations).
 
+## Chopper replanting
+
+Enable `machines.chopperReplanting` to replace suitable upright base logs with a matching stored plant. It defaults to off. Each replanted base consumes one sapling, mangrove propagule, or fungus from an unprotected slot. The planting item and log output must pass the chopper's item filter.
+
+The plant must be supported by the block below. Crimson and warped stems require matching nylium. Missing planting items or denied placement leave the eligible base intact; upper logs can still be chopped. Horizontal logs and unsupported bases follow ordinary chopping rules.
+
+Each base is handled separately. A 2×2 trunk needs four suitable bases and four planting items. Mangrove roots remain untouched, and trunks supported by roots are not replanted. Replanting does not force growth, clear leaves, or search for an entire tree.
+
 ## Storage and drops
+
+Breaking a machine in survival with a suitable pickaxe returns its core at the stored level. Inventory contents drop separately.
 
 Hoppers share the native inventory. With `collectDrops=true`, harvesters, breakers, shearers, and choppers require room for their generated drops before acting. Disabling it drops output into the world. Grinders alternate collection and attack priority within their action allowance so sustained combat does not prevent pickup.
 

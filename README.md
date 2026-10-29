@@ -46,7 +46,7 @@ See [Contributing](/contributing).
 
 ## Theme assets
 
-The Graphite theme uses `theme/minimal-brutalism.css`, `theme/minimal-brutalism.js`, and `theme/projects.json`. The stylesheet and script retain their deployed asset URLs. Wiki.js Git storage imports these files when the repository syncs. Gloss recordings live in `gloss-assets/demos/` and use the same asset import as the other plugin media directories.
+The Graphite theme uses `theme/minimal-brutalism.css`, `theme/minimal-brutalism.js`, and `theme/projects.json`. The stylesheet and script retain their deployed asset URLs. Wiki.js Git storage imports these files when the repository syncs.
 
 The homepage lists the published projects from `home.md`. Each project’s landing page supplies its documentation navigation, including section and subgroup headings. After adding a project or changing landing-page links, regenerate and validate the catalog:
 
@@ -81,6 +81,25 @@ Wormholes demonstrations with both client modes have **No client mod** and **Cli
 Gloss demonstrations label Minecraft client footage and browser editor footage separately. Single-view clips use the same playback controls. Paired client clips add **First person** and **Third person** tabs.
 
 Demonstrations use half the article width on desktop and the full article width on phones and tablets. Visible clips autoplay muted and loop, including when reduced motion is enabled. Readers can pause or enable audio with the playback controls. Hidden, offscreen, and background clips pause.
+
+### Video clips
+
+Clips are WebM files in the Cloudflare R2 bucket `volmit-docs-media`, served from `https://media.volmitsoftware.com`. In a checkout they stay in their project's assets folder, but Git ignores them (`*.webm` in `.gitignore`). Each clip has the same path in the bucket, and pages embed it by full URL:
+
+```html
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/real-drops-editor.webm" aria-label="Dropped item authoring in the browser editor"></video>
+```
+
+The theme pairs clips by their `-pov.webm`, `-observer.webm`, and `-editor.webm` endings, so keep those endings.
+
+Copy clips between a checkout and the bucket with [rclone](https://rclone.org) and a remote named `r2` that holds an R2 API token for the bucket:
+
+```sh
+rclone copy . r2:volmit-docs-media --include "/*-assets/**.webm" --ignore-existing --header-upload "Content-Type: video/webm" --header-upload "Cache-Control: public, max-age=86400"
+rclone copy r2:volmit-docs-media . --include "/*-assets/**.webm" --ignore-existing
+```
+
+The first command uploads clips the bucket does not have yet. The second downloads clips the checkout does not have yet. Upload a new clip before pushing the page that links it. Cloudflare caches clips for up to a day and these commands never replace a clip, so give a re-recorded clip a new file name. Do not upload clips through the Wiki.js editor, which stores uploads in the wiki's database.
 
 ### Local validation
 

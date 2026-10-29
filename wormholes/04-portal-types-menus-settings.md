@@ -2,7 +2,7 @@
 title: "Portal Types, Menus, and Settings"
 description: "Types, menus, travel, access, costs, and cosmetics"
 published: true
-date: 2026-10-18T01:43:50.244Z
+date: 2026-10-29T19:18:51.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -137,13 +137,13 @@ notices.
 <div class="wormholes-demo" data-demo="portal-linking">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/portal-linking-standard-pov.webm" aria-label="Portal linking, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/portal-linking-standard-observer.webm" aria-label="Portal linking, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/portal-linking-standard-pov.webm" aria-label="Portal linking, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/portal-linking-standard-observer.webm" aria-label="Portal linking, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/portal-linking-clientview-pov.webm" aria-label="Portal linking, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/portal-linking-clientview-observer.webm" aria-label="Portal linking, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/portal-linking-clientview-pov.webm" aria-label="Portal linking, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/portal-linking-clientview-observer.webm" aria-label="Portal linking, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -207,13 +207,13 @@ Crossing is tested against the whole movement since the last check. Teleports, r
 <p><strong>Mirrors</strong> Reflect the player and rotate the reflected image.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/mirrors-standard-pov.webm" aria-label="Mirror portals, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/mirrors-standard-observer.webm" aria-label="Mirror portals, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/mirrors-standard-pov.webm" aria-label="Mirror portals, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/mirrors-standard-observer.webm" aria-label="Mirror portals, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/mirrors-clientview-pov.webm" aria-label="Mirror portals, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/mirrors-clientview-observer.webm" aria-label="Mirror portals, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/mirrors-clientview-pov.webm" aria-label="Mirror portals, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/mirrors-clientview-observer.webm" aria-label="Mirror portals, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -221,13 +221,13 @@ Crossing is tested against the whole movement since the last check. Teleports, r
 <p><strong>Travel between worlds</strong> View and enter a gateway to another world.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/gateways-standard-pov.webm" aria-label="Gateway portals, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/gateways-standard-observer.webm" aria-label="Gateway portals, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/gateways-standard-pov.webm" aria-label="Gateway portals, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/gateways-standard-observer.webm" aria-label="Gateway portals, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/gateways-clientview-pov.webm" aria-label="Gateway portals, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/gateways-clientview-observer.webm" aria-label="Gateway portals, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/gateways-clientview-pov.webm" aria-label="Gateway portals, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/gateways-clientview-observer.webm" aria-label="Gateway portals, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -302,8 +302,8 @@ Open **Settings → More settings → Fidelity** to change this portal's project
 <p><strong>Directional gravity</strong> Walk, jump, and fly relative to the new floor after a quarter-turn crossing.</p>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/gravity-clientview-pov.webm" aria-label="Directional gravity, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/gravity-clientview-observer.webm" aria-label="Directional gravity, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/gravity-clientview-pov.webm" aria-label="Directional gravity, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/gravity-clientview-observer.webm" aria-label="Directional gravity, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -311,8 +311,8 @@ Open **Settings → More settings → Fidelity** to change this portal's project
 <p><strong>Traveller scale</strong> Cross both ways between different portal sizes with matching scale settings.</p>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/scale-clientview-pov.webm" aria-label="Traveler scale, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/scale-clientview-observer.webm" aria-label="Traveler scale, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/scale-clientview-pov.webm" aria-label="Traveler scale, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/scale-clientview-observer.webm" aria-label="Traveler scale, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -320,11 +320,11 @@ Open **Settings → More settings → Fidelity** to change this portal's project
 <p><strong>Arrival orientation</strong> Compare frame, look, snap, and mirror policies at a rotated exit.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/arrival-orientation-standard-pov.webm" aria-label="Arrival orientation, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/arrival-orientation-standard-pov.webm" aria-label="Arrival orientation, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/arrival-orientation-clientview-pov.webm" aria-label="Arrival orientation, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/arrival-orientation-clientview-pov.webm" aria-label="Arrival orientation, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -332,11 +332,11 @@ Open **Settings → More settings → Fidelity** to change this portal's project
 <p><strong>Traversal momentum</strong> Compare preserved, scaled, and zero velocity on arrival.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/momentum-standard-pov.webm" aria-label="Travel momentum, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/momentum-standard-pov.webm" aria-label="Travel momentum, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/momentum-clientview-pov.webm" aria-label="Travel momentum, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/momentum-clientview-pov.webm" aria-label="Travel momentum, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -344,13 +344,13 @@ Open **Settings → More settings → Fidelity** to change this portal's project
 <p><strong>Membrane and bounce</strong> Pass through the permitted face, then compare rejected entry and bounce.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/membrane-bounce-standard-pov.webm" aria-label="Membrane bounce, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/membrane-bounce-standard-observer.webm" aria-label="Membrane bounce, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/membrane-bounce-standard-pov.webm" aria-label="Membrane bounce, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/membrane-bounce-standard-observer.webm" aria-label="Membrane bounce, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/membrane-bounce-clientview-pov.webm" aria-label="Membrane bounce, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/membrane-bounce-clientview-observer.webm" aria-label="Membrane bounce, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/membrane-bounce-clientview-pov.webm" aria-label="Membrane bounce, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/membrane-bounce-clientview-observer.webm" aria-label="Membrane bounce, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -426,11 +426,11 @@ Vanilla-item and Vault charges commit only after successful travel. Failed trave
 <p><strong>Portal orientation</strong> Flip the portal face and rotate its frame.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/portal-orientation-standard-pov.webm" aria-label="Portal orientation, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/portal-orientation-standard-pov.webm" aria-label="Portal orientation, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/portal-orientation-clientview-pov.webm" aria-label="Portal orientation, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/portal-orientation-clientview-pov.webm" aria-label="Portal orientation, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -452,11 +452,11 @@ screen), not these buttons.
 <p><strong>Ambient particles and color</strong> Choose a particle style, dye color, and custom RGB color.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/ambient-particles-standard-pov.webm" aria-label="Ambient particles, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/ambient-particles-standard-pov.webm" aria-label="Ambient particles, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/ambient-particles-clientview-pov.webm" aria-label="Ambient particles, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/ambient-particles-clientview-pov.webm" aria-label="Ambient particles, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -488,13 +488,13 @@ Native ClientView ignores blackout, including its color and full-bright lighting
 <p><strong>Nexus dialing</strong> Dial two addresses, link each return portal, and travel both ways.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/network-dialing-standard-pov.webm" aria-label="Network dialing, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/network-dialing-standard-observer.webm" aria-label="Network dialing, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/network-dialing-standard-pov.webm" aria-label="Network dialing, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/network-dialing-standard-observer.webm" aria-label="Network dialing, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/network-dialing-clientview-pov.webm" aria-label="Network dialing, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/network-dialing-clientview-observer.webm" aria-label="Network dialing, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/network-dialing-clientview-pov.webm" aria-label="Network dialing, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/network-dialing-clientview-observer.webm" aria-label="Network dialing, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -502,11 +502,11 @@ Native ClientView ignores blackout, including its color and full-bright lighting
 <p><strong>Redstone dialing</strong> Configure the input action and use a lever to change destinations.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/redstone-control-standard-pov.webm" aria-label="Redstone controls, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/redstone-control-standard-pov.webm" aria-label="Redstone controls, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/redstone-control-clientview-pov.webm" aria-label="Redstone controls, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/redstone-control-clientview-pov.webm" aria-label="Redstone controls, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

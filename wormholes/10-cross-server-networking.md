@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -105,13 +105,13 @@ TCP and Unix-domain listeners allow up to 128 inbound connections that have not 
 <p><strong>Travel between servers</strong> Select a remote gateway, travel to its server, and return.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/cross-server-gateways-standard-pov.webm" aria-label="Cross-server gateways, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/cross-server-gateways-standard-observer.webm" aria-label="Cross-server gateways, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/cross-server-gateways-standard-pov.webm" aria-label="Cross-server gateways, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/cross-server-gateways-standard-observer.webm" aria-label="Cross-server gateways, no client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/cross-server-gateways-clientview-pov.webm" aria-label="Cross-server gateways, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/cross-server-gateways-clientview-observer.webm" aria-label="Cross-server gateways, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/cross-server-gateways-clientview-pov.webm" aria-label="Cross-server gateways, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/cross-server-gateways-clientview-observer.webm" aria-label="Cross-server gateways, client mod, third person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

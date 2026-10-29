@@ -2,7 +2,7 @@
 title: "Impulse integrations"
 description: "Economy, protection, storage, and events"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-29T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -40,7 +40,9 @@ Plugins that change item drops, experience, or inventory movement should use the
 
 Harvesters authorize each changed block with `HARVEST`, including pitcher halves and fruit stems. Removed crop blocks use `BlockBreakEvent`; berry picking uses `PlayerHarvestBlockEvent`, including its editable drop list. Cancellation leaves the affected crop and replanting input untouched. Berry drops start at the vanilla 2–3 yield; custom block-interaction loot tables are not evaluated.
 
-Automatic replanting does not emit `BlockPlaceEvent`. WorldGuard checks both block-break and block-place flags through `HARVEST`. Other protection plugins must handle the documented harvest or break events; a placement-only listener does not cover automatic replanting.
+Harvester replanting does not emit `BlockPlaceEvent`. WorldGuard checks both block-break and block-place flags through `HARVEST`. Other protection plugins must handle the documented harvest or break events; a placement-only listener does not cover harvester replanting.
+
+Optional chopper replanting emits both `BREAK` and `PLACE` actions, followed by native break and placement checks. The placement event sees the proposed plant and the original log as its replaced state. Cancellation restores the log and planting item when those states remain unchanged. Event handlers that replace blocks or alter inventory retain responsibility for their own changes; rollback does not overwrite them.
 
 ## Output provenance
 

@@ -2,7 +2,7 @@
 title: Titles public API
 description: Service discovery, immutable views, durable mutations, and operation history
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: titles, api
 editor: markdown
 dateCreated: 2026-10-24T00:00:00.000Z
@@ -44,7 +44,7 @@ Submit a `MutationRequest(playerId, titleId, action, expiresAt, context)` throug
 | `REVOKE` | Remove the grant, add an explicit denial, and clear a matching selection; expiry must be zero |
 | `SELECT` | Select an accessible title for an online player, or clear with an empty title ID; expiry must be zero |
 
-Selection runs on the player's owning scheduler and checks readiness, enabled state, access, and cooldown. Grant and revoke trust the calling plugin; enforce your own administrative permissions before accepting user requests. Actor and source are supplied metadata, not authenticated identities. Both require 1 to 128 characters and cannot be blank; reason permits up to 512 characters and may be empty. All three reject control characters.
+Selection runs on the player's owning scheduler and checks readiness, enabled state, access, and cooldown. Completion follows selection-token cleanup and cooldown bookkeeping, so integrations can chain subsequent operations. Grant and revoke trust the calling plugin; enforce your own administrative permissions before accepting user requests. Actor and source are supplied metadata, not authenticated identities. Both require 1 to 128 characters and cannot be blank; reason permits up to 512 characters and may be empty. All three reject control characters.
 
 ```java
 OperationContext context = new OperationContext(
@@ -74,7 +74,7 @@ Use asynchronous completion handling. A successful durable result contains an im
 
 ## Receipts and retries
 
-A profile retains its latest 256 accepted operation receipts. Profile changes and the receipt are written atomically. Repeating the exact request with the same operation ID replays the original receipt without applying it again, even if the saved profile has changed since that operation. Reusing that ID with different request data returns `CONFLICT`. Once a receipt is pruned, its operation ID no longer prevents duplicate application.
+A profile retains its latest 256 accepted operation receipts. Operation IDs are scoped to that player's retained history. Profile changes and the receipt are written atomically. Repeating the exact request with the same operation ID replays the original receipt without applying it again, even if the saved profile has changed since that operation. Reusing that ID with different request data returns `CONFLICT`. Once a receipt is pruned, its operation ID no longer prevents duplicate application.
 
 Explicit player selections, clears, grants, and revocations share this history. Default selection initialization, colors, and favorites do not create operation receipts. See [Command history](/titles/02-commands-permissions) for the operator view.
 

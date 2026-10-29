@@ -2,13 +2,15 @@
 title: "Talon: Ability API"
 description: "Custom abilities, books, and container-access decisions"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "talon, api, development"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
 ---
 
 Plugins can register custom tool abilities through `com.volmit.talon.api.TalonAbilityService`. Depend on the Talon API artifact at compile time and declare Talon as a server plugin dependency; do not shade its API into your plugin.
+
+The build produces `talon-<version>-api.jar` and `talon-<version>-api-sources.jar` in `build/libs/`. Both contain only the public `com.volmit.talon.api` package; attach the source jar in your IDE for API source navigation. The server runs the full Talon plugin jar.
 
 ## Registration
 

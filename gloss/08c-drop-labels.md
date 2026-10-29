@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-10-21T03:20:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -88,13 +88,13 @@ Labels refresh after spawns, merges, partial pickups, loads, and reloads. Removi
 
 <div class="gloss-demo" data-demo="real-drops-editor">
 <p><strong>Dropped item authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/real-drops-editor.webm" aria-label="Dropped item authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/real-drops-editor.webm" aria-label="Dropped item authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="real-drops-pov">
 <p><strong>Dropped item models and labels</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/real-drops-pov.webm" aria-label="Dropped item models and labels, first person" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/gloss-assets/demos/real-drops-observer.webm" aria-label="Dropped item models and labels, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/real-drops-pov.webm" aria-label="Dropped item models and labels, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/real-drops-observer.webm" aria-label="Dropped item models and labels, third person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 The Real Drops document accepts `show`, defaulting to `true`. It gates the display presentation

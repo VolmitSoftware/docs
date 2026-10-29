@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -23,6 +23,10 @@ Installation, configuration, commands, and reference material for Volmit plugins
 ## Choose a plugin
 
 Pick a project to open its documentation.
+
+- [Axion *Sign-directed mining, harvesting, and item collection*](/axion)
+- [GlacialRush *Three-faction conquest arenas, equipment kits, and combat tools*](/glacialrush)
+{.links-list}
 
 <div class="layout wrap">
   <div class="flex xs12 sm6 md4 pa-2">

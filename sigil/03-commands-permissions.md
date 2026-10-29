@@ -2,7 +2,7 @@
 title: "Sigil: Commands and permissions"
 description: "Player, editor and operator commands"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "sigil, commands, permissions"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -38,6 +38,8 @@ Voucher commands require `sigil.use`, granted by default. Preview, redeem, inspe
 | `/sigil forceall voucher=<id>` | `sigil.force` | Start claims for online players |
 
 `config` and `capture` require a player. Giving to an offline player is unsupported. The GUI reload button and automatic file reload apply settings; there is no standalone `/sigil reload` command.
+
+Within `/sigil config`, **Voucher appearance** edits the voucher item and **Edit rewards** manages reward steps and weighted groups. Both require `sigil.config`. Use **Use held item appearance** for the voucher's appearance template; `/sigil capture` appends the held item as a guaranteed reward. The reward editor's capture control adds a draft to the selected guaranteed list or group. See [configuration](/sigil/02-installation-configuration) for the full workflow.
 
 ## Operations
 

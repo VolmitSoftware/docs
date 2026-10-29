@@ -2,7 +2,7 @@
 title: "Impulse feature reference"
 description: "Machine capabilities and control locations"
 published: true
-date: 2026-10-23T16:24:03.218Z
+date: 2026-10-29T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -21,6 +21,7 @@ Impulse has eight machine types. Each type has its own configured tier sequence.
 | Place permitted blocks from inventory | Placer |
 | Shear adult sheep with stored shears | Shearer |
 | Cut nearby logs and nether stems with stored axes | Chopper |
+| Replant suitable upright log bases from stored plants | Optional `machines.chopperReplanting` |
 | Store inputs and outputs | Nine native dispenser slots |
 | Pause and choose redstone behavior | Machine controls |
 | Buy the next tier with XP or money | Machine controls |
@@ -33,6 +34,7 @@ Impulse has eight machine types. Each type has its own configured tier sequence.
 | Edit server settings | `/impulse config` |
 | Select and edit languages | `/impulse language` |
 | Inspect plugin state | `/impulse status` and `/impulse debug` |
+| Inspect an accessible machine and refresh its status | `/impulse inspect` and the controls' status comparator |
 | Read machine action context and output provenance | Integration events and entity provenance API |
 
 See [Machines](/impulse/05-machines) for action rules and [Configuration](/impulse/03-configuration) for tier fields.

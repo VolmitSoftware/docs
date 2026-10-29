@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-10-07T21:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -85,12 +85,12 @@ A click runs matching actions in list order. `any` matches every supported click
 
 <div class="gloss-demo" data-demo="menu-slider-editor">
 <p><strong>Slider component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/menu-slider-editor.webm" aria-label="Slider component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-slider-editor.webm" aria-label="Slider component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="menu-field-editor">
 <p><strong>Field component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/menu-field-editor.webm" aria-label="Field component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-field-editor.webm" aria-label="Field component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A slider body uses `type: "slider"`, `var`, `min`, `max`, `step`, `width`, `label`, and optional
@@ -109,12 +109,12 @@ its initial value.
 
 <div class="gloss-demo" data-demo="menu-list-editor">
 <p><strong>Scoped list component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/menu-list-editor.webm" aria-label="Scoped list component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-list-editor.webm" aria-label="Scoped list component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="menu-tabs-editor">
 <p><strong>Tabs component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/menu-tabs-editor.webm" aria-label="Tabs component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-tabs-editor.webm" aria-label="Tabs component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A list repeats a component `template` for values from its `source` expression. Its `var` binds the current entry for text, conditions, tooltips, and action expressions. `pageSize` defaults to `6`; `flow` defaults to three columns with horizontal spacing `1` and vertical spacing `0.5`.
@@ -183,7 +183,7 @@ A decoration is not clickable and has no hitbox or hover effect. Animated images
 
 <div class="gloss-demo" data-demo="menu-toggle-editor">
 <p><strong>Toggle component authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/menu-toggle-editor.webm" aria-label="Toggle component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-toggle-editor.webm" aria-label="Toggle component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 ```json
