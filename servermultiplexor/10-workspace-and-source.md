@@ -2,7 +2,7 @@
 title: "Multiplexor: Workspace and source"
 description: "Workspace layout, source builds, validation, and release behavior"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-26T13:55:15.000Z
 tags: servermultiplexor, development
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -20,7 +20,7 @@ A workspace separates server instances, cached builds, shared content, and local
 - **Isolated instance**: opts out of all shared state: no dropin sync, no Iris pack symlink, no shared `ops.json` merge. Created with `server create --isolated` or toggled later with `instance isolated <name> true`.
 - **Shared plugin data**: `consumers/plugin-consumers/shared-plugin-data/` holds Iris packs and a merged `ops.json` for non-isolated plugin instances.
 - **Build cache**: `consumers/<profile>/builds/<type>/` holds versioned server jars. `server create --type ...` resolves jars from here; `--auto-build` refreshes from upstream first.
-- **Project build**: a run of registered Gradle targets from captured source files. Each target has isolated writable project and dependency copies, a log, and verified artifacts. Delivery uses an explicit named destination. See [Project builds](/servermultiplexor/13-project-builds).
+- **Project build**: a run of registered Gradle targets from captured source files. Each target has isolated writable project and dependency copies, a log, and verified artifacts. Successful targets automatically deliver compatible runtime artifacts to saved directory and drop-ins destinations, including verified reuse. Managed instances require manual delivery. See [Project builds](/servermultiplexor/13-project-builds).
 - **Content lockfile**: `consumers/<profile>/state/content-lock.yaml` tracks jars installed by `content install` so they can be updated, removed, and re-synced through the existing dropin pipeline.
 - **Backup**: `consumers/<profile>/backups/<instance>/<backup-id>/` stores a restorable snapshot with checksums and a manifest. Backups are used manually and by `instance safe-update`.
 - **Gameplay test**: a Mineflayer scenario run against an actual instance. Built-ins cover connection, command responses, and status effects; custom `.mjs` scenarios can assert any protocol-visible player behavior. Reports stay under ignored per-consumer state.

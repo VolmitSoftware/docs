@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin support and metrics"
 published: true
-date: 2026-10-13T16:00:00.000Z
+date: 2026-10-26T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,15 +20,17 @@ These plugin integrations apply to the Bukkit distribution. PlaceholderAPI, Iris
 | Vault (+ economy provider) | Portal menu travel cost type **Vault Economy** | Vault cost mode is unavailable. Free and item costs still work |
 | Iris | Pre-load RTP fluid and biome probes | RTP falls back to ordinary chunk-backed biome and landing-safety checks |
 | Citizens | Prevents standard tracked NPCs from relinking while a portal projection occludes their real local entity | Ordinary Bukkit entities still use the same local-occlusion path; no Citizens event hook is registered |
-| FastAsyncWorldEdit | Refreshes projected terrain after applied queued and native edits, including undo and redo; requires the patched distribution below | Ordinary Bukkit block changes still update projections |
+| FastAsyncWorldEdit | Refreshes projected terrain after queued edits, including undo and redo. The patched distribution also tracks native edits | Ordinary Bukkit block changes still update projections |
 
 ## FastAsyncWorldEdit
 
-Install the matching Spigot or Paper FAWE `2.16.1-wormholes-1` distribution built with the Wormholes FAWE patches. [Build instructions](/wormholes/01-installation-configuration#build-distributions) cover both distributions. The integration requires the patched core and native adapter; stock FAWE `2.16.1` does not provide the required completion support. An incompatible FAWE leaves Wormholes running and reports that the FAWE integration could not start.
+Install a FAWE distribution compatible with your server. Wormholes automatically uses standard FAWE's queued-edit callbacks without configuration or a custom FAWE build. Queued commands, brushes, API edits, undo, and redo refresh destination views when FAWE reports the applied chunks.
 
-No Wormholes configuration is required. Queued and native edits refresh active destination views after changes have been applied, including commands, brushes, API edits, undo, and redo. Cancelling an edit still refreshes the blocks already changed.
+The optional FAWE `2.16.1-wormholes-1` distribution adds native-edit completion tracking and preserves queued notifications during cancellation. Native-edit tracking requires its patched native adapter. [Build instructions](/wormholes/01-installation-configuration#build-distributions) cover its Spigot and Paper distributions. These distributions support Spigot and Paper, not Folia.
 
-FAWE settings reloads preserve the integration. A BileTools reload of Wormholes waits up to 90 seconds for admitted FAWE edits to finish. If they remain active, the reload is refused and Wormholes stays loaded; finish the edits before trying again. Finish active edits before restarting the server. This FAWE distribution supports Spigot and Paper, not Folia.
+With standard FAWE, restart the server to reload or unload Wormholes safely. BileTools refuses hot reload because standard FAWE cannot report when all edit sessions finish. With the patched completion hooks, BileTools waits up to 90 seconds for admitted edits before reloading Wormholes. If edits remain active, Wormholes stays loaded. Finish active edits before restarting the server.
+
+FAWE settings reloads preserve the integration. Missing optional completion hooks select queued-edit support and produce an informational startup message. An integration failure disables FAWE projection tracking and logs the exception. Wormholes and FAWE edits remain available.
 
 ## Wormholes client mod
 

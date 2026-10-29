@@ -293,6 +293,7 @@ See [07 - Pregeneration](/iris/07-pregeneration).
 |---------|---------|-----------|--------|-------------|
 | `open` | `o` | Both | **Bukkit:** `<dimension> [seed=1337] [force=false]` (`dimension` alias `dim`, `seed` alias `s`, `force` alias `f`). **Modded:** `<pack> [seed]` | Open a temporary studio dimension. Bukkit refuses while a downloaded pack still requires a registry restart. `force=true` deliberately attempts the currently loaded registry state without installing datapacks or restarting, but never bypasses broken-pack validation. The session owner can replace an active Jigsaw Studio after it saves and finishes pending edits |
 | `close` | `x` | Both | — | Close the studio and discard the world. Bukkit requires `/iris jigsaw close` for an active Jigsaw Studio |
+| `hotload` | `refresh` | Both | — | Manually reload the open Studio pack and report completion or failure. Accepted edits apply to newly generated terrain; existing chunks retain their terrain |
 | `tpstudio` | `stp` | Both | — | Teleport into the open Studio |
 | `status` | | **Modded** | — | Show the open studio and pack |
 | `create` | `+` | Both | **Bukkit:** `[name=studio] [template]`. **Modded:** `[name] [template=example]` | Create a pack project |

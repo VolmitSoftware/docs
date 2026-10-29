@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry constraints, the portal registry, the Wormholes handoff, and building from source"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -68,7 +68,7 @@ Run from the ShapedPortals repository root:
 
 The build resolves a local VolmLib checkout by walking up the directory tree. Use `-PlocalVolmLibDirectory=<path>` or `VOLMLIB_DIR` for an explicit checkout, or `-PuseLocalVolmLib=false` for remote resolution.
 
-`build` runs verification and creates the selected `build/libs/ShapedPortals-<version>-packed.jar`. The React pack is written to `build/distributions/react-api-packs/`. After registering the source workspace, `projects build shapedportals --target bukkit` in Multiplexor builds the Wormholes API dependency first and passes its verified jar to the isolated plugin build. Use a named destination to export or deliver the plugin; see [Project builds](/servermultiplexor/13-project-builds).
+`build` runs verification and creates the selected `build/libs/ShapedPortals v<version> [CraftBukkit] <versions>.jar`. The React pack is written to `build/distributions/react-api-packs/`. After registering the source workspace, `projects build shapedportals --target bukkit` in Multiplexor builds the Wormholes API dependency first and passes its verified jar to the isolated plugin build. Use a named destination to export or deliver the plugin; see [Project builds](/servermultiplexor/13-project-builds).
 
 `publishToMavenLocal` verifies and publishes the shaded plugin and sources as `com.volmit:shapedportals:<version>`. See [Workspace builds](/volmlib/api/building) and [Compatibility](/shapedportals/03-compatibility-operations) for shared checks and platform limits.
 

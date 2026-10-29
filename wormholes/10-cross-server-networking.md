@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -120,7 +120,7 @@ TCP and Unix-domain listeners allow up to 128 inbound connections that have not 
 | Mode | Selection |
 |------|-----------|
 | `auto` (default) | **PROXY** for a name in `proxy-servers` or a peer route with `useProxy`, otherwise **DIRECT** |
-| `proxy` | Always BungeeCord plugin message `Connect` on channel `BungeeCord` with peer name |
+| `proxy` | Always through the proxy: the [proxy module](#wormholes-on-the-proxy) when it is enabled, otherwise BungeeCord plugin message `Connect` on channel `BungeeCord` with peer name |
 | `direct` | Minecraft transfer to the resolved game host/port |
 
 Use `proxy-servers` to mix proxy backends and direct destinations:
@@ -164,13 +164,46 @@ bungee-plugin-message-channel = true
 
 Save `wormholes.toml`. A `velocity.toml` change applies when Velocity restarts. Link the servers with `/wormholes server export` and `import` in both directions, then link each gateway from its Destination menu. Links are one-way.
 
-WormholesProxy is optional. The proxy path uses Velocity's BungeeCord `Connect` channel. Leave `[network.proxy] enabled = false` unless that module and its shared secret are configured. An XZ WormholesProxy jar extracts `plugins/WormholesProxy/cache/runtime/`, which must be writable.
-
 `auto` does not detect Velocity forwarding. A manually imported peer uses direct transfer unless `proxy-servers` includes its name or its route selects the proxy. Direct login cannot preserve a forwarded online player UUID on an offline backend, so admission rejects that transfer.
 
 A `connected` peer with a low RTT confirms the Wormholes peer connection. It does not confirm that Velocity recognizes the destination name or accepts the player transfer.
 
 The raw peer link still carries portal views and handoff control. Each backend must reach the other's advertised raw endpoint. In separate containers, `127.0.0.1` refers to the current container. Use a reachable container or host address for the peer link. The Minecraft backend addresses remain the ones configured under Velocity's `[servers]` table.
+
+### Wormholes on the proxy
+
+The Wormholes jar also loads on Velocity and BungeeCord. On the proxy, it introduces backends to each other and moves players between them. Backends linked this way skip code export and import, and a backend's `server-name` does not need to match its proxy server key.
+
+1. Put the Wormholes jar in the proxy's `plugins/` folder and start the proxy. It writes a shared secret to `secret.txt` in its data folder: `plugins/wormholes/` on Velocity or `plugins/Wormholes/` on BungeeCord. Its embedded runtime extracts to `plugins/Wormholes/cache/runtime/`, which must be writable.
+2. On each backend, enable networking and the proxy module in `wormholes.toml`, using the contents of `secret.txt`:
+
+   ```toml
+   [network]
+   enabled = true
+
+   [network.proxy]
+   enabled = true
+   secret = "paste-secret-here"
+   ```
+
+3. Save `wormholes.toml`.
+4. Join each backend through the proxy. A backend enrolls with the proxy when a player joins it and receives every other enrolled backend. It trusts each one and saves a route that transfers through the proxy, so `auto` transfer mode uses the proxy for these destinations.
+5. Link each gateway from its Destination menu.
+
+When a player uses a gateway, the source backend asks the proxy to move the player. The proxy connects the player to the backend that enrolled under the destination name and returns the result to the source backend.
+
+A backend enrolls again each time a player joins it and every minute while a player is online, which also gives it backends that enrolled after it. A backend with no players cannot enroll, so the proxy pings any backend that has not enrolled for 90 seconds and keeps it while it answers. The proxy drops a backend that stops answering, and transfers to it fail until it enrolls again.
+
+The secret signs every message on the `wormholes:proxy` channel, and any server that holds it can enroll, so keep it private. With `[network.proxy] enabled = false`, proxy transfers use the BungeeCord `Connect` channel described in [Velocity backends](#velocity-backends).
+
+`/whproxy` runs on the proxy and requires `wormholes.proxy.admin`:
+
+| Command | Output |
+|---------|--------|
+| `/whproxy status` | Number of enrolled backends and pending transfers |
+| `/whproxy servers` | Each enrolled backend with its proxy server, time since it last enrolled or answered a ping, and capability flags |
+| `/whproxy portals` | Each backend's shareable portals |
+| `/whproxy transfers` | Transfers waiting for the proxy to connect the player |
 
 ## Network endpoints
 

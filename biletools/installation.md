@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,7 +18,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 ## Building from source
 
-Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically. The selected `build/libs/BileTools-<version>-packed.jar` contains the server and Velocity editions. Use `./gradlew prepareRelease` to build only the CraftBukkit distribution for publication. After registering the source workspace, `projects build biletools --target bukkit` in Multiplexor builds the universal artifact in an isolated source copy. See [Project builds](/servermultiplexor/13-project-builds) for named export and deployment destinations.
+Run `./gradlew build` (or `.\gradlew.bat build` on Windows) with Java 25. A sibling `VolmLib` checkout is used automatically. The selected `build/libs/BileTools v<version> [CraftBukkit] <versions>.jar` contains the server and Velocity editions. Use `./gradlew prepareRelease` to build only the CraftBukkit distribution for publication. After registering the source workspace, `projects build biletools --target bukkit` in Multiplexor builds the universal artifact in an isolated source copy. See [Project builds](/servermultiplexor/13-project-builds) for named export and deployment destinations.
 
 ## Platform support
 

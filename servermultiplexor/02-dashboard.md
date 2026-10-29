@@ -2,7 +2,7 @@
 title: "Multiplexor: Dashboard and wizard"
 description: "Monitor local and remote fleets, select servers, and use guided actions"
 published: true
-date: 2026-10-21T17:07:55.373Z
+date: 2026-10-26T13:55:15.000Z
 tags: servermultiplexor, dashboard
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -179,7 +179,9 @@ Use `a` **New**, `s` **Save**, `r` **Remove**, `p` **Preview**, or `q` **Back**.
 
 Press `i` or **CONVERT**, or choose **Convert Gradle project** from actions. Enter the project root containing `gradlew` and `build.gradle` or `build.gradle.kts`. Conversion displays detected targets and exact file changes before asking to write the declaration and scan the project. See [Declare a Gradle project](/servermultiplexor/13-project-builds#declare-a-gradle-project) for supported source layouts and custom declarations.
 
-Press `d` to choose a saved destination, review the delivery preview, and confirm before applying it. With no destinations, choose **Add destination** or **Back**. Adding a destination saves its configuration; delivery remains a separate action.
+Each successful target automatically delivers compatible runtime artifacts to every saved directory and drop-ins location, including when it reuses verified artifacts. Saving a location enables delivery after subsequent successful targets; it does not deliver existing runs. APIs and libraries stay in the run. Delivery failures appear in the target output and dashboard, and the run fails while other builds and destinations continue.
+
+Press `d` to deliver an existing run, retry delivery, or deliver to a stopped, unlocked instance. Choose a saved destination, review the delivery preview, and confirm before applying it. With no destinations, choose **Add destination** or **Back**.
 
 The worker retains run state and logs when the view closes. Open the view again or use `projects status` to follow it. See [Project builds](/servermultiplexor/13-project-builds) for source snapshots, dependency ordering, artifact reuse, and delivery rules.
 

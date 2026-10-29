@@ -2,7 +2,7 @@
 title: "BileTools: Velocity Proxy"
 description: "Hot reload for proxy plugins on Velocity"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "biletools, velocity"
 editor: markdown
 dateCreated: 2026-09-16T00:00:00.000Z
@@ -16,7 +16,7 @@ The universal BileTools jar runs on Bukkit servers and on Velocity proxies. On t
 |---|---|
 | Proxy | Velocity 3.4 or newer, including 4.x |
 | Proxy JVM | Whatever the proxy build requires (Velocity 4.x runs on Java 25); the plugin is built for Java 17 and newer |
-| Jar | The universal `build/libs/BileTools-<version>-packed.jar` from `./gradlew build`; stable and beta release downloads contain only the CraftBukkit edition |
+| Jar | The universal `build/libs/BileTools v<version> [CraftBukkit] <versions>.jar` from `./gradlew build`; stable and beta release downloads contain only the CraftBukkit edition |
 
 ## Install
 

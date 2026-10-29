@@ -71,9 +71,9 @@ Local composite builds substitute `volmlib-localization` with `:localization`, `
 
 ## Build selected plugin jars
 
-Run `./gradlew packedJar` from a plugin project to create its selected `-packed.jar` beside the ordinary artifact in `build/libs/`. React's project root is `React/React/`. BileTools and Gloss produce one selected jar for both their server and Velocity editions. For the separate Wormholes proxy plugin, run `./gradlew :wormholes-proxy:packedJar` from `WormholesPlugin/`.
+Run `./gradlew packedJar` from a plugin project to write its selected jar to `build/libs/` under the artifact's normal file name. React's project root is `React/React/`. BileTools and Gloss produce one selected jar for both their server and Velocity editions, and Wormholes produces one for its server, Velocity, and BungeeCord editions.
 
-Each build compares the complete ordinary package with its XZ package and writes the smaller candidate to `-packed.jar`. Selection is automatic and needs no flag. Iris includes the native adapters in both candidates, so either selected format remains portable.
+Each build compares the complete ordinary package with its XZ package and writes only the smaller candidate to `build/libs/`. The ordinary candidate is built in `build/tmp/packaging/<artifact>/`. Selection is automatic and needs no flag. Iris includes the native adapters in both candidates, so either selected format remains portable.
 
 When XZ wins, startup verifies and extracts the bundled runtime into the plugin's writable `cache/runtime/` directory. Later starts verify and reuse that cache. The ordinary format loads directly without extraction. Required external libraries retain their normal download and cache behavior.
 
@@ -102,7 +102,15 @@ Set `intermediate = true` only on an archive consumed by a separately audited fi
 
 `packedJarAccessors` lists methods as `owner/internal/Class#method`. Each method must return `java.io.File` without parameters. The XZ candidate redirects these methods to the extracted runtime archive. Use them for class scanners that need the complete archive. Keep installed-jar identity and update paths separate.
 
-With one packed artifact, the task is `packedJar`. Multiple packed artifacts get a `packed<ArtifactName>Jar` task each. Output uses the producer's directory and filename with `-packed` before `.jar`, regardless of the selected format.
+`packedPayloadOnlyPrefixes` defaults to an empty list. Configure resource directories needed only after plugin bootstrap to keep their complete contents in the compressed runtime without duplicating them in the outer jar:
+
+```groovy
+packedPayloadOnlyPrefixes = ['linux/x64/org/lwjgl/', 'iris-language-guides/']
+```
+
+Prefixes use relative archive paths with a trailing `/`, without empty, `.` or `..` path segments. Matching classes, required artifact entries, native-provider manifests, license or notice files, and any prefix under `META-INF/` are rejected. Plugin descriptors, service registrations, and generation metadata remain in the outer jar. Runtime classloader resource lookup exposes payload resources after bootstrap. If the ordinary jar is selected, every resource remains in that jar. Prefixes are declared build inputs, so changing them rebuilds the selected distribution.
+
+With one packed artifact, the task is `packedJar`. Multiple packed artifacts get a `packed<ArtifactName>Jar` task each. Output uses the producer's configured directory and file name, whichever format is selected. The producer task writes its ordinary jar to `build/tmp/packaging/<artifact>/` instead.
 
 ## Native implementation boundaries
 
@@ -187,15 +195,15 @@ Every other audit check still fails the build in development packaging, includin
 
 ### Dependency pruning and compaction
 
-Pruning follows Shadow's existing minimization. It removes unreachable classes only from explicitly selected VolmLib packages. All plugin-owned classes remain roots. The analysis follows bytecode, constant pools, descriptors, signatures, annotations, exact reflective class-name strings, nested classes, and service providers. Computed reflection names need explicit keep rules. Iris retains its Matter slices and leaves generated Caffeine classes outside pruning.
+Pruning follows Shadow's existing minimization. It removes unreachable classes only from explicitly selected VolmLib packages. All plugin-owned classes remain roots. The analysis follows bytecode, constant pools, descriptors, signatures, annotations, exact reflective class-name strings, nested classes, and service providers. Computed reflection names need explicit keep rules. Iris retains its Matter slices and leaves generated Caffeine classes outside pruning. Bundled VolmLib native noise libraries are removed when their native library loader class is absent after pruning. Libraries remain byte-identical when the loader is retained, including relocated and multi-release classes.
 
 Compilation omits local-variable debug tables while retaining source locations and parameter names. Projects that already disable debug metadata keep that setting. Adapt, BileTools, Gloss, HiddenOre, Iris Bukkit, React, and ShapedPortals also strip local-variable tables from bundled dependency classes after shading and omit archive directory entries. This preserves executable instructions, annotations, source locations, parameter names, and resources. Archive compaction verifies content and replaces the archive only when smaller.
 
 ### Size gate
 
-Every final non-modded plugin distribution must fit the 7,500,000-byte upload cap. Plugin profiles and project builds set `max_bytes` to that cap. A non-modded profile cannot declare `max_bytes` above it; the build fails at configuration time if one does. The audit enforces the smaller of the profile's `max_bytes` and the cap on the final archive. Intermediate archives receive size warnings and retain all content checks. Fabric, Forge, and NeoForge distributions have no size restriction. Their profiles use `"modded": true` and omit `max_bytes`. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent build targets and artifact collection.
+Every final non-modded plugin distribution uses the same 7,500,000-byte upload cap. All bundled plugin profiles set `max_bytes` to 7,500,000, and project builds use that ceiling without smaller plugin-specific budgets. A non-modded profile cannot declare `max_bytes` above the cap; the build fails at configuration time if one does. Intermediate archives receive size warnings and retain all content checks; the cap is enforced on their final distribution. Fabric, Forge, and NeoForge distributions have no size restriction. Their profiles use `"modded": true` and omit `max_bytes`. Each archive must also pass its required-entry checks, duplicate checks, CRC checks, and forbidden-package checks. Cached archives receive validation too. A failed archive build prevents dependent build targets and artifact collection.
 
-Canonical budgets, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Use `authoritativeShrinkLibraries.from(...)` when a separately shipped library contains patched definitions that replace inherited compile-classpath definitions. These jars resolve first; unrelated inherited types remain available. Missing authority, overlap with program classes, or competing authoritative definitions fails the build. An authority generated inside the archive task must be registered as that task’s output and produced before shrinking. Review a size increase before changing its budget.
+Canonical profiles, required entries, `modded` flags, `shrink_keep` rules, and `shrink_dontwarn` patterns live in `VolmLib/packaging/src/main/resources/art/arcane/volmit/packaging/artifact-policies.json`. Each plugin selects its policy, dependency keep rules, extra ProGuard include files (`shrinkRules`), extra library jars (`shrinkLibraries`), and relocation mappings (`shrinkRelocations`) in `pluginPackaging` inside its build file. Use `authoritativeShrinkLibraries.from(...)` when a separately shipped library contains patched definitions that replace inherited compile-classpath definitions. These jars resolve first; unrelated inherited types remain available. Missing authority, overlap with program classes, or competing authoritative definitions fails the build. An authority generated inside the archive task must be registered as that task’s output and produced before shrinking.
 
 Reports under `build/reports/packaging/` record before/after sizes, removed classes, package sizes, resource bytes, and archive overhead; `<artifact>.json` identifies the jar in its `artifact` field by file name rather than by absolute path, so a report restored from the build cache in another checkout still names the archive sitting beside it. `<artifact>.json` carries a `shrink` block with the applied state or skip reason, bytes before and after, the removed class count, the restored advice classes, and the tolerated warnings. `<artifact>-shrink-rules.txt`, `-seeds.txt`, `-usage.txt`, `-configuration.txt`, and `-warnings.txt` hold the generated rules, the ProGuard seeds, everything ProGuard removed, the effective configuration, and the classified warnings. Reports are local build output.
 
@@ -207,9 +215,19 @@ To build and check a plugin, run from its project directory:
 
 For Iris, that command covers Bukkit. Use `verifyBukkitArtifact verifyModdedArtifacts` to assemble and check all four platform jars in their build directories.
 
-Adapt, BileTools, Gloss, HiddenOre, Iris Bukkit, React, and ShapedPortals release builds enable stronger compression by default.
+The shared packaging plugin enables stronger compression by default for every release artifact. Plugin build files do not need a compression declaration. `-PcompactRelease=true` or `false` sets the shared default; an explicit artifact-level `releaseCompression` setting takes precedence.
 
-Release compression compares Zopfli with level-9 DEFLATE for each entry and keeps the smaller result. Verified results are reused from `caches/volmit-packaging/compression/` under the Gradle user home, including across temporary source copies. An empty cache requires the full compression pass. Decompressed contents are verified before reuse and before replacing the archive. The compressor runs entirely in the Gradle JVM and adds no runtime dependency. Development packaging skips stronger compression by default in these projects. Set `-PcompactRelease=true` or `false` to override the choice. Compression is an archive-task input, so changing it rebuilds the jar. Reports record both metadata stripping and release compression.
+Release compression compares Zopfli with level-9 DEFLATE for ordinary jar entries and the packed jar's bootstrap entries. Packed runtimes also compare XZ preset 9 with deeper-search settings and keep the smallest result. The complete ordinary and packed candidates still compete for the final artifact. Stronger compression spends more build CPU without changing runtime contents, extraction settings, or the size limit.
+
+Verified DEFLATE results are reused from `caches/volmit-packaging/compression/` under the Gradle user home, including across temporary source copies. An empty cache requires the full compression pass. Decompressed contents are verified before reuse and before replacing the archive. The compressors run entirely in the Gradle JVM and add no runtime dependency. Development packaging skips stronger compression by default. Compression is a declared input of both the archive and packed-jar tasks, so changing it rebuilds the affected jars. Reports record both metadata stripping and release compression.
+
+For Iris, build the release artifact with stronger compression from its project root:
+
+```bash
+./gradlew packedJar -Prelease -PvolmitPackaging=release
+```
+
+Keep shrinking enabled for the smallest release artifact; remove any `VOLMIT_SHRINK=false` environment override or `-PvolmitShrink=false` argument.
 
 To inspect an ordinary jar without building or modifying it, run from the workspace:
 

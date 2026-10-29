@@ -125,7 +125,7 @@ Back up the complete dimension directory, including `iris/generation`. Do not ed
 | Modded world registration | `<world-root>/iris/iris-dimensions.json` |
 | Modded staged and applied replacements | `<world-root>/data/irisworldgen/dimension-replacements.json` |
 
-`level-name` in `server.properties` selects the save root. Include the registration files when backing up your server. Use the server's normal stop command and wait for the Java process to exit before copying, restoring, or removing world files. Pending chunk generation and Iris world data finish saving during shutdown.
+`level-name` in `server.properties` selects the save root. Include the registration files when backing up your server. Use the server's normal stop command and wait for the Java process to exit before copying, restoring, or removing world files or the Iris jar. Pending chunk generation and Iris world data finish saving during shutdown; Iris completes cleanup after the server finishes saving its worlds.
 
 ## When an Iris world cannot load
 

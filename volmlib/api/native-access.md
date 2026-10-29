@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-27T03:40:00.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -161,9 +161,15 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 
 `NativeWorldGeneration.inject(world, context)` installs the selected version’s generator using your `NativeBukkitGeneratorContext`. The context supplies terrain, biome, structure, spawn, and generation-history policy through typed contracts. Native structure stages respect the world’s Generate Structures setting: disabled worlds skip starts, references, placement, native locate predictions, and structure-volume prediction while terrain and feature stages continue. `lifecycle(policy)` creates its lifecycle controller; retain the controller and close its hooks during shutdown. Use `completeBootstrap(world)` after initial generation and `abandonBootstrap(world)` when creation fails.
 
+Call `attachOverworldSpawners(world)` during world initialization for worlds that use Overworld event spawning. When the world has no event spawners, it installs vanilla phantom, patrol, cat, village siege, and wandering trader spawners. An existing nonempty spawner list is preserved, and repeated calls do not duplicate spawners. The caller selects eligible worlds; Nether and End worlds should omit this call.
+
 Implement the block-change callbacks when your generator retains deferred content at generated positions. `StructureStagePolicy.trackBlockChanges` returns `NativeBlockChangeSet.create(bounds)` when that area contains such content, or `NativeBlockChangeSet.disabled()` when tracking is unnecessary. `NativeImportedFeaturePolicy.trackedBlockPositions` returns a set populated with the positions of retained content, allowing the feature pass to detect direct chunk-section writes as well as world writes. Both policies receive `invalidateBlockChanges` after placement, including partial writes when placement fails. Use `forEachChunk` and `forEachPosition` to discard superseded content; structure terrain fitting also records the air cell above a `FLATTEN` cut. Callbacks run in the generation context, so schedule any live entity cleanup on its owning thread.
 
 `NativeBlockChangeSnapshot.capture(positions, reader)` samples only the supplied positions. Call `collectChanges(changes, reader)` afterward to add positions whose sampled values differ. Readers receive world X, Y, and Z; return immutable block-type values when neighbour-induced property changes must remain valid. Native world-access factories take an explicit `guarded` argument: `true` applies their generation-boundary and protected-position checks, while `false` retains the delegate's access rules while recording writes.
+
+`NativeWorldLifecycleFactory.Controller.initializeLifecycle(pluginClassLoader)` installs shutdown protection for the supplied plugin class loader after the Java agent is ready and before services start. Repeated calls with that same loader are harmless; another loader is rejected. World-generation hooks remain separate: call `injectBukkit()` when needed, and `uninjectBukkit()` removes only those hooks. Call `deferPluginClassLoaderClose()` before the server disables the plugin, then `releasePluginClassLoaderClose()` once world saving and all dependent cleanup finish. Deferral requires successful lifecycle initialization and retains the exact supplied loader.
+
+The controller calls `NativeWorldLifecyclePolicy.releaseClassLoader(loader)` once for an initialized loader, including a normal disable without deferral. Complete provider cleanup before releasing the retained loader, and accept release when no retention was requested.
 
 `NativeWorldLifecycleFactory.Controller.createServerShutdownBoundary()` captures the server's completed world-shutdown signal. Call `ServerShutdownBoundary.await(timeout, unit)` from a background thread before releasing resources needed by native chunk workers. A terminated server thread alone does not satisfy this boundary. A `false` result means dependent resources must remain available.
 

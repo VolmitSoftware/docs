@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-10-26T02:45:59.200Z
+date: 2026-10-26T22:14:50.267Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -69,7 +69,7 @@ The Studio map (`/iris studio map`) has a **Rivers** view in the World group. It
 - Beyond 16 blocks per pixel the map draws no water.
 - Cave pools are drawn only where generated chunks recorded them, at every zoom that draws water.
 
-Previews refresh as water plans become available. Zooming retains the completed map coverage while the requested detail renders. The **3D world** terrain preview also refreshes as hydrology plans finish. Disabled hydrology leaves the water overlay empty.
+Previews refresh as water plans become available. Resizing, panning, and zooming retain cached coverage while additional detail loads. Completed river coverage stays visible while a different zoom level prepares its water detail. The **3D world** terrain preview also refreshes as hydrology plans finish. Disabled hydrology leaves the water overlay empty.
 
 The **Biomes** view shows base biome colors. Its **Water** toggle is enabled by default and overlays the same hydrology, including recorded cave pools; press `W` to switch it off or on. The inspector's **Noise** and **Both** displays keep their selection visualizations clear of the water overlay.
 

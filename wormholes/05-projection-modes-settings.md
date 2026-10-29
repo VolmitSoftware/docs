@@ -2,7 +2,7 @@
 title: "Projection Modes and Settings"
 description: "Projection ON/OFF, PanOptic vs Venticular, budgets, render, and ClientView"
 published: true
-date: 2026-10-25T18:00:00.000Z
+date: 2026-10-27T00:14:36.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -493,7 +493,7 @@ A mirror the client draws itself, with `client-mirror` on in both the client fil
 
 Blackout has no effect on mirrors. Reflections do not intercept local clicks or block breaking and do not physically collide with players or other entities. Mirrors leave water and other terrain outside the opening unchanged while chunks load or update. Mirrors, linked portals, and active dimensional doors visible in a mirror show their own destinations up to each portal's recursion depth while `client-recursion` is on in the client file.
 
-Otherwise mirrors are streamed views built from the current client world. Unavailable contents arrive from the server; matching native peers avoid resending contents supplied locally. Local block, lighting, and block-entity updates refresh the reflection, and placed and removed blocks take priority over neighboring section refreshes. Directional block models, including mushroom cap and stem faces, follow the mirror rotation; sloped water surfaces retain their reflected shading with shaders enabled. Entities and the player's own reflection follow the mirror's full rotation, and the player sees their own reflection unless `self-reflection = false`.
+Otherwise mirrors are streamed views built from the current client world. Unavailable contents arrive from the server; matching native peers avoid resending contents supplied locally. Local block, lighting, and block-entity updates refresh the reflection, and placed and removed blocks take priority over neighboring section refreshes, including during busy frames. Directional block models, including mushroom cap and stem faces, follow the mirror rotation; sloped water surfaces retain their reflected shading with shaders enabled. Entities and the player's own reflection follow the mirror's full rotation, and the player sees their own reflection unless `self-reflection = false`.
 
 With `client-recursion` enabled at both ends, mirrors, linked portals, and active dimensional doors visible inside a streamed view show their own destinations across worlds, including repeated reflections. Each nested aperture retains its own viewpoint and recursion depth. A streamed mirror chain stops after four reflections, including the first mirror. Linked portals follow each portal's recursion depth up to three nested steps. Each primary view has at most 16 nested views.
 

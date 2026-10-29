@@ -2,7 +2,7 @@
 title: "API - Getting Started"
 description: "Add Adapt as a dependency and choose a supported API"
 published: true
-date: 2026-09-28T22:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,11 +12,11 @@ Adapt exposes APIs for skills, abilities, events, protection, progression, recip
 
 ## Add Adapt to your project
 
-Compile against the deployed `Adapt-<version>-all.jar` without bundling it:
+Compile against `Adapt-<version>-thin.jar` from `build/libs/` of an Adapt source build without bundling it:
 
 ```groovy
 dependencies {
-    compileOnly files('libs/Adapt-<version>-all.jar')
+    compileOnly files('libs/Adapt-<version>-thin.jar')
 }
 ```
 

@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-10-26T00:00:00.000Z
+date: 2026-10-27T03:40:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -15,7 +15,7 @@ A background loop ticks each Iris world roughly twice a second. If there is room
 
 Vanilla natural spawning is a separate pipeline. It stays on via the biome `vanillaDerivative` unless you replace that table. Iris spawners do not turn it off, and nothing deduplicates between the two — a zombie spawner in your pack adds to whatever the server would have spawned anyway. Custom biome `spawns` merge with vanilla. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
-Vanilla event spawners also run in every Iris world whose dimension `environment` is `NORMAL`. This includes worlds the server loads at startup, Studio worlds, and worlds on Folia. These are wandering traders, phantoms, pillager patrols, village and swamp-hut cats, and zombie sieges. Each follows the world's own gamerules and Paper world settings, such as `entities.spawning.wandering-trader`, in the same way as the default overworld. A wandering trader never spawns where the biome carries the `minecraft:without_wandering_trader_spawns` tag. Custom biomes inherit their tags from `derivative`, so a biome derived from `minecraft:the_void` (the default) blocks traders.
+Vanilla event spawners also run in every Iris world whose dimension `environment` is `NORMAL`. This includes worlds the server loads at startup, worlds created during play, Studio worlds, and worlds on Folia. These are wandering traders, phantoms, pillager patrols, village and swamp-hut cats, and zombie sieges. Each follows the world's own gamerules and Paper world settings, such as `entities.spawning.wandering-trader`, in the same way as the default overworld. A wandering trader never spawns where the biome carries the `minecraft:without_wandering_trader_spawns` tag. Custom biomes inherit their tags from `derivative`, so a biome derived from `minecraft:the_void` (the default) blocks traders.
 
 | Path | Class | Role |
 |------|-------|------|

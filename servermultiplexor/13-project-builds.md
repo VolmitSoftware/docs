@@ -2,13 +2,13 @@
 title: "Multiplexor: Project builds"
 description: "Discover Gradle targets, build isolated source snapshots, and deliver verified artifacts"
 published: true
-date: 2026-10-21T17:07:55.373Z
+date: 2026-10-28T00:00:00.000Z
 tags: servermultiplexor, development, builds
 editor: markdown
 dateCreated: 2026-10-21T00:00:00.000Z
 ---
 
-Multiplexor builds declared Gradle projects in separate working copies and records their artifacts, logs, and results. A project can expose plugins, loader and Minecraft version combinations, APIs, and libraries. Delivery uses a named destination selected separately from the build.
+Multiplexor builds declared Gradle projects in separate working copies and records their artifacts, logs, and results. A project can expose plugins, loader and Minecraft version combinations, APIs, and libraries. Each successful target automatically delivers compatible runtime artifacts to saved directory and drop-ins destinations, including when it reuses verified artifacts.
 
 ## Register and select projects
 
@@ -27,7 +27,9 @@ Run these commands from the Multiplexor workspace. Downloaded executables accept
 ./start.sh projects build --all --all-targets --jobs 4 --memory 16384 --workers 8
 ```
 
-Scan a source directory containing the projects and their local dependencies. Discovery finds Gradle roots that contain a wrapper and `gradle/multiplexor.gradle`, reads their declarations in temporary source copies, and saves a catalog in the active Multiplexor workspace. Re-scan after editing build declarations, target versions, or build settings. Ordinary source edits are captured when a build starts.
+Scan a source directory containing the projects and their local dependencies. Discovery finds Gradle roots that contain a wrapper and `gradle/multiplexor.gradle`, reads their declarations in temporary source copies, and saves a catalog in the active Multiplexor workspace. Scan again to register new projects or a changed project ID.
+
+Each build captures current sources, including build declarations. When a captured project's Gradle scripts, properties, version catalogs, or JSON files differ from its catalog entry, the build reads that project's declaration from the captured copy, builds its current targets and artifact paths, and updates the catalog. Version bumps, target matrix changes, and build settings apply on the next build without a scan. A selected target that the current declaration no longer contains fails, and newly required targets and source dependencies join the run. If a changed declaration cannot be read, that project's targets fail with the Gradle output in their log, targets that require them are blocked, and other targets continue.
 
 Select a project by its ID or display name. `--target <id,...>` selects one or more target IDs separated by commas. Each ID must be non-empty and unique. Without `--target`, all targets in the selected project are selected. `--all` selects every registered project.
 
@@ -57,8 +59,8 @@ Use `--targets <project:target,...>` to select exact targets across projects, su
 | BileTools | `bukkit`, producing the combined server and Velocity jar |
 | Gloss | `bukkit` for the combined server and Velocity jar; `api` |
 | Iris | `bukkit`, `api`, `spi`, and `fabric-<version>`, `forge-<version>`, `neoforge-<version>` |
-| Wormholes | `bukkit`, `api`, `proxy`, and one target per loader and Minecraft version |
-| Husk | `bukkit` and one target per loader and Minecraft version; Forge 1.20.1 also serves NeoForge 1.20.1 |
+| Wormholes | `core` for the shared core and optics checks, `bukkit`, `api`, `proxy`, and one target per loader and Minecraft version; Bukkit and loader targets require `core` |
+| Husk | `core` for the shared runtime checks, `bukkit`, and one target per loader and Minecraft version; Bukkit and loader targets require `core`, and Forge 1.20.1 also serves NeoForge 1.20.1 |
 | VolmLib | `library`, `native-common`, and one target per native server adapter |
 
 `projects list --json` contains the exact target IDs, tasks, requirements, and artifact paths from the registered checkout. Install the JDKs and any native toolchains required by the selected targets. The Volmit Gradle wrappers run on Java 25; older Minecraft targets can also require Java 17 or 21 toolchains.
@@ -84,7 +86,7 @@ A target that needs a produced API jar waits for its declared dependency. For ex
 | `--workers <count>` | Total Gradle workers shared across running targets | Logical CPU count |
 | `--wait` | Keep the command open until the run finishes and return its result | Return after queuing the run |
 | `--changed` | Reuse matching successful artifacts; build other selected targets | Build each selected target |
-| `--packaging <local\|compact>` | Select local or maximum-compression jar packaging | `local` |
+| `--packaging <local\|compact>` | Select local or maximum-compression jar packaging | `compact` |
 
 Save workspace defaults or inspect the current limits:
 
@@ -95,19 +97,19 @@ Save workspace defaults or inspect the current limits:
 
 Each supplied setting replaces its saved value; omitted settings remain unchanged. New builds use the saved limits, with command-line build flags taking precedence. Retry retains the original run's limits.
 
-A target starts when a job slot, its declared memory reservation, and its worker allocation fit. The worker allocation is capped by the run's total and passed to Gradle through `--max-workers`. Iris mod targets divide that allocation among concurrent nested builds and use each share for the nested JVM's processor count. Test-fork limits preserve lower project settings and are capped by the allocated Gradle workers. Memory reservations govern scheduling; they are not an operating-system memory limit.
+Ready targets start in order of their longest remaining dependency chain. Each target's duration is the median of its five most recent successful builds; a target without history counts as the longest known build. A target starts when a job slot, its declared memory reservation, and its worker allocation fit. When the first ready target in that order does not fit, its capacity is reserved: other targets start only if they are expected to finish before that capacity frees or if they fit beside it. The worker allocation is capped by the run's total and passed to Gradle through `--max-workers`. Iris mod targets divide that allocation among concurrent nested builds and use each share for the nested JVM's processor count. Test-fork limits preserve lower project settings and are capped by the allocated Gradle workers. Memory reservations govern scheduling; they are not an operating-system memory limit.
 
 Iris Forge targets declare 8 Gradle workers and a 16384 MiB scheduling reservation. They use up to 4 test JVMs, capped by the allocated workers.
 
 `--changed` compares captured project and local dependency sources, additional source inputs, the target declaration, packaging mode, toolchain and host details, and dependency artifact hashes. Reuse also requires the saved artifact files to pass their recorded size and SHA-256 checks. A changed or missing input causes a build.
 
-Local packaging passes `-PcompactRelease=false`; compact packaging passes `-PcompactRelease=true`. Local mode uses faster compression for the supported Volmit targets. A packed jar that exceeds its size limit also tries compact ZIP compression before enforcing that limit. Compact mode spends more work compressing release jars. Both run the declared tests, shrinking, and artifact-size checks. The mode applies to every target in the run and is recorded with the run.
+Project builds default to Compact packaging, which passes `-PcompactRelease=true` for aggressive compression. Select `--packaging local` to pass `-PcompactRelease=false`. Local mode uses faster compression for the supported Volmit targets. A packed jar that exceeds its size limit also tries compact ZIP compression before enforcing that limit. Compact mode spends more work compressing release jars. Both run the declared tests, shrinking, and artifact-size checks. The mode applies to every target in the run and is recorded with the run.
 
 Gradle task caching is enabled for builds in either packaging mode. Targets share a local task-output cache while retaining separate writable Gradle homes. Completed local builds supply reusable wrapper distributions and a read-only dependency-cache snapshot for later targets. Iris Forge targets retain their Minecraft dependency cache in their private Gradle homes across sandbox builds. Turning artifact reuse off still allows Gradle to reuse valid task outputs when it runs.
 
 Sandbox builds pass `-Ppaperweight.experimental.genSources=false` by default. Paperweight prepares binary Minecraft dependencies without decompiling or attaching Minecraft sources. Compilation and declared tests remain enabled. This worker default does not affect ordinary builds or IDE use in the original checkout.
 
-When Minecraft sources are needed, add `'-Ppaperweight.experimental.genSources=true'` to the target's `arguments` list and re-scan the project. Iris forwards the property into its nested builds.
+When Minecraft sources are needed, add `'-Ppaperweight.experimental.genSources=true'` to the target's `arguments` list; the next build reads the changed declaration. Iris forwards the property into its nested builds.
 
 Only one project run is active per Multiplexor workspace. Its worker continues when the dashboard or invoking terminal closes. A failed target blocks its dependents while independent targets continue.
 
@@ -121,9 +123,9 @@ Only one project run is active per Multiplexor workspace. Its worker continues w
 ./start.sh projects retry <run> --wait
 ```
 
-Status includes each target's state, current Gradle task, log path, and collected artifacts. Logs can be selected by the complete `project:target` key. Cancellation stops the run's active builds and prevents queued targets from starting.
+Status includes each target's state, current Gradle task, log path, collected artifacts, and delivery results. JSON job records expose `deliveries` and `deliveryError`. Delivery failures appear in target logs and the dashboard and make the run fail, so `--wait` exits nonzero. The compiled artifacts remain reusable, and other builds and destinations continue. Logs can be selected by the complete `project:target` key. Cancellation stops the run's active builds and prevents queued targets from starting.
 
-Retry uses the previous run's captured source snapshot, additional source inputs, target declarations, and packaging mode. Use `--packaging local` or `--packaging compact` to select a different mode for the retry. Reuse applies the same full comparison as `--changed`: captured inputs, target declaration, packaging mode, toolchain and host details, and dependency artifact hashes must match. Successful artifacts are verified and copied into the new run; other targets rebuild. Use `build` to capture source edits, and `scan` first when declarations change.
+Retry uses the previous run's captured source snapshot, additional source inputs, target declarations, and packaging mode. When the previous run stopped before capturing its sources, retry captures the current sources and keeps the run's artifact reuse setting. Use `--packaging local` or `--packaging compact` to select a different mode for the retry. Reuse applies the same full comparison as `--changed`: captured inputs, target declaration, packaging mode, toolchain and host details, and dependency artifact hashes must match. Successful artifacts are verified and copied into the new run; other targets rebuild. Use `build` to capture source and declaration edits.
 
 ## Named destinations
 
@@ -138,15 +140,17 @@ Register a directory for exported jars, a managed instance, or a consumer's drop
 
 The destination list shows saved names, kinds, paths, platforms, and Minecraft compatibility. Run `projects destination` with an existing name and the complete desired settings to replace that configuration. Remove a saved destination with `projects destination <name> --remove`; this removes configuration only and leaves jars and ownership records at the destination unchanged. `--remove` cannot be combined with destination settings.
 
-A directory can receive all runtime artifacts or filter them with `--platform` and `--mc`. A managed instance supplies its platform and Minecraft version from server metadata; it must be stopped and unlocked, including for preview. Drop-ins require a platform and exact Minecraft version. Their usual subscriptions and watcher behavior apply when jars change.
+A directory can receive all runtime artifacts or filter them with `--platform` and `--mc`. Every successful target delivers compatible runtime artifacts to all saved directories and drop-ins destinations. Verified artifact reuse also triggers delivery. Drop-ins require a platform and exact Minecraft version; their usual subscriptions and watcher behavior apply when jars change.
+
+Managed instance destinations require manual delivery. An instance supplies its platform and Minecraft version from server metadata and must be stopped and unlocked, including for preview.
 
 In the dashboard, **LOCATIONS** (`o`) shows the saved location selector and editable fields on one screen. Wide terminals also show the saved list on the left; compact terminals keep the selector above the fields. Use Up/Down or Tab to move focus, Left/Right to cycle locations, kinds, or platforms, and Enter or a field click to edit text inline. Enter accepts a text edit; Esc cancels it. Existing location names remain fixed. **Minecraft version** is the delivery compatibility filter. An export directory may use **Any version (optional)**. A blank instance value uses server metadata, and an entered value must match the instance. Shared drop-ins require an exact version, such as `26.3`.
 
 For an export directory, click **[...]** to the right of **Path**, or press `f` outside a text edit, to choose a folder. The native macOS or Windows dialog starts at the current path or its nearest existing parent; Linux desktop sessions use Zenity or KDialog when available. A choice changes the draft until **Save**. Cancel retains the path. Enter paths manually over SSH or when no desktop picker is available.
 
-The editor actions are `a` **New**, `s` **Save**, `r` **Remove**, `p` **Preview**, and `q` **Back**. Leaving or selecting another location with unsaved edits asks whether to discard them. Removal requires confirmation and deletes configuration only. Preview requires a saved location without unsaved changes and a selected run; it uses the same delivery review and confirmation as the dashboard's delivery action. Saving a location does not deliver artifacts. Shortcut letters are ordinary characters while editing a text field.
+The editor actions are `a` **New**, `s` **Save**, `r` **Remove**, `p` **Preview**, and `q` **Back**. Leaving or selecting another location with unsaved edits asks whether to discard them. Removal requires confirmation and deletes configuration only. Preview requires a saved location without unsaved changes and a selected run; it uses the same delivery review and confirmation as the dashboard's delivery action. Saving a directory or drop-ins location enables delivery after subsequent successful targets; it does not deliver artifacts from existing runs. Shortcut letters are ordinary characters while editing a text field.
 
-Preview a delivery, then run it without `--preview` to apply those actions:
+Use `projects deploy` to deliver an existing run, retry a failed delivery, or deliver to an instance. Preview the delivery, then run it without `--preview` to apply those actions:
 
 ```sh
 ./start.sh projects deploy <run> --to plugins-out --preview
@@ -157,9 +161,13 @@ Preview a delivery, then run it without `--preview` to apply those actions:
 
 The dashboard's delivery action presents saved destinations, then shows the same preview and asks for confirmation. With no destinations, choose **Add destination** or **Back**. After adding one, open delivery again to select it.
 
-Delivery selects successful `runtime` artifacts, checks their saved hashes, and filters platform and Minecraft compatibility. APIs and libraries stay in the build run. Managed server destinations accept at most one compatible target per project; select `--target project:target` when more than one matches. Empty Minecraft compatibility lists accept any version; declared numeric ranges include both endpoints. Server-version ranges on combined server and Velocity jars apply to their server edition.
+Delivery selects successful `runtime` artifacts, checks their saved hashes, and filters platform and Minecraft compatibility. APIs and libraries stay in the build run. Managed instance and drop-ins destinations accept at most one compatible target per project. Selecting multiple compatible targets from the same project makes automatic delivery to those drop-ins fail; deliver the intended target manually with `--target project:target`. Empty Minecraft compatibility lists accept any version; declared numeric ranges include both endpoints. Server-version ranges on combined server and Velocity jars apply to their server edition.
 
-The preview lists installs, replacements, removals, and skipped incompatible artifacts. Delivery preserves unrelated files and refuses to overwrite an unmanaged jar or a managed jar changed outside Multiplexor. It replaces the recorded artifacts for the selected project or target, retaining other targets in an export directory. The destination's `.multiplexor-project-artifacts.json` tracks ownership and checksums. Gradle itself writes build output only; export and server delivery are explicit manager actions.
+Drop-ins use `<project-id>.jar` for a project's first delivery and retain its existing managed filename for later deliveries, so subscribed instances replace the same jar across version updates. Export directories retain build filenames.
+
+The preview lists installs, replacements, removals, and skipped incompatible artifacts. Delivery preserves unrelated files and refuses to overwrite an unmanaged jar or a managed jar changed outside Multiplexor. It replaces the recorded artifacts for the selected project or target, retaining other targets in an export directory. The destination's `.multiplexor-project-artifacts.json` tracks ownership and checksums. Multiplexor handles automatic and manual delivery after Gradle writes its build output.
+
+Delivery prepares artifacts and retains rollback copies in the operating system's temporary directory. Temporary staging directories stay outside export folders, including cloud-synced destinations. Each finished file is promoted into its destination only after copying completes.
 
 ## Declare a Gradle project
 
@@ -200,7 +208,7 @@ Apply the declaration from the root `build.gradle`:
 apply from: 'gradle/multiplexor.gradle'
 ```
 
-The declaration contains a JSON-compatible map. For example, a plugin whose final build task produces the stated packed jar can declare:
+The declaration contains a JSON-compatible map. For example, a plugin whose final build task produces the stated jar can declare:
 
 ```groovy
 ext.multiplexor = [
@@ -220,7 +228,7 @@ ext.multiplexor = [
         workers: 2,
         dependsOn: [],
         artifacts: [[
-            path: "build/libs/Example-${project.version}-packed.jar",
+            path: "build/libs/Example-${project.version}.jar",
             role: 'runtime',
             platforms: ['plugin'],
             minecraftVersions: ['26.1.2-26.3']
@@ -248,7 +256,7 @@ Set the map during configuration, `afterEvaluate`, or `gradle.projectsEvaluated`
 | Artifact `platforms` | Any of `plugin`, `fabric`, `forge`, `neoforge`, `velocity`, `bungee` |
 | Artifact `minecraftVersions` | Exact dotted numeric versions or inclusive ranges; an empty list is unrestricted |
 
-For example, a consumer can pair `dependsOn: ['wormholes:api']` with `artifactProperties: [wormholesApiJar: 'wormholes:api']`. The manager passes the verified API path as a Gradle project property. Keep machine-specific output directories and server copies out of the declared tasks.
+For example, a consumer can pair `dependsOn: ['wormholes:api']` with `artifactProperties: [wormholesApiJar: 'wormholes:api']`. To run checks for a module shared by several targets once per build, declare a target that runs those checks and add it to each consumer's `dependsOn`; Wormholes and Husk declare `core` this way. The manager passes the verified API path as a Gradle project property. Keep machine-specific output directories and server copies out of the declared tasks.
 
 ## Dashboard and storage
 
@@ -262,11 +270,11 @@ Press Space or click a left checkbox to select one target or every buildable des
 
 Elapsed time starts at submission, falling back to the start time if the submission time is unavailable, and includes queuing and preparation. Parallel jobs share one run timer. The total freezes on success, failure, or cancellation; interrupted runs use the last recorded heartbeat. The history menu shows the same duration when opened.
 
-Press `b` or **BUILD**, then choose **Build N checked targets** to build the checked targets and their required dependencies. This is the default build choice when targets are checked. With no checks, the menu offers the focused target, its entire project, or **Every listed project and target**. The last choice selects only the dashboard's build catalog, excluding library-only projects. **Reuse verified artifacts** starts enabled; turn it off to run Gradle for every selected target. **Packaging** toggles between **Local** and **Compact**, starting at **Local**. Choose these options before the build scope. Collapsing any branch preserves its checks. Checks survive refreshes, row reordering, and run-history changes. Targets removed from the dashboard build catalog lose their checks, and targets shown only in run history cannot be checked.
+Press `b` or **BUILD**, then choose **Build N checked targets** to build the checked targets and their required dependencies. This is the default build choice when targets are checked. With no checks, the menu offers the focused target, its entire project, or **Every listed project and target**. The last choice selects only the dashboard's build catalog, excluding library-only projects. **Reuse verified artifacts** starts enabled; turn it off to run Gradle for every selected target. **Packaging** toggles between **Local** and **Compact**, starting at **Compact**. Choose these options before the build scope. Collapsing any branch preserves its checks. Checks survive refreshes, row reordering, and run-history changes. Targets removed from the dashboard build catalog lose their checks, and targets shown only in run history cannot be checked.
 
 Press `p` or **LIMITS**, or choose **Build limits** from actions, to edit **Parallel builds**, **Total memory budget (MiB)**, and **Total Gradle workers**. Choose **Save limits** to save workspace defaults, or **Back** to discard the edits. Target requirements and the [run budget](/servermultiplexor/13-project-builds#build-isolation-and-limits) determine which targets can run together.
 
-Checkboxes control build scope only. Builds do not deliver artifacts automatically; manage named destinations through **LOCATIONS** (`o`), then select one when delivering artifacts. **BACK**, `q`, or `Esc` returns to the previous view while builds continue. Build, limits, and location controls provide a Back action. Press `s` to scan a source folder or `i` / **CONVERT** to convert a Gradle project. The dashboard also offers run history, retry, cancellation, and delivery preview. See [Dashboard controls](/servermultiplexor/02-dashboard#project-builds).
+Checkboxes control build scope only. Each successful target automatically delivers compatible runtime artifacts to saved directory and drop-ins locations configured through **LOCATIONS** (`o`). Instance delivery and delivery of existing runs use the manual delivery action. **BACK**, `q`, or `Esc` returns to the previous view while builds continue. Build, limits, and location controls provide a Back action. Press `s` to scan a source folder or `i` / **CONVERT** to convert a Gradle project. The dashboard also offers run history, retry, cancellation, and delivery preview. See [Dashboard controls](/servermultiplexor/02-dashboard#project-builds).
 
 Catalogs, build defaults, destinations, and run records live under `.manager-state/project-builds/` in the Multiplexor workspace. Source snapshots, target copies, artifacts, logs, and Gradle caches live under `~/.multiplexor/project-builds/<workspace-id>/`. Set `MULTIPLEXOR_BUILD_HOME` to choose the parent directory; the workspace-specific subdirectory is retained.
 

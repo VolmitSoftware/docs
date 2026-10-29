@@ -2,13 +2,13 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, quality profiles, and uninstalling"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration. Players can also install the Fabric, Forge, or NeoForge jar on their client to receive [ClientView](/wormholes/05-projection-modes-settings#clientview) and native menu screens.
+Install the artifact for your server platform: the CraftBukkit jar goes in `plugins/`; Fabric, Forge, and NeoForge jars go in `mods/`. The same CraftBukkit jar also runs on a Velocity or BungeeCord proxy; see [Wormholes on the proxy](/wormholes/10-cross-server-networking#wormholes-on-the-proxy). Edit `plugins/Wormholes/wormholes.toml` on Bukkit or `config/wormholes/wormholes.toml` on native loaders. A missing optional integration disables only that integration. Players can also install the Fabric, Forge, or NeoForge jar on their client to receive [ClientView](/wormholes/05-projection-modes-settings#clientview) and native menu screens.
 
 Download stable mod jars from [Wormholes releases](https://github.com/VolmitSoftware/Wormholes/releases), or use [Modded Beta](https://github.com/VolmitSoftware/Wormholes/releases/tag/modded-beta) for the current beta. Versioned mod releases use `v<version>` tags; Modded Beta is a rolling prerelease whose assets are replaced with each beta. Both channels contain only Fabric, Forge, and NeoForge jars, labeled by Minecraft version and loader. Use the release list to find stable mod releases rather than GitHub's Latest link.
 
@@ -86,15 +86,15 @@ The client creates this file in its `config/` folder on first launch and reads i
 
 ## Build distributions
 
-Build with Java 25 from the repository root. `./gradlew buildAll` builds and checks Bukkit, the proxy plugin, the API, and every supported Minecraft version for Fabric, Forge, and NeoForge. Minecraft versions declared under `gradle/minecraft-versions/` join the mod matrix automatically. Artifacts remain in their project or adapter build directories.
+Build with Java 25 from the repository root. `./gradlew buildAll` builds and checks the plugin jar for Bukkit, Velocity, and BungeeCord, the API, and every supported Minecraft version for Fabric, Forge, and NeoForge. Minecraft versions declared under `gradle/minecraft-versions/` join the mod matrix automatically. Artifacts remain in their project or adapter build directories.
 
 Use `buildBukkit`, `buildFabric`, `buildForge`, or `buildNeoforge` for one platform. Native single-platform builds use the selected Minecraft version, for example `./gradlew buildFabric -PminecraftVersion=26.2`. Version-specific tasks append the version with underscores, such as `buildFabric26_2`. `buildModdedVersions` builds every native target.
 
-Multiplexor exposes each platform and Minecraft version as an isolated target. After registering the source workspace, run `projects build wormholes --all-targets`, or select one with `projects build wormholes --target fabric-26.3`. It also exposes `bukkit`, `api`, and `proxy`. Named destinations handle export and server delivery with a preview; see [Project builds](/servermultiplexor/13-project-builds).
+Multiplexor exposes each platform and Minecraft version as an isolated target. After registering the source workspace, run `projects build wormholes --all-targets`, or select one with `projects build wormholes --target fabric-26.3`. It also exposes `bukkit` and `api`. Named destinations handle export and server delivery with a preview; see [Project builds](/servermultiplexor/13-project-builds).
 
 `./gradlew apiJar` creates the Bukkit compile dependency. Native integrations compile against their loader distribution; see [API](/wormholes/20-api-getting-started).
 
-Bukkit builds prepare the patched FAWE compile dependency automatically in the Gradle cache. To install [FAWE projection support](/wormholes/15-integrations#fastasyncworldedit), build its runtime distribution separately:
+Bukkit builds prepare the patched FAWE compile dependency automatically in the Gradle cache. Standard FAWE supports queued projection updates without a custom build. For native-edit tracking and safe hot reload, build the optional [patched FAWE distribution](/wormholes/15-integrations#fastasyncworldedit):
 
 ```sh
 sh compat/fastasyncworldedit/build-patched.sh /tmp/fawe-wormholes :worldedit-core:test :worldedit-bukkit:shadowJar :worldedit-bukkit:reobfShadowJar
@@ -342,6 +342,17 @@ Cross-server networking. Default `enabled = false`. Import and export set
 Static `[[peers]]` are not written into this file. Peers live in
 `routes/peers.properties`.
 
+### `[network.proxy]`
+
+Connects the backend to Wormholes running on a Velocity or BungeeCord proxy. See
+[Wormholes on the proxy](/wormholes/10-cross-server-networking#wormholes-on-the-proxy).
+
+| Key | Default | Notes |
+|-----|---------|--------|
+| `enabled` | `false` | Enroll with the proxy and send proxy transfers through it |
+| `channel` | `wormholes:proxy` | Plugin message channel. The proxy listens on `wormholes:proxy` |
+| `secret` | `""` | Contents of `secret.txt` from the proxy's Wormholes data folder. The module stays off while it is blank |
+
 ### `[[network.client-routes]]`
 
 Optional client routes select a specific destination endpoint before automatic address selection. The longest matching CIDR wins. These entries do not create or trust peers.
@@ -550,7 +561,7 @@ Then remove it:
 
 1. Stop the server and delete the Wormholes jar from `plugins/` on Paper, Purpur, and Folia, or from `mods/` on Fabric, Forge, and NeoForge.
 2. Delete the files in the table below.
-3. If the network uses WormholesProxy, delete its jar from the proxy's `plugins/` folder together with `plugins/WormholesProxy/` and, on Velocity, `plugins/wormholesproxy/`, which holds `secret.txt`. Then restart the proxy.
+3. If Wormholes runs on the network's proxy, delete its jar from the proxy's `plugins/` folder together with `plugins/Wormholes/` and, on Velocity, `plugins/wormholes/`, which holds `secret.txt`. Then restart the proxy.
 4. Players who installed the client mod remove the Wormholes jar from their `mods/` folder and delete `config/wormholes-client.toml`. For singleplayer, they also delete `config/wormholes/` in the game folder and `wormholes/` and `dimensions/wormholes/` in each world's save folder.
 5. Leave `plugins/bStats/` in place unless no remaining plugin on the server uses bStats; that folder is shared.
 6. Remove `%wormholes_…%` placeholders from other plugins' configuration. Without Wormholes, PlaceholderAPI leaves them unreplaced.

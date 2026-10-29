@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-10-25T20:00:00.000Z
+date: 2026-10-27T05:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -70,6 +70,7 @@ Studio settings live in `iris.json` under `studio`:
 ## Hotload rules
 
 - Automatic pack hotload is available in ordinary Studio. Close and reopen Jigsaw Studio to apply external pack edits.
+- Run `/iris studio hotload` or `/iris studio refresh` to request a reload of the open Studio pack without another file edit. Wait for `Studio hotloaded.` before inspecting new terrain. The command reports failure if Studio is unavailable or the pack cannot reload. Bukkit targets the active Studio project from either a player or the console; modded servers target the caller's open Studio.
 - Edit the active server's authoring folder under `plugins/Iris/packs/<pack>` on Bukkit. A separate checkout or another server's pack copy is not watched. Normal editor saves, file replacements, and FTP uploads are detected; temporary files and `.iris` output are ignored.
 - Invalid edits leave the current pack active and are reported in the console. Fix the first error and save again.
 - If terrain capture rejects an update before activation, the current generation remains available. Retry the same edit after the reported operation finishes.
@@ -91,6 +92,7 @@ Root: `/iris studio`, aliases `std` and `s`. Keyed arguments. The first column s
 |------------|---------|--------------|
 | `open <dimension> [seed=1337]` | `o` | Closes any open studio and opens the pack as a studio world. Blocked unless startup datapack validation is ready and the selected pack has a loadable validation result |
 | `close` | `x` | Closes the active studio project and world |
+| `hotload` | `refresh` | Manually reloads the active Studio pack and reports the result |
 | `create [name=studio] [template=<dimension>]` | `+` | Creates a pack under `packs/<name>` after startup validation is ready. A named template must already be installed and validate as loadable. Without one, Iris writes the starter skeleton below |
 | `vscode [dimension=default]` | `vsc` | Opens the pack's VSCode workspace, generating it if missing |
 | `update [dimension=default]` | | Refreshes the workspace and JSON schemas |
@@ -113,7 +115,7 @@ The Studio scoreboard shows the region and biome under you, including cave and f
 
 ## Commands (Modded)
 
-`/iris studio` on Fabric, Forge and NeoForge uses positional arguments. Supported: `create`/`+`, `package`/`pkg`, `version`, `regions`, `open`/`o`, `close`/`x`, `tpstudio`/`stp`, `status`, `vscode`/`vsc`, `update`, `noise`/`nmap`, `map`/`render`, `imagemap`/`imap`.
+`/iris studio` on Fabric, Forge and NeoForge uses positional arguments. Supported: `create`/`+`, `package`/`pkg`, `version`, `regions`, `open`/`o`, `close`/`x`, `hotload`/`refresh`, `tpstudio`/`stp`, `status`, `vscode`/`vsc`, `update`, `noise`/`nmap`, `map`/`render`, `imagemap`/`imap`.
 
 `create` with no arguments creates a project named `studio` from the `example` template. `create <name>` uses the same template. `create <name> <template>` picks another. `open <pack> [seed]` defaults the seed to `1337`.
 
@@ -142,6 +144,8 @@ Drag to pan and scroll to zoom. **Grid** shows chunk and region borders; **Shadi
 **Biomes** includes a **Water** overlay, enabled by default; press `W` to toggle it. It draws surface hydrology and recorded cave pools over the base biome colors. The inspector's **Noise** and **Both** displays show their selection values without this overlay.
 
 **Rivers** provides the water legend and draws streams, rivers, falls, ponds, lakes, dams, sea inlets and recorded cave pools at 16 blocks per pixel or closer. Previews refresh as water plans become available. Accepted pack hotloads refresh the map and its 3D terrain preview. See [36c - Water Inspection](/iris/36c-river-inspection).
+
+Resizing, panning, and zooming retain cached map coverage while additional detail loads. The map pauses rendering when you select another Studio view or minimize or hide the window. Returning to the map resumes from cached coverage.
 
 ### 3D and authoring views
 
