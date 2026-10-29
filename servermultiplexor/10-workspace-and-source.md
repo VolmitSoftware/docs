@@ -2,7 +2,7 @@
 title: "Multiplexor: Workspace and source"
 description: "Workspace layout, source builds, validation, and release behavior"
 published: true
-date: 2026-10-26T13:55:15.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: servermultiplexor, development
 editor: markdown
 dateCreated: 2026-09-21T00:00:00.000Z
@@ -57,7 +57,7 @@ MultiplexorApp/tool/mineflayer/      # pinned Mineflayer harness and scenarios
 active-instance                   # symlink to the active instance
 ```
 
-Project build working data lives outside the source checkout under `~/.multiplexor/project-builds/<workspace-id>/`: source snapshots, target working copies, collected artifacts, logs, and per-target Gradle user homes. `MULTIPLEXOR_BUILD_HOME` changes the parent directory.
+Project build working data lives outside the source checkout under `~/.multiplexor/project-builds/<workspace-id>/`: source snapshots, target working copies during a run, collected artifacts, logs, and a shared Gradle user home. `MULTIPLEXOR_BUILD_HOME` changes the parent directory.
 
 ## Build and run
 

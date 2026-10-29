@@ -2,7 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-10-29T00:49:52.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -192,7 +192,7 @@ The Wormholes jar also loads on Velocity and BungeeCord. On the proxy, it introd
 
 When a player uses a gateway, the source backend asks the proxy to move the player. The proxy connects the player to the backend that enrolled under the destination name and returns the result to the source backend.
 
-A backend enrolls again each time a player joins it and every minute while a player is online, which also gives it backends that enrolled after it. A backend with no players cannot enroll, so the proxy pings any backend that has not enrolled for 90 seconds and keeps it while it answers. The proxy drops a backend that stops answering, and transfers to it fail until it enrolls again.
+A backend enrolls again each time a player joins it and every minute while a player is online, which also gives it backends that enrolled after it. Disabling the proxy module stops pending enrollment messages. A backend with no players cannot enroll, so the proxy pings any backend that has not enrolled for 90 seconds and keeps it while it answers. The proxy drops a backend that stops answering, and transfers to it fail until it enrolls again.
 
 The secret signs every message on the `wormholes:proxy` channel, and any server that holds it can enroll, so keep it private. With `[network.proxy] enabled = false`, proxy transfers use the BungeeCord `Connect` channel described in [Velocity backends](#velocity-backends).
 

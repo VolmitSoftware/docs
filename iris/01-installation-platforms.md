@@ -2,7 +2,7 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +25,7 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 | Fabric Loader | 0.19.5+ |
 | Forge | 52.x for 1.21.1; 64.x for 26.1.2; 65.x for 26.2; 66.x for 26.3 |
 | NeoForge | 21.1.x for 1.21.1; 26.1.2.x for 26.1.2; 26.2.0.x for 26.2; 26.3.0.65-beta or newer for 26.3 |
-| Network | Outbound HTTP or HTTPS for pack downloads, external datapack downloads and fresh Bukkit library downloads. Retain `plugins/Iris/cache/libraries/` for offline restarts; upgrades may require new downloads. Mod jars include their required libraries |
+| Network | Outbound HTTP or HTTPS for pack downloads, external datapack downloads and fresh Bukkit library downloads. Retain `plugins/Iris/cache/libraries/` and the server's `libraries/` folder for offline restarts; upgrades may require new downloads. Mod jars include their required libraries |
 
 Before you replace an existing installation:
 
@@ -216,9 +216,9 @@ Full key list: [03 - Configuration](/iris/03-configuration).
 
 ## Native runtime dependencies
 
-Fresh Bukkit installations download required libraries from dependency repositories, including JitPack. Allow outbound HTTPS and write access to `plugins/Iris/cache/libraries/`.
+Fresh Bukkit installations download required libraries from dependency repositories, including JitPack. Allow outbound HTTPS and write access to `plugins/Iris/cache/libraries/`. The server itself downloads the LWJGL graphics libraries that the Studio 3D views use from Maven Central into its `libraries/` folder.
 
-Keep this cache for subsequent offline starts. Changing Iris or Minecraft versions may require another download. Do not install dependency jars as separate plugins. Fabric, Forge and NeoForge jars include their required libraries for offline startup.
+Keep both caches for subsequent offline starts. Changing Iris or Minecraft versions may require another download. Do not install dependency jars as separate plugins. Fabric, Forge and NeoForge jars include their required libraries for offline startup.
 
 ## Pack download policy
 
