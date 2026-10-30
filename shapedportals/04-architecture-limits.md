@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry constraints, the portal registry, the Wormholes handoff, and building from source"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-10-30T00:00:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -58,7 +58,7 @@ Shaped Portals submits Nether interior block positions and their vertical axis t
 
 ## Build from source
 
-Use Java 25. Build the sibling `WormholesPlugin` API first with `apiJar`, or pass `-PwormholesApiJar=<path>` to select another API jar. The default reads `wormholesVersion` from `../WormholesPlugin/gradle.properties` and uses `../WormholesPlugin/build/libs/Wormholes-<wormholesVersion>-api.jar`. The API is compile-only and is not bundled.
+Use Java 25. Build the sibling `Wormholes` API first with `apiJar`, or pass `-PwormholesApiJar=<path>` to select another API jar. The default reads `wormholesVersion` from `../Wormholes/gradle.properties` and uses `../Wormholes/build/libs/Wormholes-<wormholesVersion>-api.jar`. The API is compile-only and is not bundled.
 
 Run from the ShapedPortals repository root:
 
