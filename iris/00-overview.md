@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-29T17:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,6 +25,7 @@ The guides cover server operation and pack authoring. Pages `90`–`94` cover th
 | Control what vanilla still generates | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) for structures |
 | Use mod biomes, features, and dimensions on mod loaders | [48 - Mod Worldgen](/iris/48-mod-worldgen) → [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | Deploy a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) |
+| Run a pack's world on a server or client without Iris | [25 - Pack Management](/iris/25-pack-management) → [49 - Datapack Export](/iris/49-datapack-export) |
 | Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences). If you write Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
 
 ## Platforms
@@ -83,6 +84,7 @@ Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree f
 | Loot and entities | Pack entities, loot, spawners, markers | [23 - Loot](/iris/23-loot), [23b - Entities & Spawners](/iris/23b-entities-spawners), [23c - Markers](/iris/23c-markers) |
 | Pack extensions | Reusable JSON snippets | [24 - Snippets](/iris/24-pack-mods-snippets) |
 | Pack management | Download, validate, cleanup, package, update-world | [25 - Pack Management](/iris/25-pack-management) |
+| Datapack export | Compile a pack into a vanilla worldgen datapack for Minecraft 26.3 and later | [49 - Datapack Export](/iris/49-datapack-export) |
 | Minimal pack example | Walkthrough | [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
 | Overworld example | Editing the bundled overworld | [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |
 | Integrations | WorldEdit, Multiverse, Mythic, item plugins, tree feller | [28 - Integrations](/iris/28-integrations) |

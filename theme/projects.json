@@ -137,15 +137,15 @@
                 "href": "/iris/biomes/carving/sulfur"
               },
               {
-                "title": "Rivers & Hydrology",
+                "title": "Hydrology",
                 "href": "/iris/36-rivers"
               },
               {
-                "title": "River Policy",
+                "title": "Hydrology Policy",
                 "href": "/iris/36b-river-policy"
               },
               {
-                "title": "River Inspection",
+                "title": "Water Inspection",
                 "href": "/iris/36c-river-inspection"
               }
             ]
@@ -264,6 +264,10 @@
               {
                 "title": "Multiverse",
                 "href": "/iris/34-multiverse"
+              },
+              {
+                "title": "Datapack Export",
+                "href": "/iris/49-datapack-export"
               }
             ]
           }
