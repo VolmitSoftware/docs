@@ -112,27 +112,6 @@ Prefixes use relative archive paths with a trailing `/`, without empty, `.` or `
 
 With one packed artifact, the task is `packedJar`. Multiple packed artifacts get a `packed<ArtifactName>Jar` task each. Output uses the producer's configured directory and file name, whichever format is selected. The producer task writes its ordinary jar to `build/tmp/packaging/<artifact>/` instead.
 
-## Beta uploads
-
-`build` runs `uploadBeta` after `check`. It sends each selected jar that is neither `intermediate` nor `modded` to the beta intake of the Volmit dashboard, which publishes it as the plugin's latest beta build. The plugin key is the root project name in lowercase. Set the dashboard address and its beta intake token in the Gradle user properties file, or in the `VOLMIT_BETA_URL` and `VOLMIT_BETA_TOKEN` environment variables:
-
-```properties
-volmitBetaUrl=https://beta.example.com
-volmitBetaToken=<intake token>
-```
-
-The address must use HTTPS; plain HTTP is accepted only for `localhost`, `127.0.0.1` and `[::1]`.
-
-| Situation | Result |
-|---|---|
-| No address or token, development packaging, or `-PvolmitBeta=false` | The task is skipped |
-| Beta is off for the plugin in the dashboard | Nothing is sent; the build prints a note and checks again next time |
-| Jar unchanged since its last upload | The task is up to date and sends nothing |
-| No internet, dashboard down or unreachable, intake paused, or a bad address or token | The build passes with a warning and the next build tries again |
-| Dashboard refuses the upload | The build passes with a warning that gives the dashboard's reason |
-
-A completed upload writes `build/reports/beta-upload.json`.
-
 ## Native implementation boundaries
 
 The packaging plugin checks Java sources and compiled classes for Minecraft and CraftBukkit references. By default these references are permitted only inside `art.arcane.volmlib.nativelib` and its subpackages. Plugin-specific native adapters may declare additional implementation packages:
