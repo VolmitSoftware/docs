@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-26T00:00:00.000Z
+date: 2026-10-30T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -115,6 +115,8 @@ The world seed, height bounds, logical height, environment, dimension type, and 
 ## World folders and backups
 
 Back up the complete dimension directory, including `iris/generation`. Do not edit or delete the saved pack files inside it.
+
+Iris ignores saved pack fields that the running build does not read. It logs one warning per field and saved pack, naming the first file that uses it, and states it again after Iris restarts. Stage an updated pack to stop loading that saved copy.
 
 | Data | Location |
 |---|---|

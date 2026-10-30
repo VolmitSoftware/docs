@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-10-30T00:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -111,6 +111,27 @@ packedPayloadOnlyPrefixes = ['linux/x64/org/lwjgl/', 'iris-language-guides/']
 Prefixes use relative archive paths with a trailing `/`, without empty, `.` or `..` path segments. Matching classes, required artifact entries, native-provider manifests, license or notice files, and any prefix under `META-INF/` are rejected. Plugin descriptors, service registrations, and generation metadata remain in the outer jar. Runtime classloader resource lookup exposes payload resources after bootstrap. If the ordinary jar is selected, every resource remains in that jar. Prefixes are declared build inputs, so changing them rebuilds the selected distribution.
 
 With one packed artifact, the task is `packedJar`. Multiple packed artifacts get a `packed<ArtifactName>Jar` task each. Output uses the producer's configured directory and file name, whichever format is selected. The producer task writes its ordinary jar to `build/tmp/packaging/<artifact>/` instead.
+
+## Beta uploads
+
+`build` runs `uploadBeta` after `check`. It sends each selected jar that is neither `intermediate` nor `modded` to the beta intake of the Volmit dashboard, which publishes it as the plugin's latest beta build. The plugin key is the root project name in lowercase. Set the dashboard address and its beta intake token in the Gradle user properties file, or in the `VOLMIT_BETA_URL` and `VOLMIT_BETA_TOKEN` environment variables:
+
+```properties
+volmitBetaUrl=https://beta.example.com
+volmitBetaToken=<intake token>
+```
+
+The address must use HTTPS; plain HTTP is accepted only for `localhost`, `127.0.0.1` and `[::1]`.
+
+| Situation | Result |
+|---|---|
+| No address or token, development packaging, or `-PvolmitBeta=false` | The task is skipped |
+| Beta is off for the plugin in the dashboard | Nothing is sent; the build prints a note and checks again next time |
+| Jar unchanged since its last upload | The task is up to date and sends nothing |
+| No internet, dashboard down or unreachable, intake paused, or a bad address or token | The build passes with a warning and the next build tries again |
+| Dashboard refuses the upload | The build passes with a warning that gives the dashboard's reason |
+
+A completed upload writes `build/reports/beta-upload.json`.
 
 ## Native implementation boundaries
 
