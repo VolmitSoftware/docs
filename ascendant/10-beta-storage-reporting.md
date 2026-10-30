@@ -2,19 +2,19 @@
 title: Beta storage and download reporting
 description: Set plugin storage limits and review completed beta downloads
 published: true
-date: 2026-10-29T01:34:00.000Z
+date: 2026-10-30T21:00:00.000Z
 tags: ascendant, beta, storage, privacy
 editor: markdown
 dateCreated: 2026-10-29T01:34:00.000Z
 ---
 
-Open **Beta tools**, choose a plugin, then use **Storage and rollback** or **Downloads**. Reports require staff view permission for that plugin. Changing quotas or history retention requires an owner or administrator with configuration permission.
+Open **Beta builds**, select **Manage** for a plugin, then use **Storage** or **Downloads**. Reports require staff view permission for that plugin. Changing quotas or history retention requires an owner or administrator with configuration permission.
 
 ## Storage limits
 
 Each plugin starts without a storage quota. Set a limit of up to 1 TiB and a warning threshold between 50% and 100%; the default warning threshold is 80%. Storage usage measures the actual sizes of retained JARs, including drafts and withdrawn builds.
 
-The upload form warns when a selected JAR exceeds the remaining allowance. The server also enforces the quota during upload and checks it again before storing a build. Manual uploads, additional build JARs and automatic draft intake use the same limit. Concurrent uploads cannot commit more than the saved allowance.
+The server enforces the quota during upload and checks it again before storing a build. **Upload builds** lists any JAR that does not fit as not added. Every upload path uses the same limit. Concurrent uploads cannot commit more than the saved allowance.
 
 Lowering a quota below existing usage preserves those builds and blocks additional storage. Increase the quota or use the existing retention and reviewed cleanup controls to free space. Pinning, publication and active download protections still apply to deletion. A plugin quota does not reserve disk space or replace the host's free-space checks.
 
