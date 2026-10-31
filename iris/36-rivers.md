@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-26T19:00:00.000Z
+date: 2026-10-30T22:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -37,7 +37,7 @@ Set `hydrology.density` to control how many eligible water features are placed a
 | `deformation` | defaults below | How the ground around water is reshaped |
 | `underground` | defaults below | Water below the surface: flooded sea inlets and cave pools |
 | `fluids` | one profile, `water` | Named fluids that tiers, ponds, cave pools and hydrology policies fill their water with; at least one |
-| `prefetchRings` | `1` | Rings of 512-block planning windows prepared ahead around each window that chunk generation asks for, `0..4` |
+| `prefetchRings` | `1` | Rings of 512-block planning windows prepared ahead around each window that chunk generation asks for, `0..4`; during pregeneration, only windows the pregeneration area still needs are prepared ahead |
 | `persist` | `true` | Saves finished water plans with the world, so they are not planned again after a restart |
 
 ### `hydrology.drainage`
