@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -256,7 +256,7 @@ The feature biome owns only its air, water and lava volume. Solid rims, shelves,
 
 ## Hydrology
 
-`hydrology` turns on rivers, streams, ponds and lakes that follow the drainage of the terrain, plus sea inlets on cliff coasts and pools in carved caves: hollows fill until they spill, every column drains downhill to the sea, the flow gathers into channels sized by their catchment, and the ground is reshaped into beds, shores and banks. `hydrologyPolicy` on the dimension sets the rainfall, pond density, permissions, fluid and shore biomes that every region and biome inherits. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings, and rebuilt when any of those changes; chunks generated earlier keep their water.
+`hydrology` turns on rivers, streams, ponds and lakes that follow the drainage of the terrain, plus sea inlets on cliff coasts and pools in carved caves: hollows fill until they spill, every column drains downhill to the sea, the flow gathers into channels sized by their catchment, and the ground is reshaped into beds, shores and banks. `hydrologyPolicy` on the dimension sets the rainfall, pond density, climate-zone exemption, permissions, fluid and shore biomes that every region and biome inherits. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings, and rebuilt when any of those changes; chunks generated earlier keep their water.
 
 ```json
 {
@@ -277,6 +277,7 @@ The feature biome owns only its air, water and lava volume. Solid rims, shelves,
 
 | Key | What it controls |
 |-----|------------------|
+| `climate` | Wet and dry zones laid out by noise: wet zones keep the configured rainfall and pond density, and dry zones keep only the `dryRainfall` share of them, so they start few or no streams and ponds of their own |
 | `drainage` | How hollows fill and spill, how deep a hollow is breached instead of filled, how stream heads thin out in dry areas, and where catchment stops growing |
 | `tiers` | The size classes of flowing water, each with its catchment threshold, half-width, depth, inset, cascades and waterfall drop, bank band and bank style, deltas, materials, plants and fluid |
 | `ponds` | Natural ponds in hollows, seeded cups and the chains of cups along streams, dams, freeboard, climate drawdown, shore shape, materials and plants |
@@ -313,8 +314,8 @@ Automatically placed biome and region objects never stand on water, shore or dam
 | `rockPalette` | `IrisMaterialPalette` | `stone` | Subsurface fill for every column that a biome layer does not claim. Change it for a themed world (deepslate planet, sandstone desert world). Biomes and regions can override it locally |
 | `fluidPalette` | `IrisMaterialPalette` | `water` | Blocks used for ocean columns and for cave aquifers that allow fluid. Set it to lava for a magma world |
 | `overlayNoise` | `IrisShapedGeneratorStyle[]` | empty | Extra height noise summed on top of the interpolated biome height, everywhere, ignoring biome boundaries. Use it for a global roughness or a world-wide swell that must not follow biome edges |
-| `hydrology` | `IrisHydrology` or `null` | `null` (no hydrology) | Rivers, streams, ponds and lakes that follow the drainage of the terrain, sea inlets and cave pools, with their tiers, pond, lake and underground settings, terrain shaping and fluids. See [36 - Hydrology](/iris/36-rivers) |
-| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | `null` (rainfall and pond density `1`, streams and ponds allowed, no shore biomes) | Dimension-wide rainfall, pond density, stream and pond permissions, pond and lake fluid, water plants, and shore biomes. Regions and biomes override the values they set. See [36b - Hydrology Policy](/iris/36b-river-policy) |
+| `hydrology` | `IrisHydrology` or `null` | `null` (no hydrology) | Rivers, streams, ponds and lakes that follow the drainage of the terrain, sea inlets and cave pools, with their climate zones, tiers, pond, lake and underground settings, terrain shaping and fluids. See [36 - Hydrology](/iris/36-rivers) |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | `null` (rainfall and pond density `1`, climate zones applied, streams and ponds allowed, no shore biomes) | Dimension-wide rainfall, pond density, climate-zone exemption, stream and pond permissions, water fluid, water plants, and shore biomes. Regions and biomes override the values they set. See [36b - Hydrology Policy](/iris/36b-river-policy) |
 
 ## Ores and deposits
 

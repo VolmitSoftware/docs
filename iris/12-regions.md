@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -157,12 +157,13 @@ A biome does not declare its own role. The role (`LAND`, `SEA`, `SHORE`, `CAVE`)
 |--------------|------------------|
 | `rainfall` | Multiplier on the water that falls here, `0..16`: more and larger streams, fuller ponds |
 | `pondDensity` | Multiplier on how many ponds form here, `0..16` |
+| `climateZones` | Whether the dimension's wet and dry zones (`hydrology.climate`) scale the rainfall and pond density here; `false` keeps the full values inside a dry zone |
 | `streams`, `ponds` | `ALLOW` or `BLOCK` for streams starting here and ponds forming here |
-| `fluid` | Fluid profile from `hydrology.fluids` that fills the ponds and lakes here instead of `ponds.fluid`; channels keep their tier's fluid |
+| `fluid` | Fluid profile from `hydrology.fluids` that fills the ponds and lakes here instead of `ponds.fluid`, and every stretch of stream or river that flows through here instead of its tier's fluid |
 | `decorators` | Plants for the water here, replacing the tier and pond decorator lists; an empty list grows none |
 | `shoreBiomes`, `shoreBiomeWidth` | Biomes placed along the water's edge, and the width of that band in blocks, `0..31` |
 
-The drainage, tiers, pond and lake settings are dimension-owned. See [11 - Dimensions](/iris/11-dimensions#hydrology), [36 - Hydrology](/iris/36-rivers) and [36b - Hydrology Policy](/iris/36b-river-policy).
+The climate zones, drainage, tiers, pond and lake settings are dimension-owned. See [11 - Dimensions](/iris/11-dimensions#hydrology), [36 - Hydrology](/iris/36-rivers) and [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ### Zooms and the shore band
 

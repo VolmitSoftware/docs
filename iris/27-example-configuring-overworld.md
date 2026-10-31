@@ -2,7 +2,7 @@
 title: "Example - Configuring Overworld"
 description: "Iris documentation: Example - Configuring Overworld"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -182,7 +182,7 @@ Set `fluidHeight` in `dimensions/my-overworld.json`. Default `50`, in world Y, a
 
 ### Change the water
 
-Rivers, ponds and lakes come from `hydrology` in `dimensions/my-overworld.json` and from the `hydrologyPolicy` on the dimension, its regions and its biomes. To make one region wetter, raise `rainfall` and `pondDensity` in its policy. To keep a desert dry, set `"streams": "BLOCK"` and `"ponds": "BLOCK"` on it. To fill a biome's ponds and lakes with lava, give it `"fluid": "lava"`; the dimension's `hydrology.fluids` defines that profile. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings; any edit to the pack rebuilds them, and chunks generated earlier keep their water. See [36 - Hydrology](/iris/36-rivers) and [36b - Hydrology Policy](/iris/36b-river-policy).
+Rivers, ponds and lakes come from `hydrology` in `dimensions/my-overworld.json` and from the `hydrologyPolicy` on the dimension, its regions and its biomes. To make one region wetter, raise `rainfall` and `pondDensity` in its policy. To keep a desert dry, set `"streams": "BLOCK"` and `"ponds": "BLOCK"` on it. To fill a biome's ponds and lakes with lava, and turn every stream and river to lava where it flows through the biome, give it `"fluid": "lava"`; the dimension's `hydrology.fluids` defines that profile. The dimension's `hydrology.climate` splits the land into wet and dry zones: raise `dryness` to dry out more of the land, raise `style.zoom` for larger zones, and set `"climateZones": false` on a biome that keeps its own streams and ponds in every zone. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings; any edit to the pack rebuilds them, and chunks generated earlier keep their water. See [36 - Hydrology](/iris/36-rivers) and [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ### Add a biome to a region
 

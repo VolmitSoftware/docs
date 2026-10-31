@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-10-26T22:14:50.267Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -96,6 +96,7 @@ First it checks the settings it can read without compiling them, and reports eve
 When those pass, it compiles the settings exactly as a starting world does. The compile stops at its first problem, so one compile error is reported per dimension, naming the field; fix it and run the validator again. The compile rejects:
 
 - no tier, or two tiers sharing a `minCatchment`;
+- a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
 - a `bankBand` outside `0..64`, or a `minArea` above its `maxArea`;
 - a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty;
 - a duplicated fluid profile name, or a profile with an empty palette;

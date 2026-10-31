@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Volcanic Plains"
 description: "Iris biome atlas entry for tropical/volcanic-plains in Overworld and Underworld"
 published: true
-date: 2026-10-26T18:35:44.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,9 +43,9 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 ## Lava hydrology
 
-Both `tropical/volcanic-plains` and its `tropical/volcanoes` child set a `hydrologyPolicy` with rainfall `1.8`, pond density `3` and `fluid: lava`. Their ponds and lakes fill with lava in both packs, and the raised pond density seeds more cups in the volcanic terrain. Streams and rivers that cross them carry the dimension's tier fluid: water in Overworld, lava in Underworld.
+Both `tropical/volcanic-plains` and its `tropical/volcanoes` child set a `hydrologyPolicy` with rainfall `1.8`, pond density `3`, `fluid: lava` and `climateZones: false`. Their streams, rivers, ponds and lakes are lava in both packs, in wet and dry climate zones alike, and the raised pond density seeds more cups in the volcanic terrain. A river that flows in from a neighboring biome runs as lava through the volcanic terrain and carries the dimension's tier fluid again beyond it: water in Overworld, lava in Underworld.
 
-Submerged beds use the dimension's hydrology palette: gravel, sand, clay, and coarse dirt in Overworld, or Nether bed materials in Underworld. Dry banks retain the local volcanic layers. Water channels inherit the Overworld aquatic decorators, while lava ponds and lakes have no aquatic plants. See [36b - Hydrology Policy](/iris/36b-river-policy).
+Submerged beds use the dimension's hydrology palette: gravel, sand, clay, and coarse dirt in Overworld, or Nether bed materials in Underworld. Dry banks retain the local volcanic layers. Lava channels, ponds and lakes have no aquatic plants. See [36b - Hydrology Policy](/iris/36b-river-policy).
 
 ## Overworld treatment
 
@@ -70,6 +70,8 @@ This child-only biome is selected from `tropical/volcanic-plains`, not from a re
 In that immediate child choice it contributes `1` of `2` slots (50.00%); later child hops are resolved separately.
 
 **Shared terrain:** `mountain` (30..180); combined authored contribution `30..180` blocks relative to fluid height.
+
+**Hydrology:** the same policy as its parent, so its streams, rivers, ponds and lakes are lava in both packs and in every climate zone. See [Lava hydrology](#lava-hydrology).
 
 - **Overworld:** `minecraft:the_void` identity; surface 1 block(s): `minecraft:basalt`; 2 block(s): `minecraft:basalt`; 3-10 block(s): `minecraft:blackstone`; 1-2 block(s): `minecraft:tuff`; No biome-local object, decorator, procedural, deposit, or effect rules.
 - **Underworld:** `minecraft:basalt_deltas` identity; surface 1 block(s): `minecraft:basalt`; 2 block(s): `minecraft:basalt`; 3-10 block(s): `minecraft:blackstone`; 1-2 block(s): `minecraft:blackstone`; 1 decorator rule(s) (1 shared snippet reference(s)).

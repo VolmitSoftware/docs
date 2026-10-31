@@ -1,8 +1,8 @@
 ---
 title: "Hydrology"
-description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, terrain shaping, bank styles and materials"
+description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-30T22:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -15,10 +15,11 @@ Turn the system on with `hydrology.enabled: true` in the dimension file. The def
 
 1. **Make a pond-heavy biome.** Give the biome a `hydrologyPolicy` with `"pondDensity": 2.5` and `"rainfall": 1.6`. More cups are seeded in it, along its streams and elsewhere, and its ponds stay full. Natural hollows already keep their ponds at the default `ponds.natural.keep` of `1`; lower `keep`, or a `pondDensity` below `1`, thins them. Nothing in `hydrology` itself changes.
 2. **Add a chained-pond valley.** Keep `ponds.seeded.alongChannels: true` and shorten `ponds.seeded.channelSpacing` to `[64, 128]`. Streams in that dimension then pass through a cup every 64 to 128 blocks, each one spilling into the next at a lower level. Give one region a higher `pondDensity` in its policy to concentrate the chains there; `ponds.seeded.density` adds free-standing cups, not chain cups.
-3. **Switch a biome to lava ponds.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava while the rest of the dimension keeps water; channels keep their tier's fluid. A cave biome with the same policy gets lava cave pools.
-4. **Shape and plant the banks.** Set `bankBand` and `bankStyle` per tier, and `deformation.bankSlope` for the base slope. Paint the water's surroundings with `tiers[].materials` and `ponds.materials`, and grow seagrass, lily pads and reeds with `tiers[].decorators` and `ponds.decorators`.
-5. **Tune the underground water.** Sea inlets and cave pools are on by default. `underground.seaInlets.spacing` and `minimumCliffHeight` decide how many coasts get an inlet, `underground.cavePools.density` how many pool sites each chunk tries, and either `enabled: false` turns the feature off.
-6. Run `/iris pack validate`, open Studio and look at the **Rivers** view, then walk the water with `/iris find river` ([36c - Water Inspection](/iris/36c-river-inspection)).
+3. **Gather water into wet zones.** Set `hydrology.climate.enabled: true`. A noise field splits the land into wet and dry zones: wet zones keep the configured streams and ponds, dry zones start none of their own, and rivers from the wet zones still run on through the dry land. Raise `climate.dryness` to dry out more of the land and `climate.style.zoom` for larger zones.
+4. **Switch a biome to lava.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava, and every stream and river runs as lava where it flows through the biome and returns to its tier's fluid beyond it; the rest of the dimension keeps water. A cave biome with the same policy gets lava cave pools.
+5. **Shape and plant the banks.** Set `bankBand` and `bankStyle` per tier, and `deformation.bankSlope` for the base slope. Paint the water's surroundings with `tiers[].materials` and `ponds.materials`, and grow seagrass, lily pads and reeds with `tiers[].decorators` and `ponds.decorators`.
+6. **Tune the underground water.** Sea inlets and cave pools are on by default. `underground.seaInlets.spacing` and `minimumCliffHeight` decide how many coasts get an inlet, `underground.cavePools.density` how many pool sites each chunk tries, and either `enabled: false` turns the feature off.
+7. Run `/iris pack validate`, open Studio and look at the **Rivers** view, then walk the water with `/iris find river` ([36c - Water Inspection](/iris/36c-river-inspection)).
 
 A complete dimension block is at the [end of this page](#complete-example).
 
@@ -30,6 +31,7 @@ Set `hydrology.density` to control how many eligible water features are placed a
 |-------|---------|---------|
 | `enabled` | `false` | Turns rivers, streams, ponds, lakes and underground water on for this dimension |
 | `density` | `1` | Fraction of eligible water-feature candidates retained after local placement probabilities, `0..1`; `0.5` halves candidate frequency and `0` places no hydrology features |
+| `climate` | off, defaults below | Wet and dry zones across the dimension that decide where streams and ponds gather |
 | `drainage` | defaults below | How water drains across the terrain before rivers and ponds are placed |
 | `tiers` | stream, river, major (below) | Size classes of flowing water, from the smallest stream to the largest river; at least one |
 | `ponds` | defaults below | Standing water above sea level: natural hollows, seeded cups and dams |
@@ -39,6 +41,32 @@ Set `hydrology.density` to control how many eligible water features are placed a
 | `fluids` | one profile, `water` | Named fluids that tiers, ponds, cave pools and hydrology policies fill their water with; at least one |
 | `prefetchRings` | `1` | Rings of 512-block planning windows prepared ahead around each window that chunk generation asks for, `0..4`; during pregeneration, only windows the pregeneration area still needs are prepared ahead |
 | `persist` | `true` | Saves finished water plans with the world, so they are not planned again after a restart |
+
+### `hydrology.climate`
+
+Climate zones lay a noise field over the dimension and split the land into wet and dry zones. The rainfall and pond density that each column takes from its [`hydrologyPolicy`](/iris/36b-river-policy) are multiplied by the wetness of its zone: `1` in a wet zone, `dryRainfall` in a dry zone, eased between the two across the `transition` band. At the default `dryRainfall` of `0`, dry zones start no streams and form no ponds of their own, while wet zones keep the configured density, so streams and ponds gather in clusters instead of reaching every hill. Water that drains in from a wet zone keeps its flow, so a river that rises in a wet zone runs on through dry land. Dry zones do not remove lakes; a lake whose floor lies in a dry zone sits up to `ponds.climateDrawdown` blocks lower, as in any low-rainfall area. An area whose policy sets `"climateZones": false` keeps its full rainfall and pond density inside dry zones.
+
+| Field | Default | Purpose |
+|-------|---------|---------|
+| `enabled` | `false` | Turns wet and dry zones on. When off, rainfall and pond density follow the hydrology policies alone |
+| `style` | `SIMPLEX`, zoom `24` | Noise that lays out the zones. Land where its value is below `dryness` is dry; a larger `zoom` makes larger zones |
+| `dryness` | `0.5` | Noise value below which land is dry, `0..1`; `0` keeps all land wet, and higher values dry out more of it |
+| `transition` | `0.1` | Width of the noise band, centered on `dryness`, over which rainfall eases from dry to wet, `0..1`; `0` gives sharp zone edges |
+| `dryRainfall` | `0` | Share of the area's rainfall and pond density kept in dry zones, `0..1`; `0` lets dry zones start no streams or ponds of their own |
+
+```json
+{
+  "climate": {
+    "enabled": true,
+    "style": { "style": "SIMPLEX", "zoom": 24 },
+    "dryness": 0.5,
+    "transition": 0.15,
+    "dryRainfall": 0
+  }
+}
+```
+
+A `dryRainfall` above `0`, such as `0.2`, lets dry zones keep a few small streams and ponds of their own.
 
 ### `hydrology.drainage`
 
@@ -70,7 +98,7 @@ Each tier is one size class of flowing water. The tiers are ranked by `minCatchm
 | `deltas` | `false` | Spreads the channel into a delta where it reaches the sea |
 | `materials` | all unset | Blocks painted on the bed, shore and banks of this tier; see [materials](#materials) |
 | `decorators` | empty | Plants for this tier's channels and their banks and shores; see [water plants](#water-plants) |
-| `fluid` | `"water"` | Name of the fluid profile that fills this tier's channels |
+| `fluid` | `"water"` | Name of the fluid profile that fills this tier's channels; where a channel flows through an area whose `hydrologyPolicy` sets a `fluid`, that fluid replaces it |
 
 The default tiers:
 
@@ -181,7 +209,7 @@ Connected ponds receive their upstream streams and spill into outlets at the sam
 | `shore` | defaults below | Shape of pond shores and floors |
 | `materials` | all unset | Blocks painted on pond floors and shores; see [materials](#materials) |
 | `decorators` | empty | Plants for ponds and lakes and their shores; see [water plants](#water-plants) |
-| `fluid` | `"water"` | Name of the fluid profile that fills ponds and lakes |
+| `fluid` | `"water"` | Name of the fluid profile that fills ponds and lakes; the `hydrologyPolicy.fluid` of the area that holds a pond or lake floor replaces it |
 
 #### `ponds.natural`
 
@@ -239,8 +267,8 @@ A hollow becomes a lake only when it is also at least `ponds.natural.minDepth` d
 |-------|---------|---------|
 | `maxFill` | `6` | Most blocks the ground may be raised to hold water in, such as a berm beside a perched stream, `0..32` |
 | `bankSlope` | `0.2` | Base slope of banks, as rise over run, `0..4` |
-| `bankSteepFactor` | `3.5` | How much steeper banks become on steep terrain, `0..16` |
-| `bankNoise` | `0.2` | Strength of the noise that roughens bank edges, `0..2` |
+| `bankSteepFactor` | `3.5` | How much steeper a bank stays where the natural ground between it and the water is steep, `0..16` |
+| `bankNoise` | `0.2` | Strength of the smooth noise that roughens bank edges, `0..2` |
 | `caveMask` | `true` | Keeps caves from opening under water, so rivers and ponds never drain into them |
 
 ### `hydrology.underground`
@@ -301,8 +329,8 @@ Tiers, ponds, cave pools and hydrology policies pick a fluid by its name. Every 
 
 Hydrology works in 512-block planning windows on the natural terrain, before caves, objects and decoration; cave pools alone are placed after the caves are carved.
 
-1. **Drainage.** Hollows fill until they spill (`drainage.fillEpsilon` keeps a downhill path across the filled flats). Hollows deeper than `drainage.breachDepth` are drained by a cut through their lowest rim instead of filling. Every column then drains downhill to the sea, and the flow accumulates with the rainfall of the area it crosses.
-2. **Channels.** A stream starts where the accumulated catchment reaches the lowest tier's `minCatchment`, the ground falls by `drainage.headRelief` within 64 blocks downhill and the area's policy allows streams. `drainage.wetnessThinning` removes some heads in dry areas. Each channel takes the highest tier whose `minCatchment` it reaches, so a stream becomes a river and then a major river as tributaries join it. Catchment stops growing at `drainage.saturationCatchment`.
+1. **Drainage.** Hollows fill until they spill (`drainage.fillEpsilon` keeps a downhill path across the filled flats). Hollows deeper than `drainage.breachDepth` are drained by a cut through their lowest rim instead of filling. Every column then drains downhill to the sea, and the flow accumulates with the rainfall of the area it crosses, multiplied by the wetness of the climate zone when `climate` is on.
+2. **Channels.** A stream starts where the accumulated catchment reaches the lowest tier's `minCatchment`, the ground falls by `drainage.headRelief` within 64 blocks downhill and the area's policy allows streams. `drainage.wetnessThinning` removes some heads in dry areas, and a dry climate zone at the default `dryRainfall` of `0` adds no flow of its own, so no stream starts there. Each channel takes the highest tier whose `minCatchment` it reaches, so a stream becomes a river and then a major river as tributaries join it. Catchment stops growing at `drainage.saturationCatchment`.
 3. **Ponds and lakes.** A hollow whose surface is within `ponds.natural.minArea` to `maxArea` and at least `minDepth` deep becomes a pond. A hollow within `lakes.minArea` to `maxArea`, at least `minDepth` deep and no more than 2,048 blocks across becomes a lake with one level across its whole surface; larger hollows are drained. Where the land has few hollows, `ponds.seeded` cuts bowls into the terrain, and `alongChannels` places chains of them down a stream. A pond's surface sits `ponds.freeboard` blocks below its spill point, lower still in dry climates (`climateDrawdown`). `ponds.dams` raises the downhill rim to hold more water.
 4. **Terrain shaping.** Channel beds and pond floors are cut, banks are sloped across the tier's `bankBand` in its `bankStyle`, low edges are raised by up to `deformation.maxFill` to hold the water, and `deformation.caveMask` keeps caves out from under the water.
 5. **Sea inlets.** Each `spacing` cell of the coast with land at least `minimumCliffHeight` above the sea tries one inlet. The passage runs inland from the sea, up the valleys where the drainage allows and onward under higher ground, as long as enough rock stays above it, and ends in a chamber. Its water is held at sea level the whole way.
@@ -318,7 +346,7 @@ Hydrology works in 512-block planning windows on the natural terrain, before cav
 
 **Ponds, chains and lakes.** Each pond has its own level. Chained cups along a stream sit at descending heights, each spilling into the next. Lakes fill the largest hollows at one level. A dammed pond has a raised rim on its downhill side.
 
-**Banks and shores.** The bank band is reshaped in the tier's `bankStyle`, steeper on steep ground (`deformation.bankSteepFactor`) and roughened by `deformation.bankNoise`. Smooth, linear and concave banks vary gradually along the water; cliff and terraced styles retain their explicit benches and steps. Pond shores have a shallow shelf, a sloped taper outside the water and an uneven floor carved to at most `ponds.shore.maxDepth`. Shelf width, floor depth and the shore taper vary across each pond, while naturally deeper ground remains. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut.
+**Banks and shores.** The bank band is reshaped in the tier's `bankStyle` and roughened by `deformation.bankNoise`. A bank column keeps a steeper profile when the natural ground anywhere between it and the water is steep (`deformation.bankSteepFactor`), so a bank never dips below the ground nearer the water. Smooth, linear and concave banks vary gradually along the water; cliff and terraced styles retain their explicit benches and steps. Pond shores have a shallow shelf, a sloped taper outside the water and an uneven floor carved to at most `ponds.shore.maxDepth`. Shelf width, floor depth and the shore taper vary across each pond, while naturally deeper ground remains. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut.
 
 **Materials.** `tiers[].materials` and `ponds.materials` paint the bed under the water, the shore strip along the water's edge and on dam rims (to `shoreDepth` layers) and the reshaped banks. A palette left unset keeps the biome's layers, with submerged living soils replaced as described under [Materials](#materials). With `allowGravityBlocks: false`, sand, gravel and other falling blocks in every bed, shore, bank and dam column are replaced by the column's rock.
 
@@ -384,6 +412,7 @@ Invalid hydrology settings are rejected by `/iris pack validate` and again when 
 When those pass, the validator compiles the settings exactly as a starting world does. The compile stops at its first problem and names the field, so one compile error is reported per dimension; fix it and run the validator again. The compile rejects:
 
 - `hydrology` with no tier, or two tiers sharing a `minCatchment`;
+- a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
 - a `bankBand` outside `0..64`;
 - a `minArea` above its `maxArea`, on `ponds.natural`, `lakes` or `cavePools`;
 - a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
@@ -396,10 +425,11 @@ A starting world runs the same compile, and also checks the `fluid` of every tie
 
 ## Managed packs
 
-The Overworld and Underworld packs share one hydrology configuration. Underworld names a single `lava` profile and fills every tier, pond and cave pool with it; Overworld defines `water` and `lava` and fills the tiers, ponds and cave pools with water, with lava in the ponds and lakes of the volcanic biomes through their policies. Sea inlets carry each dimension's sea fluid.
+The Overworld and Underworld packs share one hydrology configuration. Underworld names a single `lava` profile and fills every tier, pond and cave pool with it; Overworld defines `water` and `lava` and fills the tiers, ponds and cave pools with water, with lava in the streams, rivers, ponds and lakes of the volcanic biomes through their policies. Sea inlets carry each dimension's sea fluid.
 
 | Setting | Managed value |
 |---|---|
+| `climate` | enabled, `SIMPLEX` zones at zoom `24`, dryness `0.5`, transition `0.15`, dry rainfall `0` |
 | `drainage.minimumHeadKeep` | `0.6` |
 | `stream` tier | catchment `900`, half-width `[0.5, 2.5]`, width factor `1.2`, inset `1`, bank band `8` |
 | `river` tier | catchment `5000`, half-width `[2.5, 9]`, width factor `1.2`, depth ratio `0.45`, inset `2`, bank band `32` |
@@ -433,6 +463,13 @@ The managed Overworld settings, written explicitly:
   "hydrology": {
     "enabled": true,
     "density": 0.5,
+    "climate": {
+      "enabled": true,
+      "style": { "style": "SIMPLEX", "zoom": 24 },
+      "dryness": 0.5,
+      "transition": 0.15,
+      "dryRainfall": 0.0
+    },
     "drainage": {
       "fillEpsilon": 0.001,
       "breachDepth": 24,

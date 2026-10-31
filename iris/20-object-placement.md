@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -40,7 +40,7 @@ Use dimension `staticObjects` for a landmark, spawn building, or other object th
 
 Static objects generate after terrain and decoration, regardless of biome, slope, water, caves, density, or chance, and later native structures cannot overwrite them. Entries apply in array order and the later entry wins where they overlap. Saved air writes air; unsaved space stays unchanged unless `bore` or `smartBore` fills it. **This can replace terrain, including the bedrock layer.**
 
-Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles work, but angles other than multiples of 90 round onto the block grid and can create holes or merge voxels. When rotated voxels merge or a later placement replaces a block, the surviving block keeps only its own block-entity data. Saved block-entity data accompanies its transformed blocks; edits apply before rotation, leave the source `.iob` unchanged, and changing a block's material discards incompatible block-entity data. A non-solid directional block that cannot represent its rotated orientation is skipped along with its tile data; the rest of the object still places.
+Rotation uses fixed degrees on `x`, `y`, and `z`, all zero by default. Negative and fractional angles work. At angles other than multiples of 90, every block inside the rotated footprint copies the nearest saved block, so solid shapes stay solid while thin details can widen or shift by one block and neighboring voxels can merge. When rotated voxels merge or a later placement replaces a block, the surviving block keeps only its own block-entity data. Saved block-entity data accompanies its transformed blocks; edits apply before rotation, leave the source `.iob` unchanged, and changing a block's material discards incompatible block-entity data. A non-solid directional block that cannot represent its rotated orientation is skipped along with its tile data; the rest of the object still places.
 
 | Field | Default | Meaning |
 |-------|---------|---------|

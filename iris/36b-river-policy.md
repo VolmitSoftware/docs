@@ -1,19 +1,19 @@
 ---
 title: "Hydrology Policy"
-description: "hydrologyPolicy: rainfall, pond density, where streams and ponds may form, the fluid of an area's ponds, lakes and cave pools, and the biomes along the water"
+description: "hydrologyPolicy: rainfall, pond density, climate zones, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-10-26T02:45:59.200Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
-`hydrologyPolicy` tunes the water of one area without changing the dimension's physical settings: how much rain falls there, how many ponds it gets, whether streams and ponds may form at all, what fluid fills its ponds, lakes and cave pools, which plants grow in and beside the water, and which biomes line the water's edge. It sits on the dimension, on regions and on biomes, and every value a region or biome leaves unset is inherited. The physical settings are on [36 - Hydrology](/iris/36-rivers), and `hydrology.enabled: true` on the dimension is what makes any policy take effect.
+`hydrologyPolicy` tunes the water of one area without changing the dimension's physical settings: how much rain falls there, how many ponds it gets, whether the dimension's wet and dry climate zones apply there, whether streams and ponds may form at all, what fluid fills its streams, rivers, ponds, lakes and cave pools, which plants grow in and beside the water, and which biomes line the water's edge. It sits on the dimension, on regions and on biomes, and every value a region or biome leaves unset is inherited. The physical settings are on [36 - Hydrology](/iris/36-rivers), and `hydrology.enabled: true` on the dimension is what makes any policy take effect.
 
 ## Workflow
 
 1. **A pond-heavy biome.** `"pondDensity": 2.5` with `"rainfall": 1.6`. More cups are seeded in the biome, along its streams and elsewhere, and its ponds stay full. Natural hollows already keep their ponds at the default `ponds.natural.keep` of `1`. Streams there also grow larger, because the extra rainfall reaches every channel downstream.
 2. **A dry desert.** `"rainfall": 0.9` thins the stream heads, and at the default `ponds.climateDrawdown` of `6` lowers pond surfaces by one block; `"streams": "BLOCK"` and `"ponds": "BLOCK"` stop them starting there at all.
-3. **Lava ponds in a volcanic biome.** Define a `lava` profile in the dimension's `hydrology.fluids`, then set `"fluid": "lava"` on the biome. Its ponds and lakes fill with lava while the rest of the dimension keeps water; streams and rivers keep their tier's fluid. On a cave biome the same setting fills its cave pools with lava.
+3. **Lava in a volcanic biome.** Define a `lava` profile in the dimension's `hydrology.fluids`, then set `"fluid": "lava"` on the biome. Its ponds and lakes fill with lava, and every stream and river runs as lava while it flows through the biome and carries its tier's fluid again beyond it; the rest of the dimension keeps water. Add `"climateZones": false` so the biome keeps its own streams and ponds even where a dry climate zone covers it. On a cave biome the same `fluid` setting fills its cave pools with lava.
 4. **Beaches along the water.** List the shore biomes on the region with `shoreBiomes`, and turn the band on with `shoreBiomeWidth` on the dimension so every region shares one width. The width defaults to `0`, which places no shore biome. A biome that should keep its own ground right up to the water sets `"shoreBiomes": []`.
 5. Run `/iris pack validate` after every policy edit; see [36c - Water Inspection](/iris/36c-river-inspection#validation).
 
@@ -23,9 +23,10 @@ dateCreated: 2026-09-19T00:00:00.000Z
 |-------|---------|---------|
 | `rainfall` | inherit, `1` | Multiplier on the water that falls in this area, `0..16`. Higher values grow more and larger streams and keep ponds fuller |
 | `pondDensity` | inherit, `1` | Multiplier on how many ponds form in this area, `0..16` |
+| `climateZones` | inherit, `true` | Whether the dimension's wet and dry zones (`hydrology.climate`) scale this area's rainfall and pond density; `false` keeps the full values even inside a dry zone |
 | `streams` | inherit, `ALLOW` | Whether streams and rivers may form in this area: `ALLOW` or `BLOCK` |
 | `ponds` | inherit, `ALLOW` | Whether ponds may form in this area: `ALLOW` or `BLOCK` |
-| `fluid` | inherit for ponds and lakes, none | Name of a fluid profile from `hydrology.fluids` that fills the ponds and lakes whose floor lies in this area instead of `ponds.fluid`. Set on a cave biome, it also fills that biome's cave pools instead of `cavePools.fluid`; cave pools read only the cave biome's own value. Channels always use the fluid of their tier |
+| `fluid` | inherit, none | Name of a fluid profile from `hydrology.fluids` that fills the water in this area: the ponds and lakes whose floor lies here instead of `ponds.fluid`, and every stretch of stream or river that flows through here instead of its tier's `fluid`. Set on a cave biome, it also fills that biome's cave pools instead of `cavePools.fluid`; cave pools read only the cave biome's own value |
 | `decorators` | inherit, none | Plants for the rivers, streams, ponds and lakes in this area, replacing the `tiers[].decorators` and `ponds.decorators` lists there; an empty list grows no plants |
 | `shoreBiomes` | inherit, none | Biomes placed along the water's edge in this area; an empty list clears the inherited biomes |
 | `shoreBiomeWidth` | inherit, `0` | Width in blocks of the shore biome band along the water, `0..31`; `0` places no shore biome |
@@ -35,6 +36,7 @@ dateCreated: 2026-09-19T00:00:00.000Z
   "hydrologyPolicy": {
     "rainfall": 1.6,
     "pondDensity": 2.0,
+    "climateZones": true,
     "streams": "ALLOW",
     "ponds": "ALLOW",
     "fluid": "water",
@@ -46,7 +48,7 @@ dateCreated: 2026-09-19T00:00:00.000Z
 
 ### Inheritance
 
-A column's policy is resolved from the biome first, then the region, then the dimension. The first scope that sets a value wins; an unset or `null` value falls through to the next scope. With no value at any scope, rainfall and pond density are `1`, streams and ponds are allowed, ponds and lakes keep `ponds.fluid`, and no shore biome is placed.
+A column's policy is resolved from the biome first, then the region, then the dimension. The first scope that sets a value wins; an unset or `null` value falls through to the next scope. With no value at any scope, rainfall and pond density are `1`, climate zones apply, streams and ponds are allowed, ponds and lakes keep `ponds.fluid`, channels keep their tier's `fluid`, and no shore biome is placed.
 
 Cave pools are the exception: they read `fluid` from the cave biome's own policy only, with no fall-through, so a region or dimension `fluid` leaves them on `cavePools.fluid`.
 
@@ -60,13 +62,17 @@ Rainfall weights the flow that drains off every column of the area, so the catch
 
 Pond density multiplies the chance of each seeded cup and of each chained cup along a stream. Natural hollows keep their ponds by `ponds.natural.keep`; `pondDensity` scales that share too, so at the default `keep` of `1` only a value below `1` changes the natural ponds. Lakes and cave pools are not affected. Pond density must be a finite value of `0` or more.
 
+### `climateZones`
+
+When the dimension turns on `hydrology.climate` ([36 - Hydrology](/iris/36-rivers)), each column's rainfall and pond density are multiplied by the wetness of its climate zone, so a dry zone starts few or no streams and ponds of its own. `"climateZones": false` exempts the area: its columns keep their full rainfall and pond density in every zone. Use it for an area that always carries its own water, such as a lava biome inside a dry zone. With no value at any scope the zones apply, and the setting has no effect while `hydrology.climate.enabled` is `false`.
+
 ### `streams` and `ponds`
 
 `BLOCK` on `streams` means no stream starts in the area. Water that drains in from an allowed area upstream still flows through. `BLOCK` on `ponds` means no natural pond, lake or seeded cup is placed whose floor lies in the area. Neither permission affects sea inlets or cave pools.
 
 ### `fluid`
 
-A fluid replaces `ponds.fluid` for every pond and lake whose floor lies in the area, and, when it is set on a cave biome itself, `cavePools.fluid` for every cave pool whose site lies in that biome. Channels are not affected: a stream or river always carries its tier's `fluid`, so a lava river needs a tier of its own. The name must be a profile in the dimension's `hydrology.fluids`. `/iris pack validate` reports an undefined name at every scope. At world start, a biome's undefined fluid stops the engine while cave pools are enabled; an undefined fluid on the dimension or a region, or on a biome with cave pools off, fails generation when the first chunk that resolves to it is made.
+A fluid replaces `ponds.fluid` for every pond and lake whose floor lies in the area, and the tier's `fluid` for every stretch of stream or river that flows through the area. Channels follow the area column by column, by the biome and region at each column: a water river that enters a lava area runs as lava through it and carries its tier's fluid again once it leaves, so a lava river needs no tier of its own. When the fluid is set on a cave biome itself, it also replaces `cavePools.fluid` for every cave pool whose site lies in that biome. The name must be a profile in the dimension's `hydrology.fluids`. `/iris pack validate` reports an undefined name at every scope. At world start, a biome's undefined fluid stops the engine while cave pools are enabled; an undefined fluid on the dimension or a region, or on a biome with cave pools off, fails generation when the first chunk that resolves to it is made.
 
 ### `decorators`
 
@@ -82,7 +88,7 @@ Listed shore biomes are reachable biomes while hydrology is enabled, whatever th
 
 ## Managed pack policies
 
-The Overworld and Underworld packs use the same policies. The dimension sets rainfall `1.2` and pond density `1.5`, and lists the temperate beaches (`temperate/shore/beach`, `temperate/shore/oak-beach`) as shore biomes. Both dimensions set `hydrology.density` to `0.5`, which halves eligible feature frequency after these local policies apply.
+The Overworld and Underworld packs use the same policies. The dimension sets rainfall `1.2` and pond density `1.5`, and lists the temperate beaches (`temperate/shore/beach`, `temperate/shore/oak-beach`) as shore biomes. Both dimensions set `hydrology.density` to `0.5`, which halves eligible feature frequency after these local policies apply, and turn on `hydrology.climate` with `SIMPLEX` zones at zoom `24`, dryness `0.5`, transition `0.15` and dry rainfall `0`, so the dry zones start no streams or ponds of their own and the policies below apply in full inside the wet zones.
 
 | Region | `rainfall` | `pondDensity` | `shoreBiomes` |
 |--------|-----------:|--------------:|---------------|
@@ -107,9 +113,9 @@ The Overworld and Underworld packs use the same policies. The dimension sets rai
 | `hot/mountain-middle` | rainfall `1.44` |
 | `hot/desert-dunes` | rainfall `0.9` |
 | `ocean/deep`, `prismatics/white` | `streams: BLOCK` |
-| `tropical/volcanic-plains`, `tropical/volcanoes` | rainfall `1.8`, pond density `3`, fluid `lava` |
+| `tropical/volcanic-plains`, `tropical/volcanoes` | rainfall `1.8`, pond density `3`, fluid `lava`, `climateZones: false` |
 
-With the managed `ponds.climateDrawdown` of `3`, the regions at rainfall `0.9` and `0.92` keep their ponds full; their rainfall still thins stream heads and shrinks the catchment that drains off them. No managed policy sets `shoreBiomeWidth`, so the shore biome band is off in both packs and the water runs through each biome's own ground. A fork that sets a width on the dimension gets these beaches along every river, pond and lake.
+With the managed `ponds.climateDrawdown` of `3`, the regions at rainfall `0.9` and `0.92` keep their ponds full inside the wet zones; their rainfall still thins stream heads and shrinks the catchment that drains off them. The volcanic biomes fill the streams, rivers, ponds and lakes inside them with lava and keep them in every climate zone. No managed policy sets `shoreBiomeWidth`, so the shore biome band is off in both packs and the water runs through each biome's own ground. A fork that sets a width on the dimension gets these beaches along every river, pond and lake.
 
 Related:
 
