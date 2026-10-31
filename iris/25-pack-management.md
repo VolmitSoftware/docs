@@ -2,7 +2,7 @@
 title: "Pack Management"
 description: "Iris documentation: Pack Management"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-28T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -316,6 +316,7 @@ Ordinary Bukkit Studio applies compatible authoring edits while the world is ope
 | Strict content key enforcement | `settings.general.strictContentKeys` — [03 - Configuration](/iris/03-configuration) |
 | List content unavailable on this Minecraft version | `/iris pack compat` — [Version content compatibility](#version-content-compatibility) |
 | Datapack bootstrap and install | `/iris datapack` — [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) |
+| Compile a pack into a vanilla worldgen datapack | `/iris datapack export` — [49 - Datapack Export](/iris/49-datapack-export) |
 
 See also:
 
@@ -326,3 +327,4 @@ See also:
 - [10 - Studio & VSCode Schemas](/iris/10-studio-vscode-schemas)
 - [24 - Snippets](/iris/24-pack-mods-snippets)
 - [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld)
+- [49 - Datapack Export](/iris/49-datapack-export)

@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-10-30T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -100,7 +100,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 ### Modded
 
 - Same root and aliases.
-- Arguments are ordered literals and typed arguments. A few commands, such as `download`, `replace`, and `ingest mods`, also take `key=value` options.
+- Arguments are ordered literals and typed arguments. A few commands, such as `download`, `replace`, and `ingest mods`, also take `key=value` options. `datapack export` takes the same `key=value` options as on Bukkit.
 - `/iris` and `/iris help [section]` open command help.
 - Flags are literals where used (pregen `gui`, `sync`, `nocache`. Download `force`).
 
@@ -415,8 +415,9 @@ See [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Struc
 | `remove` | `rm` | **Bukkit**. Stub on modded | `<id>` | Remove an installed datapack by id |
 | `status` | | **Modded** | — | Check Iris dimension-type overrides against pack heights |
 | `install` | | **Modded** | — | Install the dimension-type override datapack for loaded Iris dimensions |
+| `export` | | Both | `<dimension> [version=] [mode=overworld] [namespace=iris_export] [output=] [format=zip] [objects=true] [replace=false]` | Compile a pack dimension into a vanilla worldgen datapack for Minecraft 26.3 or later. Runs in the background |
 
-See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
+`export` uses `key=value` options on both Bukkit and mod loaders. See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) and [49 - Datapack Export](/iris/49-datapack-export).
 
 ---
 
@@ -482,6 +483,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 - [28 - Integrations](/iris/28-integrations)
 - [30 - Platform Differences](/iris/30-platform-differences)
 - [48 - Mod Worldgen](/iris/48-mod-worldgen)
+- [49 - Datapack Export](/iris/49-datapack-export)
 
 ## Shared update checks
 

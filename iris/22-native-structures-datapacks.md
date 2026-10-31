@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-10-30T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,6 +28,7 @@ These tasks are separate workflows. None of them requires the others.
 | Allow selected vanilla or datapack structures and choose where they go yourself | Task 4 |
 | Edit a registered structure's blocks or graph inside Iris | Task 5 |
 | Import vanilla ores, geodes, or snow, or control mobs, loot, and saplings | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
+| Turn an Iris pack into a worldgen datapack that runs without Iris | [49 - Datapack Export](/iris/49-datapack-export) |
 
 Every task below changes newly generated chunks only. Nothing rewrites existing terrain or existing starts.
 
@@ -707,6 +708,7 @@ Automatic import is off by default because native generation and `nativeStructur
 | `/iris datapack ingest` | `pull` | `restart=false`. Bukkit only, modded stub |
 | `/iris datapack list` | `ls` | |
 | `/iris datapack remove <id>` | `rm` | |
+| `/iris datapack export <dimension>` | | `version= mode=overworld namespace=iris_export output= format=zip objects=true replace=false`. Same keyed options on both platforms. See [49 - Datapack Export](/iris/49-datapack-export) |
 | `/iris structure list <dimension>` | `ls` | |
 | `/iris structure import <dimension>` | `import-all`, `reimport`, `imp`, `all` | |
 | `/iris structure capture <dimension>` | `cap` | |

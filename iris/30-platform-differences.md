@@ -2,7 +2,7 @@
 title: "Platform Differences"
 description: "Iris documentation: Platform Differences"
 published: true
-date: 2026-10-25T20:00:00.000Z
+date: 2026-10-28T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,6 +27,7 @@ The mod jars target Minecraft 1.21.1 on Java 21 and Minecraft 26.1.2, 26.2 and 2
 | Mod config | — | `<configDir>/irisworldgen/modded.json` |
 | Worldgen catalog | — | `<configDir>/irisworldgen/catalog/worldgen-catalog.json` |
 | Studio pack exports | `plugins/Iris/packs/exports/` | `<configDir>/irisworldgen/exports/` |
+| Datapack exports | `plugins/Iris/exports/datapacks/` | `<configDir>/irisworldgen/exports/datapacks/` |
 | Generated datapack | World `datapacks/` | `<configDir>/irisworldgen/generated/datapack/` |
 | Persistent dynamic-world registry | `<level-root>/iris/worlds.json` | `<world-root>/iris/iris-dimensions.json` |
 | Managed dimension storage | Paper-family: `<level-root>/dimensions/iris/<key>/`. Plain Spigot: `<world-container>/<level-name>_iris_<key>/dimensions/iris/<key>/` | Minecraft's dimension storage under the world save |
@@ -98,6 +99,7 @@ Full command tables: [04 - Commands & Permissions](/iris/04-commands-permissions
 | Structure list / info / place / verify | yes | yes | yes | yes |
 | Datapack HTTP(S), `file:`, and local drop-folder ingest / list / remove | yes | message only | message only | message only |
 | Dimension-type datapack install / status | not applicable | yes | yes | yes |
+| Datapack export (`/iris datapack export`) | yes | yes | yes | yes |
 | Dimension `borrowedDimensionType` | rejected by pack validation | yes | yes | yes |
 | Worldgen catalog and mod ingest (`/iris catalog`, `/iris ingest mods`) | not registered | yes | yes | yes |
 | Replace an existing world (`/iris replace`) | Paper family | dedicated server | dedicated server | dedicated server |
@@ -168,4 +170,5 @@ Run `/iris pack compat` to check which pack content your server supports. Missin
 - [37 - Image Maps](/iris/37-image-maps)
 - [43 - Image Map Configuration & Coordinates](/iris/43-image-map-config-coordinates)
 - [48 - Mod Worldgen](/iris/48-mod-worldgen)
+- [49 - Datapack Export](/iris/49-datapack-export)
 - [94 - API - Modded](/iris/94-api-modded)
