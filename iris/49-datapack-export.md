@@ -2,7 +2,7 @@
 title: "Datapack Export"
 description: "Compile an Iris pack into a vanilla worldgen datapack for Minecraft 26.3 and later"
 published: true
-date: 2026-10-30T18:00:00.000Z
+date: 2026-10-31T02:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
@@ -37,7 +37,7 @@ The export runs in the background and reports each stage and the number of resou
 
 4. Start the server. Minecraft creates the world, and the Overworld generates from the datapack. The Nether and the End generate as in vanilla Minecraft. The server needs neither Iris nor the pack.
 
-In single-player, add the zip through **Data Packs** on the Create New World screen and keep the default world type.
+In single-player, open **Data Packs** on the Create New World screen, drag `overworld-26.3.zip` into the window, and move it to the **Selected** column. Keep **Default** in the Selected column, because the export builds on the vanilla data pack. Keep the default world type.
 
 Each pack biome exports as the biome `<namespace>:<biome key>`. The key is lowercased, and characters that Minecraft ids do not accept are replaced. Use these ids with `/locate biome`.
 
@@ -47,8 +47,8 @@ Each pack biome exports as the biome `<namespace>:<biome key>`. The key is lower
 
 | `mode=` | Adds | Install |
 |---|---|---|
-| `overworld` (default) | A replacement Overworld in `data/minecraft/dimension/overworld.json` | Copy into `world/datapacks/` before the first start and leave `level-type` at its default. In single-player, add it through **Data Packs** on the Create New World screen. Added to an existing world, it generates every new chunk from the datapack while chunks that already exist keep their terrain, so the terrain changes abruptly at that border |
-| `preset` | The world preset `<namespace>:<dimension>` in `data/<namespace>/worldgen/world_preset/<dimension>.json`, listed among the standard world types through `data/minecraft/tags/worldgen/world_preset/normal.json` | Copy into `world/datapacks/` before the first start and set `level-type=<namespace>:<dimension>`. In single-player, add it through **Data Packs** on the Create New World screen and pick the preset as the world type. A world created with another world type keeps its own Overworld |
+| `overworld` (default) | A replacement Overworld in `data/minecraft/dimension/overworld.json` | Copy into `world/datapacks/` before the first start and leave `level-type` at its default. In single-player, add it through **Data Packs** on the Create New World screen and keep **Default** selected. Added to an existing world, it generates every new chunk from the datapack while chunks that already exist keep their terrain, so the terrain changes abruptly at that border |
+| `preset` | The world preset `<namespace>:<dimension>` in `data/<namespace>/worldgen/world_preset/<dimension>.json`, listed among the standard world types through `data/minecraft/tags/worldgen/world_preset/normal.json` | Copy into `world/datapacks/` before the first start and set `level-type=<namespace>:<dimension>`. In single-player, add it through **Data Packs** on the Create New World screen, keep **Default** selected, and pick the preset as the world type. A world created with another world type keeps its own Overworld |
 | `dimension` | The dimension `<namespace>:<dimension>` in `data/<namespace>/dimension/<dimension>.json` | Copy into the `datapacks/` folder of any new or existing world, then start or restart the server. Players reach `<namespace>:<dimension>` by command, such as `/execute in iris_export:overworld run tp @s 0 200 0`, or through a portal from another plugin or mod |
 
 All three modes also write the noise settings, density functions, noises, biomes, and dimension type under the export namespace. The noise settings set Minecraft's sea level one block above the dimension's `fluidHeight`, so water surfaces sit at the same Y as in the Iris world. Every export also carries the Iris logo as `pack.png`, which the **Data Packs** screen shows next to the pack.
@@ -109,7 +109,7 @@ Each diagnostic names one of the limits below. The table lists every difference 
 | Rivers | `RIVER_DRAINAGE` | Rivers are valleys calculated from the seed, with water only up to the dimension's `fluidHeight`. They do not follow drainage, so tributaries cross instead of joining, and river width follows elevation |
 | Water | `ELEVATED_WATER` | [Hydrology](/iris/36-rivers) ponds, lakes, and waterfalls are not exported, and river valleys above `fluidHeight` are dry. Hydrology bed, shore, and bank materials are not exported |
 | Water | | Hydrology sea inlets and cave pools are not exported |
-| Water | | Water placement near the surface follows a simplified terrain height. Caves that open near the surface fill with the dimension fluid up to `fluidHeight` |
+| Water | | Water below `fluidHeight` is placed in cells of 16 × 12 × 16 blocks, so some low ground beside shores and cliffs stays dry. Caves within 8 blocks of the terrain surface in ground less than 8 blocks above `fluidHeight`, and caves near coasts, fill with the dimension fluid up to `fluidHeight` |
 | Caves | `LAVA_HEIGHT` | Cave lava fills carved space up to the dimension's `caveLavaHeight` when that level is at or below world Y -10. A higher lava level exports without lava |
 | Caves | `WALL_PALETTE` | Each cave wall palette keeps its 3 most common materials, and a dimension uses at most 8 wall palettes, or 7 when it has the deep caves described under `DEEP_CAVE_LAYERS`. A cave biome over that limit uses the kept palette that shares the most blocks with its own |
 | Caves | `DEEP_CAVE_LAYERS` | Caves below Y -54, or at and below `fluidHeight` if that is lower, are open air. These deep caves keep their wall palettes but have no floor or ceiling surface layers. The pack's own deep lava band stays lava |
@@ -119,19 +119,24 @@ Each diagnostic names one of the limits below. The table lists every difference 
 | Caves | | The export adds no Minecraft carvers or ore veins |
 | Surface | `BLOCK_STATE` | A layer, palette, decorator, or deposit block that is not a Minecraft block is left out. A block whose properties the target version rejects exports in its default state |
 | Surface | `LAYER_THICKNESS` | Layer thickness varies with Minecraft's surface noise, so stacked layers in one biome vary together. Locked layers use each layer's mean thickness |
-| Surface | `SLOPE` | Slope-dependent layers and decorators measure slope over 3 blocks in the four cardinal directions |
+| Surface | `SLOPE` | Slope-dependent layers, decorators, and object placements measure slope over 3 blocks in the four cardinal directions. Objects wider than 32 blocks ignore `slopeCondition` |
 | Surface | `SEA_LAYER` | `seaLayers` are not exported |
 | Surface | | Post-processing terrain smoothing, which removes one-block bumps and fills one-block pits, is not exported |
-| Decoration | `DECORATOR_STYLE` | A decorator whose `style` or `variance` is not `STATIC` places at the style's average density, without the style's pattern |
+| Decoration | `DECORATOR_STYLE` | A decorator whose `style` is not `STATIC` covers the same share of columns as in the Iris world. Where the style forms patches, a Minecraft noise with the same patch size and coverage replaces it, so patches keep their size and spacing but not their exact shapes. Stacked decorators, decorators with a `forceBlock` or `topPalette`, underwater decorators, and cave ceiling decorators keep the coverage without the patches. A `variance` style that is not `STATIC` is not exported, so palette blocks are picked at random by weight |
+| Decoration | | Two-block plants such as `tall_seagrass` place both halves, including on the sea floor, where Iris places only the palette half |
 | Decoration | `CAVE_DECORATOR` | Cave ceiling decorators place at an estimated density instead of on every cave ceiling |
 | Decoration | `SCALE_STACK` | Decorators with `scaleStack` use their fixed stack range instead of scaling to the space available |
 | Decoration | `DEPOSIT_SCOPE` | Deposits with `placementScope: ABOVE_TERRAIN` also generate inside overhangs and floating terrain within their height band |
 | Decoration | `DEPOSIT_SIZE` | Deposit clumps export at their average size. A clump holds at most 64 blocks, and a deposit places at most 256 clumps per chunk |
-| Objects | `WIDE_OBJECT` | Objects up to 32 blocks wide export as features. Wider objects export as single-piece structures that generate at most once per chunk for each `objects[]` entry, on a chunk-aligned grid |
+| Objects | `WIDE_OBJECT` | Objects up to 32 blocks wide export as features. Wider objects export as single-piece structures that generate at most once per chunk for each `objects[]` entry, on a chunk-aligned grid, without the `requireSurfaceSupport` check |
 | Objects | `OBJECT_VARIANT` | Rotations other than multiples of 90 degrees, scale variations, and warps export as up to 32 pre-built variants |
+| Objects | | [Procedural objects](/iris/17-procedural-objects) export as their pre-built `variants`. Procedural tree roots do not check for caves or Minecraft structures below them. Trees wider than 32 blocks keep their built roots |
 | Objects | `OBJECT_VACUUM` | Vacuum terrain shaping is not exported. Objects in a vacuum mode place at their center height |
+| Objects | | Surface objects place at the terrain height under their center. `MIN_HEIGHT`, `MAX_HEIGHT`, their `FAST_` forms, and the stilt modes built on them take the lowest or highest terrain across every rotation the placement allows, not only the rotation that is placed. The object moves at most 32 blocks from the terrain height under its center, and placements that need more are skipped. Objects wider than 32 blocks place at the terrain height under their center. `requireSurfaceSupport` checks the corners of the object's lowest row, widened by `surfaceSupportBuffer`, instead of every column under it. Each corner needs `surfaceSupportDepth` blocks of solid ground within 16 blocks below the object's anchor height, so objects are skipped where the ground falls more than 16 blocks across their footprint. Stilted placements skip this check and stilt down to the ground |
+| Objects | | Leaves and other waterloggable object blocks fill with water where they replace water or touch it from the side or above, and the water spreads through connected leaves. Iris keeps them dry unless the placement sets `waterloggable` or `underwater` |
+| Objects | | Sea pickles, coral plants, and coral fans with nothing under them in the object, and coral wall fans with nothing behind them, are left out |
 | Objects | `STRUCTURE_AVOIDANCE` | Objects do not avoid Minecraft structures |
-| Objects | `OBJECT_BOUNDS` | Blocks stored outside an object's width, height, and depth are left out. Subterrain room blocks more than 128 blocks from the room's center are left out |
+| Objects | `OBJECT_BOUNDS` | Subterrain room blocks more than 128 blocks from the room's center are left out |
 | Objects | `CUSTOM_BLOCK` | Object blocks that are not Minecraft blocks, such as blocks from plugins or mods, are left out |
 | Objects | `TILE_ENTITY` | Object tile data that has no Minecraft block entity form is dropped, and the block exports as a plain block |
 | Objects | | Noise-styled object `edit` rules apply per placement, without continuity across the world |
