@@ -2,7 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-date: 2026-10-26T00:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,6 +29,8 @@ Install and validate the pack, then choose a world name and seed:
 | `seed` | `1337` | World generation seed |
 
 Names are lowercased and spaces become underscores. `iris` and `benchmark` are reserved. Creation requires an unused world name.
+
+Iris saves the new world's seed and settings before it generates the spawn area, so the world keeps its seed if the server stops unexpectedly after creation.
 
 A player who creates a world is teleported into it. Use `/iris tp <world>` to enter a loaded world. A cancelled or timed-out entry does not trigger a delayed teleport. Complete any restart Iris requests before using the world.
 
