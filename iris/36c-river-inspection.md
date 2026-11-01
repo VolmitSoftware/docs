@@ -91,7 +91,8 @@ First it checks the settings it can read without compiling them, and reports eve
 
 - a range (`tiers[].halfWidth`, `ponds.freeboard`, `ponds.seeded.radius`, `ponds.seeded.depth`, `ponds.seeded.channelSpacing`, `underground.seaInlets.length`, `halfWidth`, `depth`, `headroom`, `chamberRadius`, `underground.cavePools.freeboard`) that is not `[min, max]` of two finite numbers with `min` at or below `max`, that holds fractions where whole numbers are required, or that goes below its floor (`freeboard` and `headroom` not below `0`, the others above `0`);
 - a tier `halfWidth` above `64`;
-- a `fluid` on a tier, on `ponds`, on `cavePools`, or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `hydrology.fluids` does not define.
+- a `fluid` on a tier, on `ponds`, on `cavePools`, or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `hydrology.fluids` does not define;
+- a `hydrologyPolicy.fluid` that names a seam profile.
 
 When those pass, it compiles the settings exactly as a starting world does. The compile stops at its first problem, so one compile error is reported per dimension, naming the field; fix it and run the validator again. The compile rejects:
 
@@ -100,6 +101,7 @@ When those pass, it compiles the settings exactly as a starting world does. The 
 - a `bankBand` outside `0..64`, or a `minArea` above its `maxArea`;
 - a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty;
 - a duplicated fluid profile name, or a profile with an empty palette;
+- a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;
 - sea inlet bounds (`halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, a floor and seal below the world bottom, a reach above 512 blocks) and cave pool bounds (`radius` outside `1..15`, `maxDepth` below `1`);
 - a water `decorators` entry with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order; the validator also resolves every plant block and rejects fluids, floor plants that cannot stand in water, and surface or shore plants that hold water.
 

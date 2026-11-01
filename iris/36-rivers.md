@@ -16,7 +16,7 @@ Turn the system on with `hydrology.enabled: true` in the dimension file. The def
 1. **Make a pond-heavy biome.** Give the biome a `hydrologyPolicy` with `"pondDensity": 2.5` and `"rainfall": 1.6`. More cups are seeded in it, along its streams and elsewhere, and its ponds stay full. Natural hollows already keep their ponds at the default `ponds.natural.keep` of `1`; lower `keep`, or a `pondDensity` below `1`, thins them. Nothing in `hydrology` itself changes.
 2. **Add a chained-pond valley.** Keep `ponds.seeded.alongChannels: true` and shorten `ponds.seeded.channelSpacing` to `[64, 128]`. Streams in that dimension then pass through a cup every 64 to 128 blocks, each one spilling into the next at a lower level. Give one region a higher `pondDensity` in its policy to concentrate the chains there; `ponds.seeded.density` adds free-standing cups, not chain cups.
 3. **Gather water into wet zones.** Set `hydrology.climate.enabled: true`. A noise field splits the land into wet and dry zones: wet zones keep the configured streams and ponds, dry zones start none of their own, and rivers from the wet zones still run on through the dry land. Raise `climate.dryness` to dry out more of the land and `climate.style.zoom` for larger zones.
-4. **Switch a biome to lava.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava, and every stream and river runs as lava where it flows through the biome and returns to its tier's fluid beyond it; the rest of the dimension keeps water. A cave biome with the same policy gets lava cave pools.
+4. **Switch a biome to lava.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava, and every stretch of stream or river that starts in the biome runs as lava all the way to the next confluence, pond or mouth, even where it leaves the biome; streams that start elsewhere keep their tier's fluid while they cross it. The rest of the dimension keeps water. A cave biome with the same policy gets lava cave pools. Give the `lava` profile a `seam` such as obsidian to line its edges where it meets water or the sea.
 5. **Shape and plant the banks.** Set `bankBand` and `bankStyle` per tier, and `deformation.bankSlope` for the base slope. Paint the water's surroundings with `tiers[].materials` and `ponds.materials`, and grow seagrass, lily pads and reeds with `tiers[].decorators` and `ponds.decorators`.
 6. **Tune the underground water.** Sea inlets and cave pools are on by default. `underground.seaInlets.spacing` and `minimumCliffHeight` decide how many coasts get an inlet, `underground.cavePools.density` how many pool sites each chunk tries, and either `enabled: false` turns the feature off.
 7. Run `/iris pack validate`, open Studio and look at the **Rivers** view, then walk the water with `/iris find river` ([36c - Water Inspection](/iris/36c-river-inspection)).
@@ -98,7 +98,7 @@ Each tier is one size class of flowing water. The tiers are ranked by `minCatchm
 | `deltas` | `false` | Spreads the channel into a delta where it reaches the sea |
 | `materials` | all unset | Blocks painted on the bed, shore and banks of this tier; see [materials](#materials) |
 | `decorators` | empty | Plants for this tier's channels and their banks and shores; see [water plants](#water-plants) |
-| `fluid` | `"water"` | Name of the fluid profile that fills this tier's channels; where a channel flows through an area whose `hydrologyPolicy` sets a `fluid`, that fluid replaces it |
+| `fluid` | `"water"` | Name of the fluid profile that fills this tier's channels; a stretch of channel whose upstream end lies in an area whose `hydrologyPolicy` sets a `fluid` takes that fluid for its whole length |
 
 The default tiers:
 
@@ -314,13 +314,17 @@ Tiers, ponds, cave pools and hydrology policies pick a fluid by its name. Every 
 | Field | Default | Purpose |
 |-------|---------|---------|
 | `name` | `"water"` | Name that tiers, ponds, cave pools and hydrology policies use to pick this fluid |
-| `palette` | `minecraft:water` | Blocks that fill the water feature |
+| `palette` | `minecraft:water` | Blocks that fill the water feature; only fluid blocks, except on a seam profile |
+| `seam` | none | Name of another profile that lines this fluid's edge where it touches a different fluid or the sea |
+
+World generation places fluids without block updates, so lava that meets water or the sea stays lava beside water. A `seam` replaces the edge of the fluid instead: every column of the fluid that touches a column of a different fluid, or a dry column whose ground lies below the dimension's `fluidHeight`, diagonals included, is filled with the seam profile from its bed to its surface, and so are about 60% of the columns next to those, which makes the seam a ragged band rather than a straight line. A profile named as a seam may hold solid blocks, such as obsidian, magma and basalt for a cooled crust, and is used only as a seam: it cannot be the `fluid` of a tier, of `ponds`, of `cavePools` or of a `hydrologyPolicy`, and it cannot name a seam of its own. Falling water keeps the fluid of the water above it.
 
 ```json
 {
   "fluids": [
     { "name": "water", "palette": { "palette": [{ "block": "minecraft:water" }] } },
-    { "name": "lava", "palette": { "palette": [{ "block": "minecraft:lava" }] } }
+    { "name": "lava", "palette": { "palette": [{ "block": "minecraft:lava" }] }, "seam": "crust" },
+    { "name": "crust", "palette": { "palette": [{ "block": "minecraft:obsidian" }, { "block": "minecraft:magma_block" }] } }
   ]
 }
 ```
@@ -345,6 +349,8 @@ Hydrology works in 512-block planning windows on the natural terrain, before cav
 **Mouths and deltas.** A channel that reaches the sea ends in a mouth. A tier with `deltas: true` spreads its channel into a delta there.
 
 **Ponds, chains and lakes.** Each pond has its own level. Chained cups along a stream sit at descending heights, each spilling into the next. Lakes fill the largest hollows at one level. A dammed pond has a raised rim on its downhill side.
+
+**Biomes under the water.** A pond, lake, stream or river whose surface lies above the dimension's `fluidHeight` keeps the land biome of its area, even where its bed is cut below `fluidHeight`. Mouths and sea inlets take the sea biome.
 
 **Banks and shores.** The bank band is reshaped in the tier's `bankStyle` and roughened by `deformation.bankNoise`. A bank column keeps a steeper profile when the natural ground anywhere between it and the water is steep (`deformation.bankSteepFactor`), so a bank never dips below the ground nearer the water. Smooth, linear and concave banks vary gradually along the water; cliff and terraced styles retain their explicit benches and steps. Pond shores have a shallow shelf, a sloped taper outside the water and an uneven floor carved to at most `ponds.shore.maxDepth`. Shelf width, floor depth and the shore taper vary across each pond, while naturally deeper ground remains. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut.
 
@@ -407,7 +413,8 @@ Invalid hydrology settings are rejected by `/iris pack validate` and again when 
 
 - a range (`halfWidth`, `freeboard`, `radius`, `depth`, `channelSpacing`, `length`, `headroom`, `chamberRadius`) that is not written as `[min, max]` of two finite numbers with `min` at or below `max`, that holds fractions where whole numbers are required, a `freeboard` or `headroom` below `0`, or another range that starts at `0` or below;
 - a tier `halfWidth` above `64`;
-- a `fluid` on a tier, on `ponds`, on `cavePools` or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `fluids` does not define.
+- a `fluid` on a tier, on `ponds`, on `cavePools` or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `fluids` does not define;
+- a `hydrologyPolicy.fluid` that names a seam profile.
 
 When those pass, the validator compiles the settings exactly as a starting world does. The compile stops at its first problem and names the field, so one compile error is reported per dimension; fix it and run the validator again. The compile rejects:
 
@@ -417,11 +424,12 @@ When those pass, the validator compiles the settings exactly as a starting world
 - a `minArea` above its `maxArea`, on `ponds.natural`, `lakes` or `cavePools`;
 - a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
 - a fluid profile name that is duplicated, or a profile with an empty palette;
+- a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;
 - `seaInlets.halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, an inlet floor and seal that would lie below the world bottom, or an inlet reach above 512 blocks;
 - `cavePools.radius` outside `1..15` or `maxDepth` below `1` while cave pools are enabled;
 - a `decorators` entry, on a tier, on `ponds` or on a policy, with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block name, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order.
 
-A starting world runs the same compile, and also checks the `fluid` of every tier, of `ponds` and of `cavePools`. It also resolves every plant block in the tier, pond and policy decorator lists, so an unknown block, a fluid, a `SEA_FLOOR` block that cannot stand in water, or a `SEA_SURFACE` or `SHORE_LINE` block that holds water stops the engine; `/iris pack validate` resolves the same blocks. A `hydrologyPolicy.fluid` that `fluids` does not define is caught at start for biomes while cave pools are enabled; set on the dimension or a region, or on a biome with cave pools off, it fails generation when the first chunk that resolves to it is made. A known field with the wrong type fails the pack load even when `enabled` is `false`. See [36c - Water Inspection](/iris/36c-river-inspection#validation).
+A starting world runs the same compile, and also checks the `fluid` of every tier, of `ponds` and of `cavePools`. A fluid profile that holds a solid block stops the engine unless it is a seam profile. It also resolves every plant block in the tier, pond and policy decorator lists, so an unknown block, a fluid, a `SEA_FLOOR` block that cannot stand in water, or a `SEA_SURFACE` or `SHORE_LINE` block that holds water stops the engine; `/iris pack validate` resolves the same blocks. A `hydrologyPolicy.fluid` that `fluids` does not define is caught at start for biomes while cave pools are enabled; set on the dimension or a region, or on a biome with cave pools off, it fails generation when the first chunk that resolves to it is made. A known field with the wrong type fails the pack load even when `enabled` is `false`. See [36c - Water Inspection](/iris/36c-river-inspection#validation).
 
 ## Managed packs
 
