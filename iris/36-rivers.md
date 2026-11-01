@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -305,7 +305,7 @@ An inlet, its chamber and its seal stay within 512 blocks of the coast: `length`
 | `maxDepth` | `4` | Deepest pool in blocks, `1..16` |
 | `radius` | `15` | Half-size in blocks of the square box, centered on the site column, inside which a pool settles and spreads, `1..15`, so a pool stays within one chunk of the chunk that holds its site |
 | `freeboard` | `[0, 1]` | Blocks the pool surface sits below the highest level the cave holds, written as `[min, max]`, not below `0` |
-| `fluid` | `"water"` | Name of the fluid profile that fills cave pools; a cave biome's `hydrologyPolicy.fluid` replaces it |
+| `fluid` | `"water"` | Name of the fluid profile that fills cave pools; the `hydrologyPolicy.fluid` of the cave biome at the pool, else of its region, else of the dimension, replaces it |
 
 ### `hydrology.fluids[]`
 
@@ -364,7 +364,7 @@ Caves stay at least two blocks from the inlet water, though cave air may meet th
 
 **Cave pools.** A pool settles into a low point of a carved cave and fills it up to the highest level the surrounding rock holds, at most `maxDepth` deep and inside a square box of `radius` blocks around its site column, with its surface `freeboard` blocks below that level. A dip that would open to the sky, drain into a lower cave, come within three blocks of the surface or spread past `maxArea` columns gets no pool, and a pool needs at least `minArea` columns.
 
-The fluid is `cavePools.fluid`, or the `hydrologyPolicy.fluid` set on the cave biome at the site. A pool never mixes fluids: a dip that spans two cave fluids, or touches cave lava, an aquifer or a room's fluid, gets no pool. Pools stay out of sea inlet space. Every solid block touching the pool at or below its level is sealed and shows the column's rock, and deposits, objects and later carving leave the pool and its walls alone.
+The fluid comes from the `hydrologyPolicy.fluid` of the cave biome at the site, then of its region, then of the dimension, and is `cavePools.fluid` when none of them sets one. A surface biome's policy never fills a cave pool: near the surface, above the cave biome's `caveMinDepthBelowSurface`, and in a region without cave biomes, caves use the surface biome, but their pools take the region's or the dimension's fluid. A pool never mixes fluids: a dip that spans two cave fluids, or touches cave lava, an aquifer or a room's fluid, gets no pool. Pools stay out of sea inlet space. Every solid block touching the pool at or below its level is sealed and shows the column's rock, and deposits, objects and later carving leave the pool and its walls alone.
 
 **Decoration and objects.** Biome decorators skip channel, pond, cascade and waterfall columns; the plants in and beside the water come from the hydrology decorator lists ([water plants](#water-plants)), which run on every water column before the biome's own decorators. Mouth columns and the open mouths of sea inlets are decorated like the sea they join. Shore columns also run the biome's `SHORE_LINE` decorators ([16 - Surfaces](/iris/16-surfaces-decorators-deposits)). Automatically placed surface objects never stand on water, shore, dam or inlet-mouth columns; banks are open to them. Use an explicit placement such as `/iris object paste` to build in the water.
 
@@ -429,7 +429,7 @@ When those pass, the validator compiles the settings exactly as a starting world
 - `cavePools.radius` outside `1..15` or `maxDepth` below `1` while cave pools are enabled;
 - a `decorators` entry, on a tier, on `ponds` or on a policy, with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block name, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order.
 
-A starting world runs the same compile, and also checks the `fluid` of every tier, of `ponds` and of `cavePools`. A fluid profile that holds a solid block stops the engine unless it is a seam profile. It also resolves every plant block in the tier, pond and policy decorator lists, so an unknown block, a fluid, a `SEA_FLOOR` block that cannot stand in water, or a `SEA_SURFACE` or `SHORE_LINE` block that holds water stops the engine; `/iris pack validate` resolves the same blocks. A `hydrologyPolicy.fluid` that `fluids` does not define is caught at start for biomes while cave pools are enabled; set on the dimension or a region, or on a biome with cave pools off, it fails generation when the first chunk that resolves to it is made. A known field with the wrong type fails the pack load even when `enabled` is `false`. See [36c - Water Inspection](/iris/36c-river-inspection#validation).
+A starting world runs the same compile, and also checks the `fluid` of every tier, of `ponds` and of `cavePools`. A fluid profile that holds a solid block stops the engine unless it is a seam profile. It also resolves every plant block in the tier, pond and policy decorator lists, so an unknown block, a fluid, a `SEA_FLOOR` block that cannot stand in water, or a `SEA_SURFACE` or `SHORE_LINE` block that holds water stops the engine; `/iris pack validate` resolves the same blocks. A `hydrologyPolicy.fluid` that `fluids` does not define is caught at start on the dimension, a region or a cave biome while cave pools are enabled; set on any other biome, or with cave pools off, it fails generation when the first chunk that resolves to it is made. A known field with the wrong type fails the pack load even when `enabled` is `false`. See [36c - Water Inspection](/iris/36c-river-inspection#validation).
 
 ## Managed packs
 

@@ -2,7 +2,7 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, climate zones, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -13,7 +13,7 @@ dateCreated: 2026-09-19T00:00:00.000Z
 
 1. **A pond-heavy biome.** `"pondDensity": 2.5` with `"rainfall": 1.6`. More cups are seeded in the biome, along its streams and elsewhere, and its ponds stay full. Natural hollows already keep their ponds at the default `ponds.natural.keep` of `1`. Streams there also grow larger, because the extra rainfall reaches every channel downstream.
 2. **A dry desert.** `"rainfall": 0.9` thins the stream heads, and at the default `ponds.climateDrawdown` of `6` lowers pond surfaces by one block; `"streams": "BLOCK"` and `"ponds": "BLOCK"` stop them starting there at all.
-3. **Lava in a volcanic biome.** Define a `lava` profile in the dimension's `hydrology.fluids`, then set `"fluid": "lava"` on the biome. Its ponds and lakes fill with lava, and every stretch of stream or river that starts in the biome runs as lava to the next confluence, pond or mouth, even beyond the biome; streams that start elsewhere keep their tier's fluid while they cross it. The rest of the dimension keeps water. Give the `lava` profile a `seam` in `hydrology.fluids` to line its edges where it meets water. Add `"climateZones": false` so the biome keeps its own streams and ponds even where a dry climate zone covers it. On a cave biome the same `fluid` setting fills its cave pools with lava.
+3. **Lava in a volcanic biome.** Define a `lava` profile in the dimension's `hydrology.fluids`, then set `"fluid": "lava"` on the biome. Its ponds and lakes fill with lava, and every stretch of stream or river that starts in the biome runs as lava to the next confluence, pond or mouth, even beyond the biome; streams that start elsewhere keep their tier's fluid while they cross it. The rest of the dimension keeps water. Give the `lava` profile a `seam` in `hydrology.fluids` to line its edges where it meets water. Add `"climateZones": false` so the biome keeps its own streams and ponds even where a dry climate zone covers it. On a cave biome the same `fluid` setting fills its cave pools with lava; cave pools under the volcanic surface biome keep `cavePools.fluid`.
 4. **Beaches along the water.** List the shore biomes on the region with `shoreBiomes`, and turn the band on with `shoreBiomeWidth` on the dimension so every region shares one width. The width defaults to `0`, which places no shore biome. A biome that should keep its own ground right up to the water sets `"shoreBiomes": []`.
 5. Run `/iris pack validate` after every policy edit; see [36c - Water Inspection](/iris/36c-river-inspection#validation).
 
@@ -26,7 +26,7 @@ dateCreated: 2026-09-19T00:00:00.000Z
 | `climateZones` | inherit, `true` | Whether the dimension's wet and dry zones (`hydrology.climate`) scale this area's rainfall and pond density; `false` keeps the full values even inside a dry zone |
 | `streams` | inherit, `ALLOW` | Whether streams and rivers may form in this area: `ALLOW` or `BLOCK` |
 | `ponds` | inherit, `ALLOW` | Whether ponds may form in this area: `ALLOW` or `BLOCK` |
-| `fluid` | inherit, none | Name of a fluid profile from `hydrology.fluids` that fills the water in this area: the ponds and lakes whose floor lies here instead of `ponds.fluid`, and every stretch of stream or river whose upstream end lies here instead of its tier's `fluid`. It cannot name a seam profile. Set on a cave biome, it also fills that biome's cave pools instead of `cavePools.fluid`; cave pools read only the cave biome's own value |
+| `fluid` | inherit, none | Name of a fluid profile from `hydrology.fluids` that fills the water in this area: the ponds and lakes whose floor lies here instead of `ponds.fluid`, and every stretch of stream or river whose upstream end lies here instead of its tier's `fluid`. It cannot name a seam profile. Set on a cave biome, a region or the dimension, it also fills the cave pools there instead of `cavePools.fluid`; a surface biome's value never reaches cave pools |
 | `decorators` | inherit, none | Plants for the rivers, streams, ponds and lakes in this area, replacing the `tiers[].decorators` and `ponds.decorators` lists there; an empty list grows no plants |
 | `shoreBiomes` | inherit, none | Biomes placed along the water's edge in this area; an empty list clears the inherited biomes |
 | `shoreBiomeWidth` | inherit, `0` | Width in blocks of the shore biome band along the water, `0..31`; `0` places no shore biome |
@@ -50,7 +50,7 @@ dateCreated: 2026-09-19T00:00:00.000Z
 
 A column's policy is resolved from the biome first, then the region, then the dimension. The first scope that sets a value wins; an unset or `null` value falls through to the next scope. With no value at any scope, rainfall and pond density are `1`, climate zones apply, streams and ponds are allowed, ponds and lakes keep `ponds.fluid`, channels keep their tier's `fluid`, and no shore biome is placed.
 
-Cave pools are the exception: they read `fluid` from the cave biome's own policy only, with no fall-through, so a region or dimension `fluid` leaves them on `cavePools.fluid`.
+Cave pools resolve `fluid` from the cave biome at the pool, then the region, then the dimension, and keep `cavePools.fluid` when no scope sets one. The surface biome above a cave never counts, even near the surface where the cave uses the surface biome.
 
 `shoreBiomes` and `decorators` are lists. An explicitly empty list (`[]`) at a scope clears the inherited shore biomes, or grows no plants, in that area.
 
@@ -72,7 +72,7 @@ When the dimension turns on `hydrology.climate` ([36 - Hydrology](/iris/36-river
 
 ### `fluid`
 
-A fluid replaces `ponds.fluid` for every pond and lake whose floor lies in the area, and the tier's `fluid` for every stretch of stream or river whose upstream end lies in the area. A stretch runs from a source or confluence to the next confluence, pond or mouth, and keeps one fluid for its whole length: a lava stream that starts in a volcanic biome stays lava where it flows on through other biomes, and a water river that crosses the volcanic biome stays water, so two fluids meet only where streams join or flow into a pond or lake. A lava river needs no tier of its own. The fluid cannot be a seam profile; a `seam` on the fluid's profile lines its edges where it meets another fluid, see [`hydrology.fluids[]`](/iris/36-rivers#hydrologyfluids). When the fluid is set on a cave biome itself, it also replaces `cavePools.fluid` for every cave pool whose site lies in that biome. The name must be a profile in the dimension's `hydrology.fluids`. `/iris pack validate` reports an undefined name at every scope. At world start, a biome's undefined fluid stops the engine while cave pools are enabled; an undefined fluid on the dimension or a region, or on a biome with cave pools off, fails generation when the first chunk that resolves to it is made.
+A fluid replaces `ponds.fluid` for every pond and lake whose floor lies in the area, and the tier's `fluid` for every stretch of stream or river whose upstream end lies in the area. A stretch runs from a source or confluence to the next confluence, pond or mouth, and keeps one fluid for its whole length: a lava stream that starts in a volcanic biome stays lava where it flows on through other biomes, and a water river that crosses the volcanic biome stays water, so two fluids meet only where streams join or flow into a pond or lake. A lava river needs no tier of its own. The fluid cannot be a seam profile; a `seam` on the fluid's profile lines its edges where it meets another fluid, see [`hydrology.fluids[]`](/iris/36-rivers#hydrologyfluids). Set on a cave biome, a region or the dimension, it also replaces `cavePools.fluid` for every cave pool whose site lies there, in the order given under [Inheritance](#inheritance); set on a surface biome, it never reaches the cave pools below. The name must be a profile in the dimension's `hydrology.fluids`. `/iris pack validate` reports an undefined name at every scope. At world start, while cave pools are enabled, an undefined fluid on the dimension, a region or a cave biome stops the engine; on any other biome, or with cave pools off, it fails generation when the first chunk that resolves to it is made.
 
 ### `decorators`
 
