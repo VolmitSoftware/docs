@@ -2,7 +2,7 @@
 title: "ByteCompanions: Diagnostics"
 description: "The status entries, debug dump, report upload, bStats, update notices, and common failures"
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "bytecompanions, diagnostics"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -58,7 +58,8 @@ Credentials, JDBC URLs, player names, and configuration contents are not include
 | Console line | Cause and fix |
 |---|---|
 | `ByteCompanions requires Minecraft 26.1-26.3 (including patch releases) on Java 25 or newer; found Minecraft <version> on Java <major>.` | Unsupported server or Java version. Run a 26.1 through 26.3 server on Java 25 or newer. |
-| A library download error on first start, naming the library and the network error | The server could not reach the download repository. Check connectivity or a proxy, then restart; the plugin resumes from the cache in `.libs/`. |
+| A library download error on first start, naming the library and the network error | The server could not reach Maven Central. Check connectivity or a proxy, then restart; the plugin resumes from the cache in `.libs/`. |
+| `Downloaded artifact failed verification` or `No pinned SHA-256 for library`, naming the library | The downloaded file does not match the checksum shipped in the plugin jar, so it was deleted and not loaded. A proxy or mirror that rewrites downloads causes this; allow direct HTTPS access to `repo.maven.apache.org` and restart. |
 | `storage.mysql.username must not be blank when backend is mysql` | `storage.backend` is `mysql` without credentials. Fill in `storage.mysql.host`, `database`, `username`, and `password`. |
 | `Rejected ByteCompanions file changes; the last known good settings remain active.` | A saved file failed validation. The lines above it name the file and the key; fix the file and save again. |
 | `WorldGuard companion restrictions failed for <world>; visuals and bonuses are suspended` | WorldGuard region data could not be read. Companions and bonuses stay off in that world until the next successful query. |

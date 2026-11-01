@@ -2,13 +2,13 @@
 title: "GamemodeSwitcher: Installation and configuration"
 description: "Install the plugin and configure gestures, switch feedback, languages, and diagnostics"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gamemodeswitcher, configuration, languages"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
 ---
 
-GamemodeSwitcher supports Minecraft 26.1 through 26.3, including patch releases, on Java 25. Other Minecraft and Java versions are rejected at startup before library downloads. It targets Spigot and compatible servers, including Paper, Purpur, Leaf, Folia, and Canvas.
+GamemodeSwitcher supports Minecraft 26.1 through 26.3, including patch releases, on Java 25 or newer. Other Minecraft versions and older Java versions are rejected at startup before library downloads. It targets Spigot and compatible servers, including Paper, Purpur, Leaf, Folia, and Canvas.
 
 ## Installation
 
@@ -63,7 +63,7 @@ An invalid `config.toml` during a hot reload keeps the previous settings active.
 | `gestures.double-tap-millis` | `600` | Maximum interval between swap taps, 100–3000 ms |
 | `gestures.sneak-tap-millis` | `600` | Maximum interval between spectator sneak presses, 100–3000 ms |
 | `gestures.cooldown-millis` | `500` | Minimum interval between successful changes, 0–60000 ms |
-| `gestures.require-empty-hands` | `false` | Requires both hands empty for gestures; commands and selector remain usable |
+| `gestures.require-empty-hands` | `false` | Requires both hands empty for gestures, except the Spectator exit; a blocked double tap says why, and commands and selector remain usable |
 | `gestures.spectator-exit` | `CREATIVE` | Destination after three spectator sneak presses unless a tracked session restores its previous mode |
 | `gestures.normal.*` | See gesture table | Destination per starting gamemode for double swap |
 | `gestures.sneaking.*` | See gesture table | Destination per starting gamemode for sneaking double swap |

@@ -67,7 +67,7 @@ Files live at `plugins/Rift/languages/<locale>.toml`. Their headers describe for
 
 Changing `bstatsEnabled` applies immediately and still honors the global `plugins/bStats/config.yml` opt-out. Rift uses the official bStats runtime without custom charts.
 
-Debug uploads require the global setting and the request's upload flag. Use `/rift debug dump upload=false` to save locally. Reports can contain server paths, world names, and plugin information; review them before sharing.
+Debug uploads require the global setting and the request's upload flag. Use `/rift debug dump upload=false` to save locally. Reports list world names, world folders relative to the world container, and plugin information. They leave out world seeds and absolute paths. Review them before sharing.
 
 Update notifications check stable releases from `VolmitSoftware/Rift`. `/volmit plugins updates` shows the shared report. Checks cache results, respect GitHub rate limits, and never install updates. Disabling `updateNotifications` stops Rift's checks and notices.
 

@@ -109,7 +109,7 @@ Set `updateNotifications = false` under `[general]`, or use the General menu tog
 | `portal.maximumHeight` | `64` | Largest vertical interior span; range 1 to 512 blocks |
 | `portal.frameMaterials` | `OBSIDIAN`, `CRYING_OBSIDIAN` | Complete boundary materials accepted for new Nether portals |
 | `portal.interiorMaterials` | air variants, `FIRE`, `SOUL_FIRE` | Replaceable Nether creation and repair cells |
-| `portal.ignitionCauses` | `FLINT_AND_STEEL`, `FIREBALL`, `PLACED_FIRE` | Accepted Bukkit ignition causes. `PLACED_FIRE` covers direct fire placement and `DISPENSER` covers dispensed fire charges |
+| `portal.ignitionCauses` | `FLINT_AND_STEEL`, `FIREBALL`, `PLACED_FIRE` | Accepted Bukkit ignition causes. `PLACED_FIRE` covers direct fire placement and `DISPENSER` covers dispensed fire charges and flint and steel |
 | `portal.allowedWorlds` | empty | Optional case-insensitive allow-list |
 | `portal.deniedWorlds` | empty | Case-insensitive deny-list; takes priority |
 | `portal.deduplicationMillis` | `1500` | Coalesces duplicate events at one block; range 0 to 60,000 ms |

@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Gestures and operations"
 description: "Default key gestures, event handling, and troubleshooting"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gamemodeswitcher, gestures, operations, folia"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -22,7 +22,7 @@ In Spectator, press sneak three times to reach `gestures.spectator-exit` (Creati
 
 A double tap swaps your hands twice, so your hands end up as they started. A single or expired tap is just an ordinary swap.
 
-`/gsw toggle` persists a personal gesture opt-out. It does not disable direct commands or the selector. The server's global enable setting and disabled-world list govern every plugin mode change. The empty-hands setting affects gestures only.
+`/gsw toggle` persists a personal gesture opt-out. It does not disable direct commands or the selector. The server's global enable setting and disabled-world list govern every plugin mode change. The empty-hands setting affects gestures only. A double tap with an item in either hand is blocked with a message. The three-sneak Spectator exit ignores it, because players cannot empty their hands in Spectator.
 
 ## Changing gesture keys
 
@@ -42,7 +42,7 @@ Sessions survive reconnects and restarts in `data/spectator-sessions.toml`. Deat
 
 A blocked world, cancelled teleport, or failed safety check keeps the player in Spectator with the session available to retry. If the entry world is no longer loaded, for example after it was deleted or regenerated, the player changes mode where they are and the session ends.
 
-`data/player-preferences.toml` and `data/spectator-sessions.toml` are written by the plugin. If one cannot be read at startup, it is renamed with a `.broken-<timestamp>` suffix, the console logs the error, and the plugin starts with no saved entries in that file. Return attempts recheck permissions before changing mode. A failure after teleporting may leave the player at the origin in Spectator.
+`data/player-preferences.toml` and `data/spectator-sessions.toml` are written by the plugin. If one cannot be read at startup, it is renamed with a `.broken-<timestamp>` suffix, the console logs the error, and the plugin starts with no saved entries in that file. Return attempts recheck permissions before changing mode. If the player moves while the safety check runs, they are put back on the checked spot before the mode changes. A failed check after teleporting leaves the player at the origin in Spectator.
 
 ## Other plugins
 

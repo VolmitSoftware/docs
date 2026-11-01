@@ -2,7 +2,7 @@
 title: "ByteCompanions: Commands and permissions"
 description: "The /bytecompanions command tree, every permission node, and the shared /volmit plugins line"
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "bytecompanions, commands, permissions"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -75,12 +75,12 @@ Help is a Director page sized to fit 20 chat lines, sorted by name and filtered 
 | `bytecompanions.command.particles.unequip` | Everyone | Removing selected particle effects |
 | `bytecompanions.command.upgrades` | Everyone | Browsing and buying upgrades; also needs the menu node |
 | `bytecompanions.command.boosts` | Everyone | Browsing boosters; also needs the menu node |
-| `bytecompanions.command.booster.start` | Everyone | Starting an owned booster activation |
-| `bytecompanions.command.booster.cancel` | Everyone | Cancelling an owned booster activation |
 | `bytecompanions.command.edit` | Operators | Companion Studio and private previews |
 | `bytecompanions.command.setup` | Operators | Installing missing starters and applying a profile |
 | `bytecompanions.command.progression.give` | Operators | Granting companion XP |
 | `bytecompanions.command.booster.give` | Operators | Granting booster credits |
+| `bytecompanions.command.booster.start` | Operators | Starting or queueing a server booster without a purchase |
+| `bytecompanions.command.booster.cancel` | Operators | Cancelling any player's or the server's booster activation |
 | `bytecompanions.command.transactions.list` | Operators | Listing unresolved purchases |
 | `bytecompanions.command.transactions.resolve` | Operators | Settling unresolved purchases |
 | `bytecompanions.companion.<id>` | Unset | Equipping, upgrading, and counting one companion as owned |

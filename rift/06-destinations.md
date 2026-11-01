@@ -25,7 +25,7 @@ Rift teleports players to the spawn of a loaded world. Teleport commands do not 
 /rift send ExamplePlayer resource
 ```
 
-Use the world's Rift command name. A managed custom spawn applies when enabled; otherwise the current server spawn is used. World access permissions, player limits, departure/entry restrictions, and cancellations from other plugins can prevent travel. Travel restrictions apply only between different worlds; they do not block teleporting within the same world.
+Use the world's Rift command name. A managed custom spawn applies when enabled; otherwise the current server spawn is used. If that spot is inside blocks, in the air, or over lava, Rift moves the player up or down to the nearest solid floor with two clear blocks above it. World access permissions, player limits, departure/entry restrictions, and cancellations from other plugins can prevent travel. Travel restrictions apply only between different worlds; they do not block teleporting within the same world.
 
 ## Related settings
 
