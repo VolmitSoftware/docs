@@ -2,7 +2,7 @@
 title: "Entities & Spawners"
 description: "Iris documentation: Entities & Spawners"
 published: true
-date: 2026-10-27T03:40:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -179,6 +179,7 @@ Biomes and regions accept `effects[]`. Each entry runs at most once per `interva
 | `potionStrength` | `-1` (-1..1024) | Amplifier. `-1` disables potion application entirely, which is the default |
 | `potionTicksMin` / `potionTicksMax` | `75` / `155` | Random potion duration in ticks |
 | `sound` | null | Sound registry key |
+| `soundCategory` | `master` | Client volume slider that controls the sound: `master`, `music`, `record`, `weather`, `block`, `hostile`, `neutral`, `player`, `ambient`, `voice` or `ui`, case-insensitive. `ui` does not exist on Minecraft 1.21.1. An unknown category logs a warning and the effect plays no sound |
 | `soundDistance` | `12` (0..512) | How far from the player the sound origin can be offset. Larger values make the source feel distant and directionless |
 | `minPitch` / `maxPitch` | `0.5` / `1.5` (0.01..1.99) | Random pitch range |
 | `volume` | `1.5` (0.001..512) | Sound volume |
@@ -207,6 +208,7 @@ Biomes and regions accept `effects[]`. Each entry runs at most once per `interva
   "particleEffect": "minecraft:ash",
   "particleCount": 8,
   "sound": "minecraft:ambient.cave",
+  "soundCategory": "ambient",
   "interval": 1000,
   "chance": 8,
   "commandRegistry": {
