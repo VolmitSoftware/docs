@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -234,6 +234,8 @@ Temporary holograms also accept particle layers through the API, and rendered-on
 ## Import
 
 `/gloss import legacy mode=preview` lists conversions of old hologram files without writing. `/gloss import legacy mode=apply` validates the complete import and saves the original files under `editor-sync-backups/<transaction>/backup/holograms/` before replacing them. Current envelopes remain unchanged. Resolve reported conversion errors or conflicts before applying.
+
+Holograms from GHolo, DecentHolograms, HolographicDisplays, FancyHolograms and CMI import as panels with `/gloss import preview <source>`. See [Data Files & Hot Reload](/gloss/03-data-files) for what each source converts.
 
 ## World markers
 
