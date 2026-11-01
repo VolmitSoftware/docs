@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -342,9 +342,9 @@ Hydrology works in 512-block planning windows on the natural terrain, before cav
 
 ## What appears in the world
 
-**Channels.** The water surface of a channel sits approximately `inset` blocks below the ground it flows through. Its half-width grows with the square root of the catchment between the tier's `halfWidth` bounds, and `depthRatio` sets its maximum carved depth relative to the half-width, at least one block. Bed depth and cross-section vary gradually along the channel. Surface levels descend in steps of at least two blocks, with water continuing through bends and outlets. Channel, pond and lake surfaces can sit one block below their planned elevation to align these steps with sea level; mouths meet the sea at its exact level.
+**Channels.** The water surface of a channel sits approximately `inset` blocks below the ground it flows through. Its half-width grows with the square root of the catchment between the tier's `halfWidth` bounds, and `depthRatio` sets its maximum carved depth relative to the half-width, at least one block. Bed depth and cross-section vary gradually along the channel. Surface levels descend in steps of at least two blocks, with water continuing through bends and outlets. Channel, pond and lake surfaces can sit one block below their planned elevation to align these steps with sea level; mouths meet the sea at its exact level. Where channels join, the joining channel meets the receiving water at its surface, and the receiving channel's bed continues under the junction.
 
-**Cascades and waterfalls.** A drop of two or more blocks that is smaller than the tier's `waterfallMinimumDrop` is a cascade of steps when `cascades` is true, and is spread into a gentler slope where the terrain allows when it is false. A drop of `waterfallMinimumDrop` or more is a waterfall. Beds rise gradually toward shallow crests around drops and return to their deeper profiles beyond the transition. Water stays at least one block deep over each crest, and falling water fills the face from the lower surface up to the upper one. These shallow transitions also form where ponds meet lower channels. Falling water is written through the mantle, so it needs `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`. Still surface water does not depend on the mantle.
+**Cascades and waterfalls.** A drop of two or more blocks that is smaller than the tier's `waterfallMinimumDrop` is a cascade of steps when `cascades` is true, and is spread into a gentler slope where the terrain allows when it is false. A drop of `waterfallMinimumDrop` or more is a waterfall. Beds rise gradually toward shallow crests around drops and return to their deeper profiles beyond the transition. Water stays at least one block deep over each crest, and falling water fills the face from the lower surface up to the upper one. These shallow transitions also form where ponds meet lower channels. Where a joining channel arrives above the receiving water, a small difference is graded over its approach, and a larger one falls into the receiving channel at its bank. Falling water is written through the mantle, so it needs `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`. Still surface water does not depend on the mantle.
 
 **Mouths and deltas.** A channel that reaches the sea ends in a mouth. A tier with `deltas: true` spreads its channel into a delta there.
 
