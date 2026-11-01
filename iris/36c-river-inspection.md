@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -105,4 +105,4 @@ When those pass, it compiles the settings exactly as a starting world does. The 
 - sea inlet bounds (`halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, a floor and seal below the world bottom, a reach above 512 blocks) and cave pool bounds (`radius` outside `1..15`, `maxDepth` below `1`);
 - a water `decorators` entry with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order; the validator also resolves every plant block and rejects fluids, floor plants that cannot stand in water, and surface or shore plants that hold water.
 
-Settings that pass the validator also pass when the world starts. Settings that fail the compile, or name an undefined `fluid` on a tier, on `ponds` or on `cavePools`, make the engine refuse to start with the same message. An undefined `hydrologyPolicy.fluid` on a biome also stops the engine at start while cave pools are enabled; on the dimension or a region, or on a biome with cave pools off, it fails generation when the first chunk that resolves to it is made. **Fix validation errors before creating a world, opening Studio, or packaging the pack.**
+Settings that pass the validator also pass when the world starts. Settings that fail the compile, or name an undefined `fluid` on a tier, on `ponds` or on `cavePools`, make the engine refuse to start with the same message. An undefined `hydrologyPolicy.fluid` on the dimension, a region or any biome the dimension reaches also stops the engine at start while cave pools are enabled; with cave pools off, it fails generation when the first chunk that resolves to it is made. **Fix validation errors before creating a world, opening Studio, or packaging the pack.**
