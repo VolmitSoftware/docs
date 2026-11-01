@@ -2,7 +2,7 @@
 title: "Shaped Portals: Getting started"
 description: "Build a portal, look up commands, and check permissions"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "shapedportals, portals, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -66,6 +66,7 @@ Use `/shapedportals`, `/shapedportal`, or `/sp`.
 | `/sp language self <locale\|reset>` | Select or reset your personal ShapedPortals language | Player |
 | `/sp language server <locale>` | Change the ShapedPortals server default | Player or console |
 | `/sp language server edit [locale]` | Open the per-language message editor | Player |
+| `/sp language update` | Check the ShapedPortals repository and merge changed translations into installed files | Player or console |
 | `/volmit plugins` | Open shared Volmit language and diagnostic tools | Player or console |
 | `/volmit plugins languages [lang]` | Open the shared picker or change every enabled provider's server default | Player or console |
 | `/volmit plugins debug [plugin] [upload=true\|false]` | List shared debug providers or request one report | Player or console |
@@ -106,10 +107,10 @@ Use an ID from the list. Teleportation looks for clear standing space over a sol
 |---|---|---|
 | `shapedportals.create` | Everyone | Ignite shaped Nether portals or complete shaped End portals when creation permission checks are enabled |
 | `shapedportals.command` | Everyone | Use help and status |
-| `shapedportals.config` | Operators | Use the configuration and language-message editors and change the server language |
+| `shapedportals.config` | Operators | Use the configuration and language-message editors, change the server language, and run `/sp language update` |
 | `shapedportals.language.self` | Everyone | Choose or reset your ShapedPortals language; also requires `volmit.language.self` |
 | `volmit.language.self` | Everyone | Shared requirement for personal language selection |
-| `volmit.language.admin` | Operators | Change language defaults across enabled plugins |
+| `volmit.language.admin` | Operators | Change language defaults across enabled plugins and run `/sp language update` |
 | `shapedportals.debug` | Operators | Generate diagnostic reports, including uploads when enabled |
 | `shapedportals.update` | Operators | Receive the ShapedPortals update notice on join |
 | `shapedportals.portals` | Operators | List portals, including through bare `/sp teleport` |

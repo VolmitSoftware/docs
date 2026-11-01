@@ -1,14 +1,14 @@
 ---
 title: "Shared localization"
-description: "Language downloads, server defaults, player preferences, and the in-game picker"
+description: "Language downloads, upstream sync, server defaults, player preferences, and the in-game picker"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "volmlib, api, localization"
 editor: markdown
 dateCreated: 2026-09-02
 ---
 
-VolmLib provides language downloads and player preferences for Volmit plugins. English message catalogs are compiled into each plugin. Plugins using remote catalogs download translations from their source repository when requested. Each plugin defines its message schema and validates translations before activation.
+VolmLib provides language downloads and player preferences for Volmit plugins. English message catalogs are compiled into each plugin. Plugins using remote catalogs download translations from their source repository when requested; plugins on the branch-tracking source also merge later repository changes into installed files. Each plugin defines its message schema and validates translations before activation.
 
 On Paper and Spigot, client command suggestions reflect a shared `/volmit` owner change on the next server tick.
 
@@ -25,8 +25,9 @@ Each plugin's `/[plugin] language` command opens its language controls. The `sel
 | `/sp language self en_US` | Select English for the current player in ShapedPortals |
 | `/sp language server edit` | Open ShapedPortals' locale list in the inventory editor |
 | `/iris language server edit fr_FR` | Edit Iris's French messages without changing language selections |
+| `/sp language update` | Check the ShapedPortals repository and merge changed translations into installed files |
 
-Every Bukkit provider accepts `/[plugin] language self <locale|reset>` and `/[plugin] language server <locale>`.
+Every Bukkit provider accepts `/[plugin] language self <locale|reset>` and `/[plugin] language server <locale>`. A provider registered with an update action also accepts `/[plugin] language update`, which runs a repository check on a worker and reports the result in chat; ShapedPortals is the first plugin with this subcommand. Running it requires the same server-language administration permission as `server <locale>`, or `volmit.language.admin`.
 
 Personal selection requires both `volmit.language.self` and the selected plugin's permission below. All personal language permissions default to `true`. Denying either permission blocks the personal picker, direct locale selection, and `self reset`.
 
@@ -55,6 +56,8 @@ Sending a player command silently cancels pending input, including a reply queue
 Shared English editor chrome uses classic ampersand formatting. Plugin catalogs may override it with any formatting accepted by their renderer. Translation completeness checks should require every shared string containing natural-language text to be translated while allowing formatting-and-placeholder-only layouts to remain language-neutral.
 
 Inventory titles resolve `language.editor.title`, whose shared default is `{plugin} › {section}`, and strip formatting so Minecraft applies its native container-header text color. Plugin catalogs can override that template to use an editable name. The plugin's Director theme continues to color chat and item text.
+
+Update feedback resolves `language.usage.update`, `language.update.checking`, `language.update.unchanged`, `language.update.applied` with `{locale}`, `{added}`, `{updated}`, and `{kept}`, `language.update.locale-failed` with `{locale}` and `{reason}`, and `language.update.failed` with `{reason}`. Plugin catalogs translate these shared keys like the rest of the picker and editor text.
 
 When a plugin overrides a shared message definition, the switcher and editor use serialized MiniMessage from its configured `DirectorTextResolver` if direct snapshot resolution cannot apply that definition. This preserves custom placeholders and formatting, including editable prefixes, with the viewing player's language context active. Missing definitions still use shared English defaults. Shared feedback parses template formatting before substituting untrusted values, strips section color codes from those values, and applies its theme without parsing the rendered text again.
 
@@ -88,11 +91,44 @@ Rendering uses immutable snapshots. An uncached personal locale loads asynchrono
 
 ## Download and packaging contract
 
+Two language sources exist. The branch-tracking source, made of `LanguageSourceManifest`, `LanguageDirectory`, `GitHubLanguageSource`, `LanguageUpstreamStore`, `LanguageCatalogMerge`, and `LanguageUpstreamSync`, follows a repository branch and merges its changes into installed files; ShapedPortals uses it. `RemoteLanguageCatalog` installs a missing file once from a pinned revision and remains in use by every plugin that has not migrated.
+
+### Branch-tracking source
+
+`LanguageSourceManifest` reads a properties manifest containing `repository` as `owner/name`, `branch`, `path` with the default `src/main/resources/languages`, `extension` with the default `.toml`, and comma-separated `locales`. It rejects `revision`, `mode`, and `sha256.<locale>` keys. `LanguageDirectory` owns the plugin's `languages/` directory: it lists top-level `.toml` files whose stem matches `[A-Za-z0-9_-]{2,32}`, skips symbolic links and files over 2 MiB, and resolves the sidecar directory.
+
+The `languages/.upstream/` sidecar holds the pristine upstream copy of each merged locale, the generated English reference last written, and `upstream.properties` with `repository`, `branch`, `revision`, `etag`, `checked`, and one `sha256.<locale>` entry per stored file. `LanguageUpstreamStore` reads and writes it atomically, and discards stored state whose repository or branch differs from the manifest. Hot-reload scans skip the dot directory. Operators do not edit it.
+
+`LanguageUpstreamSync` checks the repository once at plugin startup and whenever an operator runs `/[plugin] language update`. There is no periodic timer, and startup never blocks on the check. Each check sends one `GET /repos/{owner}/{repo}/commits?sha={branch}&path={path}&per_page=1` request to the GitHub API with the stored etag in `If-None-Match`. A `304` response means unchanged and does not count against the unauthenticated rate limit. The first commit's `sha` becomes the stored revision, and every file is then fetched from `raw.githubusercontent.com` at that revision, so one check yields one consistent snapshot. `403` and `429` responses honour `Retry-After`; other failures log once and set a 30 second cooldown before the next attempt. Requests use a 3 second connect timeout, a 10 second API timeout, a 5 second file timeout, a 2 MiB cap, strict UTF-8 decoding, and no redirects.
+
+A check merges every installed repository locale plus English, whose upstream is the generated reference, so English merges work offline. Missing repository locales still install on demand when selected, from the stored revision. Custom files are never touched by a check. `checkAsync(forced)` returns a future with the per-locale report, `install(locale)` blocks and belongs on the sync worker, `status()` exposes the revision, last check, and last error for diagnostics, and `close()` interrupts the worker.
+
+### Merge rules
+
+`LanguageCatalogMerge` compares the local file, the previous upstream copy from the sidecar, and the next upstream copy key by key against the build's `MessageCatalog`:
+
+| Case | Result |
+|---|---|
+| Key in next upstream, absent locally | add |
+| Local equals previous upstream | take next upstream |
+| Local differs from previous upstream | keep local (manual edit) |
+| Key in previous upstream but gone from next, local equals previous | remove |
+| Local key not in the catalog (`[meta]` table, operator extras) | keep |
+| Next upstream entry invalid for this build (bad placeholders, wrong shape) | ignore that entry |
+
+The merged file takes the next upstream's leading comment block and is rendered through `TomlLanguageWriter`. Nothing is written when the merged content equals the local content. The result reports added, updated, kept, and removed counts per locale. Writes go through `LanguageFileEditor.update` inside the service's commit boundary, so a concurrent external edit is detected, and the plugin's self-write listener keeps hot reload from treating the merge as an operator edit.
+
+### Custom language files
+
+Any `languages/<name>.toml` whose stem matches the locale pattern is listed in every picker and the editor. An optional `[meta]` table carries `name`, the display name shown in menus, up to 64 characters, and `base`, another locale layered between the custom file and English. A `base` equal to the file's own locale is ignored; base chains resolve at most four levels deep with a cycle guard. `LanguageMeta.parse` reads the table, and `TomlLanguageEditor.upsert` preserves it on save.
+
+### Pinned source
+
 `RemoteLanguageCatalog` reads a properties manifest containing `revision`, comma-separated `locales`, and optional `sha256.<locale>` checksums. Its `Options` supplies the product name, repository URL, source directory, extension, manifest resource, and resource class loader. The plugin supplies a destination file and a parser-backed validator for each installation.
 
 `mode=remote` downloads missing catalogs from the configured repository; it is also the default when mode is omitted. `mode=bundled` reads `languages/<locale><extension>` from the supplied class loader and never falls back to HTTP. Bundled files use the same size, UTF-8, checksum, validation, and atomic-publication checks. Bundle translations when no public repository is available; remote releases can exclude them while retaining the manifest.
 
-`readOrInstall` installs a missing editable language file and validates an existing file without replacing it. This method blocks and belongs on a worker, never a gameplay thread. `requestInstallIfMissing` schedules asynchronous installation only when the destination is missing. Downloads have timeouts, size limits, strict UTF-8 decoding, validation before publication, atomic file publication, and a retry cooldown. Installed files work offline. Invalid downloaded content is rejected before publication; an interactive preparation failure selects validated built-in English for the requested scope.
+`readOrInstall` installs a missing editable language file and validates an existing file without replacing it. This method blocks and belongs on a worker, never a gameplay thread. `requestInstallIfMissing` schedules asynchronous installation only when the destination is missing. Downloads have timeouts, size limits, strict UTF-8 decoding, validation before publication, atomic file publication, and a retry cooldown. Installed files work offline and are never updated by this source. Invalid downloaded content is rejected before publication; an interactive preparation failure selects validated built-in English for the requested scope.
 
 Translation completeness is separate from file validity. Adapt, BileTools, Gloss, HiddenOre, Iris, React, Rift, ShapedPortals, and Wormholes accept partial catalogs and retain valid translations when another entry has an invalid type, placeholder set, or message format. Missing or rejected entries resolve through English. Transport failures, invalid UTF-8, and unreadable document syntax remain file-level failures.
 
@@ -114,7 +150,7 @@ Use `snapshot(UUID)` for a known recipient, or `snapshot()` inside `LanguageAudi
 
 `commitUpdate(CommitUpdate<T>)` serializes a plugin-owned configuration or catalog publication with default-language selection and service closure. Its callback can return a value or throw `IOException`. Acquire this boundary before plugin-owned language locks, and keep file preparation on a worker when the callback performs I/O. Do not wait for queued selection futures inside the callback: those selections need the same commit boundary to finish.
 
-On Bukkit platforms, `BukkitLanguageSwitcher.register(plugin, service, options)` registers the provider, player-join listener, and inventory editor. Its typed `Options` contains the plugin's root command without a slash, administration permission, existing `DirectorMiniMenu.Theme`, current `DirectorTextResolver`, and `PluginLanguageEditor.Options`. Plugins may also supply `LanguageEditFeedback` to replace the default framed save result with one plugin-owned `ComponentText`; the callback receives a typed `LanguageEditChange` containing locale, key, previous value, and new value. The switcher derives the personal permission from the lowercase plugin name followed by `.language.self` and registers it with default `true` when the plugin descriptor does not already define it.
+On Bukkit platforms, `BukkitLanguageSwitcher.register(plugin, service, options)` registers the provider, player-join listener, and inventory editor. Its typed `Options` contains the plugin's root command without a slash, administration permission, existing `DirectorMiniMenu.Theme`, current `DirectorTextResolver`, and `PluginLanguageEditor.Options`. Plugins may also supply `LanguageEditFeedback` to replace the default framed save result with one plugin-owned `ComponentText`; the callback receives a typed `LanguageEditChange` containing locale, key, previous value, and new value. `Options` also accepts a `LanguageUpdateAction` as `updateAction` and a `LocaleDisplayNames` resolver as `displayNames`; the shorter constructors pass `null` for both. With an update action, `update` appears in tab completion, `language update` runs the action off the main thread after the server-scope permission check, and the switcher reports through the `language.update.*` keys. With a display-name resolver, the picker and editor show its names instead of the canonical suite locale names. The switcher derives the personal permission from the lowercase plugin name followed by `.language.self` and registers it with default `true` when the plugin descriptor does not already define it.
 
 `PluginLanguageEditor.Options` supplies a preparation-only `SnapshotLoader` and a `MessageWriter`. The writer receives an `Edit` containing locale, key, expected value, and replacement value; it validates and atomically persists the native file, installs a matching active server snapshot, and returns the saved snapshot. The shared editor serializes its asynchronous work, rejects stale values, and refreshes personal caches after saves. `LanguageFileEditor.update` provides strict UTF-8, size bounds, regular-path checks, external-write detection, and atomic file publication around a typed preparation callback. The switcher closes its editor during shutdown.
 
@@ -130,4 +166,4 @@ While language providers are registered, the shared switcher automatically maint
 
 The plugin owns its local language command registration. `open(sender)` opens its picker; `command(sender, arguments)` and `complete(sender, arguments)` handle the arguments after `language`. Route this subcommand before a root administration check so players can reach their personal preferences. Providers exchange only JDK types through Bukkit's services registry, so separately relocated VolmLib copies can coordinate without sharing plugin classes. Close both the switcher and service during shutdown.
 
-Platform-neutral consumers such as Iris modded adapters can use `PluginLanguageService`, `LanguageAudience`, and `RemoteLanguageCatalog` without loading the Bukkit switcher.
+Platform-neutral consumers such as Iris modded adapters can use `PluginLanguageService`, `LanguageAudience`, `RemoteLanguageCatalog`, and `LanguageUpstreamSync` without loading the Bukkit switcher.

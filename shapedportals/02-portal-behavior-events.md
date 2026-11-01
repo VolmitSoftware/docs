@@ -2,7 +2,7 @@
 title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "shapedportals, portals, events, persistence"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -70,7 +70,7 @@ Bukkit has no `PortalCreateEvent` reason for End-frame activation, so none is em
 
 Recognized failed attempts use a complete `portal.failure.*` message in the player's language. The 15 reasons cover shape limits, ambiguous axes, blocked or open frames, Folia ownership, Wormholes rejection, protection denial, changed frames, overlaps, and failed block changes. `general.failureFeedback` enables these notices; `presentation.portalNotices` selects their channels. Unrelated fires and incomplete End frames remain silent.
 
-Edit these messages under `[portal.failure]` in `languages/<locale>.toml` or in the Portal language-editor group. The optional `{prefix}` token is their only placeholder. Missing entries use built-in English, and installed locale files retain local edits when the published download revision changes.
+Edit these messages under `[portal.failure]` in `languages/<locale>.toml` or in the Portal language-editor group. The optional `{prefix}` token is their only placeholder. Missing entries use built-in English, and a translation update from the repository keeps every entry you edited locally while bringing in new or changed ones.
 
 ## Troubleshooting
 

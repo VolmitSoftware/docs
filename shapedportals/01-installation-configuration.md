@@ -2,7 +2,7 @@
 title: "Shaped Portals: Installation and configuration"
 description: "Install the plugin, use the in-game editor, find every setting, and uninstall"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "shapedportals, installation, configuration, hot-reload"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -47,6 +47,7 @@ All paths below are inside `plugins/ShapedPortals/`.
 | `languages/language-preferences.properties` | Persistent per-player language choices, created after the first selection |
 | `languages/en_US.toml` | Editable English messages, created on first start |
 | `languages/<locale>.toml` | Installed translations and custom languages |
+| `languages/.upstream/` | Pristine repository copies and check state the plugin uses to merge translation updates; managed by the plugin, not for editing |
 | `portals.json` | Managed portal records, created after the first saved portal |
 | `debug/` | Locally saved diagnostic reports |
 
@@ -70,7 +71,7 @@ Changes are validated and saved to the same files used by the server. Valid chan
 
 ## Live configuration behavior
 
-By default, changes to `config.toml` and installed `languages/*.toml` files load automatically. Personal language files refresh independently of the server default.
+By default, changes to `config.toml` and installed `languages/*.toml` files load automatically. Personal language files refresh independently of the server default. The plugin's own translation updates and the `languages/.upstream/` directory are not treated as file edits.
 
 - Invalid edits keep the last working settings and log the error.
 - Changes from `/sp config` apply immediately.
@@ -208,7 +209,19 @@ Reports contain server, plugin, configuration, portal, performance, and system d
 
 ## Language files
 
-`general.language` selects the server default. Players can keep a personal language. English is built in; other repository locales install on demand from the revision in the language-source manifest. Installed files remain editable and are never automatically replaced. Missing or invalid entries use English.
+`general.language` selects the server default. Players can keep a personal language. English is built in; the 17 other repository locales install on demand from the `main` branch of the ShapedPortals repository. Missing or invalid entries use English.
+
+Installed translations merge repository changes at startup and whenever an operator runs `/sp language update`. New and changed messages arrive, keys you edited by hand stay as you wrote them, and retired keys you never touched are removed. The pristine copies used for that comparison live in `languages/.upstream/`; leave that directory alone. A check that fails, including one blocked by the GitHub rate limit, leaves the installed files and the selected language as they were, and the console logs one line per updated locale with its counts.
+
+Any other `languages/<name>.toml` is a custom language. It appears in the pickers, the message editor, and the Languages tile of `/sp config`, and updates never change it. An optional `[meta]` table sets the display name and a locale to use before English for keys the file leaves out:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+```
+
+Without `[meta]`, the file name is shown and missing keys use English directly.
 
 Edit `runtime.prefix` to change the displayed plugin name and formatting, or remove `{prefix}` from an individual message to hide its label. See [Languages](/languages) for selection, editing, and reload behavior.
 
