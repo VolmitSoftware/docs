@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T02:23:15.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -81,11 +81,11 @@ A `dryRainfall` above `0`, such as `0.2`, lets dry zones keep a few small stream
 
 ### `hydrology.tiers[]`
 
-Each tier is one size class of flowing water. The tiers are ranked by `minCatchment`, and every tier needs its own `minCatchment`. The lowest tier is what `/iris find river stream`, the Studio map and history call a stream, the highest tier is the major river, and every tier between them is a river.
+Each tier is one size class of flowing water. The tiers are ranked by `minCatchment`, and every tier needs its own `minCatchment`. A tier's `name` sets what `/iris find river`, the Studio map and history call its channels: `stream`, `river`, or `major` (also `major_river`) for a major river. A tier with any other name takes the type of its rank: the lowest tier is a stream, the highest a major river, and every tier between them a river.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `name` | `"stream"` | Label for this tier in configuration error messages; locate, maps and history rank tiers by `minCatchment` and do not use it |
+| `name` | `"stream"` | Channel type of this tier for locate, maps and history: `stream`, `river` or `major` (also `major_river`); any other name takes the type of its rank by `minCatchment`. Configuration error messages also use the name |
 | `minCatchment` | `1500` | Upstream catchment in square blocks a channel needs to belong to this tier, `0..1073741824` |
 | `halfWidth` | `[0.5, 2]` | Smallest and largest half-width of the water surface in blocks, written as `[min, max]`; the smallest is above `0` and the largest is at most `64` |
 | `widthFactor` | `1` | How fast the half-width grows from its smallest value, per unit of the square root of catchment divided by 2500, `0..16` |
