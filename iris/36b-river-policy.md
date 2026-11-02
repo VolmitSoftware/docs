@@ -2,7 +2,7 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, climate zones and their wetness bounds, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-11-02T06:31:32.000Z
+date: 2026-11-02T06:56:43.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -65,7 +65,7 @@ Rainfall weights the flow that drains off every column of the area, so the catch
 
 ### `pondDensity`
 
-Pond density multiplies the chance of each seeded cup and of each chained cup along a stream. Natural hollows keep their ponds by `ponds.natural.keep`; `pondDensity` scales that share too, so at the default `keep` of `1` only a value below `1` changes the natural ponds. Lakes and cave pools are not affected. Pond density must be a finite value of `0` or more.
+Pond density scales the number of free-standing seeded cups across its whole `0..16` range: an area seeds about `ponds.seeded.density` times `pondDensity` cups per 512 by 512 blocks before `hydrology.density` thins them, so `3` seeds three times as many cups as `1` and `0` seeds none. It also multiplies the chance of each chained cup along a stream. Natural hollows keep their ponds by `ponds.natural.keep`; `pondDensity` scales that share up to every qualifying hollow, so at the default `keep` of `1` only a value below `1` changes the natural ponds. Lakes and cave pools are not affected. Pond density must be a finite value of `0` or more.
 
 ### `climateZones`
 
