@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-11-02T09:38:28.000Z
+date: 2026-11-02T10:08:08.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -183,7 +183,7 @@ Overlapping surface and cave objects on the main terrain use a repeatable placem
 
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
 
-Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `underwater`, `onwater` and `forcePlace` placements skip that exclusion and treat river, pond and lake water like the sea: an `underwater` object seats on the floor below the water, an `onwater` object and a forced placement on the water surface, and the anchor checks of [6. Water, snow, and air pockets](#6-water-snow-and-air-pockets) read that water's own surface. `requireSurfaceSupport: false` does not bypass the exclusion, and an explicit-Y call such as `/iris object paste` is not subject to it.
+Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `underwater`, `onwater` and `forcePlace` placements skip that exclusion and treat river, pond and lake water like the sea: an `underwater` object seats on the floor below the water, an `onwater` object and a forced placement on the water surface, and the anchor checks of [6. Water, snow, and air pockets](#6-water-snow-and-air-pockets) read that water's own surface. Their support columns must still sit on flat water: a placement is skipped when any of them is a dam, cascade or waterfall column, or holds water at a different level than the anchor column. `requireSurfaceSupport: false` does not bypass the exclusion, and an explicit-Y call such as `/iris object paste` is not subject to it.
 
 Native structures reserve their piece bounds and the surface cut area of `FLATTEN` terrain adjustments. An object intersecting that reserved area is skipped as a whole, including forced placements. This keeps trees from relying on ground that a village or other native structure removes. Objects beneath the cut area remain eligible.
 
@@ -358,7 +358,7 @@ Iris fills storage chests after generation. Separately, a chest saved into the `
 
 Candidate blocks are shuffled, so which ones get marked varies per placement. `maximumMarkers` (default 8, hard max 16) caps the count. `markers/camp-spawns.json` lists the spawner resources. Its `emptyAbove` (default true) requires two air blocks above the marked block inside the object.
 
-**Saplings.** When a sapling grows, Iris scans the biome `objects[]` for placements whose `trees[]` matches the grown tree type and the sapling square size. It falls back to the region list if the biome had no match. It picks one and stamps it. A single placement can serve both natural generation and sapling override. Procedural tree generation (`proceduralObjects`) is a separate system. See [17b - Procedural Trees](/iris/17b-procedural-trees).
+**Saplings.** When a sapling grows, Iris scans the biome `objects[]` for placements whose `trees[]` matches the grown tree type and the sapling square size. It falls back to the region list if the biome had no match. It picks one and stamps it. When the picked object cannot be placed there, the sapling stays and the growth is cancelled. A single placement can serve both natural generation and sapling override. Procedural tree generation (`proceduralObjects`) is a separate system. See [17b - Procedural Trees](/iris/17b-procedural-trees).
 
 ## 8. Reference
 
