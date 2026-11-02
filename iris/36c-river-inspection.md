@@ -22,7 +22,7 @@ Use `/iris find river` to reach the water of an Iris world, the Studio map's **R
 | `stream` | A channel of a stream tier |
 | `river` | A channel of a river tier |
 | `major_river` | A channel of a major river tier |
-| `cascade` | A stepped drop in a channel shorter than the tier's `waterfallMinimumDrop` |
+| `cascade` | A stepped drop in a channel, or a step down onto another channel's water, shorter than the higher channel's `waterfallMinimumDrop` |
 | `waterfall` | A drop of `waterfallMinimumDrop` or more |
 | `mouth` | Where a channel meets the sea, across its estuary and delta channels |
 | `pond` | A natural, seeded or chained pond |
