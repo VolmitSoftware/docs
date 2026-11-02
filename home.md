@@ -26,6 +26,7 @@ Pick a project to open its documentation.
 
 - [Axion *Sign-directed mining, harvesting, and item collection*](/axion)
 - [GlacialRush *Three-faction conquest arenas, equipment kits, and combat tools*](/glacialrush)
+- [Inscribe *Enchantment extraction and enchanted-book application*](/inscribe)
 {.links-list}
 
 <div class="layout wrap">
@@ -204,6 +205,16 @@ Pick a project to open its documentation.
         <a href="/titles" class="d-flex align-center">
           <span class="project-mark mr-4" aria-hidden="true">TI</span>
           <span><strong class="title">Titles</strong><span class="d-block text--secondary">Cosmetic titles, collections, and timed grants</span></span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/brimstone" class="d-flex align-center">
+          <span class="project-mark mr-4" aria-hidden="true">BR</span>
+          <span><strong class="title">Brimstone</strong><span class="d-block text--secondary">TNT launchers with seven effects, recipes, and fuel costs</span></span>
         </a>
       </li>
     </ul>

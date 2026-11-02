@@ -2,7 +2,7 @@
 title: "Shared localization"
 description: "Language downloads, upstream sync, server defaults, player preferences, and the in-game picker"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "volmlib, api, localization"
 editor: markdown
 dateCreated: 2026-09-02
@@ -144,7 +144,7 @@ Plugins can pass a fourth `BukkitLanguageEditorPresentation` argument to `Bukkit
 
 `TomlLanguageEditor.upsert` accepts typed text, line, and plural values and preserves literal dotted message IDs. Serialization uses the grouped writer, retains leading instructions and unrelated file values, and preserves plural table boundaries. Removing a scalar message preserves independent child message IDs.
 
-Plugins using `ConfigHotloadEngine` can wrap an internal file save in `write(file, FileWrite<T>)`. The callback returns `Written<T>(content, value)` after committing the bytes; the engine records those bytes and returns the value. The transaction serializes with hotload application for that file, suppresses notifications for the plugin's own write, and invalidates older captured snapshots. `StableContentSnapshot` contains the file, signature, normalized content, and `selfWriteRevision`; apply snapshots returned by the engine without replacing their revision. `noteSelfWrite(file, content)` acknowledges an already completed write but does not serialize the preceding file operation. Release application locks before invoking callbacks that acquire a language-service commit boundary.
+Plugins using `ConfigHotloadEngine` can wrap an internal file save in `write(file, FileWrite<T>)`. The callback returns `Written<T>(content, value)` after committing the bytes; the engine records those bytes and returns the value. The transaction serializes with hotload application for that file, suppresses notifications for the plugin's own write, and invalidates older captured snapshots. `StableContentSnapshot` contains the file, signature, normalized content, and `selfWriteRevision`; apply snapshots returned by the engine without replacing their revision. `noteSelfWrite(file, content)` acknowledges an already completed write but does not serialize the preceding file operation. A watcher event for a file whose content the engine already recorded emits no snapshot, so a late or duplicate event never triggers a reload of unchanged content. Release application locks before invoking callbacks that acquire a language-service commit boundary.
 
 Call `configure(pollIntervalMs, hotloadCooldownMs, watchedFiles, watchedDirectories)` when initializing the watch set; it resets tracked contents and establishes a baseline from disk. After settings change, use `updateTiming(pollIntervalMs, hotloadCooldownMs)` to adjust scan cadence and the cooldown without replacing that baseline, pending edits, queued snapshots, or self-write revisions. Both timing values have a 100 ms minimum. The next poll reconciles the existing watch set; the new cooldown applies from the previous completed application or emission rather than starting a new cooldown window. The consuming plugin remains responsible for scheduling polls at its configured interval.
 

@@ -24,6 +24,7 @@ const projectMeta = new Map([
   ["skyprime", { color: "#7dd3fc" }],
   ["static", { color: "#cbd5e1" }],
   ["gamemodeswitcher", { color: "#bef264" }],
+  ["brimstone", { color: "#ff6b6b" }],
   ["biletools", { color: "#4ade80" }],
   ["volmlib", { color: "#d4d4d8" }],
   ["servermultiplexor", { color: "#818cf8" }]

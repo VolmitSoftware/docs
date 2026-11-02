@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -551,4 +551,4 @@ A distance-hidden tag remains assigned and reappears when the target returns in 
 
 Transaction backup retention applies even when `features.history` is disabled. Gloss removes eligible archives oldest first until both transaction limits fit. It always preserves the newest committed archive whose original files pass their recorded integrity checks; if none exists, it preserves the newest completed archive. This protected archive can exceed the byte target by itself.
 
-Pending recovery suspends archive pruning. Archives found unreadable, incomplete, or corrupt, plus unknown archives and those containing symbolic links, remain protected and can also keep storage above the targets. Recovery runs before configuration loads; boot and config reload then apply the configured retention policy, and completed publications also check retention. Cleanup stops if the filesystem cannot safely delete directories. Diagnostic dumps include retained and protected counts and bytes, whether the targets are exceeded, whether recovery blocks cleanup, and whether the last inventory completed.
+Pending recovery suspends archive pruning. Archives found unreadable, incomplete, or corrupt, plus unknown archives and those containing symbolic links or Windows junctions, remain protected and can also keep storage above the targets. Recovery runs before configuration loads; boot and config reload then apply the configured retention policy, and completed publications also check retention. Cleanup stops at the first archive entry it cannot safely delete. Diagnostic dumps include retained and protected counts and bytes, whether the targets are exceeded, whether recovery blocks cleanup, and whether the last inventory completed.

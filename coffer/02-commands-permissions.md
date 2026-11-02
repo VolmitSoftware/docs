@@ -2,7 +2,7 @@
 title: Coffer commands and permissions
 description: Vault, administration, diagnostic, and recovery commands with their permissions
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: coffer, commands, permissions
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -40,6 +40,7 @@ While `general.enabled` is `false`, these commands answer `Coffer vaults are dis
 | `/coffer status` | Show version, compatibility, storage, vault counts, service states, and active transfers | player, console |
 | `/coffer config` | Open the in-game configuration editor | player |
 | `/coffer language` | Open the language menu; `self <locale\|reset>`, `server <locale>`, and `server edit [locale]` act directly | player, console |
+| `/coffer language update` | Check the language repository and merge changes into installed locales; needs `coffer.config` or `volmit.language.admin` | player, console |
 | `/coffer debug version` | Print `Coffer v<version>`; `/coffer version` is a hidden shortcut | player, console |
 | `/coffer debug dump [upload]` | Write a diagnostic report; also uploads it to mclo.gs unless `upload=false` or `debug.uploadEnabled` is `false` | player, console |
 | `/volmit plugins [languages\|debug\|updates]` | Shared command registered by VolmLib; Coffer contributes its language, debug, and update entries | player, console |
@@ -54,7 +55,7 @@ There is no reload command. `config.toml` and language files reload from disk wh
 | Permission | Default | Allows |
 | --- | --- | --- |
 | `coffer.command` | Everyone | Help, `status`, `version`, and `debug version` |
-| `coffer.config` | Operators | `/coffer config`, server-scope language changes, and hot reload notices |
+| `coffer.config` | Operators | `/coffer config`, server-scope language changes, `/coffer language update`, and hot reload notices |
 | `coffer.language.self` | Everyone | Choosing a personal language |
 | `coffer.debug` | Operators | `/coffer debug dump` |
 | `coffer.update` | Operators | Coffer's entry in the join update notice and `/volmit plugins updates` |
@@ -71,7 +72,7 @@ There is no reload command. `config.toml` and language files reload from disk wh
 | `coffer.recovery.resolve` | Operators | `/coffer recovery hold`, `review`, `complete`, and `cancel` |
 | `coffer.*` | Operators | Every node above |
 
-Personal language changes also need the shared `volmit.language.self` node, which defaults to everyone. The shared `volmit.language.admin` node also allows server-scope language changes.
+Personal language changes also need the shared `volmit.language.self` node, which defaults to everyone. The shared `volmit.language.admin` node also allows server-scope language changes and `/coffer language update`.
 
 `coffer.vault.admin.edit` opens other players' vaults in edit mode and also authorizes explicitly requested administrator mode in the internal Bukkit session API; it does not enable bypass for ordinary session calls. The saved vault type permission is enforced by the Bukkit session API; it does not grant access to administration commands. See [items and edit sessions](/coffer/07-items-sessions) for access and thread requirements.
 
