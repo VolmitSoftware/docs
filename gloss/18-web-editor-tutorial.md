@@ -2,7 +2,7 @@
 title: "Web editor tutorial"
 description: "Open the Gloss web editor and export a document"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-18T00:00:00.000Z
@@ -67,7 +67,7 @@ leaving the file you already had unchanged.
 
 <div class="gloss-demo" data-demo="project-workflow-editor">
 <p><strong>Browser project workflow</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/project-workflow-editor.webm" aria-label="Browser project workflow, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/project-workflow-editor.webm" aria-label="Browser project workflow, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 The mode control sits on the right of the second bar. Every kind offers the same four modes, and a mode a kind cannot serve says why.
@@ -99,7 +99,7 @@ reports whether the JSON matches the plugin contract.
 
 <div class="gloss-demo" data-demo="image-library-editor">
 <p><strong>Image library and import</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/image-library-editor.webm" aria-label="Image library and import, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/image-library-editor.webm" aria-label="Image library and import, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Select **Images** in the top bar. Upload PNG or GIF files for `textImage` icons, import a Minecraft skin as an 8x8 head, or type a username and **Fetch head**. Download `images.zip` and unzip it into `plugins/Gloss/images/`.

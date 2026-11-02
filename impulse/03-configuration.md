@@ -2,7 +2,7 @@
 title: "Impulse configuration"
 description: "Server settings and individual machine tiers"
 published: true
-date: 2026-10-23T16:24:03.218Z
+date: 2026-10-29T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -30,6 +30,7 @@ Edit `plugins/Impulse/config.toml` or use `/impulse config`. File edits and the 
 | `machines.maxTargets` | `8` | Maximum completed operations per cycle; 1–64 |
 | `machines.requireOwnerOnline` | `true` | Initial owner-online gate |
 | `machines.redstoneMode` | `"ALWAYS"` | Mode assigned when a machine is placed |
+| `machines.chopperReplanting` | `false` | Consume stored plants to replant supported upright base logs |
 
 Disabling the owner-online gate does not permit actions that require an available player in the owning region.
 
@@ -120,5 +121,7 @@ protectedSlots = []
 `ALLOW` accepts listed values only; an empty list accepts nothing. `DENY` rejects listed values; the default empty lists allow all otherwise eligible targets. Item names are current item materials. Mob names are living mob entity types. They narrow the grinder's hostile targets and the shearer's eligible sheep.
 
 Item filters apply to collected drops, launcher ammunition, placer blocks, and complete harvester, breaker, shearer, or chopper output batches. If any output in a batch is denied, the target remains untouched. Filters do not discard denied items or broaden the allowed crops, blocks, or hostile targets. Harvester item filters check the output, not the seed or pod used for replanting.
+
+Chopper replanting also checks the planting item's material against the chopper item filter. Its saplings, propagules, and fungi must be in unprotected input slots. See [Chopper replanting](/impulse/05-machines#chopper-replanting) for eligible bases.
 
 `protectedSlots` lists dispenser slots 1–9, numbered left to right and top to bottom. Harvesters cannot consume replanting seeds or pods from those slots. Launchers and placers cannot consume those inputs; breakers, shearers, and choppers cannot use or wear tools in those slots. These settings do not restrict player inventory moves or hopper transfers, and collection can still store output there.

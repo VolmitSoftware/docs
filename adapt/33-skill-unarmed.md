@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,8 +41,8 @@ Combo Chain, Glass Cannon, Pressure Point, Second Wind, Sucker Punch, and Power 
 ### Sucker Punch (`unarmed-sucker-punch`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Sucker Punch" src="/adapt-assets/demos/unarmed/unarmed-sucker-punch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Sucker Punch" src="/adapt-assets/demos/unarmed/unarmed-sucker-punch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Sucker Punch" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-sucker-punch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Sucker Punch" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-sucker-punch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge, then 2 per level
@@ -57,8 +57,8 @@ A sprinting punch with the main hand exactly `AIR` multiplies damage. XP is 6.22
 ### Unarmed Power (`unarmed-power`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Unarmed Power" src="/adapt-assets/demos/unarmed/unarmed-power-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Unarmed Power" src="/adapt-assets/demos/unarmed/unarmed-power-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Unarmed Power" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-power-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Unarmed Power" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-power-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 7 levels · 6 knowledge, then 3 per level
@@ -72,8 +72,8 @@ While neither hand holds a melee tool, attack damage gains a `MULTIPLY_SCALAR_1`
 ### Glass Cannon (`unarmed-glass-cannon`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Glass Cannon" src="/adapt-assets/demos/unarmed/unarmed-glass-cannon-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Glass Cannon" src="/adapt-assets/demos/unarmed/unarmed-glass-cannon-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Glass Cannon" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-glass-cannon-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Glass Cannon" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-glass-cannon-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 7 levels · 6 knowledge, then 3 per level
@@ -89,8 +89,8 @@ With no armor, damage is `damage * (maxDamageFactor + level * maxDamagePerLevelM
 ### Battering Charge (`unarmed-battering-charge`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Battering Charge" src="/adapt-assets/demos/unarmed/unarmed-battering-charge-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Battering Charge" src="/adapt-assets/demos/unarmed/unarmed-battering-charge-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Battering Charge" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-battering-charge-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Battering Charge" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-battering-charge-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -112,8 +112,8 @@ A sprinting hit with empty hands, or with a shield in either hand, adds flat dam
 ### Combo Chain (`unarmed-combo-chain`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Combo Chain" src="/adapt-assets/demos/unarmed/unarmed-combo-chain-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Combo Chain" src="/adapt-assets/demos/unarmed/unarmed-combo-chain-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Combo Chain" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-combo-chain-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Combo Chain" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-combo-chain-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 6 levels · 4 knowledge, then 3 per level
@@ -134,8 +134,8 @@ Only the main hand is checked: consecutive punches add stacks of bonus damage, a
 ### Disarm (`unarmed-disarm`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Disarm" src="/adapt-assets/demos/unarmed/unarmed-disarm-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Disarm" src="/adapt-assets/demos/unarmed/unarmed-disarm-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Disarm" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-disarm-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Disarm" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-disarm-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 5 knowledge, then 4 per level
@@ -155,8 +155,8 @@ A bare-hand hit can knock the target's main-hand item to the ground, or an off-h
 ### Pressure Point (`unarmed-pressure-point`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Pressure Point" src="/adapt-assets/demos/unarmed/unarmed-pressure-point-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Pressure Point" src="/adapt-assets/demos/unarmed/unarmed-pressure-point-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Pressure Point" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-pressure-point-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Pressure Point" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-pressure-point-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -176,8 +176,8 @@ Bare-hand hits apply Slowness, and Weakness once it is unlocked, raising the cur
 ### Shockwave Clap (`unarmed-shockwave-clap`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Shockwave Clap" src="/adapt-assets/demos/unarmed/unarmed-shockwave-clap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Shockwave Clap" src="/adapt-assets/demos/unarmed/unarmed-shockwave-clap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Shockwave Clap" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-shockwave-clap-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Shockwave Clap" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-shockwave-clap-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 6 knowledge, then 5 per level
@@ -204,8 +204,8 @@ With both hands free of tools, sneak and left-click air or a block to shove enti
 ### Iron Fists (`unarmed-iron-fists`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Iron Fists" src="/adapt-assets/demos/unarmed/unarmed-iron-fists-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Iron Fists" src="/adapt-assets/demos/unarmed/unarmed-iron-fists-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Iron Fists" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-iron-fists-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Iron Fists" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-iron-fists-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -224,8 +224,8 @@ Bare-hand hits deal flat bonus damage. Punching dirt, sand, leaves, or any block
 ### Grapple (`unarmed-grapple`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Grapple" src="/adapt-assets/demos/unarmed/unarmed-grapple-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Grapple" src="/adapt-assets/demos/unarmed/unarmed-grapple-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Grapple" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-grapple-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Grapple" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-grapple-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 6 knowledge, then 5 per level
@@ -248,8 +248,8 @@ With both hands free of tools, sneak-punch to grab a target, then punch again or
 ### Second Wind (`unarmed-second-wind`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Second Wind" src="/adapt-assets/demos/unarmed/unarmed-second-wind-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Second Wind" src="/adapt-assets/demos/unarmed/unarmed-second-wind-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Second Wind" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-second-wind-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Second Wind" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-second-wind-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -270,8 +270,8 @@ A direct bare-hand kill on a non-player mob restores hunger and saturation and s
 ### Meditation (`unarmed-meditation`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Meditation" src="/adapt-assets/demos/unarmed/unarmed-meditation-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Meditation" src="/adapt-assets/demos/unarmed/unarmed-meditation-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Meditation" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-meditation-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Meditation" src="https://media.volmitsoftware.com/adapt-assets/demos/unarmed/unarmed-meditation-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 5 knowledge, then 4 per level

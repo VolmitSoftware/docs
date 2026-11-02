@@ -2,7 +2,11 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
+<<<<<<< HEAD
 date: 2026-10-28T12:00:00.000Z
+=======
+date: 2026-11-01T00:00:00.000Z
+>>>>>>> origin/master
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,7 +29,7 @@ Read this before [02 - Getting Started](/iris/02-getting-started). If Iris is al
 | Fabric Loader | 0.19.5+ |
 | Forge | 52.x for 1.21.1; 64.x for 26.1.2; 65.x for 26.2; 66.x for 26.3 |
 | NeoForge | 21.1.x for 1.21.1; 26.1.2.x for 26.1.2; 26.2.0.x for 26.2; 26.3.0.65-beta or newer for 26.3 |
-| Network | Outbound HTTP or HTTPS for pack downloads, external datapack downloads and fresh Bukkit library downloads. Retain `plugins/Iris/cache/libraries/` and the server's `libraries/` folder for offline restarts; upgrades may require new downloads. Mod jars include their required libraries |
+| Network | Outbound HTTP or HTTPS for pack downloads, external datapack downloads and fresh Bukkit library and native noise downloads. Retain `plugins/Iris/cache/libraries/`, `plugins/Iris/cache/natives/` and the server's `libraries/` folder for offline restarts; upgrades may require new downloads. Mod jars include their required libraries and native noise kernels |
 
 Before you replace an existing installation:
 
@@ -36,7 +40,7 @@ Before you replace an existing installation:
 
 Install only one Iris platform jar in the `plugins/` or `mods/` folder.
 
-Native Billow noise is enabled by default when the jar contains a compatible native library. Start Java 25 with `--enable-native-access=ALL-UNNAMED` before `-jar` to allow it; unavailable native support uses Java sampling. Minecraft 1.21.1 uses Java sampling and supports the Java 21 Vector API kernels. See [Configuration](/iris/03-configuration#native-billow-noise) and [Workspace builds](/volmlib/api/building).
+Native Billow noise is enabled by default when a compatible native library is available. Mod jars include it. The Bukkit jar downloads the library for your platform from GitHub on first start into `plugins/Iris/cache/natives/` and uses it only when it matches the checksum pinned in the jar. Start Java 25 with `--enable-native-access=ALL-UNNAMED` before `-jar` to allow it; unavailable native support uses Java sampling, which generates the same terrain more slowly. Minecraft 1.21.1 uses Java sampling and supports the Java 21 Vector API kernels. See [Configuration](/iris/03-configuration#native-billow-noise) and [Workspace builds](/volmlib/api/building).
 
 For a local source build, run `./gradlew buildAll` from the Iris repository. It builds and verifies Bukkit and the Fabric, Forge, and NeoForge matrix, plus the API and SPI artifacts. Build one mod jar with `./gradlew verify<Loader><version>`, writing the version with underscores, for example `./gradlew verifyFabric26_2` or `./gradlew verifyNeoForge1_21_1`. Artifacts remain in the project and adapter build directories. Source builds require Java 25 and a Java 21 toolchain for the 1.21.1 target.
 
@@ -160,8 +164,13 @@ To remove Iris and everything it created, see [Uninstalling Iris](/iris/06b-unin
 | `plugins/Iris/iris.json` | Shared settings; see [03 - Configuration](/iris/03-configuration) |
 | `plugins/Iris/packs/<key>/` | Installed packs. This is the live tree the Studio reads and edits |
 | `plugins/Iris/datapacks/` | External datapacks. Put ZIPs for automatic import in `imports/` |
+<<<<<<< HEAD
 | `plugins/Iris/exports/datapacks/` | Worldgen datapacks written by `/iris datapack export`. See [49 - Datapack Export](/iris/49-datapack-export) |
 | `plugins/Iris/languages/overrides/<locale>.json` | Optional server message overrides. See [08 - Localization](/iris/08-localization) |
+=======
+| `plugins/Iris/languages/<locale>.toml` | Installed translations and custom languages. See [08 - Localization](/iris/08-localization) |
+| `plugins/Iris/languages/.upstream/` | Pristine repository copies and check state Iris uses to merge translation updates; managed by Iris, not for editing |
+>>>>>>> origin/master
 | `<level-root>/datapacks/iris/` | The aggregate worldgen datapack Iris compiles from your installed packs. Iris owns this. Do not hand-edit it |
 | `<level-root>/dimensions/<namespace>/<name>/` | Storage for a managed Iris world on Paper-family servers. Namespace is `iris` for worlds Iris creates |
 | `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>/` | Storage for a managed `iris:<name>` world on plain Spigot/CraftBukkit |
@@ -183,6 +192,7 @@ Paths are relative to the game instance's `config/` directory.
 | `config/irisworldgen/catalog/worldgen-catalog.json` | Worldgen catalog of the loaded mods, captured at each server start. See [48 - Mod Worldgen](/iris/48-mod-worldgen) |
 | `config/irisworldgen/exports/datapacks/` | Worldgen datapacks written by `/iris datapack export`. See [49 - Datapack Export](/iris/49-datapack-export) |
 | `config/iris/` | Engine data directory — `iris.json` and per-world engine state |
+| `config/iris/languages/` | Installed translations and custom languages; `.upstream/` inside holds the managed repository copies. See [08 - Localization](/iris/08-localization) |
 | `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The built-in Overworld and Underworld packs need none |
 
 Two different roots, and mixing them up is a common mistake. Packs, the generated datapack, and mod config live under `config/irisworldgen/`. The shared engine's own data lives under `config/iris/`.
@@ -218,7 +228,7 @@ Full key list: [03 - Configuration](/iris/03-configuration).
 
 ## Native runtime dependencies
 
-Fresh Bukkit installations download required libraries from dependency repositories, including JitPack. Allow outbound HTTPS and write access to `plugins/Iris/cache/libraries/`. The server itself downloads the LWJGL graphics libraries that the Studio 3D views use from Maven Central into its `libraries/` folder.
+Fresh Bukkit installations download required libraries from dependency repositories, including JitPack. Allow outbound HTTPS and write access to `plugins/Iris/cache/libraries/`. The native noise library for your platform comes from GitHub (`raw.githubusercontent.com` or `api.github.com`) into `plugins/Iris/cache/natives/`. When that download fails, startup logs the file's address, checksum and destination so you can place it by hand; until then Iris uses Java sampling. The server itself downloads the LWJGL graphics libraries that the Studio 3D views use from Maven Central into its `libraries/` folder.
 
 Keep both caches for subsequent offline starts. Changing Iris or Minecraft versions may require another download. Do not install dependency jars as separate plugins. Fabric, Forge and NeoForge jars include their required libraries for offline startup.
 

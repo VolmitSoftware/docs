@@ -2,7 +2,7 @@
 title: SkyPrime - Commands and permissions
 description: Island commands, confirmation flows and operator permissions
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: skyprime, commands, permissions
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -111,6 +111,7 @@ Prefix each command below with `/sky`. Angle brackets mark required arguments, s
 | `reset [starter]` | Open a terrain-reset confirmation |
 | `confirm` / `cancel` | Resolve the pending deletion/reset request |
 | `language ...` | Personal language selection and authorized server translation tools |
+| `language update` | Check the language repository and merge changes into installed locales; needs `skyprime.config` or `volmit.language.admin` |
 
 Destructive requests expire after 30 seconds and are bound to the requesting player and island UUID. Only the owner can reset or delete. Reset clears terrain, stored homes and value, while preserving the team, bank, upgrades, votes and already-claimed rewards.
 

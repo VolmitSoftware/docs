@@ -2,7 +2,7 @@
 title: "HiddenOre: Configuration"
 description: "Every hiddenore.toml key and default"
 published: true
-date: 2026-10-12T16:07:52.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "hiddenore, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -237,7 +237,32 @@ Commands can use `%player%`, `%uuid%`, `%world%`, and the mined block's `%x%`, `
 
 ## Language files
 
-The server default is the `language` key. Catalogs live at `plugins/HiddenOre/languages/<locale>.toml`, and personal choices in `languages/language-preferences.properties`. Saving a file applies it automatically.
+The server default is the `language` key. Players choose their own with `/hiddenore language self`. Paths below are under `plugins/HiddenOre/`.
+
+| Path | Purpose |
+|---|---|
+| `languages/en_US.toml` | Editable English, written from the built-in catalog on first start |
+| `languages/<locale>.toml` | Installed repository translations and custom locales; saving a file applies it automatically |
+| `languages/language-preferences.properties` | Personal language choices |
+| `languages/.upstream/` | Pristine repository copies and check state used to merge translation updates; managed by HiddenOre, not for editing |
+
+Only English ships in the jar. The 17 repository translations come from `src/main/resources/languages` on the default branch of [VolmitSoftware/HiddenOre](https://github.com/VolmitSoftware/HiddenOre). A repository locale installs the first time it is selected, from the revision recorded by the last check.
+
+Installed translations merge repository changes at startup and whenever an operator runs `/hiddenore language update`. New and changed messages arrive, keys you edited by hand stay as you wrote them, and retired keys you never touched are removed. Checks run at most once every five minutes; a restart or a repeated command inside that window skips the request and the command reports the remaining wait. A check that fails, including one blocked by the GitHub rate limit, leaves the installed files and the selected language as they were. The console logs one line per updated locale with its counts, or `HiddenOre languages match VolmitSoftware/HiddenOre@master (<revision>).` when nothing changed. After a plugin update, `en_US.toml` gains new messages the same way, without network access, and keeps your edits. Translation updates do not trigger a hot reload.
+
+### Custom locales
+
+Every `languages/<id>.toml` whose id uses 2 to 32 letters, digits, underscores, or hyphens is a locale and appears in the picker, and `language` in `hiddenore.toml` accepts the same ids. An optional `[meta]` table sets `name`, the display name in the picker, and `base`, an installed locale that supplies messages the file leaves out. A base can name its own base, up to four levels. Messages missing from the whole chain use built-in English. Update checks never change custom files.
+
+HiddenOre's messages start at the root of the file, so put `[meta]` after them; keys written below a table header belong to that table.
+
+```toml
+prefix = "&6[Pirate Ore]&r "
+
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+```
 
 HiddenOre keeps its chat `prefix` as a root key rather than under `runtime`, and its messages use `{block}`-style runtime variables that must be preserved. End the prefix's formatting with `&r` before its trailing space.
 

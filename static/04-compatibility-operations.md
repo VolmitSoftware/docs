@@ -2,7 +2,7 @@
 title: Static - Compatibility and operations
 description: Platform requirements, diagnostics, persistence, and integrations
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: static, folia, diagnostics
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -34,6 +34,6 @@ Run `./gradlew build` or `.\gradlew.bat build` from the project root with Java 2
 
 Packaged-artifact checks cover reflection, localization, persistence, required metadata, the 1.5 MB size limit, and exclusion of server APIs and downloaded libraries. `buildSwiftSwamp` verifies and stages `Static.jar` in the workspace `BUILDS` directory. `-PbuildsDirectory=<path>` changes that staging destination.
 
-Release builds can set `-PlanguageSourceRevision=<published-40-character-commit-SHA>` to select the translation revision.
+The language source branch comes from the repository's `origin/HEAD`; `-PlanguageSourceBranch=<branch>` overrides it.
 
 [Installation and configuration](/static/01-installation-configuration) · [API and placeholders](/static/90-api-placeholders)

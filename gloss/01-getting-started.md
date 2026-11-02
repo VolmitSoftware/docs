@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -32,8 +32,9 @@ Enabled features write these files when they are missing:
 ```
 plugins/Gloss/
 ├── gloss.toml            every runtime knob, commented, clamped and hot-reloading
-├── languages/             translations installed when selected
+├── languages/             translations installed when selected, plus custom language files
 │   ├── en_US.toml          editable English messages, generated at startup
+│   ├── .upstream/          repository copies used to merge translation updates; managed by Gloss
 │   └── language-preferences.properties  persistent player language choices
 ├── tablist.json           conditional tablist header, footer and list-name presentations
 ├── boards/                conditional scoreboard sidebars (default.json and animation-showcase.json included)

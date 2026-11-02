@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-10-20T19:06:22.706Z
+date: 2026-11-01T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 
 `/adapt` covers menus, progression, configuration, and player data. Command routes need `adapt.main`, except personal language selection and diagnostic reports.
 
-`/adapt language` opens the picker. Permissions and locales: [Localization](/adapt/07-localization) and [Languages](/languages).
+`/adapt language` opens the picker. `/adapt language update` checks the Adapt repository and merges changed translations into installed language files; it needs `adapt.configurator` or `volmit.language.admin`. Permissions and locales: [Localization](/adapt/07-localization) and [Languages](/languages).
 
 `/adapt debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. Permission `adapt.debugdump` (default op). An upload failure keeps the local file. Report contents: [Shared diagnostic reports](/volmlib/api/diagnostics).
 
@@ -98,7 +98,7 @@ Most command permissions default to operators. `adapt.effects`, `adapt.language.
 | `adapt.language.self` | Choose or reset your Adapt language; also requires `volmit.language.self` |
 | `volmit.language.self` | Shared requirement for personal language selection |
 | `adapt.gui` | Open menus by command |
-| `adapt.configurator` | Edit or restore configs |
+| `adapt.configurator` | Edit or restore configs, change the server language, edit language messages, and run `/adapt language update` |
 | `adapt.boost` / `adapt.boost.global` | Apply XP boosts |
 | `adapt.cheatitem` | Give XP and knowledge orbs |
 | `adapt.determine` | Set skills and adaptations |

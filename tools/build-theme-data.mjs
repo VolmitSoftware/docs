@@ -16,6 +16,7 @@ const projectMeta = new Map([
   ["gloss", { color: "#c084fc", featured: true }],
   ["react", { color: "#38bdf8", featured: true }],
   ["foundation", { color: "#a8a29e" }],
+  ["axion", { color: "#f28c45" }],
   ["hiddenore", { color: "#e7c15a" }],
   ["impulse", { color: "#e69a68" }],
   ["rift", { color: "#e4e4e7" }],
@@ -23,6 +24,7 @@ const projectMeta = new Map([
   ["skyprime", { color: "#7dd3fc" }],
   ["static", { color: "#cbd5e1" }],
   ["gamemodeswitcher", { color: "#bef264" }],
+  ["brimstone", { color: "#ff6b6b" }],
   ["biletools", { color: "#4ade80" }],
   ["volmlib", { color: "#d4d4d8" }],
   ["servermultiplexor", { color: "#818cf8" }]

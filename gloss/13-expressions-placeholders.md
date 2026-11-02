@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -587,7 +587,7 @@ Related pages: [Holograms](/gloss/04-holograms),
 
 <div class="gloss-demo" data-demo="names-editor">
 <p><strong>Names catalog authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/names-editor.webm" aria-label="Names catalog authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/names-editor.webm" aria-label="Names catalog authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 `plugins/Gloss/names.json` is the shared schema-1 names catalog. Edit its eight maps:

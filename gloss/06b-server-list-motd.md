@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Configure server-list responses, request selectors, icons and server links"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -103,12 +103,12 @@ the server list after the next `motd.json` change.
 
 <div class="gloss-demo" data-demo="server-list-motd-pov">
 <p><strong>Server list and player sample</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/server-list-motd-pov.webm" aria-label="Server list and player sample, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/server-list-motd-pov.webm" aria-label="Server list and player sample, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="motd-editor">
 <p><strong>MOTD authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/motd-editor.webm" aria-label="MOTD authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/motd-editor.webm" aria-label="MOTD authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Besides its text, an entry can set the hover sample, the two player counts, and the version line.
@@ -143,7 +143,7 @@ keeps those parts of the vanilla response.
 
 <div class="gloss-demo" data-demo="server-links-pov">
 <p><strong>Native pause-menu server links</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/server-links-pov.webm" aria-label="Native pause-menu server links, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/server-links-pov.webm" aria-label="Native pause-menu server links, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 `serverLinks: {"enabled": true, "links": [...]}` publishes the links that appear in the client's pause menu independently of `[features] motd`, document `show`, and entry selection. Set `enabled` to false to disable them. When `serverLinks` is absent, a top-level `links` list is used and follows the MOTD feature switch. It needs the Paper

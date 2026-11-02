@@ -2,7 +2,7 @@
 title: Titles compatibility and integrations
 description: Supported runtime, placeholders, update checks, and metrics
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: titles
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -43,8 +43,8 @@ Metrics use the official bStats base library. `metricsEnabled` defaults to `true
 
 From the Titles repository, run `.\gradlew.bat build buildSwiftSwamp` with Java 25. The build checks source tests, API compatibility, packaged contents, and serializers and command metadata in the final JAR. The final distribution stages to `../BUILDS/Titles.jar`; `-PbuildsDirectory=<path>` changes the staging directory.
 
-For a release build, run `.\gradlew.bat buildRelease -PlanguageSourceRef=<40-character-commit-SHA>`. This requires published catalogs matching the local files and the registered Titles bStats ID in the default configuration. Ordinary `build` remains available with an unpublished manifest and inactive metrics.
+For a release build, run `.\gradlew.bat buildRelease`. This requires the registered Titles bStats ID in the default configuration. Ordinary `build` remains available with inactive metrics. The jar carries only a source manifest naming the repository and branch; `-PlanguageSourceBranch=<branch>` overrides the branch, which otherwise follows the remote's default branch.
 
-After publishing the release, `.\gradlew.bat verifyPublishedRelease -PlanguageSourceRef=<commit-SHA> -PreleaseTag=<tag>` checks the stable GitHub release and its `Titles.jar` asset size, URL, and SHA-256 digest against the local build. The tag must match the project version, optionally prefixed with `v`. These tasks do not publish files or register services.
+After publishing the release, `.\gradlew.bat verifyPublishedRelease -PreleaseTag=<tag>` checks the stable GitHub release and its `Titles.jar` asset size, URL, and SHA-256 digest against the local build. The tag must match the project version, optionally prefixed with `v`. These tasks do not publish files or register services.
 
 Required libraries must be available in the dependency cache for offline restarts.

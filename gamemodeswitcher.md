@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher"
 description: "Gamemode gestures, selector menus, permissions, and configuration"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gamemodeswitcher, gamemodes, folia"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -15,7 +15,7 @@ Permissions control both who may switch and which gamemode they may switch to.
 | | |
 |---|---|
 | Server software | Minecraft 26.1–26.3, including patch releases; targets Spigot, Paper, Purpur, Leaf, Folia, and Canvas |
-| Java | 25 |
+| Java | 25 or newer |
 | Main command | `/gsw` (`/gamemodeswitcher`) |
 | Config file | `plugins/GamemodeSwitcher/config.toml` |
 | Default gesture | Double-tap the swap-hands key (F) |

@@ -42,6 +42,6 @@ Startup auto-loading is enabled by default. Both `autoLoadManagedWorlds` and a p
 
 Run `/rift unmanage <name>` to retire a profile while keeping world files and any loaded world. Run `/rift delete <name>` twice within the confirmation window to quarantine a managed world. `/rift restore <id>` restores it without loading it.
 
-Primary, protected, and evacuation worlds cannot be unloaded or quarantined. Back up valuable worlds before lifecycle changes: quarantine protects against removal mistakes but is not a separate backup.
+The server's overworld, nether, and end, protected worlds, and the evacuation world cannot be unloaded or quarantined. Back up valuable worlds before lifecycle changes: quarantine protects against removal mistakes but is not a separate backup.
 
 Folia disables create, import, load, unload, delete, and restore. Read [Installation and compatibility](/rift/01-installation-compatibility) before choosing a server platform.

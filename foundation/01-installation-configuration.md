@@ -2,7 +2,7 @@
 title: "Installation and Configuration"
 description: "Foundation requirements, the TOML settings, the worth catalog, and the in-game editor"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "foundation, installation, configuration"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -26,7 +26,7 @@ The distribution includes the SlimJar bootstrap and the required VolmLib classes
 
 ## Configuration lifecycle
 
-Edits to `config.toml` reload automatically while `runtime.hotReload` is on. An invalid edit is rejected and the current settings stay active.
+Edits to `config.toml`, `worth.toml` and files under `languages/` reload automatically while `runtime.hotReload` is on. An invalid edit is rejected and the current settings stay active. Players with `foundation.admin.config` see one action bar line for each applied or rejected file. With `runtime.hotReload` off, file edits apply nothing and show no notice, and they are not replayed when it is turned back on.
 
 If `config.toml` is invalid at startup, Foundation falls back to `config.toml.last-good` and logs the failure. If neither file is valid, Foundation does not enable.
 
@@ -40,7 +40,27 @@ Sound and particle settings accept namespaced registry keys such as `minecraft:b
 
 ## Languages
 
-The top-level `language = "en_US"` key sets the server default. Personal choices are stored in `languages/language-preferences.json`, with `.last-good` kept alongside it.
+English is generated locally from the built-in catalog into `languages/en_US.toml`. The top-level `language = "en_US"` key sets the server default and accepts any locale id; personal choices are stored in `languages/language-preferences.json`, with `.last-good` kept alongside it.
+
+The other 17 catalogs live on the `main` branch of the `VolmitSoftware/Foundation` repository and install when first selected or when set as the server default. Startup and `/foundation language update` check that branch in the background, at most once every five minutes. When it has moved, Foundation downloads each installed repository locale and merges it into the local file: keys you edited stay as you wrote them, unedited keys take the repository's text, and new keys are added. If the repository cannot be reached, the check logs one failure and installed languages stay active. A configured repository locale that cannot be installed leaves the current messages active.
+
+| Path under `languages/` | Purpose |
+|---|---|
+| `<locale>.toml` | Editable messages for one locale |
+| `.upstream/` | Foundation's record of the last download for each repository locale, the English reference, and `upstream.properties` (repository, branch, revision, last check). Do not edit it; hot reload ignores it. |
+| `language-preferences.json` | Saved player choices |
+
+Any other `languages/<id>.toml` is a custom locale. Its id may use letters, digits, `_` and `-`, up to 32 characters. It appears in the pickers and editor, and repository updates never change it. An optional `[meta]` table names it and chooses a base locale:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "en_US"
+```
+
+`name` is the picker label. `base` names another installed locale that fills in missing keys before English.
+
+Hot reload refreshes installed personal languages as well as the server default, and picks up new files. A malformed language file keeps its last valid messages. Deleting `en_US.toml` or the server default's file restores it: English regenerates, a repository locale installs again and a custom locale starts from the English reference, with the current messages staying active until then. Deleting another locale's file uses built-in English for the players who chose it and keeps their saved selection.
 
 Message values accept MiniMessage, legacy `&` codes, `&#RRGGBB`, and escaped line breaks. The `#35E0A1` primary and `#47A7FF` secondary tokens follow your configured branding colors at render time.
 
@@ -55,6 +75,8 @@ Foundation supports `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT
 Up to 17 common commodities get a positive default price. Everything else starts at `0` and is unsellable, including spawn eggs and operator-only items. Prices are capped at `1,000,000,000,000`.
 
 Identifiers belonging to a newer server version are kept in their category and ignored for sales rather than erased. An invalid `worth.toml` falls back to `worth.toml.last-good`; if both are invalid Foundation keeps a default catalog active in read-only mode rather than overwriting your prices.
+
+Foundation applies a valid edit to the running server when you save the file, which also ends read-only mode. If your edit differs from the generated layout, Foundation rewrites the file: missing items return at their default prices, entries move to their categories in sorted order, and your comments are removed. The bytes you saved go to `worth.toml.last-good` first. If the edit is invalid or the rewrite fails, the previous catalog stays active and the file keeps your edit. If Foundation sees a newer save just before rewriting, it leaves the file alone and reloads that save instead.
 
 ## In-game editor
 

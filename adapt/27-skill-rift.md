@@ -2,7 +2,7 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,8 +22,8 @@ Anti-Levitation, Rift Visage, and Inflated Pocket Dimension are permanent. The m
 ### Rift Resistance (`rift-resist`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rift Resistance" src="/adapt-assets/demos/rift/rift-resist-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Rift Resistance" src="/adapt-assets/demos/rift/rift-resist-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Rift Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-resist-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Rift Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-resist-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 5 knowledge
@@ -39,8 +39,8 @@ Right-clicking air with an eye of ender or an ender pearl in the main hand grant
 ### Remote Access (`rift-access`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Remote Access" src="/adapt-assets/demos/rift/rift-access-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Remote Access" src="/adapt-assets/demos/rift/rift-access-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Remote Access" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-access-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Remote Access" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-access-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 15 knowledge
@@ -52,8 +52,8 @@ Personal controls: Confirm unbinding (on/off); Confirm binding (on/off); Require
 ### Easy Enderchest (`rift-enderchest`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Easy Enderchest" src="/adapt-assets/demos/rift/rift-enderchest-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Easy Enderchest" src="/adapt-assets/demos/rift/rift-enderchest-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Easy Enderchest" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-enderchest-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Easy Enderchest" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-enderchest-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 10 knowledge
@@ -65,8 +65,8 @@ Personal controls: Open gesture (Left click or right-click air/Left click only/R
 ### Rift Gate (`rift-gate`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rift Gate" src="/adapt-assets/demos/rift/rift-gate-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Rift Gate" src="/adapt-assets/demos/rift/rift-gate-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Rift Gate" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-gate-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Rift Gate" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-gate-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 30 knowledge
@@ -83,8 +83,8 @@ Personal controls: Confirm binding (on/off); Confirm unbinding (on/off); Channel
 ### Rift Blink (`rift-blink`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rift Blink" src="/adapt-assets/demos/rift/rift-blink-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Rift Blink" src="/adapt-assets/demos/rift/rift-blink-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Rift Blink" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-blink-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Rift Blink" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-blink-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 1 knowledge, then 7 per level
@@ -135,8 +135,8 @@ Range is `baseDistance + (levelPercent * distanceFactor)`. Self-damage is `pearl
 ### Anti-Levitation (`rift-descent`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Anti-Levitation" src="/adapt-assets/demos/rift/rift-descent-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Anti-Levitation" src="/adapt-assets/demos/rift/rift-descent-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Anti-Levitation" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-descent-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Anti-Levitation" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-descent-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -152,8 +152,8 @@ Personal controls: Levitation cancellation (Press sneak/Automatic).
 ### Rift Visage (`rift-visage`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rift Visage" src="/adapt-assets/demos/rift/rift-visage-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Rift Visage" src="/adapt-assets/demos/rift/rift-visage-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Rift Visage" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-visage-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Rift Visage" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-visage-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 2 knowledge
@@ -163,8 +163,8 @@ An enderman does not target a player who has at least one ender pearl anywhere i
 ### Ender Taglock (`rift-ender-taglock`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Ender Taglock" src="/adapt-assets/demos/rift/rift-ender-taglock-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Ender Taglock" src="/adapt-assets/demos/rift/rift-ender-taglock-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Ender Taglock" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-ender-taglock-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Ender Taglock" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-ender-taglock-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 7 knowledge
@@ -190,8 +190,8 @@ The health cost does not knock the affected player back.
 ### Inflated Pocket Dimension (`rift-inflated-pocket-dimension`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Inflated Pocket Dimension" src="/adapt-assets/demos/rift/rift-inflated-pocket-dimension-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Inflated Pocket Dimension" src="/adapt-assets/demos/rift/rift-inflated-pocket-dimension-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Inflated Pocket Dimension" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-inflated-pocket-dimension-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Inflated Pocket Dimension" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-inflated-pocket-dimension-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 7 knowledge
@@ -210,8 +210,8 @@ Personal controls: Pull on click (on/off); Refill building stack (on/off); Store
 ### Void Magnet (`rift-void-magnet`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Void Magnet" src="/adapt-assets/demos/rift/rift-void-magnet-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Void Magnet" src="/adapt-assets/demos/rift/rift-void-magnet-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Void Magnet" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-void-magnet-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Void Magnet" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-void-magnet-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -234,8 +234,8 @@ Personal controls: Collection control (While sneaking/Automatic collection); Pic
 ### Void Skin (`rift-void-skin`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Void Skin" src="/adapt-assets/demos/rift/rift-void-skin-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Void Skin" src="/adapt-assets/demos/rift/rift-void-skin-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Void Skin" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-void-skin-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Void Skin" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-void-skin-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 6 knowledge, then 8 per level
@@ -261,8 +261,8 @@ Personal controls: Death-save priority (First/Normal/Last); Plain pearl reserve 
 ### Pearl Rebound (`rift-pearl-rebound`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Pearl Rebound" src="/adapt-assets/demos/rift/rift-pearl-rebound-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Pearl Rebound" src="/adapt-assets/demos/rift/rift-pearl-rebound-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Pearl Rebound" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-pearl-rebound-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Pearl Rebound" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-pearl-rebound-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 3 knowledge, then 5 per level
@@ -283,8 +283,8 @@ Personal controls: Pearl rebound (on/off); Pearl damage reduction (on/off); Requ
 ### Rift Conduit (`rift-conduit`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rift Conduit" src="/adapt-assets/demos/rift/rift-conduit-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Rift Conduit" src="/adapt-assets/demos/rift/rift-conduit-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Rift Conduit" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-conduit-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Rift Conduit" src="https://media.volmitsoftware.com/adapt-assets/demos/rift/rift-conduit-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 8 knowledge

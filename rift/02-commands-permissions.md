@@ -2,7 +2,7 @@
 title: "Rift: Commands and Permissions"
 description: "Command syntax, aliases, and permission nodes"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "rift, commands, permissions, help"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -74,6 +74,7 @@ See [World policies](/rift/05-world-policies) for the policy mutation commands.
 | `/rift language self [locale\|reset]` | `volmit.language.self` and `rift.language.self` | Choose or reset a personal locale |
 | `/rift language server [locale]` | `volmit.language.admin` or `rift.config` | Choose the server default |
 | `/rift language server edit [locale]` | `volmit.language.admin` or `rift.config` | Edit message text |
+| `/rift language update` | `volmit.language.admin` or `rift.config` | Check the Rift repository and merge changed translations into installed files; at most once every five minutes |
 | `/rift debug` | None | Open diagnostic help |
 | `/rift debug version` | `rift.command` | Show the plugin version |
 | `/rift debug dump [upload]` | `rift.debug` | Save a report; upload defaults to true |

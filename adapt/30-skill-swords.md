@@ -2,7 +2,7 @@
 title: "Skill - Swords"
 description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -33,8 +33,8 @@ Nearly every adaptation needs a sword in the main hand: wooden, stone, copper, i
 ### Machete (`sword-machete`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Machete" src="/adapt-assets/demos/swords/sword-machete-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Machete" src="/adapt-assets/demos/swords/sword-machete-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Machete" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-machete-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Machete" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-machete-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 7 knowledge, then 4 per level
@@ -53,8 +53,8 @@ Left-click with a sword to cut foliage in a sphere centered 2.25 blocks along yo
 ### Poisoned Blade (`sword-poison-blade`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Poisoned Blade" src="/adapt-assets/demos/swords/sword-poison-blade-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Poisoned Blade" src="/adapt-assets/demos/swords/sword-poison-blade-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Poisoned Blade" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-poison-blade-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Poisoned Blade" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-poison-blade-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 7 knowledge
@@ -69,8 +69,8 @@ Sword hits apply Poison at amplifier 2 for `50 * level` ticks. Poison-immune mob
 ### Bloody Blade (`sword-bloody-blade`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Bloody Blade" src="/adapt-assets/demos/swords/sword-bloody-blade-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Bloody Blade" src="/adapt-assets/demos/swords/sword-bloody-blade-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Bloody Blade" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-bloody-blade-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Bloody Blade" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-bloody-blade-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 7 knowledge
@@ -86,8 +86,8 @@ Direct sword hits start an armor-ignoring bleed that procs every 5 ticks, `ceil(
 ### Dual Wield Stance (`sword-dual-wield`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Dual Wield Stance" src="/adapt-assets/demos/swords/sword-dual-wield-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Dual Wield Stance" src="/adapt-assets/demos/swords/sword-dual-wield-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Dual Wield Stance" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-dual-wield-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Dual Wield Stance" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-dual-wield-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -105,8 +105,8 @@ A sword in each hand multiplies melee damage: the exact same material uses the m
 ### Executioner's Edge (`sword-executioners-edge`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Executioner&#x27;s Edge" src="/adapt-assets/demos/swords/sword-executioners-edge-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Executioner&#x27;s Edge" src="/adapt-assets/demos/swords/sword-executioners-edge-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Executioner&#x27;s Edge" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-executioners-edge-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Executioner&#x27;s Edge" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-executioners-edge-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 6 levels · 4 knowledge, then 3 per level
@@ -125,8 +125,8 @@ A sword hit deals bonus damage when the target's current health over its maximum
 ### Riposte Window (`sword-riposte-window`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Riposte Window" src="/adapt-assets/demos/swords/sword-riposte-window-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Riposte Window" src="/adapt-assets/demos/swords/sword-riposte-window-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Riposte Window" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-riposte-window-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Riposte Window" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-riposte-window-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -144,8 +144,8 @@ Blocking a hit with a raised shield in either hand arms a riposte; the window st
 ### Crimson Cyclone (`sword-crimson-cyclone`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Crimson Cyclone" src="/adapt-assets/demos/swords/sword-crimson-cyclone-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Crimson Cyclone" src="/adapt-assets/demos/swords/sword-crimson-cyclone-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Crimson Cyclone" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-crimson-cyclone-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Crimson Cyclone" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-crimson-cyclone-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -178,8 +178,8 @@ A falling sword swing adds cyclone damage to that hit, damages other living enti
 ### Lunge Strike (`sword-lunge-strike`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Lunge Strike" src="/adapt-assets/demos/swords/sword-lunge-strike-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Lunge Strike" src="/adapt-assets/demos/swords/sword-lunge-strike-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Lunge Strike" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-lunge-strike-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Lunge Strike" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-lunge-strike-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -202,8 +202,8 @@ A sprinting sword attack lunges you forward and grants bonus entity reach for th
 ### Blade Flow (`sword-blade-flow`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Blade Flow" src="/adapt-assets/demos/swords/sword-blade-flow-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Blade Flow" src="/adapt-assets/demos/swords/sword-blade-flow-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Blade Flow" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-blade-flow-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Blade Flow" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-blade-flow-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -220,8 +220,8 @@ Each sword hit adds a flow stack worth 0.10 attack speed, applied as `ADD_SCALAR
 ### Duelist's Focus (`sword-duelists-focus`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Duelist&#x27;s Focus" src="/adapt-assets/demos/swords/sword-duelists-focus-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Duelist&#x27;s Focus" src="/adapt-assets/demos/swords/sword-duelists-focus-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Duelist&#x27;s Focus" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-duelists-focus-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Duelist&#x27;s Focus" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-duelists-focus-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -242,8 +242,8 @@ While exactly one hostile mob or player is inside the engage radius, sword damag
 ### Whetstone Ritual (`sword-whetstone-ritual`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Whetstone Ritual" src="/adapt-assets/demos/swords/sword-whetstone-ritual-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Whetstone Ritual" src="/adapt-assets/demos/swords/sword-whetstone-ritual-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Whetstone Ritual" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-whetstone-ritual-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Whetstone Ritual" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-whetstone-ritual-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -264,8 +264,8 @@ Sneak-right-click a grindstone with a sword in the main hand to apply an `ATTACK
 ### Crescent Guard (`sword-crescent-guard`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Crescent Guard" src="/adapt-assets/demos/swords/sword-crescent-guard-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Crescent Guard" src="/adapt-assets/demos/swords/sword-crescent-guard-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Crescent Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-crescent-guard-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Crescent Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-crescent-guard-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge
@@ -283,8 +283,8 @@ A kill with a sword in the main hand grants Absorption, and a later kill never r
 ### Hamstring (`sword-hamstring`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hamstring" src="/adapt-assets/demos/swords/sword-hamstring-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Hamstring" src="/adapt-assets/demos/swords/sword-hamstring-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Hamstring" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-hamstring-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Hamstring" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-hamstring-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -303,8 +303,8 @@ A sword hit slows a sprinting player or any other target at or above the flee sp
 ### Heirloom Edge (`sword-heirloom-edge`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Heirloom Edge" src="/adapt-assets/demos/swords/sword-heirloom-edge-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Heirloom Edge" src="/adapt-assets/demos/swords/sword-heirloom-edge-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Heirloom Edge" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-heirloom-edge-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Heirloom Edge" src="https://media.volmitsoftware.com/adapt-assets/demos/swords/sword-heirloom-edge-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge

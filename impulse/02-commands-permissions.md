@@ -2,7 +2,7 @@
 title: "Impulse commands and permissions"
 description: "Command syntax and access rules"
 published: true
-date: 2026-10-23T00:00:00.000Z
+date: 2026-10-29T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -16,6 +16,7 @@ Use `/impulse` or `/imp` to open Director help. Help entries follow the sender's
 | --- | --- | --- |
 | `/impulse help` | Show command help | `impulse.command` |
 | `/impulse status` | Show loaded machine counts and service state | `impulse.command` |
+| `/impulse inspect` | Inspect the machine you are looking at, within six blocks | `impulse.use` and owner/trusted/admin access |
 | `/impulse give <player> <type> [amount] [level]` | Give tagged machines to an online player | `impulse.give` |
 | `/impulse config` | Open the configuration editor | `impulse.config` |
 | `/impulse trust add <player>` | Let an online player use the targeted machine | `impulse.use` and owner/admin access |
@@ -36,7 +37,7 @@ Use `/impulse language server edit <locale>` to edit a server message catalog wi
 
 | Permission | Default | Purpose |
 | --- | --- | --- |
-| `impulse.use` | Everyone | Open machine controls |
+| `impulse.use` | Everyone | Open machine controls and inspect accessible machines |
 | `impulse.place` | Everyone | Place machines |
 | `impulse.place.<type>` | Through `impulse.place` | Place a specific machine type |
 | `impulse.craft` | Everyone | Grant crafting permissions for all machine types |

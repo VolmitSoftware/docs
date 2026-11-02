@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -120,17 +120,17 @@ Input widths are 1–1024. The combined input length budget is 16,000 characters
 
 <div class="gloss-demo" data-demo="prompt-chat-pov">
 <p><strong>Chat input and continuation</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/prompt-chat-pov.webm" aria-label="Chat input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/prompt-chat-pov.webm" aria-label="Chat input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="prompt-anvil-pov">
 <p><strong>Anvil input and continuation</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/prompt-anvil-pov.webm" aria-label="Anvil input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/prompt-anvil-pov.webm" aria-label="Anvil input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="prompt-sign-pov">
 <p><strong>Sign input and continuation</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/prompt-sign-pov.webm" aria-label="Sign input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/prompt-sign-pov.webm" aria-label="Sign input and continuation, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A `prompt` action accepts `kind` (`sign`, `anvil`, or `chat`), `label`, `initial`, `var`, `then`,
@@ -255,7 +255,7 @@ With `[features] menus = false`, every navigation mode except `close` is denied.
 
 <div class="gloss-demo" data-demo="book-reading-pov">
 <p><strong>Written book action</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/book-reading-pov.webm" aria-label="Written book action, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/book-reading-pov.webm" aria-label="Written book action, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 `setSession` accepts a `var` name and a string `value` expression. Other components read the result as `session.<name>`. `close` ends the current flow. `inventory` accepts an inventory document `id` and optional `args` object:
@@ -374,7 +374,7 @@ Declare a key through the [state API](/gloss/21-api-getting-started#persistent-s
 
 <div class="gloss-demo" data-demo="sky-transition-pov">
 <p><strong>Per-viewer sky transition</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/sky-transition-pov.webm" aria-label="Per-viewer sky transition, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/sky-transition-pov.webm" aria-label="Per-viewer sky transition, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 `sky` changes time, weather, or the world border for the clicker under a required `purpose`. Time is a tick-count string modulo `24000`; weather can be `clear` or `rain`. `fadeTicks` controls the transition, up to `72000` ticks. A `border` object accepts `centerX`, `centerZ`, `size`, and `warningBlocks`.

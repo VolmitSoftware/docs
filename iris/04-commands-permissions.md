@@ -14,7 +14,9 @@ See [30 - Platform Differences](/iris/30-platform-differences) for the platform 
 ## Language selection
 
 `/iris language` picks a language. See [Languages](/languages). Iris's server default is `general.language` in
-`iris.json`; see [08 - Localization](/iris/08-localization) for its override files and platform notes.
+`iris.json`; see [08 - Localization](/iris/08-localization) for its language files and platform notes.
+
+`/iris language update` checks the Iris repository and merges changed translations into installed files, at most once per five minutes. It requires `iris.all` or `volmit.language.admin` on Bukkit and gamemaster level 2 on Fabric, Forge, and NeoForge.
 
 ## Everyday commands
 
@@ -110,7 +112,8 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 
 | Permission | Default | Gate |
 |------------|---------|------|
-| `iris.all` | `op` | Use Iris administration commands and change the server language |
+| `iris.all` | `op` | Use Iris administration commands, change the server language, and run `/iris language update` |
+| `volmit.language.admin` | `op` | Change language defaults across enabled Volmit plugins and run `/iris language update` |
 | `iris.debugdump` | `op` | Save and optionally upload diagnostic reports |
 | `iris.update` | `op` | Receive Iris update notices and see Iris in `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
 | `iris.language.self` | `true` | Choose or reset your Iris language; also requires `volmit.language.self` |
@@ -123,7 +126,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 
 | Gate | Level | Applies to |
 |------|-----------------|------------|
-| Gamemaster | `Commands.LEVEL_GAMEMASTERS` (2) | Everything that mutates: create/world, studio, object tools, pregen, download, debug, reload, evacuate, teleport, seed, edit, find/goto, structure, datapack, pack, accesslist. Also `catalog` and `ingest` |
+| Gamemaster | `Commands.LEVEL_GAMEMASTERS` (2) | Everything that mutates: create/world, studio, object tools, pregen, download, debug, reload, `language update`, evacuate, teleport, seed, edit, find/goto, structure, datapack, pack, accesslist. Also `catalog` and `ingest` |
 | Read-only | `Commands.LEVEL_ALL` (0) | `help`, `version`, `info` (seed field omitted unless gamemaster), `worlds`, `height`, `metrics`, and the entire `what` subtree |
 
 Anyone can open `/iris` help. Commands that change state require gamemaster level 2.

@@ -2,7 +2,7 @@
 title: "Particle Layers"
 description: "Add particle layers to holograms, menus, panels, and other displays"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-26T00:00:00.000Z
@@ -42,8 +42,8 @@ Wrap authored text in `<particles:name>text</particles>` and use `{"scope":"span
 
 <div class="gloss-demo" data-demo="particle-layers-pov">
 <p><strong>Particle layer geometry</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/particle-layers-pov.webm" aria-label="Particle layer geometry, first person" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/gloss-assets/demos/particle-layers-observer.webm" aria-label="Particle layer geometry, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/particle-layers-pov.webm" aria-label="Particle layer geometry, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/particle-layers-observer.webm" aria-label="Particle layer geometry, third person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Geometry types are `point`, `line`, `polyline`, `outline`, `filledPlane`, `cuboid`, `letterBounds`, `glyphOutline`, and `glyphFill`. Hologram text targets follow the native font advances, bold formatting, wrapping width, paragraph alignment, and text display scale. Use `placement.layer` and `placement.depth` to move particles in front of or behind the display.

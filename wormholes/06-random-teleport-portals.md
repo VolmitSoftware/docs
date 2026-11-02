@@ -2,7 +2,7 @@
 title: "Random Teleport Portals"
 description: "RTP type, editor options, safety, and rotation"
 published: true
-date: 2026-10-16T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -85,11 +85,11 @@ each private reservation on `cycleDurationMillis`. The editor labels that field
 <p><strong>Shared random destinations</strong> Keep a shared destination static, reroll it manually, and travel.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/rtp-routing-standard-pov.webm" aria-label="Random teleport routing, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rtp-routing-standard-pov.webm" aria-label="Random teleport routing, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/rtp-routing-clientview-pov.webm" aria-label="Random teleport routing, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rtp-routing-clientview-pov.webm" aria-label="Random teleport routing, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 
@@ -97,13 +97,13 @@ each private reservation on `cycleDurationMillis`. The editor labels that field
 <p><strong>Personal random destinations</strong> Two players receive separate destination reservations.</p>
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/wormholes-assets/demos/rtp-personal-standard-pov.webm" aria-label="Personal random teleport, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/rtp-personal-standard-observer.webm" aria-label="Personal random teleport, no client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rtp-personal-standard-pov.webm" aria-label="Personal random teleport, no client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rtp-personal-standard-observer.webm" aria-label="Personal random teleport, no client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Client mod</p>
-<video src="/wormholes-assets/demos/rtp-personal-clientview-pov.webm" aria-label="Personal random teleport, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/wormholes-assets/demos/rtp-personal-clientview-observer.webm" aria-label="Personal random teleport, client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rtp-personal-clientview-pov.webm" aria-label="Personal random teleport, client mod, first person demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/wormholes-assets/demos/rtp-personal-clientview-observer.webm" aria-label="Personal random teleport, client mod, second player demonstration" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 </div>
 

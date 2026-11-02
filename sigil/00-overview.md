@@ -2,7 +2,7 @@
 title: "Sigil: Getting started"
 description: "Issue a voucher, redeem it, and use the in-game editor"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "sigil, vouchers, getting-started"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -21,11 +21,11 @@ Cancelling leaves the voucher intact. Changing the held item or the voucher defi
 
 ## Edit vouchers
 
-Open `/sigil config`. The home menu contains configuration, vouchers, languages and a reload control. Voucher pages provide settings, reward previews, item capture, issuance, cloning and confirmed deletion. Back and page controls return to the surrounding list.
+Open `/sigil config`. The home menu contains configuration, vouchers, languages and a reload control. Voucher pages provide appearance and reward editors, settings, previews, issuance, cloning and confirmed deletion. Back and page controls return to the surrounding list.
 
-New and cloned definitions start disabled. Review their rewards and restrictions before enabling them. To add a custom item reward, hold the item and use the capture control or `/sigil capture voucher=<id>`; capture preserves the original stack.
+New and cloned definitions start disabled. Review their rewards and restrictions before enabling them. Open **Voucher appearance** and choose **Use held item appearance** to use the held item as the voucher template. This copies its supported metadata without consuming it; issued vouchers receive their own signed identities.
 
-The field editor changes existing reward fields. Edit the voucher's TOML file to add, remove or reorder reward steps and weighted groups.
+Open **Edit rewards** to add, edit, remove or reorder guaranteed rewards and weighted groups. Choose a reward type, enter its values, then select **Save reward**. To make the held item a reward, use **Capture held item** in the selected reward list or `/sigil capture voucher=<id>` for a guaranteed reward. Both leave the held stack unchanged. See [configuration](/sigil/02-installation-configuration) for appearance controls, reward fields and TOML examples.
 
 ## Reward behavior
 

@@ -2,7 +2,7 @@
 title: Titles commands and permissions
 description: Player commands, administrative actions, and access nodes
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: titles
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -34,6 +34,7 @@ The root command is /titles, with /title and /tags aliases. Running it without a
 | /titles edit <id> | titles.config | Open a title editor |
 | /titles config | titles.config | Open settings and catalog tools |
 | /titles language | Shared language permissions | Select a personal locale or access permitted language tools |
+| /titles language update | titles.config or volmit.language.admin | Check the Titles repository and merge changed translations into installed files, at most once every five minutes |
 | /titles reload | titles.reload | Reload configuration and languages |
 | /titles status | titles.admin | Show catalog and runtime status |
 | /titles debug dump [upload=false] | titles.debug | Save a diagnostic report; upload requires explicit true and debugUpload |

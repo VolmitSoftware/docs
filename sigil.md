@@ -2,13 +2,13 @@
 title: Sigil
 description: "Signed reward vouchers with configurable rewards and redemption history"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "sigil, vouchers"
 editor: markdown
 dateCreated: 2026-10-13T00:00:00.000Z
 ---
 
-Sigil provides signed physical reward vouchers, inventory editors and persistent redemption records. Players preview and redeem items; operators configure rewards and inspect interrupted deliveries.
+Sigil provides signed physical reward vouchers, item appearance templates and persistent redemption records. Players preview and redeem items; operators edit appearance and reward steps in-game and inspect interrupted deliveries.
 
 | | |
 |---|---|

@@ -12,7 +12,7 @@ Rift creates, imports, loads, unloads, quarantines, restores, and teleports betw
 
 | | |
 |---|---|
-| Version | 2.0.1-26.1-26.3 |
+| Version | 2.0.0-26.1-26.3 |
 | Server software | Paper 26.1 through 26.3, including patch releases; Folia with lifecycle limits |
 | Java | 25 or newer |
 | Main command | `/rift` (`/rft`) |

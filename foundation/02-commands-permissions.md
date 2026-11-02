@@ -2,7 +2,7 @@
 title: "Commands and Permissions"
 description: "Every Foundation command, its permission, and what it does"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "foundation, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -25,6 +25,7 @@ dateCreated: 2026-08-28T00:00:00.000Z
 | `/foundation language self [locale\|reset]` | Both `foundation.language.self` and `volmit.language.self` | Opens the personal picker, selects a locale, or returns to the server default |
 | `/foundation language server [locale]` | `foundation.admin.config` or `volmit.language.admin` | Opens the server picker or transactionally changes the default locale |
 | `/foundation language server edit [locale]` | `foundation.admin.config` or `volmit.language.admin`; player only | Opens the grouped, searchable editor, preparing an uninstalled repository or valid custom locale when needed |
+| `/foundation language update` | `foundation.admin.config` or `volmit.language.admin` | Checks the language repository and merges changes into installed locales, at most once every five minutes |
 | `/foundations debug` (`/foundation debug`, `report`) | `foundation.debug` | Opens the Director debug submenu; `foundation.admin.debug` grants this node |
 | `/foundation debug version` | `foundation.debug` | Shows the installed plugin version |
 | `/foundation version` | `foundation.debug` | Hidden alias for the version action; omitted from normal help |

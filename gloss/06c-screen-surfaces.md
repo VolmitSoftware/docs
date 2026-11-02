@@ -2,7 +2,7 @@
 title: "Screen Surfaces"
 description: "Configure conditional action bars, boss bars, and titles"
 published: true
-date: 2026-10-08T03:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-03T00:00:00.000Z
@@ -14,12 +14,12 @@ Each schema-1 document under `plugins/Gloss/surfaces/` drives an action bar, bos
 
 <div class="gloss-demo" data-demo="screen-surfaces-pov">
 <p><strong>Action bars, boss bars, and titles</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/screen-surfaces-pov.webm" aria-label="Action bars, boss bars, and titles, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/screen-surfaces-pov.webm" aria-label="Action bars, boss bars, and titles, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="surface-editor">
 <p><strong>Screen surface authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/surface-editor.webm" aria-label="Screen surface authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/surface-editor.webm" aria-label="Screen surface authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Save this example as `surfaces/health.json`:

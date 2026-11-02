@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -39,8 +39,8 @@ Damage to another entity also runs the normal PvP and PvE checks.
 ### Multi-Armor (`blocking-multiarmor`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Multi-Armor" src="/adapt-assets/demos/blocking/blocking-multiarmor-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Multi-Armor" src="/adapt-assets/demos/blocking/blocking-multiarmor-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Multi-Armor" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-multiarmor-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Multi-Armor" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-multiarmor-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -54,8 +54,8 @@ Left-click an elytra onto a chestplate, or the reverse, to merge them. One of th
 ### Chains of Mephistopheles (`blocking-chainarmorer`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Chains of Mephistopheles" src="/adapt-assets/demos/blocking/blocking-chainarmorer-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Chains of Mephistopheles" src="/adapt-assets/demos/blocking/blocking-chainarmorer-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Chains of Mephistopheles" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-chainarmorer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Chains of Mephistopheles" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-chainarmorer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 1 knowledge
@@ -65,8 +65,8 @@ Adds the four vanilla armor shapes as `blocking-chainarmorer-helmet`, `blocking-
 ### Craftable Saddle (`blocking-saddlecrafter`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Craftable Saddle" src="/adapt-assets/demos/blocking/blocking-saddlecrafter-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Craftable Saddle" src="/adapt-assets/demos/blocking/blocking-saddlecrafter-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Craftable Saddle" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-saddlecrafter-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Craftable Saddle" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-saddlecrafter-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 1 knowledge
@@ -76,8 +76,8 @@ Adds `blocking-saddlecrafter`: five `LEATHER` shaped `I I` over `III`. `permanen
 ### Craftable Horse Armor (`blocking-horsearmorer`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Craftable Horse Armor" src="/adapt-assets/demos/blocking/blocking-horsearmorer-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Craftable Horse Armor" src="/adapt-assets/demos/blocking/blocking-horsearmorer-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Craftable Horse Armor" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-horsearmorer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Craftable Horse Armor" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-horsearmorer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 1 knowledge
@@ -87,8 +87,8 @@ Adds `blocking-horsearmorerleather`, `blocking-horsearmoreriron`, `blocking-hors
 ### Counter Guard (`blocking-counter-guard`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Counter Guard" src="/adapt-assets/demos/blocking/blocking-counter-guard-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Counter Guard" src="/adapt-assets/demos/blocking/blocking-counter-guard-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Counter Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-counter-guard-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Counter Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-counter-guard-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 5 per level
@@ -111,8 +111,8 @@ Each hit blocked with a shield adds a counter stack. A later incoming hit can sp
 ### Bastion Stance (`blocking-bastion-stance`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Bastion Stance" src="/adapt-assets/demos/blocking/blocking-bastion-stance-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Bastion Stance" src="/adapt-assets/demos/blocking/blocking-bastion-stance-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Bastion Stance" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-bastion-stance-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Bastion Stance" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-bastion-stance-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -136,8 +136,8 @@ Sneak while standing still and blocking with a shield in either hand to hold kno
 ### Mirror Block (`blocking-mirror-block`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Mirror Block" src="/adapt-assets/demos/blocking/blocking-mirror-block-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Mirror Block" src="/adapt-assets/demos/blocking/blocking-mirror-block-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Mirror Block" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-mirror-block-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Mirror Block" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-mirror-block-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -164,8 +164,8 @@ While blocking with a shield, an incoming projectile can be sent back at its sho
 ### Bulwark Bash (`blocking-bulwark-bash`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Bulwark Bash" src="/adapt-assets/demos/blocking/blocking-bulwark-bash-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Bulwark Bash" src="/adapt-assets/demos/blocking/blocking-bulwark-bash-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Bulwark Bash" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-bulwark-bash-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Bulwark Bash" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-bulwark-bash-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -199,8 +199,8 @@ With a shield in the off hand and not on cooldown, sprint, jump, and strike whil
 ### Shield Wall (`blocking-shield-wall`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Shield Wall" src="/adapt-assets/demos/blocking/blocking-shield-wall-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Shield Wall" src="/adapt-assets/demos/blocking/blocking-shield-wall-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Shield Wall" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-shield-wall-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Shield Wall" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-shield-wall-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -222,8 +222,8 @@ While blocking, projectile damage to players behind the shield is reduced for bl
 ### Perfect Guard (`blocking-perfect-guard`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Perfect Guard" src="/adapt-assets/demos/blocking/blocking-perfect-guard-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Perfect Guard" src="/adapt-assets/demos/blocking/blocking-perfect-guard-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Perfect Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-perfect-guard-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Perfect Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-perfect-guard-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 4 per level
@@ -246,8 +246,8 @@ Raising a shield inside the parry window, facing the incoming melee or projectil
 ### Tempered Guard (`blocking-tempered-guard`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Tempered Guard" src="/adapt-assets/demos/blocking/blocking-tempered-guard-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Tempered Guard" src="/adapt-assets/demos/blocking/blocking-tempered-guard-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Tempered Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-tempered-guard-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Tempered Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-tempered-guard-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level
@@ -266,8 +266,8 @@ When a blocked hit spends shield durability, a roll may repair the shield first,
 ### Shieldbearer's Resolve (`blocking-shieldbearers-resolve`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Shieldbearer&#x27;s Resolve" src="/adapt-assets/demos/blocking/blocking-shieldbearers-resolve-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Shieldbearer&#x27;s Resolve" src="/adapt-assets/demos/blocking/blocking-shieldbearers-resolve-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Shieldbearer&#x27;s Resolve" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-shieldbearers-resolve-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Shieldbearer&#x27;s Resolve" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-shieldbearers-resolve-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -289,8 +289,8 @@ An axe swing that puts the shield on cooldown grants Resistance and removes part
 ### Phalanx Crafter (`blocking-phalanx-crafter`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Phalanx Crafter" src="/adapt-assets/demos/blocking/blocking-phalanx-crafter-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Phalanx Crafter" src="/adapt-assets/demos/blocking/blocking-phalanx-crafter-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Phalanx Crafter" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-phalanx-crafter-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Phalanx Crafter" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-phalanx-crafter-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 2 levels · 2 knowledge, then 3 per level
@@ -318,8 +318,8 @@ Recipe keys are `blocking-phalanx-field-shield` (`WHITE_WOOL` x3 on top, `OAK_PL
 ### Interpose (`blocking-interpose`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Interpose" src="/adapt-assets/demos/blocking/blocking-interpose-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Interpose" src="/adapt-assets/demos/blocking/blocking-interpose-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Interpose" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-interpose-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Interpose" src="https://media.volmitsoftware.com/adapt-assets/demos/blocking/blocking-interpose-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge

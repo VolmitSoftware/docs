@@ -2,7 +2,7 @@
 title: "Impulse diagnostics"
 description: "Read status and create diagnostic reports"
 published: true
-date: 2026-10-23T00:00:00.000Z
+date: 2026-10-29T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -26,7 +26,11 @@ Reports include server and plugin information, configuration, language state, ma
 
 ## Machine controls
 
+Use `/impulse inspect` while looking at a machine within six blocks. Owners, trusted players, and administrators with `impulse.use` can inspect it. The report shows its location, effective level, last result, pause and redstone state, and occupied storage slots. A saved level above the configured maximum is shown separately.
+
 Open the machine to see its last action result and effective tier settings. Upgrades show the next tier's settings before payment. The displayed settings reflect the active configuration.
+
+Click the status comparator to refresh the controls. Its description includes the machine's location and current redstone signal; storage shows occupied slots. An action failure remains visible while the machine is automatically paused, until it is resumed or unloaded. The full exception is written to the server log.
 
 Machine results and status labels use the viewer's selected language. A result distinguishes normal waiting states, missing inputs, full storage, protection denials, unavailable owners or regions, disabled tiers, and action failures. Console reports use the server language.
 

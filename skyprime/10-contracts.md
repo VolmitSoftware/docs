@@ -2,7 +2,7 @@
 title: 10 - Island Contracts
 description: Rotating delivery orders, consumed materials, configurable rewards and interrupted hand-ins
 published: true
-date: 2026-10-10T09:50:21.111Z
+date: 2026-11-02T00:00:00.000Z
 tags: skyprime, contracts, progression, rewards
 editor: markdown
 dateCreated: 2026-10-09T05:00:00.000Z
@@ -69,7 +69,7 @@ Reset and ownership transfer retain the board and completed offers. Restart does
 | `skyprime.contracts.deliver` | Everyone | Confirm deliveries; also requires `skyprime.use` and island action `CONTRACTS` |
 | `skyprime.contracts.admin` | Operators | List and resolve interrupted deliveries |
 
-The default member role includes `CONTRACTS`. Custom roles can grant or deny it independently. The browser and confirmation messages are included in all 18 bundled language catalogs; configured offer names and descriptions use their configured text.
+The default member role includes `CONTRACTS`. Custom roles can grant or deny it independently. The browser and confirmation messages are included in all 18 language catalogs; configured offer names and descriptions use their configured text.
 
 ## Interrupted deliveries
 

@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -20,7 +20,7 @@ The reloadable `[temporaryDisplays] maxActiveBubbles` setting limits concurrent 
 
 <div class="gloss-demo" data-demo="bubble-style-editor">
 <p><strong>Bubble style authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/bubble-style-editor.webm" aria-label="Bubble style authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/bubble-style-editor.webm" aria-label="Bubble style authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss restores a missing `default.json` while chat bubbles are enabled.
@@ -164,7 +164,7 @@ disable it.
 
 <div class="gloss-demo" data-demo="chat-bubbles-pov">
 <p><strong>Chat bubbles</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/chat-bubbles-pov.webm" aria-label="Chat bubbles, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/chat-bubbles-pov.webm" aria-label="Chat bubbles, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 The base position is the speaker's eye plus `offset`. Newer messages push older ones upward by `stackDistance` per wrapped row. `followPlayer` controls whether that base follows the speaker.
@@ -245,19 +245,19 @@ See also [Damage Indicators](/gloss/08b-damage-indicators) and [Drop Labels](/gl
 
 <div class="gloss-demo" data-demo="chat-features-pov">
 <p><strong>Chat channels and rich messages</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/chat-features-pov.webm" aria-label="Chat channels and rich messages, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/chat-features-pov.webm" aria-label="Chat channels and rich messages, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="chat-recipient-pov">
 <p><strong>Recipient mentions and item hover</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/chat-recipient-pov.webm" aria-label="Recipient mentions and item hover, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/chat-recipient-pov.webm" aria-label="Recipient mentions and item hover, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Channel messages apply enabled emoji tokens and triggers when the sender has `gloss.emoji.use`. Configured emoji formatting remains active; MiniMessage tags written by the sender stay literal. Links, held-item cards and mentions retain their own formatting.
 
 <div class="gloss-demo" data-demo="channel-editor">
 <p><strong>Chat channel authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/channel-editor.webm" aria-label="Chat channel authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/channel-editor.webm" aria-label="Chat channel authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Enable `channels = true` under `[features]` in `gloss.toml` to use Gloss chat formatting and mentions. The switch applies on config reload, including when enabling channels after startup. Chat commands are registered at startup and become usable when channels are enabled. Channel documents use schema 1 under `channels/<id>.json`. Open the global channel with `/gloss web edit channel global` and choose **Mentions** to edit its enabled switch, highlighted message format, tagged-name style, and sound.

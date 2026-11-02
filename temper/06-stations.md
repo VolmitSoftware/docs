@@ -2,13 +2,13 @@
 title: "Temper: Repair stations"
 description: "Place and manage public or private repair anvils"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "temper, stations"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
 ---
 
-Registered anvil stations open Temper’s repair interface. Their location, owner, public access, and individual visual settings are saved under `storage/`.
+Registered anvil stations open Temper’s repair interface. Their location, owner, public access, and individual visual settings are saved under `storage/`. Brief Windows file locks are retried when saving; a persistent save failure disables station use and edits until restart.
 
 ## Place and configure a station
 
