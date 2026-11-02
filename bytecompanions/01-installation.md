@@ -2,7 +2,7 @@
 title: "ByteCompanions: Installation"
 description: "Requirements, platform notes, first start, file locations, updating, and uninstalling"
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "bytecompanions, installation"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -42,7 +42,7 @@ Paper, Purpur, and Leaf behave the same.
 
 ## First start
 
-The first start downloads the plugin's libraries into `plugins/ByteCompanions/.libs/` and verifies each file. Later starts reuse the cache. A download failure stops the plugin; the console names the library and the network error.
+The first start downloads the plugin's libraries from Maven Central over HTTPS into `plugins/ByteCompanions/.libs/` and checks each file against the SHA-256 recorded in the plugin jar. Later starts check the cache the same way and download a library again if its file changed. A download or checksum failure stops the plugin; the console names the library.
 
 After the libraries load, the plugin writes `config.toml`, the eight starter companion files, the feature files, `languages/en_US.toml`, and the `storage/` folder for the default `json` backend. Then it prints the splash (unless `presentation.splashScreen` is false) and this line:
 
@@ -57,7 +57,8 @@ All paths are relative to `plugins/ByteCompanions/`.
 | Path | Contents |
 |---|---|
 | `config.toml` | Root settings. See [Configuration](/bytecompanions/03-configuration). |
-| `languages/<locale>.toml` | Message catalogs, generated when a locale is first used. See [Languages](/bytecompanions/04-languages). |
+| `languages/<locale>.toml` | Message catalogs, generated or downloaded when a locale is first used. See [Languages](/bytecompanions/04-languages). |
+| `languages/.upstream/` | Pristine repository copies and check state used to merge translation updates; managed by the plugin, not for editing. |
 | `languages/language-preferences.properties` | Personal language choices by player UUID. |
 | `companions/<id>.toml` | One companion definition per file. Fresh installs receive `bee`, `copper`, `lantern`, `mushroom`, `myself`, `rainbow`, `scout`, and `warrior`. |
 | `features/attributes/config.toml` | Attribute modifiers by companion. |

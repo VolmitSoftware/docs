@@ -2,7 +2,7 @@
 title: "BileTools: Configuration"
 description: "Every biletools.yml key with its default"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "biletools, configuration"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -101,9 +101,29 @@ The proxy edition reads `plugins/biletools/biletools.json` and has no language, 
 
 ## Language files
 
-The server default is the `language` key above. Catalogs live at `plugins/BileTools/languages/<locale>.toml`, and personal choices in `languages/language-preferences.properties`.
+The server default is the `language` key above. Any id matching `[A-Za-z0-9_-]{2,32}` is accepted, including a custom locale.
 
-English is generated on first start. Other catalogs download only when the local file is missing, and an installed file is never rewritten. A partial catalog stays selectable: its valid messages are used and the rest fall back to English one key at a time. During hot reload, invalid TOML keeps the last readable version active until you fix the file.
+| Path under `plugins/BileTools/` | Contents |
+|---|---|
+| `languages/<locale>.toml` | Editable catalogs: generated English, installed repository locales, and custom locales |
+| `languages/language-preferences.properties` | Personal language choices |
+| `languages/.upstream/<locale>.toml` | Unedited upstream copy last merged into each installed repository locale, plus the English reference last written |
+| `languages/.upstream/upstream.properties` | Tracked repository, branch, revision, ETag, last check time, and a SHA-256 per stored file |
+{.dense}
+
+Translations track the `master` branch of `VolmitSoftware/BileTools` (`src/main/resources/languages`). At startup and on `/bile language update`, BileTools asks GitHub for the newest commit touching that folder, at most once per five minutes, and fetches every installed repository locale at that commit. The console logs `BileTools languages match VolmitSoftware/BileTools@master (<commit>).` or one `Updated BileTools language <locale> ...` line per changed file. A failed check logs once and leaves English and every installed file active. There is no periodic check.
+
+Each update is a per-key merge: new upstream keys are added, keys you have not edited take the upstream value, keys you edited are kept, and keys removed upstream are removed only if you had not edited them. English merges the same way from the built-in catalog after a plugin update. Custom files are never touched. A repository locale that is not installed downloads when it is selected; when the configured `language` is not installed, English stays active until the download finishes and the locale then activates.
+
+A custom locale is any other `languages/<id>.toml`. An optional `[meta]` table sets `name` (the name shown in the picker, editor, and settings editor) and `base` (another locale to fall back to before English, up to four levels):
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+```
+
+When `language` names a non-repository locale id that has no file, BileTools creates it from the English reference with `name` set to the id and `base = "en_US"`. A partial catalog stays selectable: its valid messages are used and the rest fall back one key at a time. During hot reload, invalid TOML keeps the last readable version active until you fix the file; language updates do not trigger a hot reload.
 
 See [Languages](/languages).
 

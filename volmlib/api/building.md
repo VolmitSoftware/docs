@@ -2,7 +2,11 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
+<<<<<<< HEAD
 date: 2026-11-01T00:00:00.000Z
+=======
+date: 2026-10-30T00:00:00.000Z
+>>>>>>> origin/master
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z

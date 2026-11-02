@@ -2,7 +2,7 @@
 title: Coffer installation and compatibility
 description: Requirements, first start, files, updates, diagnostics, and reload limits
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: coffer, installation
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -52,7 +52,8 @@ Coffer refuses to enable while players are online. Local storage opens asynchron
 | --- | --- |
 | `config.toml` | Settings; see [configuration and languages](/coffer/03-configuration-languages) |
 | `languages/en_US.toml` | Editable English messages, written on first start |
-| `languages/<locale>.toml` | Locale files an operator installs |
+| `languages/<locale>.toml` | Downloaded repository locales and custom locales |
+| `languages/.upstream/` | Last downloaded repository text, the English reference, and the check state; hot reload ignores it |
 | `languages/language-preferences.properties` | Players' personal language selections |
 | `storage/` | Vault records, journals, receipts, fences, and recovery decisions; see [local storage](/coffer/06-local-storage) |
 | `debug/` | Reports written by `/coffer debug dump` |
@@ -69,7 +70,7 @@ To update, stop the server, replace the jar, and start the server again. Keep th
 
 `/coffer status` shows the version, the compatibility line (Java version, Bukkit range, scheduler), storage state and queued writes, live, deleted, and damaged vault counts, the metrics, update check, and hot reload states, and active transfers.
 
-`/coffer debug dump` writes a report to `plugins/Coffer/debug/coffer-v<version>-debugdump-<time>.txt`. Coffer's section lists the bytecode and runtime Java versions, the supported Minecraft range, the scheduler, the server language and whether translation downloads are published, whether vaults are enabled, storage state, edit sessions, guarded transfers and recoveries, metrics state, the update notice and hot reload settings, and the effective configuration. It contains no credentials or tokens. The upload parameter defaults to `true`: the report is also uploaded to mclo.gs when `debug.uploadEnabled` is `true`, and `/coffer debug dump upload=false` keeps it local. A failed upload never removes the local file. `/volmit plugins debug` includes Coffer.
+`/coffer debug dump` writes a report to `plugins/Coffer/debug/coffer-v<version>-debugdump-<time>.txt`. Coffer's section lists the bytecode and runtime Java versions, the supported Minecraft range, the scheduler, the server language, the language source, revision, last check, and last error, whether vaults are enabled, storage state, edit sessions, guarded transfers and recoveries, metrics state, the update notice and hot reload settings, and the effective configuration. It contains no credentials or tokens. The upload parameter defaults to `true`: the report is also uploaded to mclo.gs when `debug.uploadEnabled` is `true`, and `/coffer debug dump upload=false` keeps it local. A failed upload never removes the local file. `/volmit plugins debug` includes Coffer.
 
 Coffer submits anonymous usage statistics to bStats under plugin ID 34915 while `metrics.enabled` is `true`. The global `plugins/bStats/config.yml` opt-out still applies.
 

@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -136,7 +136,20 @@ Preview third-party hologram imports with:
 /gloss import preview <source>
 ```
 
-Apply them with `/gloss import apply <source>`. Supported sources are `gholo`, `decent-holograms`, `holographic-displays`, and `fancy-holograms`.
+Apply them with `/gloss import apply <source>`. Hologram sources are `gholo`, `decent-holograms`, `holographic-displays`, `fancy-holograms` and `cmi`. Each imported hologram becomes a menu and a panel under `imports/<source>/`.
+
+The `gholo` source reads `plugins/GHolo`: the SQLite database `data/data.db` and the export files in `holos/` and `interactions/`. When a database entry and an export file share an id, the database copy is imported and the file is reported. MySQL storage is not read; export it to files with GHolo first. Symbols from `config.yml` are replaced, and `%id%` animation tokens from `animations.yml` become time-based `{{ select(...) }}` expressions. An animation that does not fit in one 1024-character expression is imported as its first frame.
+
+Each GHolo interaction becomes its own panel, `imports/gholo/interaction-<id>`, with an invisible button of the interaction's size and its permission. Message, command, server command, connect and absolute teleport actions are converted. Relative `~` teleports are skipped, and a teleport without yaw and pitch faces south.
+
+The `cmi` source reads `plugins/CMI/Saves/Holograms.yml`, in both the current layout and CMI's older flat layout. Only the first page is imported, and disabled holograms are skipped. The importer converts:
+
+- text lines and `ICON:` lines that name a plain material;
+- alignment, background color and alpha, text alpha, shadow, see-through, billboard, scale, facing and block light;
+- CMI hex colors, `&#` hex colors, gradients and the 16 standard color names (other color names are removed);
+- `[playerName]` and `[playerDisplayName]`, which become `{{ player.name }}` and `{{ player.displayName }}`.
+
+CMI hologram commands become an invisible button over the text. Commands run from the console unless prefixed with `asPlayer!`, `click:` prefixes become click triggers, and other CMI command prefixes are skipped. A hologram that requires a permission requires `cmi.hologram.<name>` on its panel. Without `Settings.Range.Visual`, the view range is `Holograms.Defaults.viewRange` from CMI's `config.yml`, or 16 blocks. Images, clickable text, board backgrounds, fade and rotate animations, page buttons and line-of-sight hiding are reported as not imported.
 
 For HoloUi data, run `/gloss import holoui mode=preview`, then `/gloss import holoui mode=apply` after reviewing the report. The prepared plan belongs to the command sender and expires after `[imports] previewLifetimeSeconds` (ten minutes by default). `/gloss import holoui mode=preview overwrite=true` explicitly prepares replacement of conflicting destination content; apply always uses the same reviewed plan. Changed source or destination files require a new preview.
 

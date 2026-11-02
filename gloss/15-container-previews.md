@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -19,7 +19,7 @@ Container preview cards use the `PREVIEW` limits in `[visibility]`. All content 
 
 <div class="gloss-demo" data-demo="container-previews-pov">
 <p><strong>Container previews</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/container-previews-pov.webm" aria-label="Container previews, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/container-previews-pov.webm" aria-label="Container previews, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Look at a container within the matched preview document’s `viewDistance` blocks (default `10`, range `1`–`24`). A
@@ -93,7 +93,7 @@ immediately.
 
 <div class="gloss-demo" data-demo="container-preview-editor">
 <p><strong>Container preview authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/container-preview-editor.webm" aria-label="Container preview authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/container-preview-editor.webm" aria-label="Container preview authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Each `.json` file in `plugins/Gloss/previews/` defines one preview, and its id is the filename

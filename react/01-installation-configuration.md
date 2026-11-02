@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install React, configure automatic reloads, connect React Web, and uninstall React"
 published: true
-date: 2026-10-17T14:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -37,8 +37,9 @@ To update React, stop the server, replace its jar, and restart. Keep `plugins/Re
 | `action/*.toml` | Action settings |
 | `sampler/*.toml` | Metric settings |
 | `plugin-apis/*.toml` | Third-party metric packs |
-| `languages/en_US.toml` | Complete editable English catalog, created on startup if missing |
-| `languages/<locale>.toml` | Editable locale catalog, downloaded when selected if missing |
+| `languages/en_US.toml` | Complete editable English catalog, created on startup if missing and merged with new messages after a React update |
+| `languages/<locale>.toml` | Editable repository catalog, downloaded when selected if missing, or a custom language |
+| `languages/.upstream/` | Pristine repository copies and check state React uses to merge translation updates; managed by React, not for editing |
 | `languages/language-preferences.properties` | Per-player locale choices |
 | `history/` | Saved metric history |
 
@@ -57,7 +58,7 @@ To update React, stop the server, replace its jar, and restart. Keep `plugins/Re
 | `integrationSecretsEnabled` | `false` | Activate secret Iris and Adapt integrations; changes apply automatically |
 | `unsafeBytecode` | `false` | Allow live bytecode instrumentation attachment; detaching requires a server JVM restart |
 
-React watches configuration and language files whenever the plugin is enabled. Save changes to apply them automatically, including feature, tweak, action, sampler, global, and web settings. Invalid configuration files leave the previous working settings active. Language catalogs use the per-message and file-level fallback rules in [Localization](/react/13-localization).
+React watches configuration and language files whenever the plugin is enabled. Save changes to apply them automatically, including feature, tweak, action, sampler, global, and web settings. Invalid configuration files leave the previous working settings active. React's own translation updates and the `languages/.upstream/` directory are not treated as file edits. Language catalogs use the per-message and file-level fallback rules in [Localization](/react/13-localization).
 
 Changing `metrics` starts or stops anonymous bStats reporting without a restart. Setting `unsafeBytecode = true` can attach React's general ByteBuddy agent while the server is running. Attached instrumentation remains until the server JVM restarts. Set `unsafeBytecode = false` before restarting to prevent the general agent from attaching again; versioned NMS features can still attach their own instrumentation when activated.
 
@@ -141,7 +142,7 @@ Roles are `viewer`, `operator`, and `admin`. Treat admin tokens like console acc
 
 ## Language
 
-Use `/react language` (alias `/react languages`) for a personal choice or `/react language server` for the default in `react.toml`. Edit messages directly in `languages/<locale>.toml`; React creates English on startup and preserves existing catalogs. Generated English and repository catalogs include formatting instructions and a comment reference explaining each variable in the catalog's language. See [Localization](/react/13-localization).
+Use `/react language` (alias `/react languages`) for a personal choice or `/react language server` for the default in `react.toml`. Edit messages directly in `languages/<locale>.toml`; React creates English on startup and preserves existing catalogs. Generated English and repository catalogs include formatting instructions and a comment reference explaining each variable in the catalog's language. Run `/react language update` to merge the latest repository translations into installed catalogs. See [Localization](/react/13-localization).
 
 ## Uninstalling
 

@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -38,8 +38,8 @@ Herbalist's Myconid, Herbalist's Terralid, Mushroom Maker, Webby Creator, and Ro
 ### Growth Aura (`herbalism-growth-aura`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Growth Aura" src="/adapt-assets/demos/herbalism/herbalism-growth-aura-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Growth Aura" src="/adapt-assets/demos/herbalism/herbalism-growth-aura-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Growth Aura" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-growth-aura-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Growth Aura" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-growth-aura-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 7 levels · 12 knowledge, then 8 per level
@@ -84,8 +84,8 @@ Each toggle has its own server policy under `[playerPreferences.growable-<plant>
 ### Harvest & Replant (`herbalism-replant`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Harvest &amp; Replant" src="/adapt-assets/demos/herbalism/herbalism-replant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Harvest &amp; Replant" src="/adapt-assets/demos/herbalism/herbalism-replant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Harvest &amp; Replant" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-replant-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Harvest &amp; Replant" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-replant-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 4 knowledge, then 6 per level
@@ -110,8 +110,8 @@ Hoe Drop-To-Inventory sends the loot to the inventory.
 ### Hungry Shield (`herbalism-hungry-shield`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hungry Shield" src="/adapt-assets/demos/herbalism/herbalism-hungry-shield-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hungry Shield" src="/adapt-assets/demos/herbalism/herbalism-hungry-shield-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hungry Shield" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-hungry-shield-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hungry Shield" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-hungry-shield-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 10 knowledge, then 7 per level
@@ -132,8 +132,8 @@ Damage is reduced by moving `min(damage * effectiveness, max(0, foodLevel + satu
 ### Herbalist's Hippo (`herbalism-hippo`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Herbalist&#x27;s Hippo" src="/adapt-assets/demos/herbalism/herbalism-hippo-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Herbalist&#x27;s Hippo" src="/adapt-assets/demos/herbalism/herbalism-hippo-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Herbalist&#x27;s Hippo" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-hippo-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Herbalist&#x27;s Hippo" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-hippo-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 7 levels · 3 knowledge, then 8 per level
@@ -143,8 +143,8 @@ Eating anything on the food list adds `2 + level` food, capped at 20, and the sa
 ### Hoe Drop-To-Inventory (`herbalism-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hoe Drop-To-Inventory" src="/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hoe Drop-To-Inventory" src="/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hoe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hoe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 2 knowledge
@@ -154,8 +154,8 @@ In survival, blocks broken with a hoe in the main hand send their drops to the i
 ### Herbalist's Luck (`herbalism-luck`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Herbalist&#x27;s Luck" src="/adapt-assets/demos/herbalism/herbalism-luck-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Herbalist&#x27;s Luck" src="/adapt-assets/demos/herbalism/herbalism-luck-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Herbalist&#x27;s Luck" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-luck-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Herbalist&#x27;s Luck" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-luck-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 7 levels · 3 knowledge, then 8 per level
@@ -170,8 +170,8 @@ Breaking grass can drop melon seeds, pumpkin seeds, or cocoa beans, and breaking
 ### Herbalist's Myconid (`herbalism-myconid`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Herbalist&#x27;s Myconid" src="/adapt-assets/demos/herbalism/herbalism-myconid-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Herbalist&#x27;s Myconid" src="/adapt-assets/demos/herbalism/herbalism-myconid-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Herbalist&#x27;s Myconid" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-myconid-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Herbalist&#x27;s Myconid" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-myconid-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 3 knowledge
@@ -181,8 +181,8 @@ Shapeless recipe `adapt:herbalism-dirt-myconid` turns `DIRT` + `RED_MUSHROOM` + 
 ### Herbalist's Terralid (`herbalism-terralid`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Herbalist&#x27;s Terralid" src="/adapt-assets/demos/herbalism/herbalism-terralid-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Herbalist&#x27;s Terralid" src="/adapt-assets/demos/herbalism/herbalism-terralid-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Herbalist&#x27;s Terralid" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-terralid-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Herbalist&#x27;s Terralid" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-terralid-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 3 knowledge
@@ -192,8 +192,8 @@ Shaped recipe `adapt:herbalism-dirt-terralid`, `SSS` over `DDD` with `S` = `WHEA
 ### Mushroom Maker (`herbalism-mushroom-blocks`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Mushroom Maker" src="/adapt-assets/demos/herbalism/herbalism-mushroom-blocks-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Mushroom Maker" src="/adapt-assets/demos/herbalism/herbalism-mushroom-blocks-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Mushroom Maker" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-mushroom-blocks-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Mushroom Maker" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-mushroom-blocks-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 2 knowledge
@@ -203,8 +203,8 @@ Four recipes: `adapt:herbalism-redmushblock` and `adapt:herbalism-brownmushblock
 ### Webby Creator (`herbalism-cobweb`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Webby Creator" src="/adapt-assets/demos/herbalism/herbalism-cobweb-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Webby Creator" src="/adapt-assets/demos/herbalism/herbalism-cobweb-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Webby Creator" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-cobweb-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Webby Creator" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-cobweb-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 2 knowledge
@@ -214,8 +214,8 @@ Shaped recipe `adapt:herbalism-cobwebblock` turns a 3x3 of `STRING` into one `CO
 ### Seed Sower (`herbalism-seed-sower`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Seed Sower" src="/adapt-assets/demos/herbalism/herbalism-seed-sower-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Seed Sower" src="/adapt-assets/demos/herbalism/herbalism-seed-sower-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Seed Sower" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-seed-sower-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Seed Sower" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-seed-sower-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -235,8 +235,8 @@ Sneak-right-click with wheat seeds, carrots, potatoes, beetroot seeds, melon see
 ### Compost Cascade (`herbalism-compost-cascade`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Compost Cascade" src="/adapt-assets/demos/herbalism/herbalism-compost-cascade-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Compost Cascade" src="/adapt-assets/demos/herbalism/herbalism-compost-cascade-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Compost Cascade" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-compost-cascade-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Compost Cascade" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-compost-cascade-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -280,8 +280,8 @@ Sneak-right-click a composter, or one looked at within 5 blocks, to pull in near
 ### Rooted Footing (`herbalism-rooted-footing`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rooted Footing" src="/adapt-assets/demos/herbalism/herbalism-rooted-footing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Rooted Footing" src="/adapt-assets/demos/herbalism/herbalism-rooted-footing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Rooted Footing" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-rooted-footing-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Rooted Footing" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-rooted-footing-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 3 knowledge
@@ -298,8 +298,8 @@ Walking or jumping on `FARMLAND` does not trample it, and part of fall damage on
 ### Bee Shepherd (`herbalism-bee-shepherd`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Bee Shepherd" src="/adapt-assets/demos/herbalism/herbalism-bee-shepherd-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Bee Shepherd" src="/adapt-assets/demos/herbalism/herbalism-bee-shepherd-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Bee Shepherd" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-bee-shepherd-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Bee Shepherd" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-bee-shepherd-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -336,8 +336,8 @@ Supported flowers include tulip, dandelion, poppy, blue orchid, allium, azure bl
 ### Spore Bloom (`herbalism-spore-bloom`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Spore Bloom" src="/adapt-assets/demos/herbalism/herbalism-spore-bloom-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Spore Bloom" src="/adapt-assets/demos/herbalism/herbalism-spore-bloom-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Spore Bloom" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-spore-bloom-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Spore Bloom" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-spore-bloom-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge

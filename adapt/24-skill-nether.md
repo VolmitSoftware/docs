@@ -2,7 +2,7 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,8 +20,8 @@ Lava Walker, Ghast Ward, Netherrack Mason, and the meal half of Crimson Feast ru
 ### Wither Resistance (`nether-wither-resist`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Wither Resistance" src="/adapt-assets/demos/nether/nether-wither-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Wither Resistance" src="/adapt-assets/demos/nether/nether-wither-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Wither Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-wither-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Wither Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-wither-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 5 knowledge, then 3 per level
@@ -38,8 +38,8 @@ Every wither damage attempt rolls for protection. Successful protection shows it
 ### Wither Skull Throw (`nether-skull-toss`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Wither Skull Throw" src="/adapt-assets/demos/nether/nether-skull-toss-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Wither Skull Throw" src="/adapt-assets/demos/nether/nether-skull-toss-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Wither Skull Throw" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-skull-toss-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Wither Skull Throw" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-skull-toss-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 5 knowledge, then 10 per level
@@ -57,8 +57,8 @@ Personal controls: Require sneak to throw (on/off).
 ### Fire Resistance (`nether-fire-resist`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Fire Resistance" src="/adapt-assets/demos/nether/nether-fire-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Fire Resistance" src="/adapt-assets/demos/nether/nether-fire-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Fire Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-fire-resist-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Fire Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-fire-resist-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 6 knowledge, then 4 per level
@@ -73,8 +73,8 @@ Each burn tick is cancelled with chance `fireResistBase + fireResistFactor * lev
 ### Lava Walker (`nether-lava-walker`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Lava Walker" src="/adapt-assets/demos/nether/nether-lava-walker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Lava Walker" src="/adapt-assets/demos/nether/nether-lava-walker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Lava Walker" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-lava-walker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Lava Walker" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-lava-walker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -97,8 +97,8 @@ Personal controls: Sneak to drop through (on/off); Food reserve (No reserve/Keep
 ### Ghast Ward (`nether-ghast-ward`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Ghast Ward" src="/adapt-assets/demos/nether/nether-ghast-ward-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Ghast Ward" src="/adapt-assets/demos/nether/nether-ghast-ward-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Ghast Ward" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-ghast-ward-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Ghast Ward" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-ghast-ward-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -123,8 +123,8 @@ Ghast fireballs, other explosions, and wither-skeleton arrows deal less damage, 
 ### Blaze Leech (`nether-blaze-leech`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Blaze Leech" src="/adapt-assets/demos/nether/nether-blaze-leech-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Blaze Leech" src="/adapt-assets/demos/nether/nether-blaze-leech-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Blaze Leech" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-blaze-leech-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Blaze Leech" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-blaze-leech-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -151,8 +151,8 @@ Taking damage from fire, lava, or standing on magma blocks, or hitting a burning
 ### Piglin Broker (`nether-piglin-broker`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Piglin Broker" src="/adapt-assets/demos/nether/nether-piglin-broker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Piglin Broker" src="/adapt-assets/demos/nether/nether-piglin-broker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Piglin Broker" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-piglin-broker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Piglin Broker" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-piglin-broker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge
@@ -175,8 +175,8 @@ When a piglin barter resolves, the nearest player with this adaptation inside ra
 ### Soul Strider (`nether-soul-strider`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Soul Strider" src="/adapt-assets/demos/nether/nether-soul-strider-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Soul Strider" src="/adapt-assets/demos/nether/nether-soul-strider-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Soul Strider" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-soul-strider-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Soul Strider" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-soul-strider-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 3 knowledge
@@ -199,8 +199,8 @@ Personal controls: Soul-surface slow immunity (on/off); Mastery speed burst (on/
 ### Magma Skin (`nether-magma-skin`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Magma Skin" src="/adapt-assets/demos/nether/nether-magma-skin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Magma Skin" src="/adapt-assets/demos/nether/nether-magma-skin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Magma Skin" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-magma-skin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Magma Skin" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-magma-skin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 4 levels · 4 knowledge, then 3 per level
@@ -223,8 +223,8 @@ Personal controls: Burning retaliation (on/off); Ignite struck targets (on/off).
 ### Netherrack Mason (`nether-netherrack-mason`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Netherrack Mason" src="/adapt-assets/demos/nether/nether-netherrack-mason-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Netherrack Mason" src="/adapt-assets/demos/nether/nether-netherrack-mason-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Netherrack Mason" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-netherrack-mason-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Netherrack Mason" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-netherrack-mason-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 4 levels · 3 knowledge
@@ -249,8 +249,8 @@ Personal controls: Mining assistance (on/off); Bonus drops (on/off).
 ### Strider Bond (`nether-strider-bond`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Strider Bond" src="/adapt-assets/demos/nether/nether-strider-bond-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Strider Bond" src="/adapt-assets/demos/nether/nether-strider-bond-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Strider Bond" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-strider-bond-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Strider Bond" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-strider-bond-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 4 levels · 4 knowledge, then 3 per level
@@ -275,8 +275,8 @@ Personal controls: Mounted speed (on/off); Dismount protection (on/off).
 ### Crimson Feast (`nether-crimson-feast`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Crimson Feast" src="/adapt-assets/demos/nether/nether-crimson-feast-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Crimson Feast" src="/adapt-assets/demos/nether/nether-crimson-feast-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Crimson Feast" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-crimson-feast-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Crimson Feast" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-crimson-feast-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 4 levels · 3 knowledge, then 2 per level
@@ -300,8 +300,8 @@ Personal controls: Require sneak to eat flora (on/off); Nether meal protection (
 ### Ashwalker (`nether-ashwalker`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Ashwalker" src="/adapt-assets/demos/nether/nether-ashwalker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Ashwalker" src="/adapt-assets/demos/nether/nether-ashwalker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Ashwalker" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-ashwalker-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Ashwalker" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-ashwalker-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 4 knowledge, then 3 per level
@@ -319,8 +319,8 @@ Standing on magma blocks causes no damage at any learned level, and campfire dam
 ### Wither Harvest (`nether-wither-harvest`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Wither Harvest" src="/adapt-assets/demos/nether/nether-wither-harvest-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Wither Harvest" src="/adapt-assets/demos/nether/nether-wither-harvest-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Wither Harvest" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-wither-harvest-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Wither Harvest" src="https://media.volmitsoftware.com/adapt-assets/demos/nether/nether-wither-harvest-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 4 levels · 4 knowledge, then 3 per level

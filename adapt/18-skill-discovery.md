@@ -2,7 +2,7 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-22T22:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -35,8 +35,8 @@ Toggle defaults preserve the standard behavior. Size and rate presets default to
 ### Experimental Unity (`discovery-unity`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Experimental Unity" src="/adapt-assets/demos/discovery/discovery-unity-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Experimental Unity" src="/adapt-assets/demos/discovery/discovery-unity-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Experimental Unity" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-unity-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Experimental Unity" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-unity-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 7 levels · 3 knowledge, then 2 per level
@@ -50,8 +50,8 @@ Each positive vanilla XP award requests 5 Discovery XP, then requests `amount * 
 ### World Armor (`discovery-world-armor`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of World Armor" src="/adapt-assets/demos/discovery/discovery-world-armor-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of World Armor" src="/adapt-assets/demos/discovery/discovery-world-armor-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of World Armor" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-world-armor-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of World Armor" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-world-armor-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 3 levels · 3 knowledge, then 2 per level
@@ -65,8 +65,8 @@ Bonus armor scales with the hardness of the surrounding blocks, including stone 
 ### Experimental Resistance (`discovery-xp-resist`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Experimental Resistance" src="/adapt-assets/demos/discovery/discovery-xp-resist-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Experimental Resistance" src="/adapt-assets/demos/discovery/discovery-xp-resist-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Experimental Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-xp-resist-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Experimental Resistance" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-xp-resist-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 5 per level
@@ -85,8 +85,8 @@ A hit that would fall below `triggerHealthThreshold` after armor, or kill, spend
 ### Villager Attraction (`discovery-villager-att`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Villager Attraction" src="/adapt-assets/demos/discovery/discovery-villager-att-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Villager Attraction" src="/adapt-assets/demos/discovery/discovery-villager-att-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Villager Attraction" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-villager-att-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Villager Attraction" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-villager-att-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 5 knowledge, then 1 per level
@@ -104,8 +104,8 @@ Right-clicking a villager with the main hand can apply a temporary Hero of the V
 ### Better Mending (`discovery-better-mending`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Better Mending" src="/adapt-assets/demos/discovery/discovery-better-mending-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Better Mending" src="/adapt-assets/demos/discovery/discovery-better-mending-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Better Mending" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-better-mending-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Better Mending" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-better-mending-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -125,8 +125,8 @@ Sneak-left-click air or a block with a damaged Mending item in the main hand to 
 ### Archaeologist (`discovery-archaeologist`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Archaeologist" src="/adapt-assets/demos/discovery/discovery-archaeologist-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Archaeologist" src="/adapt-assets/demos/discovery/discovery-archaeologist-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Archaeologist" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-archaeologist-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Archaeologist" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-archaeologist-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 6 levels · 4 knowledge
@@ -149,8 +149,8 @@ Brushing `SUSPICIOUS_SAND` or `SUSPICIOUS_GRAVEL` to completion can add a common
 ### Cartographer Pulse (`discovery-cartographer-pulse`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Cartographer Pulse" src="/adapt-assets/demos/discovery/discovery-cartographer-pulse-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Cartographer Pulse" src="/adapt-assets/demos/discovery/discovery-cartographer-pulse-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Cartographer Pulse" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-cartographer-pulse-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Cartographer Pulse" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-cartographer-pulse-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 4 levels · 4 knowledge
@@ -169,8 +169,8 @@ Sneak-right-click with a compass in the main hand to point it at the nearest sel
 ### Insight (`discovery-insight`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Insight" src="/adapt-assets/demos/discovery/discovery-insight-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Insight" src="/adapt-assets/demos/discovery/discovery-insight-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Insight" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-insight-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Insight" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-insight-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge
@@ -189,8 +189,8 @@ With [Gloss entity overlays](/gloss/20-entity-overlays) enabled, look directly a
 ### Trailblazer (`discovery-trailblazer`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Trailblazer" src="/adapt-assets/demos/discovery/discovery-trailblazer-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Trailblazer" src="/adapt-assets/demos/discovery/discovery-trailblazer-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Trailblazer" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-trailblazer-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Trailblazer" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-trailblazer-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level
@@ -209,8 +209,8 @@ The first visit to each biome or structure type grants skill XP at that moment a
 ### Field Notes (`discovery-field-notes`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Field Notes" src="/adapt-assets/demos/discovery/discovery-field-notes-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Field Notes" src="/adapt-assets/demos/discovery/discovery-field-notes-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Field Notes" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-field-notes-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Field Notes" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-field-notes-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -228,8 +228,8 @@ The first kill of a mob species pays a skill XP bounty, and later kills of that 
 ### Polymath (`discovery-polymath`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Polymath" src="/adapt-assets/demos/discovery/discovery-polymath-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Polymath" src="/adapt-assets/demos/discovery/discovery-polymath-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Polymath" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-polymath-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Polymath" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-polymath-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
@@ -246,8 +246,8 @@ Each skill line at or above the threshold adds a bonus to all XP gain, up to the
 ### Relic Appraiser (`discovery-relic-appraiser`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Relic Appraiser" src="/adapt-assets/demos/discovery/discovery-relic-appraiser-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Relic Appraiser" src="/adapt-assets/demos/discovery/discovery-relic-appraiser-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Relic Appraiser" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-relic-appraiser-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Relic Appraiser" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-relic-appraiser-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level
@@ -268,8 +268,8 @@ Sneak-right-click a head, skull, music disc, armor trim template, or pottery she
 ### Sixth Sense (`discovery-sixth-sense`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Sixth Sense" src="/adapt-assets/demos/discovery/discovery-sixth-sense-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Sixth Sense" src="/adapt-assets/demos/discovery/discovery-sixth-sense-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Sixth Sense" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-sixth-sense-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Sixth Sense" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-sixth-sense-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level
@@ -286,8 +286,8 @@ The action-bar center shows `{symbol} {structure} {direction} {distance}m` (N, N
 ### Keen Eye (`discovery-keen-eye`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Keen Eye" src="/adapt-assets/demos/discovery/discovery-keen-eye-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Keen Eye" src="/adapt-assets/demos/discovery/discovery-keen-eye-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Keen Eye" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-keen-eye-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Keen Eye" src="https://media.volmitsoftware.com/adapt-assets/demos/discovery/discovery-keen-eye-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 3 knowledge, then 2 per level

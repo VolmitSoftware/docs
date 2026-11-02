@@ -2,7 +2,7 @@
 title: Coffer feature map
 description: Implemented, partial, and planned features with validation evidence
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: coffer, development, testing
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -14,7 +14,7 @@ This page lists each Coffer feature as implemented, partial, or planned, with it
 | --- | --- | --- | --- |
 | CF-01 | Build and lifecycle | Implemented | Java 25 build, runtime gate for Minecraft 26.1 through 26.3 on Java 25 or newer, library download, startup on the supported platforms, restart, shutdown, and BileTools reload refusal while players are online or transfers are active |
 | CF-02 | Configuration and hot reload | Implemented | Reserved and `[vault]` sections; valid file edits apply after the cooldown; malformed files are rejected whole with the last known good settings kept; deleted `config.toml` regenerates; atomic writes; operator notices; clean watcher shutdown |
-| CF-03 | Languages and help | Partial | English written to `languages/en_US.toml` with its header, key and placeholder validation, operator-installed locale files, persistent selections, editor conflict checks, and filtered help are implemented; translation downloads wait for a published repository revision |
+| CF-03 | Languages and help | Partial | English written to `languages/en_US.toml` with its header, key and placeholder validation, branch-tracking language downloads with merged local edits, custom locales with `[meta]`, persistent selections, editor conflict checks, and filtered help are implemented |
 | CF-04 | Vault domain | Implemented | Immutable UUID identity and access grants, limits, lock handling, founder provenance without authority |
 | CF-05 | Durable local vault repository | Implemented; failure tests passed | Bounded versioned records, atomic publication, explicit durability results, revision checks, corruption quarantine, retained generations, guarded history rollback, deletion fences, indexed owner queries |
 | CF-06 | Items, sessions, and player inventory transactions | Implemented for personal owner vaults | Bounded native encoding, exclusive sessions, create/list/open commands, quota checks, menu gestures, journaled transfers, player checkpoints, interaction guards, completed receipts, restart reconciliation, and reviewed operator recovery with retained evidence |

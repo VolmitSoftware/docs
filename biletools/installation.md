@@ -2,7 +2,7 @@
 title: "BileTools: Installation"
 description: "Requirements and first-run setup"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "biletools, installation"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -60,7 +60,7 @@ Temporary `.jar.part` files are ignored. A brief delete and recreate has a three
 
 ## Language
 
-Set `language` in `biletools.yml`. Editing a language file reloads it automatically; malformed TOML leaves the current messages active. See [Languages](/languages).
+Set `language` in `biletools.yml`. Editing a language file reloads it automatically; malformed TOML leaves the current messages active. Installed translations follow the BileTools repository and merge upstream changes without overwriting your edits; see [Configuration](/biletools/configuration#language-files) and [Languages](/languages).
 
 ## Uninstalling
 
@@ -77,7 +77,7 @@ BileTools stores nothing in worlds, chunks, or player data. Plugin jars it loade
 
 | Location | Contents |
 |---|---|
-| Server `plugins/BileTools/` | `biletools.yml`, `languages/`, `library/`, downloaded libraries in `.libs/`, `cache/runtime/`, `debug/` reports, and recovery and staging copies |
+| Server `plugins/BileTools/` | `biletools.yml`, `languages/` (including the `languages/.upstream/` sync copies), `library/`, downloaded libraries in `.libs/`, `cache/runtime/`, `debug/` reports, and recovery and staging copies |
 | Proxy `plugins/biletools/` | `biletools.json`, `archive/`, and recovery and staging copies |
 | Proxy `plugins/BileTools/` | `cache/runtime/` extracted from an XZ jar |
 | `plugins/bStats/` | Shared by every plugin that uses bStats. Delete it only when no remaining plugin uses bStats |

@@ -2,7 +2,11 @@
 title: "Installation & Platforms"
 description: "Iris documentation: Installation & Platforms"
 published: true
+<<<<<<< HEAD
 date: 2026-10-28T12:00:00.000Z
+=======
+date: 2026-11-01T00:00:00.000Z
+>>>>>>> origin/master
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -160,8 +164,13 @@ To remove Iris and everything it created, see [Uninstalling Iris](/iris/06b-unin
 | `plugins/Iris/iris.json` | Shared settings; see [03 - Configuration](/iris/03-configuration) |
 | `plugins/Iris/packs/<key>/` | Installed packs. This is the live tree the Studio reads and edits |
 | `plugins/Iris/datapacks/` | External datapacks. Put ZIPs for automatic import in `imports/` |
+<<<<<<< HEAD
 | `plugins/Iris/exports/datapacks/` | Worldgen datapacks written by `/iris datapack export`. See [49 - Datapack Export](/iris/49-datapack-export) |
 | `plugins/Iris/languages/overrides/<locale>.json` | Optional server message overrides. See [08 - Localization](/iris/08-localization) |
+=======
+| `plugins/Iris/languages/<locale>.toml` | Installed translations and custom languages. See [08 - Localization](/iris/08-localization) |
+| `plugins/Iris/languages/.upstream/` | Pristine repository copies and check state Iris uses to merge translation updates; managed by Iris, not for editing |
+>>>>>>> origin/master
 | `<level-root>/datapacks/iris/` | The aggregate worldgen datapack Iris compiles from your installed packs. Iris owns this. Do not hand-edit it |
 | `<level-root>/dimensions/<namespace>/<name>/` | Storage for a managed Iris world on Paper-family servers. Namespace is `iris` for worlds Iris creates |
 | `<world-container>/<level-name>_iris_<name>/dimensions/iris/<name>/` | Storage for a managed `iris:<name>` world on plain Spigot/CraftBukkit |
@@ -183,6 +192,7 @@ Paths are relative to the game instance's `config/` directory.
 | `config/irisworldgen/catalog/worldgen-catalog.json` | Worldgen catalog of the loaded mods, captured at each server start. See [48 - Mod Worldgen](/iris/48-mod-worldgen) |
 | `config/irisworldgen/exports/datapacks/` | Worldgen datapacks written by `/iris datapack export`. See [49 - Datapack Export](/iris/49-datapack-export) |
 | `config/iris/` | Engine data directory — `iris.json` and per-world engine state |
+| `config/iris/languages/` | Installed translations and custom languages; `.upstream/` inside holds the managed repository copies. See [08 - Localization](/iris/08-localization) |
 | `<save>/datapacks/` | Save-local external datapacks declared by custom Iris packs. The built-in Overworld and Underworld packs need none |
 
 Two different roots, and mixing them up is a common mistake. Packs, the generated datapack, and mod config live under `config/irisworldgen/`. The shared engine's own data lives under `config/iris/`.

@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Select server and player languages and edit message files"
 published: true
-date: 2026-10-12T16:07:52.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,6 +12,26 @@ Gloss's server default is the `language` key in `plugins/Gloss/gloss.toml`. Its 
 is `gloss.language.self`, and server selection accepts `gloss.admin` or `volmit.language.admin`.
 
 See [Languages](/languages) for the picker, permissions, the full locale list, fallback rules, and how to edit or translate messages.
+
+## Repository translations
+
+English is built in. The 17 other repository locales install from the `master` branch of the `VolmitSoftware/Gloss` repository when they are first selected. If `language` names a repository locale that is not installed yet, Gloss starts in English, downloads the file in the background, and switches once it arrives; a failed download keeps the current language and leaves `gloss.toml` unchanged.
+
+Installed translations merge repository changes at startup and whenever an operator runs `/gloss language update`. New and changed messages arrive, keys you edited by hand stay as you wrote them, and retired keys you never touched are removed. `en_US.toml` gains new built-in messages the same way after a plugin update, with your edits kept. The pristine copies used for that comparison live in `languages/.upstream/`; leave that directory alone. Checks run at most once every five minutes; a restart or a repeated command inside that window skips the request and the command reports the remaining wait. A failed check, including one blocked by the GitHub rate limit, leaves the installed files and the selected language as they were. The console logs one line per updated locale with its counts, or `Gloss languages match VolmitSoftware/Gloss@master (<commit>).` when nothing changed.
+
+Updates are not treated as file edits by the language file watcher. Edits you make to `languages/*.toml` still reload automatically.
+
+## Custom languages
+
+Any other `languages/<name>.toml` whose name uses 2 to 32 letters, digits, `_` or `-` is a custom language. It appears in the pickers and the message editor, and updates never change it. An optional `[meta]` table sets the display name and a locale to use before English for keys the file leaves out:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+```
+
+A base can name its own base, up to four levels. A base of `en_US`, or none, uses built-in English for missing keys. Without `[meta]`, the picker shows the file name. Setting `language` to a custom id that has no file uses English.
 
 Cooperative plugin reload waits for open language-editor inventories to close on their players' owning regions before stopping services or cancelling plugin tasks. Cleanup failures fail the reload stage. Direct plugin disable only closes inventories owned by the current thread and reports other views that could not be closed.
 
@@ -38,7 +58,7 @@ Use `command.help.*` to change command and parameter descriptions.
 
 <div class="gloss-demo" data-demo="strings-editor">
 <p><strong>Content string authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/strings-editor.webm" aria-label="Content string authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/strings-editor.webm" aria-label="Content string authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Use `strings/<locale>.json` for text shared by your own menus, holograms, and other documents. These catalogs are separate from Gloss's operator messages in `languages/*.toml`.

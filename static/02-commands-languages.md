@@ -1,8 +1,8 @@
 ---
 title: Static - Commands and languages
-description: Player commands, operator tools, and downloadable translations
+description: Player commands, operator tools, and translations
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: static, commands, localization
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -42,6 +42,7 @@ Viewing another player's module values requires `static.modules.others`, which d
 | Command | Permission |
 |---|---|
 | `/static config` | `static.config` |
+| `/static language update` | `static.config` or `volmit.language.admin` |
 | `/static participation [period] [offset]` | `static.participation` |
 | `/static moduletop <module> <stat>` | `static.modules` and `static.modules.others` |
 | `/static status` | `static.status` |
@@ -54,14 +55,30 @@ Viewing another player's module values requires `static.modules.others`, which d
 
 ## Languages
 
-Only `languages/en_US.toml` is generated at startup. Selecting another language downloads its catalogue from the Static GitHub repository. Installed files work offline and retain local edits. Personal selections live in `languages/language-preferences.properties`; `general.language` supplies the server default.
+English is generated from the built-in catalogue into `languages/en_US.toml`, and new built-in keys merge into that file without changing your edits. Deleting it regenerates it. Personal selections live in `languages/language-preferences.properties`; `general.language` supplies the server default and accepts any locale id of 2 to 32 letters, digits, `_`, or `-`.
 
-Downloads use the revision embedded in the JAR's `static-language-source.properties`, from `VolmitSoftware/Static/src/main/resources/languages/`.
+The 17 translations are German (`de_DE`), Spanish (`es_ES`), Finnish (`fi_FI`), French (`fr_FR`), Hebrew (`he_IL`), Italian (`it_IT`), Japanese (`ja-JP`), Korean (`ko_KR`), Lithuanian (`lt_LT`), Dutch (`nl_NL`), Polish (`pl_PL`), Portuguese (`pt_PT`), Russian (`ru_RU`), Turkish (`tr_TR`), Vietnamese (`vi_VI`), Simplified Chinese (`zh_CN`), and Traditional Chinese (`zh_TW`).
 
-The 17 downloadable translations are German (`de_DE`), Spanish (`es_ES`), Finnish (`fi_FI`), French (`fr_FR`), Hebrew (`he_IL`), Italian (`it_IT`), Japanese (`ja-JP`), Korean (`ko_KR`), Lithuanian (`lt_LT`), Dutch (`nl_NL`), Polish (`pl_PL`), Portuguese (`pt_PT`), Russian (`ru_RU`), Turkish (`tr_TR`), Vietnamese (`vi_VI`), Simplified Chinese (`zh_CN`), and Traditional Chinese (`zh_TW`).
+They live in `src/main/resources/languages/` on the `master` branch of the `VolmitSoftware/Static` repository and install when first selected. Startup and `/static language update` check that branch in the background, at most once every five minutes. When it has moved, Static downloads each installed repository locale and merges it into the local file: keys you edited stay as you wrote them, unedited keys take the repository's text, and new keys are added. If the repository cannot be reached, the check logs one failure and installed languages stay active.
 
-A missing or invalid message falls back directly to built-in English. It does not inherit another player's language, the server's translated catalogue, or edits to the English file. The language editor validates message markup and placeholders before saving, and rejects a conflicting disk change during the save. Installed catalogue edits also hot-reload.
+| Path under `languages/` | Purpose |
+|---|---|
+| `<locale>.toml` | Editable messages for one locale |
+| `.upstream/` | Static's record of the last download for each repository locale, the English reference, and `upstream.properties` (repository, branch, revision, last check). Do not edit it; hot reload ignores it. |
+| `language-preferences.properties` | Saved player choices |
 
-Changing `general.language` to a downloadable locale applies it after installation. Set it back to `en_US` to restore English through hot reload; downloaded catalogues remain installed.
+Any other `languages/<id>.toml` is a custom locale. Its id may use letters, digits, `_`, and `-`, from 2 to 32 characters. It appears in the pickers and editor, and repository updates never change it. Setting `general.language` to an unknown id creates that file from the English reference. An optional `[meta]` table names the locale and chooses a base locale:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+```
+
+`name` is the picker label. `base` names another installed locale that fills in missing keys before English. Place `[meta]` after the top-level keys.
+
+A missing or invalid message falls back to its `base` chain and then to built-in English. It does not inherit another player's language, the server's translated catalogue, or edits to the English file. The language editor validates message markup and placeholders before saving, and rejects a conflicting disk change during the save. Installed catalogue edits also hot-reload.
+
+Setting `general.language` to a repository locale that is not installed applies your other settings at once, keeps English active, and switches to the locale after it installs. Set it back to `en_US` to restore English through hot reload; installed catalogues remain on disk. Deleting the active repository locale downloads it again.
 
 [Language controls](/languages) · [History and records](/static/05-history-records) · [Dashboard and privacy](/static/07-dashboard-privacy)

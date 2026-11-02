@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-10-07T21:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -114,7 +114,7 @@ These lifecycle settings apply only to personal menus. Panels use their own plac
 
 <div class="gloss-demo" data-demo="personal-menus-pov">
 <p><strong>Personal hologram menus</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/personal-menus-pov.webm" aria-label="Personal hologram menus, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/personal-menus-pov.webm" aria-label="Personal hologram menus, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Each player can have one personal menu open, and opening another replaces it. Personal menu displays are sent only to that player and are never saved in the world.

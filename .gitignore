@@ -7,3 +7,8 @@ playwright-report/
 test-results/
 blob-report/
 playwright/.auth/
+AGENTS.md
+# Video clips live in Cloudflare R2 (README.md, Video clips)
+*.webm
+# Local R2 sync script
+tools/sync-media.mjs

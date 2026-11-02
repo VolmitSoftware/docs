@@ -2,7 +2,7 @@
 title: "ByteCompanions: API getting started"
 description: "Compiling a plugin against the public API, reading player state, and listening to companion events"
 published: true
-date: 2026-10-15T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "bytecompanions, api"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -47,7 +47,7 @@ List<String> equippedCompanions(Player player) {
 }
 ```
 
-`ByteCompanions.getAPI()` throws until the plugin has enabled and set its provider; `ByteCompanionsProvider.hasInstance()` checks first. A player's `CompanionPlayer` exists only after their data has loaded from storage, so a `null` result means not ready, not empty. Listen for `CompanionPlayerLoadEvent` instead of polling.
+`ByteCompanions.getAPI()` throws until the plugin has enabled and set its provider; `ByteCompanionsProvider.hasInstance()` checks first. The provider is also empty while ByteCompanions restarts its runtime after a configuration change, so check `hasInstance()` on each use instead of keeping the API object. Only ByteCompanions can set or clear the provider. A player's `CompanionPlayer` exists only after their data has loaded from storage, so a `null` result means not ready, not empty. Listen for `CompanionPlayerLoadEvent` instead of polling.
 
 The API offers `configurationSettings()`, `typeRegistry()`, `companionManager()`, `animationRegistry()`, and lookups by companion ID, `Player`, or `UUID`. Treat `companions()` as read only; equip and unequip through `companionManager()` on the player's owning thread.
 

@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -147,8 +147,8 @@ This applies Gloss functions, inline expressions, PlaceholderAPI values, emoji, 
 
 <div class="gloss-demo" data-demo="standalone-beam-pov">
 <p><strong>Standalone block-display beam</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/standalone-beam-pov.webm" aria-label="Standalone block-display beam, first person" autoplay muted loop playsinline controls preload="metadata"></video>
-<video src="/gloss-assets/demos/standalone-beam-observer.webm" aria-label="Standalone block-display beam, third person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/standalone-beam-pov.webm" aria-label="Standalone block-display beam, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/standalone-beam-observer.webm" aria-label="Standalone block-display beam, third person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 `Beams.link` draws a block-display beam between two supplied locations. Each receiving viewer consumes one `SURFACE` entity unit from `[visibility]`; refused or culled beams retry during their normal updates. A positive lifetime is measured in ticks; `0` keeps it until cancelled. The method returns `null` when the beam service is unavailable.
@@ -169,7 +169,7 @@ Beam width clamps to `0.01`–`8` blocks. Returning `null` from either location 
 
 <div class="gloss-demo" data-demo="viewer-glow-pov">
 <p><strong>Per-viewer entity glow</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/viewer-glow-pov.webm" aria-label="Per-viewer entity glow, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/viewer-glow-pov.webm" aria-label="Per-viewer entity glow, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Glow tags give an entity a colored outline for one viewer. Purposes keep contributions separate, and the highest priority wins:

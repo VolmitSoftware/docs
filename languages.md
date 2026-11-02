@@ -2,7 +2,7 @@
 title: "Languages"
 description: "Choose a language, edit messages, and translate any Volmit plugin"
 published: true
-date: 2026-10-13T14:42:49.250Z
+date: 2026-11-02T00:00:00.000Z
 tags: "languages, localization"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -20,6 +20,7 @@ This page describes the shared behavior. Each plugin's localization reference do
 | `/<plugin> language self reset` | player | Follow the server default again |
 | `/<plugin> language server <locale>` | admin | Changes the server default |
 | `/<plugin> language server edit [locale]` | admin | Opens the in-game message editor |
+| `/<plugin> language update` | admin | Merges repository changes into installed translations in plugins on the branch-tracking source |
 | `/volmit plugins languages [locale]` | admin | Changes the server default for **every** enabled Volmit plugin at once |
 
 `/volmit plugins languages` keeps everyone's personal choice and offers only locales that every
@@ -56,7 +57,12 @@ lt_LT  nl_NL  pl_PL  pt_PT  ru_RU  tr_TR  vi_VI  zh_CN  zh_TW
 write `language = "ja-JP"`.
 
 English is built in. Most plugins download another language when you first select it, then use the local
-`plugins/<Plugin>/languages/<locale>.toml` file offline. Existing files keep local edits.
+`plugins/<Plugin>/languages/<locale>.toml` file offline and never update it. Existing files keep local edits.
+ShapedPortals, Iris, Adapt, BileTools, HiddenOre, React, Gloss, Wormholes, GamemodeSwitcher, Inscribe, Brimstone,
+Rift, and ByteCompanions go further: at startup and on
+`/<plugin> language update`, at most once every five minutes, they merge repository changes into their installed
+files, keeping every key you edited yourself, and they list any custom `languages/<name>.toml` in their pickers,
+with an optional `[meta]` table giving a display `name` and a `base` locale to use before English.
 [SkyPrime](/skyprime/01-installation-configuration#languages) bundles all 18 catalogs and needs no language download.
 
 ## When something is missing

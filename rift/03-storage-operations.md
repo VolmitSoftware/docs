@@ -2,7 +2,7 @@
 title: "Rift: Storage and Operations"
 description: "World directories, profiles, quarantine, and recovery"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "rift, storage, quarantine, restore, operations"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -17,6 +17,7 @@ Rift keeps plugin data under `plugins/Rift/` and world data inside the server's 
 | `plugins/Rift/config.toml` | Runtime settings |
 | `plugins/Rift/languages/<locale>.toml` | Installed message catalog |
 | `plugins/Rift/languages/language-preferences.properties` | Personal locale choices by player UUID |
+| `plugins/Rift/languages/.upstream/` | Pristine repository copies and check state used to merge translation updates; managed by Rift, not for editing |
 | `plugins/Rift/worlds/<name>.toml` | Managed-world profile |
 | `plugins/Rift/worlds/retired/` | Retired profiles |
 | `plugins/Rift/trash/<id>.toml` | Quarantine manifest and saved profile |
@@ -30,7 +31,7 @@ A profile stores its command name, relative directory, generator, environment, s
 
 ## Unload and unmanage
 
-Before unloading, Rift sends players to the configured loaded `evacuationWorld`, or the primary world when that setting is empty. It refuses the operation for the primary world family, protected profiles, and the evacuation world itself.
+Before unloading, Rift sends players to the configured loaded `evacuationWorld`, or the primary world when that setting is empty. Players land on a solid floor with two clear blocks above it. Rift refuses the operation for the server's overworld, nether, and end, protected profiles, and the evacuation world itself.
 
 `/rift unmanage <name>` retires an unprotected profile without unloading its world or moving its storage. Use `/rift import <name>` to manage the existing world again.
 
@@ -44,7 +45,7 @@ Restoring files alone does not reactivate a retired profile. Import the world ag
 
 `/rift delete <name>` requires `allowWorldDeletion=true`, a managed unprotected world, valid storage inside the supported layout, and confirmation by the same sender within `deleteConfirmationSeconds`. Rift evacuates and unloads the world, moves its directory into `.rift-trash`, and saves a restore manifest.
 
-`/rift restore <id>` refuses occupied destinations, restores the saved storage and profile, and leaves the world unloaded. Failures log a full stack trace; check the console before retrying.
+`/rift restore <id>` refuses occupied destinations, restores the saved storage and the full profile, including its policies, spawn, border, and tags, and leaves the world unloaded. Failures log a full stack trace; check the console before retrying.
 
 Quarantine has no automatic expiry. Rift does not permanently delete its contents. To remove an entry manually, stop the server, verify a backup, and remove both its manifest and matching quarantine directory.
 

@@ -2,7 +2,7 @@
 title: "Operations, Storage, and Recovery"
 description: "Foundation's files, how damaged data is recovered, and the diagnostic commands"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "foundation, operations, storage, recovery"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -17,6 +17,7 @@ dateCreated: 2026-08-28T00:00:00.000Z
 | `worth.toml` | Complete categorized item price catalog |
 | `worth.toml.last-good` | Previous worth catalog bytes |
 | `languages/<locale>.toml` | Editable locale catalog; English and custom files are generated when absent, listed translations install on demand |
+| `languages/.upstream/` | Last downloaded copy of each repository locale, the English reference, and `upstream.properties` (repository, branch, revision, last check); not for editing |
 | `languages/language-preferences.json` | UUID-to-locale personal preference map |
 | `languages/language-preferences.json.last-good` | Previous valid personal preference map |
 | `debug/foundation-v<version>-debugdump-YYYY-MM-DD-HH-mm-ss.txt` | Sanitized support report, UTC timestamp |
@@ -33,7 +34,7 @@ Every write goes to a temporary file in the same directory and then replaces the
 
 Spawn, warp, and jail records with non-finite, out-of-range, or unknown-world coordinates are discarded at load rather than becoming active.
 
-Installed non-English locale files are never rewritten or merged automatically. Limits: profiles 1 MiB, kit files 4 MiB, and the preference store 25,000 UUIDs or 2 MiB.
+Startup and `/foundation language update` merge repository changes into installed repository locales, keeping keys you edited; custom locale files are never changed. Limits: profiles 1 MiB, kit files 4 MiB, and the preference store 25,000 UUIDs or 2 MiB.
 
 ## Recovery
 

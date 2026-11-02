@@ -2,7 +2,7 @@
 title: "ByteCompanions: Feature map"
 description: "Implemented, partial, and planned work, each with its acceptance criterion"
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "bytecompanions, features, roadmap"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -26,7 +26,7 @@ This page records the state of each feature area in three groups. Each entry nam
 | Feature packs | Attributes, buffs, decorations, potion effects, and 34 particle effects, each switched in `config.toml` and configured in its own file. |
 | Progression and boosters | Companion levels, upgrade tracks, level rewards, personal and server boosters, journaled purchases, and review commands. |
 | Configuration | Typed `config.toml` with validation, the in-game editor with section and setting labels in all 18 locales, and hot reload of every file under the data folder. |
-| Languages | English in the jar, 17 locales downloaded from the repository on first use, generated language files, personal selection, and the shared editor. |
+| Languages | English in the jar, 17 locales downloaded from the repository's `master` branch on first use and merged with repository updates while keeping edits, custom language files with `[meta]`, personal selection, `language update`, and the shared editor. |
 | Storage | One `storage.backend` (`json` by default, `sqlite`, `h2`, or `mysql`) for companion selections, collections, particle choices, and progression. |
 | Integrations | PlaceholderAPI keys, WorldGuard flags, Vault costs, and Nexo and ItemsAdder item IDs. |
 | Diagnostics | Status entries, debug dump with upload, bStats, and GitHub release notices. |

@@ -2,7 +2,7 @@
 title: "Rift: Installation and Compatibility"
 description: "Minecraft and Java requirements, installation, builds, and Folia limits"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "rift, installation, compatibility, java, folia"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -46,7 +46,7 @@ The distribution relocates and shrinks the required VolmLib code. SlimJar downlo
 
 Build checks compile against the minimum and maximum supported Paper APIs, verify Java 25 bytecode, and check required and forbidden distribution entries. A failed check leaves the previously staged jar unchanged.
 
-English messages are generated locally. The other locale catalogs remain in the GitHub source repository and download on selection. See [Configuration and localization](/rift/04-configuration-localization) for language, metrics, update, and upload controls.
+English messages are generated locally. The other locale catalogs remain in the GitHub source repository, download on selection, and are checked for updates at startup. See [Configuration and localization](/rift/04-configuration-localization) for language, metrics, update, and upload controls.
 
 ## Folia
 

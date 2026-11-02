@@ -2,7 +2,7 @@
 title: "Optics Demonstrations"
 description: "Run the standalone Optics scene plugin and compare first-person renderer recordings"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "optics, api, demos"
 editor: markdown
 dateCreated: 2026-10-11T16:20:00.000Z
@@ -78,11 +78,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="grow-vanish-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/grow-vanish-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/grow-vanish-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/grow-vanish-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/grow-vanish-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -91,11 +91,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="axis-scale-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/axis-scale-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/axis-scale-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/axis-scale-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/axis-scale-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -104,11 +104,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="continuous-spin-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/continuous-spin-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/continuous-spin-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/continuous-spin-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/continuous-spin-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -117,11 +117,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="eased-motion-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/eased-motion-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/eased-motion-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/eased-motion-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/eased-motion-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -130,11 +130,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="easing-comparison-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/easing-comparison-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/easing-comparison-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/easing-comparison-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/easing-comparison-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -143,11 +143,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="keyframe-loop-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/keyframe-loop-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/keyframe-loop-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/keyframe-loop-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/keyframe-loop-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -156,11 +156,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="boolean-masks-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/boolean-masks-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/boolean-masks-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/boolean-masks-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/boolean-masks-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -169,11 +169,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="shape-morph-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/shape-morph-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/shape-morph-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/shape-morph-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/shape-morph-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -182,11 +182,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="affine-shear-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/affine-shear-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/affine-shear-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/affine-shear-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/affine-shear-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -195,11 +195,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="linked-transform-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/linked-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/linked-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/linked-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/linked-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -208,11 +208,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="mirror-transform-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/mirror-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/mirror-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/mirror-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/mirror-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -221,11 +221,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="masked-crossing-26.2" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.2/masked-crossing-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.2, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/masked-crossing-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.2, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.2/masked-crossing-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.2, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.2/masked-crossing-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.2, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -236,11 +236,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="grow-vanish-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/grow-vanish-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/grow-vanish-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/grow-vanish-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/grow-vanish-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Grow vanish, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -249,11 +249,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="axis-scale-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/axis-scale-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/axis-scale-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/axis-scale-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/axis-scale-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Axis scale, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -262,11 +262,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="continuous-spin-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/continuous-spin-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/continuous-spin-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/continuous-spin-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/continuous-spin-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Continuous spin, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -275,11 +275,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="eased-motion-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/eased-motion-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/eased-motion-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/eased-motion-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/eased-motion-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Eased motion, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -288,11 +288,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="easing-comparison-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/easing-comparison-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/easing-comparison-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/easing-comparison-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/easing-comparison-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Easing comparison, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -301,11 +301,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="keyframe-loop-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/keyframe-loop-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/keyframe-loop-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/keyframe-loop-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/keyframe-loop-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Keyframe loop, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -314,11 +314,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="boolean-masks-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/boolean-masks-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/boolean-masks-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/boolean-masks-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/boolean-masks-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Boolean masks, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -327,11 +327,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="shape-morph-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/shape-morph-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/shape-morph-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/shape-morph-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/shape-morph-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Shape morph, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -340,11 +340,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="affine-shear-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/affine-shear-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/affine-shear-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/affine-shear-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/affine-shear-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Affine shear, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -353,11 +353,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="linked-transform-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/linked-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/linked-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/linked-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/linked-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Linked transform, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -366,11 +366,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="mirror-transform-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/mirror-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/mirror-transform-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/mirror-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/mirror-transform-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Mirror transform, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 
@@ -379,11 +379,11 @@ Capture instrumentation keeps each client hidden and records its GPU frames. The
 <div class="wormholes-demo" data-demo="masked-crossing-26.3" data-standard-label="No client mod" data-clientview-label="Crisp client mod" data-tab-label="Renderer for this demonstration">
 <div class="wormholes-demo-variant" data-client="standard">
 <p>No client mod</p>
-<video src="/optics-assets/demos/26.3/masked-crossing-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.3, No client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/masked-crossing-unmodded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.3, No client mod, first person"></video>
 </div>
 <div class="wormholes-demo-variant" data-client="clientview">
 <p>Crisp client mod</p>
-<video src="/optics-assets/demos/26.3/masked-crossing-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.3, Crisp client mod, first person"></video>
+<video src="https://media.volmitsoftware.com/optics-assets/demos/26.3/masked-crossing-modded-pov.webm" controls autoplay muted loop playsinline preload="metadata" aria-label="Masked crossing, Minecraft 26.3, Crisp client mod, first person"></video>
 </div>
 </div>
 

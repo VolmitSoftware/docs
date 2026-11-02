@@ -2,7 +2,7 @@
 title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "shapedportals, portals, events, persistence"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -45,7 +45,7 @@ Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, an
 
 The registry at `plugins/ShapedPortals/portals.json` stores each portal's UUID, world, axis, anchor, interior and frame coordinates, frame-material snapshot, creation time, and creator. Axis `Y` identifies horizontal End portals.
 
-> Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store, or one with overlapping records, stops the plugin from enabling and is preserved for recovery rather than overwritten. Individual records that cannot be read, such as one with a frame material the server no longer has, are skipped with a console warning, and the original file is copied to `portals.json.unreadable-<time>.bak` first.
+> Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store stops the plugin from enabling and is preserved for recovery rather than overwritten. Individual records that cannot be read, such as one with a frame material the server no longer has, and records that duplicate or overlap an earlier record, are skipped with a console error. The original file is copied to `portals.json.skipped-<time>.bak` first, and the next save leaves the skipped records out of `portals.json`.
 {.is-warning}
 
 ## Portal listing and navigation
@@ -58,11 +58,11 @@ Teleportation fails if the portal or world is unavailable, no safe landing exist
 
 ## Ignition and protection plugins
 
-Cancelled ignition events are ignored, and a Nether attempt stops if the ignition fire is gone by the time the frame is checked, as happens when a protection plugin cancels the fire placement. For a player, each proposed interior block is then checked through `BlockCanBuildEvent` before Wormholes is offered the shape. For standalone creation, before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A denied block, a cancelled event, or a changed frame stops creation.
+Cancelled ignition events are ignored, and a Nether attempt stops if the ignition fire is gone by the time the frame is checked, as happens when a protection plugin cancels the fire placement. For a player, each proposed interior block is then checked through `BlockCanBuildEvent` and a `BlockPlaceEvent` for that block before Wormholes is offered the shape, so a claim covers every portal block even when the fire and the player are outside it. For standalone creation, before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A denied block, a cancelled event, or a changed frame stops creation.
 
-Fire charges from dispensers have no player, so they use the separate `DISPENSER` ignition cause. It is off by default; add it to `portal.ignitionCauses` to let dispensers light portals without a `shapedportals.create` check.
+Fire charges and flint and steel fired from dispensers have no player, so they use the separate `DISPENSER` ignition cause. It is off by default; add it to `portal.ignitionCauses` to let dispensers light portals without a `shapedportals.create` check.
 
-Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces ask `BlockCanBuildEvent` about each proposed cell before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
+Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces check each proposed cell through `BlockCanBuildEvent` and a `BlockPlaceEvent` before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
 
 Bukkit has no `PortalCreateEvent` reason for End-frame activation, so none is emitted; watch the placement and build events instead. On Folia, either portal type must be created inside one owned region.
 
@@ -70,7 +70,7 @@ Bukkit has no `PortalCreateEvent` reason for End-frame activation, so none is em
 
 Recognized failed attempts use a complete `portal.failure.*` message in the player's language. The 15 reasons cover shape limits, ambiguous axes, blocked or open frames, Folia ownership, Wormholes rejection, protection denial, changed frames, overlaps, and failed block changes. `general.failureFeedback` enables these notices; `presentation.portalNotices` selects their channels. Unrelated fires and incomplete End frames remain silent.
 
-Edit these messages under `[portal.failure]` in `languages/<locale>.toml` or in the Portal language-editor group. The optional `{prefix}` token is their only placeholder. Missing entries use built-in English, and installed locale files retain local edits when the published download revision changes.
+Edit these messages under `[portal.failure]` in `languages/<locale>.toml` or in the Portal language-editor group. The optional `{prefix}` token is their only placeholder. Missing entries use built-in English, and a translation update from the repository keeps every entry you edited locally while bringing in new or changed ones.
 
 ## Troubleshooting
 

@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -40,7 +40,7 @@ The editor uses the Ascii theme with ruled panels and animated text. Use the sun
 
 <div class="gloss-demo" data-demo="menu-shop-editor">
 <p><strong>Shop menu authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/menu-shop-editor.webm" aria-label="Shop menu authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-shop-editor.webm" aria-label="Shop menu authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 The editor provides forms, JSON editing, undo and redo, image import, and previews for the document kinds below. Code and Split views expose the JSON with validation and field completion. Dedicated visual controls and local simulation cover a subset of runtime fields. Use the image manager for PNG, GIF and supported Minecraft skins; imported assets are saved under `plugins/Gloss/images/`.
@@ -147,7 +147,7 @@ A menu flow map stores the workspace layout and can hold a linked runtime world 
 
 <div class="gloss-demo" data-demo="seeded-randomizer-editor">
 <p><strong>Seeded document generation</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/seeded-randomizer-editor.webm" aria-label="Seeded document generation, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/seeded-randomizer-editor.webm" aria-label="Seeded document generation, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 **Randomize document** generates a complete editable sample for the selected runtime surface. Catalogs for presets, names, strings, glyphs, behaviors, and waypoints do not offer randomization. Enter a seed and choose **Generate**, or use **Next seed** for another sample. The same seed, document identity and workspace assets reproduce the same result, and each generated document is one undoable edit.
@@ -160,12 +160,12 @@ Sample damage, health, viewer state, React counts and Adapt Insight controls aff
 
 <div class="gloss-demo" data-demo="live-sync-editor">
 <p><strong>Connected editor publication</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/live-sync-editor.webm" aria-label="Connected editor publication, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/live-sync-editor.webm" aria-label="Connected editor publication, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 <div class="gloss-demo" data-demo="editor-live-sync-pov">
 <p><strong>Published hologram in Minecraft</strong> Minecraft client. Silent capture.</p>
-<video src="/gloss-assets/demos/editor-live-sync-pov.webm" aria-label="Published hologram in Minecraft, first person" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/editor-live-sync-pov.webm" aria-label="Published hologram in Minecraft, first person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Select **Publish** explicitly to send local edits from a connected session. Editing and autosave keep a browser draft until publication. Publishing validates the changed documents and images, then writes them to `plugins/Gloss/`. Invalid content is refused and the current server files stay unchanged. If the server file changed after the editor opened, refresh the session before publishing so you do not overwrite newer work.

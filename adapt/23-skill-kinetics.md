@@ -2,7 +2,7 @@
 title: "Skill - Kinetics"
 description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-13T14:45:24.665Z
+date: 2026-10-29T19:18:51.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -18,8 +18,8 @@ A spear is any of the seven spear items, wooden through netherite, and a mace is
 ### Moon Jump (`kinetics-moon-jump`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Moon Jump" src="/adapt-assets/demos/kinetics/kinetics-moon-jump-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Moon Jump" src="/adapt-assets/demos/kinetics/kinetics-moon-jump-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Moon Jump" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-moon-jump-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Moon Jump" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-moon-jump-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -40,8 +40,8 @@ Personal controls: Base jump assistance (on/off); Floaty hop (While sneaking/Eve
 ### Rubber Soul (`kinetics-rubber-soul`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rubber Soul" src="/adapt-assets/demos/kinetics/kinetics-rubber-soul-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Rubber Soul" src="/adapt-assets/demos/kinetics/kinetics-rubber-soul-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Rubber Soul" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-rubber-soul-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Rubber Soul" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-rubber-soul-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -61,8 +61,8 @@ Personal controls: Base landing bounce (on/off); Extra springy-block bounce (on/
 ### Soft Catch (`kinetics-soft-catch`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Soft Catch" src="/adapt-assets/demos/kinetics/kinetics-soft-catch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Soft Catch" src="/adapt-assets/demos/kinetics/kinetics-soft-catch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Soft Catch" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-soft-catch-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Soft Catch" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-soft-catch-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -80,8 +80,8 @@ Fall damage is reduced on slime, honey, any bed, a hay bale, powder snow, sponge
 ### Surface Skate (`kinetics-surface-skate`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Surface Skate" src="/adapt-assets/demos/kinetics/kinetics-surface-skate-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Surface Skate" src="/adapt-assets/demos/kinetics/kinetics-surface-skate-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Surface Skate" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-surface-skate-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Surface Skate" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-surface-skate-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -101,8 +101,8 @@ Personal controls: Skating control (While sprinting/Always, sneak to brake). Arm
 ### Terminal Toggle (`kinetics-terminal-toggle`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Terminal Toggle" src="/adapt-assets/demos/kinetics/kinetics-terminal-toggle-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Terminal Toggle" src="/adapt-assets/demos/kinetics/kinetics-terminal-toggle-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Terminal Toggle" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-terminal-toggle-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Terminal Toggle" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-terminal-toggle-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 2 knowledge, then 4 per level
@@ -122,8 +122,8 @@ Personal controls: Midair mode cycle (Dive then hang/Hang then dive/Dive only/Ha
 ### Heavy Frame (`kinetics-heavy-frame`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Heavy Frame" src="/adapt-assets/demos/kinetics/kinetics-heavy-frame-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Heavy Frame" src="/adapt-assets/demos/kinetics/kinetics-heavy-frame-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Heavy Frame" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-heavy-frame-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Heavy Frame" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-heavy-frame-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -144,8 +144,8 @@ Personal controls: Stance control (Hold sneak/Tap to toggle stance).
 ### Mass Shift (`kinetics-mass-shift`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Mass Shift" src="/adapt-assets/demos/kinetics/kinetics-mass-shift-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Mass Shift" src="/adapt-assets/demos/kinetics/kinetics-mass-shift-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Mass Shift" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-mass-shift-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Mass Shift" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-mass-shift-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 5 knowledge, then 6 per level
@@ -164,8 +164,8 @@ Personal controls: Form selection (Look direction/Cycle Titan, Pocket, normal).
 ### Meteor Cadence (`kinetics-meteor-cadence`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Meteor Cadence" src="/adapt-assets/demos/kinetics/kinetics-meteor-cadence-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Meteor Cadence" src="/adapt-assets/demos/kinetics/kinetics-meteor-cadence-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Meteor Cadence" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-meteor-cadence-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Meteor Cadence" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-meteor-cadence-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -187,8 +187,8 @@ Personal controls: Dive control (While sneaking/Every eligible fall).
 ### Breachwright (`kinetics-breachwright`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Breachwright" src="/adapt-assets/demos/kinetics/kinetics-breachwright-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Breachwright" src="/adapt-assets/demos/kinetics/kinetics-breachwright-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Breachwright" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-breachwright-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Breachwright" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-breachwright-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -208,8 +208,8 @@ A landed mace smash removes armor and armor toughness from that target. At level
 ### Windburst (`kinetics-windburst`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Windburst" src="/adapt-assets/demos/kinetics/kinetics-windburst-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Windburst" src="/adapt-assets/demos/kinetics/kinetics-windburst-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Windburst" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-windburst-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Windburst" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-windburst-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -232,8 +232,8 @@ Personal controls: Hostile targets only (on/off); Require sneak for shockwave (o
 ### Quake Guard (`kinetics-quake-guard`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Quake Guard" src="/adapt-assets/demos/kinetics/kinetics-quake-guard-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Quake Guard" src="/adapt-assets/demos/kinetics/kinetics-quake-guard-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Quake Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-quake-guard-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Quake Guard" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-quake-guard-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -254,8 +254,8 @@ Each landed mace smash grants a short brace of knockback resistance, armor tough
 ### Rebound Anvil (`kinetics-rebound-anvil`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Rebound Anvil" src="/adapt-assets/demos/kinetics/kinetics-rebound-anvil-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Rebound Anvil" src="/adapt-assets/demos/kinetics/kinetics-rebound-anvil-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Rebound Anvil" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-rebound-anvil-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Rebound Anvil" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-rebound-anvil-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 4 knowledge, then 5 per level
@@ -276,8 +276,8 @@ Personal controls: Rebound bounce (on/off); Landing cushion (on/off).
 ### Phalanx Reach (`kinetics-phalanx-reach`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Phalanx Reach" src="/adapt-assets/demos/kinetics/kinetics-phalanx-reach-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Phalanx Reach" src="/adapt-assets/demos/kinetics/kinetics-phalanx-reach-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Phalanx Reach" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-phalanx-reach-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Phalanx Reach" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-phalanx-reach-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -292,8 +292,8 @@ Entity interaction range is higher while a spear is in the main hand, and it dro
 ### Charge Lance (`kinetics-charge-lance`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Charge Lance" src="/adapt-assets/demos/kinetics/kinetics-charge-lance-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Charge Lance" src="/adapt-assets/demos/kinetics/kinetics-charge-lance-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Charge Lance" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-charge-lance-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Charge Lance" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-charge-lance-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -312,8 +312,8 @@ Spear damage scales with recent horizontal speed and does not apply while riding
 ### Impale Pin (`kinetics-impale-pin`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Impale Pin" src="/adapt-assets/demos/kinetics/kinetics-impale-pin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Impale Pin" src="/adapt-assets/demos/kinetics/kinetics-impale-pin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Impale Pin" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-impale-pin-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Impale Pin" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-impale-pin-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 2 knowledge, then 4 per level
@@ -334,8 +334,8 @@ A spear hit inside the distance band applies Slowness. Distance is measured from
 ### Lunge Conductor (`kinetics-lunge-conductor`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Lunge Conductor" src="/adapt-assets/demos/kinetics/kinetics-lunge-conductor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Lunge Conductor" src="/adapt-assets/demos/kinetics/kinetics-lunge-conductor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Lunge Conductor" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-lunge-conductor-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Lunge Conductor" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-lunge-conductor-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 3 knowledge, then 4 per level
@@ -355,8 +355,8 @@ Personal controls: Extra lunge travel (on/off).
 ### Mounted Shock (`kinetics-mounted-shock`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Mounted Shock" src="/adapt-assets/demos/kinetics/kinetics-mounted-shock-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Mounted Shock" src="/adapt-assets/demos/kinetics/kinetics-mounted-shock-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Mounted Shock" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-mounted-shock-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Mounted Shock" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-mounted-shock-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 3 knowledge, then 4 per level
@@ -374,8 +374,8 @@ Spear hits while riding scale with the mount's speed, not the rider's, and stack
 ### Dead Zone (`kinetics-dead-zone`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Dead Zone" src="/adapt-assets/demos/kinetics/kinetics-dead-zone-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Dead Zone" src="/adapt-assets/demos/kinetics/kinetics-dead-zone-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Dead Zone" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-dead-zone-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Dead Zone" src="https://media.volmitsoftware.com/adapt-assets/demos/kinetics/kinetics-dead-zone-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 3 levels · 4 knowledge, then 5 per level

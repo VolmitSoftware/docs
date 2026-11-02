@@ -2,7 +2,7 @@
 title: "BileTools: Commands and Permissions"
 description: "The /bile command tree"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "biletools, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,6 +22,7 @@ The root command is `/biletools`. On a Bukkit server the aliases are `bile`, `bi
 | `/bile language self <locale\|reset>` | Select or reset your personal BileTools language |
 | `/bile language server <locale>` | Change the BileTools server default |
 | `/bile language server edit [locale]` | Open the per-language message editor in game |
+| `/bile language update` | Check the language repository now and merge upstream changes into installed files |
 | `/volmit plugins languages [lang]` | Open the shared picker or change every enabled provider's server default |
 | `/bile config` | Open the complete in-game settings and language editor |
 | `/biletools debug version` | Show the installed plugin version |
@@ -59,7 +60,7 @@ Manual `/bile load`, `/bile unload`, and `/bile reload` commands bypass the
 | Node | Default | Description |
 |---|---|---|
 | `bile.use` | `op` | Manage plugins |
-| `biletools.config` | `op` | Open the settings editor and change the server language |
+| `biletools.config` | `op` | Open the settings editor, change the server language, and run `/bile language update` |
 | `biletools.debug` | `op` | Save and optionally upload diagnostic reports |
 | `biletools.update` | `op` | Receive BileTools update notices and see BileTools in `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
 | `biletools.language.self` | `true` | Choose or reset your BileTools language; also requires `volmit.language.self` |
@@ -96,7 +97,9 @@ On a Velocity proxy BileTools registers a smaller command set. Every subcommand 
 ## Language selection
 
 `/bile language` opens the language picker. Personal selection requires both `biletools.language.self`
-and `volmit.language.self`. Server selection requires `biletools.config` or `volmit.language.admin`. See [Languages](/languages).
+and `volmit.language.self`. Server selection, the message editor, and `/bile language update` require `biletools.config` or `volmit.language.admin`. See [Languages](/languages).
+
+`/bile language update` runs off the main thread and reports the result in chat: languages already match, a locale was updated (with the counts of added, changed, and kept messages), a locale failed, or the check failed. Checks run at most once per five minutes; a request inside that window reports how long to wait. The picker lists custom locales by their `[meta]` name.
 
 
 ## Update notifications

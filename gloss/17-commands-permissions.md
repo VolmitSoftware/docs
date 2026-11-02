@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-10-25T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -16,6 +16,10 @@ Commands that take `page=` show one page sized to fit the 20 chat lines visible 
 
 `/gloss language` picks a language. Personal selection needs `gloss.language.self`; server
 selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/languages).
+
+`/gloss language update` checks the Gloss repository and merges changed translations into installed
+files, at most once every five minutes. It needs `gloss.admin` or `volmit.language.admin` and works
+from the console. See [Localization](/gloss/19-localization#repository-translations).
 
 ## Plugin version
 
@@ -147,9 +151,11 @@ See [Data Files & Hot Reload](/gloss/03-data-files) for pack authoring and file 
 | `/gloss import legacy [mode=preview]` | `gloss.import` | Preview an older Gloss data upgrade |
 | `/gloss import legacy mode=apply` | `gloss.import.apply` | Apply the sender’s unchanged preview before its configured expiry, preserving originals and recording successful configuration conversion |
 
-For `featherboard`, `animated-scoreboard` and `tab`, run `preview` before `apply` from the same player or console. Each preview expires according to `[imports] previewLifetimeSeconds`. Source edits, changed destinations or a changed project document collection require a new preview. The import preserves source files and validates all resulting Gloss documents before writing.
+For `featherboard`, `animated-scoreboard`, `tab` and `cmi-tablist`, run `preview` before `apply` from the same player or console. Each preview expires according to `[imports] previewLifetimeSeconds`. Source edits, changed destinations or a changed project document collection require a new preview. The import preserves source files and validates all resulting Gloss documents before writing.
 
 FeatherBoard and AnimatedScoreboard imports produce board and animation documents; imported boards require an explicit `select.when` before automatic selection. TAB imports global and per-group headers and footers. Other TAB features, per-world/per-server overrides and TAB-specific display conditions are reported as unsupported and require explicit Gloss configuration.
+
+`cmi-tablist` reads `plugins/CMI/Settings/TabList.yml`. Numbered header and footer blocks become animations that advance every `Updates.AutoInterval`; with the interval off, only the first block is imported. Enabled group formats become variants gated on `hasPermission('viewer', 'cmi.tablist.<number>')`, and higher numbers take priority. CMI colors and the online, maximum-player and ping placeholders become Gloss colors and expressions. Player-name formats and sorting are not imported.
 
 ## Permissions
 

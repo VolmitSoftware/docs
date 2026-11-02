@@ -2,7 +2,7 @@
 title: Static - Installation and configuration
 description: Runtime files, editable settings, and tracking filters
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: static, configuration
 editor: markdown
 dateCreated: 2026-09-10T00:00:00.000Z
@@ -33,12 +33,13 @@ Static/
   storage/profile-visibility.json
   languages/en_US.toml
   languages/<selected-locale>.toml
+  languages/.upstream/
   languages/language-preferences.properties
   dashboard/access-token
   debug/
 ```
 
-Only `en_US.toml` is generated at startup. Other languages download when selected. Preference and visibility files appear when needed; the dashboard token appears when its listener is enabled. Static saves statistics asynchronously during operation and at shutdown. Diagnostic files are created on request.
+Only `en_US.toml` is generated at startup. Other languages install when selected, and `.upstream/` records what the language source last delivered. Preference and visibility files appear when needed; the dashboard token appears when its listener is enabled. Static saves statistics asynchronously during operation and at shutdown. Diagnostic files are created on request.
 
 The first start downloads Gson, TOML4J, and Adventure libraries into `.libs/`; later starts reuse that cache. Allow outbound access to the configured Maven repositories during initial installation. Library downloads and translation downloads are independent.
 
@@ -49,7 +50,7 @@ If a required library cannot download or load, Static does not enable. Check the
 | TOML setting | Default | Behavior |
 |---|---|---|
 | `general.enabled` | `true` | Enables counters and eligible online time; stored profiles remain readable when disabled |
-| `general.language` | `en_US` | Server default for players without personal selections |
+| `general.language` | `en_US` | Server default for players without personal selections; any locale id of 2 to 32 letters, digits, `_`, or `-` |
 | `general.updateCheckerEnabled` | `true` | Checks GitHub releases and notifies permitted operators; does not install updates |
 | `general.metricsEnabled` | `false` | Enables bStats only when a registered positive plugin ID is configured |
 | `general.bstatsPluginId` | `34591` | Static's registered ID; an explicit `0` disables reporting |

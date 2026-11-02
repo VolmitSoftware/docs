@@ -38,7 +38,7 @@ For a separate provider loader, use the loader that owns `NativeAdapters` as its
 | Server release | Module |
 | --- | --- |
 | 1.21.11 | `native-v1_21_R7` |
-| 26.1 and 26.1.1 | `native-v26_1_R1` (spawn protection only) |
+| 26.1 and 26.1.1 | `native-v26_1_R1` (spawn protection, button presses, inventory extraction) |
 | 26.1.2 and 26.2 | `native-v26_2_R1` |
 | 26.3 | `native-v26_3_R1` |
 
@@ -63,6 +63,8 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | Interface | Operations |
 | --- | --- |
 | `block.BlockEntityAccess` | Capture block-entity NBT and evaluate native container locks |
+| `block.ButtonAccess` | Press buttons through native activation and scheduled release |
+| `inventory.InventoryExtractionAccess` | Filter hopper source slots before native extraction |
 | `chunk.ChunkPacketAccess` | Send loaded chunks, capture native chunk packets, and read world metadata |
 | `chunk.GeneratedChunkStructures` | Read a loaded chunk's structure starts and referenced start-chunk positions |
 | `chunk.ChunkSendRateAccessor` | Read and change server chunk send and load rates |
@@ -86,6 +88,10 @@ All packages below are under `art.arcane.volmlib.nativelib`.
 | `storage.NativeSavedWorldGeneration` | Read authenticated saved generation settings without loading a world |
 | `protection.SpawnProtectionAccess` | Create native spawn-protection checks |
 | `proxy.ProxyForwardingAccess` | Read the active Velocity forwarding key |
+
+`ButtonAccess.press(block, player, validation)` supports Minecraft 26.1 through 26.3. Call it with loaded blocks and an online player in their owning context. The validation callback runs before activation and after the rising `BlockRedstoneEvent`; return false when permissions, ownership, inventory capacity, or other required state changes. The caller supplies its interaction/protection checks, including `PlayerInteractEvent` when appropriate. Results distinguish `PRESSED`, `UNCHANGED`, `DENIED`, and `INVALIDATED`. An already-powered button is unchanged. Native activation owns neighbor updates, sound, game events, arrow handling, and scheduled release, so callers do not schedule a separate reset.
+
+`InventoryExtractionAccess.filterExtraction(source, allowedSlot)` supports Minecraft 26.1 through 26.3. Supply a native Bukkit inventory and a fast slot predicate, then use the returned inventory in a source `HopperInventorySearchEvent`. The view shares the source's live stacks and mutations, retains sided restrictions, and rejects disallowed slots before hopper selection. It neither reorders storage nor replaces the block entity. Keep source and destination in the owning context; predicates may run more than once and must not mutate storage. Normal transfer events still run for eligible slots. The filter does not restrict incoming items or manual withdrawals.
 
 `ChunkPacketAccess.snapshotSupported()` checks whether the binding can encode native chunk snapshots. On supported 26.1.2, 26.2, and 26.3 bindings, `snapshot(world, new ChunkPosition(x, z))` returns an optional `ChunkPacketSnapshot` for an already-loaded column, including its block, biome, block-entity, and light data. The snapshot copies its bytes on construction and access, with a 2 MiB limit. `context(world)` returns an optional immutable `ChunkWorldContext` with separate world and dimension-type keys, the normal client spawn seed, dimension bounds, and time and weather values. Call both methods in the destination region's owning context; they do not load chunks or send packets. Snapshots are unavailable while native packet preparation is incomplete or the world uses a chunk anti-xray controller. `registryFingerprint(world)` returns a SHA-256 digest of biome registry IDs and block-state IDs for matching the client’s decoder. Consumers must also match the Minecraft protocol and preserve any filtering applied by other plugins; ordinary packet delivery remains appropriate when those guarantees are unavailable.
 

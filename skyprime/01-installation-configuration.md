@@ -2,7 +2,7 @@
 title: SkyPrime - Installation and configuration
 description: Runtime requirements, world provisioning and SkyPrime's TOML files
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: skyprime, installation, configuration
 editor: markdown
 dateCreated: 2026-09-05T04:30:00.000Z
@@ -14,7 +14,7 @@ SkyPrime supports Minecraft 26.1 through 26.3 on Java 25 or newer, on Spigot and
 
 Place the jar in the intended server's `plugins/` directory and restart. SlimJar downloads Gson, TOML and Adventure before SkyPrime enables, so first startup needs access to the library repositories. Downloads and their relocated copies are cached in `plugins/SkyPrime/.libs/` for later starts. Keep this directory when moving the installation to a server without internet access; offline startup requires the cached libraries needed by that plugin version.
 
-Initial startup creates configuration and editable English locally. Other locales can be installed locally or downloaded when selected from a published language source; see Languages below. The plugin enables at startup to provide its void generator; managed-world initialization runs after server worlds load. It disables itself if configuration, island storage or world prerequisites are invalid.
+Initial startup creates configuration and editable English locally. Other locales install from the SkyPrime repository when selected; see [Languages](#languages). The plugin enables at startup to provide its void generator; managed-world initialization runs after server worlds load. It disables itself if configuration, island storage or world prerequisites are invalid.
 
 ## Worlds
 
@@ -68,6 +68,7 @@ plugins/SkyPrime/
   languages/
     en_US.toml
     ...
+    .upstream/
     language-preferences.properties
   storage/
     islands.json
@@ -300,13 +301,31 @@ Global `worlds.netherEnabled` and `worlds.endEnabled` remain off by default and 
 
 ## Languages
 
-English is generated locally. The server default is `general.language`; personal choices are saved in `languages/language-preferences.properties`. All 18 locale source files are present in the project. Selecting a missing locale downloads it only when the artifact has a published source manifest; installed local files remain editable.
+English is generated locally from the built-in catalog into `languages/en_US.toml`. The server default is `general.language`, which accepts any installed locale id; personal choices are saved in `languages/language-preferences.properties`.
+
+The other 17 catalogs live on the `main` branch of the `VolmitSoftware/SkyPrime` repository and install when first selected. Startup and `/sky language update` check that branch in the background, at most once every five minutes. When it has moved, SkyPrime downloads each installed repository locale and merges it into the local file: keys you edited stay as you wrote them, unedited keys take the repository's text, and new keys are added. If the repository cannot be reached, the check logs one failure and installed languages stay active.
+
+| Path under `languages/` | Purpose |
+|---|---|
+| `<locale>.toml` | Editable messages for one locale |
+| `.upstream/` | SkyPrime's record of the last download for each repository locale, the English reference, and `upstream.properties` (repository, branch, revision, last check). Do not edit it; hot reload ignores it. |
+| `language-preferences.properties` | Saved player choices |
+
+Any other `languages/<id>.toml` is a custom locale. Its id may use letters, digits, `_` and `-`, up to 32 characters. It appears in the pickers and editor, and repository updates never change it. An optional `[meta]` table names it and chooses a base locale:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "en_US"
+```
+
+`name` is the picker label. `base` names another installed locale that fills in missing keys before English.
 
 The language editor title is `language.editor.title`, using `{plugin} › {section}`. Keep both placeholders when editing the title; `{section}` identifies the current editor page. Missing messages use built-in English, and existing local language files retain custom edits.
 
 The available locales are `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN` and `zh_TW`.
 
-Use `/sky language self <locale>` for a personal selection, or `self reset` to follow the server default. Administrators use `/sky language server <locale>` and `/sky language server edit [locale]`. The shared language editor presents nested message categories and preserves required placeholders. Configured mission names and custom starter descriptions, material identifiers and diagnostic details are operator content rather than translated interface labels.
+Use `/sky language self <locale>` for a personal selection, or `self reset` to follow the server default. Administrators use `/sky language server <locale>`, `/sky language server edit [locale]` and `/sky language update`. The shared language editor presents nested message categories and preserves required placeholders. Configured mission names and custom starter descriptions, material identifiers and diagnostic details are operator content rather than translated interface labels.
 
 Hot reload refreshes installed personal languages as well as the server default. A malformed personal TOML file keeps its last valid messages while other valid language and configuration changes continue to apply. Missing entries in a valid file use built-in English. Deleting a personal language file uses built-in English without downloading or recreating that file, and preserves the saved player selection; restoring the file refreshes that selection automatically.
 

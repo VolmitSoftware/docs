@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-10-29T19:18:51.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -29,7 +29,7 @@ Use **Reusable sections** to add, rename, or remove named row lists; renaming up
 
 <div class="gloss-demo" data-demo="scoreboard-editor">
 <p><strong>Scoreboard authoring</strong> Browser editor. Silent capture. Browser editing and previews; game rendering is shown in the Minecraft client clips.</p>
-<video src="/gloss-assets/demos/scoreboard-editor.webm" aria-label="Scoreboard authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/gloss-assets/demos/scoreboard-editor.webm" aria-label="Scoreboard authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 `plugins/Gloss/boards/staff.json`:

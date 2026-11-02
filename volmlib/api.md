@@ -2,7 +2,7 @@
 title: "VolmLib API"
 description: "VolmLib documentation: API overview for plugin developers"
 published: true
-date: 2026-10-21T03:11:44.000Z
+date: 2026-10-28T00:00:00.000Z
 tags: "volmlib, api"
 editor: markdown
 dateCreated: 2026-08-12T00:00:00.000Z
@@ -55,6 +55,12 @@ Presentation plugins create one `ProjectionViewAccess(plugin)` and close it when
 `art.arcane.volmlib.util.plugin.SplashScreenSupport` supplies `javaMajorVersion()`, `startupDate()`, `releaseTrain(String version)`, and `serverVersionWithoutMcSuffix(String serverVersion)`. Pass the platform's server description explicitly; Bukkit callers can pass `Bukkit.getVersion()`. The server helper removes a trailing Minecraft version description beginning with ` (MC:`.
 
 These helpers are available in both `volmlib-shared` and the Bukkit-free `volmlib-localization` artifact. Mod loaders can use the localization artifact for splash, typed configuration, and atomic file APIs without bundling Bukkit classes. The [Husk template](/husk) demonstrates these APIs across the supported server platforms.
+
+## File replacement
+
+`util.io.AtomicFileIO.writeString(target, content)` writes UTF-8 content to a forced temporary file and replaces the destination; `replace(source, target)` publishes an already-staged file. Replacement is atomic where the filesystem supports it and uses ordinary replacement only when atomic moves are unsupported.
+
+On Windows, access-denied replacements make up to 50 attempts with 10-millisecond waits, allowing brief reader locks to clear. Persistent denial propagates the filesystem exception; an interrupted wait preserves the interrupt flag and raises `InterruptedIOException`. Run these blocking operations on an IO worker.
 
 ## Background work
 

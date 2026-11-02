@@ -2,7 +2,7 @@
 title: "Talon: Diagnostics"
 description: "Status, local reports, telemetry, and update notices"
 published: true
-date: 2026-10-25T07:15:44.815Z
+date: 2026-10-28T00:00:00.000Z
 tags: "talon, diagnostics"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -44,7 +44,7 @@ Reports remain local unless you run `/talon debug dump upload=true` and enable `
 
 `metrics.enabled` controls bStats participation. A build with service ID `0` sends no Talon metrics even when the setting is enabled. The global bStats opt-out also applies.
 
-`general.updateNotifications` controls GitHub release checks and `talon.update` controls who receives notices. Checks use the [Talon repository](https://github.com/VolmitSoftware/Talon) independently of language downloads. An unavailable repository or release reports an unknown version. Update notices do not install jars.
+`general.updateNotifications` controls GitHub release checks and `talon.update` controls who receives notices. Checks use the [Talon repository](https://github.com/VolmitSoftware/Talon) independently of language downloads. Reports distinguish no published release, a failed request, and an unrecognized version. Update notices do not install jars.
 
 ## Related pages
 
