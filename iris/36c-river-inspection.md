@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-02T02:55:18.000Z
+date: 2026-11-02T03:11:26.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -76,7 +76,7 @@ When the dimension cannot form the requested type, the command answers at once, 
 
 ## Studio map
 
-The Studio map (`/iris studio map`) has a **Rivers** view in the World group. Its legend lists what the map draws: waterfall, cascade, mouth, major river, river, stream, sea inlet, lake, pond, dam and cave pool, with the color used for each feature. Where several surface features share a pixel, the strongest one is drawn, in that order; cave pools are drawn beneath them.
+The Studio map (`/iris studio map`) has a **Rivers** view in the World group. Its legend lists what the map draws: waterfall, cascade, mouth, major river, river, stream, sea inlet, pond, lake, dam and cave pool, with the color used for each feature. Where several surface features share a pixel, the strongest one is drawn, in that order; cave pools are drawn beneath them.
 
 - At 2 blocks per pixel or closer, the map draws the planned water of each chunk, including the dam rings of dammed ponds and the open mouths of sea inlets. While chunk detail is preparing, cached water plans remain visible.
 - Between 2 and 16 blocks per pixel, the map draws the channel center lines, pond outlines, lake outlines and the passages and chambers of sea inlets from the plans that are already in memory. Dam rings are not drawn at these zooms.
