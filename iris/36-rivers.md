@@ -291,7 +291,7 @@ An inlet, its chamber and its seal stay within 512 blocks of the coast: `length`
 | `halfWidth` | `[2, 5]` | Half-width of the passage in blocks, written as `[min, max]`, each from `1` to `16`; the passage narrows toward its inland end |
 | `depth` | `[2, 5]` | Water depth below sea level in blocks, written as `[min, max]`, each from `1` to `16` |
 | `headroom` | `[4, 10]` | Air space above the water in blocks, written as `[min, max]`, each from `0` to `32`; it varies smoothly along the passage and shrinks where the ground above is thin |
-| `roofClearance` | `6` | Least solid ground in blocks kept between the passage roof and the surface, `1..64` |
+| `roofClearance` | `6` | Least solid ground in blocks kept between the passage roof and the surface, `1..64`; caves and authored rooms stay out of this rock and out of the air above the water |
 | `chamberRadius` | `[6, 12]` | Radius in blocks of the pool chamber at the inland end, written as `[min, max]`, each from `1` to `32` |
 
 #### `underground.cavePools`
@@ -360,7 +360,7 @@ Hydrology works in 512-block planning windows on the natural terrain, before cav
 
 A seal keeps the inlet watertight. Every block within two blocks of the passage below sea level, from two blocks under the bed, becomes rock where it was air, loose or not solid, so beds and walls hold. The sea floor in the open mouth keeps its sand, on two blocks of sealed rock.
 
-Caves stay at least two blocks from the inlet water, though cave air may meet the air above it. Authored subterrain rooms never take an inlet cell, and room fluid within two blocks of the inlet air is sealed as rock. The open mouth is painted and decorated like the sea floor of its biome, and no surface object stands on it.
+Caves stay at least two blocks from the inlet water. Around a covered passage and its chamber, every column within two blocks keeps caves out from one block above sea level up to `roofClearance` blocks above the passage roof, so the air above the water and the rock over it stay whole; caves above that rock carve as normal, and a cave that crosses this space ends against solid rock. Authored subterrain rooms keep out of the same space and never take an inlet cell, and room fluid within two blocks of the inlet air is sealed as rock. The open mouth is painted and decorated like the sea floor of its biome, and no surface object stands on it.
 
 **Cave pools.** A pool settles into a low point of a carved cave and fills it up to the highest level the surrounding rock holds, at most `maxDepth` deep and inside a square box of `radius` blocks around its site column, with its surface `freeboard` blocks below that level. A dip that would open to the sky, drain into a lower cave, come within three blocks of the surface or spread past `maxArea` columns gets no pool, and a pool needs at least `minArea` columns.
 
@@ -368,7 +368,7 @@ The fluid comes from the `hydrologyPolicy.fluid` of the cave biome at the site, 
 
 **Decoration and objects.** Biome decorators skip channel, pond, cascade and waterfall columns; the plants in and beside the water come from the hydrology decorator lists ([water plants](#water-plants)), which run on every water column before the biome's own decorators. Mouth columns and the open mouths of sea inlets are decorated like the sea they join. Shore columns also run the biome's `SHORE_LINE` decorators ([16 - Surfaces](/iris/16-surfaces-decorators-deposits)). Automatically placed surface objects never stand on water, shore, dam or inlet-mouth columns; banks are open to them. Use an explicit placement such as `/iris object paste` to build in the water.
 
-**Caves.** Caves stay at least two solid blocks below river beds and pond floors, under the open mouths of sea inlets, and never open within two blocks of water sideways. Authored subterrain features keep the same distance. Cave decoration under the water continues as normal. See [15 - Caves & Carving](/iris/15-caves-carving#caves-under-water).
+**Caves.** Caves stay at least two solid blocks below river beds and pond floors, under the open mouths of sea inlets, and never open within two blocks of water sideways. Over covered sea inlet passages they stay out of the air and the `roofClearance` rock. Authored subterrain features keep the same distance. Cave decoration under the water continues as normal. See [15 - Caves & Carving](/iris/15-caves-carving#caves-under-water).
 
 **Shore biomes.** A `hydrologyPolicy` can place biomes along the water's edge once it sets a `shoreBiomeWidth`; see [36b - Hydrology Policy](/iris/36b-river-policy#shore-biomes).
 
@@ -403,7 +403,7 @@ The covered passage and chamber of a sea inlet, and cave pools, lie under the su
 
 Hydrology plans are stored per world under `<world>/iris/hydrology/<dimension>/`. They are keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings, and rebuilt when any of those changes, so editing any biome, generator or policy starts a fresh set of plans. The two most recent sets are kept. With `persist: false` the plans stay in memory and are planned again after a restart. Sea inlets are part of the plans; cave pools are not planned ahead, because they follow the carved caves of each chunk.
 
-Chunks generated earlier keep their water. Where a chunk generated later meets one generated earlier, water is held back by a one-block earth wall, and the ground blends into the older terrain as in any other pack update ([06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)). Cave pools read chunks generated earlier as off limits, so a pool never reaches into them.
+Chunks generated earlier keep their water. Where a chunk generated later meets one generated earlier, water is held back by a one-block earth wall, and the ground blends into the older terrain as in any other pack update ([06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle)). Cave pools read chunks generated earlier as off limits, so a pool never reaches into them. A sea inlet passage that runs into a chunk generated earlier ends two blocks short of it in a rock seal, so its water and air never touch the older chunk.
 
 ## Validation
 

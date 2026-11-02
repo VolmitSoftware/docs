@@ -177,7 +177,7 @@ Set `allowFluid: false` to disable generated cave aquifers. It does not remove n
 
 With `hydrology.deformation.caveMask` on (the default), caves stay at least two solid blocks below every river bed, pond floor and open sea inlet mouth, and the same ceiling applies to every column within two blocks of the water, so no cave opens sideways into a stream, pond or lake. The ore pass keeps a bed or floor it would otherwise clear, and the orphan sweep leaves solid pockets above that ceiling alone. Authored subterrain features and the `CENOTE`, `LAVA_TUBE` and other room families keep the same distance from the water. Cave floors and ceilings under a river or pond are decorated as normal.
 
-`caveMask` covers only the surface water: rivers, ponds, lakes and the open mouths of sea inlets. With `caveMask: false`, or with hydrology disabled, caves carve as if that water were not there. The seal around a sea inlet passage and the cave pools below are written with the caves themselves and ignore `caveMask`. See [36 - Hydrology](/iris/36-rivers).
+`caveMask` covers only the surface water: rivers, ponds, lakes and the open mouths of sea inlets. With `caveMask: false`, or with hydrology disabled, caves carve as if that water were not there. The seal around a sea inlet passage, the cave-free space over it and the cave pools below ignore `caveMask`; see [Sea inlets](#sea-inlets). See [36 - Hydrology](/iris/36-rivers).
 
 ## Cave pools
 
@@ -196,7 +196,9 @@ Every solid block touching the pool at or below its level is sealed and keeps th
 
 With `hydrology.underground.seaInlets.enabled` on (the default), the sea runs inland through cliff coasts as flooded passages that end in a chamber pool, with the water held at sea level the whole way. The mouth is an open cove about 16 to 24 blocks long, and the covered passage keeps at least `roofClearance` blocks of rock to the surface.
 
-The seal around an inlet is independent of `caveMask`. It turns every block within two blocks of the passage below sea level into rock where it was air, loose or not solid, so caves stay at least two blocks from the inlet water. Cave air may meet the air above the water.
+The seal around an inlet is independent of `caveMask`. It turns every block within two blocks of the passage below sea level into rock where it was air, loose or not solid, so caves stay at least two blocks from the inlet water.
+
+Caves also stay out of the air above the water and out of the `roofClearance` rock over a covered passage. In every column within two blocks of the covered passage or its chamber, nothing carves from one block above sea level up to `roofClearance` blocks above the passage roof. Caves above that rock carve as normal, and a cave that crosses this space ends against solid rock. The orphan sweep leaves the space alone, and authored rooms keep out of it too.
 
 Authored rooms never take an inlet cell, and room fluid within two blocks of the inlet air is sealed as rock. The settings and the 512-block extent are on [36 - Hydrology](/iris/36-rivers#undergroundseainlets).
 
