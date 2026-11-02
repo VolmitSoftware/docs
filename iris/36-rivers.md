@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-11-02T12:37:02.000Z
+date: 2026-11-02T19:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z

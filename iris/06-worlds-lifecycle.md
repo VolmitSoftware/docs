@@ -2,11 +2,7 @@
 title: "Worlds & Lifecycle"
 description: "Iris documentation: Worlds & Lifecycle"
 published: true
-<<<<<<< HEAD
 date: 2026-10-31T00:00:00.000Z
-=======
-date: 2026-10-30T00:00:00.000Z
->>>>>>> origin/master
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z

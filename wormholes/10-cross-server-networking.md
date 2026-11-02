@@ -2,11 +2,7 @@
 title: "Cross-Server Networking"
 description: "Codes, trust, handoff, transfer modes, and doctor"
 published: true
-<<<<<<< HEAD
-date: 2026-10-29T00:49:52.000Z
-=======
 date: 2026-10-29T19:18:51.000Z
->>>>>>> origin/master
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
