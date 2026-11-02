@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-11-02T10:47:32.000Z
+date: 2026-11-02T11:10:05.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -177,7 +177,7 @@ The default (`0` to `10`) is treated as "no condition" and skips the check entir
 
 Overlapping surface and cave objects on the main terrain use a repeatable placement order for the same pack and seed, including parallel chunk generation. Empty collision lists permit overlaps without making their result depend on which chunk generates first.
 
-**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, the water exclusion, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
+**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, the water exclusion, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the flat-water rule. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not. A forced placement on river, pond or lake water still needs flat water under its support columns and places only the solid blocks above the water surface ([4. Surface support](#4-surface-support)).
 
 ## 4. Surface support
 
@@ -386,7 +386,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `requireSurfaceSupport` | `true` | Whether to refuse to bridge or roof a carved opening |
 | `surfaceSupportBuffer` | `2` (0..16) | How far past the footprint the ground must stay solid and un-carved |
 | `surfaceSupportDepth` | `2` (1..16) | How thick that un-carved ground must be under each column |
-| `forcePlace` | `false` | Skips every gate above plus water and bedrock guards. Never skips the native-structure veto |
+| `forcePlace` | `false` | Skips every gate above plus the water exclusion and the bedrock guard. Never skips the native-structure veto or the flat-water rule |
 | `heightmap` | unset | Substitutes a noise field for terrain height when resolving Y |
 
 ### Terrain fit
