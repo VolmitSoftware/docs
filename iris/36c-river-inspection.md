@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -22,7 +22,7 @@ Use `/iris find river` to reach the water of an Iris world, the Studio map's **R
 | `stream` | A channel of the lowest tier |
 | `river` | A channel of a middle tier |
 | `major_river` | A channel of the highest tier |
-| `cascade` | A stepped drop in a channel shorter than the tier's `waterfallMinimumDrop` |
+| `cascade` | A stepped drop in a channel, or a step down onto another channel's water, shorter than the higher channel's `waterfallMinimumDrop` |
 | `waterfall` | A drop of `waterfallMinimumDrop` or more |
 | `mouth` | Where a channel meets the sea, across its estuary and delta channels |
 | `pond` | A natural, seeded or chained pond |
