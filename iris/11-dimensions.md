@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -62,7 +62,7 @@ Dimension → regions[] → Region → land/sea/shore/cave biomes[] → Biome �
           → loot, entitySpawners, blockDrops
 ```
 
-Dimensions can name biomes directly through `focus`, `carving`, `subterrainFeatures` and `hydrologyPolicy.shoreBiomes`. Ordinary surface pools are reached through regions. Feature-owned biomes do not also need a region-list reference.
+Dimensions can name biomes directly through `focus`, `carving`, `subterrainFeatures` and `hydrologyPolicy.shoreBiomes`; shore biomes count only where a `shoreBiomeWidth` above `0` applies to the list. Ordinary surface pools are reached through regions. Feature-owned biomes do not also need a region-list reference.
 
 ## Engine mode
 

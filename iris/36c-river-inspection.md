@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-02T08:03:44.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -129,4 +129,5 @@ Settings that pass the validator also pass when the world starts. Settings that 
 The validator also reports warnings, which do not block the pack:
 
 - a tier written in `tiers` that leaves out `halfWidth` or `bankBand`, so it takes the stream default `[0.5, 2]` or `0` whatever its size;
-- `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades, sea inlets and cave pools are not generated.
+- `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades, sea inlets and cave pools are not generated;
+- a `hydrologyPolicy.shoreBiomes` list on the dimension, a region or a biome that no `shoreBiomeWidth` above `0` applies to, so none of its shore biomes are placed. The warning names the policy that lists them.

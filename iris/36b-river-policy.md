@@ -2,7 +2,7 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, climate zones and their wetness bounds, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-11-02T08:03:44.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -30,7 +30,7 @@ dateCreated: 2026-09-19T00:00:00.000Z
 | `ponds` | inherit, `ALLOW` | Whether ponds may form in this area: `ALLOW` or `BLOCK` |
 | `fluid` | inherit, none | Name of a fluid profile from `hydrology.fluids` that fills the water in this area: the ponds and lakes whose floor lies here instead of `ponds.fluid`, and every stretch of stream or river whose upstream end lies here instead of its tier's `fluid`. It cannot name a seam profile. Set on a cave biome, a region or the dimension, it also fills the cave pools there instead of `cavePools.fluid`; a surface biome's value never reaches cave pools |
 | `decorators` | inherit, none | Plants for the rivers, streams, ponds and lakes in this area, replacing the `tiers[].decorators` and `ponds.decorators` lists there; an empty list grows no plants |
-| `shoreBiomes` | inherit, none | Biomes placed along the water's edge in this area; an empty list clears the inherited biomes |
+| `shoreBiomes` | inherit, none | Biomes placed along the water's edge in this area, in a band as wide as `shoreBiomeWidth`; without a width above `0` the list places nothing. An empty list clears the inherited biomes |
 | `shoreBiomeWidth` | inherit, `0` | Width in blocks of the shore biome band along the water, `0..31`; `0` places no shore biome |
 
 ```json
@@ -93,7 +93,7 @@ Shore biomes are an option that `shoreBiomeWidth` turns on. The width defaults t
 
 The width is a separate value from the list, so a dimension can set `shoreBiomeWidth` once and let every region supply its own `shoreBiomes`. A region or biome with `shoreBiomeWidth: 0` keeps the inherited list but places none of it.
 
-Listed shore biomes are reachable biomes while hydrology is enabled, whatever the width: they appear in schema suggestions, `/iris find biome` and `/iris goto biome` accept them, and they need no entry in a region's biome lists. A shore biome that does not exist fails generation with an error that names the biome, the biome, region or dimension that lists it, the biome it was resolved for and the region.
+The list and the width resolve separately for every column, as the first list and the first width set on the biome, on the biomes it grows inside as a child, on the region and on the dimension. A listed shore biome is a reachable biome only where its list resolves together with a width above `0` while hydrology is enabled: it then appears in schema suggestions, `/iris find biome` and `/iris goto biome` accept it, and it needs no entry in a region's biome lists. A list that no width above `0` reaches places nothing and adds nothing to the reachable biomes, and `/iris pack validate` warns about it, naming the dimension, region or biome that lists it. A shore biome that does not exist fails generation with an error that names the biome, the biome, region or dimension that lists it, the biome it was resolved for and the region.
 
 ## Managed pack policies
 

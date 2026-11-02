@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-11-02T08:03:44.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -439,7 +439,8 @@ A starting world runs the same compile, and also checks the `fluid` of every tie
 `/iris pack validate` also warns, without blocking the pack, about settings that load but are often unintended:
 
 - a tier written in `tiers` that leaves out `halfWidth` or `bankBand`, so it takes the stream default `[0.5, 2]` or `0` whatever its size;
-- `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades, sea inlets and cave pools are not generated.
+- `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades, sea inlets and cave pools are not generated;
+- a `hydrologyPolicy.shoreBiomes` list that no `shoreBiomeWidth` above `0` applies to, so it places no shore biomes ([36b - Hydrology Policy](/iris/36b-river-policy#shore-biomes)).
 
 ## Managed packs
 

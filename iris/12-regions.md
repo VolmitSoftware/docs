@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-11-02T07:35:39.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -162,7 +162,7 @@ A biome does not declare its own role. The role (`LAND`, `SEA`, `SHORE`, `CAVE`)
 | `streams`, `ponds` | `ALLOW` or `BLOCK` for streams starting here and ponds forming here |
 | `fluid` | Fluid profile from `hydrology.fluids` that fills the ponds and lakes here instead of `ponds.fluid`, and every stretch of stream or river that flows through here instead of its tier's fluid |
 | `decorators` | Plants for the water here, replacing the tier and pond decorator lists; an empty list grows none |
-| `shoreBiomes`, `shoreBiomeWidth` | Biomes placed along the water's edge, and the width of that band in blocks, `0..31` |
+| `shoreBiomes`, `shoreBiomeWidth` | Biomes placed along the water's edge, and the width of that band in blocks, `0..31`; a list with no width above `0` from the region, its biomes or the dimension places nothing |
 
 The climate zones, drainage, tiers, pond and lake settings are dimension-owned. See [11 - Dimensions](/iris/11-dimensions#hydrology), [36 - Hydrology](/iris/36-rivers) and [36b - Hydrology Policy](/iris/36b-river-policy).
 
