@@ -57,7 +57,8 @@ All paths are relative to `plugins/ByteCompanions/`.
 | Path | Contents |
 |---|---|
 | `config.toml` | Root settings. See [Configuration](/bytecompanions/03-configuration). |
-| `languages/<locale>.toml` | Message catalogs, generated when a locale is first used. See [Languages](/bytecompanions/04-languages). |
+| `languages/<locale>.toml` | Message catalogs, generated or downloaded when a locale is first used. See [Languages](/bytecompanions/04-languages). |
+| `languages/.upstream/` | Pristine repository copies and check state used to merge translation updates; managed by the plugin, not for editing. |
 | `languages/language-preferences.properties` | Personal language choices by player UUID. |
 | `companions/<id>.toml` | One companion definition per file. Fresh installs receive `bee`, `copper`, `lantern`, `mushroom`, `myself`, `rainbow`, `scout`, and `warrior`. |
 | `features/attributes/config.toml` | Attribute modifiers by companion. |

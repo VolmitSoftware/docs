@@ -2,7 +2,7 @@
 title: "HiddenOre: Commands and Permissions"
 description: "The /hiddenore command tree and permission nodes"
 published: true
-date: 2026-10-08T17:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "hiddenore, commands, permissions"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,6 +17,7 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | `/hiddenore language self <locale\|reset>` | Select or reset your personal HiddenOre language |
 | `/hiddenore language server <locale>` | Change the HiddenOre server default |
 | `/hiddenore language server edit [locale]` | Open the per-language message editor in game |
+| `/hiddenore language update` | Check the HiddenOre language repository and merge changed translations into installed files |
 | `/volmit plugins languages [lang]` | Open the shared picker or change every enabled provider's server default |
 | `/hiddenore debug dump [upload=true]` | Save a diagnostic report, uploading by default |
 | `/hiddenore debug mode` | Toggle ore debug mode for yourself |
@@ -34,6 +35,7 @@ Version is listed under `/hiddenore debug` in help. `/hiddenore version` provide
 | `hiddenore.debugdump` | `op` | Save and optionally upload diagnostic reports |
 | `hiddenore.language.self` | `true` | Choose or reset your HiddenOre language; also requires `volmit.language.self` |
 | `volmit.language.self` | `true` | Shared requirement for personal language selection |
+| `volmit.language.admin` | `op` | Shared alternative to `hiddenore.admin` for the server language, the message editor, and `language update` |
 
 ## Notes
 
@@ -59,6 +61,8 @@ only Fortune, tool tiers, or experience does not.
 
 `/hiddenore language` picks a language. Personal selection needs `hiddenore.language.self`; server
 selection needs `hiddenore.admin` or `volmit.language.admin`. See [Languages](/languages).
+
+`/hiddenore language update` needs `hiddenore.admin` or `volmit.language.admin` and runs from a player or the console. It checks the repository off the main thread and reports each updated locale with its added, changed, and kept counts, or that installed languages already match. Checks run at most once every five minutes, counting the startup check; inside that window the command reports the remaining wait. See [Language files](/hiddenore/configuration#language-files).
 
 
 ## Update notifications

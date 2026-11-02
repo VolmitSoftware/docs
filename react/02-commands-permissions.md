@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "React command syntax, aliases, and permission requirements"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -34,7 +34,7 @@ Additional permission:
 |------------|------|
 | `react.configurator` | Required (or op) for `/react config gui` |
 
-The root gate for other commands, except `debugdump`, is `react.use`, `react.*`, or operator status. Personal language selection requires both `react.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Server language selection accepts `react.use` or `volmit.language.admin` (operator by default).
+The root gate for other commands, except `debugdump`, is `react.use`, `react.*`, or operator status. Personal language selection requires both `react.language.self` and `volmit.language.self`, each granted by default (`true`). Denying either permission blocks the personal picker, direct locale selection, and `self reset`. Server language selection and `language update` accept `react.use` or `volmit.language.admin` (operator by default).
 
 Feature and tweak bypass nodes appear in config. Examples: `react.bypass.projectile-limit`, `react.secret.adapt.bypass`, `react.secret.iris.bypass`.
 
@@ -46,6 +46,7 @@ Feature and tweak bypass nodes appear in config. Examples: `react.bypass.project
 | `language self <locale\|reset>` | | player | Select or reset your personal React language |
 | `language server <locale>` | | both | Change the React server default |
 | `language server edit [locale]` | | player | Edit one locale's messages without changing language selections; requires `react.use` or `volmit.language.admin` |
+| `language update` | | both | Check the React repository and merge changed translations into installed catalogs; requires `react.use` or `volmit.language.admin` |
 | `debugdump [upload=true]` | | both | Save a diagnostic report, uploading by default |
 | `monitor` | `m`, `mon` | player | Toggle action-bar monitor |
 | `monitoring-only` | `monitor-only`, `monitoring-mode`, `mo` | both | Toggle runtime-only suppression of gameplay features and every tweak while leaving monitoring, statistics, maps, actions, and commands available |

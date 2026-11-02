@@ -2,7 +2,7 @@
 title: "Rift: Configuration and Localization"
 description: "Settings, hot loading, language selection, and message editing"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "rift, configuration, hot-reload, localization, gui"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -14,7 +14,7 @@ Rift creates `plugins/Rift/config.toml` on first start. Valid saved changes appl
 
 | Setting | Default | Effect or bounds |
 |---|---|---|
-| `language` | `en_US` | Server-default locale |
+| `language` | `en_US` | Server-default locale; any file name of 2-32 letters, digits, `_`, or `-` |
 | `updateNotifications` | `true` | GitHub release checks and combined Volmit notices |
 | `hotReloadPollMillis` | `1000` | File polling interval, 250-10,000 ms |
 | `hotReloadCooldownMillis` | `1500` | Combine rapid saves, 250-30,000 ms |
@@ -53,11 +53,23 @@ Message edits allow 512 characters. Use `\n` for a line break, `\\` for a backsl
 
 ## Language files
 
-English is generated locally. Other supported languages download from GitHub only when selected or opened for editing. Rift does not install every catalog at startup.
+English is generated locally. The 17 other repository locales install from the `main` branch of `VolmitSoftware/Rift` only when selected or opened for editing. Rift does not install every catalog at startup. Missing translated message keys use the local English catalog.
 
-Downloads use the release's pinned Git revision, not a moving branch. Missing translated message keys use the local English catalog.
+Installed translations merge repository changes at startup and whenever an operator runs `/rift language update`. New and changed messages arrive, keys you edited by hand stay as you wrote them, and retired keys you never touched are removed. The pristine copies used for that comparison live in `languages/.upstream/`; leave that directory alone. Checks run at most once every five minutes; a restart or a repeated command inside that window skips the request and the command reports the remaining wait. A failed check, including one blocked by the GitHub rate limit, leaves the installed files and the selected language as they were. The console logs one line per updated locale with its counts.
+
+After a plugin update, `en_US.toml` gains new catalog messages the same way and keeps your edits.
 
 Supported locales are `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN`, and `zh_TW`.
+
+Any other `plugins/Rift/languages/<name>.toml` is a custom language. It appears in the pickers, the message editor, and the Language tile of `/rift config`, and updates never change it. An optional `[meta]` table sets the display name and a locale to use before English for keys the file leaves out:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+```
+
+`base` may chain up to four locales. Without `[meta]`, the file name is shown and missing keys use English directly. Selecting a name with no file creates one from the English reference with `base = "en_US"`.
 
 Files live at `plugins/Rift/languages/<locale>.toml`. Their headers describe formatting and placeholders. `runtime.prefix` controls the shared label; remove `{prefix}` from an individual message to hide it there.
 

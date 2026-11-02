@@ -2,13 +2,13 @@
 title: Plugin workspace
 description: View releases, beta builds, feedback, tickets and metrics for one plugin
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: ascendant, plugins, dashboard
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
 ---
 
-Open **Publishing → Plugin workspace** to review one plugin across its connected tools. Search the plugin selector or bookmark the page with `?plugin=<plugin-key>` to return to the same plugin.
+Open **Releases → Plugin workspace** to review one plugin across its connected tools. Search the plugin selector or bookmark the page with `?plugin=<plugin-key>` to return to the same plugin.
 
 ## Sections
 

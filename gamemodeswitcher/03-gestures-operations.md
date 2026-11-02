@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Gestures and operations"
 description: "Default key gestures, event handling, and troubleshooting"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-01T21:50:00.000Z
 tags: "gamemodeswitcher, gestures, operations, folia"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -54,7 +54,7 @@ See [Switch feedback](/gamemodeswitcher/01-installation-configuration#switch-fee
 
 ## Diagnostics
 
-`/gsw debug dump` saves a report and uploads it to mclo.gs by default. Use `upload=false` for a local-only report, or set `diagnostics.upload-enabled = false` to block uploads server-wide. Reports cover platform and runtime details, active settings, configured transitions, transient gesture/cooldown counts, language availability, and bStats state. They do not provide a history of failed switches or individual Spectator session details. The personal preference file is not included. See [Shared diagnostic reports](/volmlib/api/diagnostics).
+`/gsw debug dump` saves a report and uploads it to mclo.gs by default. Use `upload=false` for a local-only report, or set `diagnostics.upload-enabled = false` to block uploads server-wide. Reports cover platform and runtime details, active settings, configured transitions, transient gesture/cooldown counts, language availability, the language source with its last checked revision and error, and bStats state. They do not provide a history of failed switches or individual Spectator session details. The personal preference file is not included. See [Shared diagnostic reports](/volmlib/api/diagnostics).
 
 bStats uses plugin ID `33967` and respects both `metrics.enabled` and the shared `plugins/bStats/config.yml` opt-out.
 

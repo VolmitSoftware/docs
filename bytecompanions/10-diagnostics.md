@@ -16,7 +16,7 @@ This page explains what `/bytecompanions status` and `/bytecompanions debug dump
 
 | Entry | Contents |
 |---|---|
-| Configuration | `general.enabled`, the server language, and whether hot reload is on |
+| Configuration | `general.enabled`, the server language with the last checked language commit, and whether hot reload is on |
 | Runtime | Registered companion definitions, loaded players, and equipped companions |
 | Features and storage | The enabled feature packs, or `none`, and the `storage.backend` value |
 | Integrations | PlaceholderAPI, WorldGuard, Vault, Nexo, and ItemsAdder, each `ready` or `absent` |
@@ -35,6 +35,7 @@ The shared part of the report covers the server, JVM, and plugin list. The ByteC
 | Companion definitions, Loaded players | Current counts |
 | Update interval, Viewer refresh delay, View distance | The `performance` values in use |
 | Configuration source, Default language | Where the configuration came from and `general.language` |
+| Language source, Language source state | The repository and branch translations come from, the last checked commit and check time, and the last check error |
 | Active decorations, Player load failures | Decoration count and failed player loads |
 | Player tick tasks, Active player companions, Completed player ticks, Player tick failures | Companion tick scheduler counters |
 | Storage queue `<name>` active players, pending operations, failures, closed | One group per storage queue |

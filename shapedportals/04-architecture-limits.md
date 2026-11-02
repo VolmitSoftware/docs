@@ -2,7 +2,7 @@
 title: "Shaped Portals: Developer reference"
 description: "Geometry constraints, the portal registry, the Wormholes handoff, and building from source"
 published: true
-date: 2026-10-30T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "shapedportals, architecture, physics, limits"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -24,7 +24,7 @@ Shaped Portals owns shape validation and the registry for native portal surfaces
 
 Nether ignition tests both vertical axes independently; a shape valid in both is rejected as ambiguous. End activation tests the horizontal X/Z plane from the completed eye frame.
 
-For standalone Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any block is placed. End portals start from the accepted Eye of Ender placement and fire `BlockCanBuildEvent` for each proposed cell before revalidating the frame.
+For standalone Nether portals, the [creation event contract](/shapedportals/02-portal-behavior-events#ignition-and-protection-plugins) lets protection plugins cancel the proposal before any block is placed. End portals start from the accepted Eye of Ender placement and fire `BlockCanBuildEvent` and `BlockPlaceEvent` for each proposed cell before revalidating the frame.
 
 ## Why portal records are required
 

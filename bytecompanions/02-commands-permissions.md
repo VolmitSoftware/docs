@@ -21,6 +21,7 @@ The command root is `/bytecompanions`. `/companions` and `/bc` are aliases. Runn
 | `/bytecompanions language self <locale\|reset>` | Chooses or clears your personal language | Player |
 | `/bytecompanions language server <locale>` | Changes the server default language | Console or player |
 | `/bytecompanions language server edit [locale]` | Opens the in-game message editor | Player |
+| `/bytecompanions language update` | Checks the ByteCompanions repository and merges changed translations into installed files, at most once every five minutes | Console or player |
 | `/bytecompanions debug version` | Shows the installed version | Console or player |
 | `/bytecompanions debug dump [upload=true]` | Writes a diagnostic report and uploads it when allowed | Console or player |
 | `/bytecompanions menu [companion]` | Opens the named dashboard; without an ID, the only equipped companion's dashboard, otherwise the collection | Player |
@@ -58,7 +59,7 @@ Help is a Director page sized to fit 20 chat lines, sorted by name and filtered 
 | Permission | Default | Allows |
 |---|---|---|
 | `bytecompanions.command` | Everyone | Help, status, and version |
-| `bytecompanions.config` | Operators | The configuration editor, the server language, and the message editor |
+| `bytecompanions.config` | Operators | The configuration editor, the server language, the message editor, and `language update` |
 | `bytecompanions.language.self` | Everyone | Choosing a personal language, together with `volmit.language.self` |
 | `bytecompanions.debug` | Operators | Writing and uploading diagnostic reports |
 | `bytecompanions.update` | Operators | Update notices on join and this plugin's entry in the shared update report |
@@ -88,7 +89,7 @@ Help is a Director page sized to fit 20 chat lines, sorted by name and filtered 
 | `bytecompanions.variant.<companion>.<variant>` | Unset | Choosing one configured variant |
 | `bytecompanions.booster.<id>` | Unset | Buying and activating one booster |
 | `volmit.language.self` | Everyone | Shared node also required for a personal language |
-| `volmit.language.admin` | Operators | Server language and message editing across Volmit plugins |
+| `volmit.language.admin` | Operators | Server language, message editing, and `language update` across Volmit plugins |
 | `volmit.update` | Operators | The shared update report for every participating plugin |
 
 A player who should use the `bee` companion through the dashboard needs `bytecompanions.command.menu`, `bytecompanions.command.spawn`, `bytecompanions.command.despawn`, and `bytecompanions.companion.bee`. To also pick the Angel Ring effect, add the three `particles` nodes and `bytecompanions.particle.angel_ring_effect`.

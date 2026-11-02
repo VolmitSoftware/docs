@@ -2,7 +2,7 @@
 title: "Rift: Storage and Operations"
 description: "World directories, profiles, quarantine, and recovery"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "rift, storage, quarantine, restore, operations"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -17,6 +17,7 @@ Rift keeps plugin data under `plugins/Rift/` and world data inside the server's 
 | `plugins/Rift/config.toml` | Runtime settings |
 | `plugins/Rift/languages/<locale>.toml` | Installed message catalog |
 | `plugins/Rift/languages/language-preferences.properties` | Personal locale choices by player UUID |
+| `plugins/Rift/languages/.upstream/` | Pristine repository copies and check state used to merge translation updates; managed by Rift, not for editing |
 | `plugins/Rift/worlds/<name>.toml` | Managed-world profile |
 | `plugins/Rift/worlds/retired/` | Retired profiles |
 | `plugins/Rift/trash/<id>.toml` | Quarantine manifest and saved profile |

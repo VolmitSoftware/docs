@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Every /wormholes command and permission node"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -22,6 +22,7 @@ Use `/wormholes` (`/wh`, `/wormhole`) for portal setup and administration. `help
 | `/wormholes language self <locale\|reset>` | `wormholes.language.self` and `volmit.language.self` | Select or reset your personal Wormholes language |
 | `/wormholes language server <locale>` | `wormholes.admin` or `volmit.language.admin` | Change the Wormholes server default |
 | `/wormholes language server edit [locale]` | `wormholes.admin` or `volmit.language.admin` | Open the in-game message editor. See [Message editor](/wormholes/11-localization#message-editor) |
+| `/wormholes language update` | `wormholes.admin` or `volmit.language.admin` | Bukkit only. Check the language repository and merge changes into installed repository locales. See [Language updates](/wormholes/11-localization#language-updates) |
 | `/volmit plugins languages [lang]` | `volmit.language.admin` or every enabled plugin's server-language administration permission | Bukkit only. Open the shared picker or change every enabled provider's server default |
 | `/wormholes info` | none | Show portal-building instructions |
 | `/wormholes wand [rune=true]` | `wormholes.admin.items` | Give a Portal Wand and, by default, a rune |
@@ -64,7 +65,7 @@ The guide displays a bearing on the action bar while you are in the target porta
 
 ## Diagnostic reports
 
-`/wormholes debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. A failed upload keeps the file. Contents: [Shared diagnostic reports](/volmlib/api/diagnostics).
+`/wormholes debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. A failed upload keeps the file. Contents: [Shared diagnostic reports](/volmlib/api/diagnostics), plus a `Wormholes languages` section with the language repository, the last checked commit and time, the last check error, and the available locales.
 
 `/wormholes debug toggle` prints projection, network, queue, and handoff counts to the console once a second until the next settings reload or restart. `verbose-logging = true` in `[main]` keeps that output across a reload. The `render` figure is accumulated projection work per elapsed second.
 

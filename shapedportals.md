@@ -2,7 +2,7 @@
 title: "Shaped Portals"
 description: "Build custom-shaped Nether and End portals and manage them in-game"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "shapedportals, portals, folia, configuration"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -46,7 +46,7 @@ dateCreated: 2026-08-27T00:00:00.000Z
 | Server software | Bukkit-compatible Minecraft 26.1 through 26.3 servers, including Paper and Folia |
 | Java | 25 |
 | Main command | `/shapedportals` (`/shapedportal`, `/sp`) |
-| Config file | `plugins/ShapedPortals/config.toml` |
+| Config file | `plugins/ShapedPortals/shapedportals.toml` |
 | Portal records | `plugins/ShapedPortals/portals.json` |
 
 ## Start here

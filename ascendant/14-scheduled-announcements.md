@@ -2,13 +2,13 @@
 title: Scheduled announcements
 description: Schedule saved Discord messages with time zones, reviewed activation and delivery history
 published: true
-date: 2026-10-29T06:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: ascendant, messages, announcements
 editor: markdown
 dateCreated: 2026-10-29T06:00:00.000Z
 ---
 
-Open **Community → Scheduled announcements** to send a message once, daily or on selected weekdays. Owners and unrestricted administrators with View permission can inspect schedules and delivery history. Configure permission allows draft editing; Publish permission is also required to review and arm a schedule.
+Open **Messaging → Scheduled announcements** to send a message once, daily or on selected weekdays. Owners and unrestricted administrators with View permission can inspect schedules and delivery history. Configure permission allows draft editing; Publish permission is also required to review and arm a schedule.
 
 ## Create and review
 

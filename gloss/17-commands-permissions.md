@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -16,6 +16,10 @@ Commands that take `page=` show one page sized to fit the 20 chat lines visible 
 
 `/gloss language` picks a language. Personal selection needs `gloss.language.self`; server
 selection needs `gloss.admin` or `volmit.language.admin`. See [Languages](/languages).
+
+`/gloss language update` checks the Gloss repository and merges changed translations into installed
+files, at most once every five minutes. It needs `gloss.admin` or `volmit.language.admin` and works
+from the console. See [Localization](/gloss/19-localization#repository-translations).
 
 ## Plugin version
 

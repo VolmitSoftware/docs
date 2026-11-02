@@ -58,11 +58,11 @@ Teleportation fails if the portal or world is unavailable, no safe landing exist
 
 ## Ignition and protection plugins
 
-Cancelled ignition events are ignored, and a Nether attempt stops if the ignition fire is gone by the time the frame is checked, as happens when a protection plugin cancels the fire placement. For a player, each proposed interior block is then checked through `BlockCanBuildEvent` before Wormholes is offered the shape. For standalone creation, before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A denied block, a cancelled event, or a changed frame stops creation.
+Cancelled ignition events are ignored, and a Nether attempt stops if the ignition fire is gone by the time the frame is checked, as happens when a protection plugin cancels the fire placement. For a player, each proposed interior block is then checked through `BlockCanBuildEvent` and a `BlockPlaceEvent` for that block before Wormholes is offered the shape, so a claim covers every portal block even when the fire and the player are outside it. For standalone creation, before a shaped Nether surface is placed, the plugin fires a cancellable `PortalCreateEvent` with reason `FIRE` and rechecks the frame. A denied block, a cancelled event, or a changed frame stops creation.
 
 Fire charges and flint and steel fired from dispensers have no player, so they use the separate `DISPENSER` ignition cause. It is off by default; add it to `portal.ignitionCauses` to let dispensers light portals without a `shapedportals.create` check.
 
-Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces ask `BlockCanBuildEvent` about each proposed cell before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
+Shaped End creation starts only after the final Eye of Ender placement is accepted. Vanilla 3×3 portals are left alone. Custom surfaces check each proposed cell through `BlockCanBuildEvent` and a `BlockPlaceEvent` before the frame is checked again and filled. A protection plugin can stop creation through the eye-placement or build events.
 
 Bukkit has no `PortalCreateEvent` reason for End-frame activation, so none is emitted; watch the placement and build events instead. On Folia, either portal type must be created inside one owned region.
 

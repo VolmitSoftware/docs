@@ -2,7 +2,7 @@
 title: "Configuration"
 description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -16,7 +16,7 @@ A valid save reloads. Invalid TOML keeps the current settings. A startup load re
 
 | Key | Default | Notes |
 |---|---|---|
-| `language` | `"en_US"` | Server default for players without a personal override. Official translations download when selected; custom IDs use their local file with English fallback. Blank values become `en_US`. Select defaults or player overrides with `/gloss language` |
+| `language` | `"en_US"` | Server default for players without a personal override. Repository translations download in the background when selected and merge repository updates afterwards; custom IDs use their local file, then its `[meta]` base, then English. Blank values become `en_US`. Select defaults or player overrides with `/gloss language`; see [Localization](/gloss/19-localization) |
 | `metrics` | `true` | Send anonymous bStats usage metrics |
 | `updateNotifications` | `true` | Check Gloss's stable GitHub releases for shared update notices and `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
 | `splashScreen` | `true` | Console banner. A failed enable still prints it |

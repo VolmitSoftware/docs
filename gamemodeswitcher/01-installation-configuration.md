@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Installation and configuration"
 description: "Install the plugin and configure gestures, switch feedback, languages, and diagnostics"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-01T21:50:00.000Z
 tags: "gamemodeswitcher, configuration, languages"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -25,7 +25,8 @@ All runtime paths below are relative to `plugins/GamemodeSwitcher/`.
 | `config.toml` | Server settings and gesture destinations |
 | `.libs/` | Downloaded runtime dependencies and relocated cache |
 | `languages/en_US.toml` | Editable English catalog, generated from built-in English |
-| `languages/<locale>.toml` | Editable translated catalogs |
+| `languages/<locale>.toml` | Editable translated and custom catalogs |
+| `languages/.upstream/` | Last merged repository copy of each installed catalog, the English reference, and `upstream.properties` with the branch, revision, and last check time; managed by the plugin |
 | `languages/language-preferences.properties` | Personal language selections |
 | `data/player-preferences.toml` | Persistent gesture opt-outs and personal feedback mutes |
 | `data/spectator-sessions.toml` | Previous modes and entry locations for tracked Spectator sessions |
@@ -58,7 +59,7 @@ An invalid `config.toml` during a hot reload keeps the previous settings active.
 | --- | --- | --- |
 | `general.enabled` | `true` | Enables all plugin mode changes |
 | `general.update-notifications` | `true` | Checks for stable GitHub releases and joins shared Volmit notices; installs nothing |
-| `general.language` | `en_US` | Server language for players without an override |
+| `general.language` | `en_US` | Server language for players without an override; a repository locale or a custom language ID of 2–32 letters, digits, `_`, or `-` |
 | `metrics.enabled` | `true` | Enables bStats for plugin ID 33967, subject to the shared bStats opt-out |
 | `gestures.double-tap-millis` | `600` | Maximum interval between swap taps, 100–3000 ms |
 | `gestures.sneak-tap-millis` | `600` | Maximum interval between spectator sneak presses, 100–3000 ms |
@@ -110,11 +111,24 @@ Action bars and titles go through the shared Volmit HUD priority system, so a hi
 
 ## Languages
 
-The server default is `general.language`. Startup creates English locally. The other 17 catalogs are requested from GitHub when selected, then remain on disk. Existing catalogs and local edits are preserved. A missing entry uses English, regardless of the server's selected language.
+The server default is `general.language`. Startup creates English locally. The other 17 catalogs install from `src/main/resources/languages` on the `master` branch of `VolmitSoftware/GamemodeSwitcher` when selected, then remain on disk. A missing entry uses English, regardless of the server's selected language.
 
 Catalogs cover English, Dutch, Finnish, French, German, Hebrew, Italian, Japanese, Korean, Lithuanian, Polish, Portuguese, Russian, Spanish, Turkish, Vietnamese, Simplified Chinese, and Traditional Chinese.
 
-Catalog downloads use a fixed published revision rather than a moving branch. Missing entries and messages with mismatched variables use the English text; installed files and local edits are preserved.
+After startup, and when an operator runs `/gsw language update`, the plugin asks GitHub for the newest commit that changed those catalogs on that branch and merges changed messages into each installed catalog. New messages are added, messages you have not edited take the new text, and messages you edited keep your text. The console logs one line per changed catalog, or that the installed languages match the branch head. At most one check runs every five minutes, including across restarts; a repeated update inside that window reports the remaining wait. If GitHub is unreachable, English and the installed files stay active.
+
+After a plugin update, `languages/en_US.toml` gains new built-in messages the same way and keeps your edits. Missing entries and messages with mismatched variables use the English text.
+
+Any other `languages/<id>.toml` is a custom language and can be selected or set as `general.language`. An optional `[meta]` table at the top of the file sets `name`, the label shown in the language picker, and `base`, a locale whose messages fill in what the file leaves out before English. Selecting an ID that has no file creates one from the English reference with `[meta]` already filled in. Language updates never change custom files.
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+
+[language.selection]
+server-selected = "{plugin}: Arr, the server now speaks {locale}."
+```
 
 See [Languages](/languages).
 

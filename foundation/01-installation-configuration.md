@@ -2,7 +2,7 @@
 title: "Installation and Configuration"
 description: "Foundation requirements, the TOML settings, the worth catalog, and the in-game editor"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "foundation, installation, configuration"
 editor: markdown
 dateCreated: 2026-08-28T00:00:00.000Z
@@ -55,6 +55,8 @@ Foundation supports `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT
 Up to 17 common commodities get a positive default price. Everything else starts at `0` and is unsellable, including spawn eggs and operator-only items. Prices are capped at `1,000,000,000,000`.
 
 Identifiers belonging to a newer server version are kept in their category and ignored for sales rather than erased. An invalid `worth.toml` falls back to `worth.toml.last-good`; if both are invalid Foundation keeps a default catalog active in read-only mode rather than overwriting your prices.
+
+Foundation applies a valid edit to the running server when you save the file, which also ends read-only mode. If your edit differs from the generated layout, Foundation rewrites the file: missing items return at their default prices, entries move to their categories in sorted order, and your comments are removed. The bytes you saved go to `worth.toml.last-good` first. If the edit is invalid or the rewrite fails, the previous catalog stays active and the file keeps your edit. If Foundation sees a newer save just before rewriting, it leaves the file alone and reloads that save instead.
 
 ## In-game editor
 

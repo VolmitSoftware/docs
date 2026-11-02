@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install, client mod, data folder, wormholes.toml, quality profiles, and uninstalling"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "wormholes"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -109,7 +109,8 @@ plugins/Wormholes/
   wormholes.toml             consolidated settings (schema 3)
   portals/                  saved local portal files
   doors/                    dimensional door / pocket state (`state.json`, `state.json.tickets/`, `pending-resizes/`)
-  languages/                optional per-locale TOML overrides
+  languages/                editable en_US.toml, installed and custom locale files, language-preferences.properties
+  languages/.upstream/      pristine repository copies and upstream.properties used to merge language updates
   routes/peers.properties   learned peer routes (not in wormholes.toml)
   trust/peers.properties    trusted peer public keys
   identity/                 network key material (server.identity, keys)
@@ -242,7 +243,7 @@ the runtime does not use.
 
 | Key | Default | Notes |
 |-----|---------|--------|
-| `language` | `en_US` | Active locale name. See [11 - Localization](/wormholes/11-localization) |
+| `language` | `en_US` | Active locale name: a repository locale or any custom `languages/<id>.toml` whose id matches `[A-Za-z0-9_-]{2,32}`; anything else uses `en_US`. See [11 - Localization](/wormholes/11-localization) |
 | `metrics` | `true` | Enables anonymous bStats reporting after a restart |
 | `update-notifications` | `true` | Bukkit only. Checks Wormholes' stable GitHub releases for shared update notices and `/volmit plugins updates`; applies on save. See [Update notifications](/volmlib/api/github-releases) |
 | `language-fallbacks` | `""` | Comma-separated fallback locales. Code English is always final |

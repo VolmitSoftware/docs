@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, settings, and uninstalling"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,7 +21,7 @@ Startup fills missing player-preference policies and writes adaptation settings 
 | Jar | `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` in each backend `plugins/` folder |
 | Command | `/adapt`, behind `adapt.main`. `adapt.use.*` defaults to true and still needs that root node |
 
-An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That directory must be writable. A non-English `language` is downloaded to `languages/<locale>.toml` only when that file is missing.
+An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That directory must be writable. A non-English `language` is downloaded to `languages/<locale>.toml` only when that file is missing. Installed language files merge repository changes at startup and on `/adapt language update`, at most once every five minutes; see [Localization](/adapt/07-localization#language-files-and-updates).
 
 ## World and mob restrictions
 
@@ -102,6 +102,7 @@ plugins/Adapt/
   config-archive/<timestamp>/
   languages/en_US.toml
   languages/<locale>.toml
+  languages/.upstream/
   languages/language-preferences.properties
   data/players/<uuid>.json
   data/players/<uuid>.json.pending-sql   # SQL mode only
@@ -125,7 +126,7 @@ plugins/Adapt/
 | `splashScreen` | `true` | Prints the startup banner |
 | `metrics` | `true` | Starts bStats during enable |
 | `integrationSnapshotMaxMetrics` | `65536` | Maximum distinct metrics retained for snapshot consumers, clamped to 1–65536. A changed limit clears the snapshot cache on the next collection cycle |
-| `language` | `en_US` | Server default locale. Players may override it with the shared in-game picker. Supported non-English values download automatically into `languages/<locale>.toml` only when the file is missing; edit that file to customize messages |
+| `language` | `en_US` | Server default locale. Players may override it with the shared in-game picker. Repository locales download automatically into `languages/<locale>.toml` when the file is missing; a custom locale name (2 to 32 letters, digits, `_`, or `-`) uses `languages/<name>.toml`. Edit that file to customize messages |
 | `xpCurve` | `ADAPT_BALANCED` | Curve family shared by every skill line and by master level. See [05 - Configuration Math](/adapt/05-configuration-math) |
 | `experienceMaxLevel` | `1000` | Skill level cap. Lookups clamp to this value |
 | `playerXpPerSkillLevelUpBase` | `489` | Flat master XP granted per skill level crossed |

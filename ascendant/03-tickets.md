@@ -2,7 +2,7 @@
 title: Support tickets
 description: Route private support tickets by plugin, hand off staff assignments and export private transcripts
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: ascendant, discord, tickets, support
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
@@ -53,3 +53,39 @@ The dashboard rejects stale revisions so two operators cannot silently overwrite
 The private ticket database is included in configured backups. Restoring it requires both services to be stopped. Restore disables ticket creation and increases revisions. If current storage exists, its ticket histories, participants, references, transcripts, response metrics and publication records take precedence over the older archive, preserving later removals and decisions.
 
 Unfinished channel creations, closures and participant changes become uncertain; they are never replayed automatically. If no current storage exists, archived open tickets and published panel records require manual review before reuse. Review the restored settings and Discord channel state before enabling tickets.
+
+## Set up a support panel
+
+1. Create a Discord category for private tickets and a text channel where the ticket-opening button belongs. Copy their IDs and the support team role IDs with Discord Developer Mode enabled.
+2. Give Ascendant View Channel, Send Messages, Read Message History, Embed Links, Attach Files, Manage Channels and Manage Roles. It also needs Add Reactions and thread creation/send permissions at the server level because it must explicitly deny those permissions when closing tickets. Channel overrides must allow it to manage the ticket category. Administrator is not required.
+3. In **Tickets > Panels**, create a panel, enter the IDs, and write its title, description, button label and welcome message. Add up to five intake questions. Plugin, server software/version, problem description and a log link are useful starting questions.
+4. In **Settings**, choose the open-ticket limit and cooldown, enable tickets, then save. Enabling tickets does not post a panel.
+5. Preview the saved panel, review its destination and permissions, then confirm posting when ready. The review expires after five minutes or a settings change. Updating a known panel edits its existing message when possible.
+
+Only a dashboard owner with configuration access can change settings. Posting a panel also requires publishing access. Dashboard ticket history and transcripts require owner/administrator and audit access; claim actions also require configuration access, and closing also requires publishing access. In Discord, configured support roles and server administrators can claim; the requester or support team can close. Dashboard recovery-key actions are identified as Dashboard in ticket history, with the authenticated identity retained in the dashboard audit log.
+
+## Ticket workflow
+
+The panel button opens a form before creating the ticket. A private text channel is created with explicit access for the requester, bot and support roles; other server members cannot see it unless they have Administrator. Tickets have claim/unclaim and close controls in Discord, and the same actions in the Inbox. Closing requires a reason and denies the requester's ability to send messages, react or create threads. The channel is retained, not deleted. Administrators bypass Discord channel restrictions.
+
+Duplicate interactions are recorded once. Open-ticket limits and cooldowns are enforced in the database. If Discord's response is lost or the process stops during a write, the operation is marked unconfirmed and is not automatically retried. Check Discord before resolving that state. If channel creation succeeds but its welcome message fails, the dashboard can still manage the ticket. Reopening, deleting channels, transferring claims and manually reconciling uncertain operations are not included in this first release.
+
+## Transcripts and logs
+
+Transcript capture is a separate opt-in. Enable Message Content Intent in the Discord Developer Portal, set `DISCORD_MESSAGE_CONTENT_ENABLED=true`, and enable **Record ticket transcripts** in Settings. Both bot and dashboard must use the same `TICKETS_FILE`. Capture begins with newly observed messages; old chat and offline gaps are not imported. Message text, edits and deletion markers are stored as plain text. Attachments are not downloaded.
+
+Ticket detail shows the intake answers, lifecycle timeline and paginated messages. The transcript download is authenticated JSON, with no public transcript URL. Form answers remain part of the ticket even when message capture is off. Disabling tickets or transcript capture clears retained transcript text; it does not erase Discord messages or previously downloaded copies. Closed records, message history and timeline entries expire after the configured 1–90 days; active ticket records are retained. Limits are 5,000 messages and 16 MiB per ticket, three retained edit revisions per message, 100,000 messages overall, 1,000 lifecycle events per ticket and 10,000 closed ticket records. Exports indicate truncation when a bound was reached.
+
+Opening, claiming, unclaiming and closing can also produce metadata-only **Ticket activity** records in **Server logs**. Enable that event type under Server logs > Settings and optionally set a separate **Tickets** destination. Discord copies still require the logging delivery toggle. Form answers, close reasons and transcript bodies are not copied into general logging channels. Ticket channels and configured ticket categories are excluded from generic message logging/activity capture. Channel/category-ID tombstones keep previously designated ticket locations excluded after records expire or a panel is removed.
+
+## Storage
+
+Ticket response and resolution medians are available under **Reports > Analytics**. First-response metadata is recorded for new tickets independently of transcript text capture. An observed reply must come from verified support staff; claiming alone is not a reply. Older untracked tickets remain visibly untracked. See [metric definitions and coverage](/ascendant/17-community-analytics).
+
+### Local sample data
+
+`node scripts/seed-ticket-demo.mjs` creates a sample support panel, four fictional tickets, edited/deleted transcript examples and linked ticket events in a fresh `.cache/ticket-demo/sample-*` directory. It never writes to the live ticket/logging databases and never contacts Discord. The generated `.cache/ticket-demo/latest.json` lists the two database paths. Logging delivery stays off, all destinations are blank, and no panel publication is created.
+
+To inspect the sample, run only the local dashboard with `--review`, setting `TICKETS_FILE` and `COMMUNITY_LOGGING_FILE` for that process to those generated paths. Do not put the sample paths into `.env` or the VPS environment. `node scripts/check-ticket-demo.mjs` verifies the running review dashboard on port 3080 with read-only requests. Restarting the dashboard normally without these process overrides restores the real ticket and logging views.
+
+`TICKETS_FILE` defaults to `./data/tickets.sqlite`; the VPS location is `/var/vhost/volmbot/bot/data/tickets.sqlite`. Keep it on persistent local disk outside `htdocs`. Linux database access is restricted to its owner. Dashboard `.vmbak` archives do not include this database. Stopped-service VPS update backups include the default `data/` folder. For a manual backup, stop the service, copy the whole folder including SQLite companion files, then restart. Include custom paths separately.

@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Features and roadmap"
 description: "Current features, release checks, and remaining work in priority order"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-01T21:50:00.000Z
 tags: "gamemodeswitcher, features, roadmap"
 editor: markdown
 dateCreated: 2026-10-13T00:00:00.000Z
@@ -23,7 +23,7 @@ GamemodeSwitcher supports Minecraft 26.1–26.3, including patch releases, on Ja
 | Return safety | Unsafe returns are allowed by default. Turning them off checks ground, clearance, and world borders, including for existing sessions. Permissions and disabled worlds still apply. |
 | Sound picker (P3) | Five presets, previews, and custom sound keys. Previewing keeps the current gamemode. |
 | Configuration | Shared editor for all settings, validated input, stale-save protection, and one prefixed save confirmation. Configuration and installed translations reload automatically. |
-| Languages | Built-in English, 17 GitHub catalogs pinned to a verified published revision, personal selection, translation editor, variable comments, and English-only fallback. |
+| Languages | Built-in English, 17 GitHub catalogs that track the repository's `master` branch, `/gsw language update` with a five-minute minimum interval, merges that keep local edits, custom languages with `[meta]` names and base locales, personal selection, translation editor, variable comments, and English-only fallback. |
 | Commands | Director help, status, debug dump, debug version, and a hidden `/gsw version` alias. |
 | Operations | Optional bStats with ID 33967, GitHub release notices, a startup splash, and Folia-aware scheduling. |
 | Distribution | Shared VolmLib pruning/shrinking, compact release packing, downloaded Gson/TOML/Adventure/bStats, bytecode and packaging checks, and `BUILDS` output. |
@@ -56,17 +56,16 @@ WorldGuard and combat integrations must check their dependencies' platform suppo
 
 ## Verification
 
-The current November 1 build passed 100 unit tests, 7 packaged-runtime tests, and the build checks below. It has not been started on a server yet; the runtime results below describe the October 18 artifact.
+The current November 1 language-source build passed 105 unit tests, 7 packaged-runtime tests, and the build checks below, and was started on Paper 26.1.2 with a passing gameplay scenario. The other platform results below describe the October 18 artifact.
 
 | Recorded run | Result |
 | --- | --- |
 | November 1 build | 100 unit tests and 7 packaged-runtime tests passed, with Paper/Spigot 26.3 compilation and packaging checks. Startup accepts Java 25 or newer. A double tap blocked by the empty-hand requirement now says why, and the Spectator exit ignores that requirement. A player who moves during a safe-return check is put back on the checked spot. Distribution: 834,730 bytes; packed JAR: 793,784 bytes. |
-| November 1 catalog check | All 17 catalogs at pinned revision `724b670d9c9fcecb6ca600b8ab99c6a088ad2dfc` match the local files, 340 message keys each. |
+| November 1 language-source build | 105 unit tests and 7 packaged-runtime tests passed, including a loopback repository sync that keeps a local edit and leaves a custom file unchanged, a `[meta]` base chain, the English reference merge, and the five-minute cooldown. The packaging check found the `repository`, `branch`, `path`, `extension`, and `locales` manifest keys, no pinned-revision keys, and no bundled catalogs. Packed JAR: 808,285 bytes. |
+| November 1 Paper 26.1.2 build 74 language sync | Startup logged `GamemodeSwitcher languages match VolmitSoftware/GamemodeSwitcher@master (724b670).` 6 Mineflayer steps passed: German installed from the branch on selection, a dropped `pirate.toml` with `name = "Pirate Speak"` listed on page two of the picker, its own message on selection, German from its `de_DE` base in `/gsw status`, the five-minute cooldown reply from `/gsw language update`, and the return to English. No plugin warnings or errors. |
 | October 21 Spigot 26.3 build 4663, Purpur 26.3 build 2653, Leaf 26.3 build 8, and Canvas 26.3 build 991 | With the October 18 artifact on Java 25.0.1: first start from an empty library cache, `/gsw status`, `/gsw debug version`, `/gsw debug dump upload=false`, a `config.toml` hot reload confirmed in a second report, clean shutdown, a cached restart, and a second clean shutdown all passed with no plugin warnings or errors. Canvas used Folia region/entity scheduling. No gameplay assertions on these platforms. |
 | October 18 Paper 26.3 build 205 and Folia 26.3 build 3 | Java 25.0.1 first start from an empty library cache, cached restart, `config.toml` hot reload, a rejected invalid edit that kept the previous settings, `/gsw status`, `/gsw debug version`, `/gsw debug dump upload=false`, a German catalog download from the pinned revision, and clean shutdown all passed. Paper also started with legacy `disabled-worlds = ["world_nether", "minecraft:the_end"]` and set aside a corrupt `player-preferences.toml`. No gameplay assertions: the Mineflayer harness supports up to protocol 26.1. |
 | October 18 Paper 26.1.2 build 74 gameplay | 50 Mineflayer steps passed (48 from the `qa/` scenarios, 2 from a temporary missing-world scenario): commands, double-swap, sneaking double-swap and triple-sneak gestures, personal opt-out, selector and configuration menus, the disabled-worlds picker, hot reload, empty-hand and world restrictions, translation edits and fallback, local debug dump, unsafe-return safety, previous-mode and origin return, a Spectator session across a restart, and leaving Spectator in place when the entry world no longer exists. |
-| October 18 catalog check | The pinned revision's catalogs have 328 message keys; current local catalogs have 340. Missing entries use English until the catalogs are published and the pin advances. |
-| October 14 catalog checks | All 17 catalog URLs at the pinned revision were reachable. Each has 328 message keys; current local catalogs have 330. |
 | October 14 runtime attempts | Unrelated missing Multiplexor metadata blocked Paper 26.3 build 181 and Paper 26.1.2 build 74 before startup. No gameplay assertions ran and no viewer opened. The temporary instances were removed. |
 | October 14 build | 88 unit tests and 7 packaged-runtime tests passed. Paper/Spigot 26.3 compilation, required/forbidden contents, and bundled/downloaded Java 25 bytecode checks passed. Packed JAR: 797,058 bytes. |
 | October 13 build | 85 unit tests and 5 packaged-runtime tests passed, with Paper/Spigot 26.3 compilation and packaging checks. |

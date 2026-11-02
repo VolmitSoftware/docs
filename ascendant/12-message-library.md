@@ -2,13 +2,13 @@
 title: Reusable message library
 description: Save, preview and reuse Discord messages across Ascendant
 published: true
-date: 2026-10-29T02:30:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: ascendant, messages, templates
 editor: markdown
 dateCreated: 2026-10-29T02:30:00.000Z
 ---
 
-Open **Community → Message library** to create named templates, search their names and tags, and preview saved messages. Owners and administrators with unrestricted plugin access and View permission can read the library. Configure permission is also required to create or change templates.
+Open **Messaging → Message library** to create named templates, search their names and tags, and preview saved messages. Owners and administrators with unrestricted plugin access and View permission can read the library. Configure permission is also required to create or change templates.
 
 ## Create and edit
 

@@ -41,7 +41,7 @@ All paths below are inside `plugins/ShapedPortals/`.
 
 | Path | Purpose |
 |---|---|
-| `config.toml` | All plugin settings |
+| `shapedportals.toml` | All plugin settings |
 | `.libs/` | Downloaded libraries and their relocated copies |
 | `cache/runtime/` | Verified runtime extracted by an XZ distribution |
 | `languages/language-preferences.properties` | Persistent per-player language choices, created after the first selection |
@@ -71,14 +71,14 @@ Changes are validated and saved to the same files used by the server. Valid chan
 
 ## Live configuration behavior
 
-By default, changes to `config.toml` and installed `languages/*.toml` files load automatically. Personal language files refresh independently of the server default. The plugin's own translation updates and the `languages/.upstream/` directory are not treated as file edits.
+By default, changes to `shapedportals.toml` and installed `languages/*.toml` files load automatically. Personal language files refresh independently of the server default. The plugin's own translation updates and the `languages/.upstream/` directory are not treated as file edits.
 
-- Invalid edits keep the last working settings and log the error.
+- Invalid edits keep the last working settings and log the error. A rejected file is reported once and is not tried again until it changes or another watched file loads successfully.
 - Changes from `/sp config` apply immediately.
-- `/sp config` refuses to save while `config.toml` holds changes that have not been applied, so an in-game edit never overwrites a file edit. Fix the file or wait for it to reload, then edit again.
+- `/sp config` refuses to save while `shapedportals.toml` holds changes that have not been applied, so an in-game edit never overwrites a file edit. Fix the file or wait for it to reload, then edit again.
 - Watcher timing changes preserve pending edits to the same files.
 - If hot reload is disabled, restart the server after editing files on disk. Until then, `/sp config` refuses to save over the edited file.
-- If `config.toml` cannot be read at startup, the file is left unchanged, portal creation is paused, and existing portals are maintained with default settings until the file is fixed.
+- If `shapedportals.toml` cannot be read at startup, the file is left unchanged, portal creation is paused, and existing portals are maintained with default settings until the file is fixed.
 
 ## Settings
 
@@ -113,7 +113,7 @@ Set `updateNotifications = false` under `[general]`, or use the General menu tog
 | `portal.ignitionCauses` | `FLINT_AND_STEEL`, `FIREBALL`, `PLACED_FIRE` | Accepted Bukkit ignition causes. `PLACED_FIRE` covers direct fire placement and `DISPENSER` covers dispensed fire charges and flint and steel |
 | `portal.allowedWorlds` | empty | Optional case-insensitive allow-list |
 | `portal.deniedWorlds` | empty | Case-insensitive deny-list; takes priority |
-| `portal.deduplicationMillis` | `1500` | Coalesces duplicate events at one block; range 0 to 60,000 ms |
+| `portal.deduplicationMillis` | `1500` | Ignores repeat ignitions at one block for this long; range 0 to 60,000 ms |
 | `portal.endPortalCreation` | `true` | Enables managed non-vanilla End portal creation from a completed eyed frame |
 | `portal.endMinimumInteriorBlocks` | `1` | Smallest connected horizontal End interior; range 1 to 4,096 |
 | `portal.endMaximumInteriorBlocks` | `256` | Largest connected horizontal End interior; range 1 to 4,096 |
@@ -149,8 +149,8 @@ Removing a material from `portal.frameMaterials` does not disable existing porta
 |---|---|---|
 | `hotReload.enabled` | `true` | Watches the config and installed language files |
 | `hotReload.pollIntervalMillis` | `1000` | Watch poll interval; range 250–60,000 ms |
-| `hotReload.cooldownMillis` | `1500` | Stable-edit debounce; range 250–60,000 ms |
-| `hotReload.notifyOperators` | `true` | Sends permission-filtered cooperative action-bar results after automatic reloads |
+| `hotReload.cooldownMillis` | `1500` | How long a changed file must stay unchanged before it loads; range 250–60,000 ms |
+| `hotReload.notifyOperators` | `true` | Tells online players with `shapedportals.config` the result of an automatic reload, on the action bar |
 
 {.dense}
 
@@ -160,7 +160,7 @@ Removing a material from `portal.frameMaterials` does not disable existing porta
 |---|---|---|
 | `integrity.enabled` | `true` | Repairs or deactivates managed portal records |
 | `integrity.checkIntervalTicks` | `200` | Periodic sweep interval; range 20–72,000 ticks |
-| `integrity.maximumChecksPerCycle` | `32` | Bounded records queued per sweep; range 1–1,024 |
+| `integrity.maximumChecksPerCycle` | `32` | Most portals checked each cycle; range 1–1,024 |
 
 {.dense}
 
@@ -176,7 +176,7 @@ Integrity checks skip unloaded portal chunks. See [Repair-based integrity](/shap
 | `presentation.portalNotices` | `ACTION_BAR` | Portal rejection channels: `CHAT`, `ACTION_BAR`, `TITLE`, `BOSS_BAR`; empty disables notices |
 | `presentation.netherCreationNotices` | `ACTION_BAR` | Successful Nether creation channels; empty disables the message |
 | `presentation.endCreationNotices` | `ACTION_BAR` | Successful End creation channels; empty disables the message |
-| `presentation.overlayDurationTicks` | `50` | Transient overlay lifetime; range 10–600 ticks |
+| `presentation.overlayDurationTicks` | `50` | How long action bar and boss bar messages stay up; range 10–600 ticks |
 | `presentation.titleFadeInTicks` | `5` | Title fade in; range 0–200 ticks |
 | `presentation.titleStayTicks` | `30` | Title visible time; range 1–600 ticks |
 | `presentation.titleFadeOutTicks` | `10` | Title fade out; range 0–200 ticks |
@@ -211,7 +211,7 @@ Reports contain server, plugin, configuration, portal, performance, and system d
 
 `general.language` selects the server default. Players can keep a personal language. English is built in; the 17 other repository locales install on demand from the `main` branch of the ShapedPortals repository. Missing or invalid entries use English.
 
-Installed translations merge repository changes at startup and whenever an operator runs `/sp language update`. New and changed messages arrive, keys you edited by hand stay as you wrote them, and retired keys you never touched are removed. The pristine copies used for that comparison live in `languages/.upstream/`; leave that directory alone. A check that fails, including one blocked by the GitHub rate limit, leaves the installed files and the selected language as they were, and the console logs one line per updated locale with its counts.
+Installed translations merge repository changes at startup and whenever an operator runs `/sp language update`. New and changed messages arrive, keys you edited by hand stay as you wrote them, and retired keys you never touched are removed. The pristine copies used for that comparison live in `languages/.upstream/`; leave that directory alone. Checks run at most once every five minutes; a restart or a repeated command inside that window skips the request and the command reports the remaining wait. A check that fails, including one blocked by the GitHub rate limit, leaves the installed files and the selected language as they were, and the console logs one line per updated locale with its counts.
 
 Any other `languages/<name>.toml` is a custom language. It appears in the pickers, the message editor, and the Languages tile of `/sp config`, and updates never change it. An optional `[meta]` table sets the display name and a locale to use before English for keys the file leaves out:
 
@@ -254,7 +254,7 @@ Shaped Portals stores no data on players, items, or entities. These remain in th
 | Nether shapes that Wormholes accepted | Wormholes portals. Shaped Portals keeps no record of them | Manage them in [Wormholes](/wormholes/03-building-portals#vanilla-nether-and-end-portals) |
 | Frames and destination portals | Ordinary blocks and vanilla portals | Inert |
 
-To start fresh, stop the server, delete `plugins/ShapedPortals/`, keep the jar in `plugins/`, and start the server. Shaped Portals writes a default `config.toml` and `languages/en_US.toml` and downloads its libraries again. It does not register portal surfaces that are already in the world.
+To start fresh, stop the server, delete `plugins/ShapedPortals/`, keep the jar in `plugins/`, and start the server. Shaped Portals writes a default `shapedportals.toml` and `languages/en_US.toml` and downloads its libraries again. It does not register portal surfaces that are already in the world.
 
 ## Related pages
 

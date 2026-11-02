@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Commands and permissions"
 description: "Command syntax, player controls, and operator permissions"
 published: true
-date: 2026-10-14T00:00:00.000Z
+date: 2026-11-01T21:50:00.000Z
 tags: "gamemodeswitcher, commands, permissions"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -26,6 +26,7 @@ dateCreated: 2026-09-10T18:30:00.000Z
 | `/gsw language self reset` | Clear the personal override and use the server default |
 | `/gsw language server <locale>` | Select the server default language |
 | `/gsw language server edit <locale>` | Edit a catalog in-game |
+| `/gsw language update` | Check the language repository and merge changed messages into installed catalogs, keeping local edits; at most once every five minutes |
 | `/gsw debug dump` | Save a diagnostic report and request upload |
 | `/gsw debug dump upload=false` | Save a local diagnostic report |
 | `/gsw debug version` | Show `GamemodeSwitcher v<version>` using the help title gradient |
@@ -42,10 +43,10 @@ dateCreated: 2026-09-10T18:30:00.000Z
 | `gamemodeswitcher.mode.adventure` | Operators | Enter adventure |
 | `gamemodeswitcher.mode.spectator` | Operators | Enter spectator |
 | `gamemodeswitcher.mode.*` | Operators | All four mode permissions |
-| `gamemodeswitcher.config` | Operators | Configuration, server language selection, translation editor |
+| `gamemodeswitcher.config` | Operators | Configuration, server language selection, `/gsw language update`, translation editor |
 | `gamemodeswitcher.language.self` | Everyone | Personal language selection |
 | `volmit.language.self` | Everyone | Shared permission also required for personal language selection |
-| `volmit.language.admin` | Operators | Server language selection and editing across suite plugins |
+| `volmit.language.admin` | Operators | Server language selection, editing, and `language update` across suite plugins |
 | `gamemodeswitcher.debug` | Operators | Diagnostic reports |
 | `gamemodeswitcher.update` | Operators | This plugin's notices and entry in the shared update report |
 | `volmit.update` | Operators | Update report for all participating Volmit plugins |
