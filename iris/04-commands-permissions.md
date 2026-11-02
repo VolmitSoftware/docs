@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-10-30T18:00:00.000Z
+date: 2026-11-02T02:45:38.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -210,7 +210,7 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 
 `goto biome` and `find biome` resolve cave and authored-room targets at their underground Y coordinate. Cave teleports load the destination and require two clear air blocks above a safe solid floor within the requested biome. Coordinate-only searches with `teleport=false` do not teleport the player.
 
-Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes the `hydrologyPolicy.shoreBiomes` of the dimension, its regions and its biomes while hydrology is enabled, plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. `find river` searches 7,168 blocks around the player, merging the water recorded in generated chunks with the water planned for ungenerated terrain for every type but `cave_pool`, which is found in generated chunks only; an unknown type is rejected with the accepted keys, and a planning failure is reported as an error rather than "not found". On Bukkit, a water teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
+Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes the `hydrologyPolicy.shoreBiomes` of the dimension, its regions and its biomes while hydrology is enabled, plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. `find river` searches 7,168 blocks around the player, merging the water recorded in generated chunks with the water planned for ungenerated terrain for every type but `cave_pool`, which is found in generated chunks only. Each player has one search at a time, and a new one replaces the running one. A search stops after 30 seconds and reports the nearest water found by then without teleporting. A type the dimension cannot form is answered at once with the setting that turns it off ([36c - Water Inspection](/iris/36c-river-inspection)). An unknown type is rejected with the accepted keys, and a planning failure is reported as an error rather than "not found". On Bukkit, a water teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
 
 ---
 

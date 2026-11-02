@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-02T02:23:15.000Z
+date: 2026-11-02T02:45:38.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -31,7 +31,7 @@ Use `/iris find river` to reach the water of an Iris world, the Studio map's **R
 | `sea_inlet` | A flooded passage running inland from a cliff coast at sea level, from its open mouth to its chamber |
 | `cave_pool` | A pool on the floor of a carved cave |
 
-A tier's `name` sets the type of its channels: `stream`, `river`, or `major` (also `major_river`). A tier with any other name takes the type of its rank by `minCatchment`: the lowest tier is a stream, the highest a major river, and every tier between them a river. A one-tier dimension whose tier keeps the default name `stream` has streams only. A cascade, waterfall or mouth is also found by the type of the channel it belongs to, and a dammed pond is found as both `pond` and `dam`. The type is parsed without regard to case, and `-` or a space may stand in for `_`.
+A tier's `name` sets the type of its channels: `stream`, `river`, or `major` (also `major_river`). A tier with any other name takes the type of its rank by `minCatchment`: the lowest tier is a stream, the highest a major river, and every tier between them a river. A one-tier dimension whose tier keeps the default name `stream` has streams only. Generated chunks keep the channel type they recorded when they generated: their water is found by that type even after the pack's tier names or tier count change, while chunks generated later record the type the current tiers give. A cascade, waterfall or mouth is also found by the type of the channel it belongs to, and a dammed pond is found as both `pond` and `dam`. The type is parsed without regard to case, and `-` or a space may stand in for `_`.
 
 ## `/iris find river`
 
@@ -60,7 +60,7 @@ The search covers 7,168 blocks around the player. For every type except `cave_po
 
 An unknown type is rejected before any search, with the list of accepted types. A search that finds nothing within range says so. A search that fails while planning reports the failure as an error; it is never reported as "not found". On Bukkit the teleport stays tied to the world the search started in, and changing worlds cancels it.
 
-Each player has one search at a time. A new `/iris find river` or `/iris goto river` replaces the player's running search, which stops without a message. A search stops after 30 seconds: if it found water recorded in generated chunks by then, the command uses that water; otherwise it says so, for example "Stopped searching for the nearest river after 30 seconds."
+Each player has one search at a time. A new `/iris find river` or `/iris goto river` replaces the player's running search, which stops without a message. A search stops after 30 seconds. It then reports the nearest water it found by that point, recorded or planned, and does not teleport. That water may not be the nearest within range, for example: "Stopped searching for the nearest river after 30 seconds. The nearest river found so far is at 120, 63, -480; a nearer one may exist." When it found none, it says "Stopped searching for the nearest river after 30 seconds without finding one."
 
 When the dimension cannot form the requested type, the command answers at once, without planning any water, and names the setting, for example "No dam forms in this dimension: hydrology.ponds.dams is disabled." Water of that type recorded in generated chunks within range is still found.
 
