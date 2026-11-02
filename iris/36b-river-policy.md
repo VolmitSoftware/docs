@@ -2,7 +2,7 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, climate zones, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -48,9 +48,9 @@ dateCreated: 2026-09-19T00:00:00.000Z
 
 ### Inheritance
 
-A column's policy is resolved from the biome first, then the region, then the dimension. The first scope that sets a value wins; an unset or `null` value falls through to the next scope. With no value at any scope, rainfall and pond density are `1`, climate zones apply, streams and ponds are allowed, ponds and lakes keep `ponds.fluid`, channels keep their tier's `fluid`, and no shore biome is placed.
+A column's policy is resolved from the biome first, then from the biomes it grows inside as a [child](/iris/13-biomes#children): its parent, then that parent's own parent, back to the biome the region placed. The region comes next, then the dimension. The first scope that sets a value wins; an unset or `null` value falls through to the next scope. The parent is the biome the child grows inside at that column, so a child listed under two parents takes each parent's values inside that parent, and a biome a region lists directly has no parent where the region places it. With no value at any scope, rainfall and pond density are `1`, climate zones apply, streams and ponds are allowed, ponds and lakes keep `ponds.fluid`, channels keep their tier's `fluid`, and no shore biome is placed.
 
-Cave pools resolve `fluid` from the cave biome at the pool, then the region, then the dimension, and keep `cavePools.fluid` when no scope sets one. The surface biome above a cave never counts, even near the surface where the cave uses the surface biome.
+Cave pools resolve `fluid` from the cave biome at the pool, then the region, then the dimension, and keep `cavePools.fluid` when no scope sets one. Cave biomes grow no children in caves, so a cave biome takes nothing from a biome that lists it under `children`. The surface biome above a cave never counts, even near the surface where the cave uses the surface biome.
 
 `shoreBiomes` and `decorators` are lists. An explicitly empty list (`[]`) at a scope clears the inherited shore biomes, or grows no plants, in that area.
 
@@ -115,7 +115,7 @@ The Overworld and Underworld packs use the same policies. The dimension sets rai
 | `ocean/deep`, `prismatics/white` | `streams: BLOCK` |
 | `tropical/volcanic-plains`, `tropical/volcanoes` | rainfall `1.8`, pond density `3`, fluid `lava`, `climateZones: false` |
 
-With the managed `ponds.climateDrawdown` of `3`, the regions at rainfall `0.9` and `0.92` keep their ponds full inside the wet zones; their rainfall still thins stream heads and shrinks the catchment that drains off them. The volcanic biomes fill the streams, rivers, ponds and lakes inside them with lava and keep them in every climate zone. No managed policy sets `shoreBiomeWidth`, so the shore biome band is off in both packs and the water runs through each biome's own ground. A fork that sets a width on the dimension gets these beaches along every river, pond and lake.
+Children of these biomes that leave a value unset take it from the biome they grow inside. With the managed `ponds.climateDrawdown` of `3`, the regions at rainfall `0.9` and `0.92` keep their ponds full inside the wet zones; their rainfall still thins stream heads and shrinks the catchment that drains off them. The volcanic biomes fill the streams, rivers, ponds and lakes inside them with lava and keep them in every climate zone. No managed policy sets `shoreBiomeWidth`, so the shore biome band is off in both packs and the water runs through each biome's own ground. A fork that sets a width on the dimension gets these beaches along every river, pond and lake.
 
 Related:
 
