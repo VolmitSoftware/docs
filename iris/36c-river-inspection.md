@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-02T02:45:38.000Z
+date: 2026-11-02T02:55:18.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -60,7 +60,7 @@ The search covers 7,168 blocks around the player. For every type except `cave_po
 
 An unknown type is rejected before any search, with the list of accepted types. A search that finds nothing within range says so. A search that fails while planning reports the failure as an error; it is never reported as "not found". On Bukkit the teleport stays tied to the world the search started in, and changing worlds cancels it.
 
-Each player has one search at a time. A new `/iris find river` or `/iris goto river` replaces the player's running search, which stops without a message. A search stops after 30 seconds. It then reports the nearest water it found by that point, recorded or planned, and does not teleport. That water may not be the nearest within range, for example: "Stopped searching for the nearest river after 30 seconds. The nearest river found so far is at 120, 63, -480; a nearer one may exist." When it found none, it says "Stopped searching for the nearest river after 30 seconds without finding one."
+Each player has one search at a time. A new `/iris find river` or `/iris goto river` replaces the player's running search, which stops without a message. A search stops after 30 seconds. It then reports the nearest water it found by that point, recorded or planned, and does not teleport; because the search did not finish, nearer water may exist within range. The message gives the position, for example "Stopped searching for the nearest river after 30 seconds. The nearest river found so far is at 120, 63, -480; a nearer one may exist." When it found none, it says "Stopped searching for the nearest river after 30 seconds without finding one."
 
 When the dimension cannot form the requested type, the command answers at once, without planning any water, and names the setting, for example "No dam forms in this dimension: hydrology.ponds.dams is disabled." Water of that type recorded in generated chunks within range is still found.
 
