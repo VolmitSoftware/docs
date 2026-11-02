@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-11-02T07:35:39.000Z
+date: 2026-11-02T08:03:44.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -44,7 +44,7 @@ Set `hydrology.density` to control how many eligible water features are placed a
 
 ### `hydrology.climate`
 
-Climate zones lay a noise field over the dimension and split the land into wet and dry zones. The rainfall and pond density that each column takes from its [`hydrologyPolicy`](/iris/36b-river-policy) are multiplied by the wetness of its zone: `1` in a wet zone, `dryRainfall` in a dry zone, eased between the two across the `transition` band. At the default `dryRainfall` of `0`, dry zones start no streams and form no ponds of their own, while wet zones keep the configured density, so streams and ponds gather in clusters instead of reaching every hill. Water that drains in from a wet zone keeps its flow, so a river that rises in a wet zone runs on through dry land. Dry zones do not remove lakes. Inside the zones, the zone wetness at a pond or lake floor sets how far its surface drops below its freeboard, whatever the area's rainfall: `ponds.climateDrawdown` times one minus the wetness, rounded. A lake whose floor lies in a dry zone sits up to `climateDrawdown` blocks lower, and a pond in a wet zone stays full. An area whose policy sets `"climateZones": false` keeps its full rainfall and pond density inside dry zones, and its ponds drop by its [`rainfall`](/iris/36b-river-policy#rainfall) as they do with the zones off. A policy [`wetness`](/iris/36b-river-policy#wetness) holds the zone wetness of an area between its `min` and `max`, so a swamp stays wet inside a dry zone and a desert stays mostly dry inside a wet one, and its ponds drop by the bounded wetness.
+Climate zones lay a noise field over the dimension and split the land into wet and dry zones. The rainfall and pond density that each column takes from its [`hydrologyPolicy`](/iris/36b-river-policy) are multiplied by the wetness of its zone: `1` in a wet zone, `dryRainfall` in a dry zone, eased between the two across the `transition` band. At the default `dryRainfall` of `0`, dry zones start no streams and form no ponds of their own, while wet zones keep the configured density, so streams and ponds gather in clusters instead of reaching every hill. Water that drains in from a wet zone keeps its flow, so a river that rises in a wet zone runs on through dry land. Dry zones do not remove lakes. Inside the zones, the zone wetness at a pond or lake floor sets how far its surface drops below its freeboard, whatever the area's rainfall: `ponds.climateDrawdown` times one minus the wetness, rounded. A lake whose floor lies in a dry zone sits up to `climateDrawdown` blocks lower, and a pond in a wet zone stays full unless a policy `wetness` max holds the area lower. An area whose policy sets `"climateZones": false` keeps its full rainfall and pond density inside dry zones, and its ponds drop by its [`rainfall`](/iris/36b-river-policy#rainfall) as they do with the zones off. A policy [`wetness`](/iris/36b-river-policy#wetness) holds the zone wetness of an area between its `min` and `max`, so a swamp stays wet inside a dry zone and a desert stays mostly dry inside a wet one, and its ponds drop by the bounded wetness.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
@@ -256,8 +256,8 @@ On a slope the bowl spills downhill, so the pond sits perched above the ground b
 | Field | Default | Purpose |
 |-------|---------|---------|
 | `enabled` | `true` | Turns large hollows into lakes |
-| `minArea` | `65536` | Smallest lake surface in square blocks, `1024..134217728` |
-| `maxArea` | `4194304` | Largest lake surface in square blocks, `1024..134217728`; larger hollows are drained by a cut through their rim |
+| `minArea` | `65536` | Smallest lake surface in square blocks, `1024..4194304` |
+| `maxArea` | `4194304` | Largest lake surface in square blocks, `1024..4194304`, the area of 2048 by 2048 blocks; larger hollows are drained by a cut through their rim |
 
 A hollow becomes a lake only when it is also at least `ponds.natural.minDepth` deep and no more than 2,048 blocks across. A wider hollow is drained, whatever its area, so a very high `minDepth` removes lakes as well as ponds.
 
@@ -300,11 +300,11 @@ An inlet, its chamber and its seal stay within 512 blocks of the coast: `length`
 |-------|---------|---------|
 | `enabled` | `true` | Fills dips in cave floors with standing water |
 | `density` | `0.15` | Candidate pool sites per chunk, `0..8` |
-| `minArea` | `6` | Smallest pool surface in square blocks, `1..4096` |
-| `maxArea` | `400` | Largest pool surface in square blocks, `1..65536` |
+| `minArea` | `6` | Smallest pool surface in square blocks, `1..961` |
+| `maxArea` | `400` | Largest pool surface in square blocks, `1..961`, the area of the 31 by 31 block box of the widest `radius` |
 | `maxDepth` | `4` | Deepest pool in blocks, `1..16` |
 | `radius` | `15` | Half-size in blocks of the square box, centered on the site column, inside which a pool settles and spreads, `1..15`, so a pool stays within one chunk of the chunk that holds its site |
-| `freeboard` | `[0, 1]` | Blocks the pool surface sits below the highest level the cave holds, written as `[min, max]`, not below `0` |
+| `freeboard` | `[0, 1]` | Blocks the pool surface sits below the highest level the cave holds, written as `[min, max]`, not below `0`, with `max` below `maxDepth` |
 | `fluid` | `"water"` | Name of the fluid profile that fills cave pools; the `hydrologyPolicy.fluid` of the cave biome at the pool, else of its region, else of the dimension, replaces it |
 
 ### `hydrology.fluids[]`
@@ -421,17 +421,25 @@ Invalid hydrology settings are rejected by `/iris pack validate` and again when 
 When those pass, the validator compiles the settings exactly as a starting world does. The compile stops at its first problem and names the field, so one compile error is reported per dimension; fix it and run the validator again. The compile rejects:
 
 - `hydrology` with no tier, or two tiers sharing a `minCatchment`;
+- a `prefetchRings` outside `0..4`;
 - a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
-- a `bankBand` outside `0..64`;
-- a `minArea` above its `maxArea`, on `ponds.natural`, `lakes` or `cavePools`;
-- a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
+- a `drainage.fillEpsilon` that is not above `0`;
+- a `bankBand` outside `0..64`, a `widthFactor` or `depthRatio` below `0`, or a `waterfallMinimumDrop` below `2`;
+- a `minArea` above its `maxArea`, on `ponds.natural`, `lakes` or `cavePools`, or a `lakes.maxArea` above `4194304`;
+- a `ponds.seeded.density` outside `0..64`, or a `deformation.maxFill` below `0`;
+- a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty, or a `materials.shoreDepth` below `1`; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
 - a fluid profile name that is duplicated, or a profile with an empty palette;
 - a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;
-- `seaInlets.halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, an inlet floor and seal that would lie below the world bottom, or an inlet reach above 512 blocks;
-- `cavePools.radius` outside `1..15` or `maxDepth` below `1` while cave pools are enabled;
+- `seaInlets.spacing` below `1`, `halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, an inlet floor and seal that would lie below the world bottom, or an inlet reach above 512 blocks;
+- `cavePools.radius` outside `1..15`, `maxDepth` below `1`, a `freeboard` max at or above `maxDepth`, or a `maxArea` above `961` while cave pools are enabled;
 - a `decorators` entry, on a tier, on `ponds` or on a policy, with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block name, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order.
 
-A starting world runs the same compile, and also checks the `fluid` of every tier, of `ponds` and of `cavePools`. A fluid profile that holds a solid block stops the engine unless it is a seam profile. It also resolves every plant block in the tier, pond and policy decorator lists, so an unknown block, a fluid, a `SEA_FLOOR` block that cannot stand in water, or a `SEA_SURFACE` or `SHORE_LINE` block that holds water stops the engine; `/iris pack validate` resolves the same blocks. A `hydrologyPolicy.fluid` that `fluids` does not define on the dimension, a region or any biome the dimension reaches stops the engine at start while cave pools are enabled; with cave pools off, it fails generation when the first chunk that resolves to it is made. A known field with the wrong type fails the pack load even when `enabled` is `false`. See [36c - Water Inspection](/iris/36c-river-inspection#validation).
+A starting world runs the same compile, and also checks the `fluid` of every tier, of `ponds` and of `cavePools`. A fluid profile that holds a solid block stops the engine unless it is a seam profile. It also resolves every plant block in the tier, pond and policy decorator lists, so an unknown block, a fluid, a `SEA_FLOOR` block that cannot stand in water, or a `SEA_SURFACE` or `SHORE_LINE` block that holds water stops the engine; `/iris pack validate` resolves the same blocks. A `hydrologyPolicy.fluid` on the dimension, a region or any biome the dimension reaches that `fluids` does not define, or that names a seam profile, stops the engine at start. A known field with the wrong type fails the pack load even when `enabled` is `false`. See [36c - Water Inspection](/iris/36c-river-inspection#validation).
+
+`/iris pack validate` also warns, without blocking the pack, about settings that load but are often unintended:
+
+- a tier written in `tiers` that leaves out `halfWidth` or `bankBand`, so it takes the stream default `[0.5, 2]` or `0` whatever its size;
+- `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades, sea inlets and cave pools are not generated.
 
 ## Managed packs
 

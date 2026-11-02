@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-02T07:11:37.000Z
+date: 2026-11-02T08:03:44.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -113,12 +113,20 @@ First it checks the settings it can read without compiling them, and reports eve
 When those pass, it compiles the settings exactly as a starting world does. The compile stops at its first problem, so one compile error is reported per dimension, naming the field; fix it and run the validator again. The compile rejects:
 
 - no tier, or two tiers sharing a `minCatchment`;
-- a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
-- a `bankBand` outside `0..64`, or a `minArea` above its `maxArea`;
-- a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty;
+- a `prefetchRings` outside `0..4`;
+- a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`, or a `drainage.fillEpsilon` that is not above `0`;
+- a `bankBand` outside `0..64`, a `widthFactor` or `depthRatio` below `0`, or a `waterfallMinimumDrop` below `2`;
+- a `minArea` above its `maxArea`, or a `lakes.maxArea` above `4194304`;
+- a `ponds.seeded.density` outside `0..64`, or a `deformation.maxFill` below `0`;
+- a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty, or a `shoreDepth` below `1`;
 - a duplicated fluid profile name, or a profile with an empty palette;
 - a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;
-- sea inlet bounds (`halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, a floor and seal below the world bottom, a reach above 512 blocks) and cave pool bounds (`radius` outside `1..15`, `maxDepth` below `1`);
+- sea inlet bounds (`spacing` below `1`, `halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, a floor and seal below the world bottom, a reach above 512 blocks) and, while cave pools are enabled, cave pool bounds (`radius` outside `1..15`, `maxDepth` below `1`, a `freeboard` max at or above `maxDepth`, a `maxArea` above `961`);
 - a water `decorators` entry with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order; the validator also resolves every plant block and rejects fluids, floor plants that cannot stand in water, and surface or shore plants that hold water.
 
-Settings that pass the validator also pass when the world starts. Settings that fail the compile, or name an undefined `fluid` on a tier, on `ponds` or on `cavePools`, make the engine refuse to start with the same message. An undefined `hydrologyPolicy.fluid` on the dimension, a region or any biome the dimension reaches also stops the engine at start while cave pools are enabled; with cave pools off, it fails generation when the first chunk that resolves to it is made. **Fix validation errors before creating a world, opening Studio, or packaging the pack.**
+Settings that pass the validator also pass when the world starts. Settings that fail the compile, or name an undefined `fluid` on a tier, on `ponds` or on `cavePools`, make the engine refuse to start with the same message. An undefined or seam-profile `hydrologyPolicy.fluid` on the dimension, a region or any biome the dimension reaches also stops the engine at start. **Fix validation errors before creating a world, opening Studio, or packaging the pack.**
+
+The validator also reports warnings, which do not block the pack:
+
+- a tier written in `tiers` that leaves out `halfWidth` or `bankBand`, so it takes the stream default `[0.5, 2]` or `0` whatever its size;
+- `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades, sea inlets and cave pools are not generated.

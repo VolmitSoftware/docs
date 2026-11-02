@@ -2,7 +2,7 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, climate zones and their wetness bounds, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-11-02T07:35:39.000Z
+date: 2026-11-02T08:03:44.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -81,7 +81,7 @@ With `hydrology.climate` on, each column's rainfall and pond density are multipl
 
 ### `fluid`
 
-A fluid replaces `ponds.fluid` for every pond and lake whose floor lies in the area, and the tier's `fluid` for every stretch of stream or river whose upstream end lies in the area. A stretch runs from a source or confluence to the next confluence, pond or mouth, and keeps one fluid for its whole length: a lava stream that starts in a volcanic biome stays lava where it flows on through other biomes, and a water river that crosses the volcanic biome stays water, so two fluids meet only where streams join or flow into a pond or lake. A lava river needs no tier of its own. The fluid cannot be a seam profile; a `seam` on the fluid's profile lines its edges where it meets another fluid, see [`hydrology.fluids[]`](/iris/36-rivers#hydrologyfluids). Set on a cave biome, a region or the dimension, it also replaces `cavePools.fluid` for every cave pool whose site lies there, in the order given under [Inheritance](#inheritance); set on a surface biome, it never reaches the cave pools below. The name must be a profile in the dimension's `hydrology.fluids`. `/iris pack validate` reports an undefined name at every scope. At world start, while cave pools are enabled, an undefined fluid on the dimension, a region or any biome the dimension reaches stops the engine; with cave pools off, it fails generation when the first chunk that resolves to it is made.
+A fluid replaces `ponds.fluid` for every pond and lake whose floor lies in the area, and the tier's `fluid` for every stretch of stream or river whose upstream end lies in the area. A stretch runs from a source or confluence to the next confluence, pond or mouth, and keeps one fluid for its whole length: a lava stream that starts in a volcanic biome stays lava where it flows on through other biomes, and a water river that crosses the volcanic biome stays water, so two fluids meet only where streams join or flow into a pond or lake. A lava river needs no tier of its own. The fluid cannot be a seam profile; a `seam` on the fluid's profile lines its edges where it meets another fluid, see [`hydrology.fluids[]`](/iris/36-rivers#hydrologyfluids). Set on a cave biome, a region or the dimension, it also replaces `cavePools.fluid` for every cave pool whose site lies there, in the order given under [Inheritance](#inheritance); set on a surface biome, it never reaches the cave pools below. The name must be a profile in the dimension's `hydrology.fluids`. `/iris pack validate` reports an undefined name at every scope. At world start, an undefined fluid on the dimension, a region or any biome the dimension reaches stops the engine.
 
 ### `decorators`
 
