@@ -16,7 +16,7 @@ Turn the system on with `hydrology.enabled: true` in the dimension file. The def
 1. **Make a pond-heavy biome.** Give the biome a `hydrologyPolicy` with `"pondDensity": 2.5` and `"rainfall": 1.6`. More cups are seeded in it, along its streams and elsewhere, and its ponds stay full. Natural hollows already keep their ponds at the default `ponds.natural.keep` of `1`; lower `keep`, or a `pondDensity` below `1`, thins them. Nothing in `hydrology` itself changes.
 2. **Add a chained-pond valley.** Keep `ponds.seeded.alongChannels: true` and shorten `ponds.seeded.channelSpacing` to `[64, 128]`. Streams in that dimension then pass through a cup every 64 to 128 blocks, each one spilling into the next at a lower level. Give one region a higher `pondDensity` in its policy to concentrate the chains there; `ponds.seeded.density` adds free-standing cups, not chain cups.
 3. **Gather water into wet zones.** Set `hydrology.climate.enabled: true`. A noise field splits the land into wet and dry zones: wet zones keep the configured streams and ponds, dry zones start none of their own, and rivers from the wet zones still run on through the dry land. Raise `climate.dryness` to dry out more of the land and `climate.style.zoom` for larger zones.
-4. **Switch a biome to lava.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava, and every stretch of stream or river that starts in the biome runs as lava all the way to the next confluence, pond or mouth, even where it leaves the biome; streams that start elsewhere keep their tier's fluid while they cross it. The rest of the dimension keeps water. A cave biome with the same policy gets lava cave pools. Give the `lava` profile a `seam` such as obsidian to line its edges where it meets water or the sea.
+4. **Switch a biome to lava.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava, and every stretch of stream or river that starts in the biome runs as lava all the way to the next confluence, pond or estuary, even where it leaves the biome; streams that start elsewhere keep their tier's fluid while they cross it. The rest of the dimension keeps water. A cave biome with the same policy gets lava cave pools. Give the `lava` profile a `seam` such as obsidian to line its edges where it meets water or the sea.
 5. **Shape and plant the banks.** Set `bankBand` and `bankStyle` per tier, and `deformation.bankSlope` for the base slope. Paint the water's surroundings with `tiers[].materials` and `ponds.materials`, and grow seagrass, lily pads and reeds with `tiers[].decorators` and `ponds.decorators`.
 6. **Tune the underground water.** Sea inlets and cave pools are on by default. `underground.seaInlets.spacing` and `minimumCliffHeight` decide how many coasts get an inlet, `underground.cavePools.density` how many pool sites each chunk tries, and either `enabled: false` turns the feature off.
 7. Run `/iris pack validate`, open Studio and look at the **Rivers** view, then walk the water with `/iris find river` ([36c - Water Inspection](/iris/36c-river-inspection)).
@@ -95,18 +95,19 @@ Each tier is one size class of flowing water. The tiers are ranked by `minCatchm
 | `waterfallMinimumDrop` | `6` | Smallest drop in blocks that becomes a waterfall, `2..64` |
 | `bankBand` | `0` | Width in blocks of the band beside the water where the ground is reshaped into banks, `0..64`; `0` leaves the ground beside the channel as it is |
 | `bankStyle` | `SMOOTH` | Shape of the banks inside the bank band; see [bank styles](#bank-styles) |
-| `deltas` | `false` | Spreads the channel into a delta where it reaches the sea |
+| `estuary.length` | `48` | Most blocks upstream of the mouth that the channel runs as an estuary, `0..256`; the estuary stops where the lower bank rises more than `deformation.maxFill` blocks above sea level, and `0` ends the channel in a plain mouth. See [mouths and estuaries](#what-appears-in-the-world) |
+| `estuary.flare` | `2.5` | Half-width at the mouth of a full-length estuary as a multiple of the channel's own half-width, `1..4`; `1` keeps the channel's width |
 | `materials` | all unset | Blocks painted on the bed, shore and banks of this tier; see [materials](#materials) |
 | `decorators` | empty | Plants for this tier's channels and their banks and shores; see [water plants](#water-plants) |
 | `fluid` | `"water"` | Name of the fluid profile that fills this tier's channels; a stretch of channel whose upstream end lies in an area whose `hydrologyPolicy` sets a `fluid` takes that fluid for its whole length |
 
 The default tiers:
 
-| Tier | `minCatchment` | `halfWidth` | `depthRatio` | `inset` | `bankBand` | `deltas` |
-|------|---------------:|-------------|-------------:|--------:|-----------:|----------|
-| `stream` | `1500` | `[0.5, 2]` | `0.4` | `1` | `0` | `false` |
-| `river` | `20000` | `[2, 8]` | `0.45` | `2` | `32` | `false` |
-| `major` | `320000` | `[8, 16]` | `0.5` | `3` | `48` | `true` |
+| Tier | `minCatchment` | `halfWidth` | `depthRatio` | `inset` | `bankBand` |
+|------|---------------:|-------------|-------------:|--------:|-----------:|
+| `stream` | `1500` | `[0.5, 2]` | `0.4` | `1` | `0` |
+| `river` | `20000` | `[2, 8]` | `0.45` | `2` | `32` |
+| `major` | `320000` | `[8, 16]` | `0.5` | `3` | `48` |
 
 Every other field of the default tiers keeps the value in the table above.
 
@@ -346,13 +347,13 @@ Hydrology works in 512-block planning windows on the natural terrain, before cav
 
 **Cascades and waterfalls.** A drop of two or more blocks that is smaller than the tier's `waterfallMinimumDrop` is a cascade of steps when `cascades` is true, and is spread into a gentler slope where the terrain allows when it is false. A drop of `waterfallMinimumDrop` or more is a waterfall. Beds rise gradually toward shallow crests around drops and return to their deeper profiles beyond the transition. Water stays at least one block deep over each crest, and falling water fills the face from the lower surface up to the upper one. These shallow transitions also form where ponds meet lower channels. Where a joining channel arrives above the receiving water, a small difference is graded over its approach; a larger one drops into the receiving channel at its bank and follows the same cascade, spread and waterfall rules as any other drop. Falling water is written through the mantle, so it needs `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`. Still surface water does not depend on the mantle.
 
-**Mouths and deltas.** A channel that reaches the sea ends in a mouth. A tier with `deltas: true` spreads its channel into a delta there.
+**Mouths and estuaries.** A channel that reaches the sea ends in an estuary. Up to `estuary.length` blocks upstream of the mouth, as far as the lower bank lies at most `deformation.maxFill` blocks above sea level, the water drops to sea level and the banks are cut down toward it. Over the estuary the channel widens toward the sea, slowly at first and fastest near the mouth, to `estuary.flare` times its own half-width when the estuary runs its full length; an estuary cut short by higher banks widens less, and a half-width never passes `64`. The bed keeps the channel's own depth. A pond outlet's lip stays at the pond level, so an estuary never reaches into a pond. Estuary water is the dimension's sea fluid, whatever fluid the channel carries, and the sea's surface layers, such as the ice of a frozen sea, continue across it. A lava river meets the sea where its estuary begins, and a `seam` on the lava profile lines the lava there. Estuary columns carry the `MOUTH` [water role](#engine-streams).
 
 **Ponds, chains and lakes.** Each pond has its own level. Chained cups along a stream sit at descending heights, each spilling into the next. Lakes fill the largest hollows at one level. A dammed pond has a raised rim on its downhill side.
 
 **Biomes under the water.** A pond, lake, stream or river whose surface lies above the dimension's `fluidHeight` keeps the land biome of its area, even where its bed is cut below `fluidHeight`. Mouths and sea inlets take the sea biome.
 
-**Banks and shores.** The bank band is reshaped in the tier's `bankStyle` and roughened by `deformation.bankNoise`. A bank column keeps a steeper profile when the natural ground anywhere between it and the water is steep (`deformation.bankSteepFactor`), so a bank never dips below the ground nearer the water. Smooth, linear and concave banks vary gradually along the water; cliff and terraced styles retain their explicit benches and steps. Pond shores have a shallow shelf, a sloped taper outside the water and an uneven floor carved to at most `ponds.shore.maxDepth`. Shelf width, floor depth and the shore taper vary across each pond, while naturally deeper ground remains. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut.
+**Banks and shores.** The bank band is reshaped in the tier's `bankStyle` and roughened by `deformation.bankNoise`. A bank column keeps a steeper profile when the natural ground anywhere between it and the water is steep (`deformation.bankSteepFactor`), so a bank never dips below the ground nearer the water. Smooth, linear and concave banks vary gradually along the water; cliff and terraced styles retain their explicit benches and steps. Pond shores have a shallow shelf, a sloped taper outside the water and an uneven floor carved to at most `ponds.shore.maxDepth`. Shelf width, floor depth and the shore taper vary across each pond, while naturally deeper ground remains. Columns within two blocks of water are always solid, so `terrain3D` overhangs do not open into the water. Where a bank or shore is cut below the natural surface, the biome's deeper layers show on the cut. Banks never raise ground that lies below sea level: the sea floor beside a mouth, an estuary or a sea inlet keeps its natural height, and only the column at the very edge of water that stands above the sea is raised to hold that water in.
 
 **Materials.** `tiers[].materials` and `ponds.materials` paint the bed under the water, the shore strip along the water's edge and on dam rims (to `shoreDepth` layers) and the reshaped banks. A palette left unset keeps the biome's layers, with submerged living soils replaced as described under [Materials](#materials). With `allowGravityBlocks: false`, sand, gravel and other falling blocks in every bed, shore, bank and dam column are replaced by the column's rock.
 
@@ -392,7 +393,7 @@ Expressions can read the water through two engine streams ([14 - Generators & No
 | `4` | `POND` | Standing water of a pond or lake |
 | `5` | `POND_SHORE` | The strip of ground along a pond or lake |
 | `6` | `DAM` | The raised rim of a dammed pond |
-| `7` | `MOUTH` | Where a channel meets the sea |
+| `7` | `MOUTH` | The estuary where a channel meets the sea, with the sea's fluid at sea level |
 | `8` | `CASCADE` | A stepped drop in a channel |
 | `9` | `WATERFALL` | A drop of `waterfallMinimumDrop` or more |
 | `10` | `INLET` | The open mouth of a sea inlet, with water at sea level |
@@ -421,6 +422,7 @@ When those pass, the validator compiles the settings exactly as a starting world
 - `hydrology` with no tier, or two tiers sharing a `minCatchment`;
 - a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
 - a `bankBand` outside `0..64`;
+- an `estuary.length` outside `0..256` or an `estuary.flare` outside `1..4`;
 - a `minArea` above its `maxArea`, on `ponds.natural`, `lakes` or `cavePools`;
 - a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
 - a fluid profile name that is duplicated, or a profile with an empty palette;
@@ -441,7 +443,7 @@ The Overworld and Underworld packs share one hydrology configuration. Underworld
 | `drainage.minimumHeadKeep` | `0.6` |
 | `stream` tier | catchment `900`, half-width `[0.5, 2.5]`, width factor `1.2`, inset `1`, bank band `8` |
 | `river` tier | catchment `5000`, half-width `[2.5, 9]`, width factor `1.2`, depth ratio `0.45`, inset `2`, bank band `32` |
-| `major` tier | catchment `200000`, half-width `[9, 18]`, width factor `1.2`, depth ratio `0.5`, inset `3`, waterfall drop `8`, bank band `48`, deltas |
+| `major` tier | catchment `200000`, half-width `[9, 18]`, width factor `1.2`, depth ratio `0.5`, inset `3`, waterfall drop `8`, bank band `48` |
 | `ponds.natural` | min area `128`, min depth `1.5` |
 | `ponds.seeded` | density `10`, radius `[6, 22]`, max slope `0.7`, chain spacing `[80, 192]` |
 | `ponds.freeboard` / `climateDrawdown` | `[1, 2]` / `3` |
@@ -498,7 +500,7 @@ The managed Overworld settings, written explicitly:
         "waterfallMinimumDrop": 6,
         "bankBand": 8,
         "bankStyle": "SMOOTH",
-        "deltas": false,
+        "estuary": { "length": 48, "flare": 2.5 },
         "fluid": "water",
         "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
         "decorators": [
@@ -518,7 +520,7 @@ The managed Overworld settings, written explicitly:
         "waterfallMinimumDrop": 6,
         "bankBand": 32,
         "bankStyle": "SMOOTH",
-        "deltas": false,
+        "estuary": { "length": 48, "flare": 2.5 },
         "fluid": "water",
         "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
         "decorators": [
@@ -538,7 +540,7 @@ The managed Overworld settings, written explicitly:
         "waterfallMinimumDrop": 8,
         "bankBand": 48,
         "bankStyle": "SMOOTH",
-        "deltas": true,
+        "estuary": { "length": 48, "flare": 2.5 },
         "fluid": "water",
         "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
         "decorators": [

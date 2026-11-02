@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -24,7 +24,7 @@ Use `/iris find river` to reach the water of an Iris world, the Studio map's **R
 | `major_river` | A channel of the highest tier |
 | `cascade` | A stepped drop in a channel shorter than the tier's `waterfallMinimumDrop` |
 | `waterfall` | A drop of `waterfallMinimumDrop` or more |
-| `mouth` | Where a channel meets the sea |
+| `mouth` | Where a channel meets the sea, across its estuary |
 | `pond` | A natural, seeded or chained pond |
 | `lake` | A lake |
 | `dam` | A pond held up by a raised rim |
@@ -98,7 +98,7 @@ When those pass, it compiles the settings exactly as a starting world does. The 
 
 - no tier, or two tiers sharing a `minCatchment`;
 - a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
-- a `bankBand` outside `0..64`, or a `minArea` above its `maxArea`;
+- a `bankBand` outside `0..64`, an `estuary.length` outside `0..256`, an `estuary.flare` outside `1..4`, or a `minArea` above its `maxArea`;
 - a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty;
 - a duplicated fluid profile name, or a profile with an empty palette;
 - a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;

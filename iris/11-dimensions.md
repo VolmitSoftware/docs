@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -279,7 +279,7 @@ The feature biome owns only its air, water and lava volume. Solid rims, shelves,
 |-----|------------------|
 | `climate` | Wet and dry zones laid out by noise: wet zones keep the configured rainfall and pond density, and dry zones keep only the `dryRainfall` share of them, so they start few or no streams and ponds of their own |
 | `drainage` | How hollows fill and spill, how deep a hollow is breached instead of filled, how stream heads thin out in dry areas, and where catchment stops growing |
-| `tiers` | The size classes of flowing water, each with its catchment threshold, half-width, depth, inset, cascades and waterfall drop, bank band and bank style, deltas, materials, plants and fluid |
+| `tiers` | The size classes of flowing water, each with its catchment threshold, half-width, depth, inset, cascades and waterfall drop, bank band and bank style, estuary, materials, plants and fluid |
 | `ponds` | Natural ponds in hollows, seeded cups and the chains of cups along streams, dams, freeboard, climate drawdown, shore shape, materials and plants |
 | `lakes` | The area range of hollows that become single-level lakes |
 | `deformation` | How far ground is raised to hold water, the bank slopes and noise, and the cave mask under water |
