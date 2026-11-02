@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-11-02T10:08:08.000Z
+date: 2026-11-02T10:47:32.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -184,6 +184,8 @@ Overlapping surface and cave objects on the main terrain use a repeatable placem
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
 
 Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `underwater`, `onwater` and `forcePlace` placements skip that exclusion and treat river, pond and lake water like the sea: an `underwater` object seats on the floor below the water, an `onwater` object and a forced placement on the water surface, and the anchor checks of [6. Water, snow, and air pockets](#6-water-snow-and-air-pockets) read that water's own surface. Their support columns must still sit on flat water: a placement is skipped when any of them is a dam, cascade or waterfall column, or holds water at a different level than the anchor column. `requireSurfaceSupport: false` does not bypass the exclusion, and an explicit-Y call such as `/iris object paste` is not subject to it.
+
+Every generated object, wherever it is anchored, keeps its solid blocks out of river, pond, lake and sea inlet water above the floor unless it sets `underwater`: those blocks are left out and the rest of the object is placed, so the canopy of a tree beside a river stops at the water. An `onwater` or forced placement on that water keeps the blocks above its surface. Plants and other open blocks never replace the water.
 
 Native structures reserve their piece bounds and the surface cut area of `FLATTEN` terrain adjustments. An object intersecting that reserved area is skipped as a whole, including forced placements. This keeps trees from relying on ground that a village or other native structure removes. Objects beneath the cut area remain eligible.
 
