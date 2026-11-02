@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -224,7 +224,7 @@ That is why a sea biome with `vanillaDerivative: "minecraft:plains"` gets no oce
 | `childStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Shape of the child patches. Cellular styles give distinct blobs. Simplex gives soft gradients. |
 | `carvingBiome` | string | `""` | Registers the referenced biome as reachable so its custom identity and spawn mappings exist. It does **not** select a cave biome at runtime. Cave pick is region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
 | `caveMinDepthBelowSurface` | int 0-256 | `0` | When this biome is used as a cave biome, shallow columns fall back to the surface biome. The cutoff is this many blocks below the terrain surface. Raise it to keep a deep-cave palette out of shallow openings. |
-| `hydrologyPolicy` | `IrisHydrologyPolicy` or null | inherit | Adjusts the region and dimension hydrology policy wherever this biome is selected: rainfall, pond density, climate zones, stream and pond permissions, fluid, water plants and shore biomes. Unset values inherit; an explicitly empty `shoreBiomes` list clears the inherited list. See [36b - Hydrology Policy](/iris/36b-river-policy). |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or null | inherit | Adjusts the region and dimension hydrology policy wherever this biome is selected: rainfall, pond density, climate zones, stream and pond permissions, fluid, water plants and shore biomes. Unset values inherit from the biome this one grows inside as a child, then from the region and the dimension, and this biome's children inherit the values it sets; an explicitly empty `shoreBiomes` list clears the inherited list. See [36b - Hydrology Policy](/iris/36b-river-policy). |
 
 ### Height (`generators`)
 

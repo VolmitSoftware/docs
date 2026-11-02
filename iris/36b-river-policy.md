@@ -76,7 +76,7 @@ A fluid replaces `ponds.fluid` for every pond and lake whose floor lies in the a
 
 ### `decorators`
 
-A list of water decorators written like `tiers[].decorators` and `ponds.decorators` ([36 - Hydrology](/iris/36-rivers#water-plants)): `partOf` `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, with the same placement rules. The first list set on the biome, region or dimension replaces the tier and pond lists as a whole for every water column in that area, so a biome that wants only lily pads lists only lily pads, and `"decorators": []` grows nothing in its water. Unset inherits, and with no list anywhere the tiers and ponds use their own. The list is validated like the tier and pond lists, and its blocks are resolved when the world starts.
+A list of water decorators written like `tiers[].decorators` and `ponds.decorators` ([36 - Hydrology](/iris/36-rivers#water-plants)): `partOf` `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, with the same placement rules. The first list set on the biome, on the biomes it grows inside as a child, on the region or on the dimension replaces the tier and pond lists as a whole for every water column in that area, so a biome that wants only lily pads lists only lily pads, and `"decorators": []` grows nothing in its water. Unset inherits, and with no list anywhere the tiers and ponds use their own. The list is validated like the tier and pond lists, and its blocks are resolved when the world starts.
 
 ### Shore biomes
 
@@ -84,7 +84,7 @@ Shore biomes are an option that `shoreBiomeWidth` turns on. The width defaults t
 
 The width is a separate value from the list, so a dimension can set `shoreBiomeWidth` once and let every region supply its own `shoreBiomes`. A region or biome with `shoreBiomeWidth: 0` keeps the inherited list but places none of it.
 
-Listed shore biomes are reachable biomes while hydrology is enabled, whatever the width: they appear in schema suggestions, `/iris find biome` and `/iris goto biome` accept them, and they need no entry in a region's biome lists. A shore biome that does not exist fails generation with an error that names the biome, the biome it was resolved for and the region.
+Listed shore biomes are reachable biomes while hydrology is enabled, whatever the width: they appear in schema suggestions, `/iris find biome` and `/iris goto biome` accept them, and they need no entry in a region's biome lists. A shore biome that does not exist fails generation with an error that names the biome, the biome, region or dimension that lists it, the biome it was resolved for and the region.
 
 ## Managed pack policies
 
