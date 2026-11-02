@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T12:37:53.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -154,6 +154,8 @@ NativeTerrainAccess terrain = NativeAdapters.require(NativeTerrainAccess.class);
 Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `NativeBlockState` and `NativeBiome` at interface boundaries. Keep your generator's dimension settings, terrain decisions, and feature selection in your plugin.
 
 `NativeStructureVolume` describes a native piece and its optional `surfaceAdjustment`. Supply `null` for pieces without surface grading, or `SurfaceAdjustment(anchors, horizontalPadding, range)` for a `FLATTEN` reservation. Each `SurfaceAnchor` supplies inclusive X/Z bounds, a ground Y in world coordinates, and its strength. `contains`, `intersects`, and `intersectsRect` test the literal piece bounds; `intersectsInfluenceRect` also includes surface grading. `surfaceCutY(volumes, x, z, originalY)` combines the reserved anchors for a column. Keep objects that require ground support out of a lowered band, including the first block above the original surface.
+
+A structure stage policy's `water(context)` returns a `StructureWater` that reports a `StructureWaterColumn` for each column: whether it holds water, whether that water is river, stream, pond or lake water (`river`), and its floor and surface Y in world coordinates. Return `StructureWater.DRY` when your generator has no such water. The native stages invalidate a start your policy planned when more than 10% of the columns its pieces cover are `river` columns, unless the plan's `allowWater()` or `underground()` is true. `BORE` and `FORCE_CARVE` terrain leave a water column uncut from two blocks below its floor upward, and the ground within two blocks of the water uncut up to its surface. `StructureWaterRules` exposes the same footprint test and carve guard.
 
 `NativeBlockProperties.canPlaceOnto` checks substrate compatibility. It accepts crimson and warped roots on soul soil or either nylium type, and Nether sprouts on either nylium type. Placement code must also enforce its clearance and surface-support rules.
 

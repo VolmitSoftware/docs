@@ -2,7 +2,7 @@
 title: "Objects"
 description: "Iris documentation: Objects"
 published: true
-date: 2026-10-25T20:00:00.000Z
+date: 2026-11-02T11:16:58.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -146,7 +146,7 @@ The paste lands on the block you are looking at, with the object bottom resting 
 /iris object undo [amount=1]
 ```
 
-Alias `u`. It reverts pastes, not blocks you placed by hand.
+Alias `u`. It reverts pastes and `/iris structure place` placements, not blocks you placed by hand.
 
 `paste ... edit=true` also gives you a wand fitted to the pasted bounds. The selection follows the pasted rotation and encloses its transformed footprint. To edit an existing object, paste it, change it, then save the same key with `overwrite=true`.
 

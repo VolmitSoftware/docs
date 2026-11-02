@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-02T12:11:25.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -177,13 +177,15 @@ The default (`0` to `10`) is treated as "no condition" and skips the check entir
 
 Overlapping surface and cave objects on the main terrain use a repeatable placement order for the same pack and seed, including parallel chunk generation. Empty collision lists permit overlaps without making their result depend on which chunk generates first.
 
-**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the automatic water veto. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not.
+**Overrides.** `forcePlace: true` (JSON also accepts `"force"`) skips the usual placement gates. Those gates are the slope check, the carving-anchor check, surface support, the water exclusion, underwater rejection, fluid-height and cave-height checks, `clamp`, the bedrock guard, and the collision lists. It does **not** skip the native-structure veto or the flat-water rule. An object whose blocks would land inside a vanilla or datapack structure piece is always rejected, forced or not. A forced placement on river, pond or lake water still needs flat water under its support columns ([4. Surface support](#4-surface-support)).
 
 ## 4. Surface support
 
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
 
-Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `forcePlace`, `underwater`, `onwater`, and `requireSurfaceSupport: false` **do not** bypass that water exclusion; only an explicit-Y call such as `/iris object paste` can build in the water.
+Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `underwater`, `onwater` and `forcePlace` placements skip that exclusion and treat river, pond and lake water like the sea: an `underwater` object seats on the floor below the water, an `onwater` object and a forced placement on the water surface, and the anchor checks of [6. Water, snow, and air pockets](#6-water-snow-and-air-pockets) read that water's own surface. Their support columns must still sit on flat water: a placement is skipped when any of them is a dam, cascade or waterfall column, or holds water at a different level than the anchor column. `requireSurfaceSupport: false` does not bypass the exclusion, and an explicit-Y call such as `/iris object paste` is not subject to it.
+
+Every generated object, wherever it is anchored, keeps its solid blocks out of river, pond, lake and sea inlet water above the floor unless it sets `underwater`, `onwater` or `forcePlace`: those blocks are left out and the rest of the object is placed, so the canopy of a tree beside a river stops at the water while a raft on the river keeps its deck. Plants and other open blocks never replace the water. The rule covers objects that biomes and regions scatter on the surface and in caves, objects on floating islands, and the pieces of Iris structures, which follow their placement's `allowWater` instead ([21b - Jigsaw Resources](/iris/21b-jigsaw-resources#natural-placement)). Static objects at fixed positions and explicit placements such as `/iris object paste` build in the water as authored.
 
 Native structures reserve their piece bounds and the surface cut area of `FLATTEN` terrain adjustments. An object intersecting that reserved area is skipped as a whole, including forced placements. This keeps trees from relying on ground that a village or other native structure removes. Objects beneath the cut area remain eligible.
 
@@ -358,7 +360,7 @@ Iris fills storage chests after generation. Separately, a chest saved into the `
 
 Candidate blocks are shuffled, so which ones get marked varies per placement. `maximumMarkers` (default 8, hard max 16) caps the count. `markers/camp-spawns.json` lists the spawner resources. Its `emptyAbove` (default true) requires two air blocks above the marked block inside the object.
 
-**Saplings.** When a sapling grows, Iris scans the biome `objects[]` for placements whose `trees[]` matches the grown tree type and the sapling square size. It falls back to the region list if the biome had no match. It picks one and stamps it. A single placement can serve both natural generation and sapling override. Procedural tree generation (`proceduralObjects`) is a separate system. See [17b - Procedural Trees](/iris/17b-procedural-trees).
+**Saplings.** When a sapling grows, Iris scans the biome `objects[]` for placements whose `trees[]` matches the grown tree type and the sapling square size. It falls back to the region list if the biome had no match. It picks one and stamps it. When the picked object cannot be placed there, the sapling stays and the growth is cancelled. A single placement can serve both natural generation and sapling override. Procedural tree generation (`proceduralObjects`) is a separate system. See [17b - Procedural Trees](/iris/17b-procedural-trees).
 
 ## 8. Reference
 
@@ -384,7 +386,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `requireSurfaceSupport` | `true` | Whether to refuse to bridge or roof a carved opening |
 | `surfaceSupportBuffer` | `2` (0..16) | How far past the footprint the ground must stay solid and un-carved |
 | `surfaceSupportDepth` | `2` (1..16) | How thick that un-carved ground must be under each column |
-| `forcePlace` | `false` | Skips every gate above plus water and bedrock guards. Never skips the native-structure veto |
+| `forcePlace` | `false` | Skips every gate above plus the water exclusion and the bedrock guard. Never skips the native-structure veto or the flat-water rule |
 | `heightmap` | unset | Substitutes a noise field for terrain height when resolving Y |
 
 ### Terrain fit
@@ -411,7 +413,7 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `meld` | `false` | Writes only where solid terrain already exists, carving the object in rather than adding it |
 | `edit` | `[]` | Material find-and-replace applied as the object is written |
 | `snow` | `0` | Depth cap for a snow dusting laid over the object top blocks |
-| `underwater` | `false` | Ignores the water surface and seats on the sea floor. Also refuses to place above fluid height |
+| `underwater` | `false` | Ignores the water surface and seats on the sea, river, pond or lake floor. Also refuses to place above fluid height |
 | `onwater` | `false` | Seats on the fluid surface instead of the floor |
 | `waterloggable` | `false` | Waterlogs placed blocks that end up in water |
 | `isDolphinTarget` | `false` | With `underwater`, registers placed chests as buried treasure for dolphins |
