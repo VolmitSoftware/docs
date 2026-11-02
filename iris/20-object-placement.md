@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-11-02T11:16:58.000Z
+date: 2026-11-02T12:11:25.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -185,7 +185,7 @@ Iris refuses surface objects that roof over, bridge, or overhang a carved openin
 
 Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `underwater`, `onwater` and `forcePlace` placements skip that exclusion and treat river, pond and lake water like the sea: an `underwater` object seats on the floor below the water, an `onwater` object and a forced placement on the water surface, and the anchor checks of [6. Water, snow, and air pockets](#6-water-snow-and-air-pockets) read that water's own surface. Their support columns must still sit on flat water: a placement is skipped when any of them is a dam, cascade or waterfall column, or holds water at a different level than the anchor column. `requireSurfaceSupport: false` does not bypass the exclusion, and an explicit-Y call such as `/iris object paste` is not subject to it.
 
-Every generated object, wherever it is anchored, keeps its solid blocks out of river, pond, lake and sea inlet water above the floor unless it sets `underwater`, `onwater` or `forcePlace`: those blocks are left out and the rest of the object is placed, so the canopy of a tree beside a river stops at the water while a raft on the river keeps its deck. Plants and other open blocks never replace the water.
+Every generated object, wherever it is anchored, keeps its solid blocks out of river, pond, lake and sea inlet water above the floor unless it sets `underwater`, `onwater` or `forcePlace`: those blocks are left out and the rest of the object is placed, so the canopy of a tree beside a river stops at the water while a raft on the river keeps its deck. Plants and other open blocks never replace the water. The rule covers objects that biomes and regions scatter on the surface and in caves, objects on floating islands, and the pieces of Iris structures, which follow their placement's `allowWater` instead ([21b - Jigsaw Resources](/iris/21b-jigsaw-resources#natural-placement)). Static objects at fixed positions and explicit placements such as `/iris object paste` build in the water as authored.
 
 Native structures reserve their piece bounds and the surface cut area of `FLATTEN` terrain adjustments. An object intersecting that reserved area is skipped as a whole, including forced placements. This keeps trees from relying on ground that a village or other native structure removes. Objects beneath the cut area remain eligible.
 

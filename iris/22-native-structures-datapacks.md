@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T12:11:25.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -558,7 +558,9 @@ When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|templ
 | `weight` | `1` (min 1) | Weighted selection among the sources in this placement. |
 | `jigsaw` | unset | Overrides for registered **jigsaw** structures only. Fields include `startPool`, `startJigsawName`, `maxDepth` (0..20), `maxDistanceHorizontal` (1..128), and `maxDistanceVertical` (1..4064). Also `useExpansionHack`, `projectStartToHeightmap` (`SOURCE`/`NONE`/heightmap types), `dimensionPaddingBottom` and `dimensionPaddingTop`, and `liquidSettings`. Null or unset values preserve the registered definition. |
 
-Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
+Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `allowWater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
+
+A surface native placement is skipped when more than 10% of the 16 by 16 columns of its start chunk are river, stream, pond or lake water: channel, pond, cascade and waterfall columns of [36 - Rivers](/iris/36-rivers). The sea, river mouths, sea inlets, shores and banks do not count, and `underground` placements have no such limit. `allowWater: true` lifts the limit. The test reads the start chunk only, so pieces Minecraft assembles beyond it can still reach water.
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
