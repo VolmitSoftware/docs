@@ -24,7 +24,7 @@ Use `/iris find river` to reach the water of an Iris world, the Studio map's **R
 | `major_river` | A channel of the highest tier |
 | `cascade` | A stepped drop in a channel shorter than the tier's `waterfallMinimumDrop` |
 | `waterfall` | A drop of `waterfallMinimumDrop` or more |
-| `mouth` | Where a channel meets the sea, across its estuary |
+| `mouth` | Where a channel meets the sea, across its estuary and delta channels |
 | `pond` | A natural, seeded or chained pond |
 | `lake` | A lake |
 | `dam` | A pond held up by a raised rim |
@@ -98,7 +98,7 @@ When those pass, it compiles the settings exactly as a starting world does. The 
 
 - no tier, or two tiers sharing a `minCatchment`;
 - a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
-- a `bankBand` outside `0..64`, an `estuary.length` outside `0..256`, an `estuary.flare` outside `1..4`, or a `minArea` above its `maxArea`;
+- a `bankBand` outside `0..64`, an `estuary.length` outside `0..256`, an `estuary.flare` outside `1..4`, a `delta.channels` other than `0` or `2..4`, a `delta.spreadDegrees` outside `10..80`, a `delta.length` outside `8..384` or reaching more than 512 blocks with the tier's widest half-width and bank band, or a `minArea` above its `maxArea`;
 - a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty;
 - a duplicated fluid profile name, or a profile with an empty palette;
 - a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;

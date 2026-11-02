@@ -97,6 +97,9 @@ Each tier is one size class of flowing water. The tiers are ranked by `minCatchm
 | `bankStyle` | `SMOOTH` | Shape of the banks inside the bank band; see [bank styles](#bank-styles) |
 | `estuary.length` | `48` | Most blocks upstream of the mouth that the channel runs as an estuary, `0..256`; the estuary stops where the lower bank rises more than `deformation.maxFill` blocks above sea level, and `0` ends the channel in a plain mouth. See [mouths and estuaries](#what-appears-in-the-world) |
 | `estuary.flare` | `2.5` | Half-width at the mouth of a full-length estuary as a multiple of the channel's own half-width, `1..4`; `1` keeps the channel's width |
+| `delta.channels` | `0` | Delta channels that branch from each estuary of this tier and fan out to the sea, `0` for no delta or `2..4`; each has the half-width of the channel where its estuary starts divided by the square root of this count. See [deltas](#what-appears-in-the-world) |
+| `delta.spreadDegrees` | `35` | Largest angle in degrees between a delta channel and its estuary, `10..80` |
+| `delta.length` | `64` | Most blocks a delta channel runs from its estuary to the sea, `8..384`; this length, plus the tier's `halfWidth` max, plus `bankBand`, plus `3` must not exceed `512` |
 | `materials` | all unset | Blocks painted on the bed, shore and banks of this tier; see [materials](#materials) |
 | `decorators` | empty | Plants for this tier's channels and their banks and shores; see [water plants](#water-plants) |
 | `fluid` | `"water"` | Name of the fluid profile that fills this tier's channels; a stretch of channel whose upstream end lies in an area whose `hydrologyPolicy` sets a `fluid` takes that fluid for its whole length |
@@ -349,6 +352,8 @@ Hydrology works in 512-block planning windows on the natural terrain, before cav
 
 **Mouths and estuaries.** A channel that reaches the sea ends in an estuary. Up to `estuary.length` blocks upstream of the mouth, as far as the lower bank lies at most `deformation.maxFill` blocks above sea level, the water drops to sea level and the banks are cut down toward it. Over the estuary the channel widens toward the sea, slowly at first and fastest near the mouth, to `estuary.flare` times its own half-width when the estuary runs its full length; an estuary cut short by higher banks widens less, and a half-width never passes `64`. Over the same stretch the channel's depth tapers to one block at the mouth, so its bed meets the natural sea floor there. An outlet leaves its pond or lake at the water's own level, so an estuary never reaches into a pond or lake. Estuary water is the dimension's sea fluid, whatever fluid the channel carries, and the sea's surface layers, such as the ice of a frozen sea, continue across it. A lava river meets the sea where its estuary begins, and a `seam` on the lava profile lines the lava there, including any fall into the estuary. Estuary columns carry the `MOUTH` [water role](#engine-streams).
 
+**Deltas.** A tier with `delta.channels` splits each of its estuaries that crosses low coastal ground into a delta. The delta channels branch from the estuary a few blocks below where it starts and fan out to the sea on both sides of it: they share the angles up to `delta.spreadDegrees`, each turned a little at random for every mouth, and bend gently back toward the sea. Each delta channel has the half-width of the channel where the estuary starts divided by the square root of `delta.channels`. Like the estuary, it holds the sea's fluid at sea level, its depth tapers to one block where it reaches the sea, and its columns carry the `MOUTH` water role; it has the banks, materials and plants of its tier. A delta channel shares the estuary's water until it leaves the estuary's banks, so a wide `estuary.flare` keeps more of the delta inside the estuary. A delta channel is left out where it would cross ground more than `deformation.maxFill` blocks above sea level, a pond or lake, or another channel, or where it does not reach the sea within `delta.length` blocks, and sea inlets keep clear of delta channels.
+
 **Ponds, chains and lakes.** Each pond has its own level. Chained cups along a stream sit at descending heights, each spilling into the next. Lakes fill the largest hollows at one level. A dammed pond has a raised rim on its downhill side.
 
 **Biomes under the water.** A pond, lake, stream or river whose surface lies above the dimension's `fluidHeight` keeps the land biome of its area, even where its bed is cut below `fluidHeight`. Mouths and sea inlets take the sea biome.
@@ -393,7 +398,7 @@ Expressions can read the water through two engine streams ([14 - Generators & No
 | `4` | `POND` | Standing water of a pond or lake |
 | `5` | `POND_SHORE` | The strip of ground along a pond or lake |
 | `6` | `DAM` | The raised rim of a dammed pond |
-| `7` | `MOUTH` | The estuary where a channel meets the sea, with the sea's fluid at sea level |
+| `7` | `MOUTH` | The estuary and delta channels where a channel meets the sea, with the sea's fluid at sea level |
 | `8` | `CASCADE` | A stepped drop in a channel |
 | `9` | `WATERFALL` | A drop of `waterfallMinimumDrop` or more |
 | `10` | `INLET` | The open mouth of a sea inlet, with water at sea level |
@@ -423,6 +428,7 @@ When those pass, the validator compiles the settings exactly as a starting world
 - a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`;
 - a `bankBand` outside `0..64`;
 - an `estuary.length` outside `0..256` or an `estuary.flare` outside `1..4`;
+- a `delta.channels` other than `0`, `2`, `3` or `4`, a `delta.spreadDegrees` outside `10..80`, a `delta.length` outside `8..384`, or a delta whose `length`, plus the tier's `halfWidth` max, plus `bankBand`, plus `3` exceeds `512`;
 - a `minArea` above its `maxArea`, on `ponds.natural`, `lakes` or `cavePools`;
 - a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
 - a fluid profile name that is duplicated, or a profile with an empty palette;
@@ -501,6 +507,7 @@ The managed Overworld settings, written explicitly:
         "bankBand": 8,
         "bankStyle": "SMOOTH",
         "estuary": { "length": 48, "flare": 2.5 },
+        "delta": { "channels": 0, "spreadDegrees": 35, "length": 64 },
         "fluid": "water",
         "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
         "decorators": [
@@ -521,6 +528,7 @@ The managed Overworld settings, written explicitly:
         "bankBand": 32,
         "bankStyle": "SMOOTH",
         "estuary": { "length": 48, "flare": 2.5 },
+        "delta": { "channels": 0, "spreadDegrees": 35, "length": 64 },
         "fluid": "water",
         "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
         "decorators": [
@@ -541,6 +549,7 @@ The managed Overworld settings, written explicitly:
         "bankBand": 48,
         "bankStyle": "SMOOTH",
         "estuary": { "length": 48, "flare": 2.5 },
+        "delta": { "channels": 0, "spreadDegrees": 35, "length": 64 },
         "fluid": "water",
         "materials": {"bed": {"style": {"style": "SIMPLEX", "zoom": 0.125}, "zoom": 1, "palette": [{"block": "minecraft:gravel", "weight": 4}, {"block": "minecraft:sand", "weight": 3}, {"block": "minecraft:clay", "weight": 2}, {"block": "minecraft:coarse_dirt", "weight": 1}]}},
         "decorators": [
