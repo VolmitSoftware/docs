@@ -2,7 +2,7 @@
 title: Titles installation and configuration
 description: Runtime requirements, configuration files, and title policies
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: titles
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -22,6 +22,7 @@ All paths below are relative to `plugins/Titles`.
 | `titles-locales/<locale>/<id>.toml` | Partial title translations |
 | `category-locales/<locale>/<id>.toml` | Category label translations |
 | `languages/<locale>.toml` | Interface translations |
+| `languages/.upstream/` | Record of the last download for each repository locale, the English reference, and the source state; see [Languages](/titles/03-languages) |
 | `languages/language-preferences.properties` | Saved personal language choices |
 | `data/players/<uuid>.json` | Selection, colors, favorites, grants, denials, acquisition metadata, initialization state, and operation history |
 | `.libs/` | Downloaded runtime libraries and privately relocated copies |
@@ -33,9 +34,9 @@ First startup creates an unlocked `adventurer` title and a locked `pathfinder` t
 | Setting | Default | Meaning |
 | --- | --- | --- |
 | `enabled` | `true` | Permit selection/clear and selected-title output |
-| `language` | `en_US` | Default interface language |
+| `language` | `en_US` | Default interface language: `en_US`, a repository locale, or any id of 2 to 32 letters, digits, `_` or `-`. A repository locale that is not installed downloads after the other settings apply; an unknown id creates a custom `languages/<id>.toml` |
 | `splash` | `true` | Print startup artwork and runtime details |
-| `hotReload` | `true` | Watch supported TOML files |
+| `hotReload` | `true` | Apply edits to `config/settings.toml`, title and category files, their locale overlays, and `languages/<locale>.toml` while the server runs, checking every second and waiting 1.5 seconds after the last change. Holders of `titles.config` see an action-bar notice when a file change applies or is rejected |
 | `selectionCooldownSeconds` | `2` | Delay between successful selections, from 0 to 300 seconds |
 | `showLocked` | `true` | Permit discovery of titles visible while locked |
 | `allowColors` | `true` | Permit personal color overrides |

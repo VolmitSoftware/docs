@@ -2,7 +2,7 @@
 title: "Axion: Languages"
 description: "Language selection, local catalogs, and message variables"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "axion, automation"
 editor: "markdown"
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -12,11 +12,29 @@ Axion uses `plugins/Axion/languages/<locale>.toml` for editable messages. Englis
 
 ## Selection and installation
 
-`general.language` selects the server default. Players can choose a personal language through `/axion language`; their selection is stored in `languages/language-preferences.properties`.
+`general.language` selects the server default and accepts any id of 2 to 32 letters, digits, `_` or `-`. Players can choose a personal language through `/axion language`; their selection is stored in `languages/language-preferences.properties`.
 
-Axion has source catalogs for English and the seventeen shared Volmit translations. Only English is included in the plugin jar. Operators can install a translated TOML catalog in `languages/` before selecting it. Automatic downloads require a published, pinned catalog revision; a build marked `unpublished` cannot download a missing catalog and keeps English available.
+English is generated locally from the built-in catalog into `languages/en_US.toml`, and new messages merge into it after a plugin update. The other 17 catalogs live on the `main` branch of the `VolmitSoftware/Axion` repository and install when first selected. A configured repository locale that is not installed downloads in the background while English stays active. Any other configured id creates a starter file.
 
-Local edits are preserved. The [shared language guide](/languages) covers locale names, permissions, selection, and the inventory message editor.
+Startup and `/axion language update` check that branch in the background, at most once every five minutes. When it has moved, Axion downloads each installed repository locale and merges it into the local file: keys you edited stay as you wrote them, unedited keys take the repository's text, and new keys are added. If the repository cannot be reached, the check logs one failure and installed languages stay active. A translated TOML file placed in `languages/` works without any download.
+
+| Path under `languages/` | Purpose |
+| --- | --- |
+| `<locale>.toml` | Editable messages for one locale |
+| `.upstream/` | Axion's record of the last download for each repository locale, the English reference, and `upstream.properties` (repository, branch, revision, last check). Do not edit it; hot reload ignores it. |
+| `language-preferences.properties` | Saved player choices |
+
+Any other `languages/<id>.toml` is a custom locale. It appears in the pickers and editor, and repository updates never change it. An optional `[meta]` table names it and chooses a base locale:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "de_DE"
+```
+
+`name` is the picker label. `base` names another installed locale that fills in missing keys before English. Place `[meta]` after the top-level keys.
+
+The [shared language guide](/languages) covers locale names, permissions, selection, and the inventory message editor.
 
 ## Editing messages
 
@@ -32,6 +50,7 @@ Axion messages use these variables; each message accepts only its own subset:
 | `{owner}`, `{player}`, `{count}` | Owner, player name, or count |
 | `{reason}`, `{state}`, `{scheduler}` | Result, enabled state, or scheduler |
 | `{locale}`, `{version}` | Locale or plugin version |
+| `{added}`, `{updated}`, `{kept}`, `{remaining}` | Language update counts and the wait until the next check |
 | `{command}`, `{key}`, `{setting}`, `{value}`, `{old}`, `{new}` | Command and editor values |
 
 Keep required variables when editing. Invalid edits retain the working message; changing languages does not require a server restart.

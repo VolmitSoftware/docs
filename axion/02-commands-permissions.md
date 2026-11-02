@@ -2,7 +2,7 @@
 title: "Axion: Commands and permissions"
 description: "Player commands and operator permissions"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "axion, automation"
 editor: "markdown"
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -22,6 +22,7 @@ dateCreated: 2026-10-15T00:00:00.000Z
 | `/axion preview` | Plan its route without world changes or fuel use | Player |
 | `/axion config` | Open the configuration editor | Player |
 | `/axion language` | Open language controls | Player or console |
+| `/axion language update` | Check the language repository and merge changes into installed languages; needs `axion.config` or `volmit.language.admin` | Player or console |
 | `/axion debug version` | Show the installed version | Player or console |
 | `/axion version` | Hidden alias for `debug version` | Player or console |
 | `/axion debug dump [upload=true]` | Save diagnostics and request an upload when enabled | Player or console |

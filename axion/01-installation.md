@@ -2,7 +2,7 @@
 title: "Axion: Installation"
 description: "Server requirements, installation, and data files"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "axion, automation"
 editor: "markdown"
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -42,6 +42,7 @@ All paths below are relative to `plugins/Axion/`.
 | --- | --- |
 | `config.toml` | Operator settings |
 | `languages/<locale>.toml` | Editable messages |
+| `languages/.upstream/` | Language update records; do not edit |
 | `languages/language-preferences.properties` | Player language choices |
 | `storage/machines.index` | Registered controller locations |
 | `storage/pending-output.bin` | Retained output awaiting delivery or review |

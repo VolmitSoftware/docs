@@ -2,7 +2,7 @@
 title: "Axion: Diagnostics"
 description: "Status, diagnostic reports, and machine result codes"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "axion, automation"
 editor: "markdown"
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -44,7 +44,7 @@ Graceful shutdown drains active work and saves undelivered stacks for the next s
 
 `metrics.enabled` controls the local bStats service. An ID of `0` disables submission. A registered build also respects the global bStats opt-out in `plugins/bStats/config.yml`. Debug reports show the actual registration and active state.
 
-`general.updateNotifications` controls GitHub release checks. `/volmit plugins updates` shows the shared report to operators and permitted players. Notices never download or replace the plugin jar. Debug reports include the repository and catalog revision; `unpublished` means missing language files cannot be downloaded.
+`general.updateNotifications` controls GitHub release checks. `/volmit plugins updates` shows the shared report to operators and permitted players. Notices never download or replace the plugin jar. Debug reports include the release repository and the language source, revision, last check, and last error.
 
 ## Related pages
 

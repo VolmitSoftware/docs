@@ -2,7 +2,7 @@
 title: "Shaped Portals: Portal behavior and troubleshooting"
 description: "How portals are created, saved, repaired, and protected"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "shapedportals, portals, events, persistence"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -45,7 +45,7 @@ Block changes, physics, pistons, explosions, entities, fire, fluids, buckets, an
 
 The registry at `plugins/ShapedPortals/portals.json` stores each portal's UUID, world, axis, anchor, interior and frame coordinates, frame-material snapshot, creation time, and creator. Axis `Y` identifies horizontal End portals.
 
-> Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store, or one with overlapping records, stops the plugin from enabling and is preserved for recovery rather than overwritten. Individual records that cannot be read, such as one with a frame material the server no longer has, are skipped with a console warning, and the original file is copied to `portals.json.unreadable-<time>.bak` first.
+> Back up `portals.json` alongside your worlds, and do not edit it while the server is running. An invalid or unsupported store stops the plugin from enabling and is preserved for recovery rather than overwritten. Individual records that cannot be read, such as one with a frame material the server no longer has, and records that duplicate or overlap an earlier record, are skipped with a console error. The original file is copied to `portals.json.skipped-<time>.bak` first, and the next save leaves the skipped records out of `portals.json`.
 {.is-warning}
 
 ## Portal listing and navigation

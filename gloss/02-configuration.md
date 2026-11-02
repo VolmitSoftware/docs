@@ -10,7 +10,7 @@ dateCreated: 2026-08-18T00:00:00.000Z
 
 Feature switches and general settings live in `plugins/Gloss/gloss.toml`. JSON documents hold content such as tablist text, MOTD lines, bubble styles, damage indicators, and real drops. See [Data Files & Hot Reload](/gloss/03-data-files).
 
-A valid save reloads. Invalid TOML keeps the current settings. A startup load rewrites the file and drops custom comments. Values outside their range are clamped. Settings marked restart-only still need a restart.
+A valid save reloads. Invalid TOML keeps the current settings. A startup load or a default language change rewrites the file and drops custom comments. Values outside their range are clamped. Settings marked restart-only still need a restart.
 
 ## Root keys
 

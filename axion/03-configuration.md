@@ -2,7 +2,7 @@
 title: "Axion: Configuration"
 description: "Settings, tiers, fuel, and machine menu controls"
 published: true
-date: 2026-10-29T05:23:20.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "axion, configuration"
 editor: "markdown"
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -15,7 +15,7 @@ Edit `plugins/Axion/config.toml` or run `/axion config` in game. Dotted names be
 | Setting | Default | What it changes |
 | --- | --- | --- |
 | `general.enabled` | `true` | Enable machine operation |
-| `general.language` | `en_US` | Server language |
+| `general.language` | `en_US` | Server language; any id of 2 to 32 letters, digits, `_` or `-` |
 | `general.updateNotifications` | `true` | GitHub release notifications |
 
 ## Metrics
