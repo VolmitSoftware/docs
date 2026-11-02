@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-11-02T02:23:15.000Z
+date: 2026-11-02T06:31:32.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -15,7 +15,7 @@ Turn the system on with `hydrology.enabled: true` in the dimension file. The def
 
 1. **Make a pond-heavy biome.** Give the biome a `hydrologyPolicy` with `"pondDensity": 2.5` and `"rainfall": 1.6`. More cups are seeded in it, along its streams and elsewhere, and its ponds stay full. Natural hollows already keep their ponds at the default `ponds.natural.keep` of `1`; lower `keep`, or a `pondDensity` below `1`, thins them. Nothing in `hydrology` itself changes.
 2. **Add a chained-pond valley.** Keep `ponds.seeded.alongChannels: true` and shorten `ponds.seeded.channelSpacing` to `[64, 128]`. Streams in that dimension then pass through a cup every 64 to 128 blocks, each one spilling into the next at a lower level. Give one region a higher `pondDensity` in its policy to concentrate the chains there; `ponds.seeded.density` adds free-standing cups, not chain cups.
-3. **Gather water into wet zones.** Set `hydrology.climate.enabled: true`. A noise field splits the land into wet and dry zones: wet zones keep the configured streams and ponds, dry zones start none of their own, and rivers from the wet zones still run on through the dry land. Raise `climate.dryness` to dry out more of the land and `climate.style.zoom` for larger zones.
+3. **Gather water into wet zones.** Set `hydrology.climate.enabled: true`. A noise field splits the land into wet and dry zones: wet zones keep the configured streams and ponds, dry zones start none of their own, and rivers from the wet zones still run on through the dry land. Raise `climate.dryness` to dry out more of the land and `climate.style.zoom` for larger zones. Give a swamp biome a policy `"wetness": {"min": 0.7}` to keep it wet inside dry zones.
 4. **Switch a biome to lava.** Add a fluid profile named `lava` to `hydrology.fluids`, then give the biome `"hydrologyPolicy": { "fluid": "lava" }`. Ponds and lakes whose floor lies in that biome fill with lava, and every stretch of stream or river that starts in the biome runs as lava all the way to the next confluence, pond or mouth, even where it leaves the biome; streams that start elsewhere keep their tier's fluid while they cross it. The rest of the dimension keeps water. A cave biome with the same policy gets lava cave pools. Give the `lava` profile a `seam` such as obsidian to line its edges where it meets water or the sea.
 5. **Shape and plant the banks.** Set `bankBand` and `bankStyle` per tier, and `deformation.bankSlope` for the base slope. Paint the water's surroundings with `tiers[].materials` and `ponds.materials`, and grow seagrass, lily pads and reeds with `tiers[].decorators` and `ponds.decorators`.
 6. **Tune the underground water.** Sea inlets and cave pools are on by default. `underground.seaInlets.spacing` and `minimumCliffHeight` decide how many coasts get an inlet, `underground.cavePools.density` how many pool sites each chunk tries, and either `enabled: false` turns the feature off.
@@ -44,7 +44,7 @@ Set `hydrology.density` to control how many eligible water features are placed a
 
 ### `hydrology.climate`
 
-Climate zones lay a noise field over the dimension and split the land into wet and dry zones. The rainfall and pond density that each column takes from its [`hydrologyPolicy`](/iris/36b-river-policy) are multiplied by the wetness of its zone: `1` in a wet zone, `dryRainfall` in a dry zone, eased between the two across the `transition` band. At the default `dryRainfall` of `0`, dry zones start no streams and form no ponds of their own, while wet zones keep the configured density, so streams and ponds gather in clusters instead of reaching every hill. Water that drains in from a wet zone keeps its flow, so a river that rises in a wet zone runs on through dry land. Dry zones do not remove lakes; a lake whose floor lies in a dry zone sits up to `ponds.climateDrawdown` blocks lower, as in any low-rainfall area. An area whose policy sets `"climateZones": false` keeps its full rainfall and pond density inside dry zones.
+Climate zones lay a noise field over the dimension and split the land into wet and dry zones. The rainfall and pond density that each column takes from its [`hydrologyPolicy`](/iris/36b-river-policy) are multiplied by the wetness of its zone: `1` in a wet zone, `dryRainfall` in a dry zone, eased between the two across the `transition` band. At the default `dryRainfall` of `0`, dry zones start no streams and form no ponds of their own, while wet zones keep the configured density, so streams and ponds gather in clusters instead of reaching every hill. Water that drains in from a wet zone keeps its flow, so a river that rises in a wet zone runs on through dry land. Dry zones do not remove lakes; a lake whose floor lies in a dry zone sits up to `ponds.climateDrawdown` blocks lower, as in any low-rainfall area. An area whose policy sets `"climateZones": false` keeps its full rainfall and pond density inside dry zones, and a policy [`wetness`](/iris/36b-river-policy#wetness) holds the zone wetness of an area between its `min` and `max`, so a swamp stays wet inside a dry zone and a desert stays mostly dry inside a wet one.
 
 | Field | Default | Purpose |
 |-------|---------|---------|
@@ -414,7 +414,8 @@ Invalid hydrology settings are rejected by `/iris pack validate` and again when 
 - a range (`halfWidth`, `freeboard`, `radius`, `depth`, `channelSpacing`, `length`, `headroom`, `chamberRadius`) that is not written as `[min, max]` of two finite numbers with `min` at or below `max`, that holds fractions where whole numbers are required, a `freeboard` or `headroom` below `0`, or another range that starts at `0` or below;
 - a tier `halfWidth` above `64`;
 - a `fluid` on a tier, on `ponds`, on `cavePools` or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `fluids` does not define;
-- a `hydrologyPolicy.fluid` that names a seam profile.
+- a `hydrologyPolicy.fluid` that names a seam profile;
+- a `hydrologyPolicy.wetness` on the dimension, a region or a reachable biome with a bound outside `0..1` or a `min` above its `max`.
 
 When those pass, the validator compiles the settings exactly as a starting world does. The compile stops at its first problem and names the field, so one compile error is reported per dimension; fix it and run the validator again. The compile rejects:
 

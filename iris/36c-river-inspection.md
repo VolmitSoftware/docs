@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-02T03:25:08.000Z
+date: 2026-11-02T06:31:32.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -106,7 +106,8 @@ First it checks the settings it can read without compiling them, and reports eve
 - a range (`tiers[].halfWidth`, `ponds.freeboard`, `ponds.seeded.radius`, `ponds.seeded.depth`, `ponds.seeded.channelSpacing`, `underground.seaInlets.length`, `halfWidth`, `depth`, `headroom`, `chamberRadius`, `underground.cavePools.freeboard`) that is not `[min, max]` of two finite numbers with `min` at or below `max`, that holds fractions where whole numbers are required, or that goes below its floor (`freeboard` and `headroom` not below `0`, the others above `0`);
 - a tier `halfWidth` above `64`;
 - a `fluid` on a tier, on `ponds`, on `cavePools`, or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `hydrology.fluids` does not define;
-- a `hydrologyPolicy.fluid` that names a seam profile.
+- a `hydrologyPolicy.fluid` that names a seam profile;
+- a `hydrologyPolicy.wetness` on the dimension, a region or a reachable biome with a bound outside `0..1` or a `min` above its `max`.
 
 When those pass, it compiles the settings exactly as a starting world does. The compile stops at its first problem, so one compile error is reported per dimension, naming the field; fix it and run the validator again. The compile rejects:
 
