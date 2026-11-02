@@ -2,7 +2,7 @@
 title: "Datapack Export"
 description: "Compile an Iris pack into a vanilla worldgen datapack for Minecraft 26.3 and later"
 published: true
-date: 2026-10-31T02:00:00.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
@@ -87,7 +87,7 @@ A second export to an output that another export is still writing is refused. Bu
 
 ## Limits
 
-Each diagnostic names one of the limits below. The table lists every difference from an Iris world generated from the same pack, with the limit name the export reports for it. Rows without a limit name describe behavior that the export does not report.
+Each diagnostic names one of the limits below. The table lists every difference from an Iris world generated from the same pack, with the limit name the export reports for it. Rows without a limit name describe behavior that the export does not report. Hydrology limits are reported only for features the pack uses, once for each dimension, region, or biome whose settings use them.
 
 | Area | Limit | Behavior |
 |---|---|---|
@@ -107,8 +107,14 @@ Each diagnostic names one of the limits below. The table lists every difference 
 | Biomes | `SHORE_WIDTH` | `shoreMinimumWidth` is not exported. The shore band follows the shore height only |
 | Biomes | | Sea, shore, and underground biome edges follow the terrain height before biome blending. Where terrain blends down to the sea, sea biomes reach further inland and shore bands are narrower than in Iris |
 | Rivers | `RIVER_DRAINAGE` | Rivers are valleys calculated from the seed, with water only up to the dimension's `fluidHeight`. They do not follow drainage, so tributaries cross instead of joining, and river width follows elevation |
+| Rivers | `RIVER_FLUID` | Rivers fill with the first block of the dimension's `fluidPalette`. A tier `fluid` or [hydrology policy](/iris/36b-river-policy#fluid) `fluid` made of other blocks, such as lava rivers in a water dimension, is not exported. A [`seam`](/iris/36-rivers#hydrologyfluids) on a river fluid's profile is not exported either, including a seam on a fluid made of the dimension fluid's block. The warning names the fluid and its seam, if it has one. A fluid made only of the dimension fluid's block that has no seam exports unchanged |
+| Rivers | `RIVER_POLICY` | [Hydrology policy](/iris/36b-river-policy) `rainfall` other than `1` and `streams: BLOCK` are not exported, so rivers form at the same density in every biome and region |
+| Rivers | `RIVER_CLIMATE` | [Wet and dry zones](/iris/36-rivers#hydrologyclimate) are not exported, so rivers start in dry zones as they do in wet ones. Hydrology policy [`wetness`](/iris/36b-river-policy#wetness) bounds are not exported either; the warning names the biome, region or dimension that sets them |
+| Rivers | `RIVER_SHORE_BIOME` | Hydrology policy [shore biomes](/iris/36b-river-policy#shore-biomes) are not exported. The ground along the water keeps its own biome |
+| Rivers | `RIVER_DECORATOR` | Tier and hydrology policy `decorators` are not exported, so rivers grow no [water plants](/iris/36-rivers#water-plants) of their own |
 | Water | `ELEVATED_WATER` | [Hydrology](/iris/36-rivers) ponds, lakes, and waterfalls are not exported, and river valleys above `fluidHeight` are dry. Hydrology bed, shore, and bank materials are not exported |
-| Water | | Hydrology sea inlets and cave pools are not exported |
+| Water | `SEA_INLET` | Hydrology [sea inlets](/iris/36-rivers#undergroundseainlets) are not exported, so coastal cliffs have no flooded passages |
+| Water | `CAVE_POOL` | Hydrology [cave pools](/iris/36-rivers#undergroundcavepools) are not exported, so cave floors hold no standing water of their own |
 | Water | | Water below `fluidHeight` is placed in cells of 16 × 12 × 16 blocks, so some low ground beside shores and cliffs stays dry. Caves within 8 blocks of the terrain surface in ground less than 8 blocks above `fluidHeight`, and caves near coasts, fill with the dimension fluid up to `fluidHeight` |
 | Caves | `LAVA_HEIGHT` | Cave lava fills carved space up to the dimension's `caveLavaHeight` when that level is at or below world Y -10. A higher lava level exports without lava |
 | Caves | `WALL_PALETTE` | Each cave wall palette keeps its 3 most common materials, and a dimension uses at most 8 wall palettes, or 7 when it has the deep caves described under `DEEP_CAVE_LAYERS`. A cave biome over that limit uses the kept palette that shares the most blocks with its own |

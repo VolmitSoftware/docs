@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-30T18:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -373,18 +373,18 @@ Among the vertical placement controls, three structures honor only `yShift`. `mi
 | `BORE` | Clear the padded piece volume (box) before placement. |
 | `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
 | `VACUUM` | Explicit raise-only fitting to processed structure ground planes with a fixed 12-block falloff. It never lowers ground. |
-| `FLATTEN` | Cut high ground and fill low ground around exposed native structure foundations, including 3D terrain. `flattenRange` bounds vertical cut, fill, and foundation support; `horizontalPadding` is the blend distance. Buried and submerged pieces keep their terrain. |
+| `FLATTEN` | Cut high ground and fill low ground around exposed native structure foundations, including 3D terrain. `flattenRange` bounds vertical cut, fill, and foundation support; `horizontalPadding` is the blend distance. Buried and submerged pieces keep their terrain. Dry ground outside a structure footprint never ends below the dimension `fluidHeight`. |
 | `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional. Defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
 
 Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding` (0..64, where 0 preserves the floor). ERODED adds `erosionStrength` (default 0.8), `erosionFrequency` (0.07), `lobeFrequency`, and `lobeStrength` (0.85).
 
-For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Foundation support fills open space directly beneath the fitted surface, stops at solid terrain or fluids, and leaves caves beneath that terrain intact. Support beneath projected solid path columns uses the same `flattenRange` limit.
+For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. Outside a structure footprint, it never cuts dry ground below the dimension `fluidHeight`, so the fitted surface stays at least flush with the sea surface. Inside a footprint, a cut can reach below the sea surface, and that part fills with the sea fluid. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Foundation support fills open space directly beneath the fitted surface, stops at solid terrain or fluids, and leaves caves beneath that terrain intact. Support beneath projected solid path columns uses the same `flattenRange` limit.
 
-When terrain fitting lowers ground, it clears contiguous decorations above the old surface, including solid clutter such as slabs. Iris objects that intersect the reserved `FLATTEN` surface cut area are skipped before placement, including trees whose bases would lose support. Other trees follow the structure vegetation rules.
+When terrain fitting lowers ground, it clears contiguous decorations above the old surface, including solid clutter such as slabs. A cut beneath water or lava, such as a riverbed, fills with the fluid above it. Other cut cells at or below the dimension `fluidHeight` fill with the sea fluid instead of air. The sea fluid is the first water or lava block of the dimension `fluidPalette`. A dimension whose `fluidHeight` is at or below its minimum Y, or whose `fluidPalette` holds no water or lava, has no sea surface for terrain fitting. Iris objects that intersect the reserved `FLATTEN` surface cut area are skipped before placement, including trees whose bases would lose support. Other trees follow the structure vegetation rules.
 
 Dimension stacks supply the original layer surface to native height queries, so igloos, swamp huts, and terrain-matching village paths can retain their original projected elevations after `FLATTEN`.
 
-The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. Underworld applies the same settings to exposed bastions and ruined portals. Underground structures, submerged pieces, Nether fortresses, and Nether fossils keep their native placement.
+The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. A beached shipwreck keeps the surrounding shore flush with the sea, and any part of its footprint cut below the sea surface floods with water. Underworld applies the same settings to exposed bastions and ruined portals, and their cuts below its lava sea surface fill with lava. Underground structures, submerged pieces, Nether fortresses, and Nether fossils keep their native placement.
 
 #### Examples
 

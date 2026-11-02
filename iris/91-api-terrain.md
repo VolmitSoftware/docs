@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -67,7 +67,7 @@ Saved columns resolve their biome, region, and custom registry mappings from the
 
 Use `sampleColumns(world, query, sink)` for rectangular scans. Respect `maxSampleColumns()` and `maxSampleChunks()`. The sink receives each requested field without allocating a result list.
 
-Terrain reads are thread-safe and return inline. Empty optionals mean the world is not active in Iris, the requested value does not exist, or saved biome data is still loading. Pending saved reads return the method's unavailable result without logging a fault; retry on a later refresh. A batch that encounters pending data returns `false` and may have already delivered earlier columns. Actual read failures still use the rate-limited error logger.
+Terrain reads are thread-safe and return inline. Empty optionals mean the world is not active in Iris, the requested value does not exist, saved biome data is still loading, or a server-thread read reached a column whose water is not planned yet (see Water fields below). Pending reads return the method's unavailable result without logging a fault; retry on a later refresh. A batch that encounters pending saved data returns `false` and may have already delivered earlier columns. Actual read failures still use the rate-limited error logger.
 
 ## Asynchronous biome environments
 
@@ -85,7 +85,9 @@ Columns carry the water placed by hydrology as well as the terrain:
 | `RIVER_FLOW` | `1` for flowing water (channels, mouths, cascades and waterfalls), `0` for standing water (ponds, lakes and the open mouths of sea inlets), `-1` where there is no water |
 | `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet column |
 
-`surfaceKind` reports `RIVER` for every wet column, ponds, lakes and sea inlet mouths included, and `RIVER_SHORE` for shore columns; banks and dams report `LAND`. `surfaceHeight` under water is the bed. A read on the server thread for a chunk whose water is not planned reports the column without water, so read off the tick thread for complete answers, and run wide scans off the tick thread as well. See [36 - Hydrology](/iris/36-rivers).
+`surfaceKind` reports `RIVER` for every wet column, ponds, lakes and sea inlet mouths included, and `RIVER_SHORE` for shore columns; banks and dams report `LAND`. `surfaceHeight` under water is the bed. See [36 - Hydrology](/iris/36-rivers).
+
+On the server thread, a column whose water, or its neighbours' water, is not planned yet is answered from natural terrain without water, and its sample has `provisional()` set to `true`. Its height, surface kind, biome and water fields can change once hydrology plans the area, so sample it again on a later refresh. `NATURAL_HEIGHT` does not depend on hydrology and never makes a sample provisional. Single-column reads that depend on that water (`surfaceHeight`, `surfaceKind` and the biome reads) return their unavailable result instead: `OptionalInt.empty()`, an empty optional, or `UNKNOWN`. Off the server thread, reads wait for the plan and every answer is final. Run wide scans off the server thread.
 
 ## Volumetric terrain queries
 

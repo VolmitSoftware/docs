@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,7 +128,7 @@ Dimension-level palettes:
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `rockPalette` | stone | Fills every land cell below the biome layer stack. Swap it for deepslate or a stone/granite/andesite blend to change the entire underground |
-| `fluidPalette` | water | Ocean columns and cave aquifers when `allowFluid` is on. Rivers use the `hydrology.fluids` profile of their tier, or the `hydrologyPolicy.fluid` of the area they flow through; ponds and lakes use `ponds.fluid` or the `hydrologyPolicy.fluid` of their area |
+| `fluidPalette` | water | Ocean columns and cave aquifers when `allowFluid` is on. Each stretch of stream or river uses the `hydrology.fluids` profile of its tier, or the `hydrologyPolicy.fluid` of the area where it starts; ponds and lakes use `ponds.fluid` or the `hydrologyPolicy.fluid` of the area that holds their floor |
 
 ### Block data and reusable `blocks/*.json`
 

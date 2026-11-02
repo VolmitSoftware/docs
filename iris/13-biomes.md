@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-02T09:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -224,7 +224,7 @@ That is why a sea biome with `vanillaDerivative: "minecraft:plains"` gets no oce
 | `childStyle` | `IrisGeneratorStyle` | `CELLULAR_IRIS_DOUBLE` | Shape of the child patches. Cellular styles give distinct blobs. Simplex gives soft gradients. |
 | `carvingBiome` | string | `""` | Registers the referenced biome as reachable so its custom identity and spawn mappings exist. It does **not** select a cave biome at runtime. Cave pick is region `caveBiomes` or dimension `carving[]`. See [15 - Caves & Carving](/iris/15-caves-carving) |
 | `caveMinDepthBelowSurface` | int 0-256 | `0` | When this biome is used as a cave biome, shallow columns fall back to the surface biome. The cutoff is this many blocks below the terrain surface. Raise it to keep a deep-cave palette out of shallow openings. |
-| `hydrologyPolicy` | `IrisHydrologyPolicy` or null | inherit | Adjusts the region and dimension hydrology policy wherever this biome is selected: rainfall, pond density, climate zones, stream and pond permissions, fluid, water plants and shore biomes. Unset values inherit; an explicitly empty `shoreBiomes` list clears the inherited list. See [36b - Hydrology Policy](/iris/36b-river-policy). |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or null | inherit | Adjusts the region and dimension hydrology policy wherever this biome is selected: rainfall, pond density, climate zones and their wetness bounds, stream and pond permissions, fluid, water plants and shore biomes. Unset values inherit from the biome this one grows inside as a child, then from the region and the dimension, and this biome's children inherit the values it sets; an explicitly empty `shoreBiomes` list clears the inherited list. See [36b - Hydrology Policy](/iris/36b-river-policy). |
 
 ### Height (`generators`)
 
@@ -354,9 +354,9 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 | `loot` | `IrisLootReference` | Loot tables for containers generated here. |
 | `blockDrops` | `IrisBlockDrops[]` | Custom drops for blocks broken here. |
 | `caveProfile` | `IrisCaveProfile` | Overrides the region cave profile for this biome. |
-| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | Final policy layer for rainfall, pond density, climate zones, stream and pond permissions, fluid, water plants and shore biomes. Set fields override the selected region and dimension; see [36b - Hydrology Policy](/iris/36b-river-policy). |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | Final policy layer for rainfall, pond density, climate zones and their wetness bounds, stream and pond permissions, fluid, water plants and shore biomes. Set fields override the selected region and dimension; see [36b - Hydrology Policy](/iris/36b-river-policy). |
 
-The managed Overworld and Underworld mountain roots raise `rainfall` and `pondDensity`, so mountains carry more streams and ponds than the regions around them, and the volcanic biomes set `fluid` to `lava` and `climateZones` to `false`, so their streams, rivers, ponds and lakes are lava in every climate zone.
+The managed Overworld and Underworld mountain roots raise `rainfall` and `pondDensity`, so mountains carry more streams and ponds than the regions around them, and the volcanic biomes set `fluid` to `lava` and `climateZones` to `false`, so their ponds and lakes, and the streams and rivers that start in them, are lava in every climate zone, while a river that only crosses a volcanic biome keeps its own fluid.
 
 Placements are gathered per chunk from the biome at the chunk center, the cave biome at the same point, the region and the dimension. A surface biome contributes all of its `structures[]`. The cave biome contributes only placements whose resolved anchor is `CAVE_FLOOR`, `CAVE_CEILING`, `CAVE_CENTER` or `CAVE_ANY`. Surface and height-band placements written into cave-biome files are ignored. A placement own `caveBiomes` list is an additional allowlist rechecked at each candidate anchor. See [15 - Caves & Carving](/iris/15-caves-carving) and [21 - Jigsaw Structures](/iris/21-jigsaw-structures).
 

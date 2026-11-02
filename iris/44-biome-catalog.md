@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -74,7 +74,7 @@ An atlas page lists every region and selection role that can choose the root. Re
 
 ## What counts as in use
 
-Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, authored `subterrainFeatures`, children, floating targets, carving references, and the `hydrologyPolicy.shoreBiomes` of the dimension, regions and biomes while hydrology is enabled. A file outside this graph is omitted even if it parses successfully.
+Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, authored `subterrainFeatures`, children, floating targets, carving references, and the `hydrologyPolicy.shoreBiomes` that a `shoreBiomeWidth` above `0` places while hydrology is enabled. A file outside this graph is omitted even if it parses successfully.
 
 This distinction matters when editing a pack. An authored biome can validate yet never generate because nothing selects it. Use [13 - Biomes](/iris/13-biomes) for the configuration contract and [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) for the editing workflow.
 
