@@ -2,7 +2,7 @@
 title: "Datapack Export"
 description: "Compile an Iris pack into a vanilla worldgen datapack for Minecraft 26.3 and later"
 published: true
-date: 2026-11-02T06:31:32.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
@@ -107,7 +107,7 @@ Each diagnostic names one of the limits below. The table lists every difference 
 | Biomes | `SHORE_WIDTH` | `shoreMinimumWidth` is not exported. The shore band follows the shore height only |
 | Biomes | | Sea, shore, and underground biome edges follow the terrain height before biome blending. Where terrain blends down to the sea, sea biomes reach further inland and shore bands are narrower than in Iris |
 | Rivers | `RIVER_DRAINAGE` | Rivers are valleys calculated from the seed, with water only up to the dimension's `fluidHeight`. They do not follow drainage, so tributaries cross instead of joining, and river width follows elevation |
-| Rivers | `RIVER_FLUID` | Rivers fill with the first block of the dimension's `fluidPalette`. A tier `fluid` or [hydrology policy](/iris/36b-river-policy#fluid) `fluid` made of other blocks, such as lava rivers in a water dimension, is not exported. A [`seam`](/iris/36-rivers#hydrologyfluids) on a river fluid's profile is not exported either, including a seam on a fluid made of the dimension fluid's block. The warning names the fluid and its seam. A fluid made only of the dimension fluid's block that has no seam exports unchanged |
+| Rivers | `RIVER_FLUID` | Rivers fill with the first block of the dimension's `fluidPalette`. A tier `fluid` or [hydrology policy](/iris/36b-river-policy#fluid) `fluid` made of other blocks, such as lava rivers in a water dimension, is not exported. A [`seam`](/iris/36-rivers#hydrologyfluids) on a river fluid's profile is not exported either, including a seam on a fluid made of the dimension fluid's block. The warning names the fluid and its seam, if it has one. A fluid made only of the dimension fluid's block that has no seam exports unchanged |
 | Rivers | `RIVER_POLICY` | [Hydrology policy](/iris/36b-river-policy) `rainfall` other than `1` and `streams: BLOCK` are not exported, so rivers form at the same density in every biome and region |
 | Rivers | `RIVER_CLIMATE` | [Wet and dry zones](/iris/36-rivers#hydrologyclimate) are not exported, so rivers start in dry zones as they do in wet ones. Hydrology policy [`wetness`](/iris/36b-river-policy#wetness) bounds are not exported either; the warning names the biome, region or dimension that sets them |
 | Rivers | `RIVER_SHORE_BIOME` | Hydrology policy [shore biomes](/iris/36b-river-policy#shore-biomes) are not exported. The ground along the water keeps its own biome |

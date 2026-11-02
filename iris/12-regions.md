@@ -2,7 +2,7 @@
 title: "Regions"
 description: "Iris documentation: Regions"
 published: true
-date: 2026-11-02T08:40:21.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -158,9 +158,9 @@ A biome does not declare its own role. The role (`LAND`, `SEA`, `SHORE`, `CAVE`)
 | `rainfall` | Multiplier on the water that falls here, `0..16`: more and larger streams; below `1`, lower pond surfaces where the wet and dry zones do not apply |
 | `pondDensity` | Multiplier on how many ponds form here, `0..16` |
 | `climateZones` | Whether the dimension's wet and dry zones (`hydrology.climate`) scale the rainfall and pond density here; `false` keeps the full values inside a dry zone |
-| `wetness` | Bounds `min` and `max`, `0..1`, on the wetness of those zones here: `min` keeps the region wet inside a dry zone, `max` keeps it dry inside a wet zone |
+| `wetness` | Bounds `min` and `max`, `0..1`, on the wetness of those zones here: `min` keeps the region wet inside a dry zone, `max` keeps it mostly dry inside a wet zone |
 | `streams`, `ponds` | `ALLOW` or `BLOCK` for streams starting here and ponds forming here |
-| `fluid` | Fluid profile from `hydrology.fluids` that fills the ponds and lakes here instead of `ponds.fluid`, and every stretch of stream or river that flows through here instead of its tier's fluid |
+| `fluid` | Fluid profile from `hydrology.fluids` that fills the ponds and lakes whose floor lies here instead of `ponds.fluid`, and every stretch of stream or river whose upstream end lies here instead of its tier's fluid |
 | `decorators` | Plants for the water here, replacing the tier and pond decorator lists; an empty list grows none |
 | `shoreBiomes`, `shoreBiomeWidth` | Biomes placed along the water's edge, and the width of that band in blocks, `0..31`; a list with no width above `0` from the region, its biomes or the dimension places nothing |
 

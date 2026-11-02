@@ -2,7 +2,7 @@
 title: "Biome Atlas — Tropical Volcanic Plains"
 description: "Iris biome atlas entry for tropical/volcanic-plains in Overworld and Underworld"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris, biome-atlas"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -43,7 +43,7 @@ Each pack retains its own materials, decoration, objects, and ores. Floating isl
 
 ## Lava hydrology
 
-Both `tropical/volcanic-plains` and its `tropical/volcanoes` child set a `hydrologyPolicy` with rainfall `1.8`, pond density `3`, `fluid: lava` and `climateZones: false`. Their streams, rivers, ponds and lakes are lava in both packs, in wet and dry climate zones alike, and the raised pond density seeds more cups in the volcanic terrain. A river that flows in from a neighboring biome runs as lava through the volcanic terrain and carries the dimension's tier fluid again beyond it: water in Overworld, lava in Underworld.
+Both `tropical/volcanic-plains` and its `tropical/volcanoes` child set a `hydrologyPolicy` with rainfall `1.8`, pond density `3`, `fluid: lava` and `climateZones: false`. Their streams, rivers, ponds and lakes are lava in both packs, in wet and dry climate zones alike, and the raised pond density seeds more cups in the volcanic terrain. Streams and rivers that start in the volcanic terrain run as lava, while a river that flows in from a neighboring biome keeps the dimension's tier fluid as it crosses: water in Overworld, lava in Underworld.
 
 Submerged beds use the dimension's hydrology palette: gravel, sand, clay, and coarse dirt in Overworld, or Nether bed materials in Underworld. Dry banks retain the local volcanic layers. Lava channels, ponds and lakes have no aquatic plants. See [36b - Hydrology Policy](/iris/36b-river-policy).
 

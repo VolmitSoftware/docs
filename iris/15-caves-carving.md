@@ -2,7 +2,7 @@
 title: "Caves & Carving"
 description: "Iris documentation: Caves & Carving"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -188,7 +188,7 @@ With `hydrology.underground.cavePools.enabled` on (the default, with hydrology e
 3. The pool rises from that floor, level by level up to `maxDepth`, as long as the surrounding rock holds it, it stays inside the box, covers no more than `maxArea` columns, keeps three blocks under the surface and never opens to the sky or drains into a lower cave.
 4. The surface sits `freeboard` blocks below the highest held level, and a pool needs at least `minArea` columns.
 
-The fluid is the `hydrologyPolicy.fluid` of the cave biome at the site, else of its region, else of the dimension, else `cavePools.fluid`; the Underworld pack uses lava. A surface biome's policy never fills a cave pool, including near the surface where caves use the surface biome. A pool never mixes fluids: it stops rising one level below where it would span two cave fluids or touch cave lava, an aquifer or a room's fluid, and a dip whose lowest level already does gets no pool.
+The fluid is the `hydrologyPolicy.fluid` of the cave biome at the site, else of its region, else of the dimension, else `cavePools.fluid`; the Underworld pack uses lava. A surface biome's policy never fills a cave pool, including near the surface where caves use the surface biome. A pool never mixes fluids: it stops rising one level below where it would span two cave fluids or touch cave lava, an aquifer or a room's cells, and a dip whose lowest level already does gets no pool.
 
 Every solid block touching the pool at or below its level is sealed and keeps the column's host rock, so the cave wall palette, deposits, objects and later carving leave the pool and its walls alone. Pools stay out of sea inlet space, and chunks generated earlier are off limits to them. `/iris find river cave_pool` searches generated chunks only; see [36c - Water Inspection](/iris/36c-river-inspection).
 

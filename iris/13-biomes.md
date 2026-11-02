@@ -2,7 +2,7 @@
 title: "Biomes"
 description: "Iris documentation: Biomes"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -354,7 +354,7 @@ Custom biomes are installed by datapack compilation. A world usually has to be r
 | `loot` | `IrisLootReference` | Loot tables for containers generated here. |
 | `blockDrops` | `IrisBlockDrops[]` | Custom drops for blocks broken here. |
 | `caveProfile` | `IrisCaveProfile` | Overrides the region cave profile for this biome. |
-| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | Final policy layer for rainfall, pond density, climate zones, stream and pond permissions, fluid, water plants and shore biomes. Set fields override the selected region and dimension; see [36b - Hydrology Policy](/iris/36b-river-policy). |
+| `hydrologyPolicy` | `IrisHydrologyPolicy` or `null` | Final policy layer for rainfall, pond density, climate zones and their wetness bounds, stream and pond permissions, fluid, water plants and shore biomes. Set fields override the selected region and dimension; see [36b - Hydrology Policy](/iris/36b-river-policy). |
 
 The managed Overworld and Underworld mountain roots raise `rainfall` and `pondDensity`, so mountains carry more streams and ponds than the regions around them, and the volcanic biomes set `fluid` to `lava` and `climateZones` to `false`, so their streams, rivers, ponds and lakes are lava in every climate zone.
 

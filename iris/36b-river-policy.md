@@ -2,12 +2,12 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, climate zones and their wetness bounds, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-11-02T08:40:21.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
 ---
-`hydrologyPolicy` tunes the water of one area without changing the dimension's physical settings: how much rain falls there, how many ponds it gets, whether the dimension's wet and dry climate zones apply there and how wet they may make it, whether streams and ponds may form at all, what fluid fills its streams, rivers, ponds, lakes and cave pools, which plants grow in and beside the water, and which biomes line the water's edge. It sits on the dimension, on regions and on biomes, and every value a region or biome leaves unset is inherited. The physical settings are on [36 - Hydrology](/iris/36-rivers), and `hydrology.enabled: true` on the dimension is what makes any policy take effect.
+`hydrologyPolicy` tunes the water of one area without changing the dimension's physical settings: how much rain falls there, how many ponds it gets, whether the dimension's wet and dry climate zones apply there and how wet they may make it, whether streams and ponds may form at all, what fluid fills its streams, rivers, ponds, lakes and cave pools, which plants grow in and beside the water, and which biomes line the water's edge. It sits on the dimension, on regions and on biomes, and every value a region or biome leaves unset is inherited, except that a `wetness` bound left out is `0` for `min` and `1` for `max` (see [Inheritance](#inheritance)). The physical settings are on [36 - Hydrology](/iris/36-rivers), and `hydrology.enabled: true` on the dimension is what makes any policy take effect.
 
 ## Workflow
 
@@ -25,7 +25,7 @@ dateCreated: 2026-09-19T00:00:00.000Z
 | `rainfall` | inherit, `1` | Multiplier on the water that falls in this area, `0..16`. Higher values grow more and larger streams; where the wet and dry zones do not apply, values below `1` lower pond surfaces |
 | `pondDensity` | inherit, `1` | Multiplier on how many ponds form in this area, `0..16` |
 | `climateZones` | inherit, `true` | Whether the dimension's wet and dry zones (`hydrology.climate`) scale this area's rainfall and pond density; `false` keeps the full values even inside a dry zone |
-| `wetness` | inherit, none | Bounds `min` and `max`, `0..1`, on the wetness of the dimension's wet and dry zones in this area: `min` keeps the area wet inside a dry zone, `max` keeps it dry inside a wet zone. `min` defaults to `0` and `max` to `1` |
+| `wetness` | inherit, none | Bounds `min` and `max`, `0..1`, on the wetness of the dimension's wet and dry zones in this area: `min` keeps the area wet inside a dry zone, `max` keeps it mostly dry inside a wet zone. `min` defaults to `0` and `max` to `1` |
 | `streams` | inherit, `ALLOW` | Whether streams and rivers may form in this area: `ALLOW` or `BLOCK` |
 | `ponds` | inherit, `ALLOW` | Whether ponds may form in this area: `ALLOW` or `BLOCK` |
 | `fluid` | inherit, none | Name of a fluid profile from `hydrology.fluids` that fills the water in this area: the ponds and lakes whose floor lies here instead of `ponds.fluid`, and every stretch of stream or river whose upstream end lies here instead of its tier's `fluid`. It cannot name a seam profile. Set on a cave biome, a region or the dimension, it also fills the cave pools there instead of `cavePools.fluid`; a surface biome's value never reaches cave pools |
@@ -93,7 +93,7 @@ Shore biomes are an option that `shoreBiomeWidth` turns on. The width defaults t
 
 The width is a separate value from the list, so a dimension can set `shoreBiomeWidth` once and let every region supply its own `shoreBiomes`. A region or biome with `shoreBiomeWidth: 0` keeps the inherited list but places none of it.
 
-The list and the width resolve separately for every column, as the first list and the first width set on the biome, on the biomes it grows inside as a child, on the region and on the dimension. A listed shore biome is a reachable biome only where its list resolves together with a width above `0` while hydrology is enabled: it then appears in schema suggestions, `/iris find biome` and `/iris goto biome` accept it, and it needs no entry in a region's biome lists. A list that no width above `0` reaches places nothing and adds nothing to the reachable biomes, and `/iris pack validate` warns about it, naming the dimension, region or biome that lists it. A shore biome that does not exist fails generation with an error that names the biome, the biome, region or dimension that lists it, the biome it was resolved for and the region.
+The list and the width resolve separately for every column, as the first list and the first width set on the biome, on the biomes it grows inside as a child, on the region and on the dimension. A listed shore biome is a reachable biome only where its list resolves together with a width above `0` while hydrology is enabled: `/iris find biome` and `/iris goto biome` then accept it, and it needs no entry in a region's biome lists. A list that no width above `0` reaches places nothing and adds nothing to the reachable biomes, and `/iris pack validate` warns about it, naming the dimension, region or biome that lists it. A shore biome that does not exist fails generation with an error that names the biome, the biome, region or dimension that lists it, the biome it was resolved for and the region.
 
 ## Managed pack policies
 

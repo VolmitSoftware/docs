@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-11-02T08:40:21.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -204,10 +204,10 @@ Connected ponds receive their upstream streams and spill into outlets at the sam
 | `natural` | defaults below | Ponds that fill hollows already present in the terrain |
 | `seeded` | defaults below | Ponds cut into the terrain as bowls where the land has few hollows of its own |
 | `dams` | defaults below | Raised rims that hold ponds above their natural spill height |
-| `freeboard` | `[1, 3]` | Blocks the pond surface sits below its spill point, written as `[min, max]`, not below `0`; each pond picks a value in this range |
+| `freeboard` | `[1, 3]` | Blocks the pond or lake surface sits below its spill point, written as `[min, max]`, not below `0`; each pond and lake picks a value in this range |
 | `climateDrawdown` | `6` | Extra blocks a pond or lake surface drops in the driest areas, `0..32`, times the dryness at its floor: one minus the zone wetness inside [climate zones](#hydrologyclimate), and elsewhere one minus its rainfall, or `0` at rainfall `1` and above; ponds in wet areas stay full |
-| `shore` | defaults below | Shape of pond shores and floors |
-| `materials` | all unset | Blocks painted on pond floors and shores; see [materials](#materials) |
+| `shore` | defaults below | Shape of pond shores and floors; lakes take only its `roundness` |
+| `materials` | all unset | Blocks painted on pond and lake floors and shores; see [materials](#materials) |
 | `decorators` | empty | Plants for ponds and lakes and their shores; see [water plants](#water-plants) |
 | `fluid` | `"water"` | Name of the fluid profile that fills ponds and lakes; the `hydrologyPolicy.fluid` of the area that holds a pond or lake floor replaces it |
 
@@ -246,7 +246,7 @@ On a slope the bowl spills downhill, so the pond sits perched above the ground b
 
 | Field | Default | Purpose |
 |-------|---------|---------|
-| `roundness` | `0.5` | Strength of the noise that rounds and roughens pond outlines, `0..4`; `0` follows the terrain exactly |
+| `roundness` | `0.5` | Strength of the noise that rounds and roughens pond and lake outlines, `0..4`; `0` follows the terrain exactly |
 | `shelf` | `6` | Width in blocks of the shallow shelf along the shore before the floor reaches full depth, `0..64` |
 | `taper` | `14` | Width in blocks of the ground outside the shore that slopes down to the water, `0..64` |
 | `maxDepth` | `8` | Deepest pond floor below the water surface, in blocks, `1..64` |
@@ -259,7 +259,7 @@ On a slope the bowl spills downhill, so the pond sits perched above the ground b
 | `minArea` | `65536` | Smallest lake surface in square blocks, `1024..4194304` |
 | `maxArea` | `4194304` | Largest lake surface in square blocks, `1024..4194304`, the area of 2048 by 2048 blocks; larger hollows are drained by a cut through their rim |
 
-A hollow becomes a lake only when it is also at least `ponds.natural.minDepth` deep and no more than 2,048 blocks across. A wider hollow is drained, whatever its area, so a very high `minDepth` removes lakes as well as ponds.
+A hollow becomes a lake only when it is also at least `ponds.natural.minDepth` deep and no more than 2,048 blocks across. A wider hollow is drained, whatever its area, so a very high `minDepth` removes lakes as well as ponds. Lakes also take their `freeboard`, `climateDrawdown`, `shore.roundness`, `materials`, `decorators` and `fluid` from [`hydrology.ponds`](#hydrologyponds).
 
 ### `hydrology.deformation`
 
@@ -289,7 +289,7 @@ An inlet, its chamber and its seal stay within 512 blocks of the coast: `length`
 | `minimumCliffHeight` | `8` | Height in blocks the coastal land must rise above sea level to be a site, `1..128`; the passage also needs ground at least `headroom` min plus `roofClearance` plus 2 blocks above sea level within about 16 blocks of the coast, so gentle coasts hold no inlets |
 | `length` | `[64, 256]` | Length of an inlet in blocks, written as `[min, max]`, above `0` |
 | `halfWidth` | `[2, 5]` | Half-width of the passage in blocks, written as `[min, max]`, each from `1` to `16`; the passage narrows toward its inland end |
-| `depth` | `[2, 5]` | Water depth below sea level in blocks, written as `[min, max]`, each from `1` to `16` |
+| `depth` | `[2, 5]` | Water depth below sea level in blocks, written as `[min, max]`, each from `2` to `16` |
 | `headroom` | `[4, 10]` | Air space above the water in blocks, written as `[min, max]`, each from `0` to `32`; it varies smoothly along the passage and shrinks where the ground above is thin |
 | `roofClearance` | `6` | Least solid ground in blocks kept between the passage roof and the surface, `1..64`; caves and authored rooms stay out of this rock and out of the air above the water |
 | `chamberRadius` | `[6, 12]` | Radius in blocks of the pool chamber at the inland end, written as `[min, max]`, each from `1` to `32` |
@@ -362,9 +362,9 @@ A seal keeps the inlet watertight. Every block within two blocks of the passage 
 
 Caves stay at least two blocks from the inlet water. Around a covered passage and its chamber, every column within two blocks keeps caves out from one block above sea level up to `roofClearance` blocks above the passage roof, so the air above the water and the rock over it stay whole; caves above that rock carve as normal, and a cave that crosses this space ends against solid rock. Authored subterrain rooms keep out of the same space and never take an inlet cell, and room fluid within two blocks of the inlet air is sealed as rock. The open mouth is painted and decorated like the sea floor of its biome, and no surface object stands on it.
 
-**Cave pools.** A pool settles into a low point of a carved cave and fills it up to the highest level the surrounding rock holds, at most `maxDepth` deep and inside a square box of `radius` blocks around its site column, with its surface `freeboard` blocks below that level. A dip that would open to the sky, drain into a lower cave, come within three blocks of the surface or spread past `maxArea` columns gets no pool, and a pool needs at least `minArea` columns.
+**Cave pools.** A pool settles into a low point of a carved cave and fills it up to the highest level the surrounding rock holds, at most `maxDepth` deep and inside a square box of `radius` blocks around its site column, with its surface `freeboard` blocks below that level. The pool stops rising one level below where it would open to the sky, drain into a lower cave, come within three blocks of the surface, leave the box or spread past `maxArea` columns, and a dip whose lowest level already does gets no pool. A pool needs at least `minArea` columns.
 
-The fluid comes from the `hydrologyPolicy.fluid` of the cave biome at the site, then of its region, then of the dimension, and is `cavePools.fluid` when none of them sets one. A surface biome's policy never fills a cave pool: near the surface, above the cave biome's `caveMinDepthBelowSurface`, and in a region without cave biomes, caves use the surface biome, but their pools take the region's or the dimension's fluid, or `cavePools.fluid`. A pool never mixes fluids: it stops rising one level below where it would span two cave fluids or touch cave lava, an aquifer or a room's fluid, and a dip whose lowest level already does gets no pool. Pools stay out of sea inlet space. Every solid block touching the pool at or below its level is sealed and shows the column's rock, and deposits, objects and later carving leave the pool and its walls alone.
+The fluid comes from the `hydrologyPolicy.fluid` of the cave biome at the site, then of its region, then of the dimension, and is `cavePools.fluid` when none of them sets one. A surface biome's policy never fills a cave pool: near the surface, above the cave biome's `caveMinDepthBelowSurface`, and in a region without cave biomes, caves use the surface biome, but their pools take the region's or the dimension's fluid, or `cavePools.fluid`. A pool never mixes fluids: it stops rising one level below where it would span two cave fluids or touch cave lava, an aquifer or a room's cells, and a dip whose lowest level already does gets no pool. Pools stay out of sea inlet space. Every solid block touching the pool at or below its level is sealed and shows the column's rock, and deposits, objects and later carving leave the pool and its walls alone.
 
 **Decoration and objects.** Biome decorators skip channel, pond, cascade and waterfall columns; the plants in and beside the water come from the hydrology decorator lists ([water plants](#water-plants)), which run on every water column before the biome's own decorators. Mouth columns and the open mouths of sea inlets are decorated like the sea they join. Shore columns also run the biome's `SHORE_LINE` decorators ([16 - Surfaces](/iris/16-surfaces-decorators-deposits)). Automatically placed surface objects never stand on water, shore, dam or inlet-mouth columns; banks are open to them. Use an explicit placement such as `/iris object paste` to build in the water.
 
@@ -430,7 +430,7 @@ When those pass, the validator compiles the settings exactly as a starting world
 - a `materials` palette (`bed`, `shore` or `bank`, on a tier or on `ponds`) whose `palette` list is missing, misspelled or empty, or a `materials.shoreDepth` below `1`; a palette written as a single block, such as `{ "palette": [{ "block": "minecraft:stone" }] }`, loads;
 - a fluid profile name that is duplicated, or a profile with an empty palette;
 - a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;
-- `seaInlets.spacing` below `1`, `halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, an inlet floor and seal that would lie below the world bottom, or an inlet reach above 512 blocks;
+- `seaInlets.spacing` below `1`, `halfWidth` outside `1..16`, `depth` outside `2..16`, `headroom` max above `32`, `chamberRadius` max above `32`, an inlet floor and seal that would lie below the world bottom, or an inlet reach above 512 blocks;
 - `cavePools.radius` outside `1..15`, `maxDepth` below `1`, a `freeboard` max at or above `maxDepth`, or a `maxArea` above `961` while cave pools are enabled;
 - a `decorators` entry, on a tier, on `ponds` or on a policy, with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block name, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order.
 
