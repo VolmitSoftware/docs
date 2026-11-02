@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-11-02T12:11:25.000Z
+date: 2026-11-02T12:37:02.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -370,8 +370,8 @@ Among the vertical placement controls, three structures honor only `yShift`. `mi
 |---|---|
 | `SOURCE` (default) | Replay the registered terrain adaptation, including vanilla BURY/ENCAPSULATE fill. Automatic top-surface fitting runs only for `SURFACE_STRUCTURES`. It uses real processed foundation columns and jigsaw junctions, seats ordinary gaps exactly, caps each upward or downward correction at 6 blocks, and blends that correction through a fixed 12-block quadratic skirt. Template air, roofs, and non-solid decoration do not become foundation anchors. Underground steps such as Ancient Cities do not reshape the top surface through `BEARD_BOX`. |
 | `PRESERVE` | Disable terrain integration. |
-| `BORE` | Clear the padded piece volume (box) before placement. |
-| `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
+| `BORE` | Clear the padded piece volume (box) before placement. River, stream, pond, lake and sea inlet water columns stay uncut from two blocks below their floor upward, and so does the ground within two blocks of the water up to its surface. |
+| `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. Water columns and the two blocks of bank beside them stay uncut as with `BORE`. |
 | `VACUUM` | Explicit raise-only fitting to processed structure ground planes with a fixed 12-block falloff. It never lowers ground. |
 | `FLATTEN` | Cut high ground and fill low ground around exposed native structure foundations, including 3D terrain. `flattenRange` bounds vertical cut, fill, and foundation support; `horizontalPadding` is the blend distance. Buried and submerged pieces keep their terrain. Dry ground outside a structure footprint never ends below the dimension `fluidHeight`. |
 | `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional. Defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
@@ -560,7 +560,7 @@ When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|templ
 
 Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `allowWater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
 
-A surface native placement is skipped when more than 10% of the 16 by 16 columns of its start chunk are river, stream, pond or lake water: channel, pond, cascade and waterfall columns of [36 - Rivers](/iris/36-rivers). The sea, river mouths, sea inlets, shores and banks do not count, and `underground` placements have no such limit. `allowWater: true` lifts the limit. The test reads the start chunk only, so pieces Minecraft assembles beyond it can still reach water.
+A surface native placement is skipped when more than 10% of the columns its assembled pieces cover are river, stream, pond or lake water: channel, pond, cascade and waterfall columns of [36 - Rivers](/iris/36-rivers). Minecraft assembles the pieces first, so pieces that reach a river beyond the start chunk count. The sea, river mouths, sea inlets, shores and banks do not count, and `underground` placements have no such limit. `allowWater: true` lifts the limit. Structures Minecraft places by its own structure sets keep vanilla placement.
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
