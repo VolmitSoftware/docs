@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-11-02T06:31:32.000Z
+date: 2026-11-02T07:11:37.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -107,6 +107,7 @@ First it checks the settings it can read without compiling them, and reports eve
 - a tier `halfWidth` above `64`;
 - a `fluid` on a tier, on `ponds`, on `cavePools`, or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `hydrology.fluids` does not define;
 - a `hydrologyPolicy.fluid` that names a seam profile;
+- a `hydrologyPolicy.rainfall` or `pondDensity` on the dimension, a region or a reachable biome outside `0..16`;
 - a `hydrologyPolicy.wetness` on the dimension, a region or a reachable biome with a bound outside `0..1` or a `min` above its `max`.
 
 When those pass, it compiles the settings exactly as a starting world does. The compile stops at its first problem, so one compile error is reported per dimension, naming the field; fix it and run the validator again. The compile rejects:

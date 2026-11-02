@@ -2,7 +2,7 @@
 title: "Hydrology Policy"
 description: "hydrologyPolicy: rainfall, pond density, climate zones and their wetness bounds, where streams and ponds may form, the fluid of an area's streams, rivers, ponds, lakes and cave pools, and the biomes along the water"
 published: true
-date: 2026-11-02T06:56:43.000Z
+date: 2026-11-02T07:11:37.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -61,11 +61,11 @@ Cave pools resolve `fluid` from the cave biome at the pool, then the region, the
 
 ### `rainfall`
 
-Rainfall weights the flow that drains off every column of the area, so the catchment of channels downstream of a wet area grows faster: streams start sooner and reach the river and major-river tiers earlier. It also decides how many stream heads survive `drainage.wetnessThinning` (the kept share is the larger of `rainfall` and `drainage.minimumHeadKeep`), and how far pond surfaces drop below their spill point: ponds in an area with rainfall at or above `1` stay at their freeboard, and drier areas lose up to `ponds.climateDrawdown` extra blocks, rounded, so a rainfall of `0.9` lowers ponds by one block at the default drawdown of `6` and not at all at a drawdown of `3`. Rainfall must be a finite value of `0` or more.
+Rainfall weights the flow that drains off every column of the area, so the catchment of channels downstream of a wet area grows faster: streams start sooner and reach the river and major-river tiers earlier. It also decides how many stream heads survive `drainage.wetnessThinning` (the kept share is the larger of `rainfall` and `drainage.minimumHeadKeep`), and how far pond surfaces drop below their spill point: ponds in an area with rainfall at or above `1` stay at their freeboard, and drier areas lose up to `ponds.climateDrawdown` extra blocks, rounded, so a rainfall of `0.9` lowers ponds by one block at the default drawdown of `6` and not at all at a drawdown of `3`. Rainfall lies in `0..16`; `/iris pack validate` reports a value outside it at every scope, and generation fails when the first chunk that resolves to it is made.
 
 ### `pondDensity`
 
-Pond density scales the number of free-standing seeded cups across its whole `0..16` range: an area seeds about `ponds.seeded.density` times `pondDensity` cups per 512 by 512 blocks before `hydrology.density` thins them, so `3` seeds three times as many cups as `1` and `0` seeds none. It also multiplies the chance of each chained cup along a stream. Natural hollows keep their ponds by `ponds.natural.keep`; `pondDensity` scales that share up to every qualifying hollow, so at the default `keep` of `1` only a value below `1` changes the natural ponds. Lakes and cave pools are not affected. Pond density must be a finite value of `0` or more.
+Pond density scales the number of free-standing seeded cups: on ground that accepts a cup, an area seeds about `ponds.seeded.density` times `pondDensity` cups per 512 by 512 blocks before `hydrology.density` thins them, so `3` seeds three times as many cups as `1` and `0` seeds none. It also multiplies the chance of each chained cup along a stream. Natural hollows keep their ponds by `ponds.natural.keep`; `pondDensity` scales that share up to every qualifying hollow, so at the default `keep` of `1` only a value below `1` changes the natural ponds. Lakes and cave pools are not affected. Pond density lies in `0..16`; `/iris pack validate` reports a value outside it at every scope, and generation fails when the first chunk that resolves to it is made.
 
 ### `climateZones`
 

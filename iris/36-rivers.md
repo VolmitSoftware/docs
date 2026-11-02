@@ -2,7 +2,7 @@
 title: "Hydrology"
 description: "Rivers, streams, ponds, lakes, sea inlets and cave pools that follow the terrain: the dimension's hydrology settings, wet and dry climate zones, terrain shaping, bank styles and materials"
 published: true
-date: 2026-11-02T06:31:32.000Z
+date: 2026-11-02T07:11:37.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-22T00:00:00.000Z
@@ -415,6 +415,7 @@ Invalid hydrology settings are rejected by `/iris pack validate` and again when 
 - a tier `halfWidth` above `64`;
 - a `fluid` on a tier, on `ponds`, on `cavePools` or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `fluids` does not define;
 - a `hydrologyPolicy.fluid` that names a seam profile;
+- a `hydrologyPolicy.rainfall` or `pondDensity` on the dimension, a region or a reachable biome outside `0..16`;
 - a `hydrologyPolicy.wetness` on the dimension, a region or a reachable biome with a bound outside `0..1` or a `min` above its `max`.
 
 When those pass, the validator compiles the settings exactly as a starting world does. The compile stops at its first problem and names the field, so one compile error is reported per dimension; fix it and run the validator again. The compile rejects:
