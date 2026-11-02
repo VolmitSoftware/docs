@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -85,7 +85,9 @@ Columns carry the water placed by hydrology as well as the terrain:
 | `RIVER_FLOW` | `1` for flowing water (channels, mouths, cascades and waterfalls), `0` for standing water (ponds, lakes and the open mouths of sea inlets), `-1` where there is no water |
 | `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet column |
 
-`surfaceKind` reports `RIVER` for every wet column, ponds, lakes and sea inlet mouths included, and `RIVER_SHORE` for shore columns; banks and dams report `LAND`. `surfaceHeight` under water is the bed. A read on the server thread for a chunk whose water is not planned reports the column without water, so read off the tick thread for complete answers, and run wide scans off the tick thread as well. See [36 - Hydrology](/iris/36-rivers).
+`surfaceKind` reports `RIVER` for every wet column, ponds, lakes and sea inlet mouths included, and `RIVER_SHORE` for shore columns; banks and dams report `LAND`. `surfaceHeight` under water is the bed. See [36 - Hydrology](/iris/36-rivers).
+
+On the server thread, a column whose water is not planned yet is answered from natural terrain without water, and its sample has `provisional()` set to `true`. Its height, surface kind, biome and water fields can change once hydrology plans the area, so sample it again on a later refresh. `NATURAL_HEIGHT` does not depend on hydrology and never makes a sample provisional. Off the server thread, reads wait for the plan and every sample is final. The single-column reads such as `surfaceKind` answer the same way but carry no flag; a one-column `sampleColumns` query reports whether the answer is final. Run wide scans off the server thread.
 
 ## Volumetric terrain queries
 
