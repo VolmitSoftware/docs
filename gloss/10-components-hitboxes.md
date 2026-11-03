@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-11-04T00:30:00.000Z
+date: 2026-11-04T01:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -77,7 +77,7 @@ The `Required` column reflects the advisory `schema/gloss.schema.json`; a button
 
 An invalid action is dropped with a log line naming the menu and component, and the rest of the list still runs. A missing action list creates a button that does nothing. An icon that fails to resolve becomes the missing-icon checkerboard rather than dropping the component.
 
-A button’s optional `tooltip` contains `delayTicks` (default 10, from 0 to 200), `lines`, optional shared display `style`, and optional `box`. It appears just above the button's icon after the hover delay and disappears when the viewer looks away. The style and box fields follow the [icon contract](/gloss/11-icons#display-style-and-boxes).
+A button’s optional `tooltip` contains `delayTicks` (default 10, from 0 to 200), `lines`, optional shared display `style`, and optional `box`. It appears just above the button's icon and in front of any panel behind it after the hover delay and disappears when the viewer looks away. The style and box fields follow the [icon contract](/gloss/11-icons#display-style-and-boxes).
 
 A click runs matching actions in list order. `any` matches every supported click, and a `navigate` action stops the rest of that chain.
 
