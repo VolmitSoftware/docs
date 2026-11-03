@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Configure server-list responses, request selectors, icons and server links"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-03T20:45:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -96,8 +96,8 @@ that folder — is refused and logged, and that entry falls back to the vanilla 
 
 `icons` at document or entry level defines up to 64 PNG paths. The entry icon set takes precedence, followed by its single `favicon`, the document icon set, and the document `favicon`. Icon selection follows `rotation`: random for `weighted`, first for `first`, and the same sequence/time position for the other modes.
 
-Icons are decoded once per document change, never per ping. Replacing an image file on disk reaches
-the server list after the next `motd.json` change.
+Icons are decoded once per image change, never per ping. Replacing an image file on disk reaches
+the server list at the next `[motd] snapshotRefreshTicks` refresh, and so does a first load after startup.
 
 ## Ping fields
 
