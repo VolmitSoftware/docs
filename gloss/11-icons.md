@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-11-03T23:30:00.000Z
+date: 2026-11-04T00:30:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -221,7 +221,7 @@ A material that reports `isBlock()` renders as a block model, except for `BARRIE
 | `refreshTicks` | integer 0 – 1200 | no | `20` | Ticks between re-reading the configured value and profile cache. `0` never refreshes |
 | `style` | display style | no | defaults | The shared display style above |
 
-The `player` value is trimmed and run through the viewer-aware text pipeline. `%player_name%`, `%player%` and `{{ player.name }}` resolve to the viewer even without PlaceholderAPI; spaces and case inside those three spellings are normalized. Other placeholders need the integration that provides them.
+The `player` value is trimmed and run through the viewer-aware text pipeline. Inside a list template, `{{ var }}` reads the current entry, so each entry can show its own head. `%player_name%`, `%player%` and `{{ player.name }}` resolve to the viewer even without PlaceholderAPI; spaces and case inside those three spellings are normalized. Other placeholders need the integration that provides them.
 
 A result is eligible for a profile request only when it is 1–16 ASCII letters, digits or underscores. An invalid name or unresolved placeholder uses `[playerHeads] unknownFallbackItem` without making an outbound request, as does `[playerHeads] enabled = false`. See [Configuration](/gloss/02-configuration).
 

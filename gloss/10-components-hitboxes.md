@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-11-03T22:30:00.000Z
+date: 2026-11-04T00:30:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -117,7 +117,7 @@ its initial value.
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-tabs-editor.webm" aria-label="Tabs component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-A list repeats a component `template` for values from its `source` expression. Its `var` binds the current entry for text, conditions, tooltips, and action expressions. `pageSize` defaults to `6`; `flow` defaults to three columns with horizontal spacing `1` and vertical spacing `0.5`.
+A list repeats a component `template` for values from its `source` expression. Its `var` binds the current entry for text, player head names, conditions, tooltips, and action text and expressions. `pageSize` defaults to `6`; `flow` defaults to three columns with horizontal spacing `1` and vertical spacing `0.5`.
 
 ```json
 {
