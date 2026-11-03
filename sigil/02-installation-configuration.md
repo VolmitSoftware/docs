@@ -2,7 +2,7 @@
 title: "Sigil: Installation and configuration"
 description: "Install Sigil, find its files and configure reward vouchers"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "sigil, installation, configuration"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -19,7 +19,7 @@ Sigil supports released Minecraft 26.1 through 26.3 versions on released Java 25
 
 Keep Sigil's data directory when updating. Existing vouchers depend on both the signing key and the redemption database.
 
-On first start, SlimJar downloads Gson, TOML, Adventure, SQLite JDBC, SLF4J and the bStats runtime into `plugins/Sigil/.libs/`. Keep that cache when moving to an offline installation. Translation downloads use a separate system and require published language sources.
+On first start, SlimJar downloads Gson, TOML, Adventure, SQLite JDBC, SLF4J and the bStats runtime into `plugins/Sigil/.libs/`. Keep that cache when moving to an offline installation. Translations download separately from the Sigil repository when selected; see [languages](/sigil/04-languages-integrations#languages).
 
 Some distributions extract their bundled runtime into `cache/runtime/` and reuse it on later starts. Runtime extraction works offline; library downloads require the `.libs/` cache or an internet connection.
 
@@ -34,7 +34,8 @@ Paths are relative to `plugins/Sigil/`.
 | `cache/runtime/` | Verified runtime extracted by an XZ distribution |
 | `vouchers/<id>.toml` | One voucher definition per file |
 | `languages/en_US.toml` | Editable English catalog, created on first start |
-| `languages/<locale>.toml` | Installed translations |
+| `languages/<locale>.toml` | Installed translations and custom locales |
+| `languages/.upstream/` | Record of the last language download; do not edit |
 | `languages/language-preferences.properties` | Saved personal language choices |
 | `storage/redemptions.sqlite` | Issuance, claims, limits and reward outcomes |
 | `storage/signing.key` | Key used to sign and verify voucher items |
@@ -45,9 +46,9 @@ Paths are relative to `plugins/Sigil/`.
 | Setting | Default | Meaning |
 |---|---|---|
 | `general.enabled` | `true` | Enable voucher operations |
-| `general.hotreload` | `true` | Watch configuration and installed language files |
-| `general.reload-interval-ticks` | `100` | Reload interval, from 20 to 12,000 ticks |
-| `general.language` | `"en_US"` | Default message language |
+| `general.hotreload` | `true` | Watch configuration, voucher and language files |
+| `general.reload-interval-ticks` | `100` | How often the files are checked, from 20 to 12,000 ticks |
+| `general.language` | `"en_US"` | Default message language; any installed locale id or a new custom id |
 | `general.splash` | `true` | Show the startup banner |
 | `general.debug-upload` | `false` | Permit explicitly requested diagnostic uploads |
 | `general.maximum-pending-redemptions` | `256` | Maximum concurrent pending redemptions |
@@ -61,9 +62,9 @@ Paths are relative to `plugins/Sigil/`.
 
 See [languages and integrations](/sigil/04-languages-integrations) before enabling external services.
 
-File reload and editor saves validate the complete replacement before applying it. Invalid files leave the working configuration active. A save based on an outdated editor view is rejected so it cannot overwrite newer changes.
+File reload and editor saves validate the complete replacement before applying it. Invalid files leave the working configuration active, and holders of `sigil.config` see an action-bar notice when a file change applies or is rejected. Changes saved together apply as one reload. A deleted `config.toml` regenerates from the defaults. With `general.hotreload = false`, file edits are not picked up and do not apply when it is turned back on; use the GUI reload button or a restart. A save based on an outdated editor view is rejected so it cannot overwrite newer changes.
 
-When changing the default language, reload validates the newly selected catalog before applying the configuration. A malformed new default rejects the change; switching away from a malformed previous default is allowed. Personal catalogs retain their last valid messages when a file cannot be read.
+When changing the default language, reload validates the installed catalog before applying the configuration. A malformed new default rejects the change; switching away from a malformed previous default is allowed. Personal catalogs retain their last valid messages when a file cannot be read.
 
 The appearance and reward editors use individual controls and plain-text or numeric chat input. The general field editor uses JSON values, such as `12`, `"text"` or `["world"]`; click a boolean to toggle it. The default-language field opens the shared server language picker.
 

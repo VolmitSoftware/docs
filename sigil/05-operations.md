@@ -2,7 +2,7 @@
 title: "Sigil: Operations and recovery"
 description: "Support limits, backups, diagnostic reports and interrupted rewards"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "sigil, operations, recovery, compatibility"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -26,7 +26,7 @@ Folia uses entity and region scheduling for player effects and inventory operati
 
 ## Reload and shutdown
 
-The GUI reload button and automatic file watcher reload configuration and installed language files while Sigil stays enabled.
+The GUI reload button and automatic file watcher reload configuration, voucher and language files while Sigil stays enabled. The watcher sends holders of `sigil.config` an action-bar notice when a change applies or is rejected, and records rejected changes with the full failure in the console.
 
 For a plugin reload or unload, use BileTools with Sigil's managed lifecycle support. Sigil refuses preparation while voucher deliveries are active; retry after they finish. When preparation succeeds, it stops accepting new deliveries and closes voucher and language menus before completing shutdown. If preparation is cancelled, Sigil resumes accepting deliveries.
 

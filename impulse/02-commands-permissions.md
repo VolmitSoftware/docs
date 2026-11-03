@@ -2,7 +2,7 @@
 title: "Impulse commands and permissions"
 description: "Command syntax and access rules"
 published: true
-date: 2026-10-29T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -25,6 +25,7 @@ Use `/impulse` or `/imp` to open Director help. Help entries follow the sender's
 | `/impulse transfer <player>` | Offer ownership to a nearby online player | `impulse.use` and owner/admin access |
 | `/impulse accept` | Accept a pending ownership offer | `impulse.use` |
 | `/impulse language` | Open language help and selection | `impulse.language.self` for personal selection |
+| `/impulse language update` | Check the repository and merge changed translations, at most once every five minutes | `impulse.config` or `volmit.language.admin` |
 | `/impulse debug version` | Show the installed version | `impulse.command` |
 | `/impulse version` | Hidden alias for debug version | `impulse.command` |
 | `/impulse debug dump [upload=true]` | Save a diagnostic report and optionally upload it | `impulse.debug` |

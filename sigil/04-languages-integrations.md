@@ -2,7 +2,7 @@
 title: "Sigil: Languages and integrations"
 description: "Language downloads, update notices and metrics"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "sigil, languages, integrations, updates, metrics"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -14,13 +14,31 @@ Sigil uses the shared Volmit language selector, GitHub update notifier and bStat
 
 Run `/sigil language` to choose a personal language. Administrators can edit messages through the Languages control in `/sigil config`; the main configuration's language field opens the server language picker.
 
-English (`en_US`) is built in. These 17 translation sources complete the supported catalog set: `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN` and `zh_TW`.
+English is generated locally from the built-in catalog into `languages/en_US.toml`. The server default is `general.language`, which accepts any installed locale id; personal choices are saved in `languages/language-preferences.properties`.
 
-Selecting an uninstalled translation downloads its TOML file from the source specified in the build's language manifest. Files are cached under `languages/<locale>.toml`. Existing files and operator edits are preserved. Personal selections are stored in `languages/language-preferences.properties`.
+The other 17 catalogs live on the default branch of the `VolmitSoftware/Sigil` repository and install when first selected: `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN` and `zh_TW`. Startup and `/sigil language update` check that branch in the background, at most once every five minutes. When it has moved, Sigil downloads each installed repository locale and merges it into the local file: keys you edited stay as you wrote them, unedited keys take the repository's text, and new keys are added. If the repository cannot be reached, the check logs one failure and installed languages stay active.
 
-Missing messages or unavailable downloads use built-in English. A malformed installed personal catalog retains its last valid messages. Deleting a catalog uses English without automatically recreating it; restoring a valid file updates players who selected it. Keep placeholders such as `{plugin}` and `{section}` intact when editing messages.
+| Path under `languages/` | Purpose |
+|---|---|
+| `<locale>.toml` | Editable messages for one locale |
+| `.upstream/` | Sigil's record of the last download for each repository locale, the English reference, and `upstream.properties` (repository, branch, revision, last check). Do not edit it; hot reload ignores it. |
+| `language-preferences.properties` | Saved player choices |
 
-Translation downloads use the repository and revision recorded in the distribution's language manifest. The default source target is `VolmitSoftware/Sigil`, reference `main`. Downloads require an accessible source file; English and installed catalogs remain available without it.
+Any other `languages/<id>.toml` is a custom locale. Its id may use letters, digits, `_` and `-`, from 2 to 32 characters. It appears in the pickers and editor, and repository updates never change it. An optional `[meta]` table names it and chooses a base locale:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "en_US"
+```
+
+`name` is the picker label. `base` names another installed locale that fills in missing keys before English.
+
+Setting `general.language` to a repository locale that is not installed keeps the setting and switches once the download finishes; an unknown id creates a custom file. Deleting the server default's repository file installs it again, and deleting `en_US.toml` regenerates it.
+
+Missing messages use built-in English. A malformed installed personal catalog retains its last valid messages. Deleting a personal catalog uses English without recreating it and keeps the saved player selection; restoring a valid file updates players who selected it. Keep placeholders such as `{plugin}` and `{section}` intact when editing messages.
+
+`/sigil debug dump` reports show the language source, revision, last check and last error.
 
 ## GitHub update notices
 

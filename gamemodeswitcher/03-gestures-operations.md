@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Gestures and operations"
 description: "Default key gestures, event handling, and troubleshooting"
 published: true
-date: 2026-11-01T21:50:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "gamemodeswitcher, gestures, operations, folia"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -18,7 +18,7 @@ GamemodeSwitcher listens for the swap-hands key and sneak presses. The default s
 | Creative | Survival | Spectator |
 | Adventure | Creative | Survival |
 
-In Spectator, press sneak three times to reach `gestures.spectator-exit` (Creative by default), or the previous mode when the tracked session enables restoration. Releases do not count, and each press must land within `gestures.sneak-tap-millis` of the last one.
+In Spectator, press sneak three times to go back to the mode you came from. `gestures.spectator-exit` (Creative by default) is used instead when GSW did not start the session or `spectator.restore-previous-mode` is off. Releases do not count, and each press must land within `gestures.sneak-tap-millis` of the last one.
 
 A double tap swaps your hands twice, so your hands end up as they started. A single or expired tap is just an ordinary swap.
 
@@ -36,7 +36,7 @@ For example, bind Swap Item With Offhand to G, then double-tap G or hold sneak a
 
 ## Spectator sessions
 
-Enable `spectator.restore-previous-mode` to remember the previous mode, `spectator.return-to-origin` to return to the entry location, or both. Both settings default to off and are captured when GSW starts a session. `/gsw return` uses that session; leaving Spectator through another GSW mode selection also returns to the saved location when origin return is enabled.
+When GSW puts a player in Spectator, it remembers their previous mode (`spectator.restore-previous-mode`) and entry location (`spectator.return-to-origin`). Both settings default to on, and each can be turned off. They are captured when GSW starts a session. `/gsw return` uses that session; leaving Spectator through another GSW mode selection also returns to the saved location when origin return is enabled.
 
 Sessions survive reconnects and restarts in `data/spectator-sessions.toml`. Death or an external mode change ends the session. Changes to the two session settings affect new sessions. `spectator.allow-unsafe-return` defaults to `true` and applies to existing sessions immediately; set it to `false` to require clear air, solid ground, and a destination inside the world border. These checks are conservative and can reject slabs, stairs, or vegetation.
 

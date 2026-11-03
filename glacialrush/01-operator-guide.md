@@ -2,7 +2,7 @@
 title: GlacialRush operator guide
 description: Installation, arena setup, commands, equipment, and settings
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: glacialrush, configuration, equipment
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
@@ -14,7 +14,7 @@ GlacialRush runs three-faction conquest rounds in configured worlds. Players rec
 
 Run Paper or Folia for Minecraft 26.1 through 26.3 with Java 25. Place the plugin jar in the server's `plugins/` directory and start the server. The first start requires network access to download runtime libraries and creates `plugins/GlacialRush/config.toml`.
 
-Use `/grush config` to edit the main configuration and `/grush language` to choose a language. Administrators can also edit server translations through the language editor. Missing translations use English.
+Use `/grush config` to edit the main configuration and `/grush language` to choose a language. See [Languages](#languages) for translation files and updates.
 
 ## Create an arena
 
@@ -115,6 +115,7 @@ Both `/grush` and `/glacialrush` accept the following subcommands.
 | `config` | Open the main configuration editor | `glacialrush.config` |
 | `reload` | Reload configuration and languages | `glacialrush.config` |
 | `language` | Select a personal language | Public; server translation editing requires `glacialrush.config` |
+| `language update` | Check the language repository and merge changes into installed locales | `glacialrush.config` or `volmit.language.admin` |
 | `debug version` | Show the installed version and supported runtime | Public |
 | `version` | Hidden alias for the version display | Public |
 | `debug dump [upload]` | Save a diagnostic report; `true` also requests an upload to mclo.gs | `glacialrush.debug` |
@@ -123,19 +124,47 @@ Both `/grush` and `/glacialrush` accept the following subcommands.
 
 ## Main configuration
 
-Edit `plugins/GlacialRush/config.toml` or use `/grush config`. Stable file changes apply automatically when hot reload is enabled; `/grush reload` requests a reload explicitly.
+Edit `plugins/GlacialRush/config.toml` or use `/grush config`. Hot reload watches `config.toml`, `languages/` and `arenas/`. Saved changes apply automatically when it is enabled, and players with `glacialrush.config` see an action bar notice with the result. A rejected change logs the failure once and keeps the last known good settings. A deleted `config.toml` or `languages/en_US.toml` is regenerated. `/grush reload` requests a reload explicitly.
 
 | Setting | Default | Meaning |
 |---|---|---|
 | `general.enabled` | `true` | Allow arena joins and running rounds |
-| `general.language` | `en_US` | Default server language |
+| `general.language` | `en_US` | Default server language; accepts any installed locale id |
 | `general.splashScreen` | `true` | Show the startup banner |
-| `hotReload.enabled` | `true` | Apply stable configuration and translation edits automatically |
+| `hotReload.enabled` | `true` | Apply configuration, arena and translation edits automatically |
 | `hotReload.pollMillis` | `1000` | File polling interval, clamped to 250 through 60000 milliseconds |
 | `debug.uploadEnabled` | `true` | Allow requested public debug uploads |
 | `metrics.enabled` | `true` | Allow anonymous bStats metrics when a service ID is configured |
 | `metrics.serviceId` | `0` | Registered bStats ID; zero leaves reporting inactive |
 | `updates.enabled` | `false` | Enable GitHub release notifications |
-| `updates.repository` | `VolmitSoftware/GlacialRush-REPLACE-ME` | GitHub `owner/repository`; replace the placeholder before enabling release checks |
+| `updates.repository` | `VolmitSoftware/GlacialRush` | GitHub `owner/repository` checked for new releases |
 
 The global bStats opt-out also applies. Release notifications require `glacialrush.update`.
+
+## Languages
+
+English is generated locally from the built-in catalog into `plugins/GlacialRush/languages/en_US.toml`. The server default is `general.language`, which accepts any installed locale id; personal choices are saved in `languages/language-preferences.properties`.
+
+The other 17 catalogs live on the `main` branch of the `VolmitSoftware/GlacialRush` repository and install when first selected. Startup and `/grush language update` check that branch in the background, at most once every five minutes. When it has moved, GlacialRush downloads each installed repository locale and merges it into the local file: keys you edited stay as you wrote them, unedited keys take the repository's text, and new keys are added. If the repository cannot be reached, the check logs one failure and installed languages stay active.
+
+| Path under `languages/` | Purpose |
+|---|---|
+| `<locale>.toml` | Editable messages for one locale |
+| `.upstream/` | GlacialRush's record of the last download for each repository locale, the English reference, and `upstream.properties` (repository, branch, revision, last check). Do not edit it; hot reload ignores it. |
+| `language-preferences.properties` | Saved player choices |
+
+Any other `languages/<id>.toml` is a custom locale. Its id may use letters, digits, `_` and `-`, up to 32 characters. It appears in the pickers and editor, and repository updates never change it. An optional `[meta]` table names it and chooses a base locale:
+
+```toml
+[meta]
+name = "Pirate Speak"
+base = "en_US"
+```
+
+`name` is the picker label. `base` names another installed locale that fills in missing keys before English.
+
+The available locales are `en_US`, `de_DE`, `es_ES`, `fi_FI`, `fr_FR`, `he_IL`, `it_IT`, `ja-JP`, `ko_KR`, `lt_LT`, `nl_NL`, `pl_PL`, `pt_PT`, `ru_RU`, `tr_TR`, `vi_VI`, `zh_CN` and `zh_TW`.
+
+Use `/grush language self <locale>` for a personal selection, or `self reset` to follow the server default. Administrators use `/grush language server <locale>`, `/grush language server edit [locale]` and `/grush language update`. Missing entries in a valid file use built-in English. A malformed language file keeps its last valid messages while other valid changes continue to apply, and deleting a language file is not a failure. A deleted `en_US.toml` is regenerated, a deleted server default keeps its last messages and installs again from the repository when it is a repository locale, and a deleted personal language uses built-in English until the file returns.
+
+See [Languages](/languages).

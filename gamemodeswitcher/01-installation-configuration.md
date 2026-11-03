@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Installation and configuration"
 description: "Install the plugin and configure gestures, switch feedback, languages, and diagnostics"
 published: true
-date: 2026-11-01T21:50:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "gamemodeswitcher, configuration, languages"
 editor: markdown
 dateCreated: 2026-09-10T18:30:00.000Z
@@ -68,8 +68,8 @@ An invalid `config.toml` during a hot reload keeps the previous settings active.
 | `gestures.spectator-exit` | `CREATIVE` | Destination after three spectator sneak presses unless a tracked session restores its previous mode |
 | `gestures.normal.*` | See gesture table | Destination per starting gamemode for double swap |
 | `gestures.sneaking.*` | See gesture table | Destination per starting gamemode for sneaking double swap |
-| `spectator.restore-previous-mode` | `false` | Remembers the previous mode for triple-Sneak and `/gsw return` |
-| `spectator.return-to-origin` | `false` | Returns to the saved entry location before leaving a tracked session through GSW |
+| `spectator.restore-previous-mode` | `true` | Remembers the previous mode for triple-Sneak and `/gsw return` |
+| `spectator.return-to-origin` | `true` | Returns to the saved entry location before leaving a tracked session through GSW |
 | `spectator.allow-unsafe-return` | `true` | Allows returns without solid ground or clear space and outside the world border; disable for conservative safety checks |
 | `restrictions.disabled-worlds` | `[]` | Dimension keys, such as `minecraft:the_nether`, or world folder names where all plugin mode changes are blocked |
 | `feedback.auto-fly-creative` | `true` | Starts creative flight if the server allows flight after the mode change |

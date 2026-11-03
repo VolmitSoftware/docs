@@ -2,7 +2,7 @@
 title: "Talon: Configuration"
 description: "Settings, editor controls, and automatic reload behavior"
 published: true
-date: 2026-10-25T07:15:44.815Z
+date: 2026-11-02T00:00:00.000Z
 tags: "talon, configuration"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -15,7 +15,7 @@ Edit `plugins/Talon/config.toml` or open `/talon config` with `talon.config`. Ch
 | Setting | Default | What it changes |
 |---|---|---|
 | `general.enabled` | `true` | Enable abilities; stored tool data remains when disabled |
-| `general.language` | `en_US` | Server language used without a personal choice |
+| `general.language` | `en_US` | Server language used without a personal choice; a locale id of letters, digits, `_` and `-`, up to 32 characters |
 | `general.updateNotifications` | `true` | Check releases when the build has a published repository configured |
 
 ## Metrics
@@ -36,9 +36,9 @@ Edit `plugins/Talon/config.toml` or open `/talon config` with `talon.config`. Ch
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `hotReload.enabled` | `true` | Watch the config and installed language files |
+| `hotReload.enabled` | `true` | Apply edits to the config and language files; when off, edits wait for the next startup |
 | `hotReload.pollIntervalMillis` | `1000` | File-check interval, 250 through 60000 milliseconds |
-| `hotReload.cooldownMillis` | `1500` | Wait for edits to settle, 250 through 60000 milliseconds |
+| `hotReload.cooldownMillis` | `1500` | Minimum time between applied file changes, 250 through 60000 milliseconds; a file applies once it reads the same on two checks |
 | `hotReload.notifyOperators` | `true` | Send an action-bar notice to players with `talon.config` after a reload |
 
 ## Debug
@@ -145,7 +145,7 @@ Edits validate before saving. Invalid values keep the current settings. Valid ed
 
 ## File changes
 
-The watcher monitors `config.toml`, `abilities.toml`, `acquisition.toml`, `harvest.toml`, `progression.toml`, and installed `languages/*.toml` files. Related configuration documents validate and apply together; an invalid document keeps the previous settings active. Invalid personal translations retain their last valid messages; missing message keys use English. Deleting a configuration document restores its defaults on the next reload.
+The watcher monitors `config.toml`, `abilities.toml`, `acquisition.toml`, `harvest.toml`, `progression.toml`, and `languages/*.toml` files, including new ones; `languages/.upstream/` and saves made by Talon itself are ignored. Related configuration documents validate and apply together; an invalid document keeps the previous settings active, and the change is not retried until a watched file changes again. Invalid personal translations retain their last valid messages; missing message keys use English. Deleting a configuration document restores its defaults on the next reload.
 
 If file watching is disabled, restart after editing files on disk. Splash settings take effect on the next startup. Library coordinates and publication IDs are build settings, not editable server settings.
 

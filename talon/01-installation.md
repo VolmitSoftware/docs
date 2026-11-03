@@ -2,7 +2,7 @@
 title: "Talon: Installation"
 description: "Requirements, installation, downloaded files, and updates"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "talon, installation"
 editor: markdown
 dateCreated: 2026-10-14T00:00:00.000Z
@@ -46,6 +46,7 @@ All paths are inside `plugins/Talon/`.
 | `cache/runtime/` | Extracted runtime from a packed distribution |
 | `languages/en_US.toml` | Editable English messages |
 | `languages/<locale>.toml` | Installed translations and custom languages |
+| `languages/.upstream/` | Record of the last language download and the English reference; do not edit |
 | `languages/language-preferences.properties` | Saved personal language choices |
 | `data/players/<uuid>.json` | Personal activation preferences |
 | `data/purchases/<uuid>.json` | Latest purchase transaction and settlement stage |

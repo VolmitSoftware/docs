@@ -2,7 +2,7 @@
 title: "GamemodeSwitcher: Features and roadmap"
 description: "Current features, release checks, and remaining work in priority order"
 published: true
-date: 2026-11-01T21:50:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "gamemodeswitcher, features, roadmap"
 editor: markdown
 dateCreated: 2026-10-13T00:00:00.000Z
@@ -19,7 +19,7 @@ GamemodeSwitcher supports Minecraft 26.1–26.3, including patch releases, on Ja
 | Restrictions | Per-mode permissions, disabled worlds, cooldowns, global enablement, and optional empty hands for gestures, with a message when a double tap is blocked. Other plugins can cancel mode changes. |
 | Personal settings | Saved gesture opt-out and separate chat, action-bar, title, and sound mutes. |
 | Feedback | Configurable messages, titles, action bars, and sound. Titles and action bars default on. Feedback never opens the selector automatically. |
-| Spectator sessions (P1/P2) | Optional previous-mode restoration and return to the entry location. Sessions survive reconnects/restarts; death or external mode changes end them. |
+| Spectator sessions (P1/P2) | Previous-mode restoration and return to the entry location, both on by default and each optional. Sessions survive reconnects/restarts; death or external mode changes end them. |
 | Return safety | Unsafe returns are allowed by default. Turning them off checks ground, clearance, and world borders, including for existing sessions. Permissions and disabled worlds still apply. |
 | Sound picker (P3) | Five presets, previews, and custom sound keys. Previewing keeps the current gamemode. |
 | Configuration | Shared editor for all settings, validated input, stale-save protection, and one prefixed save confirmation. Configuration and installed translations reload automatically. |
@@ -28,7 +28,7 @@ GamemodeSwitcher supports Minecraft 26.1–26.3, including patch releases, on Ja
 | Operations | Optional bStats with ID 33967, GitHub release notices, a startup splash, and Folia-aware scheduling. |
 | Distribution | Shared VolmLib pruning/shrinking, compact release packing, downloaded Gson/TOML/Adventure/bStats, bytecode and packaging checks, and `BUILDS` output. |
 
-Previous-mode restoration and return-to-origin both default off. Allowing unsafe returns does not enable either feature.
+Previous-mode restoration and return-to-origin both default on. Allowing unsafe returns only controls the destination checks.
 
 ## Next in order
 
@@ -56,10 +56,12 @@ WorldGuard and combat integrations must check their dependencies' platform suppo
 
 ## Verification
 
-The current November 1 language-source build passed 105 unit tests, 7 packaged-runtime tests, and the build checks below, and was started on Paper 26.1.2 with a passing gameplay scenario. The other platform results below describe the October 18 artifact.
+The current November 2 build passed 108 unit tests, 7 packaged-runtime tests, and the build checks below, and 89 gameplay steps on Paper 26.1.2. The other platform results below describe the October 18 artifact.
 
 | Recorded run | Result |
 | --- | --- |
+| November 2 build | 108 unit tests and 7 packaged-runtime tests passed. The Minecraft range now comes from `bukkitMinecraftRange`, and the packaging check reads it back from the JAR. The config watcher keeps running after a reload throws a linkage error. Distribution: 879,233 bytes; packed JAR: 812,059 bytes. |
+| November 2 Paper 26.1.2 gameplay | 89 Mineflayer steps passed across 10 scenario runs, each on a new isolated instance, with no errors in the server logs. Selector mode and toggle clicks redraw without opening a window. A default Spectator session returns to the previous mode and entry location. A language download adds no second reload notice. This run covers what the bot can see, not how the menu looks or feels in a real client. |
 | November 1 build | 100 unit tests and 7 packaged-runtime tests passed, with Paper/Spigot 26.3 compilation and packaging checks. Startup accepts Java 25 or newer. A double tap blocked by the empty-hand requirement now says why, and the Spectator exit ignores that requirement. A player who moves during a safe-return check is put back on the checked spot. Distribution: 834,730 bytes; packed JAR: 793,784 bytes. |
 | November 1 language-source build | 105 unit tests and 7 packaged-runtime tests passed, including a loopback repository sync that keeps a local edit and leaves a custom file unchanged, a `[meta]` base chain, the English reference merge, and the five-minute cooldown. The packaging check found the `repository`, `branch`, `path`, `extension`, and `locales` manifest keys, no pinned-revision keys, and no bundled catalogs. Packed JAR: 808,285 bytes. |
 | November 1 Paper 26.1.2 build 74 language sync | Startup logged `GamemodeSwitcher languages match VolmitSoftware/GamemodeSwitcher@master (724b670).` 6 Mineflayer steps passed: German installed from the branch on selection, a dropped `pirate.toml` with `name = "Pirate Speak"` listed on page two of the picker, its own message on selection, German from its `de_DE` base in `/gsw status`, the five-minute cooldown reply from `/gsw language update`, and the return to English. No plugin warnings or errors. |

@@ -2,7 +2,7 @@
 title: "Talon: Diagnostics"
 description: "Status, local reports, telemetry, and update notices"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "talon, diagnostics"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -20,7 +20,7 @@ Use `/talon status` for runtime details and `/talon debug version` for the insta
 | Loot and recipes | Inventory collection, protection checks, crafting availability, registered recipe count, and restart requirements |
 | Job and item counters | Active mining jobs, extra blocks harvested, skipped candidates, and delivered items |
 | Purchases | Pending transactions and players with unresolved transactions discovered during this session |
-| Publication services | Metrics, update, and language publication state |
+| Publication services | Metrics state, update notifications, and the language source, revision, last check, and last error |
 
 Recipe status is included in `/talon status` and debug dumps:
 

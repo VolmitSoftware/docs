@@ -2,7 +2,7 @@
 title: "Sigil: Commands and permissions"
 description: "Player, editor and operator commands"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "sigil, commands, permissions"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -32,6 +32,7 @@ Voucher commands require `sigil.use`, granted by default. Preview, redeem, inspe
 | `/sigil capture voucher=<id>` | `sigil.config` | Append the held item as a reward |
 | `/sigil edit target=<id-or-config> field=<path> value=<value>` | `sigil.config` | Change a validated field |
 | `/sigil delete voucher=<id> confirm=true` | `sigil.config` | Delete a definition |
+| `/sigil language update` | `sigil.config` or `volmit.language.admin` | Check the language repository and merge changed translations |
 | `/sigil give player=<name> voucher=<id> amount=1` | `sigil.give` | Issue physical vouchers to an online player |
 | `/sigil giveall voucher=<id> amount=1` | `sigil.give` | Issue vouchers to online players |
 | `/sigil force player=<name> voucher=<id>` | `sigil.force` | Start a reward claim without a held voucher |
