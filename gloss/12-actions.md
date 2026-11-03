@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-03T22:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -271,7 +271,7 @@ With `[features] menus = false`, every navigation mode except `close` is denied.
 
 ## Camera rides
 
-`camera` follows a spline in the viewer's current world. Each `path` node supplies `x`, `y`, and `z`, with optional `yaw`, `pitch`, and `durationTicks` (default `20`). `skippable` defaults to `true`; sneaking ends a skippable ride. `letterbox` requests the configured title provider's bars and defaults to `false`. `[camera] maxRideSeconds` limits the path duration.
+`camera` follows a spline in the viewer's current world. Each `path` node supplies `x`, `y`, and `z`, with optional `yaw`, `pitch`, and `durationTicks` (default `20`). `skippable` defaults to `true`; sneaking ends a skippable ride. `letterbox` defaults to `false`. It draws two black bars on the title and subtitle rows through the title slot, so they sit near the middle of the screen instead of at its edges, and removes them when the ride ends. `[camera] maxRideSeconds` limits the path duration.
 
 ```json
 {
