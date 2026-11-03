@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-03T21:45:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -199,7 +199,7 @@ Animated images use the same pixel mapping, so the two-tick minimum caps them at
 | `count` | integer | no | `0` | `0` and negatives become `1` at icon construction |
 | `customModelValue` | integer | no | `0` | Applied unconditionally, including `0` |
 
-Item ids must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed ids use the missing icon without breaking the rest of the menu. A count above 1 adds a stack badge. `countFormat` defaults to `&f&l{count}` and accepts colors, expressions, and the `{count}` token; an empty format hides its text. Custom-item icons use the same setting.
+Item ids must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed ids use the missing icon without breaking the rest of the menu. Item icons draw on the center of their collision plane, 0.05 blocks below the component's position. A flat item with a count above 1 rises 0.09 blocks to leave room for its count. Block-shaped items and player heads sit 0.3 blocks forward and do not rise. A count above 1 adds a stack badge. `countFormat` defaults to `&f&l{count}` and accepts colors, expressions, and the `{count}` token; an empty format hides its text. Custom-item icons use the same setting.
 
 Inventory item, player-head, and block icons accept `name` and a `lore` string array. Both use the inventory entry’s text and expression context. Omitted names preserve the normal item name.
 
