@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-03T21:30:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -207,8 +207,12 @@ viewer, and the string contains a `%`.
 | MOTD lines | none | no |
 | Damage indicators | the player viewing the indicator | yes, when personalized hologram text is enabled |
 
-A hologram line renders per viewer when it contains a complete `%name%`, `|function|` or
-viewer-backed `{{ expression }}` token and `[holograms] perViewerPlaceholders` is `true`. Setting
+A hologram line renders per viewer when `[holograms] perViewerPlaceholders` is `true` and it
+contains a complete `%name%` or `|function|` token, or a `{{ expression }}` that reads `player.*`,
+`viewer.*`, a namespace such as `pack.*` or `state.*`, `leaderboard.<id>.me.*`, or calls `papi()`,
+`lang()`, `name()`, `glyph()` or another registered function. Expressions that only read `time.*`,
+`server.*`, `subject.*`, `metric()` and the rest of `leaderboard.*`, or that call built-in functions
+such as `fixed()` and `wave()`, stay shared. Setting
 that key to `false` keeps the text shared, tokens included, unless a dynamic `show` needs per-viewer
 rendering; it also governs indicator and drop-label text. Entity-overlay templates always evaluate
 for their viewer. See [Holograms](/gloss/04-holograms).
@@ -306,9 +310,9 @@ stays visible as written and logs once, so a typo does not silently erase the li
 ```
 
 Built-in live variables are `time.ms`, `time.seconds`, `time.ticks`, `server.online`,
-`server.maxPlayers`, `server.tps`, `player.name`, `player.ping`, `player.health` and `player.level`.
-They need no other plugin. `player.*` requires a viewer, so it does not work in MOTDs or other
-static renders.
+`server.maxPlayers`, `server.tps`, and the viewer's `player.*` and `viewer.*` properties, such as
+`player.name`, `player.ping`, `viewer.health` and `viewer.gameMode`. They need no other plugin.
+`player.*` and `viewer.*` require a viewer, so they do not work in MOTDs or other static renders.
 
 `papi(...)` and `papiNumber(...)` try PlaceholderAPI first. If the token stays unresolved, Gloss
 supplies native fallbacks for `player_name`, `player_ping`, `player_health`, `player_level`,
@@ -614,7 +618,7 @@ Keys are case-insensitive except world names, which match exactly. The `minecraf
 optional. Dimension keys `normal` and `nether` normalize to `overworld` and `the_nether`.
 Two keys that normalize to the same value are invalid.
 
-Use `{{ name('materials', 'minecraft:oak_log') }}` for direct lookup on text surfaces. Condition and menu-session entity roles expose `typeName`, `worldName`, and `dimensionName`; player roles add `gameModeName` and `groupName`. Their world scope exposes `world.displayName` and `world.environmentName`. These role and world fields are not globals in the standard text scope used by ordinary scoreboard, tablist, and hologram text. That scope provides `player.name`, `player.displayName`, `player.username`, `player.ping`, `player.health`, `player.level`, and `player.bedrock`, plus its server and elapsed-time variables. Use direct `name(category, key)` lookup when the surface does not expose the corresponding role value.
+Use `{{ name('materials', 'minecraft:oak_log') }}` for direct lookup on text surfaces. Entity roles expose `typeName`, `worldName`, and `dimensionName`; player roles add `gameModeName` and `groupName`. Condition and menu-session world scopes expose `world.displayName` and `world.environmentName`. The standard text scope used by ordinary scoreboard, tablist, and hologram text provides these fields under `player.*` and `viewer.*`, plus its server and elapsed-time variables. It has no `world.*`, `subject.*` or `source.*`. Use direct `name(category, key)` lookup when the surface does not expose the corresponding role value.
 
 Damage contexts add `event.causeName` and `event.directSourceTypeName`; drops provide `drop.materialName` and `drop.worldName`. Preview documents use `itemName(slot)` for the material in an inventory slot. Raw keys remain available in their respective condition scopes.
 

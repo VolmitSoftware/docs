@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-03T21:30:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -207,7 +207,7 @@ Particle emission and animation playback retain their own clocks; direct documen
 
 `[features] holograms = false` despawns every hologram on the next driver tick. Documents still load, hot-reload and accept command edits. Nothing renders.
 
-With `[holograms] perViewerPlaceholders = true`, each nearby player sees their own placeholder and viewer-expression values; viewer-independent text stays shared. Set it to `false` and player-only values stay unresolved unless a dynamic `show` or conditional variant needs per-viewer rendering.
+With `[holograms] perViewerPlaceholders = true`, each nearby player sees their own placeholder and viewer-expression values, including `viewer.*`, `pack.*`, `lang()` and `leaderboard.<id>.me.*`; viewer-independent text stays shared. [Expressions & Placeholders](/gloss/13-expressions-placeholders) lists what counts as viewer-dependent. Set it to `false` and player-only values stay unresolved unless a dynamic `show` or conditional variant needs per-viewer rendering.
 
 Displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap at a smaller pixel width. Configured entries stay separate logical lines, with a reset between them so `&k` and other styles cannot bleed into the next line.
 
