@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-03T22:20:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -130,6 +130,10 @@ See [Data Files & Hot Reload](/gloss/03-data-files) for pack authoring and file 
 | Command | Permission | Purpose |
 |---|---|---|
 | `/gloss debug version` | any Gloss command access | Show the installed plugin version |
+| `/gloss leaderboard list` | `gloss.leaderboards` | List loaded [leaderboards](/gloss/29-leaderboards) |
+| `/gloss leaderboard info <id>` | `gloss.leaderboards` | Show a leaderboard's source, order and rows |
+| `/gloss leaderboard reset <id> [current\|all]` | `gloss.leaderboards.reset` | Clear a leaderboard's current period or all its values |
+| `/gloss leaderboard sample <id>` | `gloss.leaderboards.sample` | Sample a leaderboard for every online player now |
 | `/gloss debug dump [upload=true]` | `gloss.debugdump` | Save a diagnostic report, uploading by default |
 | `/gloss status` | `gloss.admin` | Show feature counts, display admissions/refusals and cleanup, and image cache size, memory weight, pending loads and refusals |
 | `/gloss emoji list` | `gloss.emoji.use` | List emoji |
