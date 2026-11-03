@@ -2,7 +2,7 @@
 title: "Underworld"
 description: "Dimension-wide context for the Iris Underworld biome atlas"
 published: true
-date: 2026-10-26T18:35:44.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris, biomes, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -33,7 +33,7 @@ The paired packs configure 197 active biome profiles and 23 explicit protected i
 
 Every reachable land root and ordinary child has an explicit setting. [Terrain shaping](/iris/biomes/terrain-shaping) lists the profile families and protected identities. The per-biome tables give exact amplitudes, feature scales, crack dimensions, and slope gates.
 
-Underworld uses the same hydrology tier, pond, and lake geometry as Overworld, filled with lava. Both dimensions use `hydrology.density: 0.5` to retain half the eligible water-feature candidates without changing their configured sizes. Shores and banks keep each biome's own layers.
+Underworld uses the same hydrology tier, pond, and lake geometry as Overworld, filled with lava, and the same wet and dry climate zones. Both dimensions use `hydrology.density: 0.5` to retain half the eligible water-feature candidates without changing their configured sizes. Shores and banks keep each biome's own layers.
 
 ## Foundation and fluids
 

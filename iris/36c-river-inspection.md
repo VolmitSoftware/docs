@@ -2,7 +2,7 @@
 title: "Water Inspection"
 description: "Find rivers, ponds, lakes, sea inlets and cave pools with /iris find river, view them in the Studio map, and validate hydrology settings"
 published: true
-date: 2026-10-26T22:14:50.267Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -19,19 +19,19 @@ Use `/iris find river` to reach the water of an Iris world, the Studio map's **R
 
 | Type | Meaning |
 |------|---------|
-| `stream` | A channel of the lowest tier |
-| `river` | A channel of a middle tier |
-| `major_river` | A channel of the highest tier |
-| `cascade` | A stepped drop in a channel shorter than the tier's `waterfallMinimumDrop` |
+| `stream` | A channel of a stream tier |
+| `river` | A channel of a river tier |
+| `major_river` | A channel of a major river tier |
+| `cascade` | A stepped drop in a channel, or a step down onto another channel's water, shorter than the higher channel's `waterfallMinimumDrop` |
 | `waterfall` | A drop of `waterfallMinimumDrop` or more |
-| `mouth` | Where a channel meets the sea |
+| `mouth` | Where a channel meets the sea, across its estuary and delta channels |
 | `pond` | A natural, seeded or chained pond |
 | `lake` | A lake |
 | `dam` | A pond held up by a raised rim |
 | `sea_inlet` | A flooded passage running inland from a cliff coast at sea level, from its open mouth to its chamber |
 | `cave_pool` | A pool on the floor of a carved cave |
 
-A cascade, waterfall or mouth is also found by the type of the channel it belongs to, and a dammed pond is found as both `pond` and `dam`. The type is parsed without regard to case, and `-` or a space may stand in for `_`.
+A tier's `name` sets the type of its channels: `stream`, `river`, or `major` (also `major_river`). A tier with any other name takes the type of its rank by `minCatchment`: the lowest tier is a stream, the highest a major river, and every tier between them a river. A one-tier dimension whose tier keeps the default name `stream` has streams only. Generated chunks keep the channel type they recorded when they generated: their water is found by that type even after the pack's tier names or tier count change, while chunks generated later record the type the current tiers give. A cascade, waterfall or mouth is also found by the type of the channel it belongs to, and a dammed pond is found as both `pond` and `dam`. The type is parsed without regard to case, and `-` or a space may stand in for `_`.
 
 ## `/iris find river`
 
@@ -60,14 +60,28 @@ The search covers 7,168 blocks around the player. For every type except `cave_po
 
 An unknown type is rejected before any search, with the list of accepted types. A search that finds nothing within range says so. A search that fails while planning reports the failure as an error; it is never reported as "not found". On Bukkit the teleport stays tied to the world the search started in, and changing worlds cancels it.
 
+Each player has one search at a time. A new `/iris find river` or `/iris goto river` replaces the player's running search, which stops without a message. A search stops after 30 seconds. It then reports the nearest water it found by that point, recorded or planned, and does not teleport; because the search did not finish, nearer water may exist within range. The message gives the position, for example "Stopped searching for the nearest river after 30 seconds. The nearest river found so far is at 120, 63, -480; a nearer one may exist." When it found none, it says "Stopped searching for the nearest river after 30 seconds without finding one."
+
+When the dimension cannot form the requested type, the command answers at once, without planning any water, and names the setting, for example "No dam forms in this dimension: hydrology.ponds.dams is disabled." Water of that type recorded in generated chunks within range is still found.
+
+| Type | Cannot form when |
+|------|------------------|
+| Every type | `hydrology.enabled` is `false` or `hydrology.density` is `0` |
+| `stream`, `river`, `major_river` | No tier has that type |
+| `pond` | `hydrology.ponds.natural.enabled` and `hydrology.ponds.seeded.enabled` are both `false` |
+| `dam` | As for `pond`, or `hydrology.ponds.dams.enabled` is `false` |
+| `lake` | `hydrology.lakes.enabled` is `false` |
+| `sea_inlet` | `hydrology.underground.seaInlets.enabled` is `false` |
+| `cave_pool` | `hydrology.underground.cavePools.enabled` is `false` |
+
 ## Studio map
 
-The Studio map (`/iris studio map`) has a **Rivers** view in the World group. Its legend lists what the map draws: waterfall, cascade, mouth, major river, river, stream, sea inlet, lake, pond, dam and cave pool, with the color used for each feature. Where several surface features share a pixel, the strongest one is drawn, in that order; cave pools are drawn beneath them.
+The Studio map (`/iris studio map`) has a **Rivers** view in the World group. Its legend lists what the map draws: waterfall, cascade, mouth, major river, river, stream, sea inlet, pond, lake, dam and cave pool, with the color used for each feature. Where several surface features share a pixel, the strongest one is drawn, in that order; cave pools are drawn beneath them.
 
 - At 2 blocks per pixel or closer, the map draws the planned water of each chunk, including the dam rings of dammed ponds and the open mouths of sea inlets. While chunk detail is preparing, cached water plans remain visible.
 - Between 2 and 16 blocks per pixel, the map draws the channel center lines, pond outlines, lake outlines and the passages and chambers of sea inlets from the plans that are already in memory. Dam rings are not drawn at these zooms.
 - Beyond 16 blocks per pixel the map draws no water.
-- Cave pools are drawn only where generated chunks recorded them, at every zoom that draws water.
+- Cave pools are drawn only where generated chunks recorded them, at every zoom that draws water. At 4 blocks per pixel or closer, pools that chunks record later are added to tiles already on screen. Beyond 4 blocks per pixel, they appear after **Refresh** (`R`) redraws the map.
 
 Previews refresh as water plans become available. Resizing, panning, and zooming retain cached coverage while additional detail loads. Completed river coverage stays visible while a different zoom level prepares its water detail. The **3D world** terrain preview also refreshes as hydrology plans finish. Disabled hydrology leaves the water overlay empty.
 
@@ -91,15 +105,30 @@ First it checks the settings it can read without compiling them, and reports eve
 
 - a range (`tiers[].halfWidth`, `ponds.freeboard`, `ponds.seeded.radius`, `ponds.seeded.depth`, `ponds.seeded.channelSpacing`, `underground.seaInlets.length`, `halfWidth`, `depth`, `headroom`, `chamberRadius`, `underground.cavePools.freeboard`) that is not `[min, max]` of two finite numbers with `min` at or below `max`, that holds fractions where whole numbers are required, or that goes below its floor (`freeboard` and `headroom` not below `0`, the others above `0`);
 - a tier `halfWidth` above `64`;
-- a `fluid` on a tier, on `ponds`, on `cavePools`, or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `hydrology.fluids` does not define.
+- a `fluid` on a tier, on `ponds`, on `cavePools`, or on the `hydrologyPolicy` of the dimension, a region or a reachable biome that `hydrology.fluids` does not define;
+- a `hydrologyPolicy.fluid` that names a seam profile;
+- a `hydrologyPolicy.rainfall` or `pondDensity` on the dimension, a region or a reachable biome outside `0..16`;
+- a `hydrologyPolicy.wetness` on the dimension, a region or a reachable biome with a bound outside `0..1` or a `min` above its `max`.
 
 When those pass, it compiles the settings exactly as a starting world does. The compile stops at its first problem, so one compile error is reported per dimension, naming the field; fix it and run the validator again. The compile rejects:
 
 - no tier, or two tiers sharing a `minCatchment`;
-- a `bankBand` outside `0..64`, or a `minArea` above its `maxArea`;
-- a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty;
+- a `prefetchRings` outside `0..4`;
+- a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`, or a `drainage.fillEpsilon` that is not above `0`;
+- a `bankBand` outside `0..64`, a `widthFactor` or `depthRatio` below `0`, or a `waterfallMinimumDrop` below `2`;
+- an `estuary.length` outside `0..256`, an `estuary.flare` outside `1..4`, a `delta.channels` other than `0` or `2..4`, a `delta.spreadDegrees` outside `10..80`, or a `delta.length` outside `8..384` or reaching more than 512 blocks with the tier's widest half-width and bank band;
+- a `minArea` above its `maxArea`, or a `lakes.maxArea` above `4194304`;
+- a `ponds.seeded.density` outside `0..64`, or a `deformation.maxFill` below `0`;
+- a `materials` palette on a tier or on `ponds` whose `palette` list is missing, misspelled or empty, or a `shoreDepth` below `1`;
 - a duplicated fluid profile name, or a profile with an empty palette;
-- sea inlet bounds (`halfWidth` outside `1..16`, `depth` max above `16`, `headroom` max above `32`, `chamberRadius` max above `32`, a floor and seal below the world bottom, a reach above 512 blocks) and cave pool bounds (`radius` outside `1..15`, `maxDepth` below `1`);
+- a `seam` that names no profile, a seam profile that names a seam of its own, or a seam profile used as the `fluid` of a tier, of `ponds` or of `cavePools`;
+- sea inlet bounds (`spacing` below `1`, `halfWidth` outside `1..16`, `depth` outside `2..16`, `headroom` max above `32`, `chamberRadius` max above `32`, a floor and seal below the world bottom, a reach above 512 blocks) and, while cave pools are enabled, cave pool bounds (`radius` outside `1..15`, `maxDepth` below `1`, a `freeboard` max at or above `maxDepth`, a `maxArea` above `961`);
 - a water `decorators` entry with a `partOf` other than `SEA_FLOOR`, `SEA_SURFACE` or `SHORE_LINE`, a missing, misspelled or empty `palette`, an unknown block, a `forceBlock`, a `chance` outside `0..1`, or `stackMin` and `stackMax` out of order; the validator also resolves every plant block and rejects fluids, floor plants that cannot stand in water, and surface or shore plants that hold water.
 
-Settings that pass the validator also pass when the world starts. Settings that fail the compile, or name an undefined `fluid` on a tier, on `ponds` or on `cavePools`, make the engine refuse to start with the same message. An undefined `hydrologyPolicy.fluid` on a biome also stops the engine at start while cave pools are enabled; on the dimension or a region, or on a biome with cave pools off, it fails generation when the first chunk that resolves to it is made. **Fix validation errors before creating a world, opening Studio, or packaging the pack.**
+Settings that pass the validator also pass when the world starts. Settings that fail the compile, or name an undefined `fluid` on a tier, on `ponds` or on `cavePools`, make the engine refuse to start with the same message. An undefined or seam-profile `hydrologyPolicy.fluid` on the dimension, a region or any biome the dimension reaches also stops the engine at start. **Fix validation errors before creating a world, opening Studio, or packaging the pack.**
+
+The validator also reports warnings, which do not block the pack:
+
+- a tier written in `tiers` that leaves out `halfWidth` or `bankBand`, so it takes the stream default `[0.5, 2]` or `0` whatever its size;
+- `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades, sea inlets and cave pools are not generated;
+- a `hydrologyPolicy.shoreBiomes` list on the dimension, a region or a biome that no `shoreBiomeWidth` above `0` applies to, so none of its shore biomes are placed. The warning names the policy that lists them.

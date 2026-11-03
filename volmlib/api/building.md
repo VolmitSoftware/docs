@@ -2,7 +2,7 @@
 title: "Workspace builds"
 description: "Parallel plugin builds, test workers, local dependencies, and build logs"
 published: true
-date: 2026-10-30T00:00:00.000Z
+date: 2026-11-01T00:00:00.000Z
 tags: "volmlib, development, builds, testing"
 editor: markdown
 dateCreated: 2026-09-03T03:00:00.000Z
@@ -108,7 +108,15 @@ Set `intermediate = true` only on an archive consumed by a separately audited fi
 packedPayloadOnlyPrefixes = ['linux/x64/org/lwjgl/', 'iris-language-guides/']
 ```
 
-Prefixes use relative archive paths with a trailing `/`, without empty, `.` or `..` path segments. Matching classes, required artifact entries, native-provider manifests, license or notice files, and any prefix under `META-INF/` are rejected. Plugin descriptors, service registrations, and generation metadata remain in the outer jar. Runtime classloader resource lookup exposes payload resources after bootstrap. If the ordinary jar is selected, every resource remains in that jar. Prefixes are declared build inputs, so changing them rebuilds the selected distribution.
+Prefixes are relative archive paths with at least one directory, without empty, `.` or `..` path segments. A prefix ending in `/` selects a directory; a prefix ending in a partial file name, such as `META-INF/iris/generation-kernels/abi-`, selects only the files in that directory whose names start with it. Directories under `META-INF/` are allowed. Prefixes that reach files directly under `META-INF/`, prefixes under `META-INF/volmit/` or `META-INF/services/` in any letter case, and prefixes matching classes, required artifact entries, native-provider manifests, or license or notice files are rejected. Plugin descriptors, the jar manifest, and service registrations remain in the outer jar. Runtime classloader resource lookup exposes payload resources after bootstrap. If the ordinary jar is selected, every resource remains in that jar. Prefixes are declared build inputs, so changing them rebuilds the selected distribution.
+
+`packedMaximumBootstrapClasses` caps the classes the XZ candidate keeps in its outer jar: the application classes needed to load the plugin before the payload installs, plus the packer's runtime classes. It is unset by default, which means no limit, and accepts values of at least 1:
+
+```groovy
+packedMaximumBootstrapClasses = 40
+```
+
+When the count exceeds the cap, the build fails and lists the largest retained application classes, even if the ordinary jar would be selected. Development packaging does not enforce the cap. The packed-jar task log reports the bootstrap class count and byte size retained by a selected XZ distribution.
 
 With one packed artifact, the task is `packedJar`. Multiple packed artifacts get a `packed<ArtifactName>Jar` task each. Output uses the producer's configured directory and file name, whichever format is selected. The producer task writes its ordinary jar to `build/tmp/packaging/<artifact>/` instead.
 

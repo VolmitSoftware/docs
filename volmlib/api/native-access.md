@@ -2,7 +2,7 @@
 title: "Native server access"
 description: "Select versioned native capabilities for plugin integrations"
 published: true
-date: 2026-10-27T03:40:00.000Z
+date: 2026-11-02T12:37:53.000Z
 tags: "volmlib, api, native"
 editor: markdown
 dateCreated: 2026-09-20T00:00:00.000Z
@@ -161,6 +161,8 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 
 `NativeStructureVolume` describes a native piece and its optional `surfaceAdjustment`. Supply `null` for pieces without surface grading, or `SurfaceAdjustment(anchors, horizontalPadding, range)` for a `FLATTEN` reservation. Each `SurfaceAnchor` supplies inclusive X/Z bounds, a ground Y in world coordinates, and its strength. `contains`, `intersects`, and `intersectsRect` test the literal piece bounds; `intersectsInfluenceRect` also includes surface grading. `surfaceCutY(volumes, x, z, originalY)` combines the reserved anchors for a column. Keep objects that require ground support out of a lowered band, including the first block above the original surface.
 
+A structure stage policy's `water(context)` returns a `StructureWater` that reports a `StructureWaterColumn` for each column: whether it holds water, whether that water is river, stream, pond or lake water (`river`), and its floor and surface Y in world coordinates. Return `StructureWater.DRY` when your generator has no such water. The native stages invalidate a start your policy planned when more than 10% of the columns its pieces cover are `river` columns, unless the plan's `allowWater()` or `underground()` is true. `BORE` and `FORCE_CARVE` terrain leave a water column uncut from two blocks below its floor upward, and the ground within two blocks of the water uncut up to its surface. `StructureWaterRules` exposes the same footprint test and carve guard.
+
 `NativeBlockProperties.canPlaceOnto` checks substrate compatibility. It accepts crimson and warped roots on soul soil or either nylium type, and Nether sprouts on either nylium type. Placement code must also enforce its clearance and surface-support rules.
 
 `NativeGenerationRegistry.canonicalDefinition(...)` creates a typed registry definition from its registry key, entry key, and JSON. Resolve the registry through `NativeAdapters.require(NativeGenerationRegistry.class)`.
@@ -170,6 +172,8 @@ Pass bulk data through `BukkitTerrainBuffer` and `NativeBlockVolume`. Use `Nativ
 Call `attachOverworldSpawners(world)` during world initialization for worlds that use Overworld event spawning. When the world has no event spawners, it installs vanilla phantom, patrol, cat, village siege, and wandering trader spawners. An existing nonempty spawner list is preserved, and repeated calls do not duplicate spawners. The caller selects eligible worlds; Nether and End worlds should omit this call.
 
 Implement the block-change callbacks when your generator retains deferred content at generated positions. `StructureStagePolicy.trackBlockChanges` returns `NativeBlockChangeSet.create(bounds)` when that area contains such content, or `NativeBlockChangeSet.disabled()` when tracking is unnecessary. `NativeImportedFeaturePolicy.trackedBlockPositions` returns a set populated with the positions of retained content, allowing the feature pass to detect direct chunk-section writes as well as world writes. Both policies receive `invalidateBlockChanges` after placement, including partial writes when placement fails. Use `forEachChunk` and `forEachPosition` to discard superseded content; structure terrain fitting also records the air cell above a `FLATTEN` cut. Callbacks run in the generation context, so schedule any live entity cleanup on its owning thread.
+
+`StructureStagePolicy.seaSurface` returns a `StructureSeaSurface` with the world Y of the top sea fluid block and that fluid's block state, or `StructureSeaSurface.NONE` for a dimension without a sea. The fluid must be a fluid block such as water or lava; the structure stage rejects any other block. Structure terrain fitting never lowers dry ground outside a structure footprint below that Y, and fills every cut cell at or below it with the sea fluid. A cut beneath standing fluid fills with that fluid instead.
 
 `NativeBlockChangeSnapshot.capture(positions, reader)` samples only the supplied positions. Call `collectChanges(changes, reader)` afterward to add positions whose sampled values differ. Readers receive world X, Y, and Z; return immutable block-type values when neighbour-induced property changes must remain valid. Native world-access factories take an explicit `guarded` argument: `true` applies their generation-boundary and protected-position checks, while `false` retains the delegate's access rules while recording writes.
 

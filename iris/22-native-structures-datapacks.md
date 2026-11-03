@@ -2,7 +2,7 @@
 title: "Native Structures & Datapacks"
 description: "Iris documentation: Native Structures & Datapacks"
 published: true
-date: 2026-10-21T00:00:00.000Z
+date: 2026-11-02T12:37:02.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -28,6 +28,7 @@ These tasks are separate workflows. None of them requires the others.
 | Allow selected vanilla or datapack structures and choose where they go yourself | Task 4 |
 | Edit a registered structure's blocks or graph inside Iris | Task 5 |
 | Import vanilla ores, geodes, or snow, or control mobs, loot, and saplings | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
+| Turn an Iris pack into a worldgen datapack that runs without Iris | [49 - Datapack Export](/iris/49-datapack-export) |
 
 Every task below changes newly generated chunks only. Nothing rewrites existing terrain or existing starts.
 
@@ -369,21 +370,21 @@ Among the vertical placement controls, three structures honor only `yShift`. `mi
 |---|---|
 | `SOURCE` (default) | Replay the registered terrain adaptation, including vanilla BURY/ENCAPSULATE fill. Automatic top-surface fitting runs only for `SURFACE_STRUCTURES`. It uses real processed foundation columns and jigsaw junctions, seats ordinary gaps exactly, caps each upward or downward correction at 6 blocks, and blends that correction through a fixed 12-block quadratic skirt. Template air, roofs, and non-solid decoration do not become foundation anchors. Underground steps such as Ancient Cities do not reshape the top surface through `BEARD_BOX`. |
 | `PRESERVE` | Disable terrain integration. |
-| `BORE` | Clear the padded piece volume (box) before placement. |
-| `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. |
+| `BORE` | Clear the padded piece volume (box) before placement. River, stream, pond, lake and sea inlet water columns stay uncut from two blocks below their floor upward, and so does the ground within two blocks of the water up to its surface. |
+| `FORCE_CARVE` | Clear the padded envelope using `shape`: `BOX`, `ROUNDED`, or `ERODED`. Water columns and the two blocks of bank beside them stay uncut as with `BORE`. |
 | `VACUUM` | Explicit raise-only fitting to processed structure ground planes with a fixed 12-block falloff. It never lowers ground. |
-| `FLATTEN` | Cut high ground and fill low ground around exposed native structure foundations, including 3D terrain. `flattenRange` bounds vertical cut, fill, and foundation support; `horizontalPadding` is the blend distance. Buried and submerged pieces keep their terrain. |
+| `FLATTEN` | Cut high ground and fill low ground around exposed native structure foundations, including 3D terrain. `flattenRange` bounds vertical cut, fill, and foundation support; `horizontalPadding` is the blend distance. Buried and submerged pieces keep their terrain. Dry ground outside a structure footprint never ends below the dimension `fluidHeight`. |
 | `ENCASE` | Fill the padded volume with solid blocks before placement (air and liquid only). The structure then carves its own interiors. `encasePalette` is optional. Defaults are stone/deepslate in the Overworld, netherrack in the Nether, end stone in the End. |
 
 Padding: `horizontalPadding` (0..128), `ceilingPadding` (0..128), `floorPadding` (0..64, where 0 preserves the floor). ERODED adds `erosionStrength` (default 0.8), `erosionFrequency` (0.07), `lobeFrequency`, and `lobeStrength` (0.85).
 
-For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Foundation support fills open space directly beneath the fitted surface, stops at solid terrain or fluids, and leaves caves beneath that terrain intact. Support beneath projected solid path columns uses the same `flattenRange` limit.
+For `FLATTEN`, `flattenRange` defaults to `64` and accepts `0..128` blocks. `horizontalPadding` controls its horizontal blend instead of clearance. This mode follows each structure’s foundation and path anchors; it does not move native pieces onto a single village-wide elevation. Outside a structure footprint, it never cuts dry ground below the dimension `fluidHeight`, so the fitted surface stays at least flush with the sea surface. Inside a footprint, a cut can reach below the sea surface, and that part fills with the sea fluid. In ordinary worlds, projected village paths use the fitted terrain heightmaps before placement. Foundation support fills open space directly beneath the fitted surface, stops at solid terrain or fluids, and leaves caves beneath that terrain intact. Support beneath projected solid path columns uses the same `flattenRange` limit.
 
-When terrain fitting lowers ground, it clears contiguous decorations above the old surface, including solid clutter such as slabs. Iris objects that intersect the reserved `FLATTEN` surface cut area are skipped before placement, including trees whose bases would lose support. Other trees follow the structure vegetation rules.
+When terrain fitting lowers ground, it clears contiguous decorations above the old surface, including solid clutter such as slabs. A cut beneath water or lava, such as a riverbed, fills with the fluid above it. Other cut cells at or below the dimension `fluidHeight` fill with the sea fluid instead of air. The sea fluid is the first water or lava block of the dimension `fluidPalette`. A dimension whose `fluidHeight` is at or below its minimum Y, or whose `fluidPalette` holds no water or lava, has no sea surface for terrain fitting. Iris objects that intersect the reserved `FLATTEN` surface cut area are skipped before placement, including trees whose bases would lose support. Other trees follow the structure vegetation rules.
 
 Dimension stacks supply the original layer surface to native height queries, so igloos, swamp huts, and terrain-matching village paths can retain their original projected elevations after `FLATTEN`.
 
-The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. Underworld applies the same settings to exposed bastions and ruined portals. Underground structures, submerged pieces, Nether fortresses, and Nether fossils keep their native placement.
+The built-in Overworld enables `FLATTEN` with range `64` and blend `24` for villages, outposts, mansions, desert and jungle pyramids, igloos, swamp huts, beached shipwrecks, and exposed ruined portals. A beached shipwreck keeps the surrounding shore flush with the sea, and any part of its footprint cut below the sea surface floods with water. Underworld applies the same settings to exposed bastions and ruined portals, and their cuts below its lava sea surface fill with lava. Underground structures, submerged pieces, Nether fortresses, and Nether fossils keep their native placement.
 
 #### Examples
 
@@ -557,7 +558,9 @@ When `false`, Iris strips `data/minecraft/worldgen/structure_set|structure|templ
 | `weight` | `1` (min 1) | Weighted selection among the sources in this placement. |
 | `jigsaw` | unset | Overrides for registered **jigsaw** structures only. Fields include `startPool`, `startJigsawName`, `maxDepth` (0..20), `maxDistanceHorizontal` (1..128), and `maxDistanceVertical` (1..4064). Also `useExpansionHack`, `projectStartToHeightmap` (`SOURCE`/`NONE`/heightmap types), `dimensionPaddingBottom` and `dimensionPaddingTop`, and `liquidSettings`. Null or unset values preserve the registered definition. |
 
-Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
+Placement grid fields (`distribution`, `spacing`/`separation`/`salt`, `density`, rings, heights, `underground`, `underwater`, `allowWater`, `placementId`) match the **Natural placement** section of [21 - Jigsaw Structures](/iris/21-jigsaw-structures). The native backend supports **every** terrain mode including `VACUUM` and `ENCASE`, plus `stilt` (including `spacing`).
+
+A surface native placement is skipped when more than 10% of the columns its assembled pieces cover are river, stream, pond or lake water: channel, pond, cascade and waterfall columns of [36 - Rivers](/iris/36-rivers). Minecraft assembles the pieces first, so pieces that reach a river beyond the start chunk count. The sea, river mouths, sea inlets, shores and banks do not count, and `underground` placements have no such limit. `allowWater: true` lifts the limit. Structures Minecraft places by its own structure sets keep vanilla placement.
 
 Scoping matches Iris placements. Validation requires the structure's effective assembly span to stay inside Minecraft's 128-block (8-chunk) structure reference range.
 
@@ -707,6 +710,7 @@ Automatic import is off by default because native generation and `nativeStructur
 | `/iris datapack ingest` | `pull` | `restart=false`. Bukkit only, modded stub |
 | `/iris datapack list` | `ls` | |
 | `/iris datapack remove <id>` | `rm` | |
+| `/iris datapack export <dimension>` | | `version= mode=overworld namespace=iris_export output= format=zip objects=true replace=false`. Same keyed options on both platforms. See [49 - Datapack Export](/iris/49-datapack-export) |
 | `/iris structure list <dimension>` | `ls` | |
 | `/iris structure import <dimension>` | `import-all`, `reimport`, `imp`, `all` | |
 | `/iris structure capture <dimension>` | `cap` | |

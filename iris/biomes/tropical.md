@@ -2,7 +2,7 @@
 title: "Tropical Biomes"
 description: "Navigation for the built-in tropical biomes across Overworld and Underworld"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-10-31T00:00:00.000Z
 tags: "iris, biomes, overworld, underworld, tropical"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -46,6 +46,6 @@ The paired packs explicitly configure 17 terrain identities in this family: 2 cl
 
 ## Hydrology
 
-The tropical region's `hydrologyPolicy` sets pond density `2.5`, the highest of any region in either pack, and rainfall `1.77`, near the top (only Swamp is higher), so tropical terrain carries more seeded cups than any other region and its ponds stay full. It lists `tropical/island-beach`, `tropical/beach`, `tropical/beach-bamboo` and `tropical/beach-charred` as shore biomes; no `shoreBiomeWidth` is set, so the band is off. Overworld fills the water with water and Underworld with lava.
+The tropical region's `hydrologyPolicy` sets pond density `2.5`, the highest of any region in either pack, and rainfall `1.77`, near the top (only Swamp is higher), so tropical terrain inside the wet climate zones carries more seeded cups than any other region and its ponds stay full. It lists `tropical/island-beach`, `tropical/beach`, `tropical/beach-bamboo` and `tropical/beach-charred` as shore biomes; no `shoreBiomeWidth` is set, so the band is off. Overworld fills the water with water and Underworld with lava.
 
-[Volcanic Plains](/iris/biomes/tropical/volcanic-plains) and its volcano child set rainfall `1.8`, pond density `3` and `fluid: lava`, so their ponds and lakes are lava in both packs. See [36b - Hydrology Policy](/iris/36b-river-policy).
+[Volcanic Plains](/iris/biomes/tropical/volcanic-plains) and its volcano child set rainfall `1.8`, pond density `3`, `fluid: lava` and `climateZones: false`, so their streams, rivers, ponds and lakes are lava in both packs and in every climate zone. See [36b - Hydrology Policy](/iris/36b-river-policy).

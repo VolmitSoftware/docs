@@ -2,7 +2,7 @@
 title: "Surfaces, Decorators & Deposits"
 description: "Iris documentation: Surfaces, Decorators & Deposits"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T09:08:50.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -128,7 +128,7 @@ Dimension-level palettes:
 | Field | Default | What it does |
 |-------|---------|--------------|
 | `rockPalette` | stone | Fills every land cell below the biome layer stack. Swap it for deepslate or a stone/granite/andesite blend to change the entire underground |
-| `fluidPalette` | water | Ocean columns and cave aquifers when `allowFluid` is on. Rivers use the `hydrology.fluids` profile of their tier; ponds and lakes use `ponds.fluid` or the `hydrologyPolicy.fluid` of their area |
+| `fluidPalette` | water | Ocean columns and cave aquifers when `allowFluid` is on. Each stretch of stream or river uses the `hydrology.fluids` profile of its tier, or the `hydrologyPolicy.fluid` of the area where it starts; ponds and lakes use `ponds.fluid` or the `hydrologyPolicy.fluid` of the area that holds their floor |
 
 ### Block data and reusable `blocks/*.json`
 
@@ -214,7 +214,9 @@ Stairs and trapdoors keep their authored `half: bottom` or `half: top` state and
 
 Crimson and warped roots can grow on soul soil or either nylium type. Nether sprouts can grow on either nylium type. Use ordinary decorators and substrate whitelists for these plants.
 
-Vines get their attachment faces recomputed, and stacked weeping and twisting vines use the matching `_plant` state for their body with one tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` get correct direction and taper states for both single decorations and stacks, and adjacent opposing tips of the same material become `tip_merge` (sulfur and dripstone never merge with each other). Spikes require a full sturdy support face in their growth direction or another matching spike behind them, **even when force-placed**. They are waterlogged automatically when they replace actual water and never replace lava. Authored wet states are cleared when the decoration lands in dry space. Sulfur spikes require Minecraft 26.2.
+Vines, glow lichen and other multi-face blocks keep only the faces they can hold. An authored side face stays when the block on that side is sturdy. On `minecraft:vine` it also stays when a sturdy block is directly above or when the vine directly above carries the same face, so a `CEILING` decorator that stacks vines with an authored side face, such as `minecraft:vine[north=true]`, hangs a curtain facing that way. Each of these blocks also attaches to a sturdy block directly above it. When no authored side face can be held, the block attaches to every sturdy neighbour instead.
+
+Stacked weeping and twisting vines use the matching `_plant` state for their body with one tip at the free end. `minecraft:pointed_dripstone` and `minecraft:sulfur_spike` get correct direction and taper states for both single decorations and stacks, and adjacent opposing tips of the same material become `tip_merge` (sulfur and dripstone never merge with each other). Spikes require a full sturdy support face in their growth direction or another matching spike behind them, **even when force-placed**. They are waterlogged automatically when they replace actual water and never replace lava. Authored wet states are cleared when the decoration lands in dry space. Sulfur spikes require Minecraft 26.2.
 
 | Field | Type | Default | What it does |
 |-------|------|---------|--------------|

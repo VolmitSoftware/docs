@@ -2,7 +2,7 @@
 title: "Biome Catalog"
 description: "Paired atlas of the built-in Iris Overworld and Underworld biomes"
 published: true
-date: 2026-10-26T18:35:44.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris, biomes, overworld, underworld"
 editor: markdown
 dateCreated: 2026-08-27T00:00:00.000Z
@@ -11,7 +11,7 @@ Use this atlas to choose and configure biomes in the built-in Overworld and Unde
 
 For biome configuration, see [13 - Biomes](/iris/13-biomes). To edit the built-in pack, see [27 - Configuring Overworld](/iris/27-example-configuring-overworld). The [terrain shaping reference](/iris/biomes/terrain-shaping) compares the shared 3D terrain profiles.
 
-Both packs set `hydrology.density` to `0.5`, retaining half the eligible water-feature candidates while keeping their rainfall policies and configured sizes. Overworld river, pond, and lake beds mix gravel, sand, clay, and coarse dirt. Underworld beds mix blackstone, basalt, netherrack, and soul soil. Both palettes use `SIMPLEX` patches.
+Both packs set `hydrology.density` to `0.5`, retaining half the eligible water-feature candidates while keeping their rainfall policies and configured sizes. Both also divide the land into wet and dry climate zones: streams and ponds start only in the wet zones, rivers from them run on through the dry land, and the volcanic biomes keep their lava water in every zone. Overworld river, pond, and lake beds mix gravel, sand, clay, and coarse dirt. Underworld beds mix blackstone, basalt, netherrack, and soul soil. Both palettes use `SIMPLEX` patches.
 
 Overworld water beds grow seagrass, tall seagrass, and short kelp where water depth permits. Underworld lava beds have no aquatic plants. See the [Overworld treatment](/iris/biomes/overworld#water-beds-and-plants), [Underworld treatment](/iris/biomes/underworld#foundation-and-fluids), and [Hydrology](/iris/36-rivers) for configuration.
 
@@ -74,7 +74,7 @@ An atlas page lists every region and selection role that can choose the root. Re
 
 ## What counts as in use
 
-Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, authored `subterrainFeatures`, children, floating targets, carving references, and the `hydrologyPolicy.shoreBiomes` of the dimension, regions and biomes while hydrology is enabled. A file outside this graph is omitted even if it parses successfully.
+Reachability begins at the active dimension file. It follows region land, sea, shore, and cave lists, dimension carving, authored `subterrainFeatures`, children, floating targets, carving references, and the `hydrologyPolicy.shoreBiomes` that a `shoreBiomeWidth` above `0` places while hydrology is enabled. A file outside this graph is omitted even if it parses successfully.
 
 This distinction matters when editing a pack. An authored biome can validate yet never generate because nothing selects it. Use [13 - Biomes](/iris/13-biomes) for the configuration contract and [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) for the editing workflow.
 

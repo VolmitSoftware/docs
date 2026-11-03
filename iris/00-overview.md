@@ -2,7 +2,7 @@
 title: "Overview"
 description: "Iris documentation: Overview"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T09:30:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -25,6 +25,7 @@ The guides cover server operation and pack authoring. Pages `90`–`94` cover th
 | Control what vanilla still generates | [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) → [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) for structures |
 | Use mod biomes, features, and dimensions on mod loaders | [48 - Mod Worldgen](/iris/48-mod-worldgen) → [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough) |
 | Deploy a pack to a production server | [25 - Pack Management](/iris/25-pack-management) → [06 - Worlds & Lifecycle](/iris/06-worlds-lifecycle) → [07 - Pregeneration](/iris/07-pregeneration) |
+| Run a pack's world on a server or client without Iris | [25 - Pack Management](/iris/25-pack-management) → [49 - Datapack Export](/iris/49-datapack-export) |
 | Make another plugin or mod work with Iris | [28 - Integrations](/iris/28-integrations) → [30 - Platform Differences](/iris/30-platform-differences). If you write Java against Iris, start at [90 - API - Getting Started](/iris/90-api-getting-started) |
 
 ## Platforms
@@ -64,8 +65,8 @@ Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree f
 | Volumetric terrain | Biome `terrain3D` profiles, spans, and ledges | [47 - Volumetric Terrain](/iris/47-volumetric-terrain) |
 | Noise atlas | All style previews, 3D slices, zoom and octave comparisons, PDF | [45 - Noise Atlas](/iris/45-noise-atlas) |
 | Caves and carving | Cave profiles, field modules | [15 - Caves & Carving](/iris/15-caves-carving) |
-| Hydrology | Rivers, streams, ponds, lakes, sea inlets and cave pools, terrain shaping, bank styles and materials | [36 - Hydrology](/iris/36-rivers) |
-| Hydrology policy | Rainfall, pond density, stream and pond permissions, fluid and shore biomes per area | [36b - Hydrology Policy](/iris/36b-river-policy) |
+| Hydrology | Rivers, streams, ponds, lakes, sea inlets and cave pools, wet and dry climate zones, terrain shaping, bank styles and materials | [36 - Hydrology](/iris/36-rivers) |
+| Hydrology policy | Rainfall, pond density, climate zones and their wetness bounds, stream and pond permissions, fluid, water plants and shore biomes per area | [36b - Hydrology Policy](/iris/36b-river-policy) |
 | Water inspection | `/iris find river`, the Studio water view and validation | [36c - Water Inspection](/iris/36c-river-inspection) |
 | Image maps | Typed resources, applications, accepted PNG inputs, and the Image Map Studio workflow | [37 - Image Maps](/iris/37-image-maps) |
 | Image-map encodings | Grayscale and RGB heights, color legends, tolerance, alpha, and mask composition | [38 - Image Map Encodings](/iris/38-image-map-encodings) |
@@ -83,6 +84,7 @@ Use `/iris`, `/ir`, or `/irs`. Most commands require `iris.all`; survival tree f
 | Loot and entities | Pack entities, loot, spawners, markers | [23 - Loot](/iris/23-loot), [23b - Entities & Spawners](/iris/23b-entities-spawners), [23c - Markers](/iris/23c-markers) |
 | Pack extensions | Reusable JSON snippets | [24 - Snippets](/iris/24-pack-mods-snippets) |
 | Pack management | Download, validate, cleanup, package, update-world | [25 - Pack Management](/iris/25-pack-management) |
+| Datapack export | Compile a pack into a vanilla worldgen datapack for Minecraft 26.3 and later | [49 - Datapack Export](/iris/49-datapack-export) |
 | Minimal pack example | Walkthrough | [26 - Example - Minimal Dimension](/iris/26-example-minimal-dimension) |
 | Overworld example | Editing the bundled overworld | [27 - Example - Configuring Overworld](/iris/27-example-configuring-overworld) |
 | Integrations | WorldEdit, Multiverse, Mythic, item plugins, tree feller | [28 - Integrations](/iris/28-integrations) |

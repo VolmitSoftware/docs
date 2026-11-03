@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-02T08:40:21.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -102,7 +102,7 @@ An empty result means the whole pack generates on this version. Detail: [25 - Pa
 ### Modded
 
 - Same root and aliases.
-- Arguments are ordered literals and typed arguments. A few commands, such as `download`, `replace`, and `ingest mods`, also take `key=value` options.
+- Arguments are ordered literals and typed arguments. A few commands, such as `download`, `replace`, and `ingest mods`, also take `key=value` options. `datapack export` takes the same `key=value` options as on Bukkit.
 - `/iris` and `/iris help [section]` open command help.
 - Flags are literals where used (pregen `gui`, `sync`, `nocache`. Download `force`).
 
@@ -213,7 +213,7 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 
 `goto biome` and `find biome` resolve cave and authored-room targets at their underground Y coordinate. Cave teleports load the destination and require two clear air blocks above a safe solid floor within the requested biome. Coordinate-only searches with `teleport=false` do not teleport the player.
 
-Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes the `hydrologyPolicy.shoreBiomes` of the dimension, its regions and its biomes while hydrology is enabled, plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. `find river` searches 7,168 blocks around the player, merging the water recorded in generated chunks with the water planned for ungenerated terrain for every type but `cave_pool`, which is found in generated chunks only; an unknown type is rejected with the accepted keys, and a planning failure is reported as an error rather than "not found". On Bukkit, a water teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
+Biome completion and parsing are scoped to the active Iris dimension's reachable biome closure. This includes the `hydrologyPolicy.shoreBiomes` that a `shoreBiomeWidth` above `0` places while hydrology is enabled, plus selected child and carving biomes; unreferenced biome files are not advertised or accepted by `find biome`/`goto biome`. `find river` searches 7,168 blocks around the player, merging the water recorded in generated chunks with the water planned for ungenerated terrain for every type but `cave_pool`, which is found in generated chunks only. Each player has one search at a time, and a new one replaces the running one. A search stops after 30 seconds and reports the nearest water found by then without teleporting. A type the dimension cannot form is answered at once with the setting that turns it off ([36c - Water Inspection](/iris/36c-river-inspection)). An unknown type is rejected with the accepted keys, and a planning failure is reported as an error rather than "not found". On Bukkit, a water teleport stays tied to the world where the search started; changing worlds cancels it. Destination chunks load asynchronously, and the success message appears only after the teleport succeeds. A rejected or failed teleport reports failure.
 
 ---
 
@@ -418,8 +418,9 @@ See [18 - Structures Overview](/iris/18-structures-overview), [21 - Jigsaw Struc
 | `remove` | `rm` | **Bukkit**. Stub on modded | `<id>` | Remove an installed datapack by id |
 | `status` | | **Modded** | — | Check Iris dimension-type overrides against pack heights |
 | `install` | | **Modded** | — | Install the dimension-type override datapack for loaded Iris dimensions |
+| `export` | | Both | `<dimension> [version=] [mode=overworld] [namespace=iris_export] [output=] [format=zip] [objects=true] [replace=false]` | Compile a pack dimension into a vanilla worldgen datapack for Minecraft 26.3 or later. Runs in the background |
 
-See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks).
+`export` uses `key=value` options on both Bukkit and mod loaders. See [22 - Native Structures & Datapacks](/iris/22-native-structures-datapacks) and [49 - Datapack Export](/iris/49-datapack-export).
 
 ---
 
@@ -485,6 +486,7 @@ Bukkit uses root `create` / `loadWorld` / `unloadWorld` / `remove` / `evacuate` 
 - [28 - Integrations](/iris/28-integrations)
 - [30 - Platform Differences](/iris/30-platform-differences)
 - [48 - Mod Worldgen](/iris/48-mod-worldgen)
+- [49 - Datapack Export](/iris/49-datapack-export)
 
 ## Shared update checks
 

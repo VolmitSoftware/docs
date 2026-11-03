@@ -417,6 +417,10 @@
               {
                 "title": "Multiverse",
                 "href": "/iris/34-multiverse"
+              },
+              {
+                "title": "Datapack Export",
+                "href": "/iris/49-datapack-export"
               }
             ]
           }
