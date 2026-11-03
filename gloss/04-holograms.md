@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-11-03T21:30:00.000Z
+date: 2026-11-03T22:10:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -282,7 +282,7 @@ first offered to that viewer, including while hidden or out of range, and remove
 icon, beam and edge indicator when it expires. Moving or editing the marker does not restart it;
 changing its duration or removing and reintroducing it does. Expiry is checked every 10 ticks.
 
-`edge.arrow` is a right-pointing glyph. Gloss rotates it toward the marker's off-screen direction.
+`edge.arrow` is a right-pointing glyph, rendered through the text pipeline, so it accepts colors, emoji and expressions. Gloss rotates it toward the marker's off-screen direction.
 An empty arrow hides the indicator. `show`, audience conditions, `hideWithin`, and `maxDistance`
 control visibility without pausing its lifetime.
 
