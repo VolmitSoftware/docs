@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-11-04T01:03:11.000Z
+date: 2026-11-04T01:04:58.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -297,7 +297,7 @@ Two `gloss.toml` settings draw debug particles. Both default to `false` and appl
 
 | Key | What it draws |
 |---|---|
-| `[debug] hitbox` | For every clickable component of every open session: the four edges and four corners of its collision plane in blue, plus a red segment from the plane center out along the normal for two blocks |
-| `[debug] position` | For every open session: the menu center in yellow, and each component's resolved location in orange |
+| `[debug] hitbox` | For every clickable component of every open session: the outline of its collision plane in small blue dots a quarter block apart, corners included, plus three red dots from the plane center out along the normal for 0.6 blocks. Dots refresh every 5 ticks |
+| `[debug] position` | For every open session: the menu center in yellow, and each component's resolved location in orange, every 5 ticks |
 
 Debug overlays cover personal menus only, and everyone nearby can see their particles, so leave them off during normal use. Without `[debug] hitbox` the only feedback that a component is selected is its `highlightModifier` displacement. Menu particle layers are a separate feature; see [Particle Layers](/gloss/25-particle-layers).
