@@ -2,13 +2,13 @@
 title: "Behaviors and State"
 description: "Run actions from player events, chat matches, timers, and named events"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-03T23:40:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T22:00:00.000Z
 ---
 
-Save behavior documents under `plugins/Gloss/behaviors/<id>.json`. Each schema-2 document declares state and event entries. Valid edits reload automatically; invalid edits retain the previous valid document.
+Save behavior documents under `plugins/Gloss/behaviors/<id>.json`. Each schema-2 document declares state and event entries. New files and valid edits load automatically, and deleting a file removes its behavior. Invalid edits retain the previous valid document.
 
 ## Document
 

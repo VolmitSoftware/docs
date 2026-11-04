@@ -2,7 +2,7 @@
 title: "Impulse configuration"
 description: "Server settings and individual machine tiers"
 published: true
-date: 2026-10-29T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -15,7 +15,7 @@ Edit `plugins/Impulse/config.toml` or use `/impulse config`. File edits and the 
 | Section and key | Default | Purpose |
 | --- | --- | --- |
 | `general.enabled` | `true` | Allow machine actions |
-| `general.language` | `"en_US"` | Server language |
+| `general.language` | `"en_US"` | Server language; any installed locale id using letters, digits, `_` and `-`, up to 32 characters |
 | `general.updateNotifications` | `true` | Release notices for permitted players |
 | `metrics.enabled` | `true` | Allow configured bStats reporting |
 | `presentation.splashScreen` | `true` | Print startup artwork |
@@ -23,8 +23,8 @@ Edit `plugins/Impulse/config.toml` or use `/impulse config`. File edits and the 
 | `presentation.commandSounds` | `true` | Play command feedback |
 | `debug.uploadEnabled` | `true` | Allow requested debug uploads |
 | `hotReload.enabled` | `true` | Watch configuration and language files |
-| `hotReload.pollIntervalMillis` | `1000` | Time between checks; 250–60000 ms |
-| `hotReload.cooldownMillis` | `1500` | Quiet period after edits; 250–60000 ms |
+| `hotReload.pollIntervalMillis` | `1000` | Time between checks; a file applies once it reads the same on two checks; 250–60000 ms |
+| `hotReload.cooldownMillis` | `1500` | Minimum spacing between applies; 250–60000 ms |
 | `hotReload.notifyOperators` | `true` | Notify configuration administrators after reload |
 | `machines.maxPerChunk` | `32` | Placement limit; 1–256 |
 | `machines.maxTargets` | `8` | Maximum completed operations per cycle; 1–64 |

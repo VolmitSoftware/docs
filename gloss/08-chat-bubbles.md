@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T00:45:36.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -126,7 +126,7 @@ Gloss selects the style once per message. Changes apply to new bubbles, not ones
 
 ## From message to bubbles
 
-The bubble keeps the formatting already allowed in chat. It does not grant color formatting that the sender lacks permission to use.
+The bubble keeps the formatting and emoji already allowed in chat, with or without the channel engine. It does not grant color formatting or emoji that the sender lacks permission to use.
 
 Wrapping counts visible characters and keeps color and decoration state. One message uses one multiline display. Older messages move upward to make room for newer ones.
 

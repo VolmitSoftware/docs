@@ -2,7 +2,7 @@
 title: "Temper: Commands and permissions"
 description: "Player repairs and operator commands"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "temper, commands"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -29,6 +29,7 @@ Use `/temper` or `/tem`. Director help lists commands and parameters; the hidden
 | `/temper ledger resolve <id>` | Acknowledge a reviewed transaction | Player or console |
 | `/temper config` | Open the settings editor | Player |
 | `/temper language` | Choose or edit language | Player or console |
+| `/temper language update` | Check the repository branch and merge changed translations; requires `temper.config` or `volmit.language.admin`, at most once every five minutes | Player or console |
 | `/temper status` | Show runtime information | Player or console |
 | `/temper debug` | Show diagnostic help | Player or console |
 | `/temper debug version` | Show plugin version | Player or console |
@@ -57,7 +58,7 @@ Everyone means `true`; Operators means `op`.
 | `temper.station.give` | Operators | Issue station anvils |
 | `temper.station.manage` | Everyone | Manage owned station access and visual settings |
 | `temper.station.admin` | Operators | Override station ownership checks |
-| `temper.config` | Operators | Settings and server language editing |
+| `temper.config` | Operators | Settings, server language editing, and `/temper language update` |
 | `temper.debug` | Operators | Diagnostic dumps |
 | `temper.update` | Operators | Update notices |
 | `temper.ledger` | Operators | Inspect and resolve money transactions |

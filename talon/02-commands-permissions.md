@@ -2,7 +2,7 @@
 title: "Talon: Commands and permissions"
 description: "Player controls, administration, and access defaults"
 published: true
-date: 2026-10-25T07:15:44.815Z
+date: 2026-11-02T00:00:00.000Z
 tags: "talon, commands, permissions"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -37,6 +37,7 @@ Use `/talon` or `/tl` to open the Director help menu. Help shows the command tre
 | `/talon abilities` | Edit per-ability limits, recipes, and optional patterns | Player |
 | `/talon set <setting> <value>` | Validate, save, and apply a configuration setting | Player or console |
 | `/talon language` | Open language controls | Player or console |
+| `/talon language update` | Check the language repository and merge changes into installed locales; needs `talon.config` or `volmit.language.admin` | Player or console |
 | `/talon debug` | Show diagnostic command help | Player or console |
 | `/talon debug version` | Show the installed version | Player or console |
 | `/talon debug dump [upload=true]` | Save a local report; upload only when explicitly requested and enabled | Player or console |
@@ -64,7 +65,7 @@ Everyone means `true`; Operators means `op`. All command paths also require `tal
 | `talon.pattern.staircase` | Everyone | Select staircase patterns when enabled |
 | `talon.harvest` | Everyone | Use optional crop harvesting with a Multi Tool III hoe |
 | `talon.give` | Operators | Give ability books |
-| `talon.config` | Operators | Configuration and server-language editing |
+| `talon.config` | Operators | Configuration, server-language editing, and `/talon language update` |
 | `talon.debug` | Operators | Diagnostic report creation |
 | `talon.update` | Operators | Update notifications |
 | `talon.admin` | Operators | All Talon permissions above |

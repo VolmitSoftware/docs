@@ -2,7 +2,7 @@
 title: "Impulse installation"
 description: "Minecraft requirements and data files"
 published: true
-date: 2026-10-22T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "impulse"
 editor: markdown
 dateCreated: 2026-10-22T00:00:00.000Z
@@ -24,8 +24,9 @@ Startup downloads the runtime libraries the distribution requires. Keep the resu
 | Path | Purpose |
 | --- | --- |
 | `plugins/Impulse/config.toml` | Server settings and machine tiers |
-| `plugins/Impulse/languages/en_US.toml` | Default English messages |
-| `plugins/Impulse/languages/<locale>.toml` | Installed translations and local edits |
+| `plugins/Impulse/languages/en_US.toml` | English messages generated from the built-in catalog |
+| `plugins/Impulse/languages/<locale>.toml` | Installed translations, custom languages and local edits |
+| `plugins/Impulse/languages/.upstream/` | Record of the last language download and last check; do not edit |
 | `plugins/Impulse/languages/language-preferences.properties` | Saved player language choices |
 
 Machine ownership, level, pause state, redstone mode, and inventory are stored with the dispenser in the world. Back up worlds together with the plugin data folder.

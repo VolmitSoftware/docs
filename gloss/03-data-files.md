@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-10-31T00:00:00.000Z
+date: 2026-11-03T23:40:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -125,6 +125,8 @@ Open an existing catalog with `/gloss web edit presets presets`, or create it in
 ## Reloading
 
 The server edition reloads config and content files automatically. `/gloss reload` belongs to the [Velocity edition](/gloss/27-velocity), whose documents reload on command. Changes affect the matching live feature. Open menus and previews may close so they can be rebuilt.
+
+New and edited files usually load in under a second. Deleting a file removes its document within a few seconds.
 
 Panel files also reload automatically after stable edits, additions, or deletions. Invalid edits keep the last working definition active. See [Panels](/gloss/16-panels) for revision and identity requirements.
 

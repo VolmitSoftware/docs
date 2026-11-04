@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T01:19:34.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -239,6 +239,8 @@ An omitted `mode` defaults to `push`. A `push` or `replace` with no non-blank `t
 
 In [Inventory Menus](/gloss/09b-inventory-menus), navigation opens another inventory document and `page` changes the current list page. Inventory navigation has a separate history from in-world menus.
 
+In a [behavior](/gloss/19b-behaviors), `navigate` changes the in-world menu of the event's player with the same modes, permissions and history. A `push` or `replace` opens the menu when none is open. A firing without a player skips the action.
+
 History is per viewer: a stack of menu ids plus the root, which is the first page opened in the flow. `close` ends a personal session, or dismisses that panel view for the viewer.
 
 `back` with an empty history and `home` with no recorded root both do nothing and report no history. A `back` or `home` whose recorded id no longer names a loaded menu leaves the current page up and sends the "menu unavailable" message — that is what you see after a menu file is renamed mid-flow.
@@ -271,7 +273,7 @@ With `[features] menus = false`, every navigation mode except `close` is denied.
 
 ## Camera rides
 
-`camera` follows a spline in the viewer's current world. Each `path` node supplies `x`, `y`, and `z`, with optional `yaw`, `pitch`, and `durationTicks` (default `20`). `skippable` defaults to `true`; sneaking ends a skippable ride. `letterbox` requests the configured title provider's bars and defaults to `false`. `[camera] maxRideSeconds` limits the path duration.
+`camera` follows a spline in the viewer's current world. Each `path` node supplies `x`, `y`, and `z`, with optional `yaw`, `pitch`, and `durationTicks` (default `20`). `skippable` defaults to `true`; sneaking ends a skippable ride. `letterbox` defaults to `false`. It draws one opaque black bar at the top of the view and one at the bottom, and removes them when the ride ends. The bars need no resource pack, draw over the world and leave the title slot free. Their size follows the client's vertical field of view, which the server cannot read: each bar covers about 7% of the screen height at FOV 70, 20% at FOV 90 and 29% at FOV 110. `[camera] maxRideSeconds` limits the path duration.
 
 ```json
 {

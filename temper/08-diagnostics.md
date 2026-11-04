@@ -2,7 +2,7 @@
 title: "Temper: Diagnostics"
 description: "Status, debug reports, update notices, and metrics"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "temper, diagnostics"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -12,7 +12,7 @@ Use `/temper status` to inspect the plugin's current state. `/temper debug versi
 
 ## Debug reports
 
-`/temper debug dump upload=false` creates a local report under `plugins/Temper/debug/`. It combines the shared server/JVM diagnostics with Temper's configuration, station and transaction state, economy availability, metrics, and update-notifier state.
+`/temper debug dump upload=false` creates a local report under `plugins/Temper/debug/`. It combines the shared server/JVM diagnostics with Temper's configuration, station and transaction state, economy availability, metrics, update-notifier state, and the language source, revision, last check, and last error.
 
 Uploads require `debug.uploadEnabled=true` and `upload=true`, which is the command default. Use `upload=false` to keep a report local even when uploads are enabled. A failed upload leaves the local file available. Temper also contributes to the shared `/volmit plugins debug` tools.
 

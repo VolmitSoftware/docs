@@ -20,7 +20,7 @@ This page describes the shared behavior. Each plugin's localization reference do
 | `/<plugin> language self reset` | player | Follow the server default again |
 | `/<plugin> language server <locale>` | admin | Changes the server default |
 | `/<plugin> language server edit [locale]` | admin | Opens the in-game message editor |
-| `/<plugin> language update` | admin | Merges repository changes into installed translations in plugins on the branch-tracking source |
+| `/<plugin> language update` | admin | Merges repository changes into installed translations |
 | `/volmit plugins languages [locale]` | admin | Changes the server default for **every** enabled Volmit plugin at once |
 
 `/volmit plugins languages` keeps everyone's personal choice and offers only locales that every
@@ -56,14 +56,11 @@ lt_LT  nl_NL  pl_PL  pt_PT  ru_RU  tr_TR  vi_VI  zh_CN  zh_TW
 `ja-JP` uses a hyphen where every other id uses an underscore. That is the literal identifier, so
 write `language = "ja-JP"`.
 
-English is built in. Most plugins download another language when you first select it, then use the local
-`plugins/<Plugin>/languages/<locale>.toml` file offline and never update it. Existing files keep local edits.
-ShapedPortals, Iris, Adapt, BileTools, HiddenOre, React, Gloss, Wormholes, GamemodeSwitcher, Inscribe, Brimstone,
-Rift, and ByteCompanions go further: at startup and on
-`/<plugin> language update`, at most once every five minutes, they merge repository changes into their installed
-files, keeping every key you edited yourself, and they list any custom `languages/<name>.toml` in their pickers,
-with an optional `[meta]` table giving a display `name` and a `base` locale to use before English.
-[SkyPrime](/skyprime/01-installation-configuration#languages) bundles all 18 catalogs and needs no language download.
+English is built in. Any other language downloads when you first select it and is stored as
+`plugins/<Plugin>/languages/<locale>.toml`, which then works offline. At startup and on
+`/<plugin> language update`, at most once every five minutes, each plugin merges repository changes into its
+installed files and keeps every key you edited yourself. Plugins also list any custom `languages/<name>.toml` in
+their pickers, with an optional `[meta]` table giving a display `name` and a `base` locale to use before English.
 
 ## When something is missing
 

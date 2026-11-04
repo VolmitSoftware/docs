@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T00:45:36.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -48,7 +48,7 @@ The shared engine also requires `[features] holograms = true` in `gloss.toml`. I
 | `maxEntitiesPerViewer` | `16` | Maximum overlays per viewer, nearest first, `1` to `256` |
 | `maxActiveOverlays` | `1024` | Server-wide maximum of entities carrying an overlay, `16` to `16384` |
 | `snapshotReadLimit` | `4096` | Maximum distinct captured variable/function reads per entity, `16` to `65536` |
-| `includePlayers` | `true` | Include other visible players |
+| `includePlayers` | `true` | Include other visible players. While `[features] nameplates` is on, nameplates draw the pane for players and this setting has no effect |
 | `overrideNametag` | `false` | Hide native mob nametags for Java viewers while their Gloss overlay is visible; the mob's stored name is preserved |
 | `verticalOffset` | `0.35` | Offset above entity height, `-2` to `8` blocks |
 | `healthSegments` | `10` | Segments per health bar, `1` to `40` |

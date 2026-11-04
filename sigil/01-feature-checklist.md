@@ -2,7 +2,7 @@
 title: "Sigil: Features"
 description: "Voucher rules, rewards, editing and administration"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "sigil, features"
 editor: markdown
 dateCreated: 2026-10-13T00:00:00.000Z
@@ -22,7 +22,7 @@ Sigil provides signed voucher items, configurable reward steps and persistent cl
 | Rewards | Guaranteed steps, exactly one weighted group, ordinary/captured items, commands, experience, health, food, potions, messages and effects |
 | Authoring | Create/clone/delete, appearance editor, reward type and field controls, reward/group ordering, group weights, held-item capture, validated saves and hot reload |
 | Operations | SQLite history, per-action outcomes, inspection, manual recovery and diagnostic dumps |
-| Languages | Built-in English, 17 translation sources, local edits and persistent personal selections |
+| Languages | Built-in English, 17 repository translations with merged updates, custom locales, local edits and persistent personal selections |
 | Suite services | Shared update notifier, configurable bStats, hidden version alias and amber/copper startup banner |
 | Item protection | Direct-item checks in common player-use, crafting, workstation, furnace and brewing paths |
 

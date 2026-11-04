@@ -2,7 +2,7 @@
 title: "Temper: Configuration"
 description: "Settings, editor controls, and automatic reload"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "temper, configuration"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -15,7 +15,7 @@ Edit `plugins/Temper/config.toml` or use `/temper config`. Dotted names such as 
 | Setting | Default | What it changes |
 |---|---|---|
 | `general.enabled` | `true` | Accept new quotes and confirmations |
-| `general.language` | `en_US` | Server language; players may choose their own |
+| `general.language` | `en_US` | Server language: `en_US`, a repository locale, or any `languages/<id>.toml` id; players may choose their own |
 | `general.updateNotifications` | `false` | Check the configured GitHub release source |
 
 ## Presentation
@@ -98,7 +98,7 @@ Completed, cancelled, and resolved money records live under `storage/transaction
 
 The editor uses the shared configuration screen, with translated setting descriptions and separate controls for creating and editing repair profiles, permission profiles, and kits. Changes pass through the same validation as file edits. Navigation uses Back, page arrows, and Close; items cannot be moved into the editor.
 
-Installed catalogs and configuration are checked for stable changes. A successful settings reload invalidates outstanding quotes, so players must review a new price. Rejected configuration bytes are reported once; changing the file triggers another attempt. A malformed personal language file keeps its last valid messages while other valid files can reload.
+Installed catalogs and configuration are checked for stable changes. A successful settings reload invalidates outstanding quotes, so players must review a new price. Rejected configuration bytes are reported once; changing the file triggers another attempt. A malformed personal language file keeps its last valid messages while other valid files can reload. New language files are picked up with the same check, and `languages/.upstream/` is ignored.
 
 ## Related pages
 

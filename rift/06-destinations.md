@@ -31,7 +31,7 @@ Use the world's Rift command name. A managed custom spawn applies when enabled; 
 
 Configure `evacuationWorld` to select the loaded destination used when unloading a world. An empty setting selects the primary world.
 
-Unload evacuation still uses teleport admission checks. A full destination or a denied departure/entry can prevent evacuation and therefore prevent unloading; adjust the policy or choose an available destination first.
+Unload evacuation ignores player limits and departure and entry rules, so a full or locked world can't block an unload. World access permissions still apply: a player who can't enter the evacuation world goes to the first loaded world they can enter, and the unload stops if there is none. Another plugin cancelling the teleport also stops the unload.
 
 Use `/rift policy respawn <name> <destination>` for death respawns. Read [World policies](/rift/05-world-policies) for its access and fallback rules.
 

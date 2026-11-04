@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T05:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -20,6 +20,7 @@ Hologram interaction entities count against the `HOLOGRAM` limits in `[visibilit
 | `offset` | `vector3` | yes | Offset from the menu center |
 | `data` | object | yes | The type-discriminated component body |
 | `show` | boolean or expression | no | Defaults to `true`; combines with menu and panel visibility |
+| `motion` | object | no | Moves and resizes the component without respawning it. See [Motion](#motion) |
 
 `vector3` is always a three-element JSON array of numbers, `[x, y, z]`. The object form is not accepted. A missing `offset` or `data` value is reported when the menu opens.
 
@@ -77,7 +78,7 @@ The `Required` column reflects the advisory `schema/gloss.schema.json`; a button
 
 An invalid action is dropped with a log line naming the menu and component, and the rest of the list still runs. A missing action list creates a button that does nothing. An icon that fails to resolve becomes the missing-icon checkerboard rather than dropping the component.
 
-A button’s optional `tooltip` contains `delayTicks` (default 10, from 0 to 200), `lines`, optional shared display `style`, and optional `box`. It appears after the hover delay and disappears when the viewer looks away. The style and box fields follow the [icon contract](/gloss/11-icons#display-style-and-boxes).
+A button’s optional `tooltip` contains `delayTicks` (default 10, from 0 to 200), `lines`, optional shared display `style`, and optional `box`. It appears just above the button's icon, clear of any box on the icon or the tooltip, and in front of any panel behind it after the hover delay and disappears when the viewer looks away. The style and box fields follow the [icon contract](/gloss/11-icons#display-style-and-boxes).
 
 A click runs matching actions in list order. `any` matches every supported click, and a `navigate` action stops the rest of that chain.
 
@@ -117,7 +118,7 @@ its initial value.
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/menu-tabs-editor.webm" aria-label="Tabs component authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-A list repeats a component `template` for values from its `source` expression. Its `var` binds the current entry for text, conditions, tooltips, and action expressions. `pageSize` defaults to `6`; `flow` defaults to three columns with horizontal spacing `1` and vertical spacing `0.5`.
+A list repeats a component `template` for values from its `source` expression. Its `var` binds the current entry for text, player head names, conditions, tooltips, and action text and expressions. `pageSize` defaults to `6`; `flow` defaults to three columns with horizontal spacing `1` and vertical spacing `0.5`.
 
 ```json
 {
@@ -221,12 +222,41 @@ A decoration is not clickable and has no hitbox or hover effect. Animated images
 
 An explicit `hitbox` gives both states one stable click plane even when the true and false icons differ in size. Without one, each state uses its active icon's automatic geometry.
 
-Toggle state is per player and lasts only for the open session; reopening the menu evaluates the initial state again. `condition` is expanded through PlaceholderAPI against the viewing player and compared case-insensitively to `expectedValue`. It is never re-evaluated on tick, so an external change to the underlying placeholder does not update an open toggle.
+Toggle state is per player and lasts only for the open session; reopening the menu evaluates the initial state again. `condition` and `expectedValue` are text with the same expressions as the component's icons, including `args.*`, session values and list entries, plus PlaceholderAPI against the viewing player. They are compared case-insensitively. It is never re-evaluated on tick, so an external change to the underlying placeholder does not update an open toggle.
 
 > Omitting `condition` prevents the menu from opening. Omitting only `expectedValue` starts the toggle in the false state.
 {.is-warning}
 
 `trueActions` and `trueIcon` belong to the state being **entered**, not the one being left: clicking a toggle that is currently false runs `trueActions` and shows `trueIcon`. Switching state replaces the icon and updates the click area. If a matching `navigate` action runs, the toggle does not change state.
+
+## Motion
+
+`motion` moves and resizes a component's existing displays instead of deleting and respawning them. Gloss reads each value on every session tick, sends only what changed, and the player's client eases the change. The click area follows the component.
+
+| Key | Type | Default | Notes |
+|---|---|---|---|
+| `x`, `y`, `z` | number or expression | `0` | Added to `offset` on that axis, in menu blocks before `uiScale` |
+| `scale` | number or expression | `1` | Multiplies the icon's size and click area. Values below `0.001` use `0.001` |
+| `ticks` | whole number or expression | `3` | How long the client takes to ease to a new value. `0` jumps at once. A number must be 0 through 59; an expression's result is rounded and held to that range |
+
+```json
+{
+  "id": "slider",
+  "offset": [0, 1, 0],
+  "motion": {
+    "x": "3 * sin(time.seconds)",
+    "scale": "session.selected == 1 ? 1.2 : 1",
+    "ticks": 1
+  },
+  "data": { "type": "decoration", "icon": { "type": "item", "item": "minecraft:diamond" } }
+}
+```
+
+Expressions see the same values as the component's `show`, including list and tab entry values. An invalid expression or an out-of-range `ticks` number rejects the file when it loads. If an expression fails while the menu is open, Gloss logs the stack once and the component stays where it is until the expression works again.
+
+Each update moves the icon `1/ticks` of the remaining distance per client tick. A one-off change with a large `ticks` is a smooth glide. A value that changes every tick trails its target by about `(ticks - 1)` ticks of travel, so use `1` for continuous movement. Use an expression to jump while an icon is too small to see, such as `"abs(session.pos) > 30 ? 0 : 1"`.
+
+Entity icons ignore `scale`, and their click area keeps its size. Menus built through the Java API have no `motion`. Position easing also applies when the whole menu moves, such as with `followPlayer`.
 
 ## The hitbox system
 
@@ -270,7 +300,7 @@ Invalid hitbox values reject the file:
 
 ### Automatic sizing
 
-Without a `hitbox`, or with one that has no `width`, the plane's size and center are measured from the icon: text and image icons from their rendered lines and rows, item, block and custom-item icons from a fixed square, and entity icons from their declared `width` and `height`.
+Without a `hitbox`, or with one that has no `width`, the plane's size and center are measured from the icon: text icons from the glyph width of their widest line and their line count, image icons from their rows and columns, item, block and custom-item icons from a fixed square centered on the drawn icon, and entity icons from their declared `width` and `height`.
 
 Automatic dimensions are multiplied by the icon's `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox is not** — only the effective session scale applies to it. Entity icons have no display style, so their planes use the declared `width` and `height`, defaulting to `1` and bounded to `(0, 64]`.
 
@@ -297,7 +327,7 @@ Two `gloss.toml` settings draw debug particles. Both default to `false` and appl
 
 | Key | What it draws |
 |---|---|
-| `[debug] hitbox` | For every clickable component of every open session: the four edges and four corners of its collision plane in blue, plus a red segment from the plane center out along the normal for two blocks |
-| `[debug] position` | For every open session: the menu center in yellow, and each component's resolved location in orange |
+| `[debug] hitbox` | For every clickable component of every open session: the outline of its collision plane in small blue dots a quarter block apart, corners included, plus three red dots from the plane center out along the normal for 0.6 blocks. Dots refresh every 5 ticks |
+| `[debug] position` | For every open session: the menu center in yellow, and each component's resolved location in orange, every 5 ticks |
 
 Debug overlays cover personal menus only, and everyone nearby can see their particles, so leave them off during normal use. Without `[debug] hitbox` the only feedback that a component is selected is its `highlightModifier` displacement. Menu particle layers are a separate feature; see [Particle Layers](/gloss/25-particle-layers).

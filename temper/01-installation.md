@@ -2,7 +2,7 @@
 title: "Temper: Installation"
 description: "Server requirements, library downloads, and data locations"
 published: true
-date: 2026-10-24T00:00:00.000Z
+date: 2026-11-02T00:00:00.000Z
 tags: "temper, installation"
 editor: markdown
 dateCreated: 2026-10-15T00:00:00.000Z
@@ -33,12 +33,13 @@ Paths below are relative to `plugins/Temper/`.
 | Path | Contents |
 |---|---|
 | `config.toml` | Settings and repair profiles |
-| `languages/` | Editable installed language catalogs |
+| `languages/` | Editable English, installed, and custom language catalogs |
+| `languages/.upstream/` | Record of the last repository download, used to merge updates; do not edit |
 | `languages/players/preferences.properties` | Saved player language selections |
 | `storage/` | Station records and transaction ledger |
 | `debug/` | Local diagnostic reports |
 
-Update notices are disabled by default. Catalog installation uses the bundled translations unless the build provides a pinned remote source. Gloss is optional; station holograms and floating item previews require its temporary display APIs. Without those APIs, repairs and configurable sound/particle effects remain available.
+Update notices are disabled by default. The jar carries English only; other languages download from the `VolmitSoftware/Temper` repository when selected. Gloss is optional; station holograms and floating item previews require its temporary display APIs. Without those APIs, repairs and configurable sound/particle effects remain available.
 
 ## Related pages
 

@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T01:19:33.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -199,7 +199,7 @@ Animated images use the same pixel mapping, so the two-tick minimum caps them at
 | `count` | integer | no | `0` | `0` and negatives become `1` at icon construction |
 | `customModelValue` | integer | no | `0` | Applied unconditionally, including `0` |
 
-Item ids must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed ids use the missing icon without breaking the rest of the menu. A count above 1 adds a stack badge. `countFormat` defaults to `&f&l{count}` and accepts colors, expressions, and the `{count}` token; an empty format hides its text. Custom-item icons use the same setting.
+Item ids must be lowercase namespaced keys, such as `diamond_sword` or `minecraft:diamond_sword`. Unknown or malformed ids use the missing icon without breaking the rest of the menu. Item icons that are not blocks draw with their inventory model, so a `trident`, `shield` or `spyglass` keeps the size of other items. Blocks keep their full model. Item icons draw on the center of their collision plane, 0.05 blocks below the component's position. A flat item with a count above 1 rises 0.09 blocks to leave room for its count. Block-shaped items and player heads do not rise. A count above 1 adds a stack badge. `countFormat` defaults to `&f&l{count}` and accepts colors, expressions, and the `{count}` token; an empty format hides its text. Custom-item icons use the same setting.
 
 Inventory item, player-head, and block icons accept `name` and a `lore` string array. Both use the inventory entry’s text and expression context. Omitted names preserve the normal item name.
 
@@ -221,7 +221,7 @@ A material that reports `isBlock()` renders as a block model, except for `BARRIE
 | `refreshTicks` | integer 0 – 1200 | no | `20` | Ticks between re-reading the configured value and profile cache. `0` never refreshes |
 | `style` | display style | no | defaults | The shared display style above |
 
-The `player` value is trimmed and run through the viewer-aware text pipeline. `%player_name%`, `%player%` and `{{ player.name }}` resolve to the viewer even without PlaceholderAPI; spaces and case inside those three spellings are normalized. Other placeholders need the integration that provides them.
+The `player` value is trimmed and run through the viewer-aware text pipeline. Inside a list template, `{{ var }}` reads the current entry, so each entry can show its own head. `%player_name%`, `%player%` and `{{ player.name }}` resolve to the viewer even without PlaceholderAPI; spaces and case inside those three spellings are normalized. Other placeholders need the integration that provides them.
 
 A result is eligible for a profile request only when it is 1–16 ASCII letters, digits or underscores. An invalid name or unresolved placeholder uses `[playerHeads] unknownFallbackItem` without making an outbound request, as does `[playerHeads] enabled = false`. See [Configuration](/gloss/02-configuration).
 
