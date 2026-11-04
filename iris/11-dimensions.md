@@ -2,7 +2,7 @@
 title: "Dimensions"
 description: "Iris documentation: Dimensions"
 published: true
-date: 2026-11-02T09:08:50.000Z
+date: 2026-11-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -256,7 +256,7 @@ The feature biome owns only its air, water and lava volume. Solid rims, shelves,
 
 ## Hydrology
 
-`hydrology` turns on rivers, streams, ponds and lakes that follow the drainage of the terrain, plus sea inlets on cliff coasts and pools in carved caves: hollows fill until they spill, every column drains downhill to the sea, the flow gathers into channels sized by their catchment, and the ground is reshaped into beds, shores and banks. `hydrologyPolicy` on the dimension sets the rainfall, pond density, climate-zone exemption, wetness bounds, permissions, fluid, water plants and shore biomes that every region and biome inherits. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings, and rebuilt when any of those changes; chunks generated earlier keep their water.
+`hydrology` turns on rivers, streams, ponds and lakes that follow the drainage of the terrain, plus sea inlets on low coasts and pools in carved caves: hollows fill until they spill, every column drains downhill to the sea, the flow gathers into channels sized by their catchment, and the ground is reshaped into beds, shores and banks. `hydrologyPolicy` on the dimension sets the rainfall, pond density, climate-zone exemption, wetness bounds, permissions, fluid, water plants and shore biomes that every region and biome inherits. Hydrology plans are stored per world, keyed by the seed, the whole pack content, the world height, the generator version and the hydrology settings, and rebuilt when any of those changes; chunks generated earlier keep their water.
 
 ```json
 {
@@ -283,11 +283,11 @@ The feature biome owns only its air, water and lava volume. Solid rims, shelves,
 | `ponds` | Natural ponds in hollows, seeded cups and the chains of cups along streams, dams, freeboard, climate drawdown, shore shape, materials and plants |
 | `lakes` | The area range of hollows that become single-level lakes |
 | `deformation` | How far ground is raised to hold water, the bank slopes and noise, and the cave mask under water |
-| `underground` | Sea inlets that run inland from cliff coasts at sea level, and pools on the floors of carved caves |
+| `underground` | Sea inlets that wind inland from low coasts at sea level, grottos that run into tall coasts as sea caves, and pools on the floors of carved caves |
 | `fluids` | Named fluid profiles that tiers, ponds, cave pools and policies fill with |
 | `prefetchRings`, `persist` | Planning windows prepared ahead of generation, and whether plans are saved with the world |
 
-Every field, with its range and default, is on [36 - Hydrology](/iris/36-rivers). Falling water at waterfalls and cascades, sea inlets and cave pools are written through the mantle, so they need `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`; cave pools also need `carvingEnabled` with `CARVED` not disabled. Still surface water does not depend on the mantle.
+Every field, with its range and default, is on [36 - Hydrology](/iris/36-rivers). Falling water at waterfalls and cascades and cave pools are written through the mantle, so they need `useMantle: true` and `RIVER_HYDROLOGY` absent from `disabledComponents`; cave pools also need `carvingEnabled` with `CARVED` not disabled. Still surface water does not depend on the mantle.
 
 Automatically placed biome and region objects never stand on water, shore or dam columns. An explicit-Y placement or `/iris object paste` remains available for deliberate construction in the water.
 
@@ -385,7 +385,7 @@ Set `carvingEnabled: false` to disable cave carving throughout the dimension.
 | `caveProfile` | `IrisCaveProfile` | disabled default object | The dimension default 3D cave system: density styles, vertical range, threshold, surface clearance. Regions and biomes override it when they enable their own. Full field reference in [15 - Caves & Carving](/iris/15-caves-carving) |
 | `carving` | `IrisDimensionCarvingEntry[]` | empty | Cave-biome overrides keyed to absolute world-Y bands. Each has a stable `id`, a `biome`, a `worldYRange`, optional `children`, `childStyle`, `childShrinkFactor`, and `childRecursionDepth`. Use it for depth-banded cave themes such as a deep dark layer |
 | `useMantle` | boolean | `true` | When false, disables caves, objects, jigsaw structures, features, entities and deferred block updates. Terrain and decoration still run |
-| `disabledComponents` | mantle flag strings | empty | Disables selected features: `OBJECT` for objects, `JIGSAW` for Iris structures, `CARVED` for caves, `RIVER_HYDROLOGY` for the falling water of waterfalls and cascades, sea inlets and cave pools, and `FLOATING_OBJECT` for floating-biome objects |
+| `disabledComponents` | mantle flag strings | empty | Disables selected features: `OBJECT` for objects, `JIGSAW` for Iris structures, `CARVED` for caves, `RIVER_HYDROLOGY` for the falling water of waterfalls and cascades and cave pools, and `FLOATING_OBJECT` for floating-biome objects |
 
 ## Objects, decoration, and post-processing
 

@@ -2,7 +2,7 @@
 title: "Object Placement"
 description: "Iris documentation: Object Placement"
 published: true
-date: 2026-11-02T12:11:25.000Z
+date: 2026-11-04T12:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -183,7 +183,7 @@ Overlapping surface and cave objects on the main terrain use a repeatable placem
 
 Iris refuses surface objects that roof over, bridge, or overhang a carved opening. It takes the object lowest solid non-foliage layer and rasterizes those columns. It dilates the stencil by `surfaceSupportBuffer`. Every column in the result must have `surfaceSupportDepth` blocks of un-carved, surface-solid ground. A failure drops the placement with **no log line at all**. That makes it the usual cause of "my object never appears" near caves, canyon rims, and ravines.
 
-Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet mouth; banks stay open. `underwater`, `onwater` and `forcePlace` placements skip that exclusion and treat river, pond and lake water like the sea: an `underwater` object seats on the floor below the water, an `onwater` object and a forced placement on the water surface, and the anchor checks of [6. Water, snow, and air pockets](#6-water-snow-and-air-pockets) read that water's own surface. Their support columns must still sit on flat water: a placement is skipped when any of them is a dam, cascade or waterfall column, or holds water at a different level than the anchor column. `requireSurfaceSupport: false` does not bypass the exclusion, and an explicit-Y call such as `/iris object paste` is not subject to it.
+Natural scatter also rejects a surface placement whose support columns intersect the water, shore or dam columns of a river, pond, lake or sea inlet; banks stay open. `underwater`, `onwater` and `forcePlace` placements skip that exclusion and treat river, pond and lake water like the sea: an `underwater` object seats on the floor below the water, an `onwater` object and a forced placement on the water surface, and the anchor checks of [6. Water, snow, and air pockets](#6-water-snow-and-air-pockets) read that water's own surface. Their support columns must still sit on flat water: a placement is skipped when any of them is a dam, cascade or waterfall column, or holds water at a different level than the anchor column. `requireSurfaceSupport: false` does not bypass the exclusion, and an explicit-Y call such as `/iris object paste` is not subject to it.
 
 Every generated object, wherever it is anchored, keeps its solid blocks out of river, pond, lake and sea inlet water above the floor unless it sets `underwater`, `onwater` or `forcePlace`: those blocks are left out and the rest of the object is placed, so the canopy of a tree beside a river stops at the water while a raft on the river keeps its deck. Plants and other open blocks never replace the water. The rule covers objects that biomes and regions scatter on the surface and in caves, objects on floating islands, and the pieces of Iris structures, which follow their placement's `allowWater` instead ([21b - Jigsaw Resources](/iris/21b-jigsaw-resources#natural-placement)). Static objects at fixed positions and explicit placements such as `/iris object paste` build in the water as authored.
 
@@ -230,7 +230,7 @@ Procedural surface trees retain the selected stilt mode's anchor height and use 
 
 Occluding blocks and full ice or glass blocks can stilt; containers, block entities, stairs, slabs, and dirt paths cannot, and `stiltSettings.exclude` adds more material keys to that list. Grass, mycelium, podzol, and dirt-path bottoms are substituted with dirt so you do not get grass columns, and a `palette` overrides the column material entirely. A column stops as soon as it hits a fluid, so stilts never punch through a lake floor.
 
-`ORGANIC_STILT` and `CEILING_HANG` are for caves. `ORGANIC_STILT` scans down to the first solid block and fills the gap with noise-varied roots. `CEILING_HANG` flips the object vertically, anchors its top to the roof, and grows the same organic column up into the ceiling. Both read `organicMaxScan`, `organicJitter`, and `organicScratch`.
+`ORGANIC_STILT` and `CEILING_HANG` are for caves. A cave placement in either mode reads the carved cave and moves the object until it touches the floor or roof, at its authored size. Flora seats on its stem or trunk when the bottom layer has one, so a cap rim on a ledge does not hold it up. A placement with no floor or roof in reach, or with only standing fluid under a dry object, is dropped. Under rock and soil bottoms, a gap of up to 8 blocks is closed with rock and a longer drop gets a short ragged root. An ore block in a rock bottom uses the most common rock in that layer. A bottom with no rock leaves its gaps open, so ore, mushroom, log and leaf blocks never repeat. `CEILING_HANG` also flips the object vertically. `organicJitter` and `organicScratch` shape only the roots that cannot reach ground. Outside caves, these modes extend the bottom block toward solid ground.
 
 **Terrain shaping.** The vacuum modes bend the terrain instead of extending the object.
 
@@ -427,9 +427,9 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `overStilt` | `0` | Pushes every leg this much further under the surface. Use it with the `FAST_` modes |
 | `exclude` | `[]` | Additional material keys that must never become support columns, such as `["minecraft:calcite"]`. Containers and block entities are always excluded |
 | `palette` | unset | Material for the legs. Without it Iris repeats the object bottom block and swaps grass-family blocks for dirt |
-| `organicMaxScan` | `48` | How far `ORGANIC_STILT` and `CEILING_HANG` search for solid rock before giving up |
-| `organicJitter` | `3` | Random shortening per column, so the underside is ragged instead of a flat disc |
-| `organicScratch` | `0.55` | Fraction of the deepest part randomly punched out for a broken, rooty tip |
+| `organicMaxScan` | `48` | How far `ORGANIC_STILT` and `CEILING_HANG` search for ground. In caves the object may move at least 16 blocks to seat, and filler never exceeds this value or 8 blocks |
+| `organicJitter` | `3` | Random shortening per column that cannot reach ground, so the underside is ragged instead of a flat disc |
+| `organicScratch` | `0.55` | Fraction of the deepest part of such a column where it can randomly end early, for a broken, rooty tip |
 
 ### `vacuumSettings`
 
@@ -453,8 +453,8 @@ Candidate blocks are shuffled, so which ones get marked varies per placement. `m
 | `MIN_STILT` / `FAST_MIN_STILT` | Lowest-point seating with the same legs |
 | `CENTER_STILT` | Center seating with legs. The cheapest stilt worth using |
 | `ERODE_STILT` | Legs taper away from the centroid and break up near the tips, like eroded rock |
-| `ORGANIC_STILT` | Legs grow down to the first solid block with noise-varied lengths, connecting cave-floor objects to the floor |
-| `CEILING_HANG` | Object is flipped, hung from the cave roof, and rooted upward into it |
+| `ORGANIC_STILT` | Object moves down to touch the cave floor. Gaps of up to 8 blocks close with rock, longer drops get a ragged rock root, never ore or flora |
+| `CEILING_HANG` | Object is flipped and moved up to touch the cave roof. Gaps follow the same rock rules as `ORGANIC_STILT` |
 | `VACUUM` | Terrain around the object is pulled up or cut down to meet its base, easing back out to radius 12 |
 | `VACUUM_HIGH` | Same, blended out to radius 20 for the smoothest transition |
 | `VACUUM_FAST` | Same at radius 8 with every other column sampled, for bulk use |

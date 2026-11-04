@@ -2,7 +2,7 @@
 title: "API - Terrain"
 description: "Iris documentation: API - Terrain"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-03T18:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -82,10 +82,10 @@ Columns carry the water placed by hydrology as well as the terrain:
 | `NATURAL_HEIGHT` | Terrain height before hydrology shaped it |
 | `RIVER_STATE` | `WET` where the column holds flowing or standing water, `NONE` elsewhere |
 | `RIVER_DISTANCE` | `0` in the water, `1` on a shore, `2` on a bank or dam, `NaN` elsewhere |
-| `RIVER_FLOW` | `1` for flowing water (channels, mouths, cascades and waterfalls), `0` for standing water (ponds, lakes and the open mouths of sea inlets), `-1` where there is no water |
+| `RIVER_FLOW` | `1` for flowing water (channels, mouths, cascades and waterfalls), `0` for standing water (ponds, lakes and sea inlets), `-1` where there is no water |
 | `RIVER_WATER_SURFACE_Y` | Absolute Y of the water surface for a wet column |
 
-`surfaceKind` reports `RIVER` for every wet column, ponds, lakes and sea inlet mouths included, and `RIVER_SHORE` for shore columns; banks and dams report `LAND`. `surfaceHeight` under water is the bed. See [36 - Hydrology](/iris/36-rivers).
+`surfaceKind` reports `RIVER` for every wet column, ponds, lakes and sea inlets included, and `RIVER_SHORE` for shore columns; banks and dams report `LAND`. `surfaceHeight` under water is the bed. See [36 - Hydrology](/iris/36-rivers).
 
 On the server thread, a column whose water, or its neighbours' water, is not planned yet is answered from natural terrain without water, and its sample has `provisional()` set to `true`. Its height, surface kind, biome and water fields can change once hydrology plans the area, so sample it again on a later refresh. `NATURAL_HEIGHT` does not depend on hydrology and never makes a sample provisional. Single-column reads that depend on that water (`surfaceHeight`, `surfaceKind` and the biome reads) return their unavailable result instead: `OptionalInt.empty()`, an empty optional, or `UNKNOWN`. Off the server thread, reads wait for the plan and every answer is final. Run wide scans off the server thread.
 

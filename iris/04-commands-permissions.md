@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Iris documentation: Commands & Permissions"
 published: true
-date: 2026-11-02T08:40:21.000Z
+date: 2026-11-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -206,7 +206,7 @@ Multiple distinct slots may be staged with independent seeds before one restart.
 | `underground-biome` | **Bukkit:** `<biome> [radius=8192] [teleport=true]` | Find an occupied authored underground feature with this biome |
 | `region` | **Bukkit:** `<region> [teleport=true]`. **Modded:** `<key>` | Find an Iris region |
 | `object` | **Bukkit:** `<object> [teleport=true]`. **Modded:** `<key>` | Find an object placement (Bukkit may teleport to the object studio first) |
-| `river` | **Bukkit:** `type=<type> [teleport=true]`. **Modded:** `<type>` | Find water. `type` is `stream`, `river`, `major_river`, `cascade`, `waterfall`, `mouth`, `pond`, `lake`, `dam`, `sea_inlet` or `cave_pool`; `cave_pool` searches generated chunks only. Modded always teleports. See [36c - Water Inspection](/iris/36c-river-inspection) |
+| `river` | **Bukkit:** `type=<type> [teleport=true]`. **Modded:** `<type>` | Find water. `type` is `stream`, `river`, `major_river`, `cascade`, `waterfall`, `mouth`, `pond`, `lake`, `dam`, `sea_inlet`, `grotto` or `cave_pool`; `cave_pool` searches generated chunks only. Modded always teleports. See [36c - Water Inspection](/iris/36c-river-inspection) |
 | `structure` | **Bukkit:** `<structure>`, runs sync. **Modded:** `<key>` | Find a vanilla/datapack/Iris structure |
 | `poi` | **Bukkit:** `<type> [teleport=true]`. **Modded:** `<type>` | Find a supported point of interest |
 | `unregistered` | — | Print structures excluded from goto completion, and the rejection reasons, to console |
