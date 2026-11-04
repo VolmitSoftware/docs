@@ -2,7 +2,7 @@
 title: "Leaderboards"
 description: "Rank players by a statistic, placeholder or metric and show the rows in any text"
 published: true
-date: 2026-11-04T00:43:32.000Z
+date: 2026-11-04T00:46:11.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-11-03T22:20:00.000Z
@@ -36,7 +36,7 @@ A leaderboard ranks players by a number that Gloss samples while they are online
 | `schemaVersion` | yes | | Must be `1` |
 | `revision` | yes | | Increase it when you edit the file |
 | `source` | yes | | Where the number comes from |
-| `size` | no | `10` | Rows ranked, clamped to `1`–`1000` |
+| `size` | no | `10` | Rows ranked, clamped to `1`–`1000` and to `[leaderboards] maxEntries` (default `100`) |
 | `order` | no | `desc` | `desc` puts the highest value first, `asc` the lowest |
 | `reset` | no | `never` | `never`, `hourly`, `daily`, `weekly` or `monthly` |
 | `includeOffline` | no | `true` | `false` ranks only players online at the last update |
@@ -94,7 +94,7 @@ Ranks start at `1`. A rank past the end of the board reads as empty text, and it
 }
 ```
 
-The same values exist as text functions, such as `|leaderboard.playtime.1.name|` and `|leaderboard.playtime.me.rank|`. Gloss registers ranked functions up to the smaller of `size` and `[leaderboards] maxEntries` (default `100`).
+The same values exist as text functions, such as `|leaderboard.playtime.1.name|` and `|leaderboard.playtime.me.rank|`. Gloss registers ranked functions up to the same limit as the rows.
 
 ## Format templates
 
