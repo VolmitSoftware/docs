@@ -22,8 +22,8 @@ Use `/iris find river` to reach the water of an Iris world, the Studio map's **R
 | `stream` | A channel of a stream tier |
 | `river` | A channel of a river tier |
 | `major_river` | A channel of a major river tier |
-| `cascade` | A stepped drop in a channel, or a step down onto another channel's water, shorter than the higher channel's `waterfallMinimumDrop` |
-| `waterfall` | A drop of `waterfallMinimumDrop` or more |
+| `cascade` | A stepped drop in a channel, or a step down onto another channel's water, shorter than the higher channel's `waterfallMinDrop` |
+| `waterfall` | A drop of `waterfallMinDrop` or more |
 | `mouth` | Where a channel meets the sea, across its estuary and delta channels |
 | `pond` | A natural, seeded or chained pond |
 | `lake` | A lake |
@@ -101,7 +101,7 @@ Run the pack validator after every hydrology or policy edit:
 /iris pack validate <pack-key>
 ```
 
-For every dimension with `hydrology.enabled: true`, the validator works in two steps. A dimension with hydrology absent or disabled is skipped, and a `hydrology` value that is not an object is reported on its own.
+For every dimension with `hydrology.enabled: true`, the validator works in two steps. A dimension with hydrology absent is skipped, a disabled `hydrology` block gets only the unknown-key warning below, and a `hydrology` value that is not an object is reported on its own.
 
 First it checks the settings it can read without compiling them, and reports every failure of this kind at once as a blocking error:
 
@@ -117,7 +117,7 @@ When those pass, it compiles the settings exactly as a starting world does. The 
 - no tier, or two tiers sharing a `minCatchment`;
 - a `prefetchRings` outside `0..4`;
 - a `climate.dryness`, `climate.transition` or `climate.dryRainfall` outside `0..1`, or a `drainage.fillEpsilon` that is not above `0`;
-- a `bankBand` outside `0..64`, a `widthFactor` or `depthRatio` below `0`, a `waterfallMinimumDrop` below `2`, or a `stepHeight` outside `1..2` or above that of a larger tier;
+- a `bankBand` outside `0..64`, a `widthFactor` or `depthRatio` below `0`, a `waterfallMinDrop` below `2`, or a `stepHeight` outside `1..2` or above that of a larger tier;
 - an `estuary.length` outside `0..256`, an `estuary.flare` outside `1..4`, a `delta.channels` other than `0` or `2..4`, a `delta.spreadDegrees` outside `10..80`, or a `delta.length` outside `8..384` or reaching more than 512 blocks with the tier's widest half-width and bank band;
 - a `minArea` above its `maxArea`, or a `lakes.maxArea` above `4194304`;
 - a `ponds.seeded.density` outside `0..64`, or a `deformation.maxFill` below `0`;
@@ -131,6 +131,8 @@ Settings that pass the validator also pass when the world starts. Settings that 
 
 The validator also reports warnings, which do not block the pack:
 
+- a key the settings do not define, at any depth of `hydrology` or of a `hydrologyPolicy` on the dimension, a region or a reachable biome, including inside `tiers[]`, `fluids[]`, `decorators[]` and the `snippet/` files they reference, so its value is ignored and the setting keeps its default. The warning gives the full path of the key, such as `Dimension 'overworld'.hydrology.tiers[2].estuary.flair`, and lists the keys accepted there. Key names are case-sensitive. The `data` and `tileData` maps of a block accept any key. A disabled `hydrology` block gets the `hydrology` check; policies are checked only while it is enabled;
 - a tier written in `tiers` that leaves out `halfWidth` or `bankBand`, so it takes the stream default `[0.5, 2]` or `0` whatever its size;
 - `useMantle: false`, or `RIVER_HYDROLOGY` in `disabledComponents`, while hydrology is enabled, so the falling water at waterfalls and cascades and cave pools are not generated;
 - a `hydrologyPolicy.shoreBiomes` list on the dimension, a region or a biome that no `shoreBiomeWidth` above `0` applies to, so none of its shore biomes are placed. The warning names the policy that lists them.
+- a fluid profile that is not plain water and has no `seam`, when its rivers can meet the sea or another river fluid, so the two fluids lie side by side. A river takes a profile from the `fluid` of a tier, or from a `hydrologyPolicy.fluid` on the dimension, a region or a land or sea biome; cave pools and `ponds.fluid` do not count. The sea counts when `fluidHeight` lies above the bottom of the dimension and `fluidPalette` holds different blocks, and another river fluid counts when it holds different blocks and has no `seam` of its own. The check reads the settings alone, so it also warns about a river that the terrain keeps from the sea. The warning names the profile, what it can meet, and the tier or policy each river comes from.
