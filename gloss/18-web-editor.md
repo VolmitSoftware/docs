@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T05:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -50,6 +50,8 @@ Menu creation supports decorations, buttons, toggles, lists, sliders, fields, an
 The menu preview expands the first list page, up to the default 64-entry limit, and binds each entry for text, visibility, and action-log expressions. Slider left-click raises its value and right-click lowers it; Shift uses five steps. Tabs set their session value. Fields open a browser input dialog whose Save button updates the local session value; this previews the form flow rather than opening a Minecraft sign, anvil, or chat prompt. External effects such as commands, economy transactions, inventory windows, and proxy transfers appear in the action log without running against a server.
 
 Hologram lines may contain text strings or objects carrying `text`, `item`, `head`, `block` or `entity`. Editing text, moving lines, copying a document and exporting preserve object content, scale and conditions. Text objects use the text row; other object lines expose their fields in the generic inspector. The hologram stage previews mixed text, item, head, block and entity lines in their authored order, with separate space reserved for each object. Head previews use the bundled player skin. The seven bundled entity rigs use measured bounds; other entity types use catalog sprites with approximate sizing. Custom items without a resolved material use a barrier preview. Verify the native model and skin in game.
+
+The component inspector edits [motion](/gloss/10-components-hitboxes#motion) and validates its expressions. True render preview applies the motion once per tick using variable defaults and `time.*`. It shows where the runtime places the component, without the client's easing, and session values changed by a running sequence do not move it.
 
 Preview exact Minecraft rendering, occlusion, sounds, particles and interaction in game before publishing.
 

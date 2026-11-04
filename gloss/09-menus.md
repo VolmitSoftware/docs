@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T05:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -83,6 +83,8 @@ Menu files have no `schemaVersion` or `revision`, but Gloss still rejects a stal
 `offset` and `components` are required to open the menu; a missing value is logged when the menu is opened.
 
 ### Visibility
+
+A component's `motion` block moves and resizes it without respawning it; see [Motion](/gloss/10-components-hitboxes#motion).
 
 Document-level `show` and `components[].show` use the session viewer and are reevaluated during session ticks. A hidden menu keeps its session but hides its components and particles, blocks clicks, and releases `lockPosition` while hidden. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 

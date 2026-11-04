@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-11-04T00:43:32.000Z
+date: 2026-11-04T05:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -164,6 +164,7 @@ Public global React samplers are `react.sampler.<sampler-id>`, as in
 
 | Surface | Additional values | Evaluation |
 |---|---|---|
+| Menu component `show` and `motion` | `session.*`, `args.*`, list and tab entry values, live viewer/player values, `time.*` | Every session tick |
 | Scoreboard `select.when` and variants | live viewer/player values | Every `[boards] updateIntervalTicks`; manual sticky selection fixes the board id but its variant still updates |
 | Tablist header/footer variants | live viewer/player values | Every ordinary or shared fast tablist refresh |
 | Tablist list-name variants | live subject/player values | Every ordinary or selected fast tablist refresh |

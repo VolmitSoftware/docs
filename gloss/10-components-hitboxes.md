@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-11-04T01:04:58.000Z
+date: 2026-11-04T05:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -20,6 +20,7 @@ Hologram interaction entities count against the `HOLOGRAM` limits in `[visibilit
 | `offset` | `vector3` | yes | Offset from the menu center |
 | `data` | object | yes | The type-discriminated component body |
 | `show` | boolean or expression | no | Defaults to `true`; combines with menu and panel visibility |
+| `motion` | object | no | Moves and resizes the component without respawning it. See [Motion](#motion) |
 
 `vector3` is always a three-element JSON array of numbers, `[x, y, z]`. The object form is not accepted. A missing `offset` or `data` value is reported when the menu opens.
 
@@ -227,6 +228,35 @@ Toggle state is per player and lasts only for the open session; reopening the me
 {.is-warning}
 
 `trueActions` and `trueIcon` belong to the state being **entered**, not the one being left: clicking a toggle that is currently false runs `trueActions` and shows `trueIcon`. Switching state replaces the icon and updates the click area. If a matching `navigate` action runs, the toggle does not change state.
+
+## Motion
+
+`motion` moves and resizes a component's existing displays instead of deleting and respawning them. Gloss reads each value on every session tick, sends only what changed, and the player's client eases the change. The click area follows the component.
+
+| Key | Type | Default | Notes |
+|---|---|---|---|
+| `x`, `y`, `z` | number or expression | `0` | Added to `offset` on that axis, in menu blocks before `uiScale` |
+| `scale` | number or expression | `1` | Multiplies the icon's size and click area. Values below `0.001` use `0.001` |
+| `ticks` | whole number or expression | `3` | How long the client takes to ease to a new value. `0` jumps at once. A number must be 0 through 59; an expression's result is rounded and held to that range |
+
+```json
+{
+  "id": "slider",
+  "offset": [0, 1, 0],
+  "motion": {
+    "x": "3 * sin(time.seconds)",
+    "scale": "session.selected == 1 ? 1.2 : 1",
+    "ticks": 1
+  },
+  "data": { "type": "decoration", "icon": { "type": "item", "item": "minecraft:diamond" } }
+}
+```
+
+Expressions see the same values as the component's `show`, including list and tab entry values. An invalid expression or an out-of-range `ticks` number rejects the file when it loads. If an expression fails while the menu is open, Gloss logs the stack once and the component stays where it is until the expression works again.
+
+Each update moves the icon `1/ticks` of the remaining distance per client tick. A one-off change with a large `ticks` is a smooth glide. A value that changes every tick trails its target by about `(ticks - 1)` ticks of travel, so use `1` for continuous movement. Use an expression to jump while an icon is too small to see, such as `"abs(session.pos) > 30 ? 0 : 1"`.
+
+Entity icons ignore `scale`, and their click area keeps its size. Menus built through the Java API have no `motion`. Position easing also applies when the whole menu moves, such as with `followPlayer`.
 
 ## The hitbox system
 

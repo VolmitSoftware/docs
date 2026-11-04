@@ -90,7 +90,7 @@ Cancelled transfers release their reservations. A transfer started by another pl
 
 `travelEntry=DENY` blocks travel into the world from another world. `travelExit=DENY` blocks travel out of it. Both apply to cross-world teleports and portals, including travel initiated by other plugins. Same-world teleports are unchanged. `ALLOW` and `INHERIT` impose no Rift travel restriction; neither overrides access permissions, capacity, or another plugin's cancellation.
 
-`rift.travel.bypass` bypasses entry/exit restrictions, not capacity or access permissions. Both bypass permissions default to false and are not granted by `rift.admin`. Operators must receive them explicitly. Departure restrictions do not prevent respawn or login recovery.
+`rift.travel.bypass` bypasses entry/exit restrictions, not capacity or access permissions. Both bypass permissions default to false and are not granted by `rift.admin`. Operators must receive them explicitly. Departure restrictions do not prevent respawn or login recovery. Rift's own unload and quarantine evacuations ignore player limits and entry/exit restrictions, but not access permissions.
 
 The editor adjusts the limit by 1 with left/right click, or 10 with shift-click. Zero is unlimited; the drop-item key resets it to zero. Entry and exit use choice menus with `INHERIT` as the default.
 
