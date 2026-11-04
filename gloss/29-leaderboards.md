@@ -2,7 +2,7 @@
 title: "Leaderboards"
 description: "Rank players by a statistic, placeholder or metric and show the rows in any text"
 published: true
-date: 2026-11-04T00:46:11.000Z
+date: 2026-11-04T00:49:48.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-11-03T22:20:00.000Z
@@ -58,6 +58,8 @@ A misspelt statistic, or a metric without per-player values, logs `Leaderboard <
 
 Gloss samples every online player each `[leaderboards] sampleIntervalTicks` (default `1200`). Rows change when a sampling pass ends or when `/gloss leaderboard sample` runs. Players who have not been sampled are not ranked.
 
+A board with `reset: never` ranks each player's full value from the first sample. A board with any other `reset` ranks the gain since the period started, so a player's first sample counts as `0`.
+
 Resets follow UTC. A week starts on Monday and a month on the first. A reset clears the period values that rank the board and keeps all-time totals. Values are saved in `plugins/Gloss/leaderboards/state/<id>.json`.
 
 `[features] leaderboards = false` stops sampling and leaves every variable below empty.
@@ -106,5 +108,5 @@ The same values exist as text functions, such as `|leaderboard.playtime.1.name|`
 |---|---|---|
 | `/gloss leaderboard list` | `gloss.leaderboards` | Lists loaded boards and their row counts |
 | `/gloss leaderboard info <id>` | `gloss.leaderboards` | Shows a board's source, order and rows |
-| `/gloss leaderboard reset <id> [current\|all]` | `gloss.leaderboards.reset` | Clears the current period, or with `all` every value the board holds |
+| `/gloss leaderboard reset <id> [current\|all]` | `gloss.leaderboards.reset` | Clears the current period, or with `all` every value the board holds. `current` does not change the rows of a `reset: never` board, and after `all` its rows return with the next sample |
 | `/gloss leaderboard sample <id>` | `gloss.leaderboards.sample` | Samples every online player now |
