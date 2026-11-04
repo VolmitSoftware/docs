@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-11-03T21:30:00.000Z
+date: 2026-11-04T00:43:32.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -190,6 +190,7 @@ catalog on [Drop Labels](/gloss/08c-drop-labels#real-drops).
 The text pipeline runs functions first, inline expressions second, PlaceholderAPI third, then emoji
 and colors. A closed `{{ expression }}` that fails to parse or evaluate renders as empty text;
 surrounding text remains visible and the error is logged once per expression until reload.
+An expression that needs a viewer renders as empty text without a log entry when the surface has no viewer, such as a MOTD or an animation frame.
 Empty or oversized expressions also render empty. An unclosed `{{` remains literal text. The placeholder stage runs only when `[text] placeholders` is `true`, the render has a
 viewer, and the string contains a `%`.
 

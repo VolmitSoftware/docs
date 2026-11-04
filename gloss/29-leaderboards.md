@@ -2,7 +2,7 @@
 title: "Leaderboards"
 description: "Rank players by a statistic, placeholder or metric and show the rows in any text"
 published: true
-date: 2026-11-03T22:20:00.000Z
+date: 2026-11-04T00:43:32.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-11-03T22:20:00.000Z
@@ -81,7 +81,7 @@ These variables work in any `{{ }}` expression, `show` condition or `when` condi
 | `leaderboard.<id>.me.name` | The viewer's `format.name` text, or empty |
 | `leaderboard.<id>.me.uuid` | The viewer's UUID |
 
-Ranks start at `1`. A rank past the end of the board reads as empty. `me.*` needs a viewer, so a hologram line that uses it renders per viewer. See [Expressions & Placeholders](/gloss/13-expressions-placeholders).
+Ranks start at `1`. A rank past the end of the board reads as empty text, and its `value` and `rank` read as `0`. `me.*` needs a viewer, so a hologram line that uses it renders per viewer. See [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 ```json
 {
