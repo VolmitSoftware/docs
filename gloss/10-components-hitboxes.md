@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-11-04T00:45:36.000Z
+date: 2026-11-04T01:03:11.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -270,7 +270,7 @@ Invalid hitbox values reject the file:
 
 ### Automatic sizing
 
-Without a `hitbox`, or with one that has no `width`, the plane's size and center are measured from the icon: text and image icons from their rendered lines and rows, item, block and custom-item icons from a fixed square centered on the drawn icon, and entity icons from their declared `width` and `height`.
+Without a `hitbox`, or with one that has no `width`, the plane's size and center are measured from the icon: text icons from the glyph width of their widest line and their line count, image icons from their rows and columns, item, block and custom-item icons from a fixed square centered on the drawn icon, and entity icons from their declared `width` and `height`.
 
 Automatic dimensions are multiplied by the icon's `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox is not** — only the effective session scale applies to it. Entity icons have no display style, so their planes use the declared `width` and `height`, defaulting to `1` and bounded to `(0, 64]`.
 
