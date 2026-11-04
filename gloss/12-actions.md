@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-11-03T22:00:00.000Z
+date: 2026-11-04T00:49:49.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -238,6 +238,8 @@ All six destination fields are required; if any is missing or non-finite the act
 An omitted `mode` defaults to `push`. A `push` or `replace` with no non-blank `target` is warned once and dropped. Targets are exact, case-sensitive menu ids, including folder paths such as `shops/confirm`.
 
 In [Inventory Menus](/gloss/09b-inventory-menus), navigation opens another inventory document and `page` changes the current list page. Inventory navigation has a separate history from in-world menus.
+
+In a [behavior](/gloss/19b-behaviors), `navigate` changes the in-world menu of the event's player with the same modes, permissions and history. A `push` or `replace` opens the menu when none is open. A firing without a player skips the action.
 
 History is per viewer: a stack of menu ids plus the root, which is the first page opened in the flow. `close` ends a personal session, or dismisses that panel view for the viewer.
 
