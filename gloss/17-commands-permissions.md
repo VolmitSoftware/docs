@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-11-03T22:20:00.000Z
+date: 2026-11-04T00:49:50.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -53,6 +53,7 @@ from the console. See [Localization](/gloss/19-localization#repository-translati
 | `/board select <id> <priority> <when>` | `gloss.boards.edit` | Set its automatic selection rule |
 | `/board show <id>` | `gloss.boards.show` | Show it to yourself |
 | `/board hide` | `gloss.boards.hide` | Hide your scoreboard |
+| `/board auto` | `gloss.boards.auto` | Return your scoreboard to automatic selection |
 | `/board delete <id>` | `gloss.boards.delete` | Delete it |
 
 ## Resource packs

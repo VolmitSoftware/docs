@@ -2,7 +2,7 @@
 title: "API: Getting Started"
 description: "Add Gloss as a dependency and use its public API"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T00:49:50.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -115,6 +115,7 @@ All appearance types above are in `art.arcane.gloss.api` and ship in the API jar
 ```java
 gloss.setBoard(player, "event-board");
 gloss.clearBoard(player);
+gloss.releaseBoard(player);
 Optional<String> board = gloss.boardFor(player);
 
 gloss.setTab(player, "&dEvent night", "&7Round 3");

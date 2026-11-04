@@ -2,7 +2,7 @@
 title: "Scoreboards & Groups"
 description: "Create conditional scoreboards and select them by player or Vault group"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-04T00:49:50.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -273,7 +273,7 @@ Gloss reevaluates selection every `[boards] updateIntervalTicks` (default 20) an
 
 ### Manual selection
 
-`/gloss board show <id>` pins a board until the player logs out; `/gloss board hide` pins no board.
+`/gloss board show <id>` pins a board until the player logs out; `/gloss board hide` pins no board. `/gloss board auto` drops either pin and returns the player to automatic selection.
 Pinning bypasses `select.when` but not `show`, and the pinned board still re-evaluates its `show`
 condition and variants on each selection pass. The pin is also dropped if that board is deleted. See
 [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
@@ -299,6 +299,7 @@ condition and variants on each selection pass. The pin is also dropped if that b
 | `reset` | `[name=*]` | `gloss.boards.edit` |
 | `show` | `<id>` | `gloss.boards.show` |
 | `hide` | none | `gloss.boards.hide` |
+| `auto` | none | `gloss.boards.auto` |
 | `list` | none | none |
 | `info` | `<id>` | none |
 
