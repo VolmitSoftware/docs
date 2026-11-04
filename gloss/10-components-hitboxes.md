@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-11-04T02:00:00.000Z
+date: 2026-11-04T00:45:36.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -221,7 +221,7 @@ A decoration is not clickable and has no hitbox or hover effect. Animated images
 
 An explicit `hitbox` gives both states one stable click plane even when the true and false icons differ in size. Without one, each state uses its active icon's automatic geometry.
 
-Toggle state is per player and lasts only for the open session; reopening the menu evaluates the initial state again. `condition` is expanded through PlaceholderAPI against the viewing player and compared case-insensitively to `expectedValue`. It is never re-evaluated on tick, so an external change to the underlying placeholder does not update an open toggle.
+Toggle state is per player and lasts only for the open session; reopening the menu evaluates the initial state again. `condition` and `expectedValue` are text with the same expressions as the component's icons, including `args.*`, session values and list entries, plus PlaceholderAPI against the viewing player. They are compared case-insensitively. It is never re-evaluated on tick, so an external change to the underlying placeholder does not update an open toggle.
 
 > Omitting `condition` prevents the menu from opening. Omitting only `expectedValue` starts the toggle in the false state.
 {.is-warning}
