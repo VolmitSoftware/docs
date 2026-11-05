@@ -2,7 +2,7 @@
 title: "Inscribe: Configuration"
 description: "Typed TOML settings, validation, hot reload, and in-game editing"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "inscribe, configuration"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -59,7 +59,7 @@ Inscribe has no reload command. With `hotReload.enabled` on, Inscribe checks `co
 
 Inscribe parses and validates a file before using it. An invalid file keeps the working settings and logs one SEVERE line with the file, the reason, and the stack trace. An invalid `config.toml` at server start stops Inscribe from enabling. Open transfer menus close only when the settings actually change, so language edits and unchanged saves leave them open. A save from the editor is rejected if another edit changed the value while the editor was open.
 
-The editor's root page lists the eight sections, and each section shows its settings with translated names and descriptions. Open Enchantment policies to browse existing rules by their namespaced IDs. Material and lore lists use the shared chat input. The server-language entry under General opens the shared chat selector. Material IDs, enchantment IDs, and currency values keep their canonical spelling.
+The editor's root page lists the eight sections, and each section shows its settings with translated names and descriptions. Open Enchantment policies to browse existing rules. Each rule shows an English name built from its namespaced ID, such as Binding Curse for `minecraft:binding_curse`, with the namespace in parentheses for enchantments outside `minecraft`. Material and lore lists use the shared chat input. The server-language entry under General opens the shared chat selector. Material IDs, enchantment IDs, and currency values keep their canonical spelling.
 
 ## Related pages
 

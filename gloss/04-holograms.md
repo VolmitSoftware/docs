@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-11-03T22:10:00.000Z
+date: 2026-11-05T18:30:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -93,7 +93,7 @@ Set document-level `"show": false` to hide the hologram, or use a boolean expres
 
 A line can be a string or an object with exactly one content key: `text`, `item`, `head`, `block`, or `entity`. Item content uses the [icon contract](/gloss/11-icons); the other object values are strings. Object lines accept `show` as a boolean or viewer expression and `scale` from `0.01` to `64`, default `1`.
 
-Lines run from top to bottom in authored order, above the hologram's anchor. Object rows reserve space according to their size and the text's vertical scale; blocks are centered in their reserved row. Living entity scales clamp to the client's `0.0625`–`16` range; nonliving entities require scale `1`. Entity rows reserve space across tilted views, and upright entities face their viewer. Chicken spacing follows its visible model; other entity types use native collision dimensions to estimate their row bounds. Changing text scale recalculates that spacing.
+Lines run from top to bottom in authored order, above the hologram's anchor. Item, head and block lines sit level with the text, so they keep their row at close range. Object rows reserve space according to their size and the text's vertical scale; blocks are centered in their reserved row. Living entity scales clamp to the client's `0.0625`–`16` range; nonliving entities require scale `1`. Entity rows reserve space across tilted views, and upright entities face their viewer. Chicken spacing follows its visible model; other entity types use native collision dimensions to estimate their row bounds. Changing text scale recalculates that spacing.
 
 ```json
 "lines": [
@@ -104,6 +104,15 @@ Lines run from top to bottom in authored order, above the hologram's anchor. Obj
 ```
 
 Text and objects retain their authored row order. Each object reserves space for its authored scale in the text layout, including when its condition hides it, so conditional objects do not shift neighboring rows.
+
+A `text` line with a `scale` other than `1` is drawn at that size relative to the `style` scale and moves and turns with the rest of the hologram. It supports the same placeholders and animations as other text. It reserves whole text rows, rounded up, so `1.4` on one line reserves two rows, and it is centered in them. A scaled line has no background of its own and is centered horizontally on the hologram; the text background, box and particle text follow the regular lines.
+
+```json
+"lines": [
+  {"text": "&d&lSpawn", "scale": 1.5},
+  "Welcome, %player_name%!"
+]
+```
 
 For multiple pages, replace `lines` with `pages`. Each page needs a unique `id` and nonempty `lines`, and accepts its own `show`. A document supports up to 64 pages. Each viewer starts on the first visible page; navigation skips hidden pages and wraps. With no visible page, the hologram is hidden.
 

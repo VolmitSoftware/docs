@@ -2,7 +2,7 @@
 title: "Inscribe: Enchantment transfers"
 description: "Extract selected enchantments and apply compatible book upgrades"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "inscribe, enchantments, pricing"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -18,6 +18,8 @@ Inscribe reacts only when a transfer is possible: transfers are enabled, the pla
 2. Right-click enchanted equipment.
 3. Select the enchantments to move. Each entry shows its price.
 4. Check the total price and confirm.
+
+Selected entries appear as glinting enchanted books and unselected entries as plain books, in both the extraction and application menus. The enchantment name and level use the player's game language.
 
 One book receives the selected enchantments. Unselected enchantments stay on the equipment. Extracted books carry no lore unless `transfers.bookLore` sets it.
 
