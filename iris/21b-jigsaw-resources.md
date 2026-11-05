@@ -2,7 +2,7 @@
 title: "Jigsaw Resources"
 description: "Iris documentation: Jigsaw Resources"
 published: true
-date: 2026-11-02T12:11:25.000Z
+date: 2026-11-03T22:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -248,9 +248,13 @@ Iris tests up to `caveAnchorAttempts` unique X/Z columns in the start chunk and 
 
 On a structure placement, `underwater: true` **allows** submerged starts and `false` skips them. That is the opposite of object placement, where `underwater: true` means seafloor-only. See [35 - Vanilla Passthrough](/iris/35-vanilla-passthrough).
 
-A surface placement is skipped when more than 10% of the columns its assembled pieces cover are river, stream, pond or lake water: channel, pond, cascade and waterfall columns of [36 - Rivers](/iris/36-rivers). The sea, river mouths, sea inlets, shores and banks do not count, and height-band and cave anchors have no such limit. A placed structure leaves the water it touches alone. Its pieces and stilts keep their solid blocks out of the water above the floor, and their air never replaces the water. `BORE` and `FORCE_CARVE` leave a water column uncut from two blocks below its floor upward, and keep the ground within two blocks of the water up to the water surface.
+A surface placement is skipped when more than 10% of the columns its assembled pieces cover are river, stream, pond or lake water: channel, pond, cascade, waterfall and sea inlet columns of [36 - Rivers](/iris/36-rivers). The sea, river mouths, shores and banks do not count, and height-band and cave anchors have no such limit. A structure within the limit places whatever water, shore or dam columns its footprint touches, and leaves the water it touches alone. Its pieces and stilts keep their solid blocks out of the water above the floor, and their air never replaces the water, so the part of a piece that would land in the water is left out and the rest stands. `BORE` and `FORCE_CARVE` leave a water column uncut from two blocks below its floor upward, and keep the ground within two blocks of the water up to the water surface.
 
-Set `allowWater: true` on a structure that belongs on the water, such as a bridge or a water mill. The 10% limit does not apply, and its pieces and stilts may fill the water, while their air still leaves it. A single-piece structure placed by height, such as `CENTER_HEIGHT`, then sits on flat water like a forced object. A start column in the water also needs `underwater: true`.
+Set `allowWater: true` on a structure that belongs on the water, such as a bridge or a water mill. The 10% limit does not apply, and its pieces and stilts may fill the water, while their air still leaves it. A start column in the water also needs `underwater: true`.
+
+A surface placement whose structure has a `placeMode` other than `STRUCTURE_PIECE` or `FLOATING` and assembles to a single piece is force placed. Force placement ignores water: the 10% limit, the `underwater` start check and the rules above do not apply, with or without `allowWater`, so such a structure places at any coordinate, in the middle of a river or on open sea, sits on the water surface at its anchor column, and writes its blocks and stilts through the water. `BORE` and `FORCE_CARVE` still leave the water uncut around it: the piece writes through the water and the carve does not. The cells of cave pools stay protected, so a force placed piece has holes in those cells and still counts as placed.
+
+Height-band and cave placements are not force placed, whatever their `placeMode`. Their `ORGANIC_STILT` and `CEILING_HANG` pieces keep their exact height and follow the `underwater` check and the water rules above.
 
 For cave anchors, `underwater` is checked at the actual anchor rather than the surface ocean height. With `underwater: false`, ordinary cavern air must be above the dimension `caveLavaHeight`, and explicit water and lava are rejected. With `underwater: true`, ordinary fluid cavern cells are allowed. Hydrology-owned mantle cells always reject anchors because a later structure stamp could breach the containment footprint; see [36 - Rivers](/iris/36-rivers).
 

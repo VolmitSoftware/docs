@@ -2,7 +2,7 @@
 title: "Studio & VSCode Schemas"
 description: "Iris documentation: Studio & VSCode Schemas"
 published: true
-date: 2026-10-27T05:30:00.000Z
+date: 2026-11-04T00:00:00.000Z
 tags: "iris"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -143,7 +143,7 @@ Drag to pan and scroll to zoom. **Grid** shows chunk and region borders; **Shadi
 
 **Biomes** includes a **Water** overlay, enabled by default; press `W` to toggle it. It draws surface hydrology and recorded cave pools over the base biome colors. The inspector's **Noise** and **Both** displays show their selection values without this overlay.
 
-**Rivers** provides the water legend and draws streams, rivers, falls, ponds, lakes, dams, sea inlets and recorded cave pools at 16 blocks per pixel or closer. Previews refresh as water plans become available. Accepted pack hotloads refresh the map and its 3D terrain preview. See [36c - Water Inspection](/iris/36c-river-inspection).
+**Rivers** provides the water legend and draws streams, rivers, falls, ponds, lakes, dams, sea inlets, grottos and recorded cave pools at 16 blocks per pixel or closer. Previews refresh as water plans become available. Accepted pack hotloads refresh the map and its 3D terrain preview. See [36c - Water Inspection](/iris/36c-river-inspection).
 
 Resizing, panning, and zooming retain cached map coverage while additional detail loads. The map pauses rendering when you select another Studio view or minimize or hide the window. Returning to the map resumes from cached coverage.
 
