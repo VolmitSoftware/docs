@@ -153,6 +153,21 @@ Edits never overwrite each other, however quickly they follow one another: each 
 
 A small **i** beside a label or heading holds the note for that field. Hover it or reach it with Tab to read the note, press Escape to hide it, and click it to open the matching section of this wiki. On a touch screen a tap shows the note with a **Docs** link, and a second tap or a tap elsewhere hides it.
 
+### Completion
+
+Text, expression and id fields complete as you type, and so does the Code view. Ctrl+Space opens the list anywhere, on a Mac too. Arrow keys move, Enter or Tab picks, Escape closes. Each row shows its kind, its type and a short note. Matching is loose: `dsw` finds `diamond_sword`.
+
+| You type | You get |
+| --- | --- |
+| A name in an expression or inside `{{ }}` | Declared variables with type and scope, `player.`, `npc.`, `server.` and `context.` facts, and functions |
+| `{` | Placeholders the field fills, such as `{player_name}` in say text, or a whole `{{ viewer.name }}` hole in GUI text |
+| `<` | The tags the server formats: the sixteen colours with a swatch, `#RRGGBB`, `color:`, the decorations and `reset`. `</` closes the open tags |
+| `%` | PlaceholderAPI identifiers, when the paired server has PlaceholderAPI. Animus does not fill these yet, so they reach players as written |
+| An id | Items, blocks, sounds, particles, entity types, effects and worlds; routes, recordings, animations, skins, shops and GUIs in the workspace; flag and quest names the workspace already uses |
+| The first word of a command | The paired server's commands |
+
+Offline, game ids come from the bundled Minecraft 26.3 lists. Paired, they come from the server, modded entries included. A name the server would refuse is underlined: an unknown variable or function, a placeholder the field does not fill, a tag shown as text, or an id missing from a complete list. Hover the underline to read why.
+
 ### On a phone
 
 At phone widths the document list becomes a drawer behind **Documents** in the top bar, and the other top bar controls (undo, redo, commands, open, import, export, theme) sit under **More**. Picking a document closes the drawer. Lists open as a sheet along the bottom of the screen.
@@ -186,7 +201,7 @@ When the pairing is three days or less from expiry, the live bar says how long i
 
 | Scope | Allows |
 |---|---|
-| `read` | Reading documents, schemas, diagnostics, skins and live events |
+| `read` | Reading documents, schemas, diagnostics, skins, completion lists and live events |
 | `validate` | Checking drafts with the server's validators. Writes nothing |
 | `preview` | Showing drafts to the token's player |
 | `apply:npcs` | Applying NPCs, routes and skins |
