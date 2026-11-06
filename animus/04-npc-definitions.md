@@ -55,7 +55,7 @@ A wrong value names its exact field, for example `$.equipment.head.count: expect
 
 Create, clone and import produce definitions with `spawned: false`. `/animus spawn <id>` checks the world, the type and the profile name against the running server, then saves the activation. The NPC appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC as dormant and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
 
-```text
+```none
 /animus create guard minecraft:player world 0 64 0 town Town Guard
 /animus spawn guard
 /animus inspect guard
@@ -76,7 +76,7 @@ Saving a data file applies it within about a second, without `/animus reload`. T
 
 Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block ding and see one line per changed key, at most 12 per file:
 
-```text
+```none
 [Animus]: Animus Hotloaded: [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
 ```
 
@@ -218,7 +218,7 @@ Clients strike one of the dragon's eight parts. Animus measures each hit against
 
 On Paper and Spigot, with `packetProofEnabled = true`, an administrator can steer their own player-shaped packet preview body:
 
-```text
+```none
 /animus proof control start <entity-id>
 /animus proof control status
 /animus proof control stop

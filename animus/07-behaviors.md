@@ -651,7 +651,7 @@ A preview run refuses `command`, `combat-control`, `build`, `navigate`, `stop-na
 
 A pack keeps related behaviors together under `packs/<pack-id>/`:
 
-```text
+```none
 packs/town/
   pack.json
   behaviors/town/greeter.json

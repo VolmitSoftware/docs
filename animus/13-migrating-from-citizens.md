@@ -75,7 +75,7 @@ A label uses 1-32 lowercase letters, digits, `_` or `-`, and each copy needs a d
 
 The lower-level commands work on any Citizens save file placed in `plugins/Animus/imports/inbox/`, and give each step its own ID:
 
-```text
+```none
 /animus import preview <filename.yml> [worlds=oldWorld:newWorld,...]
 /animus import apply <import-id>
 /animus import stage <import-id> mode=replace
@@ -368,7 +368,7 @@ These are kept in each definition under `modules["citizens:review"]` and in the 
 
 ## Rolling back
 
-```text
+```none
 /animus import citizens rollback
 ```
 

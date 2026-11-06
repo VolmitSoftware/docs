@@ -124,7 +124,7 @@ Route turns go to the NPCs that waited longest, so no patrol waits forever. Ever
 
 `/animus foliaproof` shows one stationary player-shaped NPC privately to an administrator. It does not use or activate saved definitions. Enable it with `packetProofEnabled = true` in `config.toml`; the change applies when the file is saved, and turning it off clears existing preview bodies.
 
-```text
+```none
 /animus foliaproof spawn [skin-sha256]
 /animus foliaproof status
 /animus foliaproof clear

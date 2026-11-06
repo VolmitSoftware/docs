@@ -12,7 +12,7 @@ NPC movement runs on the server against real block collision. Animus never loads
 
 ## Manual navigation
 
-```text
+```none
 /animus navigate guard 10 64 4 walk 2
 /animus navigation guard status
 /animus navigation guard stop
@@ -233,7 +233,7 @@ Sneaking dismounts. A ride also ends on excess input, a stale connection, expiry
 
 While riding, the player's server position is the NPC's feet, not its seat, so vanilla does not treat the rider as flying. Block reach, other players' hits and anything else measured from the server position use the ground, which is most noticeable on a tall body. Plugins do not see `PlayerMoveEvent` for the ride's motion, so region and movement-checking plugins may need an exemption.
 
-```text
+```none
 /animus ride status
 /animus ride stop <player>
 ```

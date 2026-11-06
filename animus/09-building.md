@@ -32,7 +32,7 @@ Chest, furnace, sign and banner contents in a schematic are not copied: the bloc
 
 All build commands need `animus.admin`, except `donate`, which needs `animus.build.donate`. They are the same on every platform.
 
-```text
+```none
 /animus build status                            status of the build system
 /animus build list                              every build and its progress
 /animus build schematics                        schematic files in the folder
@@ -46,7 +46,7 @@ All build commands need `animus.admin`, except `donate`, which needs `animus.bui
 
 A build is named after the NPC that leads it, and `<build>` may also be any NPC on its team. The build starts where the leader stands, or at `at=`. An NPC can work on one build at a time. Starting a new build for an NPC whose last build has finished, failed, been cancelled or been undone discards that old build's record and undo data.
 
-```text
+```none
 /animus build start mason schematic=tower.schem at=120,64,-40 rotation=90 excavate=true materials=donate
 /animus build team add mason helper
 /animus build survey mason

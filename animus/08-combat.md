@@ -132,7 +132,7 @@ An NPC without enabled combat cannot be hurt by any of these. Every hit, in ever
 
 An NPC with `respawn.deleteOnDeath` processes its death normally (drops, experience, the `death` trigger), and then its definition is deleted as one ordinary transaction, the same as `/animus delete`. The server log names the transaction:
 
-```text
+```none
 Combat NPC guard died and was deleted (respawn.deleteOnDeath); undo with /animus rollback <transaction>
 ```
 
@@ -172,7 +172,7 @@ The built-in [`animus:combat-control`](/animus/07-behaviors#actions) action driv
 
 Administrators have the same operations. These commands need `animus.admin`:
 
-```text
+```none
 /animus combat status
 /animus combat status npc=<npc-id>
 /animus combat engage|disengage|release <npc-id>
@@ -184,7 +184,7 @@ Administrators have the same operations. These commands need `animus.admin`:
 
 Two more commands act on an active NPC directly, outside its target rules:
 
-```text
+```none
 /animus attack <npc-id> <target-uuid> [damage]
 /animus target <npc-id> <mob-uuid>
 /animus target <npc-id> stop

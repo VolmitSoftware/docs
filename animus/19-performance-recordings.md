@@ -103,7 +103,7 @@ Saves go through the same document store as definitions and routes, so hotload, 
 
 ## Recording a performance
 
-```text
+```none
 /animus record start <id>
 /animus record stop
 /animus record cancel
@@ -211,7 +211,7 @@ Changing the NPC's definition or the recording file starts the performance again
 
 `/animus inspect <id>` shows the playback:
 
-```text
+```none
 recording=market-loop playback=loop cursor=420/1180 state=playing
 ```
 
@@ -244,7 +244,7 @@ A route reads each recording its steps name once when the route loads, within `m
 
 Combat, `/animus navigate` and `navigation stop` stop a step the way they stop any playback, and `animus:resume-patrol` continues it from where it stopped, then carries on with the route. While a step plays, `/animus inspect <id>` shows it:
 
-```text
+```none
 step=recording:market-loop cursor=318/520 state=playing
 ```
 

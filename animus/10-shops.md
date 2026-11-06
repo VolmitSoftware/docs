@@ -153,7 +153,7 @@ All need `animus.admin`.
 
 Copy the dtlTraders data folder (the one with `shops/` or `guis.yml`, and `data.dat`) to `plugins/Animus/imports/inbox/dtltraders/`, and optionally the Citizens `saves.yml` beside it. Then:
 
-```text
+```none
 /animus shop import preview dtltraders saves.yml
 /animus shop import apply <import-id>
 ```

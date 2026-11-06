@@ -76,7 +76,7 @@ When a group file is deleted, or a group edit makes some NPC's combination inval
 
 `/animus inspect <id>` prints the NPC's own JSON. For an NPC with groups it then prints `Effective (groups: town-guards, harbor)`, the effective JSON and one line saying where each field came from:
 
-```text
+```none
 from: behaviors<-npc, equipment<-town-guards, modules.animus:look-close<-harbor, teamColor<-harbor
 ```
 
@@ -84,7 +84,7 @@ from: behaviors<-npc, equipment<-town-guards, modules.animus:look-close<-harbor,
 
 All of these need `animus.admin`.
 
-```text
+```none
 /animus groups list [page=1]
 /animus groups inspect <group-id>
 /animus groups members <group-id>
@@ -102,7 +102,7 @@ All of these need `animus.admin`.
 
 Give assign and unassign exactly one of `folder=<npc-folder>`, which matches the NPC folder under `npcs/`, `tag=<tag>`, an effective tag, or `ids=a,b`, a comma-separated list of NPC ids in which `@selected` is your selected NPC. Assign and unassign save every matching NPC as one change with one rollback transaction, and refuse the whole change if any result is invalid. The reply reads `assigned 12, unchanged 3; transaction <id>`. A group saved a moment ago is known once its hotload line appears.
 
-```text
+```none
 /animus groups assign town-guards folder=world/town
 /animus groups unassign town-guards ids=@selected,smith
 ```
@@ -111,7 +111,7 @@ Give assign and unassign exactly one of `folder=<npc-folder>`, which matches the
 
 Add `factor-groups=true` to the import preview, or `--factor-groups` to the converter's `preview`:
 
-```text
+```none
 /animus import citizens preview factor-groups=true
 converter preview /path/to/saves.yml /path/to/Animus --factor-groups
 ```

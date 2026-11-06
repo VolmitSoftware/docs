@@ -127,7 +127,7 @@ A local workspace's **Sync** page compares it with a paired server, validates th
 
 Pairing gives one browser a token for one server. Run on the server, in game or from the console:
 
-```text
+```none
 /animus editor pair [label] [scopes=a,b] [groups=a,b] [expires=7d]
 ```
 

@@ -18,7 +18,7 @@ Saving any data file applies it within about a second, without `/animus reload`.
 
 Online players with `animus.hotload.notify` hear a note block chime and see one line per changed key, at most 12 per file:
 
-```text
+```none
 [Animus]: Animus Hotloaded: [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
 ```
 

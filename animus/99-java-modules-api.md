@@ -95,7 +95,7 @@ Delivery budgets only report slow callbacks; they do not interrupt Java code. Wh
 
 ## Commands
 
-```text
+```none
 /animus modules status
 /animus modules list [page]
 /animus modules capabilities [page]
@@ -154,7 +154,7 @@ Paper, Spigot, Folia, Fabric, Forge and NeoForge all send notices. Notices with 
 
 `context.imports().converter(descriptor, converter)` registers a converter under the module's namespace. A converter has an id (`namespace:name`), the source plugin's name, `detect` and `convert`. Both run on the module workers with the module deadline. They must not wait on definition service results, because the import holds the file lane while it runs. Raise `modules.invocationTimeoutMillis` for large files.
 
-```text
+```none
 /animus import preview <inbox-file> [converter=<namespace:name>]
 ```
 

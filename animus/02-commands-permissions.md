@@ -68,7 +68,7 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 
 An administrator also selects an NPC by interacting with it. Saved file changes apply without `/animus reload`; see [live apply](/animus/03-configuration#live-apply).
 
-```text
+```none
 /animus create guard minecraft:player world 0 64 0 town "Town Guard"
 /animus edit guard {"name": "Captain Guard"}
 /animus spawn guard
@@ -86,7 +86,7 @@ An administrator also selects an NPC by interacting with it. Saved file changes 
 
 Assign and unassign take exactly one of `folder=<npc-folder>`, `tag=<tag>` or `ids=a,b`, where `@selected` in `ids=` is your selected NPC. A change that would leave any NPC invalid is refused whole.
 
-```text
+```none
 /animus groups assign town-guards folder=world/town
 ```
 
@@ -225,7 +225,7 @@ See [shops](/animus/10-shops) and [GUIs, holograms and menus](/animus/11-guis-ho
 
 `mode` is `reject`, `replace` or `duplicate`; `duplicate` needs `copy=<label>`. `worlds=old:new,other:renamed` renames worlds and applies only to Citizens saves. `converter=namespace:name` picks an import converter from a Java module. See [migrating from Citizens](/animus/13-migrating-from-citizens).
 
-```text
+```none
 /animus import citizens preview worlds=world:survival
 /animus import citizens apply
 /animus import citizens accept spawn,patrols
@@ -260,7 +260,7 @@ The readings need `animus.debug`. See [debug, React and metrics](/animus/17-debu
 
 With debug mode off, the default, the server log stays quiet about routine trouble of single NPCs and viewers: route legs that terrain blocks (the NPC teleports or stops), NPCs that cannot activate here, cancelled dismount teleports, failed display packets and dropped delayed screen actions. Animus counts them instead and logs at most one line every five minutes, such as:
 
-```text
+```none
 12 NPCs hit blocked route legs, 2 NPCs could not activate in the last 5m; /animus debug mode for details
 ```
 

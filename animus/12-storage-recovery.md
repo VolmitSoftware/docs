@@ -46,7 +46,7 @@ Rigs and animations keep their last valid copies under `state/rig-catalog/`.
 
 Stored [behavior variables](/animus/07-behaviors) live under `state/behavior-state/`, one JSON document per behavior and subject:
 
-```text
+```none
 state/behavior-state/npc/<npc-uuid>/<namespace>/<path>.json
 state/behavior-state/player/<player-uuid>/<namespace>/<path>.json
 state/behavior-state/relationship/<npc-uuid>/<player-uuid>/<namespace>/<path>.json
@@ -92,7 +92,7 @@ Animus's journal does not cover outside editors. A text editor saving a file whi
 
 Every transaction made by a command, an import or the web editor leaves a rollback receipt under `backups/`. Commands name the transaction in their reply:
 
-```text
+```none
 /animus delete guard
 Deleted; rollback transaction <transaction-id>
 /animus rollback <transaction-id>

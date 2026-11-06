@@ -83,7 +83,7 @@ Each visible bone rides the body in its passenger list, so it follows movement w
 
 Rigs and animations load at startup, on save (see [hand edits apply live](/animus/04-npc-definitions#hand-edits-apply-live)), on `/animus reload` and on `/animus rigs reload`. A broken or refused edit keeps the last valid document, and a changed document needs a higher `revision`. After a restart the last valid copy comes from `state/rig-catalog/`.
 
-```text
+```none
 /animus rigs status
 /animus rigs problems [page]
 /animus rigs reload
@@ -151,7 +151,7 @@ Only embedded PNG textures are read, and nothing is downloaded. Models over 16 M
 
 ### Building the pack
 
-```text
+```none
 /animus pack build
 ```
 
