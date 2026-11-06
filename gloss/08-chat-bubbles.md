@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-11-04T00:45:36.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -85,7 +85,7 @@ Each JSON file in `plugins/Gloss/bubbles/` defines one bubble style. Gloss resto
 | `box` | disabled | Shared measured panel and complete perimeter settings |
 | `particleLayers` | `[]` | Up to 64 layers attached to the one multiline temporary hologram |
 
-Write `followPlayer` and `hideOwn` explicitly — an omitted value is `false`, not the default shown above. Put bubble movement in `motion`; `shimmer.flyAway` only controls the shine pass. The [shared style and box settings](/gloss/11-icons#display-style-and-boxes) apply unchanged.
+Write `followPlayer` and `hideOwn` explicitly. An omitted value is `false`, not the default shown above. Put bubble movement in `motion`; `shimmer.flyAway` only controls the shine pass. The [shared style and box settings](/gloss/11-icons#display-style-and-boxes) apply unchanged.
 
 Bubble presentation, spacing, world exclusions, and per-speaker limits are configured in each style document. Optional `refresh.contentTicks` controls dynamic text reevaluation, `refresh.visibilityTicks` controls viewer condition checks, and `refresh.motionTicks` controls sampling of the speaker position and lifetime motion. Omitted fields use the normal cadence. Intervals take effect on the next temporary-display update, whose base interval is `[holograms] temporaryUpdateIntervalTicks`. Shimmer, named animation playback, particle emission, and expiry retain their own clocks.
 

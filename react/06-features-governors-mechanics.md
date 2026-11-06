@@ -2,7 +2,7 @@
 title: "Features - Governors & Mechanics"
 description: "Activation, view distance, hopper, redstone, farm, pathfinding, and incident controls"
 published: true
-date: 2026-10-17T14:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -291,11 +291,7 @@ The pending growth is applied once a player comes within `activeRange` blocks of
 
 ### `farm-burst-smoother`
 
-When farm growth bursts, this feature defers the growth instead of dropping it and reapplies it on
-a budget. Nothing is lost: lowering `maxPendingUpdates` only stops new intake until the queue drains
-below the cap, and turning the feature off force-applies whatever is still queued, waiting up to
-`shutdownDrainTimeoutMS`. A shutdown that cannot finish that drain fails loudly rather than
-silently losing growth.
+When farm growth bursts, this feature defers the growth and reapplies it on a budget. Queued growth stays. Lowering `maxPendingUpdates` stops new intake until the queue drains below the cap. Turning the feature off force-applies whatever is still queued, waiting up to `shutdownDrainTimeoutMS`. A shutdown that cannot finish that drain reports the failure instead of dropping the remaining growth.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

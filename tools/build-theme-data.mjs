@@ -15,6 +15,7 @@ const projectMeta = new Map([
   ["wormholes", { color: "#f5b942", featured: true }],
   ["gloss", { color: "#c084fc", featured: true }],
   ["react", { color: "#38bdf8", featured: true }],
+  ["animus", { color: "#f2557f" }],
   ["foundation", { color: "#a8a29e" }],
   ["axion", { color: "#f28c45" }],
   ["hiddenore", { color: "#e7c15a" }],

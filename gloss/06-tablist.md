@@ -2,13 +2,13 @@
 title: "Tablist"
 description: "Configure the in-game player list"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Player-list text lives in `plugins/Gloss/tablist.json` and reloads automatically. This page covers the server edition. For proxy setup, see [Velocity Proxy](/gloss/27-velocity).
+Player-list text lives in `plugins/Gloss/tablist.json` and reloads automatically. These settings are the server edition. For proxy setup, see [Velocity Proxy](/gloss/27-velocity).
 
 `plugins/Gloss/tablist.json`:
 

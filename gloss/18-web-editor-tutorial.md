@@ -2,7 +2,7 @@
 title: "Web editor tutorial"
 description: "Open the Gloss web editor and export a document"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-18T00:00:00.000Z
@@ -38,8 +38,7 @@ choice in this browser. Press `?` later to reopen it from the command palette.
 ![The tour highlighting the library rail with the workspace tree and New document](/gloss-assets/02-tour-library.png)
 
 The library rail holds the workspace tree, one row per file, with **New document** and **Folder** at
-the top. The status bar reports validation, autosave and the editor version — errors there mean
-Gloss will refuse or misread the file.
+the top. The status bar reports validation, autosave and the editor version. Errors there mean Gloss will refuse or misread the file.
 
 ## Pick a document kind
 

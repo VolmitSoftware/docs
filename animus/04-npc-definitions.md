@@ -1,0 +1,227 @@
+---
+title: "Animus: NPC Definitions"
+description: "Definition files, activation, live edits, appearance, text, inventory and presentation limits"
+published: true
+date: 2026-11-05T00:00:00.000Z
+tags: "animus, npcs, definitions, appearance, hotload"
+editor: markdown
+dateCreated: 2026-11-05T00:00:00.000Z
+---
+
+Each NPC is a JSON definition at `npcs/<folders>/<id>.json` in the Animus data folder, directly in `npcs/` or up to 8 folders deep, and the file name must be the `id` (`plugins/Animus/` on Bukkit, `config/animus/` on [mod servers](/animus/16-mod-servers)). Animus shows NPCs to players with packets only: no NPC body is registered as a world entity, and a dormant definition creates nothing in the world.
+
+Folders are yours to arrange: `npcs/guard.json`, `npcs/town/guard.json` and `npcs/world/town/market/guard.json` are all valid places. The folder path is the NPC's `group`, which commands, editor tokens limited to groups and the web editor's folder tree use. Ids stay unique across every folder, so moving an NPC between folders never clashes with another NPC of the same id. The web editor's NPC browser can make, rename, move and delete folders; see [the web editor](/animus/14-web-editor).
+
+## Definition file
+
+```json
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "uuid": "4f3c2a10-8d5e-4b6a-9c11-2e7f0a9b3c44",
+  "id": "guard",
+  "group": "town",
+  "name": "&6Town Guard",
+  "type": "minecraft:player",
+  "spawned": false,
+  "position": {"world": "world", "x": 0.5, "y": 64, "z": 0.5, "yaw": 0, "pitch": 0},
+  "behaviors": ["town:greeting"]
+}
+```
+
+| Field | Required | Accepted values |
+|---|---|---|
+| `schemaVersion` | Yes | `1`. Other versions are refused. |
+| `revision` | Yes | Integer of at least 1. Every accepted command or editor change raises it. |
+| `uuid` | Yes | Canonical UUID, unique across all NPCs. |
+| `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Unique across all groups. |
+| `group` | Yes | The folder the file sits in under `npcs/`, such as `town/market`, or empty for a file directly in `npcs/`. Each folder name follows the `id` rules, at most 8 deep. Animus sets it from where the file is, so a file moved to another folder takes that folder as its group. |
+| `name` | Yes | Printable Unicode and spaces, at most 256 UTF-16 code units, no control characters. `&` colour codes apply. |
+| `type` | Yes | `namespace:type`. Bodies that can be shown: `minecraft:player`, `minecraft:armor_stand`, `minecraft:horse`, `minecraft:turtle`, `minecraft:frog`, `minecraft:llama`, `minecraft:armadillo` and `minecraft:ender_dragon`. |
+| `spawned` | Yes | `true` when the NPC should be active. |
+| `position` | Yes | `world`, and `x`, `y`, `z`, `yaw`, `pitch` as finite numbers within ±30000000. On Bukkit, `world` is a world name, a world UUID or a dimension key such as `minecraft:the_nether`; mod servers take the forms [their own page](/animus/16-mod-servers#worlds) lists. |
+| `skin` | No | SHA-256 of a skin document in `skins/`. |
+| `behaviors` | No | `namespace:id` references to [behaviors](/animus/07-behaviors). |
+| `tags` | No | See [appearance](#appearance-text-and-inventory). |
+| `groups` | No | 1-16 [trait group](/animus/18-trait-groups) ids whose shared values the NPC takes before its own. |
+| `owner` | No | Canonical player UUID. |
+| `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat` or `animus:riding`. Unknown module data is kept as written. |
+
+Appearance, inventory, `movement`, `poses` and `rig` fields are described below and on [movement, mounts and riding](/animus/05-movement-mounts-riding) and [rigs and animations](/animus/06-rigs-animations). Health, cooldowns and running behavior state never belong in a definition; Animus does not write them there.
+
+A wrong value names its exact field, for example `$.equipment.head.count: expected integer 1..99`.
+
+## Activation and editing
+
+Create, clone and import produce definitions with `spawned: false`. `/animus spawn <id>` checks the world, the type and the profile name against the running server, then saves the activation. The NPC appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC as dormant and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
+
+```text
+/animus create guard minecraft:player world 0 64 0 town Town Guard
+/animus spawn guard
+/animus inspect guard
+/animus select guard
+/animus edit guard {"name":"Renamed Guard"}
+/animus despawn guard
+```
+
+Management commands require `animus.admin`. `animus.status` is available to everyone. When an administrator clicks an NPC (sneak-click on a rideable NPC), that NPC becomes their selection; ordinary players interact normally and never see selection messages. `spawn`, `despawn`, `inspect` and `delete` accept the selected NPC when the ID is left out. Console commands always need the ID. See [commands and permissions](/animus/02-commands-permissions) for the full list.
+
+`/animus edit` applies a top-level JSON patch: listed fields are replaced, the rest stay, and the revision goes up. An active NPC keeps its health and current position through an appearance-only edit. An edit that changes `position` moves it. Despawning and spawning again starts the NPC with fresh runtime state.
+
+Skins are content-hashed JSON documents in `skins/` holding the texture and signature. When a changed skin reference is missing or invalid, the NPC keeps its last valid look and the field error is reported. Accepted definitions have recovery checkpoints: a broken hand edit found at startup keeps the previous accepted definition and leaves the edited file untouched. Deleting a definition file deletes the NPC. See [storage and recovery](/animus/12-storage-recovery).
+
+### Hand edits apply live
+
+Saving a data file applies it within about a second, without `/animus reload`. This covers `config.toml`, NPCs and the module settings inside them, behaviors, packs, routes, skins, shops, chest GUIs, menus, holograms, text animations, rigs, animations and schematics. Each change goes through the same checks the web editor uses.
+
+Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block ding and see one line per changed key, at most 12 per file:
+
+```text
+[Animus]: Animus Hotloaded: [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
+```
+
+An invalid edit is refused with its field error and the last valid version stays in use. Each NPC file applies on its own: a broken file keeps only its own last valid version, and valid edits to other NPC files still apply. `/animus reload` follows the same rules.
+
+Every `config.toml` key applies live. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work in flight: visible NPCs, viewers, routes, fights, builds, behavior runs, queued actions and file operations above the new cap finish normally, and new work waits until usage is under it. A smaller `viewDistance` despawns NPCs that are now out of range on the next tick. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
+
+These changes need a restart, and their message ends in `[restart required]`:
+
+- `npcs.enabled` on Folia.
+- Adding, removing or replacing a [Java module](/animus/99-java-modules-api) jar.
+- Replacing TLS certificate files at the same paths. Change the path in the settings instead to apply new files live.
+
+Animus's own writes (editor applies, imports, state) are not reported, and `state/`, `backups/`, `logs/` and `imports/` are not watched.
+
+| `[hotload]` key | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` | Watch the data files. When `false`, only `config.toml` is watched. |
+| `sound` | `true` | Play the ding before each message. |
+| `maximumFiles` | `20000` | Files watched at most. |
+| `readsPerPoll` | `256` | Changed files read per 500 ms poll. |
+| `maximumFileBytes` | `4194304` | Larger files are refused. |
+
+## Appearance, text and inventory
+
+These fields are optional. Every viewer sees the same result, and it is rebuilt from the definition after a restart, a rejoin or a chunk reload. A change takes effect through `/animus edit`, a saved file or a reload, which gives viewers a fresh body.
+
+```json
+{
+  "name": "Captain of the Northern Watch",
+  "type": "minecraft:player",
+  "equipment": {
+    "main_hand": {"id": "minecraft:iron_sword"},
+    "head": {"id": "minecraft:iron_helmet", "components": "[damage=12]"},
+    "off_hand": {"id": "minecraft:shield"}
+  },
+  "hologram": {"lines": ["&6Quest giver", "Right-click to talk"]},
+  "nameplate": {"visible": true},
+  "pose": "sitting",
+  "inventory": {"size": 36, "slots": {"0": {"id": "minecraft:bread", "count": 16}}},
+  "owner": "8667ba71-b85a-4004-af54-457a9734eed7"
+}
+```
+
+| Field | Accepted values |
+|---|---|
+| `equipment` | Slots `main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`. Each holds one item. |
+| item | `id` (`namespace:item`), optional `count` (1-99, default 1), optional `components`: the text that follows the item id in `/give`, such as `[enchantment_glint_override=true]`, at most 4096 characters. `imported` holds source item data with no equivalent; it is kept and never read. |
+| `hologram.lines` | At most 16 lines of at most 256 characters each. `&` colour and format codes apply. |
+| `nameplate.visible` | `false` hides the name. Default `true`. |
+| `pose` | `standing` (default). Player bodies also accept `sneaking`, `sleeping`, `swimming` and `sitting`. |
+| `armorStand` | Armor stand bodies only: `small`, `arms`, `basePlate` (default `true`), `invisible`, and `head`, `body`, `leftArm`, `rightArm`, `leftLeg`, `rightLeg` as `[x, y, z]` degrees within ±360. Parts without angles keep the client's default pose. |
+| `inventory` | `size` is a multiple of 9 from 9 to 72; `slots` maps slot numbers below `size` to items. |
+| `owner` | The owning player's UUID. |
+| `tags` | At most 32 distinct labels of 1-32 lowercase letters, digits, `_` or `-`, starting with a letter or digit. The [web editor](/animus/14-web-editor) uses them to find and group NPCs. The server stores them and does not act on them. |
+
+`/animus spawn` checks every equipment item against the running server, so an unknown item or bad component text is refused as `$.equipment.<slot>.id` or `.components`. The [`animus:set-equipment`](/animus/07-behaviors) action replaces a slot until restart or the next definition change.
+
+### Names and text lines
+
+A player name that fits a profile name (16 characters, no `&` codes) stays the normal player nameplate. Longer or coloured player names, every non-player name and all hologram lines appear in one text display that rides the body, with the hologram lines above the name. Placeholders such as `%player%` are not interpreted.
+
+`hologram` also accepts:
+
+| Field | Values |
+|---|---|
+| `billboard` | `center` (default), `fixed`, `vertical` or `horizontal` |
+| `shadowed`, `seeThrough` | Boolean |
+| `viewRange` | 1-512 blocks; the client hides the text farther away |
+| `interpolationDelay`, `interpolationDuration` | 0-1200 ticks |
+| `lineHeight` | 0-4 blocks |
+
+A line may also be an object such as `{"text": "...", "marginTop": 0.25, "marginBottom": 0}`, with margins of up to 4 blocks. With a line height or any margin, each line and the name get their own display, stacked from the bottom: each line sits its bottom margin plus the line height above the one below and adds its top margin, as Citizens holograms do (0.25 blocks when only margins are set).
+
+### Other presentation flags
+
+| Field | Effect |
+|---|---|
+| `glowing` | Outline around the body |
+| `teamColor` | One of the sixteen chat colours; colours the glow and the name |
+| `baby` | Baby form of ageable, zombie, piglin and zoglin bodies |
+| `usingItem` | Main-hand item is raised, as when blocking or drawing a bow |
+| `listed` | A player body shows in the tab list |
+| `gravity` | `false` makes the body hover instead of falling |
+
+### Poses
+
+Sneaking, sleeping and swimming set the body's pose. A sitting player rides a hidden armor stand at its position, so its body appears lower; hits are still measured against the standing body. A sitting NPC cannot also ride another NPC. Named look directions for behaviors are set with `poses`; see [movement](/animus/05-movement-mounts-riding#named-poses).
+
+### Inventory and owner
+
+The inventory is stored data. Nothing renders it and no item moves in or out of it at run time. Modules read it from the definition snapshot, and Java code can use `NpcInventory.of(definition)`. The owner is exposed by `NpcDefinition.owner()`, `/animus inspect` and the definition snapshot, for plugins and modules to use in their own permission rules. Animus management commands still require `animus.admin`.
+
+`/animus inspect` shows the pose, the number of equipped slots and text lines, the owner, and `presentation=unavailable` on a server build that lacks the needed packet support. NPCs still appear there, with their plain body and profile name.
+
+## Interactions
+
+A player's click is checked against the NPC's current state for reach, line of sight, rate and visibility, then fires the cancellable `VirtualNpcInteractionEvent` with `preview=false` on Bukkit. An NPC with the [combat module](/animus/08-combat) takes player hits as combat damage.
+
+## Work and visibility limits
+
+`[npcs]` settings in `config.toml`:
+
+| Setting | Default | Range |
+|---|---:|---|
+| `enabled` | `true` | Boolean |
+| `viewDistance` | 48 | 8-256 blocks |
+| `maximumVisible` | 64 | 1-128 NPCs per viewer |
+| `maximumViewers` | 256 | 1-1024 |
+| `updatesPerTick` | 16 | 1-64 viewers updated per tick |
+| `packetsPerTick` | 32 | 1-1024 NPC packets per tick, shared by the viewers updated (per region on Folia) |
+| `pendingSpawnsPerViewer` | 8 | 1-64 spawns a viewer may have unanswered |
+| `lookUpdatesPerTick` | 32 | 1-1024 look-close NPCs that may turn per tick (per region on Folia) |
+| `simulationPerTick` | 512 | 16-65536 idle fall and rig animation steps per tick (per region on Folia) |
+| `queuePerViewer` | 24 | 4-32 packet operations a viewer may have waiting to send |
+| `degradedIntervalTicks` | 4 | 1-40 updates between two cosmetic updates while a budget runs short |
+
+When a tick has less packet budget than work, updates give way in this order:
+
+1. Despawns go first. Nothing else is sent to a viewer while one of its despawns waits.
+2. Moves, equipment, mounts and new spawns come next.
+3. Cosmetic updates come last: look-close turns, rig bone updates, recording poses, arm swings, dragon wing beats and timed hologram text refreshes such as text animations. They use only the budget left after every viewer's despawns, moves and spawns.
+
+Every update carries the NPC's latest state. An NPC that moves several times, or swings several times, before its viewer's next update sends one move or one swing. A swing that waited longer than half a second is skipped.
+
+Each viewer has at most `queuePerViewer` packet operations waiting to send. Cosmetic updates stop when the queue is three quarters full, and moves and spawns wait for it to drain. A full queue counts as a short packet budget; it never drops the viewer.
+
+After a tick where despawns or moves had to wait, cosmetic updates pause for 20 ticks, and the pause restarts if the budget runs short again. When the idle fall and animation budget (`simulationPerTick`), the route budget or the behavior start budget runs short instead, cosmetic updates and moves of NPCs farther than half of `viewDistance` slow to one update in `degradedIntervalTicks` for 20 ticks. Nearby moves, spawns and despawns keep their full rate, and a distant NPC always moves to where it is now. Animation endings still fire `animation_finished`, and a hologram still redraws at once when it first shows or its NPC moves. `/animus status` shows `presentation=normal`, `presentation=degraded` or `presentation=strained` with a count of deferred cosmetic updates. On Folia each region keeps its own state.
+
+NPCs only appear in chunks the player's client has received. Animus never loads terrain to show an NPC.
+
+## Ender dragon presentation
+
+A `minecraft:ender_dragon` definition has no world entity, no boss bar and no dragon AI. `yaw`, `/animus look` and route facing all mean the direction its head points. It sits with folded wings when resting on solid ground, hovers in place when resting in the air and flaps while moving. Clients may play its normal wing and growl sounds.
+
+Clients strike one of the dragon's eight parts. Animus measures each hit against part positions worked out from the dragon's position and facing, with a small allowance for client animation. The part a client claims to have hit is not trusted, and the dragon's broad 16-block bounds do not count as a hit.
+
+## Preview remote control
+
+On Paper and Spigot, with `packetProofEnabled = true`, an administrator can steer their own player-shaped packet preview body:
+
+```text
+/animus proof control start <entity-id>
+/animus proof control status
+/animus proof control stop
+```
+
+The administrator stays a normal player and is not mounted. Control starts on a fresh movement key press, moves the body at most 0.1 block per 50 ms step, holds it within 8 blocks of where control began and lasts 30 seconds. Releasing the keys stops it. Sneaking, excessive input, a stale connection, lifecycle changes or unavailable terrain end control. Sprint and jump give no extra speed or flight. At most 8 players control a preview at once, one body each. Previews run no routes, behaviors or real combat. To let players ride saved NPCs, use [riding](/animus/05-movement-mounts-riding#riding-an-npc).

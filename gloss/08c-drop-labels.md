@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -210,7 +210,7 @@ A clip has a `trigger`, `durationTicks`, `loop`, and ordered tracks. Triggers ar
 
 ### `script`
 
-The optional modifier compiles expression-driven `offset`, `rotation`, `scale`, `glow` and `visible` outputs, with `phase`, `stateTime` and `impactSpeed` available alongside the motion, fluid, material and stack inputs. It composes over the animation timeline: offsets and rotations add, scales multiply, and a non-zero script glow wins. Scripted offsets are visual only — the pickup entity does not move.
+The optional modifier compiles expression-driven `offset`, `rotation`, `scale`, `glow` and `visible` outputs, with `phase`, `stateTime` and `impactSpeed` available alongside the motion, fluid, material and stack inputs. It composes over the animation timeline: offsets and rotations add, scales multiply, and a non-zero script glow wins. Scripted offsets are visual only. The pickup entity does not move.
 
 A label goes away with the item it belongs to, however the item goes away. Nothing is persisted.
 

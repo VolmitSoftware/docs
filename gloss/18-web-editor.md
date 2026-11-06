@@ -2,7 +2,7 @@
 title: "Web Editor & Sync"
 description: "Use the Gloss web editor and live sync"
 published: true
-date: 2026-11-04T05:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -86,7 +86,7 @@ Preview exact Minecraft rendering, occlusion, sounds, particles and interaction 
 | Connection messages | `connections.json` | [Connection Messages](/gloss/26-connection-messages) |
 | Surfaces | `surfaces/`, one per action bar, boss bar or title | [Velocity Proxy](/gloss/27-velocity#surfaces) |
 
-Creating a singleton — presets, names, entity overlays, damage indicators, Real Drops, tablist, MOTD, connections — opens its existing document instead of a second file the server would not load, so duplication and renaming are unavailable for those. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [Data Files & Hot Reload](/gloss/03-data-files).
+Creating a singleton (presets, names, entity overlays, damage indicators, Real Drops, tablist, MOTD, or connections) opens its existing document instead of a second file the server would not load, so duplication and renaming are unavailable for those. Entity overlays use schema 2, holograms schema 3, bubble styles schema 5, and damage indicators and Real Drops schema 4; see [Data Files & Hot Reload](/gloss/03-data-files).
 
 The preset catalog editor selects one of the supported document collections, edits shared defaults, and creates or removes named presets. **Extends** names a parent in the same collection. Default values and preset values accept nested JSON objects and arrays. Objects merge recursively; an authored array replaces the inherited array. Validation reports missing parents, inheritance cycles, and forbidden identity fields. The catalog always saves as `presets.json`; its revision remains server-owned. Other documents show an **Inheritance → Preset** selector when a catalog is available. Selecting a preset preserves authored overrides; remove an override in Code view to use the inherited value.
 

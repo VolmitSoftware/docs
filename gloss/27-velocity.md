@@ -2,7 +2,7 @@
 title: "Velocity Proxy"
 description: "Manage network tablists, scoreboards, server-list MOTD, screen surfaces, and connection messages on Velocity"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss, velocity"
 editor: markdown
 dateCreated: 2026-09-15T21:20:00.000Z
@@ -103,7 +103,7 @@ Text supports legacy `&` colors, `§` colors, `[RRGGBB]` colors, tokens, and `{{
 | `time.ms`, `time.seconds`, `time.ticks` | Server clock |
 | `connection.from`, `connection.to` | Same backend names as `$from` and `$to` |
 
-Only these names parse — a backend value such as `viewer.world` is a load error. Conditions can also
+Only these names parse. A backend value such as `viewer.world` is a load error. Conditions can also
 use `hasPermission('permission')` or `hasPermission('viewer', 'permission')`, and the string checks
 `contains`, `startsWith`, `endsWith` and `oneOf`.
 
@@ -285,7 +285,7 @@ The included `surfaces/welcome.json` uses `"when": "false"`, so nothing appears 
 
 The text renders once per recipient with the connecting player as the subject, so `$player` and `$server` name them. `$to` is the backend being entered, `$from` the one being left.
 
-A leaving player no longer reports a backend — write `$from`, not `$server`, in a `leave` line.
+A leave line has no current backend. Write `$from`, not `$server`.
 
 Players see their own join and switch lines but never their own leave, and a login that never completed is never announced.
 
@@ -300,8 +300,7 @@ The proxy reads `emoji/` and `animations/` in its data directory. Both folders a
 | `emoji/` | `trigger`, `emoji` in `U+XXXX;` notation, `enabled`, `show` |
 | `animations/` | `mode`, `frameIntervalMs` clamped to 1 to 60000, `frames`, `show` |
 
-`:id:` and `|animation.<id>|` expand anywhere proxy text renders — MOTD, tablist, scoreboards,
-surfaces, connection messages, and link labels. A token Gloss cannot resolve is left exactly as
+`:id:` and `|animation.<id>|` expand in MOTD, tablist, scoreboards, surfaces, connection messages, and link labels. A token Gloss cannot resolve is left exactly as
 written; a hidden animation renders empty. `refreshMillis` bounds the visible frame rate, and the
 MOTD samples an animation frame when its response snapshot refreshes. The client retains that frame until another status request.
 
@@ -377,7 +376,7 @@ Omitted optional fields retain the proxy's existing ping values. `sampleMode: "h
 
 An unknown `type`, a url that is not an http or https address with a host, and an entry with neither `type` nor `label` each fail the load, so the previous configuration stays active.
 
-Gloss sends the list after every backend connection and configuration reload, so the proxy's list is the last one the client received. An explicitly enabled empty `serverLinks.links` list clears the client list. Clients older than 1.21 receive no links. Link ownership is claimed independently of status MOTD ownership. Disabling previously published links clears the client list; the backend can then publish its own list when its ownership lease expires.
+Gloss sends the list after every backend connection and configuration reload, so the proxy's list is the last one the client received. An explicitly enabled empty `serverLinks.links` list clears the client list. Clients older than 1.21 receive no links. Link ownership is claimed independently of status MOTD ownership. Disabling links the proxy already sent clears the client list. The backend can then publish its own list when its ownership lease expires.
 
 ## Commands
 

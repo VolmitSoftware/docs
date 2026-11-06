@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-11-06T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -92,6 +92,19 @@ Pick a project to open its documentation.
           <span>
             <strong class="title">Gloss</strong>
             <span class="d-block text--secondary">Holograms, menus, panels, and live displays</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="flex xs12 sm6 md4 pa-2">
+    <ul class="links-list ma-0">
+      <li class="ma-0">
+        <a href="/animus" class="d-flex align-center">
+          <img src="/home-assets/animus.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
+          <span>
+            <strong class="title">Animus</strong>
+            <span class="d-block text--secondary">JSON-defined NPCs with behaviors, combat, shops, and an editor</span>
           </span>
         </a>
       </li>

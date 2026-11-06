@@ -2,7 +2,7 @@
 title: "API - Entity Protection"
 description: "Protect plugin-owned entities from React entity operations"
 published: true
-date: 2026-10-13T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -24,7 +24,7 @@ boolean protectedEntity = ReactProtection.protect(
 );
 ```
 
-Release your claim when you no longer own the entity:
+Release the claim when the plugin stops owning the entity:
 
 ```java
 ReactProtection.release(entity, this);

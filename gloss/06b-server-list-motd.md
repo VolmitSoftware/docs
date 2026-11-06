@@ -2,13 +2,13 @@
 title: "Server List MOTD"
 description: "Configure server-list responses, request selectors, icons and server links"
 published: true
-date: 2026-11-03T20:45:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
 ---
 
-Server-list messages live in `plugins/Gloss/motd.json` and reload automatically. This page covers the server edition. For proxy setup, see [Velocity Proxy](/gloss/27-velocity).
+Server-list messages live in `plugins/Gloss/motd.json` and reload automatically. These settings are the server edition. For proxy setup, see [Velocity Proxy](/gloss/27-velocity).
 
 `plugins/Gloss/motd.json`:
 
@@ -91,8 +91,7 @@ Status requests are unauthenticated. Hostnames and client protocol numbers are c
 The top-level `favicon` is the server-list icon for every entry. An entry's own `favicon` replaces
 it for that entry. Blank or absent at both levels leaves the vanilla `server-icon.png` in place.
 
-A 64×64 PNG in `plugins/Gloss/images/`. Anything else — a JPEG, a 128×128 image, a path outside
-that folder — is refused and logged, and that entry falls back to the vanilla icon.
+A 64×64 PNG in `plugins/Gloss/images/`. Anything else (a JPEG, a 128×128 image, or a path outside that folder) is refused and logged, and that entry falls back to the vanilla icon.
 
 `icons` at document or entry level defines up to 64 PNG paths. The entry icon set takes precedence, followed by its single `favicon`, the document icon set, and the document `favicon`. Icon selection follows `rotation`: random for `weighted`, first for `first`, and the same sequence/time position for the other modes.
 

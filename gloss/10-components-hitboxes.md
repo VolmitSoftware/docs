@@ -2,7 +2,7 @@
 title: "Components & Hitboxes"
 description: "Build menu buttons, toggles, forms, lists, tabs, and their click areas"
 published: true
-date: 2026-11-04T05:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -26,7 +26,7 @@ Hologram interaction entities count against the `HOLOGRAM` limits in `[visibilit
 
 `show` controls component visibility. A hidden component has no visible icon and no active click target, and returns when its condition passes during a session tick. See [Show conditions](/gloss/13-expressions-placeholders#show-conditions).
 
-Component offsets use menu-relative axes: positive X moves to the viewer's right, positive Y up, and positive Z away from the viewer. Personal menus scale them by `[menus] uiScale`; panels multiply their own scale by `uiScale`. Only component offsets, icon geometry and hitbox geometry scale — the menu-level `offset` does not.
+Component offsets use menu-relative axes: positive X moves to the viewer's right, positive Y up, and positive Z away from the viewer. Personal menus scale them by `[menus] uiScale`; panels multiply their own scale by `uiScale`. Only component offsets, icon geometry and hitbox geometry scale. The menu-level `offset` does not.
 
 Duplicate ids do not reject the file. Gloss keeps the first component, logs each later duplicate, and the dropped one neither renders nor receives clicks.
 
@@ -302,7 +302,7 @@ Invalid hitbox values reject the file:
 
 Without a `hitbox`, or with one that has no `width`, the plane's size and center are measured from the icon: text icons from the glyph width of their widest line and their line count, image icons from their rows and columns, item, block and custom-item icons from a fixed square centered on the drawn icon, and entity icons from their declared `width` and `height`.
 
-Automatic dimensions are multiplied by the icon's `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox is not** — only the effective session scale applies to it. Entity icons have no display style, so their planes use the declared `width` and `height`, defaulting to `1` and bounded to `(0, 64]`.
+Automatic dimensions are multiplied by the icon's `style.scaleX` and `style.scaleY`. **An explicitly sized hitbox is not.** Only the effective session scale applies to it. Entity icons have no display style, so their planes use the declared `width` and `height`, defaulting to `1` and bounded to `(0, 64]`.
 
 ## Hover highlighting
 

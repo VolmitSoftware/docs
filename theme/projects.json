@@ -1139,6 +1139,143 @@
     ]
   },
   {
+    "name": "Animus",
+    "path": "animus",
+    "href": "/animus",
+    "description": "JSON-defined NPCs with behaviors, combat, shops, and an editor",
+    "icon": "/home-assets/animus.png",
+    "color": "#f2557f",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Start here",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Overview",
+                "href": "/animus/00-overview"
+              },
+              {
+                "title": "Installation and compatibility",
+                "href": "/animus/01-installation-compatibility"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/animus/02-commands-permissions"
+              },
+              {
+                "title": "Configuration",
+                "href": "/animus/03-configuration"
+              },
+              {
+                "title": "Migrating from Citizens",
+                "href": "/animus/13-migrating-from-citizens"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "NPCs",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "NPC definitions",
+                "href": "/animus/04-npc-definitions"
+              },
+              {
+                "title": "Movement, mounts, and riding",
+                "href": "/animus/05-movement-mounts-riding"
+              },
+              {
+                "title": "Rigs and animations",
+                "href": "/animus/06-rigs-animations"
+              },
+              {
+                "title": "Behaviors",
+                "href": "/animus/07-behaviors"
+              },
+              {
+                "title": "Combat",
+                "href": "/animus/08-combat"
+              },
+              {
+                "title": "Building",
+                "href": "/animus/09-building"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Interfaces",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Shops",
+                "href": "/animus/10-shops"
+              },
+              {
+                "title": "GUIs, holograms, and menus",
+                "href": "/animus/11-guis-holograms-menus"
+              },
+              {
+                "title": "Web editor",
+                "href": "/animus/14-web-editor"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Operations",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Storage and recovery",
+                "href": "/animus/12-storage-recovery"
+              },
+              {
+                "title": "Folia",
+                "href": "/animus/15-folia"
+              },
+              {
+                "title": "Mod servers",
+                "href": "/animus/16-mod-servers"
+              },
+              {
+                "title": "Debug and React metrics",
+                "href": "/animus/17-debug-react-metrics"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Developers",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Java modules and API",
+                "href": "/animus/99-java-modules-api"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Foundation",
     "path": "foundation",
     "href": "/foundation",

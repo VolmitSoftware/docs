@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-11-04T00:45:36.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -188,8 +188,7 @@ An Insight target can appear beyond the ordinary overlay radius, and the hologra
 
 Import, export, undo and live sync use the singleton id `default`, exported to
 `entity-overlays/default.json`. Sample controls change the preview only, never Adapt or React
-configuration. Check text size and placement in a Minecraft client — the browser preview does not
-reproduce the client renderer. See [Web Editor & Sync](/gloss/18-web-editor).
+configuration. Check text size and placement in a Minecraft client. The browser preview does not reproduce the client renderer. See [Web Editor & Sync](/gloss/18-web-editor).
 
 ## Permission-selected nametags
 

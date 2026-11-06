@@ -2,7 +2,7 @@
 title: "Expressions & Placeholders"
 description: "Use placeholders, conditions, inline expressions, and preview expressions in Gloss"
 published: true
-date: 2026-11-04T05:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -48,8 +48,7 @@ apply. Each line below is one alternative value for the same field.
 ```
 
 `world.time` is Minecraft time of day in ticks; `time.hour` is calendar time. Wrapping the whole
-expression in `{{ }}` is accepted but optional. A raw `%placeholder%` is not a condition — use
-`papi` or `papiNumber`. Drop labels use `presentation.labels.show` in `real-drops/default.json`, which takes the same
+expression in `{{ }}` is accepted but optional. A raw `%placeholder%` is not a condition. Use `papi` or `papiNumber`. Drop labels use `presentation.labels.show` in `real-drops/default.json`, which takes the same
 booleans and expression strings and is normalized to a quoted string.
 
 Invalid syntax or a non-boolean type rejects the document at load. A runtime failure hides that
@@ -333,10 +332,7 @@ the native `server.tps`.
 | `hex(color)` | Converts an expression color to `[RRGGBB]` for the later color stage |
 | `align(text, width, mode)` | Pads visible text to 1–16384 character cells using `left`, `center`/`middle` or `right`, without truncating longer content |
 
-The math, ternary, string, color and list functions below also apply. The animation helpers —
-`marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `scramble`, `odometer` and `wave` —
-are documented with their signatures and limits on
-[Emoji, Text & Animations](/gloss/07-emoji-text-animations#reusable-animation-helpers).
+The math, ternary, string, color and list functions below also apply. The animation helpers (`marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `scramble`, `odometer`, and `wave`) are documented with their signatures and limits on [Emoji, Text & Animations](/gloss/07-emoji-text-animations#reusable-animation-helpers).
 
 Inline expressions update at the consuming surface's refresh rate, and a surface cannot show frames
 between refreshes. Boards refresh every 20 ticks and tablists every 40 by default, so use
@@ -349,7 +345,7 @@ tablist steps. Raw PlaceholderAPI substitution happens after inline expressions,
 A preview expression fills an entire JSON field and can read target state such as furnace cook time.
 It also supports `time.*`, `server.*`, `player.*`, `papi`, `papiNumber` and `metric`; static
 validation and console dumps have no player, so those values need a fallback there. There is no
-`%…%` form — a bare `%` is the modulo operator, and a `%` inside a string is an ordinary character.
+`%…%` form. A bare `%` is the modulo operator, and a `%` inside a string is an ordinary character.
 
 Use `papi('key', 'fallback')` for a PlaceholderAPI expansion, or register a `PreviewStateProvider`
 and read `<namespace>.<key>` for typed live state. See [API: Previews](/gloss/24-api-previews) and
@@ -522,7 +518,7 @@ refresh rather than at load.
 
 ### Built-in variables
 
-The `universal` group — `time`, `blockType` and `customName` — is published in every context. The
+The `universal` group (`time`, `blockType`, and `customName`) is published in every context. The
 `inventory` group, `inventory.size` and `inventory.occupied`, is published whenever the target has an
 inventory. Exactly one category group is published on top of those, chosen from the block state,
 entity or inventory type: `furnace`, `brewing`, `beehive`, `cauldron`, `jukebox`, `inventory` or

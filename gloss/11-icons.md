@@ -2,7 +2,7 @@
 title: "Icons"
 description: "Use text, images, items, blocks, heads, and entities as menu icons"
 published: true
-date: 2026-11-04T01:19:33.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -120,7 +120,7 @@ A `box` adds a measured panel and a complete perimeter around a text block. It f
 | `backgroundArgb` | `#B31B1B22` | Panel color in `#AARRGGBB` format. Zero alpha hides the panel fill |
 | `borderArgb` | `#FFAAAAAA` | Border color in `#AARRGGBB` format. Zero alpha hides the border |
 
-`style.backgroundArgb` is the text display's own background and stays separate from the box colors, so a transparent panel can carry an opaque border. A box uses at most five parts — the inner panel and four perimeter edges — and transparent or zero-width parts allocate none. Boxes apply to text; image icons keep their pixel presentation.
+`style.backgroundArgb` is the text display's own background and stays separate from the box colors, so a transparent panel can carry an opaque border. A box uses at most five parts (the inner panel and four perimeter edges), and transparent or zero-width parts allocate none. Boxes apply to text; image icons keep their pixel presentation.
 
 ## `text`
 
@@ -172,7 +172,7 @@ Text also re-renders when the component opens, when the session rescales after a
 
 Image assets live in `plugins/Gloss/images/`. Paths are relative to that folder and cannot be URLs. Blank, absolute, missing, directory, traversal and symlink-escape paths are rejected, and API paths are limited to 256 characters with no control characters or `:`. Images can be organized in nested folders. Adding, replacing or removing an image refreshes open menus and panels automatically; creating an empty folder does not load an image.
 
-Text rasters default to a maximum of 16 by 16 pixels. Set `[images] rasterMaxDimension` from 1 through 128 to change that limit; larger images require a declared pack glyph or show the missing-image checkerboard. Source files also obey `[images] maxFileBytes`, `maxDimension`, and `maxPixels`. Images prepare in the background, with a checkerboard shown until preparation finishes; open menus and panels refresh automatically. Transparency is binary — any pixel below full alpha becomes a transparent spacer, and JPEG has no alpha channel at all.
+Text rasters default to a maximum of 16 by 16 pixels. Set `[images] rasterMaxDimension` from 1 through 128 to change that limit; larger images require a declared pack glyph or show the missing-image checkerboard. Source files also obey `[images] maxFileBytes`, `maxDimension`, and `maxPixels`. Images prepare in the background, with a checkerboard shown until preparation finishes; open menus and panels refresh automatically. Transparency is binary. Any pixel below full alpha becomes a transparent spacer, and JPEG has no alpha channel.
 
 ## `animatedTextImage`
 
@@ -265,7 +265,7 @@ Provider ids, activation order and the `[items] customItemProviders` allowlist a
 | `width` | finite number greater than 0, at most 64 | no | `1` | Editor silhouette and button/toggle click-plane width in blocks at session scale 1 |
 | `height` | finite number greater than 0, at most 64 | no | `1` | Editor silhouette and button/toggle click-plane height in blocks at session scale 1 |
 
-A `width` or `height` outside that range throws `width must be finite, greater than 0, and at most 64` and rejects the menu file. They size only the click area — they do not resize the entity or create collision.
+A `width` or `height` outside that range throws `width must be finite, greater than 0, and at most 64` and rejects the menu file. They size only the click area. They do not resize the entity or create collision.
 
 The component anchor is the entity's **feet**, not its center. The entity is visible only to the viewer and cannot push or collide with players. Yaw and pitch follow the menu, and living entities stay upright when a panel uses roll, though the anchor and hitbox still rotate.
 

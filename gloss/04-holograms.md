@@ -144,7 +144,7 @@ A presentation can replace `lines`, `style`, `box`, and `particleLayers`. Omitte
 
 `style` and `box` are the shared display contract documented once on [Icons](/gloss/11-icons#display-style-and-boxes): billboard, alignment, shadow, see-through, ARGB background, opacity, line width, paired brightness, view range, shadow size and strength, culling bounds, glow color, independent XYZ scale, and the box panel and border. An explicit partial `style` uses the shared defaults, so include `"billboard": "center"` and `"seeThrough": true` to keep the hologram defaults above.
 
-The `lines` array is the display order — move entries to reorder rows. Boxes disappear with their text, viewer conditions, unloaded worlds or feature disablement.
+The `lines` array is the display order. Move entries to reorder rows. Boxes disappear with their text, viewer conditions, unloaded worlds or feature disablement.
 
 ## Particle layers
 

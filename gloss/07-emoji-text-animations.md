@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -119,7 +119,7 @@ Gloss includes 67 emoji documents. Missing bundled files return after a reload o
 
 ### Replacement order
 
-Gloss applies emoji in file-id order, which matters only when one bare trigger contains another — rename the longer trigger's file so it sorts first. Disabled emoji do not appear in replacement, `/gloss emoji list`, or tab completion.
+Gloss applies emoji in file-id order, which matters only when one bare trigger contains another. Rename the longer trigger's file so it sorts first. Disabled emoji do not appear in replacement, `/gloss emoji list`, or tab completion.
 
 ### Permissions
 
@@ -191,7 +191,7 @@ One JSON file per animation in `plugins/Gloss/animations/`. The id comes from th
 | `frameIntervalMs` | yes | Milliseconds per frame, clamped to `1`..`60000` |
 | `frames` | yes | At least one string, otherwise `animation requires at least one frame`. A `null` entry becomes `""` |
 
-`|animation.rainbow|&lONLINE` colors the text that follows it. Gloss also includes `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer` and `wave`; use their animation tokens or call the matching expression helper below. Extracted files are never overwritten — use `/gloss animations reset name=rainbow` to restore a bundled copy.
+`|animation.rainbow|&lONLINE` colors the text that follows it. Gloss also includes `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `decode`, `odometer` and `wave`; use their animation tokens or call the matching expression helper below. Extracted files are never overwritten. Use `/gloss animations reset name=rainbow` to restore a bundled copy.
 
 An RGB frame expands to a full legacy hex sequence after the pipeline, and every surface receives it as component text.
 
@@ -222,7 +222,7 @@ This timeline scrolls a welcome message, flashes a boost notice, then replaces i
 ], time.seconds) }}
 ```
 
-`marquee`, `typewriter`, `wipe`, `scanner`, `scramble` and `wave` transform characters, so their text argument must be plain single-line text — put color outside it or use the dedicated style arguments. Formatting tokens, multi-code-point sequences such as flags and joined emoji, and PlaceholderAPI tokens are rejected rather than split; resolve placeholders first with `papi(...)` and pass the result in. `scanner` and `wave` styles must start with a legacy color/reset or `[RRGGBB]` and may carry one more formatting code. Text is bounded to 256 characters, or 64 for the per-character helpers, and timeline duration to one hour.
+`marquee`, `typewriter`, `wipe`, `scanner`, `scramble` and `wave` transform characters, so their text argument must be plain single-line text. Put color outside it or use the dedicated style arguments. Formatting tokens, multi-code-point sequences such as flags and joined emoji, and PlaceholderAPI tokens are rejected rather than split; resolve placeholders first with `papi(...)` and pass the result in. `scanner` and `wave` styles must start with a legacy color/reset or `[RRGGBB]` and may carry one more formatting code. Text is bounded to 256 characters, or 64 for the per-character helpers, and timeline duration to one hour.
 
 `align` counts visible code points and ignores legacy and bracket-hex formatting; `middle` is an alias for `center`. Padding is character-cell based, so proportional and custom fonts can still look uneven, and content longer than the requested width is returned whole.
 

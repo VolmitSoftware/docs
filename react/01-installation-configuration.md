@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Install React, configure automatic reloads, connect React Web, and uninstall React"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "react"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -180,7 +180,7 @@ React keeps its configuration, metric history, React Web pairings, and per-playe
 | Pause markers (`react:react-paused`) saved during an interrupted shutdown | AI remains disabled if React cannot restore the entity before removal. Use the first command below |
 | Sleep markers (`react:react-dozing`) saved during an interrupted shutdown | Awareness remains disabled if React cannot restore the entity before removal. Use the second command below |
 | Purge countdown names (`react:react-killer-countdown`) | The countdown stays as the mob's name. Use the third command below |
-| React map items, including copies in item frames | Ordinary filled maps that no longer show React data. Discard them |
+| React map items, including copies in item frames | Ordinary filled maps. They do not show React data. Discard them |
 | Dropped-item bundles with the lore `REACT SUPER STACK` | Ordinary bundles that hold the merged items. Pick them up and empty them like any bundle |
 | `minecraft:random_tick_speed` game rule | React restores it when the governor turns off or the server stops normally. If the server stopped abnormally while the governor was engaged, the reduced value stays saved in that world; set it back to your value. The vanilla default is `3` |
 | Other data under the `react` namespace on entities, such as entity protection claims | Inert. The server keeps it, but nothing reads it |

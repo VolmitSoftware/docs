@@ -2,13 +2,13 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-11-03T22:20:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
 ---
 
-For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The instructions below cover the server edition.
+For proxy tablists, scoreboards, surfaces, connection messages, and MOTD management, see [Velocity Proxy](/gloss/27-velocity). The pages below are the server edition.
 
 Gloss draws text, menus, and item displays in the world and on the HUD: holograms, panels, scoreboards, tablists, chat effects, and the server-list MOTD.
 

@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -192,8 +192,7 @@ existing preview size and depth scaling. Every field is listed under
 [Display style and boxes](/gloss/11-icons#display-style-and-boxes).
 
 Style objects are whole overrides, not field merges: a label with `"style": {"scaleX": 1.2}` uses
-shared defaults for every other field. Style and box fields are typed constants — use the element's
-expression fields for changing text, colors and visibility.
+shared defaults for every other field. Style and box fields are typed constants. Use the element's expression fields for changing text, colors and visibility.
 
 A label accepts `box` for a measured panel and a complete perimeter that resizes with dynamic text
 and follows preview motion, scaling and closure. An explicit `background` overrides
@@ -318,8 +317,7 @@ changes.
 
 A failed element is skipped while opening; a failed live cell becomes transparent and a failed live
 label empty. A document that fails to compile logs `previews/<name>.json: <message>` with the exact
-field path, such as `elements[3].color`, and is skipped — on a hot reload the previously compiled
-version stays live, so a half-saved edit never blanks a preview.
+field path, such as `elements[3].color`, and is skipped. On a hot reload the last compiled version stays live, so a half-saved edit never blanks a preview.
 
 ## State variables
 
@@ -365,7 +363,7 @@ Every preview also has `papi(key, fallback?)`, `papiNumber(key, fallback?)`,
 `metric(key, fallback?)`, `time.ms`, `time.seconds`, `time.ticks`, `server.online`,
 `server.maxPlayers`, `server.tps`, `player.name`, `player.ping`, `player.health` and
 `player.level`. Player values exist for block, entity, ender-chest and locked cards, but not in
-console or static diagnostics — use an explicit typed fallback there. The operator set and general
+console or static diagnostics. Use an explicit typed fallback there. The operator set and general
 function list are on [Expressions & Placeholders](/gloss/13-expressions-placeholders).
 
 A `lang` key the catalog does not declare fails that label with

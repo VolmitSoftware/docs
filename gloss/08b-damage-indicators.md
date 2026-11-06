@@ -2,7 +2,7 @@
 title: "Damage Indicators"
 description: "Show damage and healing numbers beside entities"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -125,7 +125,7 @@ conditions rather than a separate disabled-world list.
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/damage-healing-observer.webm" aria-label="Damage and healing indicators, third person" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-The number is the health actually applied, not the raw event amount — armor, resistance, absorption and other plugins are all accounted for. An event neutralized to zero produces no indicator.
+The number is the health actually applied, not the raw event amount. Armor, resistance, absorption, and other plugins are already included. An event neutralized to zero produces no indicator.
 
 Events on a target during `aggregationTicks` share one net-health sample. Event metadata and the damage or healing direction come from the first admitted event. Opposing health changes cancel within that window; a net change in the opposite direction produces no indicator for that sample. Increasing the window delays the number. New targets are omitted while `maxPendingSamples` is full.
 
@@ -148,7 +148,7 @@ Paper-derived servers provide the exact `event.critical` value. Spigot sets `eve
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/damage-indicators-editor.webm" aria-label="Damage indicator authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-The indicator stage previews damage, healing, criticals, motion, scale and fading against a rigged target. Check the final look in Minecraft — browser text and camera rendering differ from the client.
+The indicator stage previews damage, healing, criticals, motion, scale and fading against a rigged target. Check the final look in Minecraft. Browser text and camera rendering differ from the client.
 
 ## Commands and permissions
 

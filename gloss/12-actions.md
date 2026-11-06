@@ -2,7 +2,7 @@
 title: "Actions"
 description: "Author menu actions, input flows, screen notices, item transactions, state, and world effects"
 published: true
-date: 2026-11-04T01:19:34.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -210,7 +210,7 @@ Playback is positioned at the clicking player and heard only by them. A volume o
 | `x`, `y`, `z` | yes | Finite JSON numbers |
 | `yaw`, `pitch` | yes | Finite JSON numbers, in degrees |
 
-All six destination fields are required; if any is missing or non-finite the action is warned once and dropped, and the rest of the list is kept. The world must already be loaded — Gloss never creates a world, loads a chunk, or falls back to the player's current world. Later actions can run before the teleport finishes, and menu teleport and distance rules still apply at the destination.
+All six destination fields are required; if any is missing or non-finite the action is warned once and dropped, and the rest of the list is kept. The world must already be loaded. Gloss never creates a world, loads a chunk, or falls back to the player's current world. Later actions can run before the teleport finishes, and menu teleport and distance rules still apply at the destination.
 
 ## `connect`
 
@@ -243,7 +243,7 @@ In a [behavior](/gloss/19b-behaviors), `navigate` changes the in-world menu of t
 
 History is per viewer: a stack of menu ids plus the root, which is the first page opened in the flow. `close` ends a personal session, or dismisses that panel view for the viewer.
 
-`back` with an empty history and `home` with no recorded root both do nothing and report no history. A `back` or `home` whose recorded id no longer names a loaded menu leaves the current page up and sends the "menu unavailable" message — that is what you see after a menu file is renamed mid-flow.
+`back` with an empty history and `home` with no recorded root both do nothing and report no history. A `back` or `home` whose recorded id does not name a loaded menu leaves the current page up and sends the "menu unavailable" message. That is what you see after a menu file is renamed mid-flow.
 
 ### Permissions and gates
 
@@ -396,7 +396,7 @@ Glow accepts `viewer`, `subject`, or an entity UUID as `target`, a named text `c
 
 Gloss walks the action list in declaration order, skipping any entry whose trigger is neither `any` nor the exact interaction.
 
-A matching `navigate` **terminates** the list, whether or not the navigation succeeded — a denied permission, a missing menu, a cancelled open event and an empty history all still stop the remaining actions. Because the skip test runs first, a `navigate` bound to an exact trigger only terminates that one click type. A toggle whose chain reaches a `navigate` returns before swapping its icon, so a navigating toggle never changes appearance.
+A matching `navigate` **terminates** the list, whether or not the navigation succeeded. A denied permission, a missing menu, a cancelled open event, and an empty history all still stop the remaining actions. Because the skip test runs first, a `navigate` bound to an exact trigger only terminates that one click type. A toggle whose chain reaches a `navigate` returns before swapping its icon, so a navigating toggle never changes appearance.
 
 An action failure is logged with the menu, component and player, and stops the remaining actions in that component.
 

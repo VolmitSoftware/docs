@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-11-04T05:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -127,7 +127,7 @@ With `[features] menus = false`, personal menus cannot open. Documents stay edit
 
 ## Text inside menus
 
-Menu and panel text runs through the shared viewer-aware pipeline — functions, inline expressions, PlaceholderAPI, emoji, colors, then MiniMessage — before the menu subsystem converts it to a component. Each line of a text icon's `text` is split on `\n`. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
+Menu and panel text runs through the shared viewer-aware pipeline (functions, inline expressions, PlaceholderAPI, emoji, colors, then MiniMessage) before the menu subsystem converts it to a component. Each line of a text icon's `text` is split on `\n`. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
 
 Text resolves for each viewer. `refreshTicks` controls dynamic refreshes from `0` to `1200`, and `0` disables them. A failed refresh keeps the previous text and logs the error.
 
@@ -153,7 +153,7 @@ The top-level `particleLayers` field can target the full menu, one component, te
 
 Use standard JSON. Unknown keys are ignored, so a `"$schema"` member added for editor tooling is harmless. A single object is accepted where an array is expected, so `"components": {…}` parses the same as `"components": [{…}]`; the same holds for `actions`, `trueActions` and `falseActions`.
 
-Gloss validates ids, type values, hitboxes, refresh intervals, icon dimensions and display styles at load. Some missing required fields are reported only when the menu opens. An invalid edit never replaces the working menu — Gloss logs the file and the reason.
+Gloss validates ids, type values, hitboxes, refresh intervals, icon dimensions and display styles at load. Some missing required fields are reported only when the menu opens. An invalid edit never replaces the working menu. Gloss logs the file and the reason.
 
 ## Hot reload
 
@@ -275,7 +275,7 @@ Grant `gloss.open.*` to let a group open everything, or grant individual nodes t
 
 ## The JSON schema
 
-`schema/gloss.schema.json` is an editor schema with `$id` `https://volmit.com/gloss/schema.json`. The server does not read it — map it in your IDE or add a `"$schema"` key, which the runtime ignores. `schema/gloss-preview.schema.json` sits beside it and describes [Container Previews](/gloss/15-container-previews) instead.
+`schema/gloss.schema.json` is an editor schema with `$id` `https://volmit.com/gloss/schema.json`. The server does not read it. Map it in your IDE, or add a `"$schema"` key, which the runtime ignores. `schema/gloss-preview.schema.json` sits beside it and describes [Container Previews](/gloss/15-container-previews) instead.
 
 `/gloss import holoui` copies `plugins/holoui/menus/` into `plugins/Gloss/menus/`. Those menu files load as they are. World-anchored HoloUi boards are Gloss panels. Menu scale is `[menus] uiScale`.
 
