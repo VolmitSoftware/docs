@@ -111,6 +111,10 @@ Shortcuts work anywhere outside a text box:
 
 Edits never overwrite each other, however quickly they follow one another: each field you change is kept and is its own undo step, and typing in one field is one step. Undo and Redo keep 50 steps each per workspace, also after a reload, and their notices say what they reverted, such as "Undid: rename town:baker". The command palette (also **Commands** in the top bar) opens a document by name or id, switches workspace, makes a new document, exports, undoes, redoes and changes the theme: type part of a name, move with the arrow keys and press Enter. In the document list the arrow keys move between documents, and the Visual, Preview, Code and Split tabs move with Left and Right.
 
+### Field notes
+
+A small **i** beside a label or heading holds the note for that field. Hover it or reach it with Tab to read the note, press Escape to hide it, and click it to open the matching section of this wiki. On a touch screen a tap shows the note with a **Docs** link, and a second tap or a tap elsewhere hides it.
+
 ### On a phone
 
 At phone widths the document list becomes a drawer behind **Documents** in the top bar, and the other top bar controls (undo, redo, commands, open, import, export, theme) sit under **More**. Picking a document closes the drawer.
