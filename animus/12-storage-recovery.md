@@ -90,11 +90,11 @@ Animus's journal does not cover outside editors. A text editor saving a file whi
 
 ## Rollback
 
-Every transaction made by a command, an import or the web editor leaves a rollback receipt under `backups/`. Commands name the transaction in their reply:
+Every transaction made by a command, an import or the web editor leaves a rollback receipt under `backups/`. Commands name the transaction in their reply. In game, click the short id to copy the full one, or **[Undo]** to put the rollback command in your chat box; the console prints the full id:
 
 ```none
 /animus delete guard
-Deleted; rollback transaction <transaction-id>
+Deleted guard; tx <transaction-id>
 /animus rollback <transaction-id>
 ```
 

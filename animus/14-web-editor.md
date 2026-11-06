@@ -16,7 +16,9 @@ A workspace lives in the browser and is never uploaded. Start one blank, from th
 
 If the browser cannot keep workspaces (some private windows have no IndexedDB), a banner says so: everything works until the tab closes, so export a zip first. If the browser refuses to store an edit (for example when it is out of storage space for the site), the edit stays on screen and a banner names the cause, with **Save again** and **Export zip**.
 
-Every document is checked against the Animus schemas as you type and has Visual, Preview, Code and Split views. New documents start from a guided first step, such as an NPC from its name, folder, body, skin and position, or a behavior from the greeter, dialogue, patrol, shop, guard or quest template.
+Every document is checked against the Animus schemas as you type and has Visual, Preview, Code and Split views. New documents start from a guided first step, such as an NPC from its name, folder, body, skin and position, or a behavior from the conversation, greeter, dialogue, patrol, shop, guard or quest template.
+
+A list longer than eight entries has a search field at its top: type to narrow it. A list that picks another document, such as an NPC's rig or a route's recording, ends with **+ New** and **Manage**. **+ New rig** opens the new rig form with what you typed in the search as its name and the current folder, and **Create** brings you back with the new rig picked. **Manage rigs** lists every rig. Recordings are made in game, so their list says to run `/animus record start <id>` instead.
 
 A behavior's Visual view reads top to bottom: the document, its variables, its routines as a tree, then its triggers. A collapsed step shows its type and what it does in plain words, such as "Say: Welcome" or "While count < 3". Up and Down move between steps, Right and Left open and close one, and Delete asks before removing it. Wherever a step takes a value (a `set`, a `repeat` count, a `foreach` list, a `return`, a call's arguments) you choose a typed value, a variable of a matching type, an expression, or a template with `{{ }}` holes. Expressions and templates check themselves as you type and offer variables, `player.` and `npc.` facts, event `context.` keys and functions below the field; use the arrow keys and Enter to pick one. An action's argument can also be filled when the step runs: pick From a variable, From an expression or From a template, and the editor writes the placeholder for you. The Server behavior switch in the Document section makes the behavior server-wide: NPC events, `npc` and `relationship` scopes and NPC-only capabilities disappear from the pickers, and timers start at 20 ticks.
 
@@ -49,8 +51,9 @@ Once the workspace has a [trait group](/animus/18-trait-groups), the Trait group
 An NPC's Visual view puts the inspector beside the 3D stage, or under it on a phone. The inspector reads top down, and each part's heading sums it up while closed; on a phone only Identity starts open.
 
 - Identity: name, id, folder, UUID, revision, tags, the groups the NPC lists (in merge order, with Move earlier, Remove and a warning for a group the workspace does not have) and the owner's UUID.
-- Effective, for an NPC with groups: the definition the server runs, one row per field and per module with the group or NPC that set it and a link to that group, plus the whole effective JSON. The 3D stage draws the effective definition, so equipment, holograms and skins from groups show on it.
+- Effective, for an NPC with groups: the definition the server runs, one row per field, per module and per attribute with the group or NPC that set it and a link to that group, plus the whole effective JSON. The 3D stage draws the effective definition, so equipment, holograms and skins from groups show on it.
 - Body: the body type, whether it is spawned, a rig from the workspace (the stage draws it), the pose (only player bodies sit, sleep, swim or sneak), an armor stand's parts and pose angles, and traits such as glowing, team colour, baby and gravity.
+- Attributes: the NPC's [attributes](/animus/04-npc-definitions#attributes). Search to add one; each shows a number field with its range, its vanilla default and what Animus does with it, and a reset that removes it. A value out of range is refused before it is saved. The 3D stage draws the body at its `scale`. A group's editor has the same part.
 - Position: the coordinates and named facings for the `animus:pose` action.
 - Appearance: the skin, equipment by slot, hologram lines with a coloured preview and their style (billboard, line height, view range), and whether the nameplate shows.
 - Behaviour: the behaviors the NPC runs (server-wide behaviors are not offered, since they have no NPC), its route, how it walks, and its stored inventory.
@@ -97,6 +100,41 @@ Chest GUIs, shops, holographic menus, holograms, text animations and the presets
 
 **Import Gloss bundle** and **Export Gloss bundle** read and write Gloss Web workspace files. An exported bundle imports back to the same ids. Gloss folders, titles that are not Animus ids, and images are not kept, and the import lists each one.
 
+### Conversations
+
+A behavior shaped like a conversation opens on its **Conversation** tab, beside Visual. **New conversation** in the sidebar, or in the command palette, starts one: a greeting and a question with two answers.
+
+The tab is a tree. The Start block runs first, and what each answer leads to sits under that answer. A step is one of:
+
+- **NPC**: a line the NPC says, with colour codes and MiniMessage tags. Its menu adds a delay, a sound and an animation.
+- **Asks**: a question with 1 to 8 answers. Each answer has its text, and under its menu a colour, hover text, style and the block it leads to.
+- **If**: a flag, quest stage, permission, item held, relationship flag or expression, with a Yes and a No list.
+- **Does**: an action, such as set flag, give or take an item, run a command, open a shop, play an animation, teleport or start a quest, with the fields the server's capability list gives it.
+- **Go to**: continue at another block, for a loop back.
+- **End**: stop here.
+
+The tab is made for the keyboard:
+
+| Keys | Does |
+| --- | --- |
+| Enter in a line | Adds the next line |
+| Enter in a line ending in `[Yes] [No]` | Turns it into a question with those answers |
+| `/ask`, `/if`, `/do`, `/goto` or `/end`, then Enter, in an empty line | Turns it into that step |
+| Enter in an answer | Adds the next answer |
+| Ctrl+Enter in an answer | Adds what follows it, or jumps there |
+| Backspace in an empty line or answer | Removes it |
+| Alt+Up, Alt+Down | Moves the step or answer |
+| Ctrl+D | Duplicates the step or answer, with copies of what follows it |
+| Up, Down | Moves between fields |
+
+Rows can also be dragged by their handle within the same list. The `{ }` button inserts `{player_name}` or `{npc.name}`; the editor writes `{npc.name}` as a template hole, and in a question it does the same for the player's name.
+
+The tab writes an ordinary behavior. Each block is a routine, a question is `animus:choices`, and each answer that leads somewhere gets a `dialogue_choice` trigger. Ids are made once from the text and then kept, so editing an answer's text later does not rename its routine or trigger. A start other than Command is the behavior's one start trigger: Right-click is an `interaction` trigger, Sneak + right-click adds a routine that checks `context.sneaking`, and Walk near is a `proximity` trigger with its radius. Command adds no trigger; run it with `/animus behaviors run <npc> <behavior>`. A hand-written behavior that uses only these pieces opens the same way. Anything else, such as a loop node, a timer trigger or a binding, stays in Visual, and the Conversation tab names the first field that does not fit.
+
+Problems show under their step: blocks nothing leads to, answers that lead to a missing block, more than 8 answers, text over the server's limits (1,024 characters for a line, 512 for a question, 128 for an answer), and flags or quests no behavior of the namespace sets.
+
+**Preview** beside the tree plays the conversation in the browser: click an answer to follow it, and flip the switch on a condition to take its other branch. On a paired server, **Preview on server** starts the server's preview too. **NPCs** lists every NPC and group in the workspace; tick the ones that should run the conversation and press **Attach** to update their `behaviors` lists in one step, which Undo reverts together.
+
 ### Keyboard and commands
 
 Shortcuts work anywhere outside a text box:
@@ -109,7 +147,7 @@ Shortcuts work anywhere outside a text box:
 | Ctrl+F or `/` | Search the documents in the sidebar |
 | Escape | Close the palette, a menu, the documents drawer or the confirmation you are in |
 
-Edits never overwrite each other, however quickly they follow one another: each field you change is kept and is its own undo step, and typing in one field is one step. Undo and Redo keep 50 steps each per workspace, also after a reload, and their notices say what they reverted, such as "Undid: rename town:baker". The command palette (also **Commands** in the top bar) opens a document by name or id, switches workspace, makes a new document, exports, undoes, redoes and changes the theme: type part of a name, move with the arrow keys and press Enter. In the document list the arrow keys move between documents, and the Visual, Preview, Code and Split tabs move with Left and Right.
+Edits never overwrite each other, however quickly they follow one another: each field you change is kept and is its own undo step, and typing in one field is one step. Undo and Redo keep 50 steps each per workspace, also after a reload, and their notices say what they reverted, such as "Undid: rename town:baker". The command palette (also **Commands** in the top bar) opens a document by name or id, switches workspace, makes a new document, exports, undoes, redoes and changes the theme: type part of a name, move with the arrow keys and press Enter. In the document list the arrow keys move between documents, and the Visual, Preview, Code and Split tabs move with Left and Right. Each kind in the sidebar, and each NPC folder, folds from its header (Enter, or Left and Right); **Collapse all** and **Expand all** sit above the list, and what you fold stays folded for that workspace. In an open list, the arrow keys, Home and End move, typing jumps to a match, Enter picks and Escape closes without a change.
 
 ### Field notes
 
@@ -117,7 +155,7 @@ A small **i** beside a label or heading holds the note for that field. Hover it 
 
 ### On a phone
 
-At phone widths the document list becomes a drawer behind **Documents** in the top bar, and the other top bar controls (undo, redo, commands, open, import, export, theme) sit under **More**. Picking a document closes the drawer.
+At phone widths the document list becomes a drawer behind **Documents** in the top bar, and the other top bar controls (undo, redo, commands, open, import, export, theme) sit under **More**. Picking a document closes the drawer. Lists open as a sheet along the bottom of the screen.
 
 ### More than one tab
 
@@ -135,7 +173,7 @@ Pairing gives one browser a token for one server. Run on the server, in game or 
 /animus editor pair [label] [scopes=a,b] [groups=a,b] [expires=7d]
 ```
 
-The command prints a link. Open it within 10 minutes; it works once. The pairing page shows the server's name and its fingerprint (check it matches `/animus editor status`), the paths it can use and when the code expires, and **Pair** exchanges the link for a token. Turn on **Remember this browser** to keep the token after the tab closes; with it off, the token lasts for that tab only, so another tab asks you to pair again. A link can also be pasted under **Servers** on the editor's home page. A code that expired or cannot be read says so and offers the paste field for a new one.
+The reply has **[Open editor]**, which opens the link, and **[Click to copy]**, which copies it; the console prints the link itself. Open it within 10 minutes; it works once. The second line names the token with **[Revoke]**. The pairing page shows the server's name and its fingerprint (check it matches `/animus editor status`), the paths it can use and when the code expires, and **Pair** exchanges the link for a token. Turn on **Remember this browser** to keep the token after the tab closes; with it off, the token lasts for that tab only, so another tab asks you to pair again. A link can also be pasted under **Servers** on the editor's home page. A code that expired or cannot be read says so and offers the paste field for a new one.
 
 When the pairing is three days or less from expiry, the live bar says how long is left. When the server revokes or expires the token, the live bar shows **Pair again**, which opens a field for the new link.
 
@@ -165,7 +203,7 @@ To import from the editor, pair with the `import` scope, for example `/animus ed
 
 | Command | Effect |
 |---|---|
-| `/animus editor status` | Listener address, relay state and open connections |
+| `/animus editor status` | State, listener port, relay and token count; **[Details]** adds the listener address, open connections, streams, previews and the fingerprint |
 | `/animus editor tokens [page]` | Each token's id, label, scopes, groups, expiry, last use and open connections |
 | `/animus editor revoke <token-id\|all>` | Revoke tokens. Their connections, relayed streams and previews close at once, and requests still waiting to run are refused without reading or writing anything |
 
@@ -239,6 +277,20 @@ A preview shows your drafts to the in-game player who issued the token, and to n
 ### Importing
 
 The editor's **Convert Citizens, Shopkeepers, dtlTraders or Denizen** screen can upload a Citizens `saves.yml`, dtlTraders files, and a Shopkeepers `save.yml` and `config.yml` to a paired server. **Upload and stage** runs the same conversion as `/animus import citizens preview` and shows its review. **Apply** installs the import with every NPC dormant, review categories are accepted one at a time or all at once (**Accept all** asks first), and **Roll back** undoes the import and every acceptance after a confirm. Uploads are limited to 16 MiB. dtlTraders files with names dtlTraders does not use are listed as skipped. See [migrating from Citizens](/animus/13-migrating-from-citizens).
+
+### In-game notices
+
+When the editor changes the server, online players with `animus.editor.notify` (operators by default) hear a short sound and see one chat line saying who changed what, such as:
+
+```
+[Animus]: Brian's editor applied 3 NPCs, 1 behavior (tx 1a2b3c4d)
+```
+
+The player who paired the token gets the notices for that token even without the permission. Notices cover an apply, **Undo last apply**, an import being applied, accepted or rolled back, spawning and despawning from the editor, a completed pairing, a revoked token, and a refused apply, undo, import step or spawn, which plays a low note and names the reason, such as `apply refused: conflict`.
+
+A notice comes once the server has reloaded what changed, so it reports the real result: if the reload refused a file, the line names the number of problems, the hover shows the first one, and the low note plays. Click the `(tx ...)` part to copy the transaction id. Click the rest of the line to put `/animus rollback <transaction-id>` into the chat box without running it.
+
+Changes from one paired browser arrive as one notice when they come close together, so a large import or a burst of applies plays one sound, not one per document. The server log gets one line per notice, and with `/animus debug mode` on, one line per event as it happens. Sounds, chat, the action bar and the log line are set in [`[editor.notify]`](/animus/03-configuration#editornotify).
 
 ## Audit log
 

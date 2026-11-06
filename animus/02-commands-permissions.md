@@ -29,7 +29,17 @@ A wrong or extra value, or an unknown key, is refused with the reason and the co
 
 Help and tab completion list only what you have permission to run. Completion offers bare values only for the next required argument, such as NPC ids, shop ids or behavior ids, and `key=` for the optional ones.
 
-File work from commands, imports, the web editor and Java modules shares one queue. When it is full, a command answers `The Animus file queue is full; retry shortly.` and changes nothing.
+File work from commands, imports, the web editor and Java modules shares one queue. When it is full, a command answers `File queue full; try again in a moment` and changes nothing.
+
+## Replies
+
+Replies are one or two lines. In game, values you may need again are clickable, and the console gets them written out instead:
+
+- A link shows as **[Open]** (or **[Open editor]**) and **[Click to copy]**.
+- A pointer to these pages shows as **[Docs]**.
+- A transaction id shows its first eight characters; click them to copy the full id, or click **[Undo]** to put `/animus rollback <id>` in your chat box.
+- NPC ids and positions in `inspect` and `select` copy themselves when clicked.
+- **[Details]** holds the long form of a status line: hover to read it, click to copy it for a bug report.
 
 ## Permissions
 
@@ -42,6 +52,7 @@ File work from commands, imports, the web editor and Java modules shares one que
 | `animus.ride` | Operators | Riding NPCs whose `animus:riding` module names no permission of its own |
 | `animus.build.donate` | Everyone | `/animus build donate <build>` |
 | `animus.hotload.notify` | Operators | The chime and per-key message when a data file is applied or refused |
+| `animus.editor.notify` | Operators | The sound and chat line when the [web editor](/animus/14-web-editor#in-game-notices) changes the server or is refused. The player who paired the token gets its notices without it |
 
 Feature modules can name their own nodes, such as a `permission` on `animus:riding`, `animus:hire`, a shop, a shop entry or a GUI. Those nodes have no default; grant them with your permission plugin.
 
@@ -51,15 +62,16 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 
 | Command | Effect |
 |---|---|
-| `/animus status` | Runtime state, definition count, the main budgets in effect, and the number of definition files that need repair |
+| `/animus status` | One line: version, platform, NPC and group counts, definition files that need repair, and the runtime state. **[Details]** holds the runtime counters and the main budgets in effect; the console prints them as two more lines |
 | `/animus list [page=1]` | Definitions with id, name and revision, as a paged list |
 | `/animus create <id> <type> <world> <x> <y> <z> <group> <name>` | Create a dormant definition at `npcs/<group>/<id>.json`. `group` is the folder, up to eight levels such as `world/town`, or `group=` for `npcs/` itself. `type` is `namespace:type`; quote a name with spaces |
 | `/animus select <npc>` | Select an NPC. Players only |
 | `/animus selection` | Show your selection. Players only |
-| `/animus inspect <npc>` | Print the definition JSON and its live state: pose, equipment, text lines, owner, mount problems |
+| `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or dormant, groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then the live state, with pose, equipment, text lines, owner and mount problems under **[Details]** |
 | `/animus edit <npc> <patch>` | Merge the top-level fields of a JSON object into the definition and save it as a new revision |
+| `/animus npc attribute <npc> <attribute> [value=]` | Show one [attribute](/animus/04-npc-definitions#attributes) with its source, vanilla default and range, or set it with `value=` and a number, or remove it from the file with `value=reset`. Saves a new revision |
 | `/animus clone <npc> <id>` | Copy a definition under a new id and UUID, dormant |
-| `/animus delete <npc>` | Delete the definition. The reply names a rollback transaction |
+| `/animus delete <npc>` | Delete the definition. The reply names the transaction, with **[Undo]** |
 | `/animus spawn <npc>` | Check the definition against the running server and mark it spawned |
 | `/animus despawn <npc>` | Mark the definition dormant and remove its body |
 | `/animus validate` | Check every definition file without changing anything |
@@ -71,6 +83,7 @@ An administrator also selects an NPC by interacting with it. Saved file changes 
 ```none
 /animus create guard minecraft:player world 0 64 0 town "Town Guard"
 /animus edit guard {"name": "Captain Guard"}
+/animus npc attribute guard scale value=1.5
 /animus spawn guard
 ```
 
@@ -188,10 +201,10 @@ The start options are `anchor`, `rotation`, `mirror`, `offset`, `yoffset`, `patt
 |---|---|
 | `/animus shop status` | Shop catalog and economy state |
 | `/animus shop list` | Loaded shops |
-| `/animus shop open <shop> [player=]` | Open a shop for yourself or another player |
+| `/animus shop open <shop> [player=] [style=]` | Open a shop for yourself or another player; `style=native` or `style=chest` replaces the shop's window style |
 | `/animus shop reload` | Reload shops and chest GUIs |
 | `/animus shop reset <shop> [player=]` | Clear purchase limits and stock counters, for everyone or one player by name or UUID |
-| `/animus shop problems` | Refused shop documents with their reasons |
+| `/animus shop problems` | Refused shop documents with their reasons, and notes about offers the chosen window style cannot show exactly |
 | `/animus shop import preview <folder> [saves=]` | Convert a dtlTraders or Shopkeepers folder under `imports/inbox/` into a staged import |
 | `/animus shop import apply <preview>` | Install a staged shop import |
 | `/animus gui status` | GUI, menu and hologram state |

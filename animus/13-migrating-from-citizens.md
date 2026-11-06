@@ -149,8 +149,9 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 | Equipment and inventory | `equipment` (all eight slots) and `inventory`, with item names, lore, enchantments, damage, custom model data, item model, dye colour, patterns, potions and persistent data written as item components. Item meta with no component is kept in the item's `imported` field. A HorseModifiers saddle or armour fills an empty `saddle` or `body` slot. |
 | Hologram lines | `hologram`, top line first, with margins, line height, view range, billboard, shadow, see-through and interpolation. |
 | Poses, sneaking, sitting, armor stand | `poses` for [`animus:pose`](/animus/07-behaviors#actions), sneaking and sitting poses, armor stand parts and angles. |
-| Glowing, using an item, player-list visibility, scoreboard colour and tags, gravity, baby age | `glowing`, `usingItem`, `listed`, `teamColor`, `tags`, `gravity`, `baby`. |
-| Navigator settings | `movement`: speed, water avoidance, fall distance, pathfinding range, distance margin, stuck handling, flying, step height and opening doors. |
+| Glowing, using an item, player-list visibility, scoreboard colour and tags, gravity, baby age | `glowing`, `usingItem`, `listed`, `teamColor`, `tags`, `gravity`, `baby`. An armor stand without gravity also gets `gravity: false`. |
+| Attribute trait | `attributes`, with the older `generic_scale` and `generic.scale` names read as `scale`. A value outside the vanilla range is clamped with a warning; an id no supported Minecraft version registers is kept for review. |
+| Navigator settings | `movement`: speed, water avoidance, fall distance, pathfinding range, distance margin, stuck handling, flying and opening doors. |
 | `targetable: true` | `targetableByMobs` on `animus:combat`. |
 | `minecraft-ai: true` on a mob with no route | A disabled wander route around its spawn point. |
 | Owner | `owner`, when it is a player. |
@@ -184,7 +185,7 @@ Points move to the centre of their block. Citizens saves the block you clicked, 
 
 ### Look-close
 
-An enabled look-close trait becomes `modules["animus:look-close"]` with its `range`, `lineOfSight` (Citizens' realistic looking) and `whileNavigating` (the opposite of disable-while-navigating). NPC targets become `npcs`, and random looking becomes `randomLook` with its delay and yaw and pitch ranges. It needs no review: the NPC turns to the nearest player once it is spawned. Citizens writes a look-close setting only when it differs from the server's default, so when a save only ever writes `enabled: false`, an unset value means on; the report says when the import assumed this. Head-only, linked-body, per-player and filters are reported and not run.
+An enabled look-close trait becomes `modules["animus:look-close"]` with its `range`, `lineOfSight` (Citizens' realistic looking) and `whileNavigating` (the opposite of disable-while-navigating). NPC targets become `npcs`, and random looking becomes `randomLook` with its delay and yaw and pitch ranges. It needs no review: the NPC turns to the nearest player once it is spawned. Citizens writes a look-close setting only when it differs from the server's default, so when a save only ever writes `enabled: false`, an unset value means on; the report says when the import assumed this. An armor stand is the exception: it keeps its posed facing unless its own save writes `enabled: true`, and its report says so. Head-only, linked-body, per-player and filters are reported and not run.
 
 ### Text
 
@@ -278,14 +279,14 @@ The order does not matter. With both saves present, both stage together. If the 
 
 | Shopkeeper | Becomes |
 | --- | --- |
-| Any shopkeeper | Shop `shopkeepers:shop-<id>` in `shops/shopkeepers/shop-<id>.json`, one trade entry per offer, 45 offers a page. The name becomes the title. |
+| Any shopkeeper | Shop `shopkeepers:shop-<id>` in `shops/shopkeepers/shop-<id>.json`, one trade entry per offer, 45 offers a page. The name becomes the title. The shop opens in the villager trading screen (`"style": "native"`), as Shopkeepers shows it; change `style` to `chest` for the chest window. |
 | Admin shop | Unlimited trades: each recipe's first and second item are the needs, the result item is the gift. `tradePerm` becomes the shop permission. A closed shop (`open: false`) shows its offers and trades nothing. |
 | Selling player shop | An owned shop whose stock is its container. The price becomes the currency items Shopkeepers asks for: high currency first when the price is above the minimum cost, the rest in base currency. |
 | Buying player shop | The player gives the item and gets the price in base currency from the container. |
 | Trading player shop | The player gives the first and second item and gets the result item from the container. |
 | Book player shop | Kept in the source and reported. A book offer copies a book by title, which is not an item-for-item trade. |
 | Citizens object | `modules["animus:shop"]` on the NPC converted from that Citizens NPC, matched by its Citizens UUID (or numeric id). It opens nothing until `accept shops`. |
-| Mob object | A new NPC `npcs/shopkeepers/shopkeeper-<id>.json` of that mob at the shopkeeper's place, despawned until `accept spawn`, with its shop bound. Mob settings (profession, baby, equipment and so on) are kept in `modules["shopkeepers:review"]`. |
+| Mob object | A new NPC `npcs/shopkeepers/shopkeeper-<id>.json` of that mob at the shopkeeper's place, despawned until `accept spawn`, with its shop bound. A villager's profession and level go to `modules["animus:shop"].villager`, which its trading screen title shows. Other mob settings (villager type, baby, equipment and so on) are kept in `modules["shopkeepers:review"]`. |
 | Sign, hanging sign or virtual object | The shop only, with the sign data kept in the shop's `imported` section. Open it with `/animus shop open <shop>` or bind it to an NPC. |
 
 Items are written exactly: Shopkeepers saves each item component as the text the give command reads, and that text becomes the item's `components`. An offer with item data that cannot be written exactly (old Bukkit item meta, components over 4096 characters) shows in the shop, trades nothing, and keeps the data in `imported`; the report lists it. A player shop without an owner or a container also only shows its offers. Owners, members, hire settings and expiry are kept in the shop's `imported` section and not used. Owned shops are described in [container shops](/animus/10-shops#container-shops).
@@ -363,7 +364,7 @@ These are kept in each definition under `modules["citizens:review"]` and in the 
 
 - Waypoints, look-close, text and commands that did not convert, with the reason in the NPC's report.
 - Denizen assignments, triggers, flags and constants as Citizens saved them. The scripts themselves convert with the [Denizen](#denizen) part of the import.
-- Settings with no Animus equivalent, such as armor stand marker and gravity, HorseModifiers colour, style and chest, gradual rotation, attributes other than step height, and Constructor data.
+- Settings with no Animus equivalent, such as the armor stand marker, HorseModifiers colour, style and chest, gradual rotation, attributes no supported Minecraft version registers, and Constructor data.
 - Every trait Animus does not know.
 
 ## Rolling back

@@ -139,12 +139,12 @@ A definition's `movement` object applies wherever the NPC walks a route:
 
 | Field | Values | Meaning |
 |---|---|---|
-| `speed` | 1-5 blocks/second | Used by a route that sets no speed of its own |
+| `speed` | 1-5 blocks/second | Used by a route that sets no speed of its own, instead of the `movement_speed` attribute |
 | `avoidWater` | Boolean | `false` lets a walking route cross water at the surface |
 | `fly` | Boolean | Routes fly |
 | `openDoors` | Boolean | Walking routes go through closed wooden and copper doors, fence gates and upper trapdoors |
-| `stepHeight` | 0-1.5 | Replaces the body's own climb height |
-| `maximumFall` | 0-16 | Replaces the body's own drop height |
+| `stepHeight` | 0-1.5 | Replaces the body's own climb height and the `step_height` attribute |
+| `maximumFall` | 0-16 | Replaces the body's own drop height and the `safe_fall_distance` attribute, counted in levels: a drop onto a slab one level down is a fall of 1 |
 | `pathRange` | 1-256 blocks | Reach of each plan; longer legs are walked in segments |
 | `arrivalMargin` | 0-4 blocks | A point this close counts as reached |
 | `stuck.afterTicks` | 1-12000 | A leg that has not moved closer for this long, or cannot be planned, is stuck |

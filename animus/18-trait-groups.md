@@ -40,7 +40,7 @@ Groups live at `groups/<id>.json` in the Animus data folder (`plugins/Animus/` o
 | `revision` | Yes | Integer of at least 1. |
 | `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Matches the file name. |
 | `description` | No | At most 256 characters. Shown by `/animus groups list`. |
-| `values` | Yes | Any optional definition field: `modules`, `behaviors`, `tags`, `equipment`, `hologram`, `nameplate`, `pose`, `poses`, `movement`, `rig`, `armorStand`, `glowing`, `teamColor`, `baby`, `usingItem`, `listed`, `gravity`, `skin`, and `skins`. |
+| `values` | Yes | Any optional definition field: `modules`, `behaviors`, `tags`, `equipment`, `hologram`, `nameplate`, `pose`, `poses`, `movement`, `rig`, `armorStand`, `glowing`, `teamColor`, `baby`, `usingItem`, `listed`, `gravity`, `attributes`, `skin`, and `skins`. |
 | `values.skins` | No | 1-64 skin hashes. Each NPC takes one of them, chosen from its UUID, so the same NPC always gets the same skin. |
 
 Identity and state fields are refused inside `values`: `schemaVersion`, `revision`, `uuid`, `id`, `group`, `name`, `type`, `spawned`, `position`, `owner`, `migration` and `groups`, for example `$.values.name: not allowed in a group`. A group cannot list other groups. Values are checked with the same rules as an NPC, so a bad item fails the group file, as in `$.values.equipment.head.count: expected integer 1..99`. A group file is at most 256 KiB.
@@ -58,6 +58,7 @@ An NPC lists 1-16 group ids, without repeats. Each must name an existing group f
 The definition an NPC runs with, its effective definition, is built from its groups in list order, then its own fields:
 
 - Objects merge key by key, at every depth. An NPC that sets `"modules": {"animus:look-close": {"range": 6}}` changes only `range` and keeps the rest of the group's look-close settings.
+- `attributes` merge attribute by attribute, and `minecraft:scale` counts as `scale`, so a group may set `scale` and an NPC change only `movement_speed`. The web editor's effective view names the source of each attribute.
 - `behaviors` and `tags` append in order, without duplicates.
 - Every other array and every plain value replaces. Later groups win over earlier ones, and the NPC wins over every group.
 - A `skins` pool sets the NPC's `skin`, unless the NPC sets `skin` itself.
@@ -70,14 +71,17 @@ The effective definition is checked as a whole. A combination that is invalid, s
 
 Saving a group file applies it within about a second, like any [hand edit](/animus/04-npc-definitions#hand-edits-apply-live), and every NPC that lists it is rebuilt with its new values. An invalid group edit is refused with its field error and the last valid version stays in use.
 
-When a group file is deleted, or a group edit makes some NPC's combination invalid, those NPCs keep their last valid effective definition. `/animus inspect` shows `group-problem=` with the reason, `/animus status` counts them as `group-problems=<n>`, and the server log reports each problem once. Restore the group or remove it from the NPCs to clear it.
+When a group file is deleted, or a group edit makes some NPC's combination invalid, those NPCs keep their last valid effective definition. `/animus inspect` shows `group problem:` with the reason, `/animus status` counts them among the file problems, and the server log reports each problem once. Restore the group or remove it from the NPCs to clear it.
 
 ## Inspecting
 
-`/animus inspect <id>` prints the NPC's own JSON. For an NPC with groups it then prints `Effective (groups: town-guards, harbor)`, the effective JSON and one line saying where each field came from:
+`/animus inspect <id>` lists the NPC's groups on its first line. **[JSON]** copies the NPC's own JSON and **[Merged]** the effective JSON. **[Details]** on the second line says where each field came from:
 
 ```none
-from: behaviors<-npc, equipment<-town-guards, modules.animus:look-close<-harbor, teamColor<-harbor
+behaviors from npc
+equipment from town-guards
+modules.animus:look-close from harbor
+teamColor from harbor
 ```
 
 ## Commands
@@ -100,7 +104,7 @@ All of these need `animus.admin`.
 | `assign` | Adds the group to the end of each matching NPC's `groups`. |
 | `unassign` | Removes it. An NPC left with no groups loses the field. |
 
-Give assign and unassign exactly one of `folder=<npc-folder>`, which matches the NPC folder under `npcs/`, `tag=<tag>`, an effective tag, or `ids=a,b`, a comma-separated list of NPC ids in which `@selected` is your selected NPC. Assign and unassign save every matching NPC as one change with one rollback transaction, and refuse the whole change if any result is invalid. The reply reads `assigned 12, unchanged 3; transaction <id>`. A group saved a moment ago is known once its hotload line appears.
+Give assign and unassign exactly one of `folder=<npc-folder>`, which matches the NPC folder under `npcs/`, `tag=<tag>`, an effective tag, or `ids=a,b`, a comma-separated list of NPC ids in which `@selected` is your selected NPC. Assign and unassign save every matching NPC as one change with one rollback transaction, and refuse the whole change if any result is invalid. The reply reads `Assigned watch to 12 NPCs, 3 unchanged; tx <id>`. A group saved a moment ago is known once its hotload line appears.
 
 ```none
 /animus groups assign town-guards folder=world/town

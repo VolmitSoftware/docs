@@ -77,7 +77,7 @@ Saving a data file applies it within about a second, without `/animus reload`. T
 Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block ding and see one line per changed key, at most 12 per file:
 
 ```none
-[Animus]: Animus Hotloaded: [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
+[Animus]: Hotloaded [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
 ```
 
 An invalid edit is refused with its field error and the last valid version stays in use. Each NPC file applies on its own: a broken file keeps only its own last valid version, and valid edits to other NPC files still apply. `/animus reload` follows the same rules.
@@ -160,7 +160,43 @@ A line may also be an object such as `{"text": "...", "marginTop": 0.25, "margin
 | `baby` | Baby form of ageable, zombie, piglin and zoglin bodies |
 | `usingItem` | Main-hand item is raised, as when blocking or drawing a bow |
 | `listed` | A player body shows in the tab list |
-| `gravity` | `false` makes the body hover instead of falling |
+| `gravity` | `false` makes the body hover instead of falling, whatever its `gravity` attribute says |
+
+### Attributes
+
+`attributes` sets vanilla entity attributes by id. Ids may carry the `minecraft:` namespace; `scale` and `minecraft:scale` are the same attribute, and setting both is refused.
+
+```json
+"attributes": {"scale": 1.5, "gravity": 0.02, "movement_speed": 0.3}
+```
+
+Every attribute any supported Minecraft version registers is accepted, and each value must be inside its vanilla range, such as 0.0625-16 for `scale`. An unknown id or a value out of range fails the file with the field named, for example `$.attributes.scale: expected 0.0625..16 for scale`. The generated NPC schema lists every id with its range and vanilla default; the web editor and completion read it from there. `air_drag_modifier`, `below_name_distance`, `bounciness`, `friction_modifier` and `name_tag_distance` exist from Minecraft 26.2; on 26.1.2 they are stored but not sent.
+
+Viewers get the attributes with the body when it spawns, and again whenever a behavior changes one. Only the attributes the body's entity type carries are sent: a pig body has no `attack_damage`, so the client never sees it.
+
+Animus also applies these to its own simulation of the NPC:
+
+| Attribute | Effect | The definition field that wins |
+|---|---|---|
+| `scale` | The body, its hitbox, how far away a click reaches it, the room it needs on paths, its rig bones and its text all grow with it | |
+| `movement_speed` | Walking speed. A player body walks 43.17 times the value in blocks per second, so 0.1 walks 4.3; other bodies walk 44.05 times its square, as vanilla mobs do. Kept within 1-10 blocks per second | A route's own speed, then `movement.speed` |
+| `step_height` | Blocks climbed without a jump, at most 1.5 | `movement.stepHeight` |
+| `jump_strength`, `gravity` | Jump height on paths, at most 3 blocks | |
+| `gravity` | How fast an idle body falls; 0 or less hovers | `gravity: false` |
+| `safe_fall_distance` | Blocks a path may drop, 0-16 | `movement.maximumFall` |
+| `max_health` | Combat maximum health | `defense.maximumHealth` |
+| `armor`, `armor_toughness` | Vanilla armor reduction of combat damage | `defense.armor` or `defense.armorFromEquipment` |
+| `knockback_resistance` | The share of combat knockback ignored; below 0 the NPC takes more | |
+| `attack_damage` | Melee damage | `melee.damage` or `melee.fromEquipment` |
+| `attack_knockback` | Adds half its value to the 0.4 base melee knockback | `melee.knockback` |
+| `attack_speed` | Melee hits per second | `melee.cooldownTicks` |
+| `follow_range` | Combat scan range, at most 256 | `targeting.scanRange` |
+
+`movement_speed` also sets the chase speed of a combat NPC unless `pursuit.speed` is set. The combat fields are in the NPC's `animus:combat` module; see [combat](/animus/08-combat).
+
+Every other attribute is stored and sent but changes nothing for an NPC, because it matters only to a real player or to a vanilla mob brain: `block_interaction_range`, `entity_interaction_range`, `block_break_speed`, `mining_efficiency`, `submerged_mining_speed`, `sneaking_speed`, `sweeping_damage_ratio`, `camera_distance`, `luck`, `waypoint_receive_range`, `waypoint_transmit_range`, `flying_speed`, `tempt_range`, `spawn_reinforcements`, `max_absorption`, `burning_time`, `fall_damage_multiplier`, `explosion_knockback_resistance`, `movement_efficiency`, `water_movement_efficiency`, `oxygen_bonus` and the 26.2 attributes. NPCs do not slow down in water or run out of air, so the two water attributes have nothing to change.
+
+`/animus npc attribute <npc> <attribute> [value=]` shows, sets or resets one attribute in the file; see [commands](/animus/02-commands-permissions#status-and-npc-management). The behavior action `animus:set-attribute` changes one for the running NPC only. Trait groups may set attributes; they merge attribute by attribute, see [trait groups](/animus/18-trait-groups).
 
 ### Poses
 
@@ -200,7 +236,7 @@ When a tick has less packet budget than work, updates give way in this order:
 2. Moves, equipment, mounts and new spawns come next.
 3. Cosmetic updates come last: look-close turns, rig bone updates, recording poses, arm swings, dragon wing beats and timed hologram text refreshes such as text animations. They use only the budget left after every viewer's despawns, moves and spawns.
 
-Every update carries the NPC's latest state. An NPC that moves several times, or swings several times, before its viewer's next update sends one move or one swing. A swing that waited longer than half a second is skipped.
+Every update carries the NPC's latest state. An NPC that moves several times, or swings several times, before its viewer's next update sends one move or one swing. A swing that waited longer than half a second is skipped. A combat attack is not cosmetic: its swing goes out with moves, so it shows on the next update even while cosmetic updates pause, and it is never skipped for waiting.
 
 Each viewer has at most `queuePerViewer` packet operations waiting to send. Cosmetic updates stop when the queue is three quarters full, and moves and spawns wait for it to drain. A full queue counts as a short packet budget; it never drops the viewer.
 

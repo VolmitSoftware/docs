@@ -19,7 +19,7 @@ Saving any data file applies it within about a second, without `/animus reload`.
 Online players with `animus.hotload.notify` hear a note block chime and see one line per changed key, at most 12 per file:
 
 ```none
-[Animus]: Animus Hotloaded: [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
+[Animus]: Hotloaded [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
 ```
 
 An invalid edit is refused with its field error, and the last valid version stays active. Each NPC file applies on its own, so one broken file does not block valid edits to others. `/animus reload` follows the same rules.
@@ -38,7 +38,7 @@ Invalid TOML at startup stops Animus from starting. Animus's own writes are neve
 
 | Key | Default | Meaning |
 |---|---|---|
-| `statusMessage` | `"Hello from Animus"` | Text added to the end of the `/animus status` line. Must not be blank |
+| `statusMessage` | `"Hello from Animus"` | Text shown under **[Details]** in `/animus status`. Must not be blank |
 | `packetProofEnabled` | `false` | Enables the [packet preview tools](/animus/02-commands-permissions#packet-preview-tools) `/animus proof` and `/animus foliaproof`. Ignored on mod servers |
 
 ## [npcs]
@@ -271,6 +271,7 @@ See [building](/animus/09-building).
 |---|---|---|---|
 | `enabled` | `true` | | Run shops |
 | `economy` | `"auto"` | `auto` or `none` | `auto` uses the server's economy when there is one; `none` turns money prices off |
+| `style` | `"chest"` | `chest` or `native` | The window a shop opens when neither the shop nor its NPC chooses: the chest window or the villager trading screen |
 | `priceFormat` | `"#,##0.##"` | Java decimal pattern | How prices are written |
 | `flushMillis` | `2000` | 100-60000 | How long limit and stock counter changes wait before they are written |
 
@@ -323,6 +324,15 @@ Each key replaces one player-facing shop text of at most 512 characters. `&` col
 | `confirmTitle` | `&8Confirm purchase` |
 | `confirm` | `&aConfirm` |
 | `cancel` | `&cCancel` |
+| `tokenPrice` | `&e{price}` |
+| `tokenFree` | `&aFree` |
+| `tokenPays` | `&ePays {price}` |
+| `merchantTitle` | `{title} - {level}` |
+| `level1` | `Novice` |
+| `level2` | `Apprentice` |
+| `level3` | `Journeyman` |
+| `level4` | `Expert` |
+| `level5` | `Master` |
 
 ## [rigs]
 
@@ -373,6 +383,41 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `relayConcurrentRequests` | `64` | 1-1024 | Relayed requests handled at once |
 
 An unknown key in `[editor]` is refused.
+
+### [editor.notify]
+
+What players in game hear and see when the web editor changes the server. See [in-game notices](/animus/14-web-editor#in-game-notices).
+
+| Key | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` | Send notices at all |
+| `chat` | `true` | One chat line per notice; the transaction id copies on click and the line suggests the rollback command |
+| `actionBar` | `false` | The same line on the action bar |
+| `console` | `true` | One log line per notice |
+
+Each event has its own sound under `[editor.notify.sounds.<event>]`, with `sound` (a sound id such as `minecraft:block.note_block.pling`, or `""` for silence), `volume` (0-2) and `pitch` (0.5-2). A missing event or field keeps its default.
+
+| Event | Default sound | Volume | Pitch |
+|---|---|---|---|
+| `apply` | `minecraft:block.note_block.pling` | `0.8` | `1.6` |
+| `rollback` | `minecraft:block.note_block.pling` | `0.8` | `1.0` |
+| `import` | `minecraft:block.note_block.chime` | `0.8` | `1.4` |
+| `spawn` | `minecraft:block.note_block.pling` | `0.6` | `2.0` |
+| `despawn` | `minecraft:block.note_block.pling` | `0.6` | `1.2` |
+| `pair` | `minecraft:entity.experience_orb.pickup` | `0.7` | `1.2` |
+| `revoke` | `minecraft:block.note_block.bass` | `0.8` | `0.8` |
+| `refused` | `minecraft:block.note_block.bass` | `0.9` | `0.5` |
+
+`refused` also plays when a change was written but its reload refused a file.
+
+```toml
+[editor.notify]
+actionBar = true
+
+[editor.notify.sounds.apply]
+sound = "minecraft:entity.experience_orb.pickup"
+pitch = 1.2
+```
 
 ## [hotload]
 

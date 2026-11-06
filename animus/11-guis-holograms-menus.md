@@ -51,7 +51,7 @@ Open a GUI with `/animus gui open <id> [player=]`, with the behavior action `ani
 | `resolution` | `9x1` to `9x6`, `5x1` (hopper) or `3x3` (dropper). Mod servers draw only the `9xN` sizes; a `5x1` or `3x3` window does not open there. |
 | `mask`, `keys` | One row of characters per window row; each character draws the key with that name. A space is empty. |
 | `slots` | Slot number to component. Explicit slots draw over the mask. |
-| `list` | Fills the slots of one mask character with pages of a template. `var` names each entry, `source` is an expression that gives a list, `pageSize` defaults to the area, `refreshTicks` re-reads the source. List cells draw over everything else, as in Gloss. |
+| `list` | Fills the slots of one mask character with pages of a template. `var` names each entry, `source` is an expression that gives a list, `pageSize` defaults to the area, `refreshTicks` re-reads the source. List cells draw over everything else, as in Gloss. A shop that uses the GUI as its [layout](/animus/10-shops#layout-guis) fills the list with its offers instead. |
 | `refresh` | `titleTicks` and `slotsTicks` redraw the window on a timer. `0` turns a timer off. |
 | `show` | A condition. When false, the GUI does not open for that viewer. |
 | `variants` | Replacement title, mask, keys or slots, chosen by the highest `priority` whose `when` is true. Nothing merges. |
