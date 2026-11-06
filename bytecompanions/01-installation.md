@@ -61,18 +61,20 @@ All paths are relative to `plugins/ByteCompanions/`.
 | `languages/.upstream/` | Pristine repository copies and check state used to merge translation updates; managed by the plugin, not for editing. |
 | `languages/language-preferences.properties` | Personal language choices by player UUID. |
 | `companions/<id>.toml` | One companion definition per file. Fresh installs receive `bee`, `copper`, `lantern`, `mushroom`, `myself`, `rainbow`, `scout`, and `warrior`. |
-| `features/attributes/config.toml` | Attribute modifiers by companion. |
-| `features/buffs/config.toml` | Experience, loot, and drop buffs by companion. |
-| `features/decorations/config.toml` | Static decoration placements and their tick settings. |
-| `features/effects/config.toml` | Potion effects by companion. |
-| `features/particles/config.toml` | Particle text format and movement settling thresholds. |
-| `features/particles/icons.toml` | Menu icons for the 34 particle effects. |
-| `features/progression/config.toml` | Level thresholds, XP sources, upgrade tracks, level rewards, and boosters. |
+| `features/attributes.toml` | Attribute modifiers by companion. |
+| `features/buffs.toml` | Experience, loot, and drop buffs by companion. |
+| `features/decorations.toml` | Static decoration placements and their tick settings. |
+| `features/effects.toml` | Potion effects by companion. |
+| `features/particles.toml` | Particle text format, movement settling thresholds, and menu icons for the 34 particle effects. |
+| `features/progression.toml` | Level thresholds, XP sources, upgrade tracks, level rewards, and boosters. |
 | `storage/companions/`, `storage/collections/`, `storage/particles/`, `storage/progression/` | One JSON document per record when `storage.backend` is `json` (the default). |
 | `storage/bytecompanions.db` | The SQLite database when `storage.backend` is `sqlite`. |
 | `<storage.h2.directory>/storage.mv.db` | The embedded H2 database when `storage.backend` is `h2`. |
 | `storage/progression-server-id.txt` | Installation ID used when progression `server-id` is `local`. |
 | `.libs/` | Downloaded libraries, created on first start. |
+| `cache/runtime/` | The unpacked plugin runtime, one jar per plugin build. |
+
+Before 2.0.0 each feature had its own folder, such as `features/buffs.toml`. The plugin moves those files to the flat names above on the next start and keeps your edits; particle settings and icons are joined into `features/particles.toml`.
 | `debug/` | Diagnostic reports written by `/bytecompanions debug dump`. |
 
 Back up `storage/` to keep player state; it holds every collection for the json, sqlite, and h2 backends.

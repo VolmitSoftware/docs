@@ -14,13 +14,13 @@ The `[features]` section of `config.toml` switches seven feature packs on and of
 
 | Switch | Default | File |
 |---|---|---|
-| `features.attributes` | `false` | `features/attributes/config.toml` |
-| `features.buffs` | `false` | `features/buffs/config.toml` |
-| `features.decorations` | `true` | `features/decorations/config.toml` |
-| `features.effects` | `false` | `features/effects/config.toml` |
-| `features.particles` | `true` | `features/particles/config.toml`, `features/particles/icons.toml` |
-| `features.progression` | `false` | `features/progression/config.toml` |
-| `features.boosters` | `false` | `features/progression/config.toml` |
+| `features.attributes` | `false` | `features/attributes.toml` |
+| `features.buffs` | `false` | `features/buffs.toml` |
+| `features.decorations` | `true` | `features/decorations.toml` |
+| `features.effects` | `false` | `features/effects.toml` |
+| `features.particles` | `true` | `features/particles.toml` |
+| `features.progression` | `false` | `features/progression.toml` |
+| `features.boosters` | `false` | `features/progression.toml` |
 
 A disabled pack keeps its saved records and hides its commands and dashboard pages. Every file is validated before a reload, even for a disabled pack, so a bad file is reported while the pack is off. The starter setup menu sets these switches as a group.
 
@@ -30,13 +30,13 @@ Thirty-four built-in effects can be attached to an equipped companion: `angel_ri
 
 Players choose an effect from the dashboard or with `/bytecompanions particles equip <companion> <effect>`, and need `bytecompanions.particle.<effect>` for each one. The choice is saved per companion and survives removing and re-equipping that companion; `particles unequip` clears it. Personal viewer settings and `performance.maximumParticleIntensity` decide how many frames each viewer receives.
 
-`features/particles/icons.toml` holds one `items.<effect>` table per effect with `material`, `name`, `amount`, `lore`, and `custom-model-data` for the menu. `features/particles/config.toml` holds the text format and the movement settling thresholds. Particle choices are saved through the root `storage.backend` beside companions, collections, and progression; see [Configuration](/bytecompanions/03-configuration#storage).
+`features/particles.toml` holds the text format and the movement settling thresholds under `settings`, then one `items.<effect>` table per effect with `material`, `name`, `amount`, `lore`, and `custom-model-data` for the menu. Particle choices are saved through the root `storage.backend` beside companions, collections, and progression; see [Configuration](/bytecompanions/03-configuration#storage).
 
 Companion definitions can also list built-in effects under `animations.post-tracking`; Companion Studio toggles them. With `features.particles` off those entries are skipped.
 
 ## Decorations
 
-A decoration is a companion definition anchored at a fixed location for everyone to see. Add one table per decoration in `features/decorations/config.toml`:
+A decoration is a companion definition anchored at a fixed location for everyone to see. Add one table per decoration in `features/decorations.toml`:
 
 ```toml
 [decorations.spawn_bee]
@@ -63,7 +63,7 @@ Decorations respect `serverRules.hiddenWorlds` and each viewer's visibility sett
 
 ## Attributes
 
-`features/attributes/config.toml` adds attribute modifiers while a companion is equipped. Each entry names an `attribute`, an `amount`, and an `operation` of `ADD_NUMBER`, `ADD_SCALAR`, or `MULTIPLY_SCALAR_1`. The bundled file has only commented examples.
+`features/attributes.toml` adds attribute modifiers while a companion is equipped. Each entry names an `attribute`, an `amount`, and an `operation` of `ADD_NUMBER`, `ADD_SCALAR`, or `MULTIPLY_SCALAR_1`. The bundled file has only commented examples.
 
 ```toml
 [[companions.bee]]
@@ -74,7 +74,7 @@ operation = "ADD_NUMBER"
 
 ## Buffs
 
-`features/buffs/config.toml` changes vanilla rewards while a companion is equipped. Each companion has a `default-priority` and eight `vanilla.<category>` tables: `experience`, `experience-mob`, `experience-block`, `experience-furnace`, `experience-fishing`, `mob-loot`, `block-drops`, and `fishing-loot`. A category has `enabled`, `operation` (`SUM`, `MULTIPLY`, or `ADD_PERCENT`), `value`, and `cooldown` in milliseconds. When several companions buff the same category the higher priority wins. Cooldowns are kept in memory only.
+`features/buffs.toml` changes vanilla rewards while a companion is equipped. Each companion has a `default-priority` and eight `vanilla.<category>` tables: `experience`, `experience-mob`, `experience-block`, `experience-furnace`, `experience-fishing`, `mob-loot`, `block-drops`, and `fishing-loot`. A category has `enabled`, `operation` (`SUM`, `MULTIPLY`, or `ADD_PERCENT`), `value`, and `cooldown` in milliseconds. When several companions buff the same category the higher priority wins. Cooldowns are kept in memory only.
 
 ```toml
 [companions.copper]
@@ -91,7 +91,7 @@ The bundled file gives `copper` +10% block experience, `warrior` +10% mob experi
 
 ## Potion effects
 
-`features/effects/config.toml` applies potion effects while a companion is equipped. Each entry has `effect`, `amplifier`, `priority`, and `stack-mode` (`SUM` or `HIGHEST`). Summed amplifiers are capped at 255. An equal or stronger effect from another source is kept; when a companion effect that replaced a weaker external effect ends, the external effect returns with its remaining time.
+`features/effects.toml` applies potion effects while a companion is equipped. Each entry has `effect`, `amplifier`, `priority`, and `stack-mode` (`SUM` or `HIGHEST`). Summed amplifiers are capped at 255. An equal or stronger effect from another source is kept; when a companion effect that replaced a weaker external effect ends, the external effect returns with its remaining time.
 
 ```toml
 [[companions.mushroom]]

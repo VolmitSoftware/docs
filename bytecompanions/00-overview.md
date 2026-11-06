@@ -12,7 +12,7 @@ ByteCompanions adds cosmetic companions that follow players. Each companion is a
 
 ## What it does
 
-Players browse a collection, equip companions they have permission for, save outfits, name their companions, choose particle effects, and ask a companion to pet, wave, sit, stay, or come back. Companions have no combat, pathfinding, or mounting behavior.
+Players browse a collection, equip companions they have permission for, save loadouts, name their companions, choose particle effects, and ask a companion to pet, wave, sit, stay, or come back. Companions have no combat, pathfinding, or mounting behavior.
 
 Operators get eight starter companions, a setup menu that applies a cosmetic or survival profile, Companion Studio for editing definitions in game, and optional feature packs: attribute modifiers, experience and loot buffs, potion effects, static decorations, companion levels with purchasable upgrades, and timed boosters. Every file under the data folder hot reloads when saved.
 

@@ -32,9 +32,9 @@ IDs that already exist, or that already appear in bonus or progression configura
 | Equipment & Colors | Material, custom model data, and existing item fields per slot; an RGB color for leather items |
 | Movement & Animation | Existing animation parameters per channel plus four presets: formation following, hovering, looking at the owner, and walking swings |
 | Built-in Particles | Toggles for the post-tracking particle effects; colors are fixed |
-| Attribute Bonuses | Attribute, amount, and operation entries in `features/attributes/config.toml` |
-| Potion Bonuses | Effect, amplifier, priority, and stack mode entries in `features/effects/config.toml` |
-| XP & Reward Bonuses | Enabled, operation, value, and cooldown for the eight buff categories in `features/buffs/config.toml` |
+| Attribute Bonuses | Attribute, amount, and operation entries in `features/attributes.toml` |
+| Potion Bonuses | Effect, amplifier, priority, and stack mode entries in `features/effects.toml` |
+| XP & Reward Bonuses | Enabled, operation, value, and cooldown for the eight buff categories in `features/buffs.toml` |
 
 Long encoded head textures still need a text editor. Studio does not change feature switches, progression tracks, upgrade prices, or boosters.
 

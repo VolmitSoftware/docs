@@ -2,7 +2,7 @@
 title: "Brimstone: Launchers and effects"
 description: "Launching, crafting, the seven effects, and cleanup"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, gameplay, effects"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -16,8 +16,8 @@ Hold a launcher in your main hand and left-click the air. A launch needs, in thi
 
 1. `brimstone.launch` and `brimstone.launch.<id>`.
 2. A world allowed by `access.worldMode`.
-3. Permission from [WorldGuard](/brimstone/06-integrations#worldguard), when it applies.
-4. A finished cooldown. The default is 30 ticks.
+3. Permission from [WorldGuard](/brimstone/06-integrations#worldguard) and [other protection plugins](/brimstone/06-integrations#other-protection-plugins), when they apply.
+4. A finished cooldown. The default is 30 ticks, and leaving and rejoining does not reset it.
 5. Enough fuel. The default is one gunpowder, and the `love` launcher uses one redstone.
 6. Capacity under the [entity limits](/brimstone/03-configuration#limits).
 
@@ -43,7 +43,7 @@ Each effect has its own launch sound and presentation. Particle and secondary-en
 | `rainbow` | Horse-jump launch sound, chimes, and pastel particle colors |
 | `water` | Swimming launch sound, dripping water and splash particles, and a swimming sound at detonation |
 
-The `creeper` and `firework` launchers gain extra upward speed at launch. The `creeper` effect spawns one charged creeper per two blocks of radius, rounded up, from one to eight.
+The `creeper` and `firework` launchers gain extra upward speed at launch. The `creeper` effect spawns one charged creeper per two blocks of radius, rounded up, from one to eight. With `effects.creeperAI` off, those creepers stand still and cannot explode until they expire.
 
 The `dj` sequence stops at detonation or after one pass. The full sequence needs a `fuseTicks` of at least 954, and the default 80-tick fuse plays about the first 39 positions, roughly four seconds.
 

@@ -2,7 +2,7 @@
 title: Community utilities
 description: Open Messaging → Utilities for Polls, Voice rooms, Snipe, Component builder, and Emoji & stickers
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: ascendant, discord, utilities
 editor: markdown
 dateCreated: 2026-11-01T00:00:00.000Z
@@ -32,7 +32,7 @@ Bot and webhook messages, private ticket channels, Snipe's ignored channels, log
 
 Build message text, one embed, and up to five HTTPS link buttons, then copy or download Discord message JSON. The preview uses the same renderer as the dashboard's message tools. JSON import validates the supported fields and reports unsupported components instead of silently removing them. Undo and redo keep up to 50 edits.
 
-Embed controls include title, URL, description, color, image, thumbnail, and footer. Remote preview images load only after you select **Load remote preview images**. Exported payloads disable automatic mentions. The draft stays intact while switching Utilities tabs, but is not persisted across a page reload; export it before leaving. This editor does not post to Discord. It does not support Components V2, select menus, or application callback buttons.
+Embed controls include title, URL, description, color, image, thumbnail, and footer. Remote preview images load only after you select **Load images** above the preview. Exported payloads disable automatic mentions. The draft stays intact while switching Utilities tabs, but is not persisted across a page reload; export it before leaving. This editor does not post to Discord. It does not support Components V2, select menus, or application callback buttons.
 
 ## Emoji & stickers
 

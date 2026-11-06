@@ -2,7 +2,7 @@
 title: "Skill - Blocking"
 description: "Blocking XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-06T16:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -45,7 +45,7 @@ Damage to another entity also runs the normal PvP and PvE checks.
 
 1 level · 3 knowledge
 
-Left-click an elytra onto a chestplate, or the reverse, to merge them. One of the two items must be an elytra. Worn, the item is a chestplate on the ground and becomes an elytra once fall distance passes 4 blocks. Swaps are limited to once every 3000 ms. Sneak-drop returns both parts with names, enchantments, and damage. A MultiArmor lore tag marks the merge. Destroying the merged item destroys its contents.
+Left-click an elytra onto a chestplate, or the reverse, to merge them. One of the two items must be an elytra. Worn, the item is a chestplate on the ground and becomes an elytra once fall distance passes 4 blocks. Swaps are limited to once every 3000 ms. Sneak-drop returns both parts with names, enchantments, damage, lore, and other plugins' item data. The worn part keeps its own lore, including custom enchantment lines from other plugins, with the MultiArmor lines added below it; Adapt identifies merged items by item data, not lore. Destroying the merged item destroys its contents.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|

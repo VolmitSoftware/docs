@@ -2,7 +2,7 @@
 title: Volmit Software
 description: Documentation for Volmit Software Minecraft plugins and developer tools
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-06T00:00:00.000Z
 tags: index
 editor: markdown
 dateCreated: 2026-07-31T23:34:19.060Z
@@ -25,6 +25,8 @@ Installation, configuration, commands, and reference material for Volmit plugins
 Pick a project to open its documentation.
 
 - [Axion *Sign-directed mining, harvesting, and item collection*](/axion)
+- [Bastion *Land claims, protection rules, and child plots for rent or sale*](/bastion)
+- [Cache *Kits, keys, and crates with an in-game editor*](/cache)
 - [GlacialRush *Three-faction conquest arenas, equipment kits, and combat tools*](/glacialrush)
 - [Inscribe *Enchantment extraction and enchanted-book application*](/inscribe)
 {.links-list}
@@ -213,7 +215,7 @@ Pick a project to open its documentation.
     <ul class="links-list ma-0">
       <li class="ma-0">
         <a href="/brimstone" class="d-flex align-center">
-          <span class="project-mark mr-4" aria-hidden="true">BR</span>
+          <img src="/home-assets/brimstone.png" alt="" width="52" height="52" class="mr-4" style="object-fit:contain">
           <span><strong class="title">Brimstone</strong><span class="d-block text--secondary">TNT launchers with seven effects, recipes, and fuel costs</span></span>
         </a>
       </li>

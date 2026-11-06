@@ -2,7 +2,7 @@
 title: "Brimstone: Languages"
 description: "Language files, repository updates, custom locales, and placeholders"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, languages"
 editor: markdown
 dateCreated: 2026-11-02T00:00:00.000Z
@@ -26,7 +26,7 @@ The jar contains no other catalogs. These locales install from the default branc
 | `.upstream/` | Last downloaded copy of each repository locale, the English reference, and `upstream.properties` with the repository, branch, revision, and last check; do not edit, the file watcher ignores it |
 | `language-preferences.properties` | Saved personal choices |
 
-Each language file starts with a comment header describing the prefix, color and formatting codes, and the placeholders valid in that file.
+Each language file starts with a comment header in four parts: where to edit the file, the prefix, color and formatting codes, and the placeholders valid in the file. Messages are grouped into tables by area, such as `[command.feedback]`, `[launch.denied]`, `[status]`, and `[gui.setting.gameplay]`, and keys use lowercase words joined by underscores.
 
 ## Repository updates
 
@@ -46,14 +46,15 @@ Any `languages/<id>.toml` whose ID has 2 to 32 letters, digits, `_`, or `-` is a
 An optional `[meta]` table names the language and chooses a base locale:
 
 ```toml
-"no-permission" = "{prefix}&r &7› &7&cArr, ye lack the rank fer that.&r"
+[command.feedback]
+no_permission = "{prefix}&r &7› &7&cArr, ye lack the rank fer that.&r"
 
 [meta]
 name = "Pirate Speak"
 base = "en_US"
 ```
 
-`name` is the picker label, up to 64 characters. `base` names another installed locale whose messages fill in what this file leaves out, up to four levels deep, before English. Most Brimstone keys sit at the top level of the file, so put `[meta]` after them, because TOML assigns every key below a table header to that table.
+`name` is the picker label, up to 64 characters. `base` names another installed locale whose messages fill in what this file leaves out, up to four levels deep, before English. Every Brimstone message sits in a table, so `[meta]` can go before or after them.
 
 ## Editing messages
 
@@ -75,14 +76,21 @@ Messages accept `&0` to `&f`, `&k` to `&r`, RGB colors such as `&#RRGGBB`, and M
 | `{before}` | Value before the change |
 | `{command}` | Command path |
 | `{count}` | Number of entries |
+| `{crafting}` | Crafting recipe state |
+| `{enabled}` | Launch switch state |
 | `{group}` | Message category name |
+| `{hot_reload}` | File watching state |
 | `{id}` | TNT type identifier |
 | `{kept}` | Local edits kept by a language update |
 | `{key}` | Parameter or message key |
+| `{language}` | Server default locale |
 | `{line}` | Message line number |
 | `{locale}` | Locale identifier |
 | `{maximum}` | Maximum accepted value |
+| `{metrics}` | bStats state |
+| `{new}` | Setting value after an editor save |
 | `{number}` | Entry number |
+| `{old}` | Setting value before an editor save |
 | `{page}` | Current page |
 | `{pages}` | Total pages |
 | `{parameter}` | Parameter name |
@@ -92,19 +100,25 @@ Messages accept `&0` to `&f`, `&k` to `&r`, RGB colors such as `&#RRGGBB`, and M
 | `{player}` | Player name |
 | `{plugin}` | Plugin name |
 | `{prefix}` | Styled plugin name from `runtime.prefix` |
+| `{protection}` | Protection plugin check state |
+| `{range}` | Supported Minecraft versions |
 | `{reason}` | Failure reason |
 | `{remaining}` | Time until the next language check is allowed |
+| `{scheduler}` | Scheduler in use |
 | `{secondary}` | Secondary effect count |
 | `{section}` | Language editor section |
+| `{setting}` | Setting path |
 | `{step}` | Editor step |
 | `{target}` | Language selection target |
 | `{type}` | Parameter type |
 | `{types}` | Configured TNT types |
 | `{updated}` | Messages changed by a language update |
+| `{updates}` | Update notice state |
 | `{url}` | Public report URL |
 | `{value}` | Current, default, or raw value |
 | `{variables}` | Placeholders valid for the selected message |
 | `{version}` | Plugin version |
+| `{worldguard}` | WorldGuard integration state |
 {.dense}
 
 ## Related pages

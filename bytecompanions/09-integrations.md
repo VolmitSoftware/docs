@@ -55,7 +55,7 @@ The flags register while the plugin loads, so installing or removing WorldGuard 
 |---|---|
 | Enables | Money costs for upgrades and boosters through a registered economy provider |
 | Without it | Purchases with a `money` cost are unavailable; item-only and free costs still work |
-| Gated by | A `cost.money` value in `features/progression/config.toml` |
+| Gated by | A `cost.money` value in `features/progression.toml` |
 
 On Folia and Canvas the plugin that registers the economy service must declare Folia support, or money purchases stay unavailable. A provider that fails after a possible withdrawal leaves the purchase for review; see [Progression and boosters](/bytecompanions/07-progression-and-boosters#administration-and-payment-review).
 

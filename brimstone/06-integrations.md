@@ -1,14 +1,14 @@
 ---
 title: "Brimstone: Integrations"
-description: "WorldGuard rules and the Volmit suite service"
+description: "WorldGuard rules, other protection plugins, and the Volmit suite service"
 published: true
-date: 2026-11-02T00:00:00.000Z
-tags: "brimstone, integrations, worldguard"
+date: 2026-11-05T00:00:00.000Z
+tags: "brimstone, integrations, worldguard, claims"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
 ---
 
-Brimstone needs no other plugin. WorldGuard adds region protection, and a local service lets other Volmit plugins read Brimstone's state. Brimstone adds no PlaceholderAPI keys.
+Brimstone needs no other plugin. WorldGuard and other protection plugins limit where TNT effects work, and a local service lets other Volmit plugins read Brimstone's state. Brimstone adds no PlaceholderAPI keys.
 
 ## WorldGuard
 
@@ -18,7 +18,9 @@ Brimstone needs no other plugin. WorldGuard adds region protection, and a local 
 | `REQUIRED` | Checks apply | Launches and effects are denied |
 | `DISABLED` | No checks | No checks |
 
-Brimstone looks for WorldGuard when it enables. If WorldGuard is installed but the integration cannot start or a query fails, protected actions are denied and the console logs the exception.
+Brimstone attaches to WorldGuard when it enables and again whenever WorldGuard enables, and it detaches when WorldGuard disables. WorldGuard that is installed but not enabled counts as missing.
+
+If the integration cannot start, or a permission capture or region query fails, the integration becomes degraded and the console logs the exception. While degraded, every WorldGuard check denies, whatever `access.worldGuard` says, until WorldGuard enables again. `/brimstone status` shows the state as ready, absent, degraded, or disabled.
 
 Checks run before launch and at later explosion, block, damage, ignition, and secondary-effect locations. Owned TNT, charged creepers, and fireworks keep the launcher's identity and permissions from the moment of launch. Current region rules apply where the effect happens, including after an entity crosses a region boundary. A later denial does not refund the launch.
 
@@ -40,6 +42,16 @@ Each effect then applies its own flags, which deny only when set to `deny`:
 | Damage to boats and minecarts | `destroy-vehicle` |
 
 Damage to the launching player, hostile mobs, and ambient mobs uses only the starting check. WorldGuard applies its own `mob-damage` and `creeper-explosion` rules to charged-creeper damage as well.
+
+## Other protection plugins
+
+With `access.protectionPlugins` on, Brimstone asks the server's protection plugins whether the launching player could break the block at each spot a TNT effect reaches. This covers claim plugins such as GriefPrevention, Lands, and Towny without a separate integration for each.
+
+The check runs at the launch spot, wherever the TNT flies or explodes, every block an explosion would destroy, fire, creeper and firework spawns, and entities the effects damage. A spot where the player could not break a block is denied, and an explosion keeps only the blocks the player could break.
+
+Only listeners at `MONITOR` priority are skipped, so logging and reward plugins such as CoreProtect, Jobs, and mcMMO do not record these checks as real block breaks. WorldGuard is left out of this check, because `access.worldGuard` applies its own flags. A plugin's own admin bypass works as it does for normal block breaking.
+
+The player must be online for the check. If the player leaves while their TNT is still in flight, its later effects are denied. A protection plugin that throws an exception during the check also denies the effect, and the console logs it once.
 
 ## Volmit suite service
 

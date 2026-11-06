@@ -26,7 +26,7 @@ The command root is `/bytecompanions`. `/companions` and `/bc` are aliases. Runn
 | `/bytecompanions debug dump [upload=true]` | Writes a diagnostic report and uploads it when allowed | Console or player |
 | `/bytecompanions menu [companion]` | Opens the named dashboard; without an ID, the only equipped companion's dashboard, otherwise the collection | Player |
 | `/bytecompanions collection` | Opens the collection with favorite, access, and category filters | Player |
-| `/bytecompanions outfits` | Opens saved outfits | Player |
+| `/bytecompanions loadouts` | Opens saved loadouts | Player |
 | `/bytecompanions interact <pet\|wave\|sit\|stay\|call> [companion]` | Acts on an equipped companion; the ID is required when more than one is equipped | Player |
 | `/bytecompanions edit [companion]` | Opens Companion Studio for a definition, or resumes your draft | Player |
 | `/bytecompanions setup` | Opens the starter setup menu | Player |
@@ -67,8 +67,8 @@ Help is a Director page sized to fit 20 chat lines, sorted by name and filtered 
 | `bytecompanions.command.spawn` | Everyone | Equipping companions the player has access to |
 | `bytecompanions.command.despawn` | Everyone | Removing equipped companions |
 | `bytecompanions.command.settings` | Everyone | Viewer settings; does not need the menu node |
-| `bytecompanions.command.outfits` | Everyone | Saving and wearing outfits; also needs the menu node |
-| `bytecompanions.command.personalize` | Everyone | Personal names, variants, and formations; also needs the menu node and access to the companion |
+| `bytecompanions.command.loadouts` | Everyone | Saving and using loadouts; also needs the menu node |
+| `bytecompanions.command.personalize` | Everyone | Personal names, outfits (variants), and formations; also needs the menu node and access to the companion |
 | `bytecompanions.command.interact` | Everyone | Pet, wave, sit, stay, and call; also needs the menu node |
 | `bytecompanions.command.trial` | Everyone | Private trials of companions, including locked ones; also needs the menu node |
 | `bytecompanions.command.particles.menu` | Everyone | The particle selection menu |
@@ -86,7 +86,7 @@ Help is a Director page sized to fit 20 chat lines, sorted by name and filtered 
 | `bytecompanions.command.transactions.resolve` | Operators | Settling unresolved purchases |
 | `bytecompanions.companion.<id>` | Unset | Equipping, upgrading, and counting one companion as owned |
 | `bytecompanions.particle.<id>` | Unset | Selecting one particle effect |
-| `bytecompanions.variant.<companion>.<variant>` | Unset | Choosing one configured variant |
+| `bytecompanions.variant.<companion>.<variant>` | Unset | Choosing one configured variant, shown to players as an outfit |
 | `bytecompanions.booster.<id>` | Unset | Buying and activating one booster |
 | `volmit.language.self` | Everyone | Shared node also required for a personal language |
 | `volmit.language.admin` | Operators | Server language, message editing, and `language update` across Volmit plugins |

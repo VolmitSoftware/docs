@@ -1,6 +1,6 @@
 ---
 title: "ByteCompanions: Companions and collections"
-description: "The dashboard, collection, outfits, personalization, interactions, trials, viewer settings, and starter setup"
+description: "The dashboard, collection, loadouts, personalization, interactions, trials, viewer settings, and starter setup"
 published: true
 date: 2026-10-25T00:00:00.000Z
 tags: "bytecompanions, companions, collections"
@@ -8,21 +8,34 @@ editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
 ---
 
-This page describes what players do with companions: the menus, outfits, names and variants, actions, private trials, and viewer settings. It ends with the eight starter companions and the operator setup menu.
+This page describes what players do with companions: the menus, loadouts, names and outfits, actions, private trials, and viewer settings. It ends with the eight starter companions and the operator setup menu.
 
 ## Companion definitions
 
 Each `companions/<id>.toml` file defines one companion: its model (`HEAD` or `FULL_BODY`), the menu item under `display.item`, appearance flags and scale, equipment per slot, animations per channel, and optional `display.category` and `variants`. Saving a file applies it through hot reload. `appearance.scale` accepts `-1` for the default or a value above zero.
 
-Categories and variant IDs use 1 to 32 lowercase letters, digits, underscores, or hyphens. A companion without `display.category` is in `general`. A variant has one key, `template`, naming another definition with the same model; it borrows that definition's equipment and animations but not its bonuses. At most 32 variants per companion. A player needs `bytecompanions.variant.<companion>.<variant>` to choose one.
+Categories and variant IDs use 1 to 32 lowercase letters, digits, underscores, or hyphens. A companion without `display.category` is in `general`. Players see variants as outfits in Personalize. At most 32 variants per companion, and a player needs `bytecompanions.variant.<companion>.<variant>` to choose one.
+
+A variant either lists its own `equipment`, with an optional plain `name` of up to 32 characters for the menus, or has one key, `template`, naming another definition with the same model. An equipment variant replaces only the slots it lists and keeps the rest. A template variant borrows that definition's equipment and animations but not its bonuses.
 
 ```toml
 [display]
-category = "nature"
+category = "miniatures"
+
+[variants.gilded]
+name = "Gilded"
+
+[variants.gilded.equipment.HEAD]
+material = "GOLDEN_HELMET"
+
+[variants.gilded.equipment.HAND]
+material = "GOLDEN_SWORD"
 
 [variants.moss]
 template = "mushroom"
 ```
+
+The starter companions include outfits: Gilded and Shadow on `warrior`, Snow Trail and Desert Trail on `scout`, Weathered and Oxidized on `copper`, Brown Cap on `mushroom`, Armored on `myself`, Carved Pumpkin on `lantern`, and Beehive on `bee`. Servers that installed the starters before 2.0.0 keep their existing files, so `/bytecompanions setup` does not add these outfits; copy the `variants` tables from a fresh install instead.
 
 A player needs `bytecompanions.companion.<id>` to equip a companion. `general.companionLimits` caps how many companions, full-body models, and head-only models one player can equip at once. An `exclusive = true` companion cannot share the player with another companion.
 
@@ -53,15 +66,17 @@ Selecting a companion opens its dashboard. From there the player equips or remov
 
 Equip and remove feedback waits for the database write. A failed write keeps the visual change for the session and warns that it may revert after reconnecting. While a player's data is still loading, the menus report it instead of creating an empty record.
 
-## Outfits
+## Loadouts
 
-`/bytecompanions outfits` lists saved outfits. Save current outfit stores the equipped companion IDs with each one's name, variant, particle choice, and formation order. Names use 1 to 32 letters, digits, underscores, or hyphens and are stored in lowercase; saving under an existing name replaces it. `collections.maximumOutfits` caps the count.
+`/bytecompanions loadouts` lists saved loadouts. A loadout stores the equipped companion IDs with each one's name, outfit, particle choice, and formation order. Save current loadout asks for a name in chat; names use 1 to 32 letters, digits, underscores, or hyphens and are stored in lowercase, and saving under an existing name replaces it. `collections.maximumLoadouts` caps the count.
 
-Wearing an outfit rechecks permissions, available definitions, particle access, exclusivity, and companion limits, then replaces the whole selection in one step. A cancelled equip or remove rejects the whole transition. Deleting an outfit has its own confirmation screen.
+Each entry lists its companions. Left-click uses the loadout; right-click opens its details, which show every companion's name, outfit, effect, and formation, with buttons to use it, update it with the companions out now, or delete it. The loadout in use is highlighted. Deleting has its own confirmation screen.
+
+Using a loadout rechecks permissions, available definitions, particle access, exclusivity, and companion limits, then replaces the whole selection in one step. A cancelled equip or remove rejects the whole transition.
 
 ## Personalization
 
-Personalize sets a plain name of up to 32 characters or resets it, picks a permitted variant, and chooses the default, line, grid, or orbit formation with earlier and later buttons to reorder equipped companions. These choices belong to the player and never edit the shared definition. Name prompts arrive in chat, expire after 60 seconds, and accept `cancel`. Changing a name or formation keeps the selected particle effect. Removing a companion keeps its particle choice for the next equip; only explicit particle removal clears it.
+Personalize has four buttons, each showing its current value. Name: left-click to rename (a plain name of up to 32 characters), right-click to reset. Outfit: left-click to choose a permitted variant, right-click to go back to the default. Formation: left-click and right-click step through default, line, grid, and orbit. Place in line: left-click moves the companion forward among equipped companions, right-click moves it back. These choices belong to the player and never edit the shared definition. Name prompts arrive in chat, expire after 60 seconds, and accept `cancel`. Changing a name or formation keeps the selected particle effect. Removing a companion keeps its particle choice for the next equip; only explicit particle removal clears it.
 
 ## Interactions
 

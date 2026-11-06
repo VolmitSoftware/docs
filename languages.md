@@ -2,7 +2,7 @@
 title: "Languages"
 description: "Choose a language, edit messages, and translate any Volmit plugin"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "languages, localization"
 editor: markdown
 dateCreated: 2026-09-19T00:00:00.000Z
@@ -30,7 +30,7 @@ Your personal choice affects only you. Console output and players who have not c
 default. Choices are stored by UUID and survive restarts.
 
 The server default is also a config key, so you can set it before first start. Most plugins call it
-`language`; Iris, ShapedPortals, GamemodeSwitcher, SkyPrime, and Static use `general.language`. Each
+`language`; Brimstone, Iris, ShapedPortals, GamemodeSwitcher, SkyPrime, and Static use `general.language`. Each
 plugin's own localization page names its file.
 
 ## Permissions

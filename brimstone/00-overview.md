@@ -2,7 +2,7 @@
 title: "Brimstone: Overview"
 description: "What Brimstone does and the first things to try"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, overview"
 editor: markdown
 dateCreated: 2026-11-02T00:00:00.000Z
@@ -16,7 +16,7 @@ Each launch costs the launcher item and its fuel, and it must pass permissions, 
 
 1. Run `/brimstone status` to confirm the plugin is running and see the launcher count.
 2. Run `/brimstone give notch <player> 1`, hold some gunpowder for fuel, and left-click the air.
-3. Run `/brimstone config` to change recipes, limits, and launcher settings in game, or edit `config.toml` and save it.
+3. Run `/brimstone config` to change recipes, limits, and launcher settings in game, or edit `brimstone.toml` and save it.
 
 ## Common commands
 

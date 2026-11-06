@@ -2,7 +2,7 @@
 title: "Inscribe"
 description: "Move enchantments from equipment into books and apply enchanted books from the inventory"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "inscribe, enchantments"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -16,7 +16,7 @@ Inscribe moves selected enchantments from equipment into a book and applies ench
 | Minecraft | 26.1 through 26.3 |
 | Java | 25 or newer |
 | Main command | `/inscribe` (`/ins`) |
-| Configuration | `plugins/Inscribe/config.toml` |
+| Configuration | `plugins/Inscribe/inscribe.toml` |
 | Money payments | Optional Vault economy provider |
 
 ## Start here

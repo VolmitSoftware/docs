@@ -2,7 +2,7 @@
 title: "Brimstone: Commands and permissions"
 description: "Command syntax and access controls"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, commands, permissions"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -16,7 +16,7 @@ dateCreated: 2026-10-08T00:00:00.000Z
 |---|---|---|
 | `/brimstone` | Show help | Player or console |
 | `/brimstone list` | List configured launcher IDs | Player or console |
-| `/brimstone status` | Show the version, launcher count, and active TNT and secondary effects | Player or console |
+| `/brimstone status` | Show the main settings, launcher count, active TNT and secondary effects, compatibility, and integration state | Player or console |
 | `/brimstone give <id> <player> [amount]` | Give 1 to 2304 launchers to an online player; items that do not fit drop at their feet | Player or console |
 | `/brimstone clear` | Remove owned TNT and secondary effects | Player or console |
 | `/brimstone config` | Open the settings editor | Player |
@@ -34,7 +34,7 @@ dateCreated: 2026-10-08T00:00:00.000Z
 
 Subcommands may be abbreviated, typed in any case, or slightly misspelled, so `/brimstone clea` runs `clear`. Permissions are checked against the command that actually runs, and tab completion applies the same check.
 
-There is no reload command. Brimstone applies saved changes to `config.toml` and language files on its own; see [file watching](/brimstone/03-configuration#file-watching).
+There is no reload command. Brimstone applies saved changes to `brimstone.toml` and language files on its own; see [file watching](/brimstone/03-configuration#file-watching).
 
 ## Shared Volmit commands
 

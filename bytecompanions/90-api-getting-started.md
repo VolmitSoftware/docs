@@ -63,11 +63,11 @@ All events live in `com.volmit.bytecompanions.api.bukkit.event` and fire on the 
 |---|---|---|
 | `CompanionPlayerLoadEvent` | A player's companion data finished loading | No |
 | `CompanionPlayerUnloadEvent` | A player's companion data is released, on quit or reload | No |
-| `CompanionEquipEvent` | Before a companion is equipped; `preflight()` is `true` for outfit checks that may not change anything | Yes |
+| `CompanionEquipEvent` | Before a companion is equipped; `preflight()` is `true` for loadout checks that may not change anything | Yes |
 | `CompanionUnequipEvent` | Before a companion is removed; `preflight()` as above | Yes |
 | `CompanionSpawnEvent` | A companion's visual is created | No |
 | `CompanionDespawnEvent` | A companion's visual is removed | No |
-| `CompanionSelectionChangedEvent` | After a batch selection change, such as wearing an outfit; carries `previousIds()` | No |
+| `CompanionSelectionChangedEvent` | After a batch selection change, such as using a loadout; carries `previousIds()` | No |
 | `CompanionPlayerInteractEvent` | A player clicked a companion, only with `performance.dispatchInteractEvent` on | No |
 
 `CompanionPlayerInteractEvent` fires on the companion owner's thread, which may differ from the clicking player's. Read the clicker from the immutable `actor()` snapshot; `player()` is live and must be used on that player's own thread. `CompanionSelectionChangedEvent` can precede the database write, so it is not a receipt that the selection was saved.

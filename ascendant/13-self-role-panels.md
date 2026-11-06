@@ -2,7 +2,7 @@
 title: Self-role panels
 description: Let members choose community roles with eligibility rules and optional expiry
 published: true
-date: 2026-11-05T06:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: ascendant, community, roles
 editor: markdown
 dateCreated: 2026-10-29T06:00:00.000Z
@@ -23,6 +23,8 @@ Turn on **Members can use this panel** to make it available. Turn on **Members c
 ## Save and publish
 
 One button saves every panel and sends each changed, turned-on panel to Discord. Its label names the result: **Save and post panel** for a panel that has no message yet, **Save and update panel** for one that does. A panel that is still in its original channel is updated in place, so members keep their roles and its buttons keep working. Moving a panel to another channel posts a new message there, and the old message's buttons stop working. If the panel's message was deleted, a new one is posted. Turned-off panels are saved without posting. **Discard changes** returns every panel to its saved version.
+
+Discord lists messages in the order they were posted, so a panel cannot be moved up or down in place. To make a panel the newest message in its channel, save any changes and select **Post again at the bottom** beside the preview. Ascendant posts a fresh copy, tracks it, and deletes the old message. Members keep their roles, but links to the old message stop working. If the old message cannot be deleted, the panel shows a reminder to delete it in Discord.
 
 Members receive private confirmations. An old or unrecognized control explains that the panel is no longer active. The bot requires access to the destination and **Manage Roles**, with its highest role above the roles it assigns.
 

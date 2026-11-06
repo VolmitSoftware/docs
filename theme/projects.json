@@ -67,6 +67,138 @@
     ]
   },
   {
+    "name": "Bastion",
+    "path": "bastion",
+    "href": "/bastion",
+    "description": "Land claims, protection rules, and child plots for rent or sale",
+    "mark": "B",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Start here",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Installation",
+                "href": "/bastion/01-installation"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/bastion/02-commands"
+              },
+              {
+                "title": "Integrations and languages",
+                "href": "/bastion/03-integrations-languages"
+              },
+              {
+                "title": "Protection settings",
+                "href": "/bastion/04-protection-settings"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Reference",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Claim welcome messages",
+                "href": "/bastion/05-claim-welcome-messages"
+              },
+              {
+                "title": "Notification inbox",
+                "href": "/bastion/06-notification-inbox"
+              },
+              {
+                "title": "Public directory",
+                "href": "/bastion/07-public-directory"
+              },
+              {
+                "title": "Capabilities",
+                "href": "/bastion/08-feature-map"
+              },
+              {
+                "title": "Java integration",
+                "href": "/bastion/09-api"
+              },
+              {
+                "title": "Shared language guide",
+                "href": "/languages"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cache",
+    "path": "cache",
+    "href": "/cache",
+    "description": "Kits, keys, and crates with an in-game editor",
+    "mark": "C",
+    "group": "Plugins",
+    "sections": [
+      {
+        "title": "Start here",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Installation and compatibility",
+                "href": "/cache/01-installation-compatibility"
+              },
+              {
+                "title": "Commands and permissions",
+                "href": "/cache/02-commands-permissions"
+              },
+              {
+                "title": "Kits and rewards",
+                "href": "/cache/03-kits-rewards"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Reference",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Keys and displays",
+                "href": "/cache/04-keys-displays"
+              },
+              {
+                "title": "Configuration and languages",
+                "href": "/cache/05-configuration-languages"
+              },
+              {
+                "title": "Delivery and recovery",
+                "href": "/cache/06-delivery-recovery"
+              },
+              {
+                "title": "Feature reference",
+                "href": "/cache/07-feature-map"
+              },
+              {
+                "title": "Developer API",
+                "href": "/cache/08-api"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "GlacialRush",
     "path": "glacialrush",
     "href": "/glacialrush",
@@ -969,6 +1101,10 @@
               {
                 "title": "Resource Packs & Glyph Fonts",
                 "href": "/gloss/28-resource-packs"
+              },
+              {
+                "title": "Leaderboards",
+                "href": "/gloss/29-leaderboards"
               }
             ]
           }
@@ -1132,10 +1268,6 @@
               {
                 "title": "Diagnostics",
                 "href": "/bytecompanions/10-diagnostics"
-              },
-              {
-                "title": "Feature map",
-                "href": "/bytecompanions/11-feature-map"
               },
               {
                 "title": "API getting started",
@@ -1582,7 +1714,7 @@
     "path": "brimstone",
     "href": "/brimstone",
     "description": "TNT launchers with seven effects, recipes, and fuel costs",
-    "mark": "BR",
+    "icon": "/home-assets/brimstone.png",
     "color": "#ff6b6b",
     "group": "Plugins",
     "sections": [

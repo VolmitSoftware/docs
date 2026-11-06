@@ -2,7 +2,7 @@
 title: Ascendant
 description: Discord community management and plugin publishing
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-06T16:00:00.000Z
 tags: ascendant, discord
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
@@ -21,7 +21,7 @@ Ascendant combines a Discord community bot, administration dashboard and Scribe 
 - [Pet equipment *Adventure accessories and cosmetic appearances*](/ascendant/07-pet-equipment)
 - [Plugin workspace *Releases, feedback, support and metrics by plugin*](/ascendant/08-plugin-workspace)
 - [Achievements *Permanent badges and milestone rewards*](/ascendant/09-achievements)
-- [Beta storage and downloads *Quotas, transfer totals and access history*](/ascendant/10-beta-storage-reporting)
+- [Beta build history, storage and downloads *Build numbers, GitHub changes, retention, quotas and download totals*](/ascendant/10-beta-storage-reporting)
 - [Alerts and analytics *Category routing, escalation and release annotations*](/ascendant/11-alerts-analytics)
 - [Message library *Saved templates, previews and revision history*](/ascendant/12-message-library)
 - [Self-role panels *Community choices, eligibility and temporary roles*](/ascendant/13-self-role-panels)

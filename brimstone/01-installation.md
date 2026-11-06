@@ -2,7 +2,7 @@
 title: "Brimstone: Installation"
 description: "Requirements, first start, file locations, updating, and removal"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, installation"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -32,7 +32,7 @@ A separate VolmLib plugin is not required.
 
 ## First start
 
-Brimstone downloads its runtime libraries, and later starts reuse that cache. It then writes `config.toml` with default settings and `languages/en_US.toml` from its built-in English messages. Other languages download when [first selected](/brimstone/04-languages).
+Brimstone downloads its runtime libraries, and later starts reuse that cache. It then writes `brimstone.toml` with default settings and `languages/en_US.toml` from its built-in English messages. Other languages download when [first selected](/brimstone/04-languages).
 
 ## Files
 
@@ -40,7 +40,7 @@ All paths are relative to `plugins/Brimstone/`.
 
 | Path | Purpose |
 |---|---|
-| `config.toml` | Server settings and launcher definitions |
+| `brimstone.toml` | Server settings and launcher definitions |
 | `languages/<locale>.toml` | Editable messages for one locale |
 | `languages/.upstream/` | Last downloaded copy of each repository locale, managed by the plugin |
 | `languages/language-preferences.properties` | Saved personal language choices |
@@ -48,7 +48,7 @@ All paths are relative to `plugins/Brimstone/`.
 
 ## Updating
 
-Stop the server, replace the jar, and start it again. Your `config.toml` and language edits stay in place, and new English messages are added to `languages/en_US.toml`. Prefer a full restart over unloading the plugin while the server runs.
+Stop the server, replace the jar, and start it again. Your `brimstone.toml` and language edits stay in place, and new English messages are added to `languages/en_US.toml`. Prefer a full restart over unloading the plugin while the server runs.
 
 When a newer release exists on GitHub, players with `brimstone.update` are told at startup. See [update notices](/brimstone/07-diagnostics#update-notices).
 

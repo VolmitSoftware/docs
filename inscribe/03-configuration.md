@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
 ---
 
-Configuration lives at `plugins/Inscribe/config.toml`. Open `/inscribe config` for the shared in-game editor, or edit the TOML file directly.
+Configuration lives at `plugins/Inscribe/inscribe.toml`. Open `/inscribe config` for the shared in-game editor, or edit the TOML file directly.
 
 | Setting | Default | Behavior |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ Configuration lives at `plugins/Inscribe/config.toml`. Open `/inscribe config` f
 
 ## Enchantment policies
 
-Rules in `enchantments` use namespaced enchantment IDs. Each rule has `enabled`, `cost`, `perLevel`, and `currency`. Enchantments without a rule use the `pricing` extraction defaults. The default rules disable `minecraft:binding_curse` and `minecraft:vanishing_curse`.
+Rules in `enchantments` use namespaced enchantment IDs. Each rule has `enabled`, `cost`, `perLevel`, and `currency`. Enchantments without a rule use the `pricing` extraction defaults. The default rules disable `minecraft:binding_curse` and `minecraft:vanishing_curse`. The generated file explains the four options once, above the first rule.
 
 ```toml
 [enchantments."minecraft:sharpness"]
@@ -55,9 +55,9 @@ Costs must be between 0 and 1,000,000, and experience costs must be whole points
 
 ## Reload and editing
 
-Inscribe has no reload command. With `hotReload.enabled` on, Inscribe checks `config.toml` and the language files at the configured interval, and a changed file applies once it has stayed unchanged for the cooldown. Edits made while hot reload is off are not applied when it is turned back on. They apply at the next restart or the next file change. Settings-editor changes always apply immediately.
+Inscribe has no reload command. With `hotReload.enabled` on, Inscribe checks `inscribe.toml` and the language files at the configured interval, and a changed file applies once it has stayed unchanged for the cooldown. Edits made while hot reload is off are not applied when it is turned back on. They apply at the next restart or the next file change. Settings-editor changes always apply immediately.
 
-Inscribe parses and validates a file before using it. An invalid file keeps the working settings and logs one SEVERE line with the file, the reason, and the stack trace. An invalid `config.toml` at server start stops Inscribe from enabling. Open transfer menus close only when the settings actually change, so language edits and unchanged saves leave them open. A save from the editor is rejected if another edit changed the value while the editor was open.
+Inscribe parses and validates a file before using it. An invalid file keeps the working settings and logs one SEVERE line with the file, the reason, and the stack trace. An invalid `inscribe.toml` at server start stops Inscribe from enabling. Open transfer menus close only when the settings actually change, so language edits and unchanged saves leave them open. A save from the editor is rejected if another edit changed the value while the editor was open.
 
 The editor's root page lists the eight sections, and each section shows its settings with translated names and descriptions. Open Enchantment policies to browse existing rules. Each rule shows an English name built from its namespaced ID, such as Binding Curse for `minecraft:binding_curse`, with the namespace in parentheses for enchantments outside `minecraft`. Material and lore lists use the shared chat input. The server-language entry under General opens the shared chat selector. Material IDs, enchantment IDs, and currency values keep their canonical spelling.
 

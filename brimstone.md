@@ -2,13 +2,15 @@
 title: "Brimstone"
 description: "TNT launchers with seven effects, crafting recipes, fuel costs, and entity limits"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, tnt, folia"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
 ---
 
-Brimstone adds custom TNT that players launch by left-clicking the air. Operators set each launcher's effect, recipe, fuel cost, and explosion in `config.toml` or an in-game editor.
+![Brimstone](/home-assets/brimstone.png =96x){.align-center}
+
+Brimstone adds custom TNT that players launch by left-clicking the air. Operators set each launcher's effect, recipe, fuel cost, and explosion in `brimstone.toml` or an in-game editor.
 
 | | |
 |---|---|
@@ -16,9 +18,9 @@ Brimstone adds custom TNT that players launch by left-clicking the air. Operator
 | Minecraft | 26.1 through 26.3, including patch releases |
 | Java | 25 or newer |
 | Main command | `/brimstone` (`/brim`) |
-| Config file | `plugins/Brimstone/config.toml` |
+| Config file | `plugins/Brimstone/brimstone.toml` |
 | Default launchers | `notch`, `creeper`, `firework`, `love`, `dj`, `rainbow`, `water` |
-| Optional plugin | WorldGuard |
+| Optional plugins | WorldGuard, and any claim or protection plugin that controls block breaking |
 
 ## Start here
 
@@ -33,7 +35,7 @@ Brimstone adds custom TNT that players launch by left-clicking the air. Operator
 - [Commands and permissions *Every command and permission node*](/brimstone/02-commands-permissions)
 - [Configuration *Every setting, the editor, and file watching*](/brimstone/03-configuration)
 - [Brimstone languages *Language files, custom locales, and placeholders*](/brimstone/04-languages)
-- [Integrations *WorldGuard rules and the Volmit suite service*](/brimstone/06-integrations)
+- [Integrations *WorldGuard, other protection plugins, and the Volmit suite service*](/brimstone/06-integrations)
 - [Diagnostics *Status, debug reports, bStats, update notices, and console messages*](/brimstone/07-diagnostics)
 - [Feature map *Implemented, partial, and planned features*](/brimstone/08-feature-map)
 {.links-list}

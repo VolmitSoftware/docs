@@ -112,7 +112,7 @@ World names must match exactly and must not be blank.
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `collections.maximumOutfits` | `8` | Maximum saved outfits per player, from 1 to 32. Lowering it keeps existing outfits. |
+| `collections.maximumLoadouts` | `8` | Maximum saved loadouts per player, from 1 to 32. Lowering it keeps existing loadouts. |
 | `collections.trialSeconds` | `30` | Private locked-companion preview duration, from 5 to 120 seconds. |
 | `collections.personalityEnabled` | `true` | Allow pet, wave, sit, stay, and call interactions and the dashboard actions. |
 | `collections.idleReactions` | `true` | Allow occasional idle reactions while a companion is stationary. |
@@ -121,13 +121,13 @@ World names must match exactly and must not be blank.
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `features.attributes` | `false` | Enable companion attribute modifiers from `features/attributes/config.toml`. |
-| `features.buffs` | `false` | Enable experience, loot, and drop buffs from `features/buffs/config.toml`. |
-| `features.decorations` | `true` | Enable static decoration companions from `features/decorations/config.toml`. |
-| `features.effects` | `false` | Enable potion effects from `features/effects/config.toml`. |
-| `features.particles` | `true` | Enable particle effects; icons in `features/particles/icons.toml`, settings in `features/particles/config.toml`. |
-| `features.progression` | `false` | Enable companion levels and upgrades from `features/progression/config.toml`. |
-| `features.boosters` | `false` | Enable personal and server boosters from `features/progression/config.toml`. |
+| `features.attributes` | `false` | Enable companion attribute modifiers from `features/attributes.toml`. |
+| `features.buffs` | `false` | Enable experience, loot, and drop buffs from `features/buffs.toml`. |
+| `features.decorations` | `true` | Enable static decoration companions from `features/decorations.toml`. |
+| `features.effects` | `false` | Enable potion effects from `features/effects.toml`. |
+| `features.particles` | `true` | Enable particle effects; settings and icons in `features/particles.toml`. |
+| `features.progression` | `false` | Enable companion levels and upgrades from `features/progression.toml`. |
+| `features.boosters` | `false` | Enable personal and server boosters from `features/progression.toml`. |
 
 A disabled feature keeps its saved records and hides its commands.
 
@@ -151,7 +151,7 @@ Every edit is validated like a saved file. A setting that changed on disk while 
 
 ## Hot reload
 
-The plugin watches `config.toml`, `companions/*.toml`, `features/*/config.toml`, `features/particles/icons.toml`, `features/progression/config.toml`, and `languages/*.toml`. A change is applied after it has stayed unchanged for `hotReload.cooldownMillis`, polled every `hotReload.pollIntervalMillis`, so a burst of saves becomes one reload. Root settings and content files are validated together before the running companions are replaced.
+The plugin watches `config.toml`, `companions/*.toml`, `features/*.toml`, and `languages/*.toml`. A change is applied after it has stayed unchanged for `hotReload.cooldownMillis`, polled every `hotReload.pollIntervalMillis`, so a burst of saves becomes one reload. Root settings and content files are validated together before the running companions are replaced.
 
 A rejected file keeps the last known good runtime and logs one `SEVERE` line:
 

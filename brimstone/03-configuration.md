@@ -2,13 +2,13 @@
 title: "Brimstone: Configuration"
 description: "Every setting, launcher definitions, the in-game editor, and file watching"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, configuration"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
 ---
 
-Brimstone stores settings in `plugins/Brimstone/config.toml`. Change them with `/brimstone config` or by saving the file.
+Brimstone stores settings in `plugins/Brimstone/brimstone.toml`. Change them with `/brimstone config` or by saving the file.
 
 Settings are written as `section.key`, so `gameplay.cooldownTicks` is the `cooldownTicks` key under `[gameplay]`. Values outside their range reject the whole file.
 
@@ -16,6 +16,7 @@ Settings are written as `section.key`, so `gameplay.cooldownTicks` is the `coold
 
 | Setting | Default | What it changes |
 |---|---|---|
+| `general.enabled` | `true` | Allow new launches; when off, a launch is refused with a chat notice and costs nothing, while TNT already in flight finishes |
 | `general.language` | `en_US` | Server default [language](/brimstone/04-languages) |
 | `general.updateNotifications` | `true` | Check GitHub releases once at startup and notify players with `brimstone.update` |
 
@@ -29,7 +30,11 @@ Settings are written as `section.key`, so `gameplay.cooldownTicks` is the `coold
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `presentation.splashScreen` | `true` | Print the startup splash |
+| `presentation.splashScreen` | `true` | Print the startup banner with the version, platform, and supported Minecraft range |
+| `presentation.alternateSplashes` | `true` | Let one start in ten use alternate banner art; the detail rows stay the same |
+| `presentation.commandSounds` | `true` | Play a sound when an editor save succeeds or fails |
+
+The banner always prints when Brimstone fails to enable, whatever these settings say.
 
 ## hotReload
 
@@ -44,7 +49,7 @@ Settings are written as `section.key`, so `gameplay.cooldownTicks` is the `coold
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `debug.uploadEnabled` | `false` | Allow `/brimstone debug dump upload=true` to upload reports to mclo.gs |
+| `debug.uploadEnabled` | `true` | Allow `/brimstone debug dump upload=true` to upload reports to mclo.gs; reports are always saved locally and upload only when asked |
 
 ## gameplay
 
@@ -55,6 +60,8 @@ Settings are written as `section.key`, so `gameplay.cooldownTicks` is the `coold
 | `gameplay.fuelMaterial` | `GUNPOWDER` | Default fuel item |
 | `gameplay.fuelCount` | `1` | Default fuel count, 0 to 64 |
 
+A cooldown keeps running if the player leaves and rejoins, and it resets when the server restarts.
+
 Each launch consumes one launcher item. A fuel count of zero or the fuel bypass removes only the extra fuel cost. Named or otherwise customized items do not count as fuel.
 
 ## access
@@ -64,6 +71,7 @@ Each launch consumes one launcher item. A fuel count of zero or the fuel bypass 
 | `access.worldMode` | `ALL` | `ALL`, `ALLOWLIST`, or `DENYLIST` |
 | `access.worlds` | `[]` | Exact world names for the mode; at most 128 unique, nonblank names of up to 128 characters |
 | `access.worldGuard` | `AUTO` | `AUTO`, `REQUIRED`, or `DISABLED`; see [WorldGuard](/brimstone/06-integrations#worldguard) |
+| `access.protectionPlugins` | `true` | Deny TNT effects wherever the launching player could not break blocks; see [other protection plugins](/brimstone/06-integrations#other-protection-plugins) |
 
 ## limits
 
@@ -87,6 +95,7 @@ Limits count work still being spawned. A limit of zero denies new entities. Fuel
 | `effects.burstParticles` | `60` | Particles in each explosion burst, 0 to 4096 |
 | `effects.particlesPerTick` | `4096` | Particles Brimstone may emit per tick across the server, 0 to 65536 |
 | `effects.secondaryLifetimeTicks` | `600` | Ticks before a secondary creeper or firework is removed, 1 to 72000 |
+| `effects.creeperAI` | `true` | Let creeper-effect creepers chase and explode near players; when off, they stand still and cannot explode |
 
 These settings cover particles only. DJ notes, creeper hisses, and rainbow chimes keep their own timing, including when trail particles are zero or the budget is spent. Sounds missed while an entity is unavailable are not replayed.
 
@@ -126,16 +135,19 @@ Changes to limits, access, effects, and languages leave unchanged recipes in pla
 
 ## In-game editor
 
-`/brimstone config` opens the settings in an inventory menu and needs `brimstone.config`.
+`/brimstone config` opens the settings in a six-row inventory menu and needs `brimstone.config`. The opening pages list the ten sections, eight per page, each with its own icon, followed by a Languages button that opens the language editor. Each launcher under `definitions` shows as a TNT block.
 
 | Control | Action |
 |---|---|
 | Click a section or launcher | Open it |
 | Click a true or false value | Toggle it |
-| Click any other value | Type the new value in chat; type `cancel` to return |
+| Left-click or right-click a number | Raise or lower it by one step; hold Shift for ten steps. The value stops at its range |
+| Press the drop key on a number, or click any other value | Type the new value in chat; type `cancel` to return |
 | Back, Previous, Next | Move between sections and pages |
 | Refresh | Reload the values from the file |
 | Close | Close the editor |
+
+Each save posts the setting with its old and new values in chat. A success or failure sound plays unless `presentation.commandSounds` is off.
 
 A chat prompt expires after 60 seconds. If the value changed after you opened the editor, the save is refused and you reopen it to try again.
 
@@ -143,17 +155,17 @@ An editor save changes only that key and keeps the rest of your file, including 
 
 ## File watching
 
-Brimstone watches `config.toml` and every installed `languages/<locale>.toml`. A saved change applies once the file has stopped changing for `hotReload.cooldownMillis`.
+Brimstone watches `brimstone.toml` and every installed `languages/<locale>.toml`. A saved change applies once the file has stopped changing for `hotReload.cooldownMillis`.
 
 A file that fails validation is rejected as a whole. The console logs a SEVERE message with the reason and the last valid settings stay active. The console logs every applied or rejected change, whatever `hotReload.notifyOperators` says. Saving the last accepted content again changes nothing and sends no notice.
 
-Deleting `config.toml` regenerates the defaults. Saves from the in-game editors apply directly and do not trigger a second reload.
+Deleting `brimstone.toml` regenerates the defaults. Saves from the in-game editors apply directly and do not trigger a second reload.
 
 Edits made while `hotReload.enabled` is off are not replayed later. Because file edits are ignored while it is off, turn it back on with `/brimstone config` or restart the server.
 
 ## What needs a restart
 
-`presentation.splashScreen` is read once at startup. A restart is also needed after installing or removing WorldGuard and after changing the global `plugins/bStats/config.yml` file. Every other setting applies without a restart.
+`presentation.splashScreen` and `presentation.alternateSplashes` are read once at startup. A restart is also needed after changing the global `plugins/bStats/config.yml` file. Every other setting applies without a restart, and Brimstone attaches to WorldGuard whenever WorldGuard enables.
 
 ## Related pages
 

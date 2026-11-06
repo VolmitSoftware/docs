@@ -12,7 +12,7 @@ Companions can earn their own XP, unlock purchasable bonus upgrades, and receive
 
 ## Enabling
 
-Set `features.progression`, `features.boosters`, or both in `config.toml`. The definitions live in `features/progression/config.toml` and hot reload like every other file. The dashboard gains Companion Upgrades and Boosters pages when the matching feature is on; `/bytecompanions upgrades <companion>` and `/bytecompanions boosts` open them directly.
+Set `features.progression`, `features.boosters`, or both in `config.toml`. The definitions live in `features/progression.toml` and hot reload like every other file. The dashboard gains Companion Upgrades and Boosters pages when the matching feature is on; `/bytecompanions upgrades <companion>` and `/bytecompanions boosts` open them directly.
 
 ```toml
 [features]

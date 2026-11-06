@@ -2,7 +2,7 @@
 title: "Brimstone: Feature map"
 description: "Implemented, partial, and planned features with their acceptance criteria"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "brimstone, features"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -16,8 +16,9 @@ This page lists each Brimstone feature as implemented, partial, or planned, with
 |---|---|
 | Seven effects with configurable recipes, fuel, cooldowns, names, fuse, velocity, radius, and fire | Every effect launches and detonates from a configured definition |
 | Launch sounds, DJ sequence, varied fireworks, and rainbow colors | Sound timing does not change with particle settings |
-| World rules and per-type permissions | Denied players keep their launcher and fuel |
+| World rules, per-type permissions, and a launch switch | Denied players keep their launcher and fuel |
 | WorldGuard checks throughout an effect's life | Region denials hold at launch and where later effects land, and the access bypass leaves them in force |
+| Other protection plugins through block break checks | A spot where the launching player cannot break blocks denies the effect, and logging listeners do not see the check |
 | Per-player, per-world, and server-wide entity limits, a particle budget, and finite secondary lifetimes | Limits refuse new entities before any inventory cost |
 | Owned-effect cleanup | `clear` and plugin disable remove owned effects and leave other entities alone |
 | Startup version gate | Unsupported versions stop before libraries download |
@@ -36,14 +37,14 @@ This page lists each Brimstone feature as implemented, partial, or planned, with
 | Coverage of every server target | Gameplay checks cover Paper and Folia 26.1.2 | Gameplay, file-change, and restart checks pass on each target in 26.1 through 26.3 |
 | Plugin disable with active effects on Folia | Owned effects are removed on disable; a full server restart is the recommended path | Live disable removes owned effects on a supported Folia build |
 | Update notices | The notice and its controls are in place; no GitHub release is published | A published release reaches a player with `brimstone.update` |
+| BileTools hot reload | Brimstone shuts down once whether BileTools or the server stops it, and owned effects are removed; not yet run under BileTools | `/bile reload brimstone` twice in a row leaves no leaked tasks, commands, or channels, with TNT active |
 | Client presentation | Sound and particle packets are checked by automated clients | Sounds, particles, menus, and translated text are reviewed in a Minecraft client |
 
 ## Planned
 
 | Feature | Acceptance criterion |
 |---|---|
-| BileTools hot reload | `/bile reload brimstone` twice in a row leaves no leaked tasks, commands, or channels, with TNT active |
-| Configurable feedback channels | Command chat stays, with optional overlays and confirmation sounds, and operators choose gameplay notice channels |
+| Configurable feedback channels | Command chat stays, with optional overlays, and operators choose gameplay notice channels |
 | Cosmetic-only effects | Every effect can run with no block changes, fire, damage, or harmful secondary entities |
 | Launch preview and recipe browser | Players inspect permitted launchers, ingredients, and fuel costs without consuming items, and displayed values match validated settings |
 | Sound controls | Launch, repeating, and detonation sounds have separate volumes, and muting does not change gameplay |

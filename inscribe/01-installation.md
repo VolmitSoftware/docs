@@ -2,7 +2,7 @@
 title: "Inscribe: Installation"
 description: "Requirements, library downloads, and plugin files"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-05T00:00:00.000Z
 tags: "inscribe, installation"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -24,7 +24,7 @@ Put `Inscribe.jar` in the server's `plugins/` directory and start the server. Th
 
 | Path | Purpose |
 | --- | --- |
-| `plugins/Inscribe/config.toml` | Validated plugin settings |
+| `plugins/Inscribe/inscribe.toml` | Validated plugin settings |
 | `plugins/Inscribe/languages/<locale>.toml` | Editable language files: generated English, installed translations, and custom languages |
 | `plugins/Inscribe/languages/.upstream/` | Unedited repository copies and `upstream.properties`, used to merge updates and managed by Inscribe |
 | `plugins/Inscribe/languages/language-preferences.properties` | Personal language choices |

@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-06T16:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -84,7 +84,7 @@ Pick up a tool onto your inventory cursor, then shift-left-click another tool to
 
 Hold the combined tool while mining: it selects the pickaxe for stone and ores, the axe for logs and planks, the shovel for dirt and sand, and the sword for cobwebs. Right-click grass or dirt to select the hoe, then right-click again to till it with air above the block. The demonstration shows all five tools being combined and used on these block types.
 
-Sneak-drop the combined tool to separate its components, preserving their names, enchantments, and damage. Breaking blocks and attacking are blocked while the adaptation is inactive; a component with two or fewer durability points remaining cannot be used.
+Sneak-drop the combined tool to separate its components, preserving their names, enchantments, damage, lore, and other plugins' item data. The active tool keeps its own lore, including custom enchantment lines from other plugins, with the tool list added below it. Breaking blocks and attacking are blocked while the adaptation is inactive; a component with two or fewer durability points remaining cannot be used.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
