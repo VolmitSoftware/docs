@@ -2,7 +2,7 @@
 title: "Brimstone: Feature map"
 description: "Implemented, partial, and planned features with their acceptance criteria"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-07T00:00:00.000Z
 tags: "brimstone, features"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -14,7 +14,7 @@ This page lists each Brimstone feature as implemented, partial, or planned, with
 
 | Feature | Acceptance criterion |
 |---|---|
-| Seven effects with configurable recipes, fuel, cooldowns, names, fuse, velocity, radius, and fire | Every effect launches and detonates from a configured definition |
+| Twelve effects with configurable recipes, fuel, cooldowns, names, fuse, velocity, lift, radius, and fire | Every effect launches and detonates from a configured definition |
 | Launch sounds, DJ sequence, varied fireworks, and rainbow colors | Sound timing does not change with particle settings |
 | World rules, per-type permissions, and a launch switch | Denied players keep their launcher and fuel |
 | WorldGuard checks throughout an effect's life | Region denials hold at launch and where later effects land, and the access bypass leaves them in force |

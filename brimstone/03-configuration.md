@@ -2,7 +2,7 @@
 title: "Brimstone: Configuration"
 description: "Every setting, launcher definitions, the in-game editor, and file watching"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-07T00:00:00.000Z
 tags: "brimstone, configuration"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -94,7 +94,7 @@ Limits count work still being spawned. A limit of zero denies new entities. Fuel
 | `effects.trailParticles` | `4` | Particles in each trail pulse, 0 to 256 |
 | `effects.burstParticles` | `60` | Particles in each explosion burst, 0 to 4096 |
 | `effects.particlesPerTick` | `4096` | Particles Brimstone may emit per tick across the server, 0 to 65536 |
-| `effects.secondaryLifetimeTicks` | `600` | Ticks before a secondary creeper or firework is removed, 1 to 72000 |
+| `effects.secondaryLifetimeTicks` | `600` | Ticks before a secondary creeper, firework, or cluster charge is removed, 1 to 72000 |
 | `effects.creeperAI` | `true` | Let creeper-effect creepers chase and explode near players; when off, they stand still and cannot explode |
 
 These settings cover particles only. DJ notes, creeper hisses, and rainbow chimes keep their own timing, including when trail particles are zero or the budget is spent. Sounds missed while an entity is unavailable are not replayed.
@@ -105,11 +105,12 @@ These settings cover particles only. DJ notes, creeper hisses, and rainbow chime
 
 | Setting | Default | What it changes |
 |---|---|---|
-| `effect` | `notch` | `notch`, `creeper`, `firework`, `love`, `dj`, `rainbow`, or `water` |
+| `effect` | `notch` | `notch`, `creeper`, `firework`, `love`, `dj`, `rainbow`, `water`, `impact`, `cluster`, `bouncy`, `frost`, or `smoke` |
 | `name` | `&6Notch TNT` | Item name with `&` color codes, up to 256 characters; renaming does not change the launcher's ID |
 | `lore` | One usage line | Up to 16 lines of up to 512 characters each, with `&` color codes |
-| `velocity` | `1.5` | Launch speed in blocks per tick, 0 to 4 |
-| `radius` | `3.0` | Explosion radius, 0 to 16; zero still runs the effect's sounds and secondary entities |
+| `velocity` | `1.5` | Launch speed in blocks per tick along the aimed direction, 0 to 4 |
+| `lift` | `0.0` | Extra upward launch speed in blocks per tick, 0 to 2, added to the aimed direction |
+| `radius` | `3.0` | Explosion radius, 0 to 16; zero still runs the effect's sounds and secondary entities; `frost` and `smoke` use it as their reach and never break blocks |
 | `fire` | `false` | Set fire around the explosion |
 | `fuseTicks` | `80` | Fuse length, 1 to 1200 ticks |
 | `craftingMaterial` | `TNT` | Ingredient combined with one TNT; must be an item |
@@ -119,17 +120,22 @@ These settings cover particles only. DJ notes, creeper hisses, and rainbow chime
 
 Two launchers with recipes cannot share the same `craftingMaterial` and `craftingCount`. Such a change is rejected and the log names both launchers.
 
-The default launchers all use an 80-tick fuse:
+The default launchers:
 
-| ID | Velocity | Radius | Fire | Recipe with one TNT | Fuel |
-|---|---|---|---|---|---|
-| `notch` | 0.5 | 8 | Yes | 3 coal | 1 gunpowder |
-| `creeper` | 2.5 | 8 | Yes | 8 gunpowder | 1 gunpowder |
-| `firework` | 0.69 | 10 | No | 4 firework stars | 1 gunpowder |
-| `love` | 1.25 | 3 | Yes | 2 redstone | 1 redstone |
-| `dj` | 1.69 | 10 | Yes | 1 diamond | 1 gunpowder |
-| `rainbow` | 1.0 | 15 | No | 3 gold ingots | 1 gunpowder |
-| `water` | 1.5 | 5 | No | 1 cod | 1 gunpowder |
+| ID | Velocity | Lift | Radius | Fire | Fuse | Recipe with one TNT | Fuel |
+|---|---|---|---|---|---|---|---|
+| `notch` | 0.5 | 0 | 8 | Yes | 80 | 3 coal | 1 gunpowder |
+| `creeper` | 2.5 | 1.0 | 8 | Yes | 80 | 8 gunpowder | 1 gunpowder |
+| `firework` | 1.0 | 1.5 | 10 | No | 80 | 4 firework stars | 1 gunpowder |
+| `love` | 1.25 | 0 | 3 | Yes | 80 | 2 redstone | 1 redstone |
+| `dj` | 1.69 | 0 | 10 | Yes | 80 | 1 diamond | 1 gunpowder |
+| `rainbow` | 1.0 | 0 | 15 | No | 80 | 3 gold ingots | 1 gunpowder |
+| `water` | 1.5 | 0 | 5 | No | 80 | 1 cod | 1 gunpowder |
+| `impact` | 1.6 | 0.1 | 4 | No | 100 | 2 arrows | 1 gunpowder |
+| `cluster` | 1.0 | 0.3 | 4 | No | 60 | 4 iron nuggets | 1 gunpowder |
+| `bouncy` | 1.0 | 0.4 | 4 | No | 120 | 2 slime balls | 1 gunpowder |
+| `frost` | 1.2 | 0.2 | 5 | No | 60 | 4 snowballs | 1 gunpowder |
+| `smoke` | 1.0 | 0.2 | 6 | No | 60 | 3 charcoal | 1 gunpowder |
 
 Changes to limits, access, effects, and languages leave unchanged recipes in place. Changes to recipe membership, item names, lore, ingredients, or counts rebuild the recipes, and connected players can craft the changed launcher without rejoining.
 

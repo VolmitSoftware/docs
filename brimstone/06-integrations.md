@@ -2,7 +2,7 @@
 title: "Brimstone: Integrations"
 description: "WorldGuard rules, other protection plugins, and the Volmit suite service"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-07T00:00:00.000Z
 tags: "brimstone, integrations, worldguard, claims"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -22,7 +22,7 @@ Brimstone attaches to WorldGuard when it enables and again whenever WorldGuard e
 
 If the integration cannot start, or a permission capture or region query fails, the integration becomes degraded and the console logs the exception. While degraded, every WorldGuard check denies, whatever `access.worldGuard` says, until WorldGuard enables again. `/brimstone status` shows the state as ready, absent, degraded, or disabled.
 
-Checks run before launch and at later explosion, block, damage, ignition, and secondary-effect locations. Owned TNT, charged creepers, and fireworks keep the launcher's identity and permissions from the moment of launch. Current region rules apply where the effect happens, including after an entity crosses a region boundary. A later denial does not refund the launch.
+Checks run before launch and at later explosion, block, damage, ignition, and secondary-effect locations. Owned TNT, cluster charges, charged creepers, and fireworks keep the launcher's identity and permissions from the moment of launch. Current region rules apply where the effect happens, including after an entity crosses a region boundary. A later denial does not refund the launch.
 
 `brimstone.bypass.access` does not bypass WorldGuard. A launcher with WorldGuard's own bypass passes these checks in the world where they launched.
 
@@ -41,7 +41,7 @@ Each effect then applies its own flags, which deny only when set to `deny`:
 | Damage to animals and other passive mobs | `damage-animals` |
 | Damage to boats and minecarts | `destroy-vehicle` |
 
-Damage to the launching player, hostile mobs, and ambient mobs uses only the starting check. WorldGuard applies its own `mob-damage` and `creeper-explosion` rules to charged-creeper damage as well.
+Frost and smoke apply these damage flags to the mobs and players they affect. Damage to the launching player, hostile mobs, and ambient mobs uses only the starting check. WorldGuard applies its own `mob-damage` and `creeper-explosion` rules to charged-creeper damage as well.
 
 ## Other protection plugins
 

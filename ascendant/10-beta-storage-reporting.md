@@ -2,7 +2,7 @@
 title: Beta build history, storage and download reporting
 description: Number beta builds, show their GitHub changes, set storage limits and review completed beta downloads
 published: true
-date: 2026-11-06T18:00:00.000Z
+date: 2026-11-07T21:30:00.000Z
 tags: ascendant, beta, storage, privacy
 editor: markdown
 dateCreated: 2026-10-29T01:34:00.000Z
@@ -18,7 +18,7 @@ Builds that existed before numbering receive numbers in publish order on first s
 
 ## Build history
 
-The tester portal shows the current build first, then a **Build history** list of every published build, newest first, ten per page. Each row shows the build number, version, publish date and commit count, and expands to the linked commits, staff notes, downloads and a feedback button. Withdrawn builds and drafts are not listed for testers.
+The tester portal lists every published build of the selected plugin, newest first, ten per page, with the current build marked. Each build shows its number, version, publish date and download links, then its first five commits with author and short SHA; longer lists and the notes and checksums expand on request. **Report an issue** files feedback against the current build. Withdrawn builds and drafts are not listed for testers.
 
 Staff can edit the changelog, testing notes and an optional commit SHA on any build from **Builds** with **Edit notes**. Notes cannot change while a build is being announced.
 
@@ -63,5 +63,11 @@ Member history is off by default. Set retention to 1–30 days to keep recent Di
 Setting retention to zero clears recorded member history. Shortening retention removes entries outside the new window. Expiry runs on startup, every fifteen minutes while the service runs, and during storage transactions. Anonymous totals remain available when member history is off.
 
 Backup archives can contain history that existed when the snapshot was created; their own retention controls govern those copies. Restoring a backup clears download history and disables history collection. Restore keeps the highest available anonymous counters and never reintroduces current-only artifacts.
+
+## Beta update messages
+
+Testers turn private messages on or off with the **Beta update messages** button on the beta downloads panel. When builds become current betas, each subscribed tester gets one silent message covering the builds they can download and whose Plugin or Modded update role from **Products** they hold.
+
+Publishes are gathered until no new build has been published for 2 minutes, or for at most 10 minutes while builds keep arriving, so a mass upload sends one message. The message lists each build with its emoji, name and version, its platforms on a subtext line, and a link to the beta panel. Builds that are already current when the dashboard starts or beta settings change are recorded without messages.
 
 See [Off-host backups](/ascendant/06-offhost-backups) for encrypted storage and restore checks.

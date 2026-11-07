@@ -1,8 +1,8 @@
 ---
 title: "Brimstone"
-description: "TNT launchers with seven effects, crafting recipes, fuel costs, and entity limits"
+description: "TNT launchers with twelve effects, crafting recipes, fuel costs, and entity limits"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-07T00:00:00.000Z
 tags: "brimstone, tnt, folia"
 editor: markdown
 dateCreated: 2026-10-08T00:00:00.000Z
@@ -19,14 +19,14 @@ Brimstone adds custom TNT that players launch by left-clicking the air. Operator
 | Java | 25 or newer |
 | Main command | `/brimstone` (`/brim`) |
 | Config file | `plugins/Brimstone/brimstone.toml` |
-| Default launchers | `notch`, `creeper`, `firework`, `love`, `dj`, `rainbow`, `water` |
+| Default launchers | `notch`, `creeper`, `firework`, `love`, `dj`, `rainbow`, `water`, `impact`, `cluster`, `bouncy`, `frost`, `smoke` |
 | Optional plugins | WorldGuard, and any claim or protection plugin that controls block breaking |
 
 ## Start here
 
 - [Overview *What Brimstone does and the first things to try*](/brimstone/00-overview)
 - [Installation *Requirements, first start, file locations, and updating*](/brimstone/01-installation)
-- [Launchers and effects *Launching, crafting, the seven effects, and cleanup*](/brimstone/05-launchers-effects)
+- [Launchers and effects *Launching, crafting, the twelve effects, and cleanup*](/brimstone/05-launchers-effects)
 - [Languages *Choosing a language and editing messages*](/languages)
 {.links-list}
 

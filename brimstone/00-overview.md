@@ -2,13 +2,13 @@
 title: "Brimstone: Overview"
 description: "What Brimstone does and the first things to try"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-07T00:00:00.000Z
 tags: "brimstone, overview"
 editor: markdown
 dateCreated: 2026-11-02T00:00:00.000Z
 ---
 
-Brimstone adds custom TNT items called launchers. A player holds one, left-clicks the air, and throws primed TNT that plays one of seven effects and explodes with the radius and fire setting of that launcher.
+Brimstone adds custom TNT items called launchers. A player holds one, left-clicks the air, and throws primed TNT that plays one of twelve effects and explodes with the radius and fire setting of that launcher.
 
 Each launch costs the launcher item and its fuel, and it must pass permissions, world rules, the cooldown, and entity limits. Launchers can be crafted from ordinary TNT or given by command.
 
