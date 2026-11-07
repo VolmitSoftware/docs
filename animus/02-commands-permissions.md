@@ -271,10 +271,10 @@ The readings need `animus.debug`. See [debug, React and metrics](/animus/17-debu
 
 ### Debug mode
 
-With debug mode off, the default, the server log stays quiet about routine trouble of single NPCs and viewers: route legs that terrain blocks (the NPC teleports or stops), NPCs that cannot activate here, cancelled dismount teleports, failed display packets and dropped delayed screen actions. Animus counts them instead and logs at most one line every five minutes, such as:
+With debug mode off, the default, the server log stays quiet about routine trouble of single NPCs and viewers: route legs that terrain blocks or that the planner could not path (the NPC teleports or stops), NPCs that cannot activate here, cancelled dismount teleports, failed display packets and dropped delayed screen actions. Animus counts them instead and logs at most one line every five minutes, such as:
 
 ```none
-12 NPCs hit blocked route legs, 2 NPCs could not activate in the last 5m; /animus debug mode for details
+9 NPCs hit route legs blocked by terrain, 3 NPCs hit route legs the planner could not path, 2 NPCs could not activate in the last 5m; /animus debug mode for details
 ```
 
 `/animus debug mode` turns on the full lines, one per NPC, until the server restarts; it is not saved to `config.toml`. Startup and settings problems, invalid documents, import failures, budget summaries and refusals are always logged.
