@@ -253,4 +253,4 @@ Imported shops with commands need `commandNamespaces = ["dtltraders"]` under `[b
 - Limit windows run per player in real time instead of on one server-uptime clock.
 - Right click buys the listed amount instead of asking for a typed amount.
 - Shops are edited as files or in the [web editor](/animus/14-web-editor); there is no in-game shop editor.
-- The web editor offers only trade and static entries in a shop that lists containers, and removes the fields an entry's new type cannot use when you change its type.
+- The [web editor](/animus/14-web-editor#gui-editors) offers only trade and static entries in a shop that lists containers, and removes the fields an entry's new type cannot use when you change its type. It also shows the notes `/animus shop problems` gives for the window style, at the offer they are about.
