@@ -52,6 +52,10 @@ Each recording lives at `recordings/<id>.json` in the data folder. The id uses 1
 | `origin` | `x`, `y`, `z`, `yaw` and `pitch` where the recording started. Frame positions are relative to it |
 | `sampleTicks` | 1-20 ticks between two captured frames |
 | `durationTicks` | The tick of the last frame, at most 72000 |
+| `description` | Optional. What the recording is for, at most 256 characters |
+| `tags` | Optional. Up to 32 tags of 1-32 lowercase letters, digits, `_` or `-`, for finding it in the editor |
+| `playback` | Optional. `once`, `loop` or `pingpong`: the mode an NPC or `animus:play-recording` uses when it names none. Unset means `loop` |
+| `speed` | Optional. Recorded ticks played per game tick, 0.25 to 4. 2 plays twice as fast, 0.5 at half speed. Unset means 1 |
 | `frames` | The movement, at least 2 frames (see below) |
 | `events` | Arm swings, equipment changes and door uses, at most 4096 |
 
@@ -98,6 +102,8 @@ Nothing else is recorded: other right-clicks, block breaking, chat and inventory
 Animus writes recordings in a fixed layout: keys in the order shown above, one frame per line, one event per line and numbers without trailing zeros. Reading a file Animus wrote and saving it again gives the same bytes, so a recording that has not changed never shows up as changed in hotload, backups or version control.
 
 Before saving, Animus drops frames that add nothing. A frame is left out when its pose lies within 0.02 blocks and 2 degrees of the straight line between its neighbours and no flag changes. A frame is always kept at every event and at every flag change. A player who stands still for ten seconds therefore costs two frames, not a hundred.
+
+Recording again under an existing id replaces the frames and events but keeps the file's `description`, `tags`, `playback` and `speed`.
 
 Saves go through the same document store as definitions and routes, so hotload, [web editor](/animus/14-web-editor) undo and [rollback](/animus/12-storage-recovery) all see them.
 
@@ -157,8 +163,10 @@ A recording is a movement source of the `animus:navigation` module, alongside a 
 | `playback` | Effect |
 |---|---|
 | `once` | Plays the recording one time and stops at the last frame |
-| `loop` (default) | Starts again from the first frame after the last |
+| `loop` | Starts again from the first frame after the last |
 | `pingpong` | Plays forward, then backward, then forward again, forever |
+
+Without `playback`, the NPC uses the recording's own `playback`, and `loop` when that is unset too. The recording's `speed` applies to every playback of it, including route steps and the ghost preview.
 
 For a clean `loop`, end the recording close to where you started it.
 
@@ -168,7 +176,7 @@ For a clean `loop`, end the recording close to where you started it.
 
 | Capability | Arguments | Result |
 |---|---|---|
-| `animus:play-recording` | `recording` (an id under `recordings/`), optional `playback` (`once`, `loop`, `pingpong`), `wait`, and with it `timeoutTicks` (20-12,000, default 1,200) | Plays the recording on the NPC. Completes when started unless `wait` is true. `wait` needs `playback: once` |
+| `animus:play-recording` | `recording` (an id under `recordings/`), optional `playback` (`once`, `loop`, `pingpong`), `wait`, and with it `timeoutTicks` (20-12,000, default 1,200) | Plays the recording on the NPC; without `playback`, the recording's own, else `loop`. Completes when started unless `wait` is true. `wait` needs a `once` playback: `playback: once`, or no `playback` on a recording whose own is `once` |
 | `animus:resume-patrol` | None | Starts the NPC's declared route or recording again, continuing from where it was interrupted. Reports `resumed`, or `nothing-to-resume` when the NPC has no declared route or recording |
 | `animus:stop-navigation` | None | Stops a playing recording like any route |
 
