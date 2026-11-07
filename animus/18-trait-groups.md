@@ -19,11 +19,11 @@ Groups live at `groups/<id>.json` in the Animus data folder (`plugins/Animus/` o
   "schemaVersion": 1,
   "revision": 1,
   "id": "town-guards",
-  "description": "Watch uniform, look-close and the patrol",
+  "description": "Watch uniform, look-close and the route",
   "values": {
     "modules": {
       "animus:look-close": {"range": 12},
-      "animus:navigation": {"enabled": true, "route": "town-patrol"}
+      "animus:navigation": {"enabled": true, "route": "town-walk"}
     },
     "behaviors": ["town:greeting"],
     "equipment": {"head": {"id": "minecraft:iron_helmet"}},
@@ -86,25 +86,16 @@ teamColor from harbor
 
 ## Commands
 
-All of these need `animus.admin`.
+All of these need `animus.admin`; see [commands](/animus/02-commands-permissions#trait-groups) for the full list. The two that change NPCs:
 
 ```none
-/animus groups list [page=1]
-/animus groups inspect <group-id>
-/animus groups members <group-id>
-/animus groups assign <group-id> [folder=] [tag=] [ids=]
-/animus groups unassign <group-id> [folder=] [tag=] [ids=]
+/animus groups assign <group> [folder=] [tag=] [ids=]
+/animus groups unassign <group> [folder=] [tag=] [ids=]
 ```
 
-| Command | Effect |
-|---|---|
-| `list` | Every group with its revision, member count and description, then any refused group file, as a paged list. |
-| `inspect` | One group's values. |
-| `members` | The NPCs that list the group. |
-| `assign` | Adds the group to the end of each matching NPC's `groups`. |
-| `unassign` | Removes it. An NPC left with no groups loses the field. |
+`assign` adds the trait group to the end of each matching NPC's `groups`. `unassign` removes it; an NPC left with no trait groups loses the field.
 
-Give assign and unassign exactly one of `folder=<npc-folder>`, which matches the NPC folder under `npcs/`, `tag=<tag>`, an effective tag, or `ids=a,b`, a comma-separated list of NPC ids in which `@selected` is your selected NPC. Assign and unassign save every matching NPC as one change with one rollback transaction, and refuse the whole change if any result is invalid. The reply reads `Assigned watch to 12 NPCs, 3 unchanged; tx <id>`. A group saved a moment ago is known once its hotload line appears.
+Give assign and unassign exactly one of `folder=<npc-folder>`, which matches the NPC folder under `npcs/`, `tag=<tag>`, an effective tag, or `ids=a,b`, a comma-separated list of NPC ids in which `@selected` is your selected NPC. Assign and unassign save every matching NPC as one change with one rollback transaction, and refuse the whole change if any result is invalid. The reply reads `Assigned watch to 12 NPCs, 3 unchanged; tx <id>`. A trait group saved a moment ago is known once its [live apply](/animus/03-configuration#live-apply) line appears.
 
 ```none
 /animus groups assign town-guards folder=world/town

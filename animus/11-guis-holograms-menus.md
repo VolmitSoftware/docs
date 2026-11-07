@@ -47,7 +47,7 @@ Open a GUI with `/animus gui open <id> [player=]`, with the behavior action `ani
 | --- | --- |
 | `schemaVersion` | Must be 1. Any other version is refused by name. |
 | `revision` | 1 or more. |
-| `title` | Window title. `&` colour codes, `&#RRGGBB` and common MiniMessage colour and style tags such as `<red>` and `<bold>` work. `{{ expr }}` holes are filled for each viewer. |
+| `title` | Window title. `&` color codes, `&#RRGGBB` and common MiniMessage color and style tags such as `<red>` and `<bold>` work. `{{ expr }}` holes are filled for each viewer. |
 | `resolution` | `9x1` to `9x6`, `5x1` (hopper) or `3x3` (dropper). Mod servers draw only the `9xN` sizes; a `5x1` or `3x3` window does not open there. |
 | `mask`, `keys` | One row of characters per window row; each character draws the key with that name. A space is empty. |
 | `slots` | Slot number to component. Explicit slots draw over the mask. |
@@ -93,7 +93,7 @@ A GUI that runs `command` anywhere needs its id or namespace on the same allow-l
 
 ## Expressions
 
-`{{ expr }}` in text, and the `show`, `when`, `condition`, `on`, `source` and `amount` fields, use the Gloss expression grammar: numbers, quoted strings, colours (`#RGB`, `#RRGGBB`, `#AARRGGBB`), `true` and `false`, arrays, `!`, `-`, `* / %`, `+ -`, comparisons, `== !=`, `&&`, `||` and `a ? b : c`.
+`{{ expr }}` in text, and the `show`, `when`, `condition`, `on`, `source` and `amount` fields, use the Gloss expression grammar: numbers, quoted strings, colors (`#RGB`, `#RRGGBB`, `#AARRGGBB`), `true` and `false`, arrays, `!`, `-`, `* / %`, `+ -`, comparisons, `== !=`, `&&`, `||` and `a ? b : c`.
 
 The functions are `clamp`, `lerp`, `min`, `max`, `floor`, `ceil`, `round`, `abs`, `mod`, `pow`, `smoothstep`, `sin`, `cos`, `rgb`, `argb`, `alpha`, `mix`, `palette`, `select`, `number`, `bar`, `hex`, `str`, `fixed`, `plain`, `readable` and `align`, plus `len`, `contains`, `lower` and `upper`, and Gloss's text animation functions `marquee`, `timeline`, `typewriter`, `flash`, `wipe`, `scanner`, `scramble`, `odometer` and `wave`. An expression is at most 512 characters and 256 levels deep. An unknown name or function refuses the file at load; a failure while running shows `?` in text and counts as false in a condition. PlaceholderAPI's `papi(...)` is not supported.
 
@@ -145,7 +145,7 @@ A hologram file in `gui/holograms/<namespace>/` is a Gloss hologram. Animus show
 
 ## Holographic menus
 
-A menu file in `gui/menus/<namespace>/` is a Gloss menu. A file at `lobby/main.json` has the id `lobby:main`. It opens in front of the player. The menu's `offset` is measured from the player's feet, with x to their right, y up and z the way they face. Each component's `offset` is measured from that centre.
+A menu file in `gui/menus/<namespace>/` is a Gloss menu. A file at `lobby/main.json` has the id `lobby:main`. It opens in front of the player. The menu's `offset` is measured from the player's feet, with x to their right, y up and z the way they face. Each component's `offset` is measured from that center.
 
 Open a menu with `/animus gui menu <id> [player=]`, with `animus:open-gui` and `"kind": "menu"`, with an [NPC binding](#npc-bindings), or with `navigate` from another menu.
 
@@ -163,7 +163,7 @@ Open a menu with `/animus gui menu <id> [player=]`, with `animus:open-gui` and `
 
 | Field | Meaning |
 | --- | --- |
-| `offset`, `components`, `show`, `vars`, `actions` | The centre, the components, who sees the menu, the first `session.*` values (constant expressions) and named action lists for `call`. |
+| `offset`, `components`, `show`, `vars`, `actions` | The center, the components, who sees the menu, the first `session.*` values (constant expressions) and named action lists for `call`. |
 | `followPlayer`, `lockPosition` | Move the menu with the player, or keep the player in place while the menu is open. |
 | `maxDistance`, `closeOnDeath`, `closeOnTeleport` | When the menu closes. Without `closeOnTeleport`, a teleport moves the menu to where the player arrives. A menu also closes when the player changes world or respawns, and when it opens a chest GUI or a shop. |
 | `button` | `icon`, `actions`, `highlightModifier` (how far the button moves toward the player while it is hovered), `hoverDurationTicks`, `hoverEasing`, `hitbox` (`width`, `height`, `offset`, `anchor`) and `tooltip` (`delayTicks`, `lines`, `style`). |
@@ -180,7 +180,7 @@ Icons are `text`, `item`, `playerHead`, `block` and `entity`. Animus finds the h
 
 A text animation file in `gui/text-animations/<namespace>/` is a Gloss animation: `schemaVersion` 1, `revision`, `show`, `mode` (`ascend`, `descend`, `ascend_descend` or `random`), `frameIntervalMs` and `frames`. Text in holograms and menus shows the current frame with `|animation.<id>|`. An id without a namespace is found in the namespace of the document that uses it. All players see the same frame at the same time, and the `{{ }}` holes in a frame are filled for each player. A hologram or menu that shows an animation that did not load is refused. Chest GUIs refuse `|animation.` tokens.
 
-Gloss's `[RRGGBB]` colour shorthand works, so frames such as those of Gloss's rainbow animation colour the text that follows them.
+Gloss's `[RRGGBB]` color shorthand works, so frames such as those of Gloss's rainbow animation color the text that follows them.
 
 ## NPC bindings
 
@@ -195,22 +195,15 @@ An NPC definition can open a chest GUI, menu, shop or Gloss menu when the NPC is
 
 ## Commands
 
-All of these need `animus.admin`.
+All of these need `animus.admin`; see [commands](/animus/02-commands-permissions#shops-and-guis) for the full list. The ones you use most:
 
-| Command | What it does |
-| --- | --- |
-| `/animus gui status` | Counts, open menus, and whether displays and Gloss are available. |
-| `/animus gui list [kind=all]` | The loaded documents. |
-| `/animus gui open <gui> [player=]` | Opens a chest GUI. |
-| `/animus gui menu <menu> [player=]`, `/animus gui close [player=]` | Opens or closes a holographic menu. |
-| `/animus gui reload` | Reads chest GUIs, shops, holograms, menus and animations again. Editor applies, `/animus rollback`, and import apply, accept and rollback reload what they change on their own; use this after editing files by hand. |
-| `/animus gui problems` | Why files were refused, with the field. |
-| `/animus gui import gloss <kind\|all> [id\|all] [namespace=<ns>] [replace=true]` | Copies documents from Gloss's folders on this server. |
-| `/animus gui export gloss <kind\|all> [id\|all] [replace=true]` | Writes documents into Gloss's folders. |
-| `/animus gui import file <name> [namespace=<ns>] [replace=true]` | Reads a folder or a gloss-web bundle from `imports/inbox/`. |
-| `/animus gui export file <name> [format=folder\|bundle]` | Writes `exports/gui/<name>/` or `exports/gui/<name>.json`. |
+```none
+/animus gui open <gui> [player=]
+/animus gui import gloss <kind> [id=all] [namespace=animus] [replace=false]
+/animus gui export file <name> [format=]
+```
 
-`<kind>` is `inventory`, `menu`, `hologram` or `animation`.
+`<kind>` is `inventory`, `menu`, `hologram`, `animation` or `all`. `gui import gloss` copies documents from Gloss's folders on this server. `gui export file` writes `exports/gui/<name>/` or, with `format=bundle`, `exports/gui/<name>.json`.
 
 ## With and without Gloss
 

@@ -541,16 +541,16 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:message` | `text` (up to 1,024 characters), optional `to`: `trigger` (default), `all`, `world` or `console`, optional `player` with `trigger` | Sends [formatted](#text-formatting) text with no speaker name to the triggering player, every online player, the players in the NPC's world (the triggering player's world in a server behavior) or the console. Reports `delivered`. |
 | `animus:title` | At least one of `title` and `subtitle` (each up to 256 characters), optional `fadeIn`, `stay`, `fadeOut` (0-72,000 ticks; defaults 10, 70 and 20), `player` | Shows a title to the player. |
 | `animus:actionbar` | `text` (up to 256 characters), optional `player` | Shows the text above the player's hotbar. |
-| `animus:choices` | `id`, `prompt`, `options` (1-8 of `id` and `text`, each with optional `color`, `hover`, `style`), optional `lifetimeSeconds` (1-600) | Shows the prompt and a row of coloured answer buttons to the triggering player. Completes when shown and does not wait for the answer. |
+| `animus:choices` | `id`, `prompt`, `options` (1-8 of `id` and `text`, each with optional `color`, `hover`, `style`), optional `lifetimeSeconds` (1-600) | Shows the prompt and a row of colored answer buttons to the triggering player. Completes when shown and does not wait for the answer. |
 | `animus:command` | `command` (no leading slash), optional `as`: `console` (default) or `player`, optional `player` | Runs the command. Each `{player}` becomes the triggering player's UUID, which vanilla selectors accept, such as `clear {player} minecraft:emerald 1`. Each `{player_name}` becomes their current name. Requires the [allow-list](#commands). |
 | `animus:navigate` | Either `x`, `y`, `z` with optional `mode` (`walk`, `swim`, `fly`) and `speed` (1-5), or `route`. Optional `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). | Starts a route or follows `routes/<route>.json`. Completes when requested unless `wait` is true; see [walking a patrol](#walking-a-patrol). The [movement](/animus/05-movement-mounts-riding) limits apply. |
 | `animus:stop-navigation` | None | Stops any route, including a playing recording. Reports `stopped`. |
 | `animus:play-recording` | `recording` (an id under `recordings/`), optional `playback` (`once`, `loop` or `pingpong`; unset uses the recording's own, else `loop`), `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). `wait` needs a `once` playback. | Plays a [performance recording](/animus/19-performance-recordings) on the NPC. Completes when started unless `wait` is true, then at the last frame, with the same failures as [walking a patrol](#walking-a-patrol). Unavailable when `[recordings]` is disabled. |
-| `animus:resume-patrol` | None | Restarts the NPC's declared route or recording, continuing from where combat, a manual navigate or a stop interrupted it. Reports `resumed`, or `nothing-to-resume` when there is none. |
+| `animus:resume-patrol` | None | Restarts the NPC's declared route or recording, continuing from where combat, `/animus navigation go` or a stop interrupted it. Reports `resumed`, or `nothing-to-resume` when there is none. |
 | `animus:look` | Either `x`, `y`, `z`, or `"target": "player"` | Turns the NPC. The target must be within 64 blocks in the same world. |
 | `animus:pose` | `pose`: a name from the definition's `poses` | Turns the NPC to the yaw and pitch of that named pose. A name the definition does not declare is refused. |
 | `animus:set-appearance` | Any of `name` (up to 16 characters) and `skin` (a skin file hash), or `"reset": true` | Shows a new name on any body, or a skin on a player body. Viewers receive a fresh body. |
-| `animus:set-equipment` | `slot` (`main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`), optional `item` | Shows the item, such as `minecraft:iron_sword`. Without `item`, clears the slot. Equipment declared in the definition returns after a restart or a definition change. |
+| `animus:set-equipment` | `slot` (`main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`), optional `item` | Shows the item, such as `minecraft:iron_sword`. Without `item`, clears the slot. A slot the NPC's body cannot show fails the action and names the body and slot; see [equipment](/animus/04-npc-definitions). Equipment declared in the definition returns after a restart or a definition change. |
 | `animus:set-attribute` | `attribute` (a vanilla [attribute](/animus/04-npc-definitions#attributes) id such as `scale`), and either `value` (inside the attribute's range) or `"reset": true` | Sets the attribute for the running NPC, or returns it to the definition's value. Viewers get it at once, and movement uses it from the next step; a new `scale` also resizes the hitbox and shows the body again. Combat settings taken from attributes keep their values until the definition is applied again. The change lasts until a restart or a definition change. |
 | `animus:play-sound` | `sound`, optional `volume` (0-4), `pitch` (0.5-2), `audience`, `radius`, `at`: `npc` (default) or `player`, `player` | Plays the sound at the NPC, or at the player, for its audience only. Server behaviors always play at the player. |
 | `animus:spawn-particle` | `particle`, optional `count` (1-64), `spread` (0-8), `audience`, `radius`, `at`: `npc` (default) or `player`, `player` | Shows the particle at the NPC, or at the player, to its audience only. Server behaviors always show it at the player. Particles that need extra data are rejected. |
@@ -580,9 +580,9 @@ Flags and quests belong to the behavior's namespace rather than to one behavior:
 
 A flag holds a value of any type, like a variable declared `any`; a quest stage is an integer. Expressions read both with `flag`, `has_flag` and `quest`. A flag can expire: from its expiry time it reads as unset, and the owner removes expired flags in the background, at most 256 per behavior tick, after which they no longer count against the budgets. Writing a flag again without an expiry clears the old one, and writing it with an expiry that has already passed unsets it at once. Expiry is stored as epoch milliseconds beside the value, so it continues across restarts.
 
-The `[behaviors.state]` budgets apply, and a write over a budget fails its run with the same diagnostics as a variable. One namespace holds at most 128 flags and 128 quests per subject. Values are stored as `animus:flags/<namespace>` and `animus:quests/<namespace>`, which behaviors cannot use as their own IDs. To remove them, use `/animus behaviors state purge`, for example `state purge behavior animus:quests/town`; the `npc`, `player`, `relationship` and `all` forms reach them too.
+The `[behaviors.state]` budgets apply, and a write over a budget fails its run with the same diagnostics as a variable. One namespace holds at most 128 flags and 128 quests per subject. Values are stored as `animus:flags/<namespace>` and `animus:quests/<namespace>`, which behaviors cannot use as their own IDs. To remove them, use `/animus behaviors state delete`, for example `state delete behavior animus:quests/town`; the `npc`, `player`, `relationship` and `all` forms reach them too.
 
-### Walking a patrol
+### Walking a route
 
 With `"wait": true`, `animus:navigate` completes on arrival, so steps run one after another:
 
@@ -622,15 +622,15 @@ On Folia, actions run on the region that owns the NPC; an NPC waiting for its ch
 
 Everything an NPC says, every prompt and answer, combat greetings and warnings, build and shop messages, hologram lines and names use one formatter on every platform. It reads:
 
-- `&` colour and style codes (`&a`, `&l`), `&#RRGGBB`, `&x&R&R&G&G&B&B` and Gloss's `[RRGGBB]` hex colours;
+- `&` color and style codes (`&a`, `&l`), `&#RRGGBB`, `&x&R&R&G&G&B&B` and Gloss's `[RRGGBB]` hex colors;
 - section codes (`§a`) and backslash-u escapes such as `❤`;
-- the MiniMessage tags the [chest GUI](/animus/11-guis-holograms-menus) reads: colour names (`<green>`), `<#RRGGBB>`, `<color:...>`, `<bold>`, `<italic>`, `<underlined>`, `<strikethrough>`, `<obfuscated>`, `<reset>` and their closing tags.
+- the MiniMessage tags the [chest GUI](/animus/11-guis-holograms-menus) reads: color names (`<green>`), `<#RRGGBB>`, `<color:...>`, `<bold>`, `<italic>`, `<underlined>`, `<strikethrough>`, `<obfuscated>`, `<reset>` and their closing tags.
 
-Unicode symbols such as `❤`, `⚔` and `✔` show as written. A speaker without its own colour is shown in Animus pink (`#FF5FA8`) and spoken text in white.
+Unicode symbols such as `❤`, `⚔` and `✔` show as written. A speaker without its own color is shown in Animus pink (`#FF5FA8`) and spoken text in white.
 
 ### Dialogue choices
 
-Each answer is a bracketed button, `[ Yes ]`, with hover text. An option may set `color` (a name such as `green`, a code such as `a`, or `#RRGGBB`), `hover` (up to 256 characters; `\n` starts a new line) and `style` (`bold`, `italic`, `underlined` or `plain`). Without them, an answer whose id is `yes`, `accept`, `agree`, `ok`, `sure`, `confirm`, `hire`, `buy` or `deal` is green, an answer whose id is `no`, `pass`, `cancel`, `decline`, `leave`, `later`, `goodbye` or a similar word is red (when there is more than one answer), the rest take Animus pink, light pink, white, deep pink and grey in order, and the hover reads "Click to choose this answer".
+Each answer is a bracketed button, `[ Yes ]`, with hover text. An option may set `color` (a name such as `green`, a code such as `a`, or `#RRGGBB`), `hover` (up to 256 characters; `\n` starts a new line) and `style` (`bold`, `italic`, `underlined` or `plain`). Without them, an answer whose id is `yes`, `accept`, `agree`, `ok`, `sure`, `confirm`, `hire`, `buy` or `deal` is green, an answer whose id is `no`, `pass`, `cancel`, `decline`, `leave`, `later`, `goodbye` or a similar word is red (when there is more than one answer), the rest take Animus pink, light pink, white, deep pink and gray in order, and the hover reads "Click to choose this answer".
 
 ```json
 {"id": "rumours", "text": "Heard any rumours?", "color": "gold", "hover": "&7Ask what the regulars whisper about", "style": "bold"}
@@ -869,27 +869,15 @@ Player, NPC and server flags with a permission check, as a gate keeper:
 
 ## Commands
 
-All behavior commands need `animus.admin`:
+All behavior commands need `animus.admin`; every one is listed under [commands](/animus/02-commands-permissions#behaviors). The three you use while writing behaviors:
 
 | Command | Result |
 | --- | --- |
-| `/animus behaviors status` | Catalog state, running work, held calls, delivery counts and failures. |
-| `/animus behaviors list [page]` | Up to 20 sources per page, with availability, accepted and observed revisions and accepted hashes. |
-| `/animus behaviors validate [behavior-id]` | Scan and compile without replacing accepted programs or changing source files. With an ID, show only that behavior's problems. |
-| `/animus behaviors reload` | Publish validated sources, including packs; an invalid edit keeps the previous accepted program. Rereads `server-behaviors.json`. |
-| `/animus behaviors schema` | Write the generated [schemas and completions](#schemas-and-editor-support) under `schemas/`. |
-| `/animus behaviors packs` | Each pack with its manifest state and any missing required modules. |
-| `/animus behaviors run <npc-id> <behavior-id>` | Start a manual run against the NPC's current definition and the accepted program. Returns an execution UUID. |
-| `/animus behaviors inspect <execution-uuid>` | Show an active or recently finished run: source identity, waits, diagnostics and recent steps. |
-| `/animus behaviors trace <npc-id-or-uuid>` | Show each active run of that NPC, manual or trigger-started, with its origin, waits and last step, plus its last four finished runs. Use `inspect` for one run's full recent steps. A deleted NPC's UUID still works while its runs are retained. |
-| `/animus behaviors cancel <execution-uuid>` | Cancel that run and its pending calls. |
-| `/animus behaviors triggers [page]` | Trigger availability and totals, drop reasons, binding problems and up to 20 bindings with last fired, fired, active, queued, suppressed and dropped counts. [Server behavior](#server-behaviors) triggers follow the NPC triggers. |
-| `/animus behaviors state status` | Stored and transient key counts against their budgets, documents waiting to be written, write failures, and each invalid stored file with its reason. |
-| `/animus behaviors state purge behavior <behavior-id>` | Remove every variable of that behavior. |
-| `/animus behaviors state purge npc <npc-id-or-uuid>` | Remove that NPC's `npc` and `relationship` variables across all behaviors. |
-| `/animus behaviors state purge player <player-uuid>` | Remove that player's `player` and `relationship` variables across all behaviors. |
-| `/animus behaviors state purge relationship <npc-id-or-uuid> <player-uuid>` | Remove the variables of that one pair. |
-| `/animus behaviors state purge all confirm` | Remove all stored and transient variables, including invalid or unrecognized stored files. |
+| `/animus behaviors validate [behavior=]` | Scan and compile without replacing accepted programs or changing source files. With `behavior=`, show only that behavior's problems. |
+| `/animus behaviors run <npc> <behavior>` | Start a manual run against the NPC's current definition and the accepted program. Returns an execution UUID. |
+| `/animus behaviors trace <npc> [page=1]` | Show each active run of that NPC, manual or trigger-started, with its origin, waits and last step, plus its last four finished runs. Takes an id or UUID; a deleted NPC's UUID still works while its runs are retained. `/animus behaviors inspect <execution>` shows one run's full recent steps. |
+
+`/animus behaviors schema` writes the generated [schemas and completions](#schemas-and-editor-support) under `schemas/`. `/animus behaviors triggers` lists bindings with their fired, active, queued, suppressed and dropped counts; [server behavior](#server-behaviors) triggers follow the NPC triggers. `/animus behaviors state delete` removes stored variables: `behavior <state>` one behavior's, `npc <npc>` an NPC's `npc` and `relationship` variables, `player <player>` a player's `player` and `relationship` variables, `relationship <npc> <player>` one pair's, and `all confirm` every stored and transient variable, including invalid stored files.
 
 While a catalog scan is pending, further catalog commands report busy. A run started from the console carries no player. A run started by a player carries that player's UUID as the triggering player, which grants no extra authority.
 

@@ -13,35 +13,35 @@ NPC movement runs on the server against real block collision. Animus never loads
 ## Manual navigation
 
 ```none
-/animus navigate guard 10 64 4 walk 2
-/animus navigation guard status
-/animus navigation guard stop
-/animus look guard 12 65 4
+/animus navigation go guard 10 64 4 mode=walk speed=2
+/animus navigation status guard
+/animus navigation stop guard
+/animus navigation look guard 12 65 4
 ```
 
-`/animus navigate <id> <x> <y> <z> [walk|swim|fly] [speed]` moves an active NPC in its current world at 1-10 blocks per second. A leg may be any length. Short legs are planned whole; longer legs are planned in segments, and the NPC walks each segment to the point closest to the goal before planning the next. Climbs and descents of any height go segment by segment over stairs and slopes, or by swimming or flying when the mode allows it.
+`/animus navigation go <npc> <x> <y> <z> [mode=walk] [speed=2.0]` moves an active NPC in its current world at 1-10 blocks per second. A leg may be any length. Short legs are planned whole; longer legs are planned in segments, and the NPC walks each segment to the point closest to the goal before planning the next. Climbs and descents of any height go segment by segment over stairs and slopes, or by swimming or flying when the mode allows it.
 
-When a plan gets no closer and its search reached the edge of the terrain it read, Animus plans again over four times the area, then sixteen times, holding both ends of a short leg, so a way round such as stairs at the far end of a room is found. When that still gets no closer, or a segment is blocked while walked, Animus plans again turned 45, 90 and then 135 degrees to either side. A turned plan that reaches somewhere new is walked as a detour and later turns keep to that side, so the NPC follows a cliff, wall or shore until it can head for the goal again. After 12 plans in a row that get no closer, the leg is blocked and the server log names the NPC and the leg once. The line says whether terrain blocks the leg (a closed space, the widest plan around both ends found no way, or a step was blocked while walked) or the planner found no path (no plan could hold the way round, if there is one). A walking NPC crosses a gap in its footing narrower than a quarter block, such as the open front of a shelf beside a slab. A walking goal names a block: the NPC stands on the ground in it or the block below, or on top of the block itself when it is solid, a top slab or a stair, so a point that names the ground under the feet works. When no path reaches the goal itself, such as the top of a pillar, a short leg walks to the nearest reachable place and ends there if that is within 1.5 blocks across and 2 up or down.
+When a plan gets no closer, Animus searches a wider area and then tries ways round to either side, so the NPC follows a cliff, wall or shore until it can head for the goal again. When none of that gets closer, the leg is blocked and the server log names the NPC and the leg once, saying whether terrain blocks it (a closed space, or a step blocked while walked) or no way round was found. A walking NPC crosses a gap in its footing narrower than a quarter block, such as the open front of a shelf beside a slab. A walking goal names a block: the NPC stands on the ground in it or the block below, or on top of the block itself when it is solid, a top slab or a stair, so a point that names the ground under the feet works. When no path reaches the goal itself, such as the top of a pillar, a short leg walks to the nearest reachable place and ends there if that is within 1.5 blocks across and 2 up or down.
 
-Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows the current position, route identity and arrival count. A manual navigate or stop overrides the NPC's waypoint route until it is applied again.
+Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows the current position, route identity and arrival count. A manual `navigation go` or `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-riding) for the rest of the movement commands.
 
 ### How bodies move
 
 - Walking bodies stand on slabs, stairs, paths, snow layers and other partial blocks, step and jump within their body's limits and fall at most 3 blocks.
 - Walking bodies other than armor stands climb ladders, vines and scaffolding straight up and down, and stand on top of scaffolding. An NPC on a ladder or vine does not fall.
 - Ordinary bodies swim at the water surface, aquatic bodies dive and flying bodies fly. Flying and aquatic bodies do not fall.
-- Every step is checked for clearance, support and hazards. Vanilla ballistic physics are not modelled.
+- Every step is checked for clearance, support and hazards. Vanilla ballistic physics are not modeled.
 - Terrain checks use a central hull of at most 4 blocks wide and 8 tall, so an ender dragon's wings and tail may overhang terrain.
 
 An NPC that is not following a route falls when the block under it is broken, burnt, blown up, pushed by a piston, taken by an entity, or changed by a build or its undo. It falls to the ground or water surface below and stays put over unloaded terrain. A walking NPC whose route leg starts while it stands in the air first falls the same way, then plans the leg. A block that another plugin removes without firing an event leaves an idle NPC where it is.
 
 ## Routes
 
-An NPC follows waypoints with the `animus:navigation` module:
+An NPC follows a route, a list of points, with the `animus:navigation` module:
 
 ```json
 "modules": {
-  "animus:navigation": {"enabled": true, "route": "town-patrol"}
+  "animus:navigation": {"enabled": true, "route": "town-walk"}
 }
 ```
 
@@ -74,7 +74,7 @@ A reusable route lives at `routes/<name>.json` in the data folder, at most 64 Ki
 | `points[i].recording` | `{"recording": id, "fromTick": 0, "toTick": durationTicks, "playback": "once"}`, not `wander` | A recording step instead of a position: the NPC walks to the segment's first frame, plays ticks `fromTick` to `toTick` once, then goes on to the next point from the segment's last frame |
 | `guides` | 0-1024 of `{x, y, z}`, `random` only | Helper points a path may pass through, with no waits |
 | `linkDistance` | 1-256, default 32, `random` only | The longest link between two points or guides |
-| `wander` | `{"radius": 1-32, "height": 0-8}`, default 25 and 3, `wander` only | How far from a centre a wander target may be |
+| `wander` | `{"radius": 1-32, "height": 0-8}`, default 25 and 3, `wander` only | How far from a center a wander target may be |
 
 Points and guides together allow at most 1280 coordinates; a recording step counts as a point. Walking routes need whole-block heights for position points. A field used with the wrong order is reported against that field.
 
@@ -93,15 +93,15 @@ A step counts as a point for `order`, `next`, `weight`, `loop` and the `waypoint
 - `sequence` walks 0, 1, ..., n-1, then stops or, with `loop`, starts again at 0. A point with `next` leads to one of its listed points instead; the route ends, or with `loop` returns to 0, only after the last point when it has no `next`.
 - `pingpong` walks 0, 1, ..., n-1, n-2, ..., 1, 0, 1, ... forever without repeating an end point. With one point it walks there once and stops.
 - `random` picks a point at random each time, never the one it just reached, and walks the shortest path to it over points and guides linked within `linkDistance`. When links do not reach the chosen point, the NPC follows them to the closest reachable point or guide and walks the rest as one long leg. From a position that is not a point or guide, the first step goes to a guide when the route has any. Points and guides passed on the way get no wait.
-- `wander` picks a centre at random each leg (a point, or the NPC's definition position when there are no points) and walks to a random block within `radius` on x and z and within `height` blocks up or down. A centre's own `waitTicks` applies after reaching a target around it.
+- `wander` picks a center at random each leg (a point, or the NPC's definition position when there are no points) and walks to a random block within `radius` on x and z and within `height` blocks up or down. A center's own `waitTicks` applies after reaching a target around it.
 
 With `seed: npc` each NPC draws its route choices (destinations, junctions, wait ranges, jitter and start offset) from its own UUID and the route's identity, the reusable route id or the inline module, so NPCs sharing a route make different choices and each NPC makes the same ones again after a restart. `seed: random` mixes in the clock, which is how every route chose before `seed` existed. Give a shared route `startOffset: random` so NPCs that start together spread over its points and do not walk in a stack. When a jittered goal cannot be planned, the leg walks to the exact point once instead, without counting as stuck.
 
-The `waypoint` trigger and `VirtualNpcWaypointEvent` report point `i` as `i` and guide `j` as the number of points plus `j`. A wander arrival reports the centre it used, or 0 without points.
+The `waypoint` trigger and `VirtualNpcWaypointEvent` report point `i` as `i` and guide `j` as the number of points plus `j`. A wander arrival reports the center it used, or 0 without points.
 
 A `sequence` or `pingpong` leg that terrain blocks stops the route. A `random` route waits the larger of its `waitTicks` and 100 ticks, then picks a new destination; a `wander` route waits the larger of its `waitTicks` and 20 ticks and picks a new target. Neither stops on its own. A behavior that waits for a route refuses one that never finishes: a looping `sequence`, a `sequence` whose junctions can reach a point with no way to the end, a `pingpong` over more than one point, and every `random` or `wander` route.
 
-Instead of waypoints, the module can replay a player's recorded movement with `recording`, the id of a file under `recordings/`. A module sets only one of `recording`, `route` and inline `points`. `playback` is `once`, `loop` (default) or `pingpong`:
+Instead of route points, the module can replay a player's recorded movement with `recording`, the id of a file under `recordings/`. A module sets only one of `recording`, `route` and inline `points`. `playback` is `once`, `loop` (default) or `pingpong`:
 
 ```json
 "animus:navigation": {"enabled": true, "recording": "market-loop", "playback": "loop"}
@@ -113,7 +113,7 @@ An invalid route edit is reported with its field, such as `$.points[3].next[1].t
 
 ### How many routes run
 
-There is no limit on how many NPCs follow a route. A patrol with no player within `[npcs] viewDistance` sleeps: it holds no turn and no path plan, its status says `sleeping`, and it continues from where it stood when a player comes near (checked about once a second). A manual `/animus navigate` route and a route a behavior waits for never sleep.
+There is no limit on how many NPCs follow a route. A route with no player within `[npcs] viewDistance` sleeps: it holds no turn and no path plan, its status says `sleeping`, and it continues from where it stood when a player comes near (checked about once a second). A manual `/animus navigate` route and a route a behavior waits for never sleep.
 
 Awake routes take turns. Each tick at most `routesPerTick` of them plan or take a step, and a route that missed its turn goes first on the next tick, so with more walking NPCs than the budget they all move, only slower. On Folia these budgets apply to each region tick.
 
@@ -202,7 +202,7 @@ A relation that cannot be honoured leaves the NPC standing at its own position w
 
 | Problem | Effect |
 |---|---|
-| Vehicle missing or dormant, or an imported reference recorded as missing, ambiguous or invalid | Reported; activation is still allowed. The NPC attaches once the vehicle becomes active |
+| Vehicle missing or dormant, or an imported reference recorded as missing, ambiguous or invalid | Reported; spawning is still allowed. The NPC attaches once the vehicle becomes active |
 | An imported vehicle id that now belongs to a different NPC | Reported; never attached |
 | Riding itself, a cycle, a chain too deep or a full vehicle | Refused by `/animus spawn` and by `/animus edit` of a spawned NPC. A hand-edited file that creates one is reported, and every member of a cycle stays unattached |
 

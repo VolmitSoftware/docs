@@ -101,11 +101,11 @@ Nothing else is recorded: other right-clicks, block breaking, chat and inventory
 
 Animus writes recordings in a fixed layout: keys in the order shown above, one frame per line, one event per line and numbers without trailing zeros. Reading a file Animus wrote and saving it again gives the same bytes, so a recording that has not changed never shows up as changed in hotload, backups or version control.
 
-Before saving, Animus drops frames that add nothing. A frame is left out when its pose lies within 0.02 blocks and 2 degrees of the straight line between its neighbours and no flag changes. A frame is always kept at every event and at every flag change. A player who stands still for ten seconds therefore costs two frames, not a hundred.
+Before saving, Animus drops frames that add nothing. A frame is left out when its pose lies within 0.02 blocks and 2 degrees of the straight line between its neighbors and no flag changes. A frame is always kept at every event and at every flag change. A player who stands still for ten seconds therefore costs two frames, not a hundred.
 
 Recording again under an existing id replaces the frames and events but keeps the file's `description`, `tags`, `playback` and `speed`.
 
-Saves go through the same document store as definitions and routes, so hotload, [web editor](/animus/14-web-editor) undo and [rollback](/animus/12-storage-recovery) all see them.
+Saves go through the same document store as definitions and routes, so [live apply](/animus/03-configuration#live-apply), [web editor](/animus/14-web-editor) undo and [rollback](/animus/12-storage-recovery) all see them.
 
 ## Recording a performance
 
@@ -114,8 +114,9 @@ Saves go through the same document store as definitions and routes, so hotload, 
 /animus record stop
 /animus record cancel
 /animus record status
-/animus record ghost on|off
-/animus record preview <id> [stop]
+/animus record ghost [enabled=toggle]
+/animus record preview <id>
+/animus record clear
 ```
 
 All of them need `animus.admin`. Every command except `status` must be run by a player.
@@ -125,11 +126,12 @@ All of them need `animus.admin`. Every command except `status` must be run by a 
 | `record start <id>` | Starts recording you as `recordings/<id>.json`. Your current position becomes the origin |
 | `record stop` | Ends the recording and saves it |
 | `record cancel` | Ends the recording and throws it away |
-| `record status` | Shows who is recording, for how long and how many frames are captured |
-| `record ghost on\|off` | Shows or hides your ghost while you record |
-| `record preview <id> [stop]` | Plays a saved recording to you as a ghost. `stop` ends the preview early |
+| `record status [page=1]` | Shows who is recording, for how long and how many frames are captured |
+| `record ghost [enabled=toggle]` | Shows or hides your ghost while you record; `enabled` is `on`, `off` or `toggle` |
+| `record preview <id>` | Plays a saved recording to you as a ghost |
+| `record clear` | Ends your preview early |
 
-While recording, Animus reads your position, look direction, ground contact, sneaking, sprinting, swimming, gliding and jumps every `sampleTicks` ticks. It also notes each arm swing, each change to your hands and armour, and each door, fence gate or trapdoor you open or close with a right-click. At most `maximumSessions` players record at once.
+While recording, Animus reads your position, look direction, ground contact, sneaking, sprinting, swimming, gliding and jumps every `sampleTicks` ticks. It also notes each arm swing, each change to your hands and armor, and each door, fence gate or trapdoor you open or close with a right-click. At most `maximumSessions` players record at once.
 
 A recording ends and saves when you run `record stop` or when it reaches `maximumTicks` (12000 ticks, 10 minutes, by default). It also ends and saves what it has, and tells you why, when you:
 
@@ -180,7 +182,7 @@ For a clean `loop`, end the recording close to where you started it.
 | `animus:resume-patrol` | None | Starts the NPC's declared route or recording again, continuing from where it was interrupted. Reports `resumed`, or `nothing-to-resume` when the NPC has no declared route or recording |
 | `animus:stop-navigation` | None | Stops a playing recording like any route |
 
-With `wait`, the action completes at the last frame and fails with the same codes as [walking a patrol](/animus/07-behaviors#walking-a-patrol). A loop or pingpong never reaches an end, which is why `wait` is refused with them.
+With `wait`, the action completes at the last frame and fails with the same codes as [walking a route](/animus/07-behaviors#walking-a-route). A loop or pingpong never reaches an end, which is why `wait` is refused with them.
 
 `animus:resume-patrol` lets a behavior stop an NPC for a conversation and send it back to work afterwards:
 
@@ -203,7 +205,7 @@ With `wait`, the action completes at the last frame and fails with the same code
 
 **Unloaded terrain.** When the next frame is in a chunk that is not loaded, the playback pauses as unavailable and continues once the chunk loads.
 
-**Sleeping.** With no player near, a playback sleeps like a [patrol](/animus/05-movement-mounts-riding#how-many-routes-run): it holds its place in the recording and continues when a player comes near. Playbacks take turns within the same `[navigation]` budgets as routes.
+**Sleeping.** With no player near, a playback sleeps like a [route](/animus/05-movement-mounts-riding#how-many-routes-run): it holds its place in the recording and continues when a player comes near. Playbacks take turns within the same `[navigation]` budgets as routes.
 
 **Poses.** Sneaking, swimming and gliding frames put the NPC in that pose, and sprinting frames show it sprinting. Every viewer sees the same pose.
 
@@ -211,9 +213,9 @@ With `wait`, the action completes at the last frame and fails with the same code
 
 ### Interruptions and resuming
 
-Combat, `/animus navigate` and `/animus navigation stop <id>` stop a playback the same way they stop a route, but the NPC remembers where it was in the recording. When combat releases the NPC, or a behavior runs `animus:resume-patrol`, the performance continues from that point instead of from the start.
+Combat, `/animus navigation go` and `/animus navigation stop <id>` stop a playback the same way they stop a route, but the NPC remembers where it was in the recording. When combat releases the NPC, or a behavior runs `animus:resume-patrol`, the performance continues from that point instead of from the start.
 
-Changing the NPC's definition or the recording file starts the performance again from the first frame. Editing a recording applies within about a second, like any [hotloaded](/animus/03-configuration#live-apply) file; every NPC playing it picks up the new version.
+Changing the NPC's definition or the recording file starts the performance again from the first frame. Editing a recording applies within about a second, like any [live-applied](/animus/03-configuration#live-apply) file; every NPC playing it picks up the new version.
 
 ### Inspecting a playback
 
@@ -240,7 +242,7 @@ A missing or invalid recording is shown as `route-error=` with the reason. The N
 
 ### Recording steps in routes
 
-A [route](/animus/05-movement-mounts-riding#routes) point can play a segment of a recording instead of naming a position, so a patrol can walk to the bakery, perform the recorded stretch of kneading and serving, and walk on:
+A [route](/animus/05-movement-mounts-riding#routes) point can play a segment of a recording instead of naming a position, so an NPC on a route can walk to the bakery, perform the recorded stretch of kneading and serving, and walk on:
 
 ```json
 {"recording": "market-loop", "fromTick": 120, "toTick": 520, "playback": "once"}
@@ -250,7 +252,7 @@ A [route](/animus/05-movement-mounts-riding#routes) point can play a segment of 
 
 A route reads each recording its steps name once when the route loads, within `maximumFileBytes`, and keeps them while the route runs. Editing one of those recordings restarts a step that is playing it from `fromTick`. A recording that cannot be read, was made in another world, or ends before `toTick` blocks the step with `route-error=recording step <index>: <reason>`, and the route's usual failure rules apply: a `sequence` or `pingpong` route stops, a `random` route waits and picks again. A step that becomes blocked while playing does the same.
 
-Combat, `/animus navigate` and `navigation stop` stop a step the way they stop any playback, and `animus:resume-patrol` continues it from where it stopped, then carries on with the route. While a step plays, `/animus inspect <id>` shows it:
+Combat, `/animus navigation go` and `navigation stop` stop a step the way they stop any playback, and `animus:resume-patrol` continues it from where it stopped, then carries on with the route. While a step plays, `/animus inspect <id>` shows it:
 
 ```none
 step=recording:market-loop cursor=318/520 state=playing
@@ -275,7 +277,7 @@ These keys live in `config.toml`. Every key applies live; lowering a cap lets re
 | `ghostIntervalTicks` | `100` | 40-1200 | Ticks between two ghost replays while recording |
 | `ghostStretchTicks` | `100` | 20-600 | How far behind the recorder a ghost replay starts |
 | `ghostGlow` | `true` | | Make the ghost glow |
-| `ghostColor` | `aqua` | One of the sixteen chat colours | The ghost's glow colour, such as `aqua` or `gold` |
+| `ghostColor` | `aqua` | One of the sixteen chat colors | The ghost's glow color, such as `aqua` or `gold` |
 | `maximumPreviews` | `8` | 1-32 | `record preview` ghosts at once |
 
 ## Example: a looping market vendor

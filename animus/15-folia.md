@@ -19,12 +19,12 @@ On Folia 26.1.2, 26.2 and 26.3, each saved NPC runs on the region that owns its 
 | Use and attack interactions, `VirtualNpcInteractionEvent`, administrator selection | Yes, when the player's region also owns the NPC |
 | Triggers: spawn, despawn, interaction, waypoint, proximity, timers | Yes |
 | Built-in behavior actions that touch the world or a player | Yes |
-| Navigation: `/animus navigate`, `look`, stop, waypoint patrols, reusable routes, waiting behaviors | Yes |
+| Navigation: `/animus navigation go`, `look`, `stop`, routes, waiting behaviors | Yes |
 | Riding an NPC (`animus:riding`) | Yes; see [riding](#riding) |
-| Mounted NPCs (`animus:mount`) | Yes; see [mounted groups](#mounted-groups) |
+| Mounted NPCs (`animus:mount`) | Yes; see [mounted NPCs](#mounted-npcs) |
 | Combat module, `/animus combat`, the `animus:combat` action, hiring | Yes; see [combat](#combat) |
 | Ender dragon wing phases | Yes |
-| `/animus attack`, `/animus target` | Yes; see [manual attack and mob control](#manual-attack-and-mob-control) |
+| `/animus combat attack`, `/animus combat mob` | Yes; see [manual attack and mob control](#manual-attack-and-mob-control) |
 | Builds (`/animus build`, `animus:build`), scaffolding, doors and beds | Yes; see [builds](#builds) |
 | Packet preview (`/animus proof`) | No. Use the [stationary preview](#stationary-preview) |
 | Recording (`/animus record`), the recording ghost and previews | Yes; every session and preview runs on the recording player's own thread |
@@ -54,11 +54,11 @@ If the new chunk is not loaded, or the new region has not adopted the NPC within
 
 A long leg walks to the edge of its region and the handoff carries the route on. A short leg whose terrain belongs to more than one region waits and retries after 2 seconds; a waiting behavior is told the route is unavailable instead. Folia keeps neighbouring loaded chunks in one region, so this normally happens only while regions merge.
 
-## Mounted groups
+## Mounted NPCs
 
-A vehicle and every NPC riding it share one owner: the region that owns the root vehicle. Passengers move right after their vehicle, so they always sit on the current seat. When the root crosses into another chunk, the whole group is handed over at once. When the group goes dormant, every passenger goes dormant with it and wakes on its own later.
+A vehicle and every NPC riding it share one owner: the region that owns the root vehicle. Passengers move right after their vehicle, so they always sit on the current seat. When the root crosses into another chunk, the whole stack is handed over at once. When the stack stops being active, every passenger stops with it and becomes active again on its own later.
 
-A passenger whose vehicle is on another region steps onto the vehicle's seat, which hands it to the vehicle's region, and it joins the group there. A passenger whose vehicle is not active waits where it stands; `/animus inspect` shows `mounted-on=<vehicle> (not seated yet ...)`. When a relation ends or its vehicle is removed, the passenger returns to the position in its definition. Cycles, chains deeper than 8 and full vehicles are refused as on Paper.
+A passenger whose vehicle is on another region steps onto the vehicle's seat, which hands it to the vehicle's region, and it joins the stack there. A passenger whose vehicle is not active waits where it stands; `/animus inspect` shows `mounted-on=<vehicle> (not seated yet ...)`. When a relation ends or its vehicle is removed, the passenger returns to the position in its definition. Cycles, chains deeper than 8 and full vehicles are refused as on Paper.
 
 ## Riding
 
@@ -78,11 +78,11 @@ The `[combat]` limits `brainsPerTick`, `targetScansPerTick`, `pathRequestsPerTic
 
 ## Manual attack and mob control
 
-`/animus attack` and `/animus target` answer `QUEUED` at once; the result follows in the server log as `Attack <npc>: <status> ...` or `Mob control ...`, with the same statuses as on Paper. `target` on a player is refused, as on Paper.
+`/animus combat attack` and `/animus combat mob` answer `QUEUED` at once; the result follows in the server log as `Attack <npc>: <status> ...` or `Mob control ...`, with the same statuses as on Paper. `combat mob` on a player is refused, as on Paper.
 
 An attack is captured on the NPC's region, where the NPC stands at that moment, and handed to the target's own region. That region checks that the target is alive in the same world, that the NPC has not moved more than 2 blocks since, reach, line of sight and protection, fires `VirtualNpcDamageEvent` and applies the damage. When the line to the target crosses chunks the target's region does not own, the attack is refused as `UNAVAILABLE_CHUNK`. Each NPC has at most one attack on its way at a time, and the cooldown counts from when it began.
 
-A controlled mob runs on its own region and reads the NPC only from its published state. It walks to the NPC through chunks its region owns and stops where that region ends. Its hits go to the NPC's region, which checks the reach again and applies the NPC's own defense; `VirtualNpcDamagedByMobEvent` fires on the mob's region. `target <npc> stop` lets each mob go on its own region. At most 32 mobs are controlled at once, and their path plans count against the region's `pathRequestsPerTick`. A mob removed or unloaded while controlled is released without being touched. When Animus stops, controlled mobs have no goals until their chunks load again. `/animus combat status` counts `attacks`, `applied`, `refused`, `controlled-mobs` and `mob-hits`.
+A controlled mob runs on its own region and reads the NPC only from its published state. It walks to the NPC through chunks its region owns and stops where that region ends. Its hits go to the NPC's region, which checks the reach again and applies the NPC's own defense; `VirtualNpcDamagedByMobEvent` fires on the mob's region. `combat mob <npc> stop` lets each mob go on its own region. At most 32 mobs are controlled at once, and their path plans count against the region's `pathRequestsPerTick`. A mob removed or unloaded while controlled is released without being touched. When Animus stops, controlled mobs have no goals until their chunks load again. `/animus combat status` counts `attacks`, `applied`, `refused`, `controlled-mobs` and `mob-hits`.
 
 ## Builds
 
@@ -118,19 +118,19 @@ These limits apply to each region tick rather than to the whole server:
 
 A region that runs short of simulation steps or route turns slows its own cosmetic updates and distant moves, as described under [NPC definitions](/animus/04-npc-definitions); other regions keep their rate. Waiting behavior runs slow every region. These stay server-wide: `maximumViewers`, `viewDistance`, 10,000 active NPCs, 8 concurrent route and appearance reads, 8 skin reads and 8 path plans. `maximumVisible` applies to each viewer, and each NPC queues at most 32 actions. Work over a limit waits for the next tick.
 
-Route turns go to the NPCs that waited longest, so no patrol waits forever. Every player marks the NPCs within `viewDistance` once a second, also on other regions; a patrol that nobody marked for 3 seconds sleeps until a player comes near. `/animus status` shows `routes-sleeping` and `navigation-pressure`, and the console logs once when regions start to run short of route turns and once when the shortage ends.
+Route turns go to the NPCs that waited longest, so no route waits forever. Every player marks the NPCs within `viewDistance` once a second, also on other regions; a route that nobody marked for 3 seconds sleeps until a player comes near. `/animus status` shows `routes-sleeping` and `navigation-pressure`, and the console logs once when regions start to run short of route turns and once when the shortage ends.
 
 ## Stationary preview
 
-`/animus foliaproof` shows one stationary player-shaped NPC privately to an administrator. It does not use or activate saved definitions. Enable it with `packetProofEnabled = true` in `config.toml`; the change applies when the file is saved, and turning it off clears existing preview bodies.
+`/animus proof folia` shows one stationary player-shaped NPC privately to an administrator. It does not use or activate saved definitions. Enable it with `packetProofEnabled = true` in `config.toml`; the change applies when the file is saved, and turning it off clears existing preview bodies.
 
 ```none
-/animus foliaproof spawn [skin-sha256]
-/animus foliaproof status
-/animus foliaproof clear
+/animus proof folia spawn [skin=]
+/animus proof folia status
+/animus proof folia clear
 ```
 
-All three require `animus.admin`. The console can read `status`; `spawn` and `clear` need a player. Skin references use existing content-hashed JSON files under `skins/`. The NPC appears about three blocks ahead, centred on a block, on full-block support with clear space; nearby partial or unknown block shapes can cause a refusal.
+All three require `animus.admin`. The console can read `status`; `spawn` and `clear` need a player. Skin references use existing content-hashed JSON files under `skins/`. The NPC appears about three blocks ahead, centered on a block, on full-block support with clear space; nearby partial or unknown block shapes can cause a refusal.
 
 The whole body and its support must be owned by the player's region, loaded and sent to the client. A pending spawn is cancelled when the player teleports. A visible preview is removed after a teleport (including a same-position teleport), logout, death or respawn, a world change, losing permission, unavailable terrain or expiry.
 

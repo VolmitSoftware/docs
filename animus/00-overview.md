@@ -14,13 +14,15 @@ Animus manages NPCs on Paper, Spigot and Folia servers, and on Fabric, NeoForge 
 
 ### JSON definitions
 
-Each NPC is one definition file at `npcs/<group>/<id>.json` in the data folder. The `id` is unique across all groups and the `uuid` never changes. Every accepted change raises the definition's `revision`. Behaviors, routes, skins, shops, GUIs, rigs and animations are separate JSON documents that a definition refers to by id. Plugin-wide settings are the one exception: they live in [`config.toml`](/animus/03-configuration).
+Each NPC is one definition file at `npcs/<folder>/<id>.json` in the data folder. The `id` is unique across all folders and the `uuid` never changes. Every accepted change raises the definition's `revision`. Behaviors, routes, skins, shops, GUIs, rigs and animations are separate JSON documents that a definition refers to by id. Plugin-wide settings are the one exception: they live in [`config.toml`](/animus/03-configuration).
 
-Saving any of these files applies it within about a second. An invalid edit is refused with its exact field error, and the last valid version stays active. See [configuration](/animus/03-configuration#live-apply) and [storage and recovery](/animus/12-storage-recovery).
+Saving any of these files applies it within about a second; see [live apply](/animus/03-configuration#live-apply). An invalid edit is refused with its exact field error, and the last valid version stays in use. See [storage and recovery](/animus/12-storage-recovery).
 
-### Dormant until spawned
+### Spawned, despawned and active
 
-Creating, cloning or importing an NPC leaves it dormant (`"spawned": false`). A dormant NPC is stored and editable but has no body, fires no triggers and costs nothing at run time. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves the intent to spawn. The NPC appears once a player in range has received its chunk, and it comes back after a restart. `/animus despawn <id>` returns it to dormant.
+A new, cloned or imported NPC is saved despawned (`"spawned": false`), which these pages call dormant: it is stored and editable, but has no body, fires no triggers and costs nothing at run time. `/animus spawn <id>` marks it spawned, and `/animus despawn <id>` marks it despawned again. Both are saved, so a restart keeps them.
+
+A spawned NPC is active while it is loaded in a world: its chunk is loaded and it runs its routes, triggers and combat. A spawned NPC in an unloaded chunk waits and becomes active again when the chunk loads. See [activation and editing](/animus/04-npc-definitions#activation-and-editing).
 
 ### Virtual, packet-only bodies
 
@@ -36,24 +38,47 @@ A definition's `modules` object holds per-NPC feature settings keyed by `namespa
 
 Trusted Java modules extend Animus with new behavior actions, conditions, triggers and import converters. They are jars placed in `modules/` and load at startup. See [Java modules and API](/animus/99-java-modules-api).
 
+## Glossary
+
+| Term | Meaning |
+|---|---|
+| Definition | One NPC's JSON file, `npcs/<folder>/<id>.json` |
+| Folder | The path under `npcs/` a definition sits in, such as `world/town`. The definition's `group` field holds it, and `folder=` on commands names it |
+| Trait group | A file in `groups/` holding values that several NPCs share; an NPC lists the trait groups it takes in its `groups` field. See [trait groups](/animus/18-trait-groups) |
+| Spawned, despawned | Whether the NPC should exist in its world. Saved in the definition as `"spawned"` |
+| Dormant | Saved and not spawned |
+| Active | Spawned and loaded in a world right now |
+| Route | The points an NPC walks, from `routes/<name>.json` or written into its `animus:navigation` module. See [routes](/animus/05-movement-mounts-riding#routes) |
+| Recording | A player's captured movement that an NPC replays. See [performance recordings](/animus/19-performance-recordings) |
+| Live apply | A saved data file taking effect within a second, without a reload. The chat line and permission call it hotload. See [live apply](/animus/03-configuration#live-apply) |
+| Note block chime | The sound operators hear when a saved file is applied or refused |
+| Transaction | One saved change with a rollback receipt. Replies show its id as `tx`, with **[Undo]** |
+| Web editor | The web editor at [animus-editor.web.app](https://animus-editor.web.app) |
+| Pairing link | The single-use link `/animus editor pair` prints to connect the web editor to a server |
+| Module | Per-NPC feature settings in a definition's `modules`, such as `animus:navigation`. A Java module is a trusted jar in `modules/` that adds capabilities |
+
 ## Sections
 
 | Page | Covers |
 |---|---|
+| [First ten minutes](/animus/20-first-ten-minutes) | Install, set up, and make, skin and walk your first NPC |
 | [Installation and compatibility](/animus/01-installation-compatibility) | Requirements, supported versions, file layout and platform differences |
 | [Commands and permissions](/animus/02-commands-permissions) | Every `/animus` command and permission node |
 | [Configuration](/animus/03-configuration) | Every `config.toml` setting and live apply |
-| [NPC definitions](/animus/04-npc-definitions) | Definition fields, appearance, equipment, holograms and poses |
+| [Migrating from Citizens](/animus/13-migrating-from-citizens) | Importing Citizens, Sentinel, Denizen, dtlTraders and Shopkeepers data |
+| [NPC definitions](/animus/04-npc-definitions) | Definition fields, spawning, appearance, equipment, holograms and poses |
+| [Trait groups](/animus/18-trait-groups) | Values shared by many NPCs, and how they merge |
 | [Movement, mounts and riding](/animus/05-movement-mounts-riding) | Navigation, routes, look-close, mounted NPCs, riding and hiring |
+| [Performance recordings](/animus/19-performance-recordings) | Recording a player's movement and replaying it on an NPC |
 | [Rigs and animations](/animus/06-rigs-animations) | Bone rigs, animation clips and the resource pack |
 | [Behaviors](/animus/07-behaviors) | JSON behaviors, triggers, actions and stored state |
 | [Combat](/animus/08-combat) | The combat module, targets, guards and protection |
 | [Building](/animus/09-building) | NPCs that build schematics |
+| [In-game toolkit](/animus/21-in-game-toolkit) | Editing NPCs in game with `/animus tools` |
+| [Web editor](/animus/14-web-editor) | Pairing the web editor and what it edits |
 | [Shops](/animus/10-shops) | Shops, trades, stock and the dtlTraders importer |
 | [GUIs, holograms and menus](/animus/11-guis-holograms-menus) | Chest GUIs, holograms and holographic menus in Gloss formats |
 | [Storage and recovery](/animus/12-storage-recovery) | Last-valid recovery, transactions, rollback and limits |
-| [Migrating from Citizens](/animus/13-migrating-from-citizens) | Importing Citizens, Sentinel, Denizen, dtlTraders and Shopkeepers data |
-| [Web editor](/animus/14-web-editor) | Pairing the browser editor and what it edits |
 | [Folia](/animus/15-folia) | How NPCs run on Folia regions and what differs there |
 | [Mod servers](/animus/16-mod-servers) | Fabric, NeoForge and Forge |
 | [Debug, React and metrics](/animus/17-debug-react-metrics) | `/animus debug summary` and the metrics published to React |

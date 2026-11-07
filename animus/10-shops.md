@@ -112,7 +112,7 @@ A layout applies to the chest style only. When the GUI is not loaded or has no l
 | Field | Meaning |
 | --- | --- |
 | `schemaVersion`, `revision`, `id` | Version 1, a revision of 1 or more, and the id that matches the file. |
-| `title` | Window title, with `&` colour codes. Defaults to the id. |
+| `title` | Window title, with `&` color codes. Defaults to the id. |
 | `permission` | Needed to open the shop. |
 | `style` | `native` (trading screen) or `chest`. Defaults to `[shops] style`. See [window styles](#window-styles). |
 | `layout` | A chest GUI id whose list area shows the offers, for the chest style. See [layout GUIs](#layout-guis). |
@@ -156,7 +156,7 @@ Every purchase runs on the player's own thread and either completes fully or cha
 - **Trade**: takes every needed item, gives every reward, then takes any money price. If any step fails, the player gets back exactly what they had.
 - **Trade in a container shop**: takes the rewards out of the shop's containers, takes every needed item from the player, puts the needed items into the containers, then gives the rewards. If the containers lack a reward the trade is out of stock; if they have no room for the needed items it is refused with `containerFull`. Either way both sides keep exactly what they had.
 
-Only the hotbar and the three storage rows are used; armour, the offhand and the cursor are never touched. Every click in either window is cancelled, so no item can be taken out of it; see [chest GUI safety](/animus/11-guis-holograms-menus#safety).
+Only the hotbar and the three storage rows are used; armor, the offhand and the cursor are never touched. Every click in either window is cancelled, so no item can be taken out of it; see [chest GUI safety](/animus/11-guis-holograms-menus#safety).
 
 ## Container shops
 
@@ -194,26 +194,23 @@ A shop that runs commands needs its id or namespace on the command allow-list (`
 
 ## Commands
 
-All need `animus.admin`.
+All need `animus.admin`; see [commands](/animus/02-commands-permissions#shops-and-guis) for the full list. The ones you use most:
 
-| Command | What it does |
-| --- | --- |
-| `/animus shop status` | Counts, open windows and whether money works. |
-| `/animus shop list` | Loaded shops. |
-| `/animus shop open <shop> [player=] [style=]` | Opens a shop for yourself or a player, in its own style or the `style=` given (`native` or `chest`). |
-| `/animus shop reload` | Reads shops and GUIs again. Editor applies, `/animus rollback`, and import apply, accept and rollback reload shops and GUIs on their own; use this after editing files by hand. |
-| `/animus shop problems` | Why files were refused, with the field, then notes about offers a style cannot show exactly. |
-| `/animus shop reset <shop> [player=]` | Clears limits and stock. |
-| `/animus shop import preview <folder> [saves.yml]` | Stages a dtlTraders import from `imports/inbox/`. |
-| `/animus shop import apply <import-id>` | Installs a staged import. |
+```none
+/animus shop open <shop> [player=] [style=]
+/animus shop problems
+/animus shop reset <shop> [player=]
+```
+
+Run `/animus shop reload` after editing files by hand. Editor applies, `/animus rollback`, and import apply, accept and rollback reload shops and GUIs on their own.
 
 ## Importing from dtlTraders
 
-Copy the dtlTraders data folder (the one with `shops/` or `guis.yml`, and `data.dat`) to `plugins/Animus/imports/inbox/dtltraders/`, and optionally the Citizens `saves.yml` beside it. Then:
+Copy the dtlTraders data folder (the one with `shops/` or `guis.yml`, and `data.dat`) to `plugins/Animus/imports/inbox/dtltraders/`, and optionally the Citizens `saves.yml` beside it in `imports/inbox/`. Then run these, where `<preview>` is the id the first command prints:
 
 ```none
-/animus shop import preview dtltraders saves.yml
-/animus shop import apply <import-id>
+/animus shop import preview dtltraders saves=saves.yml
+/animus shop import apply <preview>
 ```
 
 The [Citizens migration](/animus/13-migrating-from-citizens) also installs dtlTraders shops it finds, in the same apply step as the NPCs. The offline converter does the same as these commands:

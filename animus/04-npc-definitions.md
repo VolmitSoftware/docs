@@ -1,6 +1,6 @@
 ---
 title: "Animus: NPC Definitions"
-description: "Definition files, activation, live edits, appearance, text, inventory and presentation limits"
+description: "Definition files, spawning, live edits, appearance, text, inventory and presentation limits"
 published: true
 date: 2026-11-05T00:00:00.000Z
 tags: "animus, npcs, definitions, appearance, hotload"
@@ -10,7 +10,7 @@ dateCreated: 2026-11-05T00:00:00.000Z
 
 Each NPC is a JSON definition at `npcs/<folders>/<id>.json` in the Animus data folder, directly in `npcs/` or up to 8 folders deep, and the file name must be the `id` (`plugins/Animus/` on Bukkit, `config/animus/` on [mod servers](/animus/16-mod-servers)). Animus shows NPCs to players with packets only: no NPC body is registered as a world entity, and a dormant definition creates nothing in the world.
 
-Folders are yours to arrange: `npcs/guard.json`, `npcs/town/guard.json` and `npcs/world/town/market/guard.json` are all valid places. The folder path is the NPC's `group`, which commands, editor tokens limited to groups and the web editor's folder tree use. Ids stay unique across every folder, so moving an NPC between folders never clashes with another NPC of the same id. The web editor's NPC browser can make, rename, move and delete folders; see [the web editor](/animus/14-web-editor).
+Folders are yours to arrange: `npcs/guard.json`, `npcs/town/guard.json` and `npcs/world/town/market/guard.json` are all valid places. The folder path is the NPC's folder, stored in its `group` field. `folder=` on commands, editor tokens limited to folders and the web editor's folder tree use it. Ids stay unique across every folder, so moving an NPC between folders never clashes with another NPC of the same id. The web editor's NPC browser can make, rename, move and delete folders; see [the web editor](/animus/14-web-editor).
 
 ## Definition file
 
@@ -36,11 +36,11 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 | `schemaVersion` | Yes | `1`. Other versions are refused. |
 | `revision` | Yes | Integer of at least 1. Every accepted command or editor change raises it. |
 | `uuid` | Yes | Canonical UUID, unique across all NPCs. |
-| `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Unique across all groups. |
-| `group` | Yes | The folder the file sits in under `npcs/`, such as `town/market`, or empty for a file directly in `npcs/`. Each folder name follows the `id` rules, at most 8 deep. Animus sets it from where the file is, so a file moved to another folder takes that folder as its group. |
-| `name` | Yes | Printable Unicode and spaces, at most 256 UTF-16 code units, no control characters. `&` colour codes apply. |
+| `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Unique across all folders. |
+| `group` | Yes | The folder the file sits in under `npcs/`, such as `town/market`, or empty for a file directly in `npcs/`. Each folder name follows the `id` rules, at most 8 deep. Animus sets it from where the file is, so a file moved to another folder takes that folder. It is not a [trait group](/animus/18-trait-groups); those go in `groups`. |
+| `name` | Yes | Printable Unicode and spaces, at most 256 UTF-16 code units, no control characters. `&` color codes apply. |
 | `type` | Yes | An entity type, such as `minecraft:villager` or `villager`. Bodies that can be shown: `minecraft:player`, `minecraft:armor_stand`, `minecraft:horse`, `minecraft:turtle`, `minecraft:frog`, `minecraft:llama`, `minecraft:armadillo` and `minecraft:ender_dragon`. |
-| `spawned` | Yes | `true` when the NPC should be active. |
+| `spawned` | Yes | `true` when the NPC is spawned: it becomes active whenever its chunk is loaded. `false` keeps it dormant. |
 | `position` | Yes | `world`, and `x`, `y`, `z`, `yaw`, `pitch` as finite numbers within ±30000000. On Bukkit, `world` is a world name, a world UUID or a dimension key such as `minecraft:the_nether`; mod servers take the forms [their own page](/animus/16-mod-servers#worlds) lists. |
 | `skin` | No | SHA-256 of a skin document in `skins/`. |
 | `behaviors` | No | `namespace:id` references to [behaviors](/animus/07-behaviors). |
@@ -55,10 +55,10 @@ A wrong value names its exact field, for example `$.equipment.head.count: expect
 
 ## Activation and editing
 
-Create, clone and import produce definitions with `spawned: false`. `/animus spawn <id>` checks the world, the type and the profile name against the running server, then saves the activation. The NPC appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC as dormant and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
+Create, clone and import save definitions despawned (`spawned: false`), so they start dormant. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves `spawned: true`. The NPC is active while its chunk is loaded, and it appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC despawned and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
 
 ```none
-/animus create guard minecraft:player world 0 64 0 town Town Guard
+/animus create guard name="Town Guard" folder=town
 /animus spawn guard
 /animus inspect guard
 /animus select guard
@@ -74,33 +74,7 @@ Skins are content-hashed JSON documents in `skins/` holding the texture and sign
 
 ### Hand edits apply live
 
-Saving a data file applies it within about a second, without `/animus reload`. This covers `config.toml`, NPCs and the module settings inside them, behaviors, packs, routes, skins, shops, chest GUIs, menus, holograms, text animations, rigs, animations and schematics. Each change goes through the same checks the web editor uses.
-
-Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block ding and see one line per changed key, at most 12 per file:
-
-```none
-[Animus]: Hotloaded [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
-```
-
-An invalid edit is refused with its field error and the last valid version stays in use. Each NPC file applies on its own: a broken file keeps only its own last valid version, and valid edits to other NPC files still apply. `/animus reload` follows the same rules.
-
-Every `config.toml` key applies live. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work in flight: visible NPCs, viewers, routes, fights, builds, behavior runs, queued actions and file operations above the new cap finish normally, and new work waits until usage is under it. A smaller `viewDistance` despawns NPCs that are now out of range on the next tick. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
-
-These changes need a restart, and their message ends in `[restart required]`:
-
-- `npcs.enabled` on Folia.
-- Adding, removing or replacing a [Java module](/animus/99-java-modules-api) jar.
-- Replacing TLS certificate files at the same paths. Change the path in the settings instead to apply new files live.
-
-Animus's own writes (editor applies, imports, state) are not reported, and `state/`, `backups/`, `logs/` and `imports/` are not watched.
-
-| `[hotload]` key | Default | Meaning |
-|---|---|---|
-| `enabled` | `true` | Watch the data files. When `false`, only `config.toml` is watched. |
-| `sound` | `true` | Play the ding before each message. |
-| `maximumFiles` | `20000` | Files watched at most. |
-| `readsPerPoll` | `256` | Changed files read per 500 ms poll. |
-| `maximumFileBytes` | `4194304` | Larger files are refused. |
+Saving a definition file applies it within about a second, without `/animus reload`, and a broken edit keeps the last valid version. See [live apply](/animus/03-configuration#live-apply) for the chat line, what needs a restart and the `[hotload]` settings.
 
 ## Appearance, text and inventory
 
@@ -125,9 +99,9 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 
 | Field | Accepted values |
 |---|---|
-| `equipment` | Slots `main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`. Each holds one item. Player bodies and armor stands show the first six, a horse shows its armour in `body` and its saddle in `saddle`, a llama shows its carpet in `body`, and turtles, frogs, armadillos and dragons show none. Items in other slots are kept and sent, and the client ignores them. |
+| `equipment` | Slots `main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`. Each holds one item. Player bodies and armor stands show the first six, a horse shows its armor in `body` and its saddle in `saddle`, a llama shows its carpet in `body`, and turtles, frogs, armadillos and dragons show none. A slot the body cannot show is refused, such as `$.equipment.head: minecraft:horse bodies cannot show head; they show body and saddle`. When an edit changes the body type, set `"equipment": null` in the same edit or drop the slots the new body cannot show. |
 | item | `id`, such as `minecraft:iron_sword` or `iron_sword`, optional `count` (1-99, default 1), optional `components`: the text that follows the item id in `/give`, such as `[enchantment_glint_override=true]`, at most 4096 characters. `imported` holds source item data with no equivalent; it is kept and never read. |
-| `hologram.lines` | At most 16 lines of at most 256 characters each. `&` colour and format codes apply. |
+| `hologram.lines` | At most 16 lines of at most 256 characters each. `&` color and format codes apply. |
 | `nameplate.visible` | `false` hides the name. Default `true`. |
 | `pose` | `standing` (default). Player bodies also accept `sneaking`, `sleeping`, `swimming` and `sitting`. |
 | `armorStand` | Armor stand bodies only: `small`, `arms`, `basePlate` (default `true`), `invisible`, and `head`, `body`, `leftArm`, `rightArm`, `leftLeg`, `rightLeg` as `[x, y, z]` degrees within ±360. Parts without angles keep the client's default pose. |
@@ -142,7 +116,7 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 
 ### Names and text lines
 
-A player name that fits a profile name (16 characters, no `&` codes) stays the normal player nameplate. Longer or coloured player names, every non-player name and all hologram lines appear in one text display that rides the body, with the hologram lines above the name. Placeholders such as `%player%` are not interpreted.
+A player name that fits a profile name (16 characters, no `&` codes) stays the normal player nameplate. Longer or colored player names, every non-player name and all hologram lines appear in one text display that rides the body, with the hologram lines above the name. Placeholders such as `%player%` are not interpreted.
 
 `hologram` also accepts:
 
@@ -168,20 +142,20 @@ Each of these bodies has one optional object of its own. A setting left out keep
 
 | Field | Settings |
 |---|---|
-| `horse` | `color`: `white` (default), `creamy`, `chestnut`, `brown`, `black`, `gray` or `dark_brown`. `markings`: `none` (default), `white`, `white_field`, `white_dots` or `black_dots`. The saddle and armour are the `saddle` and `body` equipment slots. |
+| `horse` | `color`: `white` (default), `creamy`, `chestnut`, `brown`, `black`, `gray` or `dark_brown`. `markings`: `none` (default), `white`, `white_field`, `white_dots` or `black_dots`. The saddle and armor are the `saddle` and `body` equipment slots. |
 | `llama` | `variant`: `creamy` (default), `white`, `brown` or `gray`. `chest`: `true` puts a chest on its back. The carpet is the `body` equipment slot. |
 | `frog` | `variant`: `temperate` (default), `warm` or `cold`. |
 | `armadillo` | `state`: `idle` (default), `rolling`, `scared` (rolled up) or `unrolling`. |
 | `dragon` | `phase`: `hovering` or `sitting`, how a still dragon rests. Left out, it sits on solid ground and hovers in the air. A moving dragon always flaps. |
 
-A turtle has no settings of its own; `baby` gives a hatchling. A [group](/animus/18-trait-groups) may hold one body's settings for the NPCs of that body type.
+A turtle has no settings of its own; `baby` gives a hatchling. A [trait group](/animus/18-trait-groups) may hold one body's settings for the NPCs of that body type.
 
 ### Other presentation flags
 
 | Field | Effect |
 |---|---|
 | `glowing` | Outline around the body |
-| `teamColor` | One of the sixteen chat colours; colours the glow and the name |
+| `teamColor` | One of the sixteen chat colors; colors the glow and the name |
 | `baby` | Baby form of ageable, zombie, piglin and zoglin bodies, which includes the horse, llama, turtle, frog and armadillo |
 | `usingItem` | Main-hand item is raised, as when blocking or drawing a bow |
 | `listed` | A player body shows in the tab list |
@@ -271,7 +245,7 @@ NPCs only appear in chunks the player's client has received. Animus never loads 
 
 ## Ender dragon presentation
 
-A `minecraft:ender_dragon` definition has no world entity, no boss bar and no dragon AI. `yaw`, `/animus look` and route facing all mean the direction its head points. It sits with folded wings when resting on solid ground, hovers in place when resting in the air and flaps while moving; `dragon.phase` picks one resting look wherever it is. Clients may play its normal wing and growl sounds.
+A `minecraft:ender_dragon` definition has no world entity, no boss bar and no dragon AI. `yaw`, `/animus navigation look` and route facing all mean the direction its head points. It sits with folded wings when resting on solid ground, hovers in place when resting in the air and flaps while moving; `dragon.phase` picks one resting look wherever it is. Clients may play its normal wing and growl sounds.
 
 Clients strike one of the dragon's eight parts. Animus measures each hit against part positions worked out from the dragon's position and facing, with a small allowance for client animation. The part a client claims to have hit is not trusted, and the dragon's broad 16-block bounds do not count as a hit.
 

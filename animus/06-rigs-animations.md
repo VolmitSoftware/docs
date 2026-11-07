@@ -81,17 +81,15 @@ Each visible bone rides the body in its passenger list, so it follows movement w
 
 ## Loading and playback
 
-Rigs and animations load at startup, on save (see [hand edits apply live](/animus/04-npc-definitions#hand-edits-apply-live)), on `/animus reload` and on `/animus rigs reload`. A broken or refused edit keeps the last valid document, and a changed document needs a higher `revision`. After a restart the last valid copy comes from `state/rig-catalog/`.
+Rigs and animations load at startup, on save (see [live apply](/animus/03-configuration#live-apply)), on `/animus reload` and on `/animus rigs reload`. A broken or refused edit keeps the last valid document, and a changed document needs a higher `revision`. After a restart the last valid copy comes from `state/rig-catalog/`.
 
 ```none
-/animus rigs status
-/animus rigs problems [page]
-/animus rigs reload
+/animus rigs problems
 /animus rigs play <npc> <animation> [layer=0] [speed=1] [loop=default]
-/animus rigs stop <npc> [layer] [fadeTicks]
+/animus rigs stop <npc> [layer=-1] [fade=0]
 ```
 
-`status` and `problems` show what was loaded and what was refused. `play` and `stop` test clips. There are 4 layers (0-3); speed is 0.25-4, `loop` is `once`, `loop`, `pingpong` or `hold`, and `fadeTicks` is 0-40. Higher layers blend over lower ones by each track's `blend`.
+`problems` shows what was refused and why. `play` and `stop` test clips. There are 4 layers (0-3); speed is 0.25-4, `loop` is `once`, `loop`, `pingpong` or `hold`, and `fade` is 0-40 ticks. Every rig command is listed under [commands](/animus/02-commands-permissions#rigs-and-resource-pack). Higher layers blend over lower ones by each track's `blend`.
 
 ### Playback
 
@@ -133,7 +131,7 @@ Bones that show vanilla items and blocks need no resource pack. A custom bone sh
 | Data-folder path | Contents |
 |---|---|
 | `pack/assets/animus/items/<rig path>/<bone>.json` | Item definition: `{"model": {"type": "minecraft:model", "model": "animus:item/<rig path>/<bone>"}}` |
-| `pack/assets/animus/models/item/<rig path>/<bone>.json` | The bone's cubes as an item model, centred on the bone's pivot at (8, 8, 8) and shrunk to the -16..32 model bounds when needed; the bone's visual `scale` makes up the difference |
+| `pack/assets/animus/models/item/<rig path>/<bone>.json` | The bone's cubes as an item model, centered on the bone's pivot at (8, 8, 8) and shrunk to the -16..32 model bounds when needed; the bone's visual `scale` makes up the difference |
 | `pack/assets/animus/textures/item/<rig path>/<texture>.png` | Embedded Blockbench textures |
 
 The [web editor](/animus/14-web-editor)'s Blockbench import and its Download server files button write exactly these files; unzip an exported `<rig>-server-files.zip` into the data folder and run `/animus pack build`. The editor's import also keeps Blockbench sound keyframes that name a vanilla sound as `animus:play-sound` events, and keeps both values of a two-value keyframe as two keyframes a thousandth of a tick apart.

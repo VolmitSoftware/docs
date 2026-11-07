@@ -28,6 +28,21 @@ The readings require `animus.debug` (operators by default) and work from the con
 
 Tab completion offers the subcommands and the names of players with recorded traffic.
 
+### Reading the summary
+
+`/animus debug summary` prints one line per area. Values are averages over the last 10 seconds unless a line says otherwise. Right after a start it answers `No measurement yet; try again in a second`.
+
+| Line | What it tells you |
+|---|---|
+| `NPCs` | The runtime in use, then definitions on disk, active NPCs, dormant NPCs and routes asleep because no player is near |
+| `Viewers` | Players receiving NPCs, and NPC bodies shown across all of them |
+| `Network` | Packets per second and per tick, estimated bytes per second, and NPC clicks coming in |
+| `Server time` | Milliseconds of server-thread time per tick and its share of a 50 ms tick, then the three busiest subsystems |
+| `Pressure` | `ok` or `short` for navigation, with routes waiting for a turn and path plans running; `normal` or `strained` for presentation; fights waiting for a combat slot |
+| `Memory` | A rough estimate of what the runtime holds |
+
+The web editor's state follows, then a reminder that byte counts are estimates. A `short` or `strained` value means a per-tick budget in [`config.toml`](/animus/03-configuration) is full: the work still happens, spread over more ticks. `/animus debug performance` and `/animus debug npc <npc>` show where the time goes.
+
 ## React metrics
 
 Animus has no hard dependency on React. When React is present, Animus registers the metric source `animus` with 24 metrics and publishes every value once a second. React shows a value as unavailable when it is older than 15 seconds. React carries single server-wide numbers only; per-chunk NPC density, per-player bandwidth and per-NPC cost are available in `/animus debug` only.
@@ -60,7 +75,7 @@ Rates and times are rolling averages over the last 10 seconds. Counts and pressu
 | `animus.net.kind.rig_bones.bytes_per_second` | BYTES | B | Rig bone spawns, transforms and removals |
 | `animus.net.kind.gui_window.bytes_per_second` | BYTES | B | Shop and menu window opens |
 | `animus.npcs.active` | GAUGE | | NPCs with a live body |
-| `animus.npcs.sleeping` | GAUGE | | Patrols that sleep because no player is near |
+| `animus.npcs.sleeping` | GAUGE | | Routes that sleep because no player is near |
 | `animus.npcs.viewers` | GAUGE | | Players that watch NPCs |
 
 ### On Folia

@@ -1,6 +1,6 @@
 ---
 title: "Animus: Web Editor"
-description: "Pairing the browser editor with a server and what it edits"
+description: "Pairing the web editor with a server and what it edits"
 published: true
 date: 2026-11-05T00:00:00.000Z
 tags: "animus, editor, web, pairing"
@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-The Animus editor runs in the browser at <https://animus-editor.web.app>. It edits NPCs, trait groups, routes, recordings, skins, behaviors, packs, shops, chest GUIs, menus, holograms, text animations, rigs and animations, with a 3D preview of each NPC. It works on its own against local files, and against a live server once paired.
+The web editor runs in the browser at <https://animus-editor.web.app>. It edits NPCs, trait groups, routes, recordings, skins, behaviors, packs, shops, chest GUIs, menus, holograms, text animations, rigs and animations, with a 3D preview of each NPC. It works on its own against local files, and against a live server once paired.
 
 ## Working without a server
 
@@ -16,11 +16,13 @@ A workspace lives in the browser and is never uploaded. Start one blank, from th
 
 If the browser cannot keep workspaces (some private windows have no IndexedDB), a banner says so: everything works until the tab closes, so export a zip first. If the browser refuses to store an edit (for example when it is out of storage space for the site), the edit stays on screen and a banner names the cause, with **Save again** and **Export zip**.
 
+A blank workspace's overview names three ways to start: **Create an NPC**, **Import** (convert a Citizens, Shopkeepers or Denizen save) and **Pair a server**.
+
 Every document is checked against the Animus schemas as you type and has Visual, Preview, Code and Split views. New documents start from a guided first step, such as an NPC from its name, folder, body, skin and position, or a behavior from the conversation, greeter, dialogue, patrol, shop, guard or quest template.
 
 A list longer than eight entries has a search field at its top: type to narrow it. A list that picks another document, such as an NPC's rig or a route's recording, ends with **+ New** and **Manage**. **+ New rig** opens the new rig form with what you typed in the search as its name and the current folder, and **Create** brings you back with the new rig picked. **Manage rigs** lists every rig. Recordings are made in game, so their list says to run `/animus record start <id>` instead.
 
-A behavior's Visual view reads top to bottom: the document, its variables, its routines as a tree, then its triggers. A collapsed step shows its type and what it does in plain words, such as "Say: Welcome" or "While count < 3". Up and Down move between steps, Right and Left open and close one, and Delete asks before removing it. Wherever a step takes a value (a `set`, a `repeat` count, a `foreach` list, a `return`, a call's arguments) you choose a typed value, a variable of a matching type, an expression, or a template with `{{ }}` holes. Expressions and templates check themselves as you type and offer variables, `player.` and `npc.` facts, event `context.` keys and functions below the field; use the arrow keys and Enter to pick one. An action's argument can also be filled when the step runs: pick From a variable, From an expression or From a template, and the editor writes the placeholder for you. The Server behavior switch in the Document section makes the behavior server-wide: NPC events, `npc` and `relationship` scopes and NPC-only capabilities disappear from the pickers, and timers start at 20 ticks.
+A behavior's Visual view reads top to bottom: the document, its variables, its routines as a tree, then its triggers. A collapsed step shows its type and what it does in plain words, such as "Say: Welcome" or "While count < 3". Up and Down move between steps, Right and Left open and close one, and Delete asks in place before removing it (Escape keeps it). A step you close stays closed while you edit the rest. Wherever a step takes a value (a `set`, a `repeat` count, a `foreach` list, a `return`, a call's arguments) you choose a typed value, a variable of a matching type, an expression, or a template with `{{ }}` holes. Expressions and templates check themselves as you type and offer variables, `player.` and `npc.` facts, event `context.` keys and functions below the field; use the arrow keys and Enter to pick one. An action's argument can also be filled when the step runs: pick From a variable, From an expression or From a template, and the editor writes the placeholder for you. The Server behavior switch in the Document section makes the behavior server-wide: NPC events, `npc` and `relationship` scopes and NPC-only capabilities disappear from the pickers, and timers start at 20 ticks.
 
 A behavior's Preview is a dry run: pick a trigger, step through what the NPC says, asks and walks to, and answer its prompts. Loops, expressions and templates run in the browser; facts only a server knows, such as a player's health, use sample values, and a condition that reads one is marked assumed so you can flip it. Commands, combat, building, items and shop trades are listed as server-only and not run.
 
@@ -30,7 +32,7 @@ An NPC's Preview wears its skin: the editor reads the skin document the NPC name
 
 Schematics are not editor documents.
 
-### NPCs, groups, routes, recordings, skins and packs
+### NPCs, trait groups, routes, recordings, skins and packs
 
 Browse, beside NPCs in the sidebar, lists every NPC with its folder, tags, type, world and features, and the skin's face once its PNG is loaded. Search by name, id, type, world or tag, or narrow with `tag:`, `folder:`, `type:`, `world:`, `has:` (route, combat, shop, rig, skin, behaviors) and `is:` (spawned, despawned, invalid); a leading `-` excludes a term. `folder:town` finds the NPCs in `npcs/town/` and in every folder below it; `folder:=town` finds only those directly in `npcs/town/`, and `folder:=` only those directly in `npcs/`. A search that matches nothing offers Clear search, and an empty workspace links to Create an NPC.
 
@@ -44,19 +46,19 @@ Below the tree, the buttons act on the selected folder:
 
 Folder names follow the server's rules: 1-64 lowercase letters, digits, `_` or `-`, at most 8 folders deep. A name the server would refuse is refused before anything changes, in the server's words.
 
-Select NPCs to tag or untag them, move them to a folder (pick one from the tree, `npcs/` itself included, or type a new path such as `town/market`), switch a module on or off or remove it, mark them spawned or despawned, or delete them. Each change is one undo step.
+Select NPCs to mark them spawned or despawned (first in the bar), tag or untag them, move them to a folder (pick one from the tree, `npcs/` itself included, or type a new path such as `town/market`), switch a module on or off or remove it, or delete them. Each change is one undo step.
 
-Once the workspace has a [trait group](/animus/18-trait-groups), the Trait groups form above the list assigns or unassigns one, like `/animus groups assign` and `unassign`: for the selected NPCs, for one folder (that folder only, not the ones below it), or for every NPC whose tags include a tag, counting tags that come from its groups. The reply reads like the server's, such as `Assigned town-guards: 2 changed, 1 unchanged.`, and the whole change is one undo step. On a server workspace it goes out as one change set at the next apply. A group the workspace does not have, or one that would give an NPC more than 16 groups, changes nothing. Delete asks once more, and Escape keeps the NPCs. On a paired server whose token has the `spawn` scope, Spawn on server and Despawn on server act at once; Despawn asks first because undo does not reach the server. Without the scope the bar says how to get it.
+Once the workspace has a [trait group](/animus/18-trait-groups), the Trait groups form above the list assigns or unassigns one, like `/animus groups assign` and `unassign`: for the selected NPCs, for one folder (that folder only, not the ones below it), or for every NPC whose tags include a tag, counting tags that come from its trait groups. The reply reads like the server's, such as `Assigned town-guards: 2 changed, 1 unchanged.`, and the whole change is one undo step. On a server workspace it goes out as one change set at the next apply. A group the workspace does not have, or one that would give an NPC more than 16 groups, changes nothing. Delete asks once more, and Escape keeps the NPCs. On a paired server whose token has the `spawn` scope, Spawn on server and Despawn on server act at once; Despawn asks first because undo does not reach the server. Without the scope the bar says how to get it.
 
 An NPC's Visual view puts the inspector beside the 3D stage, or under it on a phone. The inspector reads top down, and each part's heading sums it up while closed; on a phone only Identity starts open.
 
-- Identity: name, id, folder, UUID, revision, tags, the groups the NPC lists (in merge order, with Move earlier, Remove and a warning for a group the workspace does not have) and the owner's UUID.
-- Effective, for an NPC with groups: the definition the server runs, one row per field, per module and per attribute with the group or NPC that set it and a link to that group, plus the whole effective JSON. The 3D stage draws the effective definition, so equipment, holograms and skins from groups show on it.
-- Body: the body type (while the NPC wears a skin, its own or one from a group, a body other than a player asks first, since the server refuses a skin on any other body: Remove skin changes both in one step, also taking the skin out of the groups that gave it, and Cancel keeps the player body), whether it is spawned, a rig from the workspace (the stage draws it), the pose (shown for player bodies only), an armor stand's parts and pose angles, the settings of a horse, llama, frog, armadillo or ender dragon as dropdowns and switches, and the traits that body shows: baby only for bodies with a baby form, tab list and raised item only for players. Fields left from the old body after a type change, such as a skin, a pose or another body's settings, are listed under the type with a button to remove each one, or all of them. The stage draws a horse's coat and markings and a llama's and frog's variant.
-- Attributes: the NPC's [attributes](/animus/04-npc-definitions#attributes). Add one from the dropdown, which can be searched: attributes are grouped under Size and movement, Combat, Senses, Player only and Other, each row shows its range and vanilla default, attributes already set are greyed out, and the ones the NPC's body type carries come first, with the rest marked as having no effect on this body; each shows a number field with its range, its vanilla default and what Animus does with it, and a reset that removes it. A value out of range is refused before it is saved. The 3D stage draws the body at its `scale`. A group's editor has the same part.
+- Identity: name, id, folder, UUID, revision, tags, the trait groups the NPC lists (in merge order, with Move earlier, Remove and a warning for a trait group the workspace does not have) and the owner's UUID.
+- Effective, for an NPC with trait groups: the definition the server runs, one row per field, per module and per attribute with the trait group or NPC that set it and a link to that trait group, plus the whole effective JSON. The 3D stage draws the effective definition, so equipment, holograms and skins from trait groups show on it.
+- Body: the body type and, right under it, whether the NPC is spawned (while the NPC wears a skin, its own or one from a trait group, a body other than a player asks first, since the server refuses a skin on any other body: Remove skin changes both in one step, also taking the skin out of the trait groups that gave it, and Cancel keeps the player body), a rig from the workspace (the stage draws it), the pose (shown for player bodies only), an armor stand's parts and pose angles, the settings of a horse, llama, frog, armadillo or ender dragon as dropdowns and switches, and the traits that body shows: baby only for bodies with a baby form, tab list and raised item only for players. Fields left from the old body after a type change, such as a skin, a pose or another body's settings, are listed under the type with a button to remove each one, or all of them. The stage draws a horse's coat and markings and a llama's and frog's variant.
 - Position: the coordinates and named facings for the `animus:pose` action.
-- Appearance: the skin, picked from the workspace skins with their faces or by hash, with Remove skin, the arm model (slim or classic) and New skin from a PNG file or address; equipment by slot (only the slots the body shows, plus any other slot already filled, with a warning), hologram lines with a coloured preview and their style (billboard, line height, view range), and whether the nameplate shows.
-- Behaviour: the behaviors the NPC runs, picked from the workspace and, while connected, the server (server-wide behaviors are not offered, since they have no NPC), its route, how it walks, and its stored inventory. A reusable route shows read-only, with Edit route to open it and Make a copy for this NPC, which makes a new route the NPC alone uses (one Undo step).
+- Appearance: the skin, picked from the workspace skins with their faces or by hash, with Remove skin, the arm model (slim or classic) and New skin from a PNG file or address; equipment by slot (only the slots the body shows, plus any other slot already filled, with a warning), hologram lines with a colored preview and their style (billboard, line height, view range), and whether the nameplate shows.
+- Attributes: the NPC's [attributes](/animus/04-npc-definitions#attributes). Add one from the dropdown, which can be searched: attributes are grouped under Size and movement, Combat, Senses, Player only and Other, each row shows its range and vanilla default, attributes already set are grayed out, and the ones the NPC's body type carries come first, with the rest marked as having no effect on this body; each shows a number field with its range, its vanilla default and what Animus does with it, and a reset that removes it. A value out of range is refused before it is saved. The 3D stage draws the body at its `scale`. A trait group's editor has the same part.
+- Behavior: the behaviors the NPC runs, picked from the workspace and, while connected, the server (server-wide behaviors are not offered, since they have no NPC), its route, how it walks, and its stored inventory. A reusable route shows read-only, with Edit route to open it and Make a copy for this NPC, which makes a new route the NPC alone uses (one Undo step).
 - Modules: combat, the shop a click opens (picked from the workspace shops, with **Edit shop** and **+ New shop**), another NPC to ride, and any other module, typed from its schema or as key and value rows; Advanced edits it as JSON.
 - Kept fields: anything else in the file, kept as written and edited as key and value rows; the server reads it.
 
@@ -66,11 +68,11 @@ A wait is one number or, with Range, a Min and a Max (a new wait is drawn at eac
 
 An NPC's route chooses how it moves: waypoints of its own, a reusable route, or a [recording](/animus/19-performance-recordings) with its playback, `once`, `loop` or `pingpong`; **recording default** leaves it to the recording.
 
-A trait group opens in the same parts as an NPC, editing the group's `values`: Group (id, description, the NPCs that list it, tags), Body without type or presence, Appearance with a skin pool, Behaviour without the inventory, Modules and Kept fields. Values are checked the way the server checks them, and a problem names its field under `$.values`. Renaming a group updates every NPC that lists it.
+A trait group opens in the same parts as an NPC, editing its `values`: Group (id, description, the NPCs that list it with a picker and **Add member** to add one, tags), Body without type or presence, Appearance with a skin pool, Behavior without the inventory, Modules and Kept fields. Values are checked the way the server checks them, and a problem names its field under `$.values`. Renaming a trait group updates every NPC that lists it.
 
 Recordings are made in game; the editor changes everything around the frames. A recording's Visual view edits its id, description, tags, default playback and speed, and lists its length, frames, events, world, origin, sample rate, recorder, size and revision, beside a top-down path of the recorded positions with its events marked. Drag the scrub, or use the arrow keys on it, to move a marker along the path with the tick, seconds and states such as sneaking; Play runs it at the recording's speed and starts paused. The events list jumps the scrub to an event. To trim, move the scrub and press **Start here** and **End here**; both snap to the nearest frame, the path shows the kept part, and **Trim** cuts the frames and events outside it in one step that Undo reverses. The kept start becomes tick 0 and the new origin, every position stays where it was, and the equipment worn at the new start is kept. Code applies a hand edit only when it passes every rule the server checks, and names the first one it breaks. Browse, beside Recordings in the sidebar, lists every recording with its length, frames, events, world and size. Renaming a recording updates the NPCs and route steps that play it.
 
-A skin document shows the face once its PNG is loaded, its hash, arm model and signature, the NPCs and groups that wear it, and the controls to load the PNG into the preview from a file or a web address that allows it. A skin's id is the hash of its text, so changing its arm model makes a new skin document: from the skin document every NPC and group wearing it moves to the new one and the old one is removed; from an NPC or group only that one moves, and the old skin stays while others wear it. Each is one Undo step. A signed skin keeps its model, since the model is part of the signed data. Deleting a skin lists who wears it first. Looking a skin up by player name is not offered. A pack's manifest edits its name, version and description, and the Java modules its behaviors use: each is required (without it the pack is unavailable) or optional, with its own configuration.
+A skin document shows the face once its PNG is loaded, its hash, arm model and signature, the NPCs and trait groups that wear it, and the controls to load the PNG into the preview from a file or a web address that allows it. A skin's id is the hash of its text, so changing its arm model makes a new skin document: from the skin document every NPC and trait group wearing it moves to the new one and the old one is removed; from an NPC or trait group only that one moves, and the old skin stays while others wear it. Each is one Undo step. A signed skin keeps its model, since the model is part of the signed data. Deleting a skin lists who wears it first. Looking a skin up by player name is not offered. A pack's manifest edits its name, version and description, and the Java modules its behaviors use: each is required (without it the pack is unavailable) or optional, with its own configuration.
 
 ### Rig and animation editor
 
@@ -94,9 +96,9 @@ Chest GUIs, shops, holographic menus, holograms, text animations and the presets
 - **Chest GUI**: the window is drawn as the game draws it. Click a slot, or Tab to it and press Enter, to edit what draws it. Pick a key under **Mask brush** and drag across slots to paint the mask. The tabs cover the window (title, size, mask, show, close on teleport, refresh, select), keys, the list, variants and named action lists. In Preview, tap a slot to read its name and lore.
 - **Shop**: the offers sit on one side as rows that read like trades, such as "2 emerald + 1 book → 1 enchanted book", grouped by grid and page in the order players see them. **+ Add offer** picks the kind: trade, buy, sell, command or decoration. Click a row to edit it in place: the items with their counts, enchantments and model number, the money price, commands, name and lore, stock, limits and permission, each label with a short tip. Drag a row, or press Alt with the up and down arrows, to reorder it within its group; tick rows to delete several, and **Undo** brings deleted offers back. Changing an offer's kind removes the fields the new kind cannot use and moves it to that kind's grid.
   The other side shows the **Trading screen** and the **Chest window** as tabs, marking the one players get. Both follow every edit, and clicking an offer in either opens it on the board. **Limits used up** and **No permissions** show offers crossed out as such a player sees them. A shop with a `layout` chest GUI is drawn in that GUI, page by page.
-  The **Shop** tab sets the title, window style, layout GUI (with **+ New chest GUI**), permission, modes in order, purchase switches, pages, and the owner and up to eight containers. A shop with containers sells through trades only, so its offers are trades or decorations, with no price and no stock of their own. The **NPCs** tab lists the NPCs and groups whose shop module opens the shop, with each one's window style and, for a villager, the profession and level its trading screen title shows; **Attach to NPC...** adds the shop to another NPC in one undo step.
+  The **Shop** tab sets the title, window style, layout GUI (with **+ New chest GUI**), permission, modes in order, purchase switches, pages, and the owner and up to eight containers. A shop with containers sells through trades only, so its offers are trades or decorations, with no price and no stock of their own. The **NPCs** tab lists the NPCs and trait groups whose shop module opens the shop, with each one's window style and, for a villager, the profession and level its trading screen title shows; **Attach to NPC...** adds the shop to another NPC in one undo step.
   Problems show at the offer: anything the server refuses, notes for what the chosen window style cannot show exactly, items not picked, counts of zero, and limits that work against each other. **New shop** starts blank or from villager trades, a money shop or a command shop.
-- **Hologram**: rows of text, items, heads, blocks and entities, each with **Show when** and **Scale**, plus pages, variants, placement (anchor, yaw, pitch, view distance, refresh), style and click actions. The stage draws the text rows as one text display, as the server sends them: colour codes and MiniMessage tags read the way the server reads them, a colour carrying on to the next row, and the style's background, shadow, alignment, opacity, line width, scale and fixed light. A billboard other than `center`, `seeThrough` off, `glowColor` and `shadowRadius` are listed under the stage, which draws text facing the camera and over blocks. Heads are drawn without a skin and entities as a labelled box; the server shows the real thing.
+- **Hologram**: rows of text, items, heads, blocks and entities, each with **Show when** and **Scale**, plus pages, variants, placement (anchor, yaw, pitch, view distance, refresh), style and click actions. The stage draws the text rows as one text display, as the server sends them: color codes and MiniMessage tags read the way the server reads them, a color carrying on to the next row, and the style's background, shadow, alignment, opacity, line width, scale and fixed light. A billboard other than `center`, `seeThrough` off, `glowColor` and `shadowRadius` are listed under the stage, which draws text facing the camera and over blocks. Heads are drawn without a skin and entities as a labelled box; the server shows the real thing.
 - **Menu**: click a component on the stage or in the list to edit it. Components have an offset, show, motion, hover and click box, a tooltip, icon styles and list or tab layout. Menus also have constants and named action lists.
 - **Text animation**: edit the frames, mode, interval and show beside a preview that plays the frames the way the server does. **Pause** and the frame buttons hold or step it. If your system asks for reduced motion, the preview starts paused.
 - **Presets**: per-kind defaults and named presets for Gloss documents. Animus refuses a chest GUI, hologram or text animation that names a preset. Its editor offers **Copy this preset's fields into the document**, which copies the kind's defaults and the preset chain under the document's own fields and removes `preset`.
@@ -109,8 +111,8 @@ A behavior shaped like a conversation opens on its **Conversation** tab, beside 
 
 The tab is a tree. The Start block runs first, and what each answer leads to sits under that answer. A step is one of:
 
-- **NPC**: a line the NPC says, with colour codes and MiniMessage tags. Its menu adds a delay, a sound and an animation.
-- **Asks**: a question with 1 to 8 answers. Each answer has its text, and under its menu a colour, hover text, style and the block it leads to.
+- **NPC**: a line the NPC says, with color codes and MiniMessage tags. Its menu adds a delay, a sound and an animation.
+- **Asks**: a question with 1 to 8 answers. Each answer has its text, and under its menu a color, hover text, style and the block it leads to.
 - **If**: a flag, quest stage, permission, item held, relationship flag or expression, with a Yes and a No list.
 - **Does**: an action, such as set flag, give or take an item, run a command, open a shop, play an animation, teleport or start a quest, with the fields the server's capability list gives it.
 - **Go to**: continue at another block, for a loop back.
@@ -136,7 +138,7 @@ The tab writes an ordinary behavior. Each block is a routine, a question is `ani
 
 Problems show under their step: blocks nothing leads to, answers that lead to a missing block, more than 8 answers, text over the server's limits (1,024 characters for a line, 512 for a question, 128 for an answer), and flags or quests no behavior of the namespace sets.
 
-**Preview** beside the tree plays the conversation in the browser: click an answer to follow it, and flip the switch on a condition to take its other branch. On a paired server, **Preview on server** starts the server's preview too. **NPCs** lists every NPC and group in the workspace; tick the ones that should run the conversation and press **Attach** to update their `behaviors` lists in one step, which Undo reverts together.
+**Preview** beside the tree plays the conversation in the browser: click an answer to follow it, and flip the switch on a condition to take its other branch. On a paired server, **Preview on server** starts the server's preview too. **NPCs** lists every NPC and trait group in the workspace; tick the ones that should run the conversation and press **Attach** to update their `behaviors` lists in one step, which Undo reverts together.
 
 ### Keyboard and commands
 
@@ -144,17 +146,24 @@ Shortcuts work anywhere outside a text box:
 
 | Keys | Does |
 | --- | --- |
-| Ctrl+Z (Cmd+Z on a Mac) | Undo |
-| Ctrl+Shift+Z or Ctrl+Y | Redo |
-| Ctrl+K (Cmd+K) | Open the command palette |
-| Ctrl+F or `/` | Search the documents in the sidebar |
-| Escape | Close the palette, a menu, the documents drawer or the confirmation you are in |
+| Ctrl+K (Cmd+K on a Mac) | Open the command palette |
+| `?` | Show every shortcut, page-wide and local |
+| Ctrl+Z (Cmd+Z) | Undo |
+| Ctrl+Shift+Z or Ctrl+Y (Cmd+Shift+Z or Cmd+Y) | Redo |
+| Ctrl+F (Cmd+F) or `/` | Search the documents in the sidebar |
+| Ctrl+S (Cmd+S) | Save; in a live server workspace, Apply |
+| Ctrl+B (Cmd+B) | Show or hide the sidebar (the documents drawer on a phone) |
+| N | New document |
+| B | Browse NPCs |
+| Escape | Close the palette, the shortcut sheet, a menu, the documents drawer or the confirmation you are in |
+
+The shortcut sheet (`?`, or **Keyboard shortcuts** in the command palette) lists these and the keys that work in one place: lists and dropdowns, the sidebar, tabs and trees, the conversation editor, behavior steps, route points, offers and keyframes, and the 3D preview. Its labels follow your computer, Cmd on a Mac and Ctrl elsewhere, as do the hints in the top bar and the palette. Escape or **Close** shuts it and puts you back where you were.
 
 Edits never overwrite each other, however quickly they follow one another: each field you change is kept and is its own undo step, and typing in one field is one step. Undo and Redo keep 50 steps each per workspace, also after a reload, and their notices say what they reverted, such as "Undid: rename town:baker". The command palette (also **Commands** in the top bar) opens a document by name or id, switches workspace, makes a new document, exports, undoes, redoes and changes the theme: type part of a name, move with the arrow keys and press Enter. In the document list the arrow keys move between documents, and the Visual, Preview, Code and Split tabs move with Left and Right. Each kind in the sidebar, and each NPC folder, folds from its header (Enter, or Left and Right); **Collapse all** and **Expand all** sit above the list, and what you fold stays folded for that workspace. In an open list, the arrow keys, Home and End move, typing jumps to a match, Enter picks and Escape closes without a change.
 
 ### Field notes
 
-A small **i** beside a label or heading holds the note for that field. Hover it or reach it with Tab to read the note, press Escape to hide it, and click it to open the matching section of this wiki. On a touch screen a tap shows the note with a **Docs** link, and a second tap or a tap elsewhere hides it.
+A label or heading with a dotted underline holds a short note on what it is, with a **Docs** link to the matching section of this wiki. Every inspector part and subhead, every GUI editor section, and the headings of the NPC browser, folders, server, pairing, home and rig screens have one. Hover the text or reach it with Tab to read the note, press Escape to hide it, and press Enter to open the wiki. On a touch screen a tap shows the note, and a second tap or a tap elsewhere hides it.
 
 ### Completion
 
@@ -164,8 +173,8 @@ Text, expression and id fields complete as you type, and so does the Code view. 
 | --- | --- |
 | A name in an expression or inside `{{ }}` | Declared variables with type and scope, `player.`, `npc.`, `server.` and `context.` facts, and functions |
 | `{` | Placeholders the field fills, such as `{player_name}` in say text, or a whole `{{ viewer.name }}` hole in GUI text |
-| `<` | The tags the server formats: the sixteen colours with a swatch, `#RRGGBB`, `color:`, the decorations and `reset`. `</` closes the open tags |
-| `%` | PlaceholderAPI identifiers, when the paired server has PlaceholderAPI. Animus does not fill these yet, so they reach players as written |
+| `<` | The tags the server formats: the sixteen colors with a swatch, `#RRGGBB`, `color:`, the decorations and `reset`. `</` closes the open tags |
+| `%` | PlaceholderAPI identifiers, when the paired server has PlaceholderAPI. Each says **Not filled on the server yet**: Animus does not fill them, so they reach players as written |
 | An id | Items, blocks, sounds, particles, entity types, effects and worlds; routes, recordings, animations, skins, shops and GUIs in the workspace; flag and quest names the workspace already uses |
 | The first word of a command | The paired server's commands |
 
@@ -188,18 +197,18 @@ A local workspace's **Sync** page compares it with a paired server, validates th
 Pairing gives one browser a token for one server. Run on the server, in game or from the console:
 
 ```none
-/animus editor pair [label] [scopes=a,b] [groups=a,b] [expires=7d]
+/animus editor pair [label=] [scopes=a,b] [folders=a,b] [expires=7d]
 ```
 
-The reply has **[Open editor]**, which opens the link, and **[Click to copy]**, which copies it; the console prints the link itself. Open it within 10 minutes; it works once. The second line names the token with **[Revoke]**. The pairing page shows the server's name and its fingerprint (check it matches `/animus editor status`), the paths it can use and when the code expires, and **Pair** exchanges the link for a token. Turn on **Remember this browser** to keep the token after the tab closes; with it off, the token lasts for that tab only, so another tab asks you to pair again. A link can also be pasted under **Servers** on the editor's home page. A code that expired or cannot be read says so and offers the paste field for a new one.
+The reply has **[Open editor]**, which opens the link, and **[Click to copy]**, which copies it; the console prints the link itself. Open it within 10 minutes; it works once. The second line names the token with **[Revoke]**. The pairing page shows the server's name and its fingerprint (check it matches `/animus editor status`), the paths it can use and when the link expires, and **Pair** exchanges the link for a token. Turn on **Remember this browser** to keep the token after the tab closes; with it off, the token lasts for that tab only, so another tab asks you to pair again. A link can also be pasted under **Servers** on the editor's home page. A pairing link that expired or cannot be read says so and offers the paste field for a new one.
 
 When the pairing is three days or less from expiry, the live bar says how long is left. When the server revokes or expires the token, the live bar shows **Pair again**, which opens a field for the new link.
 
 | Option | Default | Meaning |
 |---|---|---|
-| `label` | None | A name shown in `/animus editor tokens` |
+| `label=` | None | A name shown in `/animus editor tokens` |
 | `scopes=` | `read,validate,preview,apply:npcs,apply:behaviors,apply:gui,apply:rigs` | What the token may do |
-| `groups=` | All groups | Limit the token to NPCs in these groups, such as `groups=town,harbor` |
+| `folders=` | All folders | Limit the token to NPCs in these folders under `npcs/`, such as `folders=town,harbor` |
 | `expires=` | `tokenDays` from `config.toml` (7 days) | Lifetime as a number with `d`, `h` or `m`, such as `12h` |
 
 | Scope | Allows |
@@ -222,8 +231,8 @@ To import from the editor, pair with the `import` scope, for example `/animus ed
 | Command | Effect |
 |---|---|
 | `/animus editor status` | State, listener port, relay and token count; **[Details]** adds the listener address, open connections, streams, previews and the fingerprint |
-| `/animus editor tokens [page]` | Each token's id, label, scopes, groups, expiry, last use and open connections |
-| `/animus editor revoke <token-id\|all>` | Revoke tokens. Their connections, relayed streams and previews close at once, and requests still waiting to run are refused without reading or writing anything |
+| `/animus editor tokens [page=1]` | Each token's id, label, scopes, folders, expiry, last use and open connections |
+| `/animus editor revoke <token>` | Revoke a token, or `all`. Their connections, relayed streams and previews close at once, and requests still waiting to run are refused without reading or writing anything |
 
 All of these need `animus.admin`. A token issued by a player is also revoked when that player loses `animus.admin`, checked on connect and every 60 seconds. The browser asks for a new pairing when its token expires or is revoked.
 
@@ -294,7 +303,7 @@ A preview shows your drafts to the in-game player who issued the token, and to n
 
 ### Importing
 
-The editor's **Convert Citizens, Shopkeepers, dtlTraders or Denizen** screen can upload a Citizens `saves.yml`, dtlTraders files, and a Shopkeepers `save.yml` and `config.yml` to a paired server. **Upload and stage** runs the same conversion as `/animus import citizens preview` and shows its review. **Apply** installs the import with every NPC dormant, review categories are accepted one at a time or all at once (**Accept all** asks first), and **Roll back** undoes the import and every acceptance after a confirm. Uploads are limited to 16 MiB. dtlTraders files with names dtlTraders does not use are listed as skipped. See [migrating from Citizens](/animus/13-migrating-from-citizens).
+The editor's **Import Citizens and others** screen converts in the browser and, after a conversion, offers **Open as workspace** (the converted files as a new workspace to review) and **Send to server**. It can also upload a Citizens `saves.yml`, dtlTraders files, and a Shopkeepers `save.yml` and `config.yml` to a paired server. **Upload and stage** runs the same conversion as `/animus import citizens preview` and shows its review. **Apply** installs the import with every NPC dormant, review categories are accepted one at a time or all at once (**Accept all** asks first), and **Roll back** undoes the import and every acceptance after a confirm. Once applied, **Open the imported NPCs** leads to them in the server's catalog. Uploads are limited to 16 MiB. dtlTraders files with names dtlTraders does not use are listed as skipped. See [migrating from Citizens](/animus/13-migrating-from-citizens).
 
 ### In-game notices
 

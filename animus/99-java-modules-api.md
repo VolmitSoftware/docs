@@ -37,7 +37,7 @@ Compile against only the API and the JDK, and leave the API classes out of the m
 
 ## Installing a module
 
-Put module jars directly in `plugins/Animus/modules/` (`config/animus/modules/` on [mod servers](/animus/16-mod-servers)) and restart the server. Modules load once per server start, in dependency order. Adding, removing or replacing a jar needs a restart; `/animus reload` and file hotloading do not reload Java classes. A module jar is not a Bukkit plugin and has no `plugin.yml`.
+Put module jars directly in `plugins/Animus/modules/` (`config/animus/modules/` on [mod servers](/animus/16-mod-servers)) and restart the server. Modules load once per server start, in dependency order. Adding, removing or replacing a jar needs a restart; `/animus reload` and [live apply](/animus/03-configuration#live-apply) do not reload Java classes. A module jar is not a Bukkit plugin and has no `plugin.yml`.
 
 Each jar contains a generated `animus-module.json`:
 
@@ -96,14 +96,12 @@ Delivery budgets only report slow callbacks; they do not interrupt Java code. Wh
 ## Commands
 
 ```none
-/animus modules status
-/animus modules list [page]
-/animus modules capabilities [page]
-/animus modules action <namespace:name> <npc-id> <JSON object>
-/animus modules condition <namespace:name> <npc-id> <JSON object>
+/animus modules list [page=1]
+/animus modules action <capability> <npc> <input>
+/animus modules condition <capability> <npc> <input>
 ```
 
-These require `animus.admin`. `action` and `condition` call a registered capability on an existing NPC with a JSON argument object, for example `/animus modules action reference:hello guard {}`. They grant no console-command privilege, so `animus:command` cannot be called from here. `status` lists loaded modules, their lifecycle phase, outstanding work, bound hooks and converters, dropped interaction notices and hook failures.
+These require `animus.admin`; every module command is listed under [commands](/animus/02-commands-permissions#java-modules). `action` and `condition` call a registered capability on an existing NPC with a JSON argument object, for example `/animus modules action reference:hello guard {}`. They grant no console-command privilege, so `animus:command` cannot be called from here. `status` lists loaded modules, their lifecycle phase, outstanding work, bound hooks and converters, dropped interaction notices and hook failures.
 
 ## Capabilities
 
@@ -127,9 +125,9 @@ Handlers run on two bounded module workers with a deadline. A call holds its slo
 
 ## Definitions
 
-`DefinitionService` reads and replaces NPC definitions asynchronously. Snapshots are immutable and carry a revision and hash token. A replacement is a full JSON document that keeps the UUID, readable id and group, and names the revision it was based on. Animus validates it before writing, raises the revision and keeps unmodified unknown module settings. A stale token is a conflict. The API cannot activate NPCs: replacement definitions must be dormant, and activation goes through `/animus spawn`.
+`DefinitionService` reads and replaces NPC definitions asynchronously. Snapshots are immutable and carry a revision and hash token. A replacement is a full JSON document that keeps the UUID, readable id and folder, and names the revision it was based on. Animus validates it before writing, raises the revision and keeps unmodified unknown module settings. A stale token is a conflict. The API cannot spawn NPCs: replacement definitions must be dormant, and spawning goes through `/animus spawn`.
 
-Commands, imports and API edits share one file lane, so each validation and save completes before the next starts. API results are delivered on separate workers. Blocking both result workers uses up the shared admission budget and causes `BUSY` answers, but cannot stall a save in progress. A timeout or cancellation of a module action does not undo a definition edit that already saved; check the accepted revision when recovering from an interrupted action.
+Commands, imports and API edits share one file queue, so each validation and save completes before the next starts. API results are delivered on separate workers. Blocking both result workers uses up the shared admission budget and causes `BUSY` answers, but cannot stall a save in progress. A timeout or cancellation of a module action does not undo a definition edit that already saved; check the accepted revision when recovering from an interrupted action.
 
 ## API versions and compatibility
 
@@ -152,7 +150,7 @@ Paper, Spigot, Folia, Fabric, Forge and NeoForge all send notices. Notices with 
 
 ## Import converters
 
-`context.imports().converter(descriptor, converter)` registers a converter under the module's namespace. A converter has an id (`namespace:name`), the source plugin's name, `detect` and `convert`. Both run on the module workers with the module deadline. They must not wait on definition service results, because the import holds the file lane while it runs. Raise `modules.invocationTimeoutMillis` for large files.
+`context.imports().converter(descriptor, converter)` registers a converter under the module's namespace. A converter has an id (`namespace:name`), the source plugin's name, `detect` and `convert`. Both run on the module workers with the module deadline. They must not wait for a definition change to finish, because the import keeps other file work waiting until it returns. Raise `modules.invocationTimeoutMillis` for large files.
 
 ```none
 /animus import preview <inbox-file> [converter=<namespace:name>]

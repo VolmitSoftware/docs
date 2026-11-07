@@ -14,7 +14,7 @@ Every write made by Animus goes through a journal, so a crash never leaves a fil
 
 ## Definitions
 
-Each NPC is a file at `npcs/<folders>/<id>.json` (directly in `npcs/` or up to 8 folders deep; the folder sets its group) with a stable `uuid`, a readable `id` that is unique across all groups, a `schemaVersion` and an increasing `revision`. Commands, the editor and reloads use the same validation. An edit made from a definition that has changed in the meantime is refused as a conflict instead of overwriting the newer version.
+Each NPC is a file at `npcs/<folders>/<id>.json` (directly in `npcs/` or up to 8 folders deep; the folder is stored in its `group` field) with a stable `uuid`, a readable `id` that is unique across all folders, a `schemaVersion` and an increasing `revision`. Commands, the editor and reloads use the same validation. An edit made from a definition that has changed in the meantime is refused as a conflict instead of overwriting the newer version.
 
 Health, cooldowns and running behaviors are never written into definitions. A restart restores whether an NPC is spawned, not what it was doing.
 
@@ -30,7 +30,20 @@ When a definition is accepted, Animus also records a checkpoint of it under `sta
 | A checkpoint is corrupt | Startup fails and names it |
 | A source file was deleted | The NPC is removed. Recovery never brings back a missing source |
 
-A definition kept from its checkpoint stays active, but commands that edit it are refused until you repair the file and the repaired version is applied. `/animus validate` lists every file with its field errors, and `/animus status` counts the files needing repair.
+A definition kept from its checkpoint stays active. `/animus validate` lists every file with its field errors, and `/animus status` counts the files needing repair.
+
+### Refused hand edits
+
+When a reload, [live apply](/animus/03-configuration#live-apply) or startup recovery refuses a hand edit, the NPC keeps its last valid version and the broken file stays on disk. You can then:
+
+- Fix the file. Live apply picks it up, or run `/animus reload`.
+- Run `/animus edit <npc>` or `/animus delete <npc>`. The command starts from the last valid version and replaces or removes the refused file; its reply ends with `replaced the refused hand edits in <file>` or `removed the refused hand edits in <file>`. `/animus rollback <transaction>` brings the refused file back.
+
+A trait group assignment that includes such an NPC skips it and names it, for example `skipped guard: npcs/town/guard.json has refused hand edits; fix the file or /animus reload`. Every other member is still assigned.
+
+### Conflicts
+
+`Conflict: <file> changed since Animus read it; fix the file or /animus reload` means the file changed on disk after Animus last read it and that change has not been checked yet. Animus never overwrites it. Wait for the live apply line in chat, or run `/animus reload`, then repeat the command.
 
 The same holds for live reloads: a broken edit to one NPC file keeps only that NPC's last valid version, and valid edits to other files still apply. Checkpoints cover definitions only. A missing or invalid skin file is reported on its own and is not restored from a checkpoint.
 
@@ -69,7 +82,7 @@ state/behavior-state/global/<namespace>/<path>.json
 
 Each entry names the value's own type (`boolean`, `integer`, `decimal`, `string`, `list` or `map`) and holds its JSON; a decimal always keeps its point. `expires`, when present, is the epoch millisecond from which the entry reads as unset. Expired entries are removed from memory a bounded number at a time and leave the file at the next write.
 
-These files are generated; do not edit them. Use `/animus behaviors state purge` to remove state.
+These files are generated; do not edit them. Use `/animus behaviors state delete` to remove state.
 
 Values are held in memory and written in batches. The first change after a quiet period starts a timer of `behaviors.state.flushMillis` (5 seconds by default), later changes join it, and one journaled write then saves every changed document. If a write fails, the values stay in memory, the failure shows in `/animus behaviors state status`, and the write is retried. A clean shutdown writes everything still waiting. A crash loses at most the changes since the last completed write.
 
@@ -108,7 +121,7 @@ Keep `backups/` together with `state/objects/`, since a receipt may refer to sto
 
 ## Schema versions
 
-Every versioned document carries a `schemaVersion`: NPC definitions, behaviors, pack manifests (`pack.json`), shops, routes, recordings, groups, chest GUIs, holograms, text animations, rigs, animations and `server-behaviors.json`. Each kind is at version 1, except holograms, which keep Gloss's version 3. At startup, before loading and before backups rotate, Animus upgrades any document whose version is older than the running build reads. The original bytes go into the journal before any file changes, so the upgrade is backed up first and a crash part way through finishes on the next start. All upgraded documents are written in one transaction with a rollback receipt, and the log names the transaction, so `/animus rollback <transaction-id>` restores the original files. A document at the current version is never rewritten. A document newer than the running build reads, or one that cannot be upgraded, is left unchanged and reported by the normal loader.
+Every versioned document carries a `schemaVersion`: NPC definitions, behaviors, pack manifests (`pack.json`), shops, routes, recordings, trait groups, chest GUIs, holograms, text animations, rigs, animations and `server-behaviors.json`. Each kind is at version 1, except holograms, which keep Gloss's version 3. At startup, before loading and before backups rotate, Animus upgrades any document whose version is older than the running build reads. The original bytes go into the journal before any file changes, so the upgrade is backed up first and a crash part way through finishes on the next start. All upgraded documents are written in one transaction with a rollback receipt, and the log names the transaction, so `/animus rollback <transaction-id>` restores the original files. A document at the current version is never rewritten. A document newer than the running build reads, or one that cannot be upgraded, is left unchanged and reported by the normal loader.
 
 ## Validating offline
 
@@ -118,7 +131,7 @@ The standalone converter checks a data folder without a running server:
 converter/build/install/converter/bin/converter validate /path/to/Animus
 ```
 
-It opens the folder read-only: it creates no lock, writes no checkpoints, activates no NPCs and does not finish a pending transaction. A pending transaction is reported as an error. It cannot open the data folder of a running server, which holds the lock; use `/animus validate` there.
+It opens the folder read-only: it creates no lock, writes no checkpoints, makes no NPC active and does not finish a pending transaction. A pending transaction is reported as an error. It cannot open the data folder of a running server, which holds the lock; use `/animus validate` there.
 
 ## Limits
 

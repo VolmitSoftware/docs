@@ -8,38 +8,37 @@ editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Plugin-wide settings live in `plugins/Animus/config.toml` (`config/animus/config.toml` on mod servers). Animus writes the file with every default on first start. A missing table or key uses its default, and comments you add are kept. Every value is checked against the ranges below; an out-of-range or mistyped value names its table and key.
+Plugin-wide settings live in `plugins/Animus/config.toml` (`config/animus/config.toml` on mod servers). Animus writes the file with every default on first start, with a comment above each table that links to its section here. A missing table or key uses its default, a key Animus does not know is ignored, and comments you add are kept. Every value is checked against the ranges below; an out-of-range or mistyped value names its table and key.
 
 NPC definitions and every other document use JSON. Per-NPC settings belong in the definition's `modules`, not here.
 
 ## Live apply
 
-Saving any data file applies it within about a second, without `/animus reload`. This covers `config.toml`, NPC definitions and the module settings inside them, behaviors, packs, routes, skins, shops, chest GUIs, menus, holograms, text animations, rigs, animations and schematics. Each change goes through the same validators as commands and the web editor.
+Saving any data file applies it within about a second, without `/animus reload`. This covers `config.toml`, NPC definitions and the module settings inside them, trait groups, behaviors, packs, routes, recordings, skins, shops, chest GUIs, menus, holograms, text animations, rigs, animations and schematics. Each change goes through the same validators as commands and the web editor. The server log and chat call this hotload.
 
-Online players with `animus.hotload.notify` hear a note block chime and see one line per changed key, at most 12 per file:
+Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block chime and see one line per changed key, at most 12 per file:
 
 ```none
 [Animus]: Hotloaded [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
 ```
 
-An invalid edit is refused with its field error, and the last valid version stays active. Each NPC file applies on its own, so one broken file does not block valid edits to others. `/animus reload` follows the same rules.
+An invalid edit is refused with its field error, and the last valid version stays in use. Each NPC file applies on its own, so one broken file does not block valid edits to others. `/animus reload` follows the same rules.
 
-Every `config.toml` key applies live. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work already running: NPCs, viewers, routes, fights, builds, behavior runs and file operations above the new cap finish normally, and new work waits until usage drops under it. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
+Every `config.toml` key applies live. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work already running: visible NPCs, viewers, routes, fights, builds, behavior runs, queued actions and file operations above the new cap finish normally, and new work waits until usage drops under it. A smaller `viewDistance` despawns NPCs that are now out of range on the next tick. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
 
-These changes need a restart, and the hotload message ends in `[restart required]`:
+These changes need a restart, and the chat line ends in `[restart required]`:
 
 - `npcs.enabled` on Folia.
-- Adding, removing or replacing a Java module jar.
-- Replacing the TLS certificate or key files at the same paths. Change the path instead.
+- Adding, removing or replacing a [Java module](/animus/99-java-modules-api) jar.
+- Replacing the TLS certificate or key files at the same paths. Change the path instead to apply new files live.
 
-Invalid TOML at startup stops Animus from starting. Animus's own writes are never reported, and `state/`, `backups/`, `logs/` and `imports/` are not watched.
+Invalid TOML at startup stops Animus from starting. Animus's own writes (editor applies, imports, state) are never reported, and `state/`, `backups/`, `logs/` and `imports/` are not watched. The watcher itself is set under [`[hotload]`](#hotload).
 
 ## Top-level keys
 
 | Key | Default | Meaning |
 |---|---|---|
-| `statusMessage` | `"Hello from Animus"` | Text shown under **[Details]** in `/animus status`. Must not be blank |
-| `packetProofEnabled` | `false` | Enables the [packet preview tools](/animus/02-commands-permissions#packet-preview-tools) `/animus proof` and `/animus foliaproof`. Ignored on mod servers |
+| `packetProofEnabled` | `false` | Enables the [packet preview tools](/animus/02-commands-permissions#packet-preview-tools) `/animus proof` and `/animus proof folia`. Ignored on mod servers |
 
 ## [npcs]
 
@@ -74,7 +73,7 @@ When `simulationPerTick`, the `[navigation]` route budget or the `[behaviors.tri
 | `planningJobs` | `32` | 1-256 | Path plans in progress at once |
 | `captureReadsPerTick` | `2048` | 256-65536 | Terrain reads those plans make per tick (per region on Folia) |
 
-There is no limit on how many NPCs follow routes. Routes take turns within these budgets, so more walking NPCs than the budget all move, only more slowly. A patrol with no player within `npcs.viewDistance` sleeps until one comes near. See [movement](/animus/05-movement-mounts-riding).
+There is no limit on how many NPCs follow routes. Routes take turns within these budgets, so more walking NPCs than the budget all move, only more slowly. A route with no player within `npcs.viewDistance` sleeps until one comes near. See [movement](/animus/05-movement-mounts-riding).
 
 ## [recordings]
 
@@ -85,11 +84,11 @@ There is no limit on how many NPCs follow routes. Routes take turns within these
 | `maximumTicks` | `12000` | 200-72000 | The longest a recording session captures before it saves |
 | `maximumFileBytes` | `1048576` | 65536-4194304 | The largest recording file read or saved |
 | `maximumSessions` | `4` | 1-16 | Players recording at once |
-| `ghostEnabled` | `true` | | Show the recorder's ghost |
+| `ghostEnabled` | `true` | | Show ghosts at all |
 | `ghostIntervalTicks` | `100` | 40-1200 | Ticks between two ghost replays while recording |
 | `ghostStretchTicks` | `100` | 20-600 | How far behind the recorder a ghost replay starts |
 | `ghostGlow` | `true` | | Make the ghost glow |
-| `ghostColor` | `aqua` | One of the sixteen chat colours | The ghost's glow colour |
+| `ghostColor` | `aqua` | One of the sixteen chat colors | The ghost's glow color, such as `aqua` or `gold` |
 | `maximumPreviews` | `8` | 1-32 | `/animus record preview` ghosts at once |
 
 Lowering a cap lets recordings and previews already running finish. See [performance recordings](/animus/19-performance-recordings).
@@ -277,7 +276,7 @@ See [building](/animus/09-building).
 
 ### [shops.messages]
 
-Each key replaces one player-facing shop text of at most 512 characters. `&` colour codes and the placeholders shown work. An unknown key is refused.
+Each key replaces one player-facing shop text of at most 512 characters. `&` color codes and the placeholders shown work. An unknown key is refused.
 
 | Key | Default |
 |---|---|
@@ -360,7 +359,7 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `advertisedUrl` | `""` | `http` or `https` URL | Public `https://` address of a TLS proxy in front of the listener, put into pairing links |
 | `tlsCertificate` | `""` | File path | PEM certificate. Set together with `tlsPrivateKey` |
 | `tlsPrivateKey` | `""` | File path | PEM private key |
-| `allowedOrigins` | `["https://animus-editor.web.app", "https://animus-editor.firebaseapp.com", "http://127.0.0.1:8098", "http://localhost:8098"]` | At most 32 | Browser origins accepted, as `scheme://host[:port]`. `http://` only on loopback |
+| `allowedOrigins` | `["https://animus-editor.web.app", "https://animus-editor.firebaseapp.com"]` | At most 32 | Browser origins accepted, as `scheme://host[:port]`. `http://` only on loopback. To use an editor you serve yourself, add its origin, such as `http://127.0.0.1:8098` |
 | `tokenDays` | `7` | 1-365 | Default lifetime of a pairing |
 | `auditDays` | `30` | 1-3650 | Days of editor audit log kept |
 | `requestBodyBytes` | `4194304` | 1024-67108864 | Size of one request |
@@ -432,7 +431,6 @@ pitch = 1.2
 ## Example
 
 ```toml
-statusMessage = "Hello from Animus"
 packetProofEnabled = false
 
 [npcs]

@@ -1,6 +1,6 @@
 ---
 title: "Animus"
-description: "JSON-defined NPCs with behaviors, navigation, combat, shops, GUIs, and a browser editor"
+description: "JSON-defined NPCs with behaviors, navigation, combat, shops, GUIs, and a web editor"
 published: true
 date: 2026-11-05T00:00:00.000Z
 tags: "animus, npc, bukkit, paper, spigot, folia, fabric, neoforge, forge"
@@ -10,7 +10,7 @@ dateCreated: 2026-11-05T00:00:00.000Z
 
 ![Animus](/home-assets/animus.png =96x){.align-center}
 
-Animus manages NPCs. Each NPC is a JSON definition file that you can edit by hand, from commands, or in the browser editor. NPCs are packet-only and shown separately to each viewer. They stay dormant until you spawn them. Behaviors, routes, combat, shops, chest GUIs, and builds are all set in JSON.
+Animus manages NPCs. Each NPC is a JSON definition file that you can edit by hand, from commands, or in the web editor. NPCs are packet-only and shown separately to each viewer. They stay dormant until you spawn them. Behaviors, routes, combat, shops, chest GUIs, and builds are all set in JSON.
 
 | | |
 |---|---|
@@ -23,7 +23,8 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 
 ## Start here
 
-- [Overview *How Animus NPCs work*](/animus/00-overview)
+- [Overview *How Animus NPCs work, and a glossary*](/animus/00-overview)
+- [First ten minutes *Install, set up, and make your first NPC*](/animus/20-first-ten-minutes)
 - [Installation and compatibility *Requirements, files, and platform differences*](/animus/01-installation-compatibility)
 - [Commands and permissions *Every command and node*](/animus/02-commands-permissions)
 - [Configuration *Every config.toml setting*](/animus/03-configuration)
@@ -32,8 +33,10 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 
 ## NPCs
 
-- [NPC definitions *Files, activation, appearance, and limits*](/animus/04-npc-definitions)
+- [NPC definitions *Files, spawning, appearance, and limits*](/animus/04-npc-definitions)
+- [Trait groups *Values shared by many NPCs*](/animus/18-trait-groups)
 - [Movement, mounts, and riding *Routes, mounts, riders, and hiring*](/animus/05-movement-mounts-riding)
+- [Performance recordings *Record a player, replay it on an NPC*](/animus/19-performance-recordings)
 - [Rigs and animations *Bone rigs, clips, and resource packs*](/animus/06-rigs-animations)
 - [Behaviors *Triggers, capabilities, and packs*](/animus/07-behaviors)
 - [Combat *Targets, weapons, guards, and protection*](/animus/08-combat)
@@ -42,9 +45,10 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 
 ## Interfaces
 
+- [In-game toolkit *Edit NPCs in game with /animus tools*](/animus/21-in-game-toolkit)
+- [Web editor *Pairing and editing in the browser*](/animus/14-web-editor)
 - [Shops *Buy, sell, and trade pages*](/animus/10-shops)
 - [GUIs, holograms, and menus *Gloss-format windows and text*](/animus/11-guis-holograms-menus)
-- [Web editor *Pairing and editing in the browser*](/animus/14-web-editor)
 {.links-list}
 
 ## Operations

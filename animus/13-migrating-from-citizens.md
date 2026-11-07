@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Animus reads the Citizens `saves.yml` and turns every NPC into its own definition file. Nothing runs until you apply the import, and patrols, combat, riding, shops, builds and converted scripts stay off until you accept them. You can undo the whole migration with one command.
+Animus reads the Citizens `saves.yml` and turns every NPC into its own definition file. Nothing runs until you apply the import, and routes, combat, riding, shops, builds and converted scripts stay off until you accept them. You can undo the whole migration with one command.
 
 The import commands need `animus.admin`. They work the same on Paper, Spigot, Folia and mod servers. On mod servers the data folder is `config/animus/` instead of `plugins/Animus/`.
 
@@ -25,7 +25,7 @@ The import commands need `animus.admin`. They work the same on Paper, Spigot, Fo
    /animus import citizens preview
    ```
 
-   This converts the save, stages a plan and prints the counts: NPCs, valid definitions, skins, folders, the patrols, look-close and behaviors it made, what stays off and what is kept but not run. Nothing is installed. A definition counts as valid only when it also passes the spawn checks that do not depend on the server, such as a skin needing a player body. A spawned NPC that still cannot start is logged once as a warning that names the field. The full report is `imports/<import-id>/report.json`, with one report per NPC under `reports/`.
+   This converts the save, stages a plan and prints the counts: NPCs, valid definitions, skins, folders, the routes, look-close and behaviors it made, what stays off and what is kept but not run. Nothing is installed. A definition counts as valid only when it also passes the spawn checks that do not depend on the server, such as a skin needing a player body. A spawned NPC that still cannot start is logged once as a warning that names the field. The full report is `imports/<import-id>/report.json`, with one report per NPC under `reports/`.
 
    Each NPC report gives every Citizens field a status under `fields`: `CONVERTED`, `REQUIRES_REVIEW` (Animus has a near equivalent you should check), `UNSUPPORTED_PRESERVED` (kept in `citizens:review` and `records/`, not run) or `REQUIRES_INTEGRATION` (needs data that is not in the save, such as Denizen scripts). `reasons` gives a one-line reason for each field that is not converted, and for converted fields that change nothing. The migration warnings in `report.json` list only things you should act on, each saying what to do.
 
@@ -76,13 +76,15 @@ A label uses 1-32 lowercase letters, digits, `_` or `-`, and each copy needs a d
 The lower-level commands work on any Citizens save file placed in `plugins/Animus/imports/inbox/`, and give each step its own ID:
 
 ```none
-/animus import preview <filename.yml> [worlds=oldWorld:newWorld,...]
-/animus import apply <import-id>
-/animus import stage <import-id> mode=replace
-/animus import stage <import-id> mode=duplicate copy=town-copy
-/animus import apply-plan <import-id> <application-id>
-/animus rollback <transaction-id>
+/animus import preview <file> [worlds=oldWorld:newWorld]
+/animus import apply <preview>
+/animus import stage <preview> mode=replace
+/animus import stage <preview> mode=duplicate copy=town-copy
+/animus import plan <preview> <application>
+/animus rollback <transaction>
 ```
+
+`<preview>` is the import id that `import preview` prints, and `<application>` the id that `stage` prints.
 
 `import apply` installs with the default `reject` mode. `stage` prepares an application plan for another mode and prints its application ID, mode, counts, plan path and the exact apply command; it changes no definitions. The plan lives at `imports/<import-id>/applications/<application-id>/plan.json`. Do not edit generated plans: a changed plan must be staged again.
 
@@ -146,17 +148,17 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 | --- | --- |
 | UUID, numeric ID, name, type, location and facing | Definition identity, `name`, body type and position, with world mappings applied. |
 | Skin | `skins/<sha256>.json` on player bodies. See [skins](#skins). |
-| Equipment and inventory | `equipment` (all eight slots) and `inventory`, with item names, lore, enchantments, damage, custom model data, item model, dye colour, patterns, potions and persistent data written as item components. Item meta with no component is kept in the item's `imported` field. A HorseModifiers saddle or armour fills an empty `saddle` or `body` slot. |
+| Equipment and inventory | `equipment` (all eight slots) and `inventory`, with item names, lore, enchantments, damage, custom model data, item model, dye color, patterns, potions and persistent data written as item components. Item meta with no component is kept in the item's `imported` field. A HorseModifiers saddle or armor fills an empty `saddle` or `body` slot. |
 | Hologram lines | `hologram`, top line first, with margins, line height, view range, billboard, shadow, see-through and interpolation. |
 | Poses, sneaking, sitting, armor stand | `poses` for [`animus:pose`](/animus/07-behaviors#actions), sneaking and sitting poses, armor stand parts and angles. |
-| Glowing, using an item, player-list visibility, scoreboard colour and tags, gravity, baby age | `glowing`, `usingItem`, `listed`, `teamColor`, `tags`, `gravity`, `baby`. An armor stand without gravity also gets `gravity: false`. |
+| Glowing, using an item, player-list visibility, scoreboard color and tags, gravity, baby age | `glowing`, `usingItem`, `listed`, `teamColor`, `tags`, `gravity`, `baby`. An armor stand without gravity also gets `gravity: false`. |
 | Attribute trait | `attributes`, with the older `generic_scale` and `generic.scale` names read as `scale`. A value outside the vanilla range is clamped with a warning; an id no supported Minecraft version registers is kept for review. |
 | Navigator settings | `movement`: speed, water avoidance, fall distance, pathfinding range, distance margin, stuck handling, flying and opening doors. |
 | `targetable: true` | `targetableByMobs` on `animus:combat`. |
 | `minecraft-ai: true` on a mob with no route | A disabled wander route around its spawn point. |
 | Owner | `owner`, when it is a player. |
 | Mounts | Mount references resolved through the UUID map. |
-| Waypoints | A route, off until `accept patrols`. See [patrols](#patrols). |
+| Waypoints | A route, off until `accept patrols`. See [waypoints](#waypoints). |
 | Look-close | `animus:look-close`. See [look-close](#look-close). |
 | Text and commands | Generated behaviors. See [text](#text) and [commands](#commands). |
 | Sentinel | `animus:combat`, off until `accept combat`. See [Sentinel settings](#sentinel-settings). |
@@ -169,7 +171,7 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 
 A skin on a player NPC becomes `skins/<sha256>.json`. Only player bodies show a skin, so a skin on any other body (a llama, frog or ender dragon) is not set. Citizens never drew those skins either. It stays in `modules["citizens:review"]` in case the NPC is changed to a player, the NPC's report says why, and the preview counts it among the skins on non-player NPCs kept unused.
 
-### Patrols
+### Waypoints
 
 Waypoints become a route in the NPC's `modules["animus:navigation"]`, with world mappings applied. It stays off until you accept `patrols`.
 
@@ -177,11 +179,11 @@ Waypoints become a route in the NPC's `modules["animus:navigation"]`, with world
 | --- | --- |
 | `linear` | `order: sequence` that loops, or `pingpong` when `cycle` is on |
 | `guided` | `order: random`: destinations become `points` and guide waypoints `guides`; the NPC walks to a random destination through the guides. `distance` (or the NPC's pathfinding range) becomes `linkDistance` |
-| `wander` | `order: wander` around the region centres, or around the NPC's position. `xrange` and `yrange` become `wander.radius` and `height` (at most 32 and 8); a `delay` of -1 becomes 60 ticks |
+| `wander` | `order: wander` around the region centers, or around the NPC's position. `xrange` and `yrange` become `wander.radius` and `height` (at most 32 and 8); a `delay` of -1 becomes 60 ticks |
 | `delay` trigger | The point's `waitTicks`; several delays on one point add up |
 | Speed modifier | `speed` of 4.3 blocks per second times the modifier, within 1 to 5 |
 
-Points move to the centre of their block. Citizens saves the block you clicked, which is usually the ground under the NPC's feet, so a point that names a solid block, a top slab or a stair is walked to the surface on top of it, and a stuck NPC that teleports lands there instead of inside the block. A waypoints trait with no points, which Citizens saves for many NPCs that never had a route, converts to nothing and is not counted as kept. Points in another world are left out. Other providers and the `animation`, `chat`, `command`, `speed` and `teleport` triggers are kept in `citizens:review` and reported for each NPC. Long legs and destinations no guide reaches need no extra points. Routes are described in [movement](/animus/05-movement-mounts-riding).
+Points move to the center of their block. Citizens saves the block you clicked, which is usually the ground under the NPC's feet, so a point that names a solid block, a top slab or a stair is walked to the surface on top of it, and a stuck NPC that teleports lands there instead of inside the block. A waypoints trait with no points, which Citizens saves for many NPCs that never had a route, converts to nothing and is not counted as kept. Points in another world are left out. Other providers and the `animation`, `chat`, `command`, `speed` and `teleport` triggers are kept in `citizens:review` and reported for each NPC. Long legs and destinations no guide reaches need no extra points. Routes are described in [movement](/animus/05-movement-mounts-riding).
 
 ### Look-close
 
@@ -189,7 +191,7 @@ An enabled look-close trait becomes `modules["animus:look-close"]` with its `ran
 
 ### Text
 
-Citizens text becomes the behavior `citizens:text-<id>` in `behaviors/citizens/`, listed in the NPC's `behaviors`. Talk-close NPCs speak when a player comes within the talk range (at most 32 blocks); others speak when right-clicked. The delay is the trigger cooldown (100 ticks when Citizens chose a random delay). A random talker picks a random line; otherwise the lines take turns. `<br>` starts a new message, `<p>` and `<player>` become the player's name, and colour codes are kept. The cooldown is one per NPC, not one per player. Speech bubbles and held-item requirements are reported.
+Citizens text becomes the behavior `citizens:text-<id>` in `behaviors/citizens/`, listed in the NPC's `behaviors`. Talk-close NPCs speak when a player comes within the talk range (at most 32 blocks); others speak when right-clicked. The delay is the trigger cooldown (100 ticks when Citizens chose a random delay). A random talker picks a random line; otherwise the lines take turns. `<br>` starts a new message, `<p>` and `<player>` become the player's name, and color codes are kept. The cooldown is one per NPC, not one per player. Speech bubbles and held-item requirements are reported.
 
 ### Commands
 
@@ -320,7 +322,7 @@ Rollback removes the behaviors, the GUIs, the imported state and the NPC binding
 | `data` script | Its values are copied where they are read: text in place, lists as list values, maps through a temporary variable |
 | `item` script | Used by `give` and in GUI slots when it sets only `material`, `display name` and `lore` |
 | Trigger on or off, cooldown, radius | Read from the NPC's saved `triggers` (`CLICK`, `PROXIMITY` and so on). A trigger that is off on every NPC with the script is kept |
-| Tags | [Expressions](/animus/07-behaviors#expressions) over the run's values. `<[name]>` is the execution variable `d_<name>` (dots inside walk map keys). `<player.name>`, `uuid`, `location`, `health`, `world`, `item_in_hand` and the like read player facts, `<npc.*>` NPC facts, `<player.flag[...]>`, `<player.has_flag[...]>`, `<server.flag[...]>` and the NPC forms the `denizen` flags, `<util.random.int[a].to[b]>` and its kin the random functions, `<context.*>` the event's values (`<context.location.x>`, `<context.item.material.name>`, `<context.inventory.inventory_type>` and the like read the keys the world events pass), `<npc.id>` the Citizens id `npc.citizens_id`, `<server.online_players>` the list `server.players`, `.name`, `.is_online`, `.has_flag[...]` and `.flag[...]` of a definition or loop value holding a player that player's facts and flags, and element, list and map attributes (`add`, `length`, `get`, `contains`, `replace`, `separated_by` and so on) the matching functions. In text a tag becomes a `{{ expression }}` hole. Colour tags become `&` codes, `<&color[#hex]>` becomes `&#hex`, and escapes such as `<&co>` and `<&chr[2764]>` become their characters |
+| Tags | [Expressions](/animus/07-behaviors#expressions) over the run's values. `<[name]>` is the execution variable `d_<name>` (dots inside walk map keys). `<player.name>`, `uuid`, `location`, `health`, `world`, `item_in_hand` and the like read player facts, `<npc.*>` NPC facts, `<player.flag[...]>`, `<player.has_flag[...]>`, `<server.flag[...]>` and the NPC forms the `denizen` flags, `<util.random.int[a].to[b]>` and its kin the random functions, `<context.*>` the event's values (`<context.location.x>`, `<context.item.material.name>`, `<context.inventory.inventory_type>` and the like read the keys the world events pass), `<npc.id>` the Citizens id `npc.citizens_id`, `<server.online_players>` the list `server.players`, `.name`, `.is_online`, `.has_flag[...]` and `.flag[...]` of a definition or loop value holding a player that player's facts and flags, and element, list and map attributes (`add`, `length`, `get`, `contains`, `replace`, `separated_by` and so on) the matching functions. In text a tag becomes a `{{ expression }}` hole. Color tags become `&` codes, `<&color[#hex]>` becomes `&#hex`, and escapes such as `<&co>` and `<&chr[2764]>` become their characters |
 | `define` | `set` of the definition's variable to a literal, an expression or a template; `define x:++` and the other data actions compute the new value |
 | `if`, `else if`, `else`, `choose` | `condition` nodes with one expression. `==` and `!=` compare as Denizen does (numbers as numbers, other text ignoring case), `<`, `>`, `<=` and `>=` compare numbers, and `contains`, `in` and `matches` (alternatives with `\|` and `*` at either end) convert, joined by `&&`, `\|\|`, `!` and parentheses. `has_permission` stays an `animus:has-permission` condition. `choose` reads its value once and compares it with each `case` |
 | `foreach`, `repeat`, `while` | `foreach` over a list or map with `as:` and `key:`, `repeat` with a literal or computed count, and `while` with its condition. `<[loop_index]>` and `<[value]>` read the loop's pass. `foreach stop`, `repeat next` and the like become `break` and `continue` |
@@ -366,7 +368,7 @@ These are kept in each definition under `modules["citizens:review"]` and in the 
 
 - Waypoints, look-close, text and commands that did not convert, with the reason in the NPC's report.
 - Denizen assignments, triggers, flags and constants as Citizens saved them. The scripts themselves convert with the [Denizen](#denizen) part of the import.
-- Settings with no Animus equivalent, such as the armor stand marker, HorseModifiers colour, style and chest, gradual rotation, attributes no supported Minecraft version registers, and Constructor data.
+- Settings with no Animus equivalent, such as the armor stand marker, HorseModifiers color, style and chest, gradual rotation, attributes no supported Minecraft version registers, and Constructor data.
 - Every trait Animus does not know.
 
 ## Rolling back

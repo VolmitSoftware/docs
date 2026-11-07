@@ -32,23 +32,21 @@ Chest, furnace, sign and banner contents in a schematic are not copied: the bloc
 
 All build commands need `animus.admin`, except `donate`, which needs `animus.build.donate`. They are the same on every platform.
 
+Every build command is listed under [commands](/animus/02-commands-permissions#building). The three you start with:
+
 ```none
-/animus build status                            status of the build system
-/animus build list                              every build and its progress
-/animus build schematics                        schematic files in the folder
-/animus build inspect <schematic>               size, block count and unknown blocks
-/animus build start <npc-id> schematic=<file> [at=<x>,<y>,<z>] [option=value...]
-/animus build start <npc-id>                    start the build saved in the NPC's definition
-/animus build status|pause|resume|cancel|undo|survey <build>
-/animus build team add|remove <build> <npc-id>
-/animus build donate <build>                    give the items in your main hand
+/animus build inspect <schematic>
+/animus build start <npc> [schematic=] [at=x,y,z] [option=value ...]
+/animus build survey <build>
 ```
+
+`build start <npc>` with no `schematic=` starts the build saved in the NPC's definition. `build rollback <build>` removes the blocks a build placed.
 
 A build is named after the NPC that leads it, and `<build>` may also be any NPC on its team. The build starts where the leader stands, or at `at=`. An NPC can work on one build at a time. Starting a new build for an NPC whose last build has finished, failed, been cancelled or been undone discards that old build's record and undo data.
 
 ```none
 /animus build start mason schematic=tower.schem at=120,64,-40 rotation=90 excavate=true materials=donate
-/animus build team add mason helper
+/animus build team assign mason helper
 /animus build survey mason
 /animus build pause mason
 ```
@@ -86,7 +84,7 @@ The build goes up one group of layers at a time. Inside each group the order is:
 4. blocks that hang on others: torches, lanterns, doors, trapdoors, buttons, levers, pressure plates, redstone dust, repeaters, comparators, rails, signs, banners, beds, carpets, plants, crops, vines and similar;
 5. water and lava last.
 
-Blocks are placed without updating their neighbours, so a torch or a door does not pop off while the wall behind it is not built yet, and water does not flow until a neighbour changes. Excavation, when turned on, runs before the first group.
+Blocks are placed without updating their neighbors, so a torch or a door does not pop off while the wall behind it is not built yet, and water does not flow until a neighbor changes. Excavation, when turned on, runs before the first group.
 
 A block that already matches the schematic is skipped and costs nothing. Each NPC takes the next block of the current step; the next step starts only when every block of the current one is done.
 
@@ -129,7 +127,7 @@ Each scaffolding block is checked with protection like any other change and reco
 
 With `materials=creative` scaffolding is free. Otherwise each block takes one `minecraft:scaffolding` from the build's materials (or the container), and every block that comes down goes back to the build's materials, so one column's worth is used again and again. `survey` and `donate` count enough scaffolding for one column from the origin to one block under the highest block left. A build that runs out of scaffolding waits with `needs 1 minecraft:scaffolding to put up scaffolding` while the NPC stays on its column.
 
-Walking NPCs climb scaffolding, ladders and vines with their normal navigation, so a patrol can use them too.
+Walking NPCs climb scaffolding, ladders and vines with their normal navigation, so an NPC on a route can use them too.
 
 ## Pausing, waiting and undo
 

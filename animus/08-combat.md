@@ -48,7 +48,7 @@ Settings live in the NPC definition as JSON. Every section and field is optional
 | `pursuit` | `speed` is 1-10 blocks per second, limited further by `maximumSpeed` in `config.toml`. A target farther than `giveUpRange` (at most 256) is dropped. `leashRange` is measured from where the fight began; past it the NPC drops the target and, with `returnToPost`, walks back before its patrol resumes. `teleportWhenStuck` moves the NPC to its goal after three refused path requests. `region` names a protection region: targets outside it are not chosen, and a target that leaves it is dropped (checked every 10 ticks). |
 | `melee` | Every hit swings the NPC's main arm for everyone who sees it. Reach is measured from the NPC's body center to the nearest point of the target's bounds, at most 6 blocks. `fromEquipment` takes damage from the definition's `main_hand` item (see [equipment](#equipment)). `weaponDamage` maps a held item to its damage and replaces any other damage, for melee and ranged, while that item is held. |
 | `ranged` | `weapon` is `arrow`, `spectral_arrow`, `trident`, `snowball`, `egg`, `fireball`, `small_fireball`, `wither_skull`, `llama_spit` or `potion`. A potion needs `effect`; see [weapons](#weapons). An NPC with `arrow`, `spectral_arrow` or `trident` holds its weapon drawn while a target is in range and lowers it when the fight ends; any other weapon is thrown with an arm swing. `minimumRange` makes the NPC switch to melee or walk closer. `safeShot` holds fire when a friend is in the line and makes a shot that hits anything other than its target do nothing. `fromEquipment` and `useAmmo` are described below. |
-| `defense` | `maximumHealth` 1-2048 replaces the default of 20. A new activation starts at full health; a definition change keeps current health, lowering it only to fit a smaller maximum. `armor` 0-1 removes that fraction of each hit; `armorFromEquipment` takes it from worn armor instead. `invulnerableTicks` ignores repeat hits for that long. `protectedFromIgnored` blocks damage from anything in `ignores`. `protectFromRange` ignores attackers farther than that. `healRateTicks` restores 1 health per interval; 0 never heals. With `invincible` the NPC takes no damage, its hits are reported as protected, and other NPCs never choose it as a target. |
+| `defense` | `maximumHealth` 1-2048 replaces the default of 20. An NPC starts at full health each time it becomes active; a definition change keeps current health, lowering it only to fit a smaller maximum. `armor` 0-1 removes that fraction of each hit; `armorFromEquipment` takes it from worn armor instead. `invulnerableTicks` ignores repeat hits for that long. `protectedFromIgnored` blocks damage from anything in `ignores`. `protectFromRange` ignores attackers farther than that. `healRateTicks` restores 1 health per interval; 0 never heals. With `invincible` the NPC takes no damage, its hits are reported as protected, and other NPCs never choose it as a target. |
 | `death` | Items drop with independent chances. `victimDrops: false` stops mobs killed by this NPC from dropping loot or experience. |
 | `respawn` | `delayTicks` -1 never respawns. Otherwise the NPC comes back at full health and full ammunition, with no target, at a random listed location or where it died, and the spawn trigger fires again. If that is away from its post and `pursuit.returnToPost` is on, it walks back to the post as it does after a fight. With `deleteOnDeath` (which needs `delayTicks` -1) the definition is deleted when the NPC dies; see [deletion on death](#deletion-on-death). |
 | `greetings` | When a player the NPC can see comes within `range` (1-64), it says `hostile` to a player it would target and `friendly` to anyone else, as `[NPC name]: text` in that player's chat. A player is spoken to again only after leaving range and coming back, and at most once per `cooldownTicks`. Either line may be left out. |
@@ -124,7 +124,7 @@ With `useAmmo`, each shot uses one matching item counted from the definition's s
 | NPC | Player or mob | Bukkit damage with a damage location and no causing entity. `VirtualNpcDamageEvent` can cancel or change it first. |
 | NPC | NPC | Virtual damage applied by Animus. |
 | Player | NPC | A hit that passed the reach, line-of-sight and rate checks. The amount is the player's attack damage attribute scaled by attack charge, like vanilla. Enchantments and potions are not added. |
-| Controlled mob | NPC | `/animus target`, or a mob drawn by `targetableByMobs`, subject to the NPC's defense. Zombies, husks, drowned, zombie villagers and vindicators. |
+| Controlled mob | NPC | `/animus combat mob`, or a mob drawn by `targetableByMobs`, subject to the NPC's defense. Zombies, husks, drowned, zombie villagers and vindicators. |
 | Projectile from an NPC | Player or mob | The projectile's own effect is cancelled and the hit is applied once through the combat module. |
 | Projectile from an NPC | NPC | Projectiles pass through virtual bodies, so each flight segment is tested against nearby NPC bounds. |
 
@@ -172,14 +172,12 @@ The built-in [`animus:combat-control`](/animus/07-behaviors#actions) action driv
 
 `target` is a UUID, or `player` for the player who started the run, so a hire dialogue can guard whoever answered it. The action fails with a reason when the NPC has no enabled combat, is dead, or the target is not available in its world. Use the `damage` and `death` triggers to react to fights.
 
-Administrators have the same operations. These commands need `animus.admin`:
+Administrators have the same operations as `/animus combat` commands, which need `animus.admin`; see [commands](/animus/02-commands-permissions#combat) for the full list. The ones you use most:
 
 ```none
-/animus combat status
-/animus combat status npc=<npc-id>
-/animus combat engage|disengage|release <npc-id>
-/animus combat target <npc-id> <uuid>
-/animus combat guard <npc-id> <uuid>|stop
+/animus combat status npc=guard
+/animus combat target guard <uuid>
+/animus combat guard guard stop
 ```
 
 ### Manual attack and mob control
@@ -187,14 +185,14 @@ Administrators have the same operations. These commands need `animus.admin`:
 Two more commands act on an active NPC directly, outside its target rules:
 
 ```none
-/animus attack <npc-id> <target-uuid> [damage]
-/animus target <npc-id> <mob-uuid>
-/animus target <npc-id> stop
+/animus combat attack <npc> <target> [damage=1]
+/animus combat mob <npc> <mob>
+/animus combat mob <npc> stop
 ```
 
-`attack` makes the NPC hit a loaded player or mob once. The hit uses Bukkit damage with no attacking entity, fires `VirtualNpcDamageEvent`, which can cancel it, and asks protection like any other hit. Reach, world, loaded chunks and line of sight are checked again after the event. The command reports the damage applied and the target's health.
+`combat attack` makes the NPC hit a loaded player or mob once. The hit uses Bukkit damage with no attacking entity, fires `VirtualNpcDamageEvent`, which can cancel it, and asks protection like any other hit. Reach, world, loaded chunks and line of sight are checked again after the event. The command reports the damage applied and the target's health.
 
-`target` makes a loaded zombie, husk, drowned, zombie villager or vindicator attack the NPC. Its own goals, targeting and path are paused while it is controlled and restored when it is released, the NPC despawns or dies, or the plugin stops. `VirtualNpcDamagedByMobEvent` can cancel the damage, and the NPC's defense applies. Mob control works on Paper and Spigot only.
+`combat mob` makes a loaded zombie, husk, drowned, zombie villager or vindicator attack the NPC. Its own goals, targeting and path are paused while it is controlled and restored when it is released, the NPC despawns or dies, or the plugin stops. `VirtualNpcDamagedByMobEvent` can cancel the damage, and the NPC's defense applies. Mob control works on Paper, Spigot and Folia; on mod servers the command says it is unavailable.
 
 On an imported NPC, both commands work only after its combat settings are accepted (`enabled` and `reviewAccepted` both `true`).
 
@@ -232,10 +230,10 @@ Each tick wakes at most `brainsPerTick` NPCs and runs at most `targetScansPerTic
 
 - Movement uses the NPC navigator: walking only, on full blocks, at most 30 blocks per path request. A path that fails after it was accepted is not reported back, so such a target is dropped only by give-up range, leash or line-of-sight memory.
 - Knockback and stuck teleports move an NPC only onto loaded, clear, supported ground.
-- A patrol resumes from its first waypoint after a fight.
+- A route resumes from its first point after a fight.
 - Lightning, ender pearls, shulker bullets, evoker fangs and gun plugins are not weapons. Item display names, lore and whole-inventory contents are not target rules.
 - Greetings and target rules see only what one scan saw: at most `scanCandidates` entities, and idle NPCs scan less often.
 - Player damage against NPCs ignores enchantments, potions and critical hits.
-- Real mobs fight an NPC only through mob control: `/animus target`, or `targetableByMobs`. With `"targetableByMobs": true` in the module, every second the NPC draws up to 3 zombies, husks, drowned, zombie villagers or vindicators within 16 blocks that have no target of their own and can see it. Each walks to the NPC and attacks with its own attack damage every second for up to 10 seconds, showing its own attack animation, then gets its own goals, path and target back. Brain-driven and ranged mobs (piglins, skeletons) are not drawn. This works on Paper and Spigot only; on Folia and mod servers the setting does nothing.
+- Real mobs fight an NPC only through mob control: `/animus combat mob`, or `targetableByMobs`. With `"targetableByMobs": true` in the module, every second the NPC draws up to 3 zombies, husks, drowned, zombie villagers or vindicators within 16 blocks that have no target of their own and can see it. Each walks to the NPC and attacks with its own attack damage every second for up to 10 seconds, showing its own attack animation, then gets its own goals, path and target back. Brain-driven and ranged mobs (piglins, skeletons) are not drawn. This works on Paper and Spigot only; on Folia and mod servers the setting does nothing.
 
 Settings imported from Sentinel are described in [migrating from Citizens](/animus/13-migrating-from-citizens#sentinel-settings).
