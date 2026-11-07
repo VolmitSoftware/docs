@@ -125,15 +125,18 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 
 | Field | Accepted values |
 |---|---|
-| `equipment` | Slots `main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`. Each holds one item. |
+| `equipment` | Slots `main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`. Each holds one item. Player bodies and armor stands show the first six, a horse shows its armour in `body` and its saddle in `saddle`, a llama shows its carpet in `body`, and turtles, frogs, armadillos and dragons show none. Items in other slots are kept and sent, and the client ignores them. |
 | item | `id`, such as `minecraft:iron_sword` or `iron_sword`, optional `count` (1-99, default 1), optional `components`: the text that follows the item id in `/give`, such as `[enchantment_glint_override=true]`, at most 4096 characters. `imported` holds source item data with no equivalent; it is kept and never read. |
 | `hologram.lines` | At most 16 lines of at most 256 characters each. `&` colour and format codes apply. |
 | `nameplate.visible` | `false` hides the name. Default `true`. |
 | `pose` | `standing` (default). Player bodies also accept `sneaking`, `sleeping`, `swimming` and `sitting`. |
 | `armorStand` | Armor stand bodies only: `small`, `arms`, `basePlate` (default `true`), `invisible`, and `head`, `body`, `leftArm`, `rightArm`, `leftLeg`, `rightLeg` as `[x, y, z]` degrees within ±360. Parts without angles keep the client's default pose. |
+| `horse`, `llama`, `frog`, `armadillo`, `dragon` | Settings only that body has; see [body settings](#body-settings). |
 | `inventory` | `size` is a multiple of 9 from 9 to 72; `slots` maps slot numbers below `size` to items. |
 | `owner` | The owning player's UUID. |
 | `tags` | At most 32 distinct labels of 1-32 lowercase letters, digits, `_` or `-`, starting with a letter or digit. The [web editor](/animus/14-web-editor) uses them to find and group NPCs. The server stores them and does not act on them. |
+
+`skin`, a pose other than `standing`, `armorStand` and another body's settings are refused on a body that cannot show them, so after changing `type`, remove what the old body used. The [web editor](/animus/14-web-editor) lists these fields with a remove button.
 
 `/animus spawn` checks every equipment item against the running server, so an unknown item or bad component text is refused as `$.equipment.<slot>.id` or `.components`. The [`animus:set-equipment`](/animus/07-behaviors) action replaces a slot until restart or the next definition change.
 
@@ -153,13 +156,33 @@ A player name that fits a profile name (16 characters, no `&` codes) stays the n
 
 A line may also be an object such as `{"text": "...", "marginTop": 0.25, "marginBottom": 0}`, with margins of up to 4 blocks. With a line height or any margin, each line and the name get their own display, stacked from the bottom: each line sits its bottom margin plus the line height above the one below and adds its top margin, as Citizens holograms do (0.25 blocks when only margins are set).
 
+### Body settings
+
+Each of these bodies has one optional object of its own. A setting left out keeps the look a newly spawned animal of that type has.
+
+```json
+"type": "minecraft:horse",
+"horse": {"color": "chestnut", "markings": "white_dots"},
+"equipment": {"saddle": {"id": "minecraft:saddle"}, "body": {"id": "minecraft:iron_horse_armor"}}
+```
+
+| Field | Settings |
+|---|---|
+| `horse` | `color`: `white` (default), `creamy`, `chestnut`, `brown`, `black`, `gray` or `dark_brown`. `markings`: `none` (default), `white`, `white_field`, `white_dots` or `black_dots`. The saddle and armour are the `saddle` and `body` equipment slots. |
+| `llama` | `variant`: `creamy` (default), `white`, `brown` or `gray`. `chest`: `true` puts a chest on its back. The carpet is the `body` equipment slot. |
+| `frog` | `variant`: `temperate` (default), `warm` or `cold`. |
+| `armadillo` | `state`: `idle` (default), `rolling`, `scared` (rolled up) or `unrolling`. |
+| `dragon` | `phase`: `hovering` or `sitting`, how a still dragon rests. Left out, it sits on solid ground and hovers in the air. A moving dragon always flaps. |
+
+A turtle has no settings of its own; `baby` gives a hatchling. A [group](/animus/18-trait-groups) may hold one body's settings for the NPCs of that body type.
+
 ### Other presentation flags
 
 | Field | Effect |
 |---|---|
 | `glowing` | Outline around the body |
 | `teamColor` | One of the sixteen chat colours; colours the glow and the name |
-| `baby` | Baby form of ageable, zombie, piglin and zoglin bodies |
+| `baby` | Baby form of ageable, zombie, piglin and zoglin bodies, which includes the horse, llama, turtle, frog and armadillo |
 | `usingItem` | Main-hand item is raised, as when blocking or drawing a bow |
 | `listed` | A player body shows in the tab list |
 | `gravity` | `false` makes the body hover instead of falling, whatever its `gravity` attribute says |
@@ -248,7 +271,7 @@ NPCs only appear in chunks the player's client has received. Animus never loads 
 
 ## Ender dragon presentation
 
-A `minecraft:ender_dragon` definition has no world entity, no boss bar and no dragon AI. `yaw`, `/animus look` and route facing all mean the direction its head points. It sits with folded wings when resting on solid ground, hovers in place when resting in the air and flaps while moving. Clients may play its normal wing and growl sounds.
+A `minecraft:ender_dragon` definition has no world entity, no boss bar and no dragon AI. `yaw`, `/animus look` and route facing all mean the direction its head points. It sits with folded wings when resting on solid ground, hovers in place when resting in the air and flaps while moving; `dragon.phase` picks one resting look wherever it is. Clients may play its normal wing and growl sounds.
 
 Clients strike one of the dragon's eight parts. Animus measures each hit against part positions worked out from the dragon's position and facing, with a small allowance for client animation. The part a client claims to have hit is not trusted, and the dragon's broad 16-block bounds do not count as a hit.
 

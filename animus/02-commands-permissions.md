@@ -68,7 +68,7 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 | `/animus select <npc>` | Select an NPC. Players only |
 | `/animus selection` | Show your selection. Players only |
 | `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or dormant, groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then the live state, with pose, equipment, text lines, owner and mount problems under **[Details]** |
-| `/animus edit <npc> <patch>` | Merge the top-level fields of a JSON object into the definition and save it as a new revision |
+| `/animus edit <npc> <patch>` | Merge the top-level fields of a JSON object into the definition and save it as a new revision. A field set to `null` is removed, so `{"type": "minecraft:horse", "skin": null, "pose": null}` turns a skinned, seated player into a horse. A refused edit answers `Cannot save` with the first problem; when it changes `type`, the reply shows the `null` that removes the field the new body cannot show |
 | `/animus npc attribute <npc> <attribute> [value=]` | Show one [attribute](/animus/04-npc-definitions#attributes) with its source, vanilla default and range, or set it with `value=` and a number, or remove it from the file with `value=reset`. Saves a new revision |
 | `/animus clone <npc> <id>` | Copy a definition under a new id and UUID, dormant |
 | `/animus delete <npc>` | Delete the definition. The reply names the transaction, with **[Undo]** |
