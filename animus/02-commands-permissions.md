@@ -278,7 +278,7 @@ See [web editor](/animus/14-web-editor#pairing).
 | Command | Effect |
 |---|---|
 | `/animus setup [dismiss=false]` | List the first steps on a new server, done steps marked, with a button for each. Also turns off the join greeting; `dismiss=true` only turns it off |
-| `/animus tools` | Open the chest-window tool palette: manage, trait groups, folders, routes, skins and find. Same as `/animus tools open`. Players only |
+| `/animus tools` | Open the chest-window tool palette: new NPC, manage, edit, skins, equipment, combat, mounts, routes, recordings, trait groups, folders, behaviors, shops, GUIs and find. Same as `/animus tools open`. Players only |
 | `/animus tools wand` | Give the selection wand: click an NPC to select it, sneak-click to add or remove it. Players only |
 | `/animus tools manage` | Open the manage screen for your selection. Players only |
 
