@@ -29,6 +29,8 @@ Folders are yours to arrange: `npcs/guard.json`, `npcs/town/guard.json` and `npc
 }
 ```
 
+A Minecraft id written without a namespace, such as `netherite_axe` or `villager`, means the `minecraft:` one. This holds for item, block, entity, sound, particle, effect and other registry ids in every Animus file. The file keeps what you wrote until Animus itself saves it, which writes the full `minecraft:` form.
+
 | Field | Required | Accepted values |
 |---|---|---|
 | `schemaVersion` | Yes | `1`. Other versions are refused. |
@@ -37,7 +39,7 @@ Folders are yours to arrange: `npcs/guard.json`, `npcs/town/guard.json` and `npc
 | `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Unique across all groups. |
 | `group` | Yes | The folder the file sits in under `npcs/`, such as `town/market`, or empty for a file directly in `npcs/`. Each folder name follows the `id` rules, at most 8 deep. Animus sets it from where the file is, so a file moved to another folder takes that folder as its group. |
 | `name` | Yes | Printable Unicode and spaces, at most 256 UTF-16 code units, no control characters. `&` colour codes apply. |
-| `type` | Yes | `namespace:type`. Bodies that can be shown: `minecraft:player`, `minecraft:armor_stand`, `minecraft:horse`, `minecraft:turtle`, `minecraft:frog`, `minecraft:llama`, `minecraft:armadillo` and `minecraft:ender_dragon`. |
+| `type` | Yes | An entity type, such as `minecraft:villager` or `villager`. Bodies that can be shown: `minecraft:player`, `minecraft:armor_stand`, `minecraft:horse`, `minecraft:turtle`, `minecraft:frog`, `minecraft:llama`, `minecraft:armadillo` and `minecraft:ender_dragon`. |
 | `spawned` | Yes | `true` when the NPC should be active. |
 | `position` | Yes | `world`, and `x`, `y`, `z`, `yaw`, `pitch` as finite numbers within ±30000000. On Bukkit, `world` is a world name, a world UUID or a dimension key such as `minecraft:the_nether`; mod servers take the forms [their own page](/animus/16-mod-servers#worlds) lists. |
 | `skin` | No | SHA-256 of a skin document in `skins/`. |
@@ -124,7 +126,7 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 | Field | Accepted values |
 |---|---|
 | `equipment` | Slots `main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`. Each holds one item. |
-| item | `id` (`namespace:item`), optional `count` (1-99, default 1), optional `components`: the text that follows the item id in `/give`, such as `[enchantment_glint_override=true]`, at most 4096 characters. `imported` holds source item data with no equivalent; it is kept and never read. |
+| item | `id`, such as `minecraft:iron_sword` or `iron_sword`, optional `count` (1-99, default 1), optional `components`: the text that follows the item id in `/give`, such as `[enchantment_glint_override=true]`, at most 4096 characters. `imported` holds source item data with no equivalent; it is kept and never read. |
 | `hologram.lines` | At most 16 lines of at most 256 characters each. `&` colour and format codes apply. |
 | `nameplate.visible` | `false` hides the name. Default `true`. |
 | `pose` | `standing` (default). Player bodies also accept `sneaking`, `sleeping`, `swimming` and `sitting`. |

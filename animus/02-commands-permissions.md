@@ -64,7 +64,7 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 |---|---|
 | `/animus status` | One line: version, platform, NPC and group counts, definition files that need repair, and the runtime state. **[Details]** holds the runtime counters and the main budgets in effect; the console prints them as two more lines |
 | `/animus list [page=1]` | Definitions with id, name and revision, as a paged list |
-| `/animus create <id> <type> <world> <x> <y> <z> <group> <name>` | Create a dormant definition at `npcs/<group>/<id>.json`. `group` is the folder, up to eight levels such as `world/town`, or `group=` for `npcs/` itself. `type` is `namespace:type`; quote a name with spaces |
+| `/animus create <id> <type> <world> <x> <y> <z> <group> <name>` | Create a dormant definition at `npcs/<group>/<id>.json`. `group` is the folder, up to eight levels such as `world/town`, or `group=` for `npcs/` itself. `type` is an entity type such as `minecraft:villager` or `villager`; quote a name with spaces |
 | `/animus select <npc>` | Select an NPC. Players only |
 | `/animus selection` | Show your selection. Players only |
 | `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or dormant, groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then the live state, with pose, equipment, text lines, owner and mount problems under **[Details]** |

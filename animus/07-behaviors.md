@@ -272,7 +272,7 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 
 | `event` | Other fields | Fires when |
 | --- | --- | --- |
-| `interaction` | Optional `action`: `interact` (default), `attack` or `any`. Optional `consume`: an expression checked as the click arrives. | A viewer's hit passes server validation and no listener cancels `VirtualNpcInteractionEvent`. When `consume` holds, shops, hiring, GUIs, riding and selection do not see the click. |
+| `interaction` | Optional `action` (see [interaction actions](#interaction-actions)): `interact` (default). Optional `consume`: an expression checked as the input arrives. Optional `playerCooldownTicks` (0 to 72,000) and `whileRunning` (`drop` or `queue`). | A viewer's click passes server validation and no listener cancels `VirtualNpcInteractionEvent`, or the viewer presses the drop or swap-hands key while looking at the NPC in reach. When `consume` holds, shops, hiring, GUIs, riding and selection do not see the click, and a drop or swap does not happen. |
 | `proximity` | `phase`: `enter` or `leave`. `radius`: above 0, at most 64 blocks. | A viewer crosses that radius. Leaving needs half a block of extra distance. |
 | `spawn` | None. | The NPC is first presented. At startup it waits for the first behavior catalog. |
 | `despawn` | None. | A spawned NPC is despawned. It runs against the new dormant definition. |
@@ -310,6 +310,32 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `projectile_hit` | Optional `projectile`, `shooter`, `entity`, `block`, `cancel`. | A projectile hits an entity or a block. NPCs are not entities, so projectiles pass through them. Server behaviors only. |
 | `entity_shoot_bow` | Optional `shooter`, `bow`, `projectile`, `cancel`. | A player or mob shoots a bow or crossbow. Server behaviors only. |
 
+### Interaction actions
+
+An `interaction` trigger's `action` names the input it takes. The plain names take their input with or without sneaking; the `sneak_` names take it only while the player sneaks, so a sneaking right-click fires both an `interact` and a `sneak_interact` trigger.
+
+| `action` | Fires on |
+| --- | --- |
+| `interact` | A right-click on the NPC. The default. |
+| `attack` | A left-click on the NPC. |
+| `any` | A right-click or a left-click. Not the drop or swap-hands key. |
+| `sneak_interact` | A right-click while sneaking. |
+| `sneak_attack` | A left-click while sneaking. |
+| `drop` | The drop key (Q, or Ctrl+Q) while looking at the NPC. |
+| `sneak_drop` | The drop key while sneaking. |
+| `swap_hands` | The swap-hands key (F) while looking at the NPC. |
+| `sneak_swap_hands` | The swap-hands key while sneaking. |
+
+The drop and swap-hands keys name no entity, so Animus traces the player's view against the hitboxes of the NPCs that player sees, scaled bodies and dragons included, and takes the nearest one in interaction reach. The press then passes the same reach, line-of-sight and rate checks as a click, and shares the click rate limit, so a click right after a press may be refused. Only triggers see a press: it fires no `VirtualNpcInteractionEvent`, and shops, hiring, GUIs, riding and selection ignore it.
+
+A matched drop or swap is consumed: the item stays in the hand, or the hands are not swapped. A trigger with `consume` decides by its condition instead, and `"consume": "false"` lets the drop or swap happen while the trigger still fires. The press is consumed even while the trigger cools down. A drop or swap that no trigger matches happens as usual. On Paper, Spigot and Folia the drop key with an empty hand reaches no trigger, because the server reports a drop only when an item leaves the hand, and a drop made from an open inventory window is never a press. Fabric, Forge and NeoForge also report the drop key with an empty hand.
+
+Interaction triggers rate-limit each player on their own. Without `cooldownTicks`, a player's runs of the trigger are spaced by `playerCooldownTicks` from `config.toml` (20 ticks by default), and another player is never held back. A trigger's own `playerCooldownTicks` replaces that; `0` turns it off. A trigger with `cooldownTicks` keeps that cooldown per trigger on each NPC and applies no player cooldown unless it also sets `playerCooldownTicks`. While a player's run of the trigger is queued or running, their next input is dropped and counted under `PLAYER_BUSY`; `"whileRunning": "queue"` queues it instead. Clicking an NPC ten times in two seconds therefore starts its dialogue once. The input still counts toward `consume`, so a busy click stays away from a shop on the NPC.
+
+Clicks and key presses must reach the NPC: the server measures the player's view ray to the NPC's hitbox, scaled with the NPC, and refuses anything beyond 4.5 blocks from the eyes, through blocks, or faster than once every 100 ms. A click on air or a block near the NPC sends no entity click and fires nothing.
+
+Runs and `consume` conditions read `context.action` (`interact`, `attack`, `drop` or `swap_hands`), `context.sneaking` and `context.hand` (`main_hand` or `off_hand`; always `main_hand` for a key press). `sneaking` comes from the click itself for a right-click and from the player's sneaking state for the other inputs.
+
 Interaction, proximity and dialogue runs carry the viewer's UUID, and module runs carry the UUID the module supplied. The other events carry no player. Triggers pass no other event data to the routine. Trigger-started runs use the same variables as manual runs, and `player` and `relationship` variables resolve from the triggering player. Every routine a behavior's triggers start shares that behavior's variables.
 
 A trigger with no player cannot start a behavior that declares a `player` or `relationship` variable. That start is counted under `START_FAILED`, and `/animus behaviors triggers` shows the most recent refusal with its field. Spawn, despawn, damage, death, waypoint and timer triggers never have a player, so `/animus behaviors validate` warns with `behavior-trigger-needs-player` on each such trigger in that behavior. The behavior is still accepted, since its other triggers may work. A `module` trigger depends on what its module supplies and is not flagged.
@@ -318,7 +344,7 @@ Only active NPCs fire triggers. Dormant NPCs, including applied imports that are
 
 Replacing the behavior, editing or despawning the NPC, or making the behavior unavailable cancels its running executions and drops its queued starts. Cancellation cannot undo an action that already happened. A `module` trigger whose module is missing makes the whole behavior unavailable.
 
-Timers, cooldowns and queue lifetimes count behavior ticks, about 50 ms each with the default `tickMillis`. Cooldowns apply per trigger on each NPC, not per player: a second player entering a `proximity` radius during the cooldown does not fire it.
+Timers, cooldowns and queue lifetimes count behavior ticks, about 50 ms each with the default `tickMillis`. `cooldownTicks` and `defaultCooldownTicks` apply per trigger on each NPC, not per player: a second player entering a `proximity` radius during the cooldown does not fire it. Interaction triggers use a [player cooldown](#interaction-actions) instead.
 
 On Folia, triggers run on the region that owns each NPC, damage and death triggers included. Where the NPC runtime is unavailable, or when `behaviors.triggers.enabled` is false, `/animus behaviors triggers` shows `UNAVAILABLE` with the reason, nothing runs, and module publishes return `UNAVAILABLE` with the same reason. Manual runs still work there.
 
@@ -349,9 +375,10 @@ proximityIntervalTicks = 5
 proximityViewersPerTick = 16
 proximityCandidates = 32
 proximityTrackedPerViewer = 64
+playerCooldownTicks = 20
 ```
 
-An event that finds its cooldown running is suppressed. An event that finds a full queue is dropped. A start waiting on a concurrency limit stays queued until `queueLifetimeTicks`, then is dropped. All of these are counted. A timer below `minimumTimerTicks`, a radius above `maximumProximityRadius`, and bindings or timers beyond their maximums stay unbound and are listed as diagnostics. When `concurrentTotal` is below `behaviors.engine.executions`, the difference stays free for manual runs.
+`defaultCooldownTicks` applies to every trigger without `cooldownTicks` except timers and interaction triggers, which use `playerCooldownTicks` per player; `0` turns either off. An event that finds its cooldown running is suppressed. An event that finds a full queue is dropped. A start waiting on a concurrency limit stays queued until `queueLifetimeTicks`, then is dropped. All of these are counted. A timer below `minimumTimerTicks`, a radius above `maximumProximityRadius`, and bindings or timers beyond their maximums stay unbound and are listed as diagnostics. When `concurrentTotal` is below `behaviors.engine.executions`, the difference stays free for manual runs.
 
 A valid click on [`animus:choices`](#dialogue-choices) publishes the dialogue event. `dialogue` matches the prompt's `id` and `choice` matches the option's `id`.
 
