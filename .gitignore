@@ -10,5 +10,6 @@ playwright/.auth/
 AGENTS.md
 # Video clips live in Cloudflare R2 (README.md, Video clips)
 *.webm
+!animus-assets/**/*.webm
 # Local R2 sync script
 tools/sync-media.mjs
