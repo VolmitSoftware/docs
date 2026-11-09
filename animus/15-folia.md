@@ -2,7 +2,7 @@
 title: "Animus: Folia"
 description: "How saved NPCs run on Folia regions, what differs from Paper, and the stationary preview command"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, folia, regions, compatibility"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -29,7 +29,7 @@ On Folia 26.1.2, 26.2 and 26.3, each saved NPC runs on the region that owns its 
 | Packet preview (`/animus proof`) | No. Use the [stationary preview](#stationary-preview) |
 | Recording (`/animus record`), the recording ghost and previews | Yes; every session and preview runs on the recording player's own thread |
 
-Changing `npcs.enabled` needs a restart on Folia. Every other `config.toml` key applies live, on each region's next tick.
+Changing `npcs.enabled` needs a restart on Folia, and the `[behaviors.server]` keys need one on every platform; see [live apply](/animus/03-configuration#live-apply). Every other `config.toml` key applies live, on each region's next tick.
 
 ## Ownership
 
@@ -74,7 +74,13 @@ Helper projectiles spawn only in chunks the NPC's region holds. A helper that fl
 
 A player's hit on an NPC counts only when the player's region also owns the NPC. `/animus combat status npc=<npc>` reads the NPC's published combat state; `engage`, `disengage`, `release`, `target` and `guard` run on the NPC's region and log their result. A guard teleport, a knockback and a respawn hand the NPC over like any chunk crossing.
 
-The `[combat]` limits `brainsPerTick`, `targetScansPerTick`, `pathRequestsPerTick`, `squadAlertsPerTick` and `helperUpdatesPerTick` apply to each region tick. `maximumNpcs` does not apply on Folia. `helpersPerNpc` applies to each NPC. When a region is short of combat turns, the NPCs that waited longest go first. Damage and death triggers fire as on Paper. Killable NPCs (`animus:health`) take damage, die and respawn on their own region. A player's or mob's projectile is followed by the region that owns it as it flies, which tests each move against NPC bodies and hands a strike to the struck NPC's region; fire, lava and falls are read on the NPC's own region from blocks it owns; the hurt flash and death fall reach each viewer through that viewer's region, a permadeath is written on the file lane, and `/animus npc revive` on an NPC waiting to respawn runs on its region and logs the result.
+The `[combat]` limits `brainsPerTick`, `targetScansPerTick`, `pathRequestsPerTick`, `squadAlertsPerTick` and `helperUpdatesPerTick` apply to each region tick. `maximumNpcs` does not apply on Folia. `helpersPerNpc` applies to each NPC. When a region is short of combat turns, the NPCs that waited longest go first. Damage and death triggers fire as on Paper. Killable NPCs (`animus:health`) take damage, die and respawn on their own region:
+
+- A projectile hits an NPC as it does on Paper, even when it was shot from another region.
+- Fire, lava and fall damage come from blocks in the NPC's own region.
+- Every viewer sees the hurt flash and the death fall.
+- A permadeath is saved to the definition a moment after the death.
+- `/animus npc revive` on an NPC waiting to respawn runs on the NPC's region and logs its result.
 
 ## Manual attack and mob control
 
@@ -92,7 +98,7 @@ While a build is out on a turn, only its region touches it. A command for that b
 
 A team member on another region keeps its claim and scaffolding and works when a turn reaches its region. When the block it claims, or the other half of the object, is in a loaded chunk another region owns, the NPC walks towards it, and the block is checked and placed by a turn on the region that holds both. A material container on another region makes the build wait with `the material container at ... is in chunk X Z, which another region owns`. A turn goes only to a chunk Animus knows is loaded; otherwise the build waits with `waiting for chunk X Z to load`.
 
-Build commands answer through your own region a moment later, and `animus:build` answers `queued` and logs its result. A donation takes the stack from your hand first; what the build does not need goes back into your inventory, and what does not fit drops at your feet. When Animus stops, standing scaffolding stays and comes down after the restart.
+Build commands answer through your own region a moment later, and `animus:build` answers `queued` and logs its result. A donation takes the stack from your hand first; what the build does not need goes back into your inventory as the same items, with their damage, enchantments and contents, and what does not fit drops at your feet. When Animus stops, standing scaffolding stays and comes down after the restart.
 
 ## Editor terrain
 
@@ -117,14 +123,14 @@ These limits apply to each region tick rather than to the whole server:
 | Live collision cells | `[navigation] motionCellsPerTick` (16384) |
 | New path plans | `[navigation] planningStartsPerTick` (16) |
 | Terrain capture reads | `[navigation] captureReadsPerTick` (2048) |
-| Viewer updates | `[npcs] updatesPerTick`; with more viewers, they take turns |
-| Packet operations | `[npcs] packetsPerTick` (32), shared by the viewers updating |
+| Viewer updates | `[npcs] updatesPerTick` (64); with more viewers, they take turns |
+| Packet operations | `[npcs] packetsPerTick` (512), split evenly across the viewers updating |
 | Look-close turns | `[npcs] lookUpdatesPerTick` (32) |
 | Idle fall and rig animation steps | `[npcs] simulationPerTick` (512) |
 | NPC starts | 16 |
 | Combat brains, target scans, path requests, squad alerts, helper updates | The `[combat]` limits of the same names |
 
-A region that runs short of simulation steps or route turns slows its own cosmetic updates and distant moves, as described under [NPC definitions](/animus/04-npc-definitions); other regions keep their rate. Waiting behavior runs slow every region. These stay server-wide: `maximumViewers`, `viewDistance`, 10,000 active NPCs, 8 concurrent route and appearance reads, 8 skin reads and 8 path plans. `maximumVisible` applies to each viewer, and each NPC queues at most 32 actions. Work over a limit waits for the next tick.
+A region that runs short of simulation steps or route turns slows its own cosmetic updates and distant moves, as described under [NPC definitions](/animus/04-npc-definitions); other regions keep their rate. Waiting behavior runs slow every region. These stay server-wide: `maximumViewers`, `viewDistance`, 10,000 active NPCs, 8 concurrent route and appearance reads, 8 skin reads and `[navigation] planningJobs` (32) path plans in progress. `maximumVisible` applies to each viewer, and each NPC queues at most 32 actions. Work over a limit waits for the next tick.
 
 Route turns go to the NPCs that waited longest, so no route waits forever. Every player marks the NPCs within `viewDistance` once a second, also on other regions; a route that nobody marked for 3 seconds sleeps until a player comes near. `/animus status` shows `routes-sleeping` and `navigation-pressure`, and the console logs once when regions start to run short of route turns and once when the shortage ends.
 

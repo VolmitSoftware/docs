@@ -2,7 +2,7 @@
 title: "Animus: Movement, Mounts and Riding"
 description: "Navigation, routes, look-close, movement settings, mounted NPCs, player riding and hiring"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, navigation, routes, mounts, riding, hire"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -26,7 +26,13 @@ NPC movement runs on the server against real block collision. Animus never loads
 
 `/animus navigation go <npc> <x> <y> <z> [mode=walk] [speed=2.0]` moves an active NPC in its current world at 1-10 blocks per second. A leg may be any length. Short legs are planned whole; longer legs are planned in segments, and the NPC walks each segment to the point closest to the goal before planning the next. Climbs and descents of any height go segment by segment over stairs and slopes, or by swimming or flying when the mode allows it. An NPC whose `movement.style` is `fly` or `glide` flies the leg whatever `mode` says.
 
-When a plan gets no closer, Animus searches a wider area and then tries ways round to either side, so the NPC follows a cliff, wall or shore until it can head for the goal again. When none of that gets closer, the leg is blocked and the server log names the NPC and the leg once, saying whether terrain blocks it (a closed space, or a step blocked while walked) or no way round was found. A walking NPC crosses a gap in its footing narrower than a quarter block, such as the open front of a shelf beside a slab. A walking goal names a block: the NPC stands on the ground in it or the block below, or on top of the block itself when it is solid, a top slab or a stair, so a point that names the ground under the feet works. When no path reaches the goal itself, such as the top of a pillar, a short leg walks to the nearest reachable place and ends there if that is within 1.5 blocks across and 2 up or down.
+When a plan gets no closer:
+
+- Animus searches a wider area, then tries ways round to either side, so the NPC follows a cliff, wall or shore until it can head for the goal again.
+- When none of that gets closer, the leg is blocked. The server log names the NPC and the leg once, saying whether terrain blocks it (a closed space, or a step blocked while walked) or no way round was found.
+- When no path reaches the goal itself, such as the top of a pillar, a short leg walks to the nearest reachable place and ends there if that is within 1.5 blocks across and 2 up or down.
+
+A walking goal names a block: the NPC stands on the ground in it or the block below, or on top of the block itself when it is solid, a top slab or a stair, so a point that names the ground under the feet works. A walking NPC crosses a gap in its footing narrower than a quarter block, such as the open front of a shelf beside a slab.
 
 Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows what the NPC is doing, its goal, its position and the arrival count, such as `Navigation guard: moving to 4.5 64 2.5, now at 3.25 64 1`. A walking goal rounds its feet height to the block, so `^ ^ ^5` works. A manual `navigation go` or `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-riding) for the rest of the movement commands.
 
@@ -107,13 +113,13 @@ A step counts as a point for `order`, `next`, `weight`, `loop` and the `waypoint
 - `random` picks a point at random each time, never the one it just reached, and walks the shortest path to it over points and guides linked within `linkDistance`. When links do not reach the chosen point, the NPC follows them to the closest reachable point or guide and walks the rest as one long leg. From a position that is not a point or guide, the first step goes to a guide when the route has any. Points and guides passed on the way get no wait.
 - `wander` picks a center at random each leg (a point, or the NPC's definition position when there are no points) and walks to a random block within `radius` on x and z and within `height` blocks up or down. A center's own `waitTicks` applies after reaching a target around it.
 
-With `seed: npc` each NPC draws its route choices (destinations, junctions, wait ranges, jitter and start offset) from its own UUID and the route's identity, the reusable route id or the inline module, so NPCs sharing a route make different choices and each NPC makes the same ones again after a restart. `seed: random` mixes in the clock, which is how every route chose before `seed` existed. Give a shared route `startOffset: random` so NPCs that start together spread over its points and do not walk in a stack. When a jittered goal cannot be planned, the leg walks to the exact point once instead, without counting as stuck.
+With `seed: npc` each NPC draws its route choices (destinations, junctions, wait ranges, jitter and start offset) from its own UUID and the route's identity, the reusable route id or the inline module, so NPCs sharing a route make different choices and each NPC makes the same ones again after a restart. `seed: random` mixes in the clock, so choices differ after every restart. Give a shared route `startOffset: random` so NPCs that start together spread over its points and do not walk in a stack. When a jittered goal cannot be planned, the leg walks to the exact point once instead, without counting as stuck.
 
 The `waypoint` trigger and `VirtualNpcWaypointEvent` report point `i` as `i` and guide `j` as the number of points plus `j`. A wander arrival reports the center it used, or 0 without points.
 
 A `sequence` or `pingpong` leg that terrain blocks stops the route. A `random` route waits the larger of its `waitTicks` and 100 ticks, then picks a new destination; a `wander` route waits the larger of its `waitTicks` and 20 ticks and picks a new target. Neither stops on its own. A behavior that waits for a route refuses one that never finishes: a looping `sequence`, a `sequence` whose junctions can reach a point with no way to the end, a `pingpong` over more than one point, and every `random` or `wander` route.
 
-Instead of route points, the module can replay a player's recorded movement with `recording`, the id of a file under `recordings/`. A module sets only one of `recording`, `route` and inline `points`. `playback` is `once`, `loop` (default) or `pingpong`:
+Instead of route points, the module can replay a player's recorded movement with `recording`, the id of a file under `recordings/`. A module sets only one of `recording`, `route` and inline `points`. `playback` is `once`, `loop` or `pingpong`; without it the recording's own `playback` applies, then `loop`:
 
 ```json
 "animus:navigation": {"enabled": true, "recording": "market-loop", "playback": "loop"}
@@ -125,7 +131,7 @@ An invalid route edit is reported with its field, such as `$.points[3].next[1].t
 
 ### How many routes run
 
-There is no limit on how many NPCs follow a route. A route with no player within `[npcs] viewDistance` sleeps: it holds no turn and no path plan, its status says `sleeping`, and it continues from where it stood when a player comes near (checked about once a second). A manual `/animus navigate` route and a route a behavior waits for never sleep.
+There is no limit on how many NPCs follow a route. A route with no player within `[npcs] viewDistance` sleeps: it holds no turn and no path plan, its status says `sleeping`, and it continues from where it stood when a player comes near (checked about once a second). A manual `/animus navigation go` leg and a route a behavior waits for never sleep.
 
 Awake routes take turns. Each tick at most `routesPerTick` of them plan or take a step, and a route that missed its turn goes first on the next tick, so with more walking NPCs than the budget they all move, only slower. On Folia these budgets apply to each region tick.
 
@@ -175,7 +181,7 @@ Every field is optional. With `openDoors`, the NPC opens each door just before i
 
 ### Movement styles
 
-A style says how an NPC moves along a leg: the pose viewers see, its speed and where the path may go. The leg's style is the point's `style`, else the route's `style`, else the NPC's `movement.style`. A trait group's `movement.style` applies like any other movement field. Set it with the editor's Movement, route and point dropdowns, the in-game Edit screen (`/animus tools`), or `/animus edit guard {"movement": {"style": "sneak"}}`, which replaces the whole `movement` object.
+A style says how an NPC moves along a leg: the pose viewers see, its speed and where the path may go. The leg's style is the point's `style`, else the route's `style`, else the NPC's `movement.style`. A trait group's `movement.style` applies like any other movement field. Set it with the editor's Movement, route and point dropdowns, the in-game Edit screen (`/animus tools`), or `/animus edit guard {"movement": {"style": "sneak"}}`, which changes only `movement.style`.
 
 | Style | Speed | Player body | Other bodies | Path |
 |---|---|---|---|---|
@@ -280,11 +286,17 @@ Imported definitions also need literal `"reviewAccepted": true`. An imported Cit
 
 The player mounts with a right-click on the NPC. The click passes the same reach, line-of-sight and rate checks as any interaction, and a plugin can stop it by cancelling `VirtualNpcInteractionEvent`. A sneak-right-click does not mount, and the wand selects a rideable NPC as any other. The NPC needs room for its body and rider where it stands: on ground, at a water surface it can swim, or in open air when it flies. Each NPC carries one player, each player rides one NPC, and at most 8 players ride at once. Mounting cancels the NPC's route until the definition is applied again.
 
-Press a movement key after mounting to start moving; a key already held while mounting does not count. Steering follows the player's look direction. Sprint and jump give no extra speed. The body steps up one full block and down at most three. Movement happens only on the server, through the same clearance check as navigation; the client's coordinates are never used. Block shapes the check does not recognize stop the ride, so plants, slabs, stairs and fences stop the NPC next to them. Reaching the leash holds the NPC in place without ending the ride. The NPC stays where the ride ended. Flying and swimming control are not available.
+Press a movement key after mounting to start moving; a key already held while mounting does not count. Steering follows the player's look direction. Sprint and jump give no extra speed. Movement happens only on the server, through the same clearance check as navigation, against the real height of each block; the client's coordinates are never used. How the NPC moves depends on its body:
 
-Sneaking dismounts. A ride also ends on excess input, a stale connection, expiry, losing permission, entering a real vehicle, sleeping, spectator mode, unavailable terrain, the NPC's despawn, death or definition change, and plugin shutdown. The player is placed beside the NPC, or at its feet when nothing beside it is clear, and is told the reason unless they chose to sneak off. Death, logout, an outside teleport and a world change end the ride without moving the player further. Rides do not survive a restart, and a player who logs out or crashes while riding is saved at the NPC's feet.
+- A walking body climbs onto anything up to its step or jump height, whichever is higher, and drops at most three blocks. A block it cannot climb or pass stops it next to that block.
+- A body that swims stays at the water surface. A body that cannot walk does not leave the water.
+- A flying body follows the player's look direction up and down as well, through clear air, and settles on a surface it flies into.
 
-While riding, the player's server position is the NPC's feet, not its seat, so vanilla does not treat the rider as flying. Block reach, other players' hits and anything else measured from the server position use the ground, which is most noticeable on a tall body. Plugins do not see `PlayerMoveEvent` for the ride's motion, so region and movement-checking plugins may need an exemption.
+Reaching the leash holds the NPC in place without ending the ride. The NPC stays where the ride ended.
+
+Sneaking dismounts. A ride also ends on excess input, a stale connection, expiry, losing permission, entering a real vehicle, sleeping, spectator mode, unavailable terrain, a step into a region the player may not enter, the NPC's despawn, death or definition change, and plugin shutdown. The player is placed beside the NPC, or at its feet when nothing beside it is clear, and is told the reason unless they chose to sneak off. Death, logout, an outside teleport and a world change end the ride without moving the player further. Rides do not survive a restart, and a player who logs out or crashes while riding is saved at the NPC's feet.
+
+While riding, the player's server position is the NPC's feet, not its seat, so vanilla does not treat the rider as flying. Block reach, other players' hits and anything else measured from the server position use the ground, which is most noticeable on a tall body. Plugins do not see `PlayerMoveEvent` for the ride's motion, so riding bypasses their region entry rules unless Animus checks them itself. With WorldGuard installed, Animus checks the `entry` flag for the rider on each block the ride steps into, as when the player walks in: members and players with region bypass enter, and a denied step ends the ride with "Dismounted: region entry denied". A WorldGuard that is disabled or fails to answer ends the ride too. Other claim and region plugins, and movement checks such as flight, see none of the ride's motion, so keep ridable NPCs away from areas they guard.
 
 ```none
 /animus ride status

@@ -2,7 +2,7 @@
 title: "Animus Tutorial: First NPC"
 description: "Install Animus, then make, edit, skin, dress and organize NPCs with the in-game toolkit"
 published: true
-date: 2026-11-08T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, tutorial, toolkit, wand, first npc"
 editor: markdown
 dateCreated: 2026-11-08T00:00:00.000Z
@@ -40,25 +40,7 @@ Put the Animus jar in `plugins/` (Paper, Spigot, Folia) or `mods/` (Fabric, NeoF
 /animus shop
 ```
 
-## 3. Select NPCs with the wand
-
-Most toolkit screens act on your selection. The wand is a blaze rod named **Animus wand**. Click an NPC with it to select only that NPC; sneak and click to add another or remove it. Particles mark the corners of each selected NPC, and only you see them. [The wand](/animus/21-in-game-toolkit#the-wand) lists every click.
-
-<div class="animus-demo">
-<p><strong>Wand and selection</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/03-wand-selection-ingame.webm" aria-label="Selecting two NPCs with the wand" autoplay muted loop playsinline controls preload="metadata"></video>
-</div>
-
-```none
-/animus tools wand
-/animus selection
-```
-
-- Click an NPC with the wand to select it.
-- Sneak and click a second NPC to add it.
-- The palette's top item shows the same selection.
-
-## 4. Open the palette
+## 3. Open the palette
 
 `/animus tools` opens the palette, a chest window with every tool. Hover a tool to read what a left click, a right click and a sneak click do. The top item is the selection: left opens it, right opens **Manage**, and sneak clears it. [Palette](/animus/21-in-game-toolkit#palette) lists the rows.
 
@@ -71,21 +53,7 @@ Most toolkit screens act on your selection. The wand is a blaze rod named **Anim
 /animus tools
 ```
 
-## 5. Find an NPC
-
-**Find** lists the active NPCs in your world, nearest first, with the distance in each entry. It is the quickest way to reach or select an NPC you cannot see. [Find](/animus/21-in-game-toolkit#find) has the details.
-
-<div class="animus-demo">
-<p><strong>Find</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/05-find-ingame.webm" aria-label="Teleporting to an NPC and selecting another from Find" autoplay muted loop playsinline controls preload="metadata"></video>
-</div>
-
-- In the palette, click **Find**.
-- Left-click an entry to teleport beside that NPC, facing it.
-- Right-click an entry to select only that NPC.
-- Sneak-click an entry to bring the NPC to you.
-
-## 6. Make an NPC
+## 4. Make an NPC
 
 **New NPC** asks for an id and saves `npcs/<id>.json` two blocks in front of you, facing you. It selects the new NPC and spawns it in one transaction, so one chat line names the file and carries **[Undo]**. Questions like this open as an anvil: edit the name, then click the paper in the result slot. Close the anvil to cancel. [New NPC](/animus/21-in-game-toolkit#new-npc) and [typing text](/animus/21-in-game-toolkit#typing-text) cover both.
 
@@ -98,14 +66,13 @@ Most toolkit screens act on your selection. The wand is a blaze rod named **Anim
 - Type `greeter` and click the result paper.
 - Sneak-click **New NPC** instead to save the NPC dormant, so it shows only once you spawn it.
 
-The command form saves a dormant NPC at your feet:
+Make a second NPC, the guard, with the command form. It spawns where you stand, facing your way; step aside to see it. Add `spawned=false` to save it dormant instead. The [third part](/animus/24-tutorial-interaction) gives it combat.
 
 ```none
-/animus create greeter
-/animus spawn greeter
+/animus create guard
 ```
 
-## 7. Pick a body type
+## 5. Pick a body type
 
 A new NPC has a player body. Right-click **New NPC** to choose another body first, such as a llama or a horse. Skins show only on player bodies. [NPC definitions](/animus/04-npc-definitions) lists the bodies and their settings.
 
@@ -120,6 +87,38 @@ A new NPC has a player body. Right-click **New NPC** to choose another body firs
 ```none
 /animus inspect trader
 ```
+
+## 6. Select NPCs with the wand
+
+Most toolkit screens act on your selection. The wand is a blaze rod named **Animus wand**. Click an NPC with it to select only that NPC; sneak and click to add another or remove it. Particles mark the corners of each selected NPC, and only you see them. [The wand](/animus/21-in-game-toolkit#the-wand) lists every click.
+
+<div class="animus-demo">
+<p><strong>Wand and selection</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/03-wand-selection-ingame.webm" aria-label="Selecting two NPCs with the wand" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+```none
+/animus tools wand
+/animus selection
+```
+
+- Click the greeter with the wand to select it.
+- Sneak and click the trader to add it.
+- The palette's top item shows the same selection.
+
+## 7. Find an NPC
+
+**Find** lists the active NPCs in your world, nearest first, with the distance in each entry. It is the quickest way to reach or select an NPC you cannot see. [Find](/animus/21-in-game-toolkit#find) has the details.
+
+<div class="animus-demo">
+<p><strong>Find</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/05-find-ingame.webm" aria-label="Teleporting to an NPC and selecting another from Find" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+- In the palette, click **Find**.
+- Left-click an entry to teleport beside that NPC, facing it.
+- Right-click an entry to select only that NPC.
+- Sneak-click an entry to bring the NPC to you.
 
 ## 8. Edit an NPC
 
@@ -163,10 +162,10 @@ The **Attributes** screen lists the vanilla attributes the NPC's body carries, s
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/10-skins-ingame.webm" aria-label="Putting three skins on the greeter and relabelling one" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- In the palette, click **Skins**.
-- Click an entry to put that skin on the selection.
-- Click **Use my skin** to copy your own skin.
+- Select the greeter, then click **Skins** in the palette.
+- Click **Use my skin** to copy your own skin. On a server in offline mode your profile carries no skin, so this fails; use the next step instead.
 - Click **From a player name** and type a Minecraft name. The server looks the skin up on Mojang's servers, so it needs internet access.
+- Each skin you add becomes an entry. Click an entry to put that skin on the selection.
 - Right-click an entry to give it a label.
 
 ## 11. Dress it
@@ -206,10 +205,10 @@ Folders under `npcs/` keep NPCs apart, for example one folder per town. **Folder
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/13-manage-undo-ingame.webm" aria-label="Cloning and deleting an NPC, then undoing the delete" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- In the palette, click **Manage**.
-- Click **Clone** to save a dormant copy named `<id>-copy`.
-- Click **Delete** twice to delete the selection.
-- Click **[Undo]** on the delete line, then press Enter to run the command.
+- Select only the greeter with the wand, then click **Manage** in the palette.
+- Click **Clone** to save a dormant copy named `greeter-copy`. The copy is not selected; the selection is still the greeter. The [third part](/animus/24-tutorial-interaction) uses the copy.
+- Click **Delete** twice to delete the selection, the greeter.
+- Click **[Undo]** on the delete line, then press Enter to run the command. The greeter comes back.
 
 ```none
 /animus rollback <transaction>
@@ -224,10 +223,10 @@ A [trait group](/animus/18-trait-groups) holds values that many NPCs share, such
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/14-trait-groups-ingame.webm" aria-label="Assigning a trait group and making a new one" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Select the NPCs, then click **Trait groups** in the palette.
-- Left-click a group to assign it to the selection; right-click removes it.
-- Sneak-click a group to open it. **Values** edits the fields it supplies, and **Members** lists its NPCs.
-- Click **New group** and type an id to make a group with the selection in it.
+- Select the greeter and the trader, then click **Trait groups** in the palette.
+- Click **New group** and type `town-folk`. The group is made with the selection in it.
+- Right-click `town-folk` to take it off the selection, then left-click it to assign it again.
+- Sneak-click the group to open it. **Values** edits the fields it supplies, and **Members** lists its NPCs.
 
 ```none
 /animus groups list

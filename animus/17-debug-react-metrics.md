@@ -2,7 +2,7 @@
 title: "Animus: Debug and React Metrics"
 description: "Reading Animus network and server-time measurements with /animus debug and React"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, debug, metrics, react, performance"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -14,13 +14,13 @@ Byte counts are estimates: Animus counts packets by kind and multiplies each cou
 
 ## /animus debug
 
-The readings require `animus.debug` (operators by default) and work from the console. Optional values are keyed, such as `player=Alex`.
+The readings require `animus.debug` (operators by default) and work from the console. Optional values are keyed, such as `viewer=Alex`.
 
 | Command | Shows |
 |---|---|
 | `/animus debug summary` | Summary: definitions, active, dormant and sleeping NPCs, viewers, network totals, server time per tick and the busiest subsystems, navigation, presentation and combat pressure, and a rough memory estimate |
 | `/animus debug network` | Outgoing packets and estimated bytes by packet kind over 1, 10 and 60 seconds, totals, incoming NPC clicks and rate-limited clicks, and the busiest viewers |
-| `/animus debug network player=<player>` | One player's packets, estimated bytes and clicks over the last second and since tracking began, by kind |
+| `/animus debug network viewer=<player>` | One player's packets, estimated bytes and clicks over the last second and since tracking began, by kind |
 | `/animus debug performance` | Server time per subsystem over 1, 10 and 60 seconds |
 | `/animus debug npc <npc>` | One NPC's share of the measured time and traffic |
 | `/animus debug watch` | Toggles a live action-bar line with the main numbers. Players only |
@@ -30,7 +30,7 @@ Tab completion offers the subcommands and the names of players with recorded tra
 
 ### Reading the summary
 
-`/animus debug summary` prints one line per area. Values are averages over the last 10 seconds unless a line says otherwise. Right after a start it answers `No measurement yet; try again in a second`.
+`/animus debug summary` prints one line per area. Values are averages over the last 10 seconds unless a line says otherwise. Right after a start its first line is `No measurement yet; try again in a second`, and the lines after it read zero until a second has passed.
 
 | Line | What it tells you |
 |---|---|

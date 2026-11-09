@@ -2,7 +2,7 @@
 title: "Animus: Rigs and Animations"
 description: "Bone rigs, keyframe animations, playback commands, resource pack layout and sampling rules"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, rigs, animations, resource-pack, blockbench"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -44,6 +44,8 @@ Each visible bone rides the body in its passenger list, so it follows movement w
 
 - `body`: `hidden` or `shown`, as above.
 - Visual types: `item` (any item, including `item_model` and `custom_model_data` from a resource pack), `block` (any block state), `text` (a text display) and `none` for pivot-only bones. A visual may set its own `translation`, `rotation` and `scale`.
+  - `item` visuals take `itemDisplay`, the item transform: `none` (default), `thirdperson_lefthand`, `thirdperson_righthand`, `firstperson_lefthand`, `firstperson_righthand`, `head`, `gui`, `ground` or `fixed`.
+  - `text` visuals take `billboard` (`fixed` by default, or `vertical`, `horizontal`, `center`), `background` as `#AARRGGBB`, `shadow` (`true` or `false`) and `lineWidth` (1-1024, default 200).
 - `sockets` attach equipment slots to bones. The NPC's item in a socketed slot (from its definition, `animus:set-equipment` or a recording) shows on that bone and follows its animation, and the body no longer shows it. Main and off hand items are posed as held in the right and left hand, head items as worn on the head, and other slots as fixed items. An empty slot shows nothing, and a hidden bone hides its item.
 - `animations` names the rig's clips. `idle` and `walk` are played automatically; see [playback](#playback).
 - Limits: 64 bones per rig, depth 16, 256 KiB per document. Bone ids must be unique and parents are listed before their children.

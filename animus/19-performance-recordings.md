@@ -2,7 +2,7 @@
 title: "Animus: Performance Recordings"
 description: "Recording a player's movement and replaying it on an NPC: files, capture commands, the ghost, playback and settings"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, recordings, playback, navigation, ghost"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -124,7 +124,7 @@ Saves go through the same document store as definitions and routes, so [live app
 /animus record clear
 ```
 
-All of them need `animus.admin`. Every command except `status` must be run by a player.
+All of them need `animus.record`, which `animus.admin` grants. Every command except `status` must be run by a player.
 
 | Command | Effect |
 |---|---|
@@ -143,7 +143,9 @@ A recording ends and saves when you run `record stop` or when it reaches `maximu
 - quit,
 - die,
 - change world,
-- or are teleported more than 8 blocks at once. An NPC cannot teleport mid-performance, so a jump like that cannot be replayed.
+- or move more than 8 blocks between two samples, as a teleport does. An NPC cannot teleport mid-performance, so a jump like that cannot be replayed.
+
+A recording still open when the server stops is saved too.
 
 A recording shorter than 20 ticks is thrown away instead of saved. When the saved file would be larger than `maximumFileBytes`, the save is refused with the size and the recording stays open: raise the limit and run `record stop` again, or `record cancel`.
 
@@ -153,7 +155,7 @@ The ghost is a copy of the recorder that only the recorder can see. Nobody else 
 
 While you record with the ghost on, every `ghostIntervalTicks` ticks the ghost appears where you were `ghostStretchTicks` ticks ago and replays that stretch at the speed you moved, walking behind you, then disappears. Use it to check how a movement reads from outside while you are still recording. Each recorder has one ghost, so when a replay is still running at the next interval, that interval is skipped.
 
-`/animus record preview <id>` plays a saved recording once, at the place it was recorded, as a ghost only you can see, then removes it. Each player can run one preview at a time and at most `maximumPreviews` run at once. A preview also ends when you quit, die, change world, teleport, lose `animus.admin`, or the server stops.
+`/animus record preview <id>` plays a saved recording once, at the place it was recorded, as a ghost only you can see, then removes it. You must be in the recording's world. Each player can run one preview at a time and at most `maximumPreviews` run at once. A preview also ends when you quit, die, change world, teleport, lose `animus.admin`, or the server stops.
 
 ## Playing a recording on an NPC
 

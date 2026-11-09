@@ -2,13 +2,21 @@
 title: "Animus: Configuration"
 description: "Every config.toml setting, its default and range, and how changes apply live"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, configuration, config.toml, hotload"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Plugin-wide settings live in `plugins/Animus/config.toml` (`config/animus/config.toml` on mod servers). Animus writes the file with every default on first start, with a comment above each table that links to its section here. A missing table or key uses its default, a key Animus does not know is ignored, and comments you add are kept. Every value is checked against the ranges below; an out-of-range or mistyped value names its table and key.
+Plugin-wide settings live in `plugins/Animus/config.toml` (`config/animus/config.toml` on mod servers). On first start Animus writes the file with every key on this page and its default, including the relay keys and `[shops.messages]`, with a comment above each table that links to its section here. A file written by an older version keeps its values; Animus never rewrites it, so keys added later are missing from it and use their defaults. A missing table or key uses its default, and comments you add are kept.
+
+A key or table Animus does not know is ignored in every table, never refused. The server log warns about it with its line and the nearest known key, so check the log after editing by hand:
+
+```none
+[Animus] config.toml line 52: viewDistence is not a setting in [npcs]; it is ignored; did you mean viewDistance?
+```
+
+Every value is checked against the ranges below. An out-of-range or mistyped value, or a key with no value after `=`, refuses the whole file with one line that names the file, the line, the table, the key and the value, such as `config.toml line 52: npcs: viewDistance must be within 8..256, not 300`. Broken TOML names the line and column the same way.
 
 NPC definitions and every other document use JSON. Per-NPC settings belong in the definition's `modules`, not here.
 
@@ -16,7 +24,7 @@ NPC definitions and every other document use JSON. Per-NPC settings belong in th
 
 Saving any data file applies it within about a second, without `/animus reload`. This covers `config.toml`, NPC definitions and the module settings inside them, trait groups, behaviors, packs, routes, recordings, skins, shops, chest GUIs, menus, holograms, text animations, rigs, animations and schematics. Each change goes through the same validators as commands and the web editor. The server log and chat call this hotload.
 
-Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block chime and see one line per changed key, at most 12 per file:
+Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block chime and see one line per changed key, at most 5 per file, then `[+N more changes]`:
 
 ```none
 [Animus]: Hotloaded [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
@@ -24,15 +32,18 @@ Online players with `animus.hotload.notify` (operators by default; permission le
 
 An invalid edit is refused with its field error, and the last valid version stays in use. Each NPC file applies on its own, so one broken file does not block valid edits to others. `/animus reload` follows the same rules.
 
-Every `config.toml` key applies live. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work already running: visible NPCs, viewers, routes, fights, builds, behavior runs, queued actions and file operations above the new cap finish normally, and new work waits until usage drops under it. A smaller `viewDistance` despawns NPCs that are now out of range on the next tick. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
+Every `config.toml` key applies live except the ones listed below. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work already running: visible NPCs, viewers, routes, fights, builds, behavior runs, queued actions and file operations above the new cap finish normally, and new work waits until usage drops under it. A smaller `viewDistance` despawns NPCs that are now out of range on the next tick. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
 
-These changes need a restart, and the chat line ends in `[restart required]`:
+These changes need a restart:
 
-- `npcs.enabled` on Folia.
+- `npcs.enabled` on Folia. Its chat line ends in `[restart required]`.
+- Every key under [`[behaviors.server]`](#behaviorsserver). The new values are saved but used only after a restart, and no `[restart required]` marker is shown.
 - Adding, removing or replacing a [Java module](/animus/99-java-modules-api) jar.
 - Replacing the TLS certificate or key files at the same paths. Change the path instead to apply new files live.
 
-Invalid TOML at startup stops Animus from starting. Animus's own writes (editor applies, imports, state) are never reported, and `state/`, `backups/`, `logs/` and `imports/` are not watched. The watcher itself is set under [`[hotload]`](#hotload).
+Jars and TLS files are not watched, so changing them prints no chat line at all.
+
+A file refused at startup stops Animus from starting: the log has one line that names the file and line, the banner says `Startup: FAILED`, and `/animus` answers with the same reason until the file is fixed and the server restarted. A file refused by a hotload is reported at WARN level and the running settings stay. Animus's own writes (editor applies, imports, state) are never reported, and `state/`, `backups/`, `logs/` and `imports/` are not watched. The watcher itself is set under [`[hotload]`](#hotload).
 
 ## Top-level keys
 
@@ -48,10 +59,10 @@ Invalid TOML at startup stops Animus from starting. Animus's own writes (editor 
 |---|---|---|---|
 | `enabled` | `true` | | Run the NPC runtime |
 | `viewDistance` | `48` | 8-256 blocks | How close a player must be to see an NPC |
-| `maximumVisible` | `64` | 1-128 | NPCs shown to one player at once |
+| `maximumVisible` | `64` | 1-128 | NPCs shown to one player at once. Past it, the nearest NPCs found first show and the rest stay hidden for that player; the console warns, at most every 10 minutes, naming a player who reached it |
 | `maximumViewers` | `256` | 1-1024 | Players that receive NPCs |
-| `updatesPerTick` | `16` | 1-64 | Players whose NPC view is updated per tick |
-| `packetsPerTick` | `32` | 1-1024 | NPC packets per tick, shared by the players updated (per region on Folia) |
+| `updatesPerTick` | `64` | 1-64 | Players whose NPC view is updated per tick; with more players, they take turns |
+| `packetsPerTick` | `512` | 1-1024 | NPC packets per tick, split evenly across the players updated (per region on Folia). A share one player leaves unused goes to the next |
 | `pendingSpawnsPerViewer` | `8` | 1-64 | Spawns one player may have unanswered |
 | `lookUpdatesPerTick` | `32` | 1-1024 | Look-close NPCs that may turn per tick (per region on Folia) |
 | `simulationPerTick` | `512` | 16-65536 | NPC upkeep per tick: one idle fall step or one rig animation step each (per region on Folia) |
@@ -99,10 +110,12 @@ Lowering a cap lets recordings and previews already running finish. See [perform
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `maximumOperations` | `32` | 1-128 | Admitted file operations at once: commands, imports, reads, editor and API operations. Past this, new work is answered as busy |
+| `maximumOperations` | `32` | 1-128 | Admitted file operations at once: commands, imports, reads, editor and API operations. Past this, new work is answered `File queue full ([files] maximumOperations edits are waiting); wait a moment and send it again`. A script that sends many commands at once should pause and resend refused ones, or raise this value |
 | `deliveryBudgetMillis` | `250` | 1-60000 | Time after which a slow result callback is reported. It is not interrupted |
 | `backupsKept` | `200` | 1-100000 | Rollback receipts always kept, newest first. See [storage and recovery](/animus/12-storage-recovery) |
-| `backupDays` | `14` | 0-3650 | Rollback receipts younger than this are kept too. Older ones beyond `backupsKept` are removed at startup |
+| `backupDays` | `14` | 0-3650 | Rollback receipts younger than this are kept too. Older ones beyond `backupsKept` are removed in the background right after startup and every 6 hours |
+
+Each edit keeps a receipt and usually one stored copy, a few KiB together, until both limits pass. A server where 200 NPCs were each edited three times in two weeks holds about 2,000 small files, 1.5 MiB. `backupsKept` is a floor, not a cap: on a server with many edits, such as editor autosaves or scripts, lower `backupDays` to keep fewer. `backupDays = 0` keeps only the newest `backupsKept`.
 
 ## [modules]
 
@@ -110,7 +123,7 @@ Lowering a cap lets recordings and previews already running finish. See [perform
 |---|---|---|---|
 | `enabled` | `true` | | Send work to Java modules. Built-in `animus:` capabilities work either way |
 | `maximumInvocations` | `64` | 1-256 | Module calls in progress at once |
-| `invocationTimeoutMillis` | `1000` | 1-60000 | Deadline for one call. A call that misses it is cancelled and its module suspended |
+| `invocationTimeoutMillis` | `1000` | 1-60000 | Deadline for one call. A call that misses it is cancelled and its module suspended; an [integration hook](/animus/99-java-modules-api#integration-hooks) suspends only after repeated misses and resumes after a cool-off |
 | `deliveryBudgetMillis` | `250` | 1-60000 | Time after which a slow result callback is reported |
 
 ## [behaviors]
@@ -177,12 +190,13 @@ Changing a catalog limit reloads the catalog.
 | `proximityViewersPerTick` | `16` | 1-256 | Players checked per proximity pass |
 | `proximityCandidates` | `32` | 1-1024 | NPCs checked around one player |
 | `proximityTrackedPerViewer` | `64` | 1-1024 | NPCs one player can be inside the radius of at once |
+| `playerCooldownTicks` | `20` | 0-72000 | Spacing of one player's runs of an interaction trigger that sets no `cooldownTicks`. `0` turns it off |
 
 Timers, radii and bindings past these limits stay unbound and are listed by `/animus behaviors triggers`.
 
 ### [behaviors.server]
 
-These limits apply to [server behaviors](07-behaviors.md#server-behaviors) and need a restart.
+These limits apply to [server behaviors](/animus/07-behaviors#server-behaviors) and need a restart.
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
@@ -196,6 +210,7 @@ These limits apply to [server behaviors](07-behaviors.md#server-behaviors) and n
 | `defaultCooldownTicks` | `0` | 0-72000 | Cooldown of a trigger that sets none, per player for player events |
 | `minimumTimerTicks` | `20` | 20-72000 | Shortest timer interval accepted |
 | `maximumCommands` | `64` | 0-64 | Commands registered for `command` triggers |
+| `maximumAreas` | `256` | 0-4096 | Areas tracked for `player_area` triggers. Triggers past it are refused with `server-area-capacity` |
 
 ### [behaviors.state]
 
@@ -221,8 +236,9 @@ Lowering a budget below existing data keeps the data; only growth is refused.
 | `commandBehaviors` | `[]` | At most 256 | Behavior, shop and GUI ids allowed to run commands, such as `"town:gate/open"` |
 | `commandNamespaces` | `[]` | At most 256 | Namespaces whose behaviors, shops and GUIs may run commands |
 | `navigationWaits` | `8` | 1-64 | Actions waiting for an NPC to finish walking |
+| `rawTextBehaviors` | `[]` | At most 256 | Behavior ids whose commands may take [interpolated text](/animus/07-behaviors#text-in-commands) outside letters, digits and `_ . : + -` |
 
-Commands are denied unless the behavior, shop or GUI is on one of the allow-lists. Anyone who can edit an allowed document can run console commands, so keep the lists narrow.
+Commands are denied unless the behavior, shop or GUI is on one of the allow-lists. Anyone who can edit an allowed document can run console commands, so keep the lists narrow. The web editor changes such a document only with the [`apply:commands`](/animus/14-web-editor#console-commands) scope.
 
 ## [combat]
 
@@ -278,7 +294,7 @@ See [building](/animus/09-building).
 
 ### [shops.messages]
 
-Each key replaces one player-facing shop text of at most 512 characters. `&` color codes and the placeholders shown work. An unknown key is refused.
+Each key replaces one player-facing shop text of at most 512 characters. `&` color codes and the placeholders shown work. A new `config.toml` lists every key with its default; delete a line to go back to the built-in text. An unknown key is ignored with a warning in the server log.
 
 | Key | Default |
 |---|---|
@@ -316,10 +332,10 @@ Each key replaces one player-facing shop text of at most 512 characters. `&` col
 | `stockLine` | `&7Stock: &f{left}` |
 | `lockedLine` | `&cNeeds permission` |
 | `stackLine` | `&8Shift-click for a stack` |
-| `previous` | `&aPrevious page` |
-| `next` | `&aNext page` |
+| `previous` | `&#FF5FA8Previous page` |
+| `next` | `&#FF5FA8Next page` |
 | `close` | `&cClose` |
-| `mode` | `&eShowing: {mode}` |
+| `mode` | `&#FFB3D6Showing: {mode}` |
 | `modeHint` | `&7Click to switch` |
 | `modeBuy` | `Buy` |
 | `modeSell` | `Sell` |
@@ -379,14 +395,14 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `previewMinutes` | `15` | 1-120 | How long a preview lasts |
 | `idempotencyHours` | `24` | 1-168 | How long the result of an applied change set is remembered for safe retries |
 | `terrainRadius` | `160` | 0-1024 | How far from an NPC the token can see the editor may read terrain, in blocks. `0` turns terrain reads off |
-| `relayEnabled` | `true` | | Connect out to the relay |
-| `relayUrl` | The Volmit relay | `wss://` URL | Relay address. `ws://` only on `127.0.0.1` or `localhost` |
+| `relayEnabled` | `true` | | Use the relay. The server connects only after the first `/animus editor pair`, and at each start while a token or pairing exists, so a server nobody paired never dials out |
+| `relayUrl` | `"wss://animus-relay-823521865655.us-central1.run.app"` | `wss://` URL | Relay address, the Volmit relay by default. `ws://` only on `127.0.0.1` or `localhost` |
 | `relayReconnectMinSeconds` | `1` | 1-3600 | Shortest wait before reconnecting to the relay |
 | `relayReconnectMaxSeconds` | `60` | `relayReconnectMinSeconds`-3600 | Longest wait before reconnecting |
 | `relayFrameBytes` | `1048576` | 65536-16777216 | Largest relay message |
 | `relayConcurrentRequests` | `64` | 1-1024 | Relayed requests handled at once |
 
-An unknown key in `[editor]` is refused.
+An unknown key in `[editor]` is ignored with a warning in the server log.
 
 ### [editor.notify]
 

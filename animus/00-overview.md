@@ -2,13 +2,13 @@
 title: "Animus: Overview"
 description: "What Animus is, how its NPCs work, and where each topic is documented"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, npc, overview"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Animus manages NPCs on Paper, Spigot and Folia servers, and on Fabric, NeoForge and Forge servers as a server-side mod. Every NPC is a JSON file you can edit by hand, through `/animus` commands, or in the [web editor](/animus/14-web-editor). NPCs can walk routes, carry riders, fight, build schematics, run behaviors, open shops and chest GUIs, and play rig animations. Players join with an unmodified client.
+Animus manages NPCs on Paper, Spigot and Folia servers, and, as an experimental server-side mod, on Fabric, NeoForge and Forge servers. Every NPC is a JSON file you can edit by hand, through `/animus` commands, or in the [web editor](/animus/14-web-editor). NPCs can walk routes, carry riders, fight, build schematics, run behaviors, open shops and chest GUIs, and play rig animations. Players join with an unmodified client.
 
 ## Core concepts
 
@@ -20,7 +20,7 @@ Saving any of these files applies it within about a second; see [live apply](/an
 
 ### Spawned, despawned and active
 
-A new, cloned or imported NPC is saved despawned (`"spawned": false`), which these pages call dormant: it is stored and editable, but has no body, fires no triggers and costs nothing at run time. `/animus spawn <id>` marks it spawned, and `/animus despawn <id>` marks it despawned again. Both are saved, so a restart keeps them.
+A cloned or imported NPC is saved despawned (`"spawned": false`), which these pages call dormant: it is stored and editable, but has no body, fires no triggers and costs nothing at run time. A new NPC made with **New NPC** in the [toolkit](/animus/21-in-game-toolkit#new-npc) or with `/animus create` spawns at once; a sneak-click on **New NPC** saves it dormant. `/animus spawn <id>` marks it spawned, and `/animus despawn <id>` marks it despawned again. Both are saved, so a restart keeps them.
 
 A spawned NPC is active while it is loaded in a world: its chunk is loaded and it runs its routes, triggers and combat. A spawned NPC in an unloaded chunk waits and becomes active again when the chunk loads. See [activation and editing](/animus/04-npc-definitions#activation-and-editing).
 
@@ -62,6 +62,10 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | Page | Covers |
 |---|---|
 | [First ten minutes](/animus/20-first-ten-minutes) | Install, set up, and make, skin and walk your first NPC |
+| [Tutorial: first NPC](/animus/22-tutorial-first-npc) | Make, edit, skin, dress and sort NPCs with the in-game toolkit |
+| [Tutorial: movement](/animus/23-tutorial-movement) | Routes, recordings, mounts and riding in game |
+| [Tutorial: conversations, shops and combat](/animus/24-tutorial-interaction) | Behaviors, conversations, shops, holograms, GUIs, combat and health |
+| [Tutorial: web editor](/animus/25-tutorial-web-editor) | Pairing, editing, applying and undoing in the browser |
 | [Installation and compatibility](/animus/01-installation-compatibility) | Requirements, supported versions, file layout and platform differences |
 | [Commands and permissions](/animus/02-commands-permissions) | Every `/animus` command and permission node |
 | [Configuration](/animus/03-configuration) | Every `config.toml` setting and live apply |
@@ -80,6 +84,6 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | [GUIs, holograms and menus](/animus/11-guis-holograms-menus) | Chest GUIs, holograms and holographic menus in Gloss formats |
 | [Storage and recovery](/animus/12-storage-recovery) | Last-valid recovery, transactions, rollback and limits |
 | [Folia](/animus/15-folia) | How NPCs run on Folia regions and what differs there |
-| [Mod servers](/animus/16-mod-servers) | Fabric, NeoForge and Forge |
+| [Mod servers](/animus/16-mod-servers) | Fabric, NeoForge and Forge (experimental) |
 | [Debug, React and metrics](/animus/17-debug-react-metrics) | `/animus debug summary` and the metrics published to React |
 | [Java modules and API](/animus/99-java-modules-api) | Trusted modules, capabilities and the Java API |

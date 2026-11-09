@@ -2,7 +2,7 @@
 title: "Animus: Shops"
 description: "Buy, sell and trade shops, container shops, money, and importing from dtlTraders"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, shops, trading, economy, vault, dtltraders"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -48,13 +48,31 @@ Bind it to an NPC in the NPC definition:
 
 `openOn` is `right` (default), `left` or `both`. A sneaking player with `animus.admin` selects the NPC instead of opening the shop.
 
-The module can also set `style` (`native` or `chest`), which replaces the shop's own style for this NPC, and `villager`, which a villager body shows in the trading screen title:
+The module can also set `style` (`native` or `chest`), which replaces the shop's own style for this NPC, and `villager`, the profession and level shown in the trading screen title of an NPC whose `type` is `minecraft:villager`:
 
 ```json
 "modules": {"animus:shop": {"shop": "town:baker", "style": "native", "villager": {"profession": "minecraft:farmer", "level": 2}}}
 ```
 
-`profession` defaults to `minecraft:none` and `level` (1 to 5) to 1. Other bodies ignore `villager`. Because the module is an ordinary definition field, a [trait group](/animus/18-trait-groups) can set `style` and `villager` for every NPC that lists it.
+`profession` defaults to `minecraft:none` and `level` (1 to 5) to 1. Other types ignore `villager`. A villager body cannot be shown (see the [bodies that can be shown](/animus/04-npc-definitions#definition-file)), so the field is kept mainly for NPCs imported from Shopkeepers. Because the module is an ordinary definition field, a [trait group](/animus/18-trait-groups) can set `style` and `villager` for every NPC that lists it.
+
+## Stocking a shop in game
+
+Hold the item to offer in your main hand and run:
+
+```none
+/animus shop stock town:baker price=12
+```
+
+The held stack, with its count, name and other data, becomes one offer in the first free slot of the first page, and the shop reloads. `mode=` picks the grid:
+
+| Mode | Offer |
+|---|---|
+| `buy` (default) | Players buy the held stack for `price` |
+| `sell` | Players sell the held stack for `price` |
+| `trade` | Players get the held stack for the stack in your off hand; no price |
+
+`page=2` stocks the second page. An id with no file yet, such as `town:smith`, makes the shop with one three-row page first. The reply names the entry id and slot, such as `Added 4 bread as buy offer bread in slot 0 of page 1`, and the transaction. Limits, discounts, display names and the window layout are set afterwards in the file or the [web editor](/animus/14-web-editor#gui-editors). Stocking needs `animus.shops.edit`, which `animus.admin` includes. The toolkit's **Shops** screen makes an empty shop and binds it to NPCs.
 
 ## Window styles
 
@@ -146,7 +164,7 @@ A layout applies to the chest style only. When the GUI is not loaded or has no l
 | `display` | `name`, `lore` lines, `showPrice` and `showLimit` (both default true). |
 | `needs`, `gives` | For trades: 1 to 27 items each, as `{"item": {...}, "amount": n}`. |
 | `allowStack`, `sellPartial`, `dropWhenFull` | Shift click takes a full stack; a sale may take fewer items than listed (never zero); items that do not fit drop at the player's feet instead of refusing. |
-| `commands` | Up to 16 `{"command": "...", "as": "console"}` (or `"player"`) run after the purchase completes. `{player}` is the player's name, `{uuid}` their UUID, `{amount}` and `{price}` what they took and paid. A `command` entry sells only its commands. |
+| `commands` | Up to 16 `{"command": "...", "as": "console"}` (or `"player"`) run after the purchase completes. `{player}` is the player's name, `{uuid}` their UUID, `{amount}` and `{price}` what they took and paid. A player whose name has spaces or symbols other than `_ . * -`, such as `@a` on an offline-mode server, cannot buy an entry whose commands use `{player}`. A `command` entry sells only its commands. |
 | `limit` | `perPlayer` and `global` counts with an optional `resetSeconds`. A window starts at the first purchase after the last one ended. |
 | `stock` | `maximum` units for everyone, refilled every `restockSeconds` when given. |
 | `permission` | Needed to buy; other players see a "needs permission" line. |
@@ -159,7 +177,7 @@ Limits count items for buy and sell entries and purchases for trade and command 
 
 ## How a purchase works
 
-Every purchase runs on the player's own thread and either completes fully or changes nothing.
+Every purchase runs on the player's own thread and either completes fully or changes nothing. Limits and stock are held for a purchase before anything moves and given back if it fails, so on Folia two players in different regions cannot both take the last unit.
 
 - **Buy**: checks permission, limits and stock, checks that the items fit (partial stacks count as room), takes the money, then gives the items. If giving fails, the items are taken back and the money is refunded.
 - **Sell**: counts matching items anywhere in the 36 main slots, takes them from as many stacks as needed, then pays. If the payment fails, the items are put back.
@@ -204,10 +222,11 @@ A shop that runs commands needs its id or namespace on the command allow-list (`
 
 ## Commands
 
-All need `animus.admin`; see [commands](/animus/02-commands-permissions#shops-and-guis) for the full list. The ones you use most:
+All need `animus.shops`, which `animus.admin` grants; the shop import needs `animus.import`; see [commands](/animus/02-commands-permissions#shops-and-guis) for the full list. The ones you use most:
 
 ```none
 /animus shop open <shop> [player=] [style=]
+/animus shop stock <shop> [price=] [mode=buy] [page=1]
 /animus shop problems
 /animus shop reset <shop> [player=]
 ```
@@ -219,8 +238,8 @@ Run `/animus shop reload` after editing files by hand. Editor applies, `/animus 
 Copy the dtlTraders data folder (the one with `shops/` or `guis.yml`, and `data.dat`) to `plugins/Animus/imports/inbox/dtltraders/`, and optionally the Citizens `saves.yml` beside it in `imports/inbox/`. Then run these, where `<preview>` is the id the first command prints:
 
 ```none
-/animus shop import preview dtltraders saves=saves.yml
-/animus shop import apply <preview>
+/animus import shops preview dtltraders saves=saves.yml
+/animus import shops apply <preview>
 ```
 
 The [Citizens migration](/animus/13-migrating-from-citizens) also installs dtlTraders shops it finds, in the same apply step as the NPCs. The offline converter does the same as these commands:
@@ -247,7 +266,7 @@ The preview writes everything to `imports/shops/<import-id>/`: the original file
 | `custom-input-enabled`, `custom-display-text` | Not available; reported |
 | Bukkit item (`type`, `amount`, `meta` with `display-name`, `lore`, `enchants`, `Damage`, `Unbreakable`) | `item` with components. Any other item data is kept in `item.imported` and reported for review. Amounts above 99 show as 99. |
 | `trader` trait in `saves.yml` | `modules["animus:shop"]` through the [Citizens import](/animus/13-migrating-from-citizens). The shop import checks each link and reports NPCs that name a shop the folder does not have. |
-| Version 3 `trader` trait with its own `sell` and `buy` lists | Shop `dtltraders:converted-<npc name>`; the old `sell` list becomes the buy grid and `buy` the sell grid. Only money entries convert: `a:` amount, `p:` price (times the amount unless `.sp`), `s:` slot. Everything else is reported. `wallet` traits are kept for review. |
+| Version 3 `trader` trait with its own `sell` and `buy` lists | Shop `dtltraders:converted-<npc name>`, with the NPC name lowercased and cut to letters only (`Old Bob 2` becomes `converted-oldbob`); the old `sell` list becomes the buy grid and `buy` the sell grid. Only money entries convert: `a:` amount, `p:` price (times the amount unless `.sp`), `s:` slot. Everything else is reported. `wallet` traits are kept for review. |
 | `data.dat` | Read only when its whole structure reads to the end. Per-player counts become limit counts for entries that have a limit; the shared uptime clock is not kept, so each player's window starts at their next purchase. If it cannot be read, it is kept as it is and the report says why. |
 | `BUY_AND_KEEP` tokens already in player inventories | Not recognised. |
 | `config.yml`, `messages.yml` | Copied as originals; set the matching `[shops]` settings by hand. |
@@ -259,5 +278,5 @@ Imported shops with commands need `commandNamespaces = ["dtltraders"]` under `[b
 - A purchase that fits into partial stacks is allowed; dtlTraders needs an empty slot.
 - Limit windows run per player in real time instead of on one server-uptime clock.
 - Right click buys the listed amount instead of asking for a typed amount.
-- Shops are edited as files or in the [web editor](/animus/14-web-editor); there is no in-game shop editor.
+- Shops are edited as files or in the [web editor](/animus/14-web-editor). In game, `/animus shop stock` adds offers from held items; there is no chest-style offer editor.
 - The [web editor](/animus/14-web-editor#gui-editors) offers only trade and static entries in a shop that lists containers, and removes the fields an entry's new type cannot use when you change its type. It also shows the notes `/animus shop problems` gives for the window style, at the offer they are about.

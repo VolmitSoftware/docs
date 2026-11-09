@@ -2,13 +2,13 @@
 title: "Animus: Your First Ten Minutes"
 description: "Install Animus, set it up, and make, skin and walk your first NPC"
 published: true
-date: 2026-11-08T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, quick start, setup, first npc"
 editor: markdown
 dateCreated: 2026-11-07T00:00:00.000Z
 ---
 
-This page takes you from an empty server to an NPC that wears a skin and walks a route. Run the commands in game as an operator; each one can be pasted as it stands.
+This page takes you from an empty server to an NPC that wears a skin and walks a route, mostly with commands. Run them in game as an operator; each one can be pasted as it stands. The [tutorial](/animus/22-tutorial-first-npc) is the longer path: it covers every in-game toolkit screen, step by step, with videos.
 
 ## 1. Install
 
@@ -40,53 +40,46 @@ When it finds Citizens, Shopkeepers or Denizen data, importing it comes first; s
 
 ## 3. Make an NPC at your feet
 
-Stand where the NPC should stand and run:
+Stand where the NPC should stand, face the way it should face, and run:
 
 ```none
 /animus create guard name="Town Guard"
 ```
 
-The NPC is saved to `npcs/guard.json` at your position, with a player body. It is dormant: saved, but not in the world yet. Add `type=villager` for another body, or `folder=town` to keep it in `npcs/town/`.
+The NPC is saved to `npcs/guard.json` at your position, facing your way, with a player body, and it appears for every player in range. It stays spawned after a restart. Add `type=llama` for another body (the [bodies that can be shown](/animus/04-npc-definitions#definition-file) are listed there), `folder=town` to keep it in `npcs/town/`, or `spawned=false` to save it without showing it yet. `/animus despawn guard` takes it away again without deleting the file, and `/animus spawn guard` brings it back.
 
-## 4. Spawn it
+## 4. Give it a skin
+
+Skins only show on player bodies. The quickest way is a Minecraft account's name:
 
 ```none
-/animus spawn guard
+/animus npc skin guard Notch
 ```
 
-Animus checks the definition against this server and marks it spawned. The guard appears for every player in range, and it stays spawned after a restart. `/animus despawn guard` takes it away again without deleting the file.
+Animus looks the account up on Mojang, saves its signed skin once in `skins/<sha256>.json` and points the guard's `skin` field at it, so other NPCs can share it. It works from the console too, and `/animus npc skin guard reset` takes the skin off. The server needs internet access for the lookup; online mode is not required.
 
-## 5. Give it a skin
+Other ways: the in-game toolkit's **Skins** screen (`/animus tools`, then **Skins**) has **Use my skin** and **From a player name**, and the [web editor](/animus/14-web-editor) (step 7) makes a skin from a PNG file or a web address under **Appearance**.
 
-Skins only show on player bodies. Two ways to set one:
+## 5. Move it and name it
 
-- In game, run `/animus tools wand`, click the guard with the wand, then run `/animus tools`, open **Skins** and pick a skin file, or **Use my skin**. See the [in-game toolkit](/animus/21-in-game-toolkit).
-- In the [web editor](/animus/14-web-editor) (step 7), open the guard, go to **Appearance** and make a new skin from a PNG file or a web address. Apply sends it to the server.
+```none
+/animus npc move guard
+/animus npc tp guard
+/animus npc rename guard "&6Captain"
+```
 
-The skin is saved once in `skins/<sha256>.json` and the guard's `skin` field points at it, so other NPCs can share it.
+`move` brings the guard to where you stand, facing your way. `tp` takes you to the guard. `rename` changes the name above its head; `&` colour codes work.
 
 ## 6. Give it a route
 
-A route is a list of points the NPC walks. Make `routes/guard-walk.json` in the data folder with two points near the guard (`/animus inspect guard` shows where it stands):
+A route is a list of points the NPC walks. Record one by walking it:
 
-```json
-{
-  "schemaVersion": 1,
-  "mode": "walk",
-  "speed": 2,
-  "loop": true,
-  "waitTicks": 40,
-  "points": [{"x": 10, "y": 64, "z": 4}, {"x": 16, "y": 64, "z": 4}]
-}
-```
+1. Run `/animus tools wand` and click the guard with the wand to select it.
+2. Run `/animus tools`, open **Routes** and click **Capture a route**. The first point is where you stand.
+3. Walk to the next place, hold the wand and tap sneak to drop a point. Repeat for each point.
+4. Run `/animus tools` again, open **Routes** and right-click **Save route**. It saves `routes/wp-<your name>.json` and puts it on the guard, which starts walking it.
 
-Then point the guard at it:
-
-```none
-/animus edit guard {"modules": {"animus:navigation": {"enabled": true, "route": "guard-walk"}}}
-```
-
-Saving the route file applies it within a second, so you can move points and watch the guard follow. The toolkit's **Routes** tool can also capture a route as you walk it. [Routes](/animus/05-movement-mounts-riding#routes) covers random order, wandering and waits.
+The [toolkit's Routes screen](/animus/21-in-game-toolkit#routes) edits the points afterwards. Saving a route file applies it within a second, so you can also edit the JSON and watch the guard follow. [Routes](/animus/05-movement-mounts-riding#routes) covers random order, wandering and waits.
 
 ## 7. Pair the web editor
 
@@ -99,7 +92,7 @@ The [web editor](/animus/14-web-editor) edits every Animus document with a 3D pr
 Click **[Open editor]** in the reply. The pairing link works once, within 10 minutes. The default token can read, check and apply documents but cannot spawn or despawn NPCs; add the `spawn` scope when you want that:
 
 ```none
-/animus editor pair scopes=read,validate,preview,apply:npcs,apply:behaviors,apply:gui,apply:rigs,spawn
+/animus editor pair scopes=read,validate,preview,apply:npcs,apply:behaviors,apply:gui,apply:rigs,terrain,spawn
 ```
 
 ## 8. Coming from Citizens

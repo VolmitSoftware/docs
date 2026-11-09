@@ -2,7 +2,7 @@
 title: "Animus: In-Game Toolkit"
 description: "Chest-GUI screens and a selection wand that edit NPCs, groups, routes, behaviors, shops and skins without leaving the game"
 published: true
-date: 2026-11-07T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, gui, tools, wand, selection"
 editor: markdown
 dateCreated: 2026-11-07T00:00:00.000Z
@@ -18,7 +18,7 @@ What the toolkit does not do is paint: behavior node graphs other than conversat
 | `/animus tools wand` | Put a selection wand in your inventory |
 | `/animus tools manage` | Open the manage screen for your selection |
 
-All three need `animus.admin` and a player. Every item in a toolkit window says in its lore what a left click, a right click and a sneak click do. **Back** sits at the start of the bottom row of every screen; on the palette, **Close** does.
+All three need `animus.tools` and a player. Each tool and button also needs the node of the command it stands for, checked on every click: Delete needs `animus.npc.delete`, Combat `animus.combat`, and so on (see [permissions](/animus/02-commands-permissions#permissions)). `animus.admin` grants them all. Every item in a toolkit window says in its lore what a left click, a right click and a sneak click do. **Back** sits at the start of the bottom row of every screen. The palette has **Close** in the middle of its bottom row instead.
 
 ## The wand
 
@@ -36,7 +36,7 @@ The wand is a blaze rod named **Animus wand**. The server knows it by a marker o
 | Tap sneak during a route capture | Drop a route point where you stand |
 | Click an NPC while a screen asks for one | Answer the screen (a mount's vehicle, a guard's NPC, an NPC to edit) |
 
-The last NPC you add also becomes your `@selected` NPC, so commands that take `@selected` act on it. While you have a selection, small particles mark the corners of each selected NPC within 48 blocks; only you see them. Clearing the selection or leaving the server stops them. The selection holds at most 256 NPCs and is forgotten when you leave.
+This is the same selection `@selected`, `/animus selection` and `/animus select` use. With one NPC selected, commands that take `@selected` act on it; with several, they refuse and ask you to name one, and `/animus select <npc>` keeps only that one. While you have a selection, small particles mark the corners of each selected NPC within 48 blocks; only you see them. Clearing the selection or leaving the server stops them. The selection holds at most 256 NPCs and is forgotten when you leave.
 
 Without the wand, a click on an NPC opens its shop, GUI or hire window as usual and never changes the selection.
 
@@ -163,7 +163,7 @@ A step is the schema's `multipleOf`, else 1 for whole numbers, else 0.05, 0.1 or
 
 In a list (tags, behaviors, groups, hologram lines, health drops, respawn points), a left click retypes a text entry, cycles an option entry or opens an object entry. Right removes the entry, sneak-left moves it up and sneak-right moves it down. **Add an entry** asks for the text, offers the options or, for an object, asks for its first required text field. A list of fixed length such as an armor stand's `[x, y, z]` keeps its length: its entries step like numbers and sneak-right resets the whole list. Maps such as `poses` and a melee weapon's `weaponDamage` list their entries by name; **Add an entry** asks for the name.
 
-A field the toolkit cannot edit says so in its lore: items say the Equipment screen sets them, and other shapes say to edit them in the web editor.
+A single-item field, such as a health drop's `item`, takes the item in your main hand on a left or right click; a sneak click clears it. Items in lists, such as a stored inventory, say in their lore that the Equipment screen sets them. A field of any other shape the toolkit cannot edit says to edit it in the web editor.
 
 ### Attributes
 
@@ -176,7 +176,7 @@ Lists every vanilla attribute the NPC's body carries, each with its own icon, wi
 
 ### Modules
 
-Each module has a switch with an Edit button below it. A module with an `enabled` field turns off by setting it to false, which keeps its settings. Shop and GUI have no switch of their own: they are on while their object exists, so turning one off removes it and asks twice, and turning one on opens its fields. Edit opens every field of the module, combat's target, ignore and avoid rules included.
+Each module has a switch with an Edit button below it. A module with an `enabled` field turns off by setting it to false, which keeps its settings. The `animus:health` switch sets `killable` instead. Shop and GUI have no switch of their own: they are on while their object exists, so turning one off removes it and asks twice, and turning one on opens its fields. Edit opens every field of the module, combat's target, ignore and avoid rules included.
 
 ### Several NPCs
 
@@ -265,16 +265,16 @@ The live buttons change nothing on disk; the command's reply comes as chat.
 
 Each row is one setting, with the description the web editor shows as its tip. A value the NPC does not set shows the value combat runs with, attributes included, and says so.
 
-| Kind of setting | Left | Right | Sneak |
-|---|---|---|---|
-| On or off | Toggle | Toggle | Toggle |
-| Number | Add one step | Take one step off | Ten steps |
-| Choice, such as `ranged.weapon` | Next | Previous | Next |
-| Text, such as `squad.name` | Type a value | Clear | Clear |
-| `guard.player` | Set to you | Clear | Set to you |
-| `guard.npc` | Click an NPC with the wand | Clear | Click an NPC with the wand |
-| `avoidance.returnPoint` | Set to where you stand | Clear | Set to where you stand |
-| `melee.weaponDamage` | Type a damage for the item in your main hand | Remove that item's entry | Type a damage |
+| Kind of setting | Left | Right | Sneak-left | Sneak-right |
+|---|---|---|---|---|
+| On or off | Toggle | Toggle | Toggle | Toggle |
+| Number | Add one step | Take one step off | Add ten steps | Take ten steps off |
+| Choice, such as `ranged.weapon` | Next | Previous | Next | Previous |
+| Text, such as `squad.name` | Type a value | Clear | Clear | Clear |
+| `guard.player` | Set to you | Clear | Set to you | Clear |
+| `guard.npc` | Click an NPC with the wand | Clear | Click an NPC with the wand | Clear |
+| `avoidance.returnPoint` | Set to where you stand | Clear | Set to where you stand | Clear |
+| `melee.weaponDamage` | Type a damage for the item in your main hand | Remove that item's entry | Type a damage | Remove that item's entry |
 
 Setting `guard.player` clears `guard.npc`, and the other way round. `ranged.effect` opens a screen of its own for the potion's effect id, amplifier and duration.
 
@@ -284,15 +284,15 @@ Clicks change a draft. **Save** writes the changed rows to every selected NPC in
 
 Targets, Ignores and Avoids each show the kinds of rule the list can hold.
 
-| Row | Left | Right | Sneak |
-|---|---|---|---|
-| Players, NPCs, Mobs, Monsters, Animals | Toggle the category | Toggle | Toggle |
-| Owner | Toggle | Toggle | Toggle |
-| Health above, Health below | Turn on at 50%, then +5% | -5% | Turn off |
-| Mob types, Players by name, Mobs by custom name, Squads, Permissions, Permission groups, Effects, Chat words | Type an entry | List the entries; a click removes one | List the entries |
-| NPCs by id | Type an id | List the entries | Click an NPC with the wand |
-| Player, NPC and Mob name patterns | Type a regular expression | List the entries | List the entries |
-| Main-hand, Off-hand and Worn item | Type an item id pattern | List the entries | Add the item in your main hand |
+| Row | Left | Right | Sneak-left | Sneak-right |
+|---|---|---|---|---|
+| Players, NPCs, Mobs, Monsters, Animals | Toggle the category | Toggle | Toggle | Toggle |
+| Owner | Toggle | Toggle | Toggle | Toggle |
+| Health above, Health below | Turn on at 50%, then +5% | -5% | Turn off | Turn off |
+| Mob types, Players by name, Mobs by custom name, Squads, Permissions, Permission groups, Effects, Chat words | Type an entry | List the entries; a click removes one | List the entries | List the entries |
+| NPCs by id | Type an id | List the entries | Click an NPC with the wand | List the entries |
+| Player, NPC and Mob name patterns | Type a regular expression | List the entries | List the entries | List the entries |
+| Main-hand, Off-hand and Worn item | Type an item id pattern | List the entries | Add the item in your main hand | List the entries |
 
 Each entry is checked as it is added, so a broken pattern or an unknown effect id is refused with the reason and left out. Ignores has no chat words. Match-all sets, together groups and fight events are shown with their count and kept as they are; edit them in the [web editor](/animus/14-web-editor).
 
@@ -373,7 +373,7 @@ To record a new route:
 
 1. Click **Capture a route**, or right-click **Routes** in the palette. The first point is where you stand.
 2. Walk to the next place. Hold the wand and tap sneak to drop a point there. Points show as green sparks while you capture, and the current point, where the next one goes after, shows as an orange flame. Sneak-click **Capture** to remove the last point; right-click it to open the points.
-3. Click **Save route**. It saves `routes/wp-<your name>.json`, or `wp-<your name>-2.json` when that file exists, as a looping walk through the points. The chat line names the route and its point count, such as `Saved wp-alex, 4 points`; **[Path]** shows and copies the file path. Right-click **Save route** to also put it on the selection.
+3. Click **Save route**. It saves `routes/wp-<your name>.json` with your name in lowercase, or `wp-<your name>-2.json` when that file exists, as a looping walk through the points. The chat line names the route and its point count, such as `Saved wp-alex, 4 points`; **[Path]** shows and copies the file path. Right-click **Save route** to also put it on the selection.
 
 Points snap to the center of the block you stand on and must stay in one world; a route holds at most 256 points. **Discard capture** drops the points and asks once more; saved files stay.
 
@@ -565,7 +565,7 @@ On Folia the NPC moves when its definition reloads, a moment after the position 
 
 ## Left to the web editor
 
-A core test walks the NPC schema and fails when a field has neither a screen nor a line in this table, so the table is complete.
+Every NPC definition field has either a toolkit screen or a line in this table.
 
 | Field | Why |
 |---|---|

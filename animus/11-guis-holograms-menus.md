@@ -2,7 +2,7 @@
 title: "Animus: GUIs, Holograms and Menus"
 description: "Chest GUIs, holograms, holographic menus and text animations in the Gloss formats"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, gui, holograms, menus, gloss"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -20,6 +20,8 @@ Animus opens chest windows, shows holograms and opens holographic menus from JSO
 ## Chest GUIs
 
 Files live in `plugins/Animus/gui/inventories/` (`config/animus/gui/inventories/` on mod servers). A file at `town/menu.json` has the id `town:menu`. Files must be in a namespace folder.
+
+To start one in game, `/animus gui create town:board rows=4 title="&8Notice board"` writes an empty chest window of that size and reloads the GUIs. Fill it in the file or the [web editor](/animus/14-web-editor#gui-editors), and bind it to NPCs with the toolkit's **GUIs** screen.
 
 ```json
 {
@@ -81,7 +83,7 @@ Chest GUIs, holograms and menus share these actions. Every action may have `trig
 | `parallel` | Runs each list in `branches` side by side. A `delay` or `stop` in one branch affects only that branch; the list goes on once every branch has started. |
 | `repeat` | Runs `steps` up to `times` times, `everyTicks` apart (0 runs them all at once). `while` is checked before each pass; false ends the loop. |
 | `teleport` | Moves the viewer to `world` (a key such as `minecraft:the_nether`), `x`, `y`, `z`, `yaw` and `pitch`. A world that is not loaded stops the list. |
-| `bossbar` | Shows a boss bar on the lane `id` for `ticks` (default 100; 0 hides the lane), with `title`, `progress` (0 to 1), `color` (default `pink`) and `style`. A new bar on the same lane replaces the old one. `priority` is read and checked; Animus shows every lane. |
+| `bossbar` | Shows a boss bar named `id` for `ticks` (default 100; 0 hides the bar with that `id`), with `title`, `progress` (0 to 1), `color` (default `pink`) and `style`. A new bar with the same `id` replaces the old one. `priority` is read and checked; Animus shows every bar. |
 | `broadcast` | Sends `message` to the whole server, the viewer's world or a `radius` around the viewer (`scope` `server`, `world` or `radius`), optionally only to players with `permission`. |
 | `effect` | Gives the viewer the potion `effect` for `ticks` at `amplifier`. An unknown effect stops the list. |
 | `particle` | Spawns `count` particles that only the viewer sees, spread by `offset`, at the viewer or, for holograms and menus, `"at": "location"`. |
@@ -90,6 +92,8 @@ Chest GUIs, holograms and menus share these actions. Every action may have `trig
 Gloss actions that have no meaning in Animus are refused when the file loads, with the exact field, for example `$.keys.X.actions[1].type: action 'camera' is not available in Animus`. These are `connect`, `surface`, `prompt`, `dialog`, `book`, `emit`, `setState`, `addState`, `clearState`, `sky`, `camera` and `glow`, and the cutscene fields `once`, `skippable` and `onSkip` of `sequence`. The `subject` and `source` targets of `effect` and `particle` belong to Gloss behaviors and are refused too. Animus-only actions start with `animus:`. Nothing is skipped silently: a file with any problem is refused as a whole, and the previously loaded files keep working.
 
 A GUI that runs `command` anywhere needs its id or namespace on the same allow-list as the [`animus:command`](/animus/07-behaviors#commands) behavior action (`commandBehaviors` or `commandNamespaces` under `[behaviors.actions]`). Without it the file is refused with that reason.
+
+A command run as the server takes each `{{ }}` hole only when its text is letters, digits and `_ . : + -`; otherwise the command does not run and the rest of that action list stops. A command run as the viewer (`"source": "player"`) takes any text, since it runs with the viewer's own permissions. The web editor changes a GUI that runs commands, gives items or changes money (`command`, `give` or `economy` actions) only with the [`apply:commands`](/animus/14-web-editor#console-commands) scope.
 
 ## Expressions
 
@@ -122,6 +126,8 @@ A window closes when the player logs out, dies, changes world or respawns, telep
 </div>
 
 A hologram file in `gui/holograms/<namespace>/` is a Gloss hologram. Animus shows it to every player within `viewDistance` of its anchor, drawn with display entities that exist only in that player's client. No entity is created on the server, and each player can see a different page, variant or text.
+
+To make one where you stand, run `/animus hologram create town:welcome text="&6Welcome to town"`. It writes a hologram with that one line, anchored 1.5 blocks above your feet and facing your way, and shows it at once. Add lines, pages and actions in the file or the web editor afterwards.
 
 ```json
 {
@@ -200,15 +206,17 @@ An NPC definition can open a chest GUI, menu, shop or Gloss menu when the NPC is
 
 ## Commands
 
-All of these need `animus.admin`; see [commands](/animus/02-commands-permissions#shops-and-guis) for the full list. The ones you use most:
+All of these need `animus.gui`, which `animus.admin` grants; the imports need `animus.import`; see [commands](/animus/02-commands-permissions#shops-and-guis) for the full list. The ones you use most:
 
 ```none
+/animus gui create <id> [rows=3] [title=]
+/animus hologram create <id> [text=]
 /animus gui open <gui> [player=]
-/animus gui import gloss <kind> [id=all] [namespace=animus] [replace=false]
+/animus import gloss live <kind> [document=all] [namespace=gloss] [replace=false]
 /animus gui export file <name> [format=]
 ```
 
-`<kind>` is `inventory`, `menu`, `hologram`, `animation` or `all`. `gui import gloss` copies documents from Gloss's folders on this server. `gui export file` writes `exports/gui/<name>/` or, with `format=bundle`, `exports/gui/<name>.json`.
+`<kind>` is `inventory`, `menu`, `hologram`, `animation` or `all`. `import gloss live` copies documents from Gloss's folders on this server. `gui export file` writes `exports/gui/<name>/` or, with `format=bundle`, `exports/gui/<name>.json`.
 
 ## With and without Gloss
 
@@ -217,9 +225,9 @@ Everything on this page works without Gloss, on Bukkit, Paper, Spigot, Folia, Fa
 When Gloss is installed on a Bukkit server, Animus finds it at startup through Gloss's public API, by name only, so Animus has no dependency on Gloss. Then:
 
 - `animus:open-gui` and NPC bindings with `"kind": "gloss"` open Gloss menus by their Gloss id. Without Gloss they refuse with `gloss-unavailable`.
-- `gui import gloss` reads Gloss's `inventories/`, `menus/`, `holograms/` and `animations/` folders. A Gloss id becomes `<namespace>:<id>` (namespace `gloss` by default), lowercased, with other characters changed to `-`. Each document is checked exactly as Animus would load it. A newer `schemaVersion` or a Gloss-only feature refuses that document with the field, and nothing is written for it. Gloss's folders do not change. An Animus file that already exists with other content is kept unless you add `replace=true`.
+- `import gloss live` reads Gloss's `inventories/`, `menus/`, `holograms/` and `animations/` folders. A Gloss id becomes `<namespace>:<id>` (namespace `gloss` by default), lowercased, with other characters changed to `-`. Each document is checked exactly as Animus would load it. A newer `schemaVersion` or a Gloss-only feature refuses that document with the field, and nothing is written for it. Gloss's folders do not change. An Animus file that already exists with other content is kept unless you add `replace=true`.
 - `gui export gloss` writes Animus documents into Gloss's folders, where Gloss's file watcher loads them. A document in namespace `gloss` keeps its id; other documents become `<namespace>.<path>`. Documents with `animus:` actions are listed and skipped. A Gloss file that already exists with other content is kept unless you add `replace=true`. Documents that name another document with a namespace are reported, because Gloss does not know Animus namespaces.
 
-Without Gloss on the same server, move documents as files. `gui export file` writes the `/gloss export documents` layout (`<kind>/<id>.json` and `workspace.json`) or, with `format=bundle`, a `gloss-editor-workspace` bundle that Gloss Web opens. `gui import file` reads either form, including bundles saved from Gloss Web. Bundle documents of kinds that Animus does not adopt are listed and skipped.
+Without Gloss on the same server, move documents as files. `gui export file` writes the `/gloss export documents` layout (`<kind>/<id>.json` and `workspace.json`) or, with `format=bundle`, a `gloss-editor-workspace` bundle that Gloss Web opens. `import gloss file` reads either form, including bundles saved from Gloss Web. Bundle documents of kinds that Animus does not adopt are listed and skipped.
 
-The web editor's **Export Gloss bundle** writes each document's Animus id as its Gloss title, so the same bundle imports back to the same ids in the editor. `gui import file` and `gui import gloss` map ids from the Gloss id alone: `town:menu` leaves as `town.menu` and returns as `gloss:town-menu`.
+The web editor's **Export Gloss bundle** writes each document's Animus id as its Gloss title, so the same bundle imports back to the same ids in the editor. `import gloss file` and `import gloss live` map ids from the Gloss id alone: `town:menu` leaves as `town.menu` and returns as `gloss:town-menu`.

@@ -2,7 +2,7 @@
 title: "Animus: Combat"
 description: "The combat module: target rules, weapons, guards, protection and limits"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, combat, guards, worldguard, sentinel"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -44,7 +44,7 @@ Combat runs on Spigot and Paper 26.1.2, 26.2 and 26.3, and on Fabric, NeoForge a
 | Field | Meaning |
 | --- | --- |
 | `killable` | Players, mobs, NPCs and their projectiles can hurt and kill it. Off by default. A Sentinel import sets it from `invincible`, and it applies once the import's combat review is accepted. |
-| `maximumHealth` | 1-2048. Left out, the `max_health` [attribute](/animus/04-npc-definitions#attributes), or 20. An NPC starts at full health each time it becomes active; a definition change keeps current health, lowering it only to fit a smaller maximum. |
+| `maximumHealth` | 1-2048. Left out, the `max_health` [attribute](/animus/04-npc-definitions#attributes), or 20. Applies whether or not the NPC is killable. An NPC starts at full health each time it becomes active. Raising the maximum keeps the same share of health, so a full NPC fills to the new maximum; lowering it clamps current health to fit. |
 | `armor`, `armorFromEquipment` | A 0-1 share of each hit, or the worn pieces as for combat. Left out, the `armor` and `armor_toughness` attributes apply as vanilla armor points. |
 | `invulnerableTicks` | 0-100, default 10. Hits during this time after a hit do nothing. |
 | `knockback` | Default `true`. A hit pushes the NPC back, less by the `knockback_resistance` attribute, onto clear ground only. |
@@ -65,7 +65,7 @@ Every hit asks [protection](#protection) first, as combat hits do, so WorldGuard
 
 On death, drops and experience fall where it died, the player who dealt the last blow, or shot the projectile that did, gets a mob kill on their statistics, and the `death` [behavior trigger](/animus/07-behaviors#automatic-triggers) runs with the killer as its player. A behavior gives commands, rewards or messages on death with `animus:command` or `animus:message` from that trigger; `context.killer` and `context.killer_type` say who it was.
 
-After a respawn delay it comes back at full health at its next point and walks back to its post, as combat NPCs do after a fight; a patrolling NPC picks up its route from the first point. With `permadeath` it stays dead: after its fall has played, Animus sets `dead` to `true` in its definition as one transaction. The definition is kept, the NPC is not shown, and a restart keeps it dead. `/animus npc revive <npc>`, **Revive** in the toolkit's Manage screen or the editor's Revive button clears the mark, and it spawns at its definition position. On an NPC that is merely waiting to respawn, revive brings it back at once.
+After a respawn delay it comes back at full health at its next point and walks back to its post, as combat NPCs do after a fight; a patrolling NPC picks up its route from the first point. With `permadeath` it stays dead: after its fall has played, Animus sets `dead` to `true` in its definition as one transaction. The definition is kept, the NPC is not shown, and a restart keeps it dead. `/animus npc revive <npc>`, **Revive** in the toolkit's Manage screen or the editor's Revive button clears the mark, and it spawns at its definition position. On an NPC that is merely waiting to respawn, revive brings it back at once. A revive during the fall that cannot bring the NPC back, because no respawn point is loaded, changes nothing: the permadeath is still recorded when the fall ends.
 
 ### Projectiles and the environment
 
@@ -78,7 +78,7 @@ Arrows, spectral and tipped arrows, tridents, snowballs, eggs, small and large f
 | Snowball, egg | None; it pushes the NPC | Gone |
 | Small fireball | 5, and an NPC that lists `fire` burns for 5 seconds | Gone |
 | Large fireball, wither skull | 6 and 8 | Bursts where it hit, without breaking blocks |
-| Splash or lingering potion | Harming deals 6 per level and Healing heals 4 per level to the NPC it hit | Drops and breaks at the NPC's feet, so its effects reach real entities as vanilla |
+| Splash or lingering potion | Harming deals 6 and Healing heals 4 to the NPC it hit, doubling with each level above I | Drops and breaks at the NPC's feet, so its effects reach real entities as vanilla |
 
 An NPC that lists `lava` takes 4 damage every half second while its body touches lava. One that lists `fire` takes 1 every half second in fire. Both set the body burning, which every viewer sees: 15 seconds after lava and 8 after fire. A burning NPC that lists `fire` takes 1 a second once out of them, and water puts it out. Armor reduces lava and fire damage, not the burn.
 
@@ -121,15 +121,14 @@ Settings live in the NPC definition as JSON. Every section and field is optional
 | Section | Meaning |
 | --- | --- |
 | `targets`, `ignores`, `avoids` | Rule lists; see [target rules](#target-rules). An ignore always beats a target. |
-| `targeting` | `scanRange` 1-256 blocks, limited further by `maximumScanRange` in `config.toml`. `lineOfSight` is `required`, `ignored` or `field_of_view` (a 140-degree cone in front of the NPC, plus line of sight). `memoryTicks` keeps a target that went behind a wall. `reactionTicks` delays the first attack on a new target. `retainTarget` keeps the current target when a closer one appears. `fightBack` targets whoever hurts the NPC. |
-| `avoidance` | The NPC runs from anything in `avoids` within `range`, toward `returnPoint` when set. `fleeWhenAttacked` makes it run from attackers instead of fighting. |
-| `squad` | Members never target each other or each other's guarded player. A member that picks a target alerts idle members within `alertRange`. |
-| `guard` | Either `player` or `npc` (a UUID). Once farther than `followDistance` (1-64, default 7), the guard walks to a point `pointRange` (0-16, default 4) behind its charge, against the way the charge last moved, and walks faster when more than twice `followDistance` behind. It replans when the charge moved more than `replanDistance` (0.25-16, default 1.5) since the last plan or the plan is `replanTicks` old, at most every 5 ticks. Beyond `catchUpDistance` (0-256, default 24; 0 turns it off), in another world or after a teleport, it stops fighting and teleports to clear ground beside its charge. It attacks whatever hurts its charge and never targets it. With `assist`, it also attacks whatever its charge attacks. |
-| `pursuit` | `speed` is 1-10 blocks per second, limited further by `maximumSpeed` in `config.toml`. A target farther than `giveUpRange` (at most 256) is dropped. `leashRange` is measured from where the fight began; past it the NPC drops the target and, with `returnToPost`, walks back before its patrol resumes. `teleportWhenStuck` moves the NPC to its goal after three refused path requests. `region` names a protection region: targets outside it are not chosen, and a target that leaves it is dropped (checked every 10 ticks). |
-| `melee` | Every hit swings the NPC's main arm for everyone who sees it. Reach is measured from the NPC's body center to the nearest point of the target's bounds, at most 6 blocks. `fromEquipment` takes damage from the definition's `main_hand` item (see [equipment](#equipment)). `weaponDamage` maps a held item to its damage and replaces any other damage, for melee and ranged, while that item is held. |
-| `ranged` | `weapon` is `arrow`, `spectral_arrow`, `trident`, `snowball`, `egg`, `fireball`, `small_fireball`, `wither_skull`, `llama_spit` or `potion`. A potion needs `effect`; see [weapons](#weapons). An NPC with `arrow`, `spectral_arrow` or `trident` holds its weapon drawn while a target is in range and lowers it when the fight ends; any other weapon is thrown with an arm swing. `minimumRange` makes the NPC switch to melee or walk closer. `safeShot` holds fire when a friend is in the line and makes a shot that hits anything other than its target do nothing. `fromEquipment` and `useAmmo` are described below. |
-| `greetings` | When a player the NPC can see comes within `range` (1-64), it says `hostile` to a player it would target and `friendly` to anyone else, as `[NPC name]: text` in that player's chat. A player is spoken to again only after leaving range and coming back, and at most once per `cooldownTicks`. Either line may be left out. |
-
+| `targeting` | `scanRange` 1-256 blocks (default 16), limited further by `maximumScanRange` in `config.toml`. `scanIntervalTicks` 1-200 (default 10) sets how often it looks for targets. `lineOfSight` is `required`, `ignored` or `field_of_view` (a 140-degree cone in front of the NPC, plus line of sight). `memoryTicks` (0-1200, default 60) keeps a target that went behind a wall. `reactionTicks` (0-200, default 0) delays the first attack on a new target. `retainTarget` (default `false`) keeps the current target when a closer one appears. `fightBack` (default `true`) targets whoever hurts the NPC. `lineOfSight` defaults to `required`. |
+| `avoidance` | The NPC runs from anything in `avoids` within `range` (1-64, default 10), toward `returnPoint` when set. `fleeWhenAttacked` makes it run from attackers instead of fighting. |
+| `squad` | Members never target each other or each other's guarded player. A member that picks a target alerts idle members within `alertRange` (1-64, default 16). |
+| `guard` | Either `player` or `npc` (a UUID). Once farther than `followDistance` (1-64, default 7), the guard walks to a point `pointRange` (0-16, default 4) behind its charge, against the way the charge last moved, and walks faster when more than twice `followDistance` behind. It replans when the charge moved more than `replanDistance` (0.25-16, default 1.5) since the last plan or the plan is `pursuit.replanTicks` old, at most every 5 ticks. Beyond `catchUpDistance` (0-256, default 24; 0 turns it off), in another world or after a teleport, it stops fighting and teleports to clear ground beside its charge. It attacks whatever hurts its charge and never targets it. With `assist` (default `false`), it also attacks whatever its charge attacks. A guard ignores `leashRange` and `returnToPost`. |
+| `pursuit` | `speed` is 1-10 blocks per second (default 4), limited further by `maximumSpeed` in `config.toml`. A target farther than `giveUpRange` (1-256, default 32) is dropped. `leashRange` (1-256, default 64) is measured from where the fight began; past it the NPC drops the target and, with `returnToPost` (default `true`), walks back before its patrol resumes. `closeChase` (default `true`) makes an NPC that fights in melee walk after its target. `rangedChase` (default `false`) makes an NPC keep walking toward a target it can already shoot, and toward one it can neither shoot nor reach in melee. `replanTicks` (5-200, default 20) is how old a chase path may get before it is planned again. `teleportWhenStuck` (default `false`) moves the NPC to its goal after three refused path requests. `region` names a protection region: targets outside it are not chosen, and a target that leaves it is dropped (checked every 10 ticks). |
+| `melee` | On by default: `damage` 2 (0.01-100), `reach` 3 (0.5-6), `cooldownTicks` 20 (1-1200), `knockback` 0.4 (0-4). Every hit swings the NPC's main arm for everyone who sees it. Reach is measured from the NPC's body center to the nearest point of the target's bounds. `fromEquipment` takes damage from the definition's `main_hand` item (see [equipment](#equipment)). `weaponDamage` maps a held item to its damage and replaces any other damage, for melee and ranged, while that item is held. |
+| `ranged` | Off by default. Defaults: `weapon` `arrow`, `damage` 3 (0.01-100), `range` 24 (1-256), `minimumRange` 0, `cooldownTicks` 40 (1-1200), `velocity` 1.6 (0.5-4), `inaccuracy` 0 (0-16), `knockback` 0.2 (0-4). `weapon` is `arrow`, `spectral_arrow`, `trident`, `snowball`, `egg`, `fireball`, `small_fireball`, `wither_skull`, `llama_spit` or `potion`. A potion needs `effect`; see [weapons](#weapons). An NPC with `arrow`, `spectral_arrow` or `trident` holds its weapon drawn while a target is in range and lowers it when the fight ends; any other weapon is thrown with an arm swing. `minimumRange` makes the NPC switch to melee or walk closer. `safeShot` holds fire when a friend is in the line and makes a shot that hits anything other than its target do nothing. `fromEquipment` and `useAmmo` are described below. |
+| `greetings` | When a player the NPC can see comes within `range` (1-64, default 10), it says `hostile` to a player it would target and `friendly` to anyone else, as `[NPC name]: text` in that player's chat. A player is spoken to again only after leaving range and coming back, and at most once per `cooldownTicks` (default 100). Either line may be left out. |
 | `victimDrops` | Default `true`. `false` stops mobs killed by this NPC from dropping loot or experience. |
 
 The NPC's [attributes](/animus/04-npc-definitions#attributes) fill what the module leaves out: `attack_damage`, `attack_knockback` and `attack_speed` the melee hit, `follow_range` the scan range and `movement_speed` the chase speed. `max_health`, `armor`, `armor_toughness` and `knockback_resistance` fill `animus:health`. A field the module sets always wins.
@@ -181,7 +180,7 @@ A `potion` applies its effect once to whatever it hits:
 
 A helpful effect (instant health, regeneration, speed, strength, resistance, fire resistance, absorption, health boost, saturation, night vision, water breathing, invisibility, jump boost, haste, luck, slow falling, conduit power, dolphin's grace, hero of the village) is not an attack: it needs no protection check, it may land on the NPC's charge or squad, and an NPC with such a weapon never uses melee. Any other effect is an attack and passes protection like a hit. On another combat NPC, instant health heals 4 times 2 to the amplifier and instant damage deals 6 times 2 to the amplifier through its defense; other effects do nothing to NPCs. A healer is a potion NPC whose targets select the players it should help, for example `"targets": {"all": [{"categories": ["players"], "healthBelow": 50}]}`.
 
-With `useAmmo`, each shot uses one matching item counted from the definition's stored inventory: arrows (plain, tipped or spectral) for `arrow`, the item itself for `spectral_arrow`, `trident`, `snowball` and `egg`, fire charges for fireballs, wither skeleton skulls for `wither_skull`, and splash or lingering potions for `potion`. `llama_spit` needs none. The count is runtime state: the stored inventory is never changed, the count starts again when the NPC respawns, the definition changes or the server restarts, and an NPC with none left stops shooting and uses melee or closes in. `/animus combat status npc=<npc-id>` shows `ammunition=<count>`.
+With `useAmmo`, each shot uses one matching item counted from the definition's stored inventory: arrows (plain, tipped or spectral) for `arrow`, the item itself for `spectral_arrow`, `trident`, `snowball` and `egg`, fire charges for fireballs, wither skeleton skulls for `wither_skull`, and splash or lingering potions for `potion`. `llama_spit` needs none. The count is runtime state: the stored inventory is never changed, the count starts again when the NPC respawns, the definition changes or the server restarts, and an NPC with none left stops shooting and uses melee or closes in. `/animus combat status npc=<npc-id>` shows the count, as `<count> ammunition` on Paper, Spigot and mod servers and `ammunition=<count>` on Folia.
 
 ## Equipment
 
@@ -217,7 +216,7 @@ An NPC without a killable `animus:health` module cannot be hurt by any of these.
 An NPC whose `animus:health` has `"respawn": {"afterDeath": "delete"}` processes its death normally (drops, experience, the `death` trigger), and then its definition is deleted as one ordinary transaction, the same as `/animus delete`. The server log names the transaction:
 
 ```none
-Combat NPC guard died and was deleted (animus:health afterDeath delete); undo with /animus rollback <transaction>
+Combat NPC guard died and was deleted (animus:health afterDeath delete); tx <transaction>
 ```
 
 `/animus rollback <transaction>` restores the definition exactly. If the definition was already deleted or replaced, nothing happens. `/animus combat status` counts deletions as `deleted-on-death`.
@@ -254,7 +253,7 @@ The built-in [`animus:combat-control`](/animus/07-behaviors#actions) action driv
 
 `target` is a UUID, or `player` for the player who started the run, so a hire dialogue can guard whoever answered it. The action fails with a reason when the NPC has no enabled combat, is dead, or the target is not available in its world. Use the `damage` and `death` triggers to react to fights.
 
-Administrators have the same operations as `/animus combat` commands, which need `animus.admin`; see [commands](/animus/02-commands-permissions#combat) for the full list. The ones you use most:
+Administrators have the same operations as `/animus combat` commands, which need `animus.combat` (granted by `animus.admin`). A target is a player name, an NPC id, `@me` or a UUID; see [commands](/animus/02-commands-permissions#combat) for the full list. The ones you use most:
 
 ```none
 /animus combat status npc=guard

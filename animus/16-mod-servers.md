@@ -2,13 +2,18 @@
 title: "Animus: Mod Servers"
 description: "Running Animus on Fabric, NeoForge and Forge servers, and what differs from Bukkit"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, fabric, neoforge, forge, mods, compatibility"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Animus runs on Fabric, NeoForge and Forge servers for Minecraft 26.1.2, 26.2 and 26.3 with Java 25. It is a server-side mod: players join with an unmodified client. The NPC runtime, definitions, imports, commands, behaviors, triggers, modules, navigation, mounts, riding and combat are the same as on Bukkit and Paper, so a definition behaves the same on every platform. An integrated singleplayer or LAN server loads it too.
+Animus runs on Fabric, NeoForge and Forge servers for Minecraft 26.1.2, 26.2 and 26.3 with Java 25.
+
+> Mod server support is experimental. Expect rough edges, and test on a copy of your world before you rely on it. Paper, Spigot and Folia are the supported platforms.
+{.is-warning}
+
+It is a server-side mod: players join with an unmodified client. The NPC runtime, definitions, imports, commands, behaviors, triggers, modules, navigation, mounts, riding and combat are the same as on Bukkit and Paper, so a definition behaves the same on every platform. An integrated singleplayer or LAN server loads it too.
 
 ## Install
 
@@ -42,10 +47,10 @@ After installing, run `/animus status` from the console or as an operator to che
 |---|---|
 | `animus.status` | Everyone |
 | `animus.build.donate` | Everyone |
-| `animus.admin`, `animus.debug`, `animus.hotload.notify` | Operators (permission level 2 and above) |
+| `animus.admin` and the nodes under it, `animus.debug`, `animus.debug.mode`, `animus.hotload.notify`, `animus.editor.commands`, `animus.editor.notify` | Operators (permission level 2 and above) |
 | `animus.ride` and custom riding nodes | Operators |
 
-A permission mod can grant any node through the vanilla permission named by the node with its first dot as the namespace separator: `animus.admin` is `animus:admin` and `animus.ride.town` is `animus:ride.town`.
+A permission mod can grant any node through the vanilla permission named by the node with its first dot as the namespace separator: `animus.admin` is `animus:admin`, which grants every node under it as on Paper, and `animus.ride.town` is `animus:ride.town`.
 
 ## What differs from Bukkit
 
@@ -59,12 +64,14 @@ A permission mod can grant any node through the vanilla permission named by the 
 | Money prices in shops, GUIs and hiring | No economy unless a Java module provides one. Use item prices |
 | Mob control (`/animus combat mob <npc> <mob>`) | Not available; the command says so. Use `/animus combat target <npc> <target>` or `combat guard` instead |
 | Manual hit (`/animus combat attack <npc> <target> [damage=1]`) | Available, with the same reach, line of sight and protection checks |
-| Plugin events (`VirtualNpcInteractionEvent`, `VirtualNpcDamageEvent` and the others) | Not fired. Java modules and behavior triggers receive the same facts on every platform |
+| Plugin events (`VirtualNpcInteractionEvent`, `VirtualNpcDamageEvent` and the others) | Not fired. Behavior triggers receive the same facts on every platform; Java modules receive interaction notices |
 | PlaceholderAPI placeholders (`%player_name%`) | Not filled: PlaceholderAPI is a Bukkit plugin, and mod-side placeholder mods are not read. Text shows the `%` placeholders as written; Animus's own `{player_name}` and `{{ }}` holes still work |
 | React metrics | Not published; [`/animus debug`](/animus/17-debug-react-metrics) works the same |
 | Packet previews (`/animus proof`, `/animus proof folia`) | Not available; they answer that they belong to Bukkit |
 | `packetProofEnabled` in `config.toml` | Ignored |
+| Chest GUIs with a `5x1` or `3x3` shape | Do not open; use a 9-wide chest shape |
+| Gloss | Not available, so `import gloss live`, `gui export gloss` and GUI bindings with `"kind": "gloss"` have nothing to talk to. `import gloss file` and `gui export file` work |
 
 ## Recording on mod servers
 
-`/animus record` works on Fabric, NeoForge and Forge with the same syntax as on Paper, and needs permission level 2. Recordings are saved in `config/animus/recordings/<id>.json`. The ghost wears the recorder's own skin when the server runs in online mode, and a plain skin in offline mode. Arm swings are read from the client's swing packet, and door, trapdoor and fence gate use from its use-on-block packet, because the loaders have no shared event for these.
+`/animus record` works on Fabric, NeoForge and Forge with the same syntax as on Paper, and needs `animus.record`. Recordings are saved in `config/animus/recordings/<id>.json`. The ghost wears the recorder's own skin when the server runs in online mode, and a plain skin in offline mode. Arm swings are read from the client's swing packet, and door, trapdoor and fence gate use from its use-on-block packet, because the loaders have no shared event for these.

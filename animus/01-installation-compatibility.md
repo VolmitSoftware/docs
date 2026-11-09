@@ -2,7 +2,7 @@
 title: "Animus: Installation and Compatibility"
 description: "Requirements, installation, data folder layout and platform differences"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, installation, compatibility, paper, spigot, folia, fabric, neoforge, forge"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -15,7 +15,7 @@ dateCreated: 2026-11-05T00:00:00.000Z
 | Minecraft | 26.1.2, 26.2 and 26.3 |
 | Java | 25 |
 | Plugin servers | Paper, Spigot and Folia |
-| Mod servers | Fabric, NeoForge and Forge, dedicated server |
+| Mod servers | Fabric, NeoForge and Forge, dedicated server. Experimental |
 | Client | Unmodified vanilla client |
 
 Optional plugins on Paper, Spigot and Folia:
@@ -26,6 +26,7 @@ Optional plugins on Paper, Spigot and Folia:
 | Vault | Money prices in [shops](/animus/10-shops), GUIs and NPC hiring |
 | Gloss | Importing and exporting GUIs, holograms and menus in [Gloss formats](/animus/11-guis-holograms-menus) |
 | React | Receiving Animus [metrics](/animus/17-debug-react-metrics) |
+| PlaceholderAPI | Filling `%placeholders%` in NPC names, holograms, messages and GUIs; see [placeholders](/animus/03-configuration#placeholders) |
 
 ## Install on Paper, Spigot or Folia
 
@@ -37,6 +38,9 @@ Optional plugins on Paper, Spigot and Folia:
 Next, follow [your first ten minutes](/animus/20-first-ten-minutes) to make, skin and walk a first NPC. Moving from Citizens? Follow [migrating from Citizens](/animus/13-migrating-from-citizens) before you create NPCs by hand.
 
 ## Install on a mod server
+
+> Mod server support is experimental. Expect rough edges, and test on a copy of your world before you rely on it.
+{.is-warning}
 
 Put the jar for your loader and Minecraft version in the server's `mods/` folder. Each jar runs only on its own Minecraft version.
 
@@ -70,12 +74,23 @@ Everything lives in `plugins/Animus/` (or `config/animus/` on mod servers). The 
 | `schematics/` | Schematics for [building](/animus/09-building) |
 | `modules/` | Trusted [Java module](/animus/99-java-modules-api) jars |
 | `imports/`, `imports/inbox/` | Import sources and staged import bundles |
+| `exports/gui/` | GUI folders and bundles written by `/animus gui export file` |
 | `schemas/` | JSON schemas written by `/animus behaviors schema` |
 | `state/` | Generated recovery checkpoints, transaction journal, behavior variables, hire contracts and editor tokens |
 | `backups/` | Rollback receipts for each transaction |
 | `logs/` | Shop transaction logs |
 
 Plugin settings use TOML. Every other document uses JSON. Do not edit or delete `state/` or `backups/` by hand; see [storage and recovery](/animus/12-storage-recovery).
+
+## Removing Animus
+
+NPCs, holograms and GUIs are packets only, so removing Animus leaves nothing in the world.
+
+1. Stop the server.
+2. Delete `plugins/Animus-<version>.jar` (on mod servers, the mod jar under `mods/`).
+3. To remove the data too, delete `plugins/Animus/` (`config/animus/` on mod servers). Keep it to reinstall later with every NPC, behavior, shop and receipt intact. `plugins/bStats/` is shared with other plugins; leave it.
+
+The web editor's pairing for this server lives in `state/editor/`. Deleting the data folder ends every pairing, and a reinstall makes a new identity with a new fingerprint, so browsers pair again. Revoke tokens first with `/animus editor revoke all` if the folder is kept but the editor should lose access.
 
 ## Platform differences
 
@@ -91,7 +106,7 @@ Paper and Spigot run every feature. Folia and mod servers run the same NPC runti
 | `targetableByMobs` drawing real mobs | Yes | No effect | No effect |
 | Combat and build protection | WorldGuard when installed | Same as Paper, asked on the region that owns the target | None |
 | Money prices | Vault | Vault, called on the player's region | Only through a Java module economy hook; use item prices otherwise |
-| Bukkit events (`VirtualNpcInteractionEvent` and others) | Yes | Yes, on the owning region | Not fired |
+| [Bukkit events](/animus/99-java-modules-api#bukkit-plugins) (`VirtualNpcInteractionEvent` and others) and the `AnimusNpcs` service | Yes | Yes, on the owning region | Not fired |
 | Packet preview tools | `/animus proof` | `/animus proof folia` | No |
 | Data folder | `plugins/Animus/` | `plugins/Animus/` | `config/animus/` |
 

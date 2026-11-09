@@ -2,7 +2,7 @@
 title: "Animus Tutorial: Web Editor"
 description: "Pair the web editor, make and edit NPCs, trait groups, conversations, shops and routes, and apply or undo changes"
 published: true
-date: 2026-11-08T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, tutorial, editor, web, pairing"
 editor: markdown
 dateCreated: 2026-11-08T00:00:00.000Z
@@ -12,7 +12,7 @@ This is the last part of the Animus tutorial. The [web editor](https://animus-ed
 
 ## 1. Pair with a server
 
-Pairing gives one browser a token for one server. Run the pair command in game or from the console and open the link it prints. The pairing page shows the server's name and fingerprint; check that it matches `/animus editor status`. With **Remember this browser** on, the token survives closing the tab. [Pairing](/animus/14-web-editor#pairing) lists the scopes and options.
+Pairing gives one browser a token for one server. Run the pair command in game or from the console and open the link it prints. The pairing page shows the server's name and fingerprint; check that it matches `/animus editor status`. **Remember this browser** is on by default, so the token survives closing the tab; turn it off on a shared computer. [Pairing](/animus/14-web-editor#pairing) lists the scopes and options.
 
 <div class="animus-demo">
 <p><strong>Pair with a server</strong> Browser editor.</p>
@@ -25,8 +25,8 @@ Pairing gives one browser a token for one server. Run the pair command in game o
 ```
 
 - Click **[Open editor]** in the reply, or paste the link under **Servers** on the editor's home page.
-- Check the fingerprint, turn on **Remember this browser** and click **Pair**.
-- Open the server to list its documents.
+- Check the fingerprint, leave **Remember this browser** on and click **Pair**.
+- Click **Open all** in the sidebar to open the server's documents, or **Pick from the catalog** to open some of them.
 
 The link works once, within 10 minutes. Add the `spawn` scope to spawn and despawn NPCs from the editor:
 
@@ -71,7 +71,7 @@ A [trait group](/animus/18-trait-groups) supplies values to every NPC that lists
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/04-trait-groups-editor.webm" aria-label="Creating a trait group and assigning it to three NPCs" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Click **New document** and pick **Trait group**. Give it an id.
+- Click **New document** and pick **Group**, the trait group kind. Give it an id.
 - Set its look under **Appearance**.
 - Go to **Browse**, select the NPCs and assign the group from the **Trait groups** form above the list.
 - Open one member and read its **Effective** table.
@@ -104,7 +104,7 @@ The shop editor lists offers as rows that read like trades, and draws the tradin
 
 - Click **New document**, pick **Shop** and start blank.
 - Set the title.
-- Click **+ Add offer**, pick **Trade** and set the items. Add a **Buy** offer with a price.
+- Click **+ Add offer**, pick **Trade** and set the items. Add a **Buy** offer with a price. Money prices need Vault and an economy plugin on the server; without them, use item prices.
 - Switch between **Trading screen** and **Chest window** to check both.
 - On the **NPCs** tab, click **Attach to NPC...** and pick the NPC.
 

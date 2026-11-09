@@ -2,7 +2,7 @@
 title: "Animus: Building"
 description: "NPCs that build schematics block by block, with scaffolding, materials and undo"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, building, schematics, builder"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-11-05T00:00:00.000Z
 
 An NPC can build a schematic block by block. It walks to each block with its normal [navigation](/animus/05-movement-mounts-riding), faces it, swings its arm with the block in its hand and places it, and nearby players hear the block's place sound. A door, bed, tall flower or double chest goes down whole, never one half at a time. To reach blocks high above the ground, the NPC puts up [scaffolding](#scaffolding), climbs it and takes it down again. Several NPCs can share one build. Builds are saved, so they continue after a restart, and every block a build changes can be undone.
 
-Builds run on Spigot and Paper 26.1.2, 26.2 and 26.3, and on Fabric, NeoForge and Forge servers for the same versions. They are not available on Folia; see [platforms](#platforms).
+Builds run on Spigot, Paper and Folia 26.1.2, 26.2 and 26.3, and on Fabric, NeoForge and Forge servers for the same versions. On Folia a build works in region turns; see [Folia builds](/animus/15-folia#builds).
 
 ## Schematic files
 
@@ -30,7 +30,7 @@ Chest, furnace, sign and banner contents in a schematic are not copied: the bloc
 
 ## Commands
 
-All build commands need `animus.admin`, except `donate`, which needs `animus.build.donate`. They are the same on every platform.
+All build commands need `animus.build`, which `animus.admin` grants, except `donate`, which needs `animus.build.donate`. They are the same on every platform.
 
 Every build command is listed under [commands](/animus/02-commands-permissions#building). The three you start with:
 
@@ -106,7 +106,7 @@ When a build replaces or clears one half of such an object already in the world,
 
 ### Materials
 
-With `materials=donate`, a build waits when it needs an item it does not have, and its status says which item and how many. Players hand items over with `/animus build donate <builde` while holding them; the build takes only items it still needs and leaves the rest in the hand. `animus.build.donate` is given to everyone by default. `survey` lists what the rest of the build needs and what it holds. The list is an upper bound: blocks already in place are only counted off when the build gets to them.
+With `materials=donate`, a build waits when it needs an item it does not have, and its status says which item and how many. Players hand items over with `/animus build donate <build>` while holding them; the build takes only items it still needs and leaves the rest in the hand. `animus.build.donate` is given to everyone by default. `survey` lists what the rest of the build needs and what it holds. The list is an upper bound: blocks already in place are only counted off when the build gets to them.
 
 With `materials=container`, items come from the container block at `container=`. The container must be in a loaded chunk; when it is missing or unloaded the build waits.
 
@@ -123,9 +123,9 @@ A block the NPC cannot reach from the ground, because it is more than about `rea
 
 The build finishes only when all its scaffolding is down. `pause` and `cancel` also send the NPCs down with their scaffolding. Scaffolding whose NPC has left the team or the world, scaffolding of a failed build, and scaffolding still standing when the server stops is removed at once, without the NPC. Scaffolding recorded with a build that did not stop cleanly is removed when the server starts again. While scaffolding stands, `status` shows `scaffolding=<blocks>`.
 
-Each scaffolding block is checked with protection like any other change and recorded for undo. When protection refuses a block or another block takes its place, the scaffolding comes down and the NPC reaches the block the other way: after `timeout` it is moved next to the block, or places it from where it stands. The same happens with `scaffolding=false` or when no scaffolding fits. `undo` removes scaffolding still standing; scaffolding the build already took down is not put up again.
+Each scaffolding block is checked with protection like any other change and recorded for undo. When protection refuses a block or another block takes its place, the scaffolding comes down and the NPC reaches the block the other way: after `timeout` it is moved next to the block, or places it from where it stands. The same happens with `scaffolding=false` or when no scaffolding fits. `rollback` removes scaffolding still standing; scaffolding the build already took down is not put up again.
 
-With `materials=creative` scaffolding is free. Otherwise each block takes one `minecraft:scaffolding` from the build's materials (or the container), and every block that comes down goes back to the build's materials, so one column's worth is used again and again. `survey` and `donate` count enough scaffolding for one column from the origin to one block under the highest block left. A build that runs out of scaffolding waits with `needs 1 minecraft:scaffolding to put up scaffolding` while the NPC stays on its column.
+With `materials=creative` scaffolding is free. Otherwise each block takes one `minecraft:scaffolding` from the build's materials (or the container), and every block that comes down goes back to the build's materials, so one column's worth is used again and again. `survey` and `donate` count enough scaffolding for one column from the origin to one block under the highest block left. A build that runs out of scaffolding waits with `needs 1 minecraft:scaffolding to put up scaffolding (have 0)` while the NPC stays on its column.
 
 Walking NPCs climb scaffolding, ladders and vines with their normal navigation, so an NPC on a route can use them too.
 
@@ -139,7 +139,7 @@ A build waits on its own, and starts again on its own, when:
 
 `pause` stops a build until `resume`. `cancel` stops it for good. A paused, waiting, cancelled or finished build keeps its undo record.
 
-`undo` puts back every block the build changed, newest first, including blocks it dug out. A block that someone changed after the build placed it is left alone and counted under `kept`. Undo does not walk: blocks change at `undoPerTick` per tick, and wait for unloaded chunks the same way. The undo record holds at most `maximumUndoEntries` changes. Past that the build still runs, its status shows `undo=... (full)`, and undo can only revert the changes it recorded.
+`/animus build rollback <build>` puts back every block the build changed, newest first, including blocks it dug out. A block that someone changed after the build placed it is left alone and counted under `kept`. Undo does not walk: blocks change at `undoPerTick` per tick, and wait for unloaded chunks the same way. The undo record holds at most `maximumUndoEntries` changes. Past that the build still runs, its status shows `undo=... (full)`, and undo can only revert the changes it recorded.
 
 ## Protection
 
@@ -231,9 +231,7 @@ saveSeconds = 5
 | --- | --- | --- |
 | Spigot and Paper | Yes, on the main thread | WorldGuard flags when installed, otherwise none |
 | Fabric, NeoForge, Forge | Yes, on the server thread | None: mod servers have no standard protection API |
-| Folia | No. `/animus build` and `animus:build` say so | |
-
-On Folia a build site, the NPCs of its team and its material container can belong to different regions, so building is turned off there.
+| Folia | Yes, in region turns; see [Folia builds](/animus/15-folia#builds) | WorldGuard flags when installed, otherwise none |
 
 ## Limits
 

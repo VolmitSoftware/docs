@@ -2,7 +2,7 @@
 title: "Animus: Behaviors"
 description: "JSON behavior documents, triggers, built-in capabilities, packs and state"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, behaviors, triggers, dialogue, quests, packs"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -422,7 +422,7 @@ The web editor edits this list as the Server behaviors list document: add, remov
 
 A server behavior has no NPC. It may declare only `execution`, `player` and `global` variables, and it may use only these events: `player_join`, `player_quit`, `player_chat`, `command`, `server_start`, `timer`, `player_death`, `player_respawn`, `player_world_change`, `module` and the [world events](#world-events). NPC behaviors cannot use the player and server events. Capabilities that need an NPC refuse a server run with `no-npc`: `say`, `look`, `navigate`, `stop-navigation`, `play-recording`, `resume-patrol`, `set-appearance`, `set-equipment`, `set-attribute`, `combat-control`, `build`, `play-animation`, `stop-animation`, `choices`, `npc-state`, `player-in-range`, flags and quests with `npc` or `relationship` scope, sounds and particles `at` the NPC, and teleports of or to the NPC.
 
-Every event except `server_start` and `timer` carries the player, and the projectile events carry it when a player shot, so `player` variables and the player capabilities work from it. Runs see the event's details as `context`: `message` for chat and death, `first` for joins, `from` and `to` for world changes, and `command`, `alias`, `args` (the words after the command) and `raw_args` for commands. Cooldowns of player events apply per trigger and player, so one player's cooldown never holds back another. Other cooldowns apply per trigger.
+Every event except `server_start` and `timer` carries the player, and the projectile events carry it when a player shot, so `player` variables and the player capabilities work from it. Runs see the event's details as `context`: `message` for chat and death, `first` for joins, `from` and `to` for world changes, and `command`, `alias`, `args` (the words after the command) and `raw_args` for commands. Cooldowns of player events apply per trigger and player, so one player's cooldown never holds back another. A trigger tracks up to 4,096 players in their cooldown; while that many are still cooling down, a new player's event is suppressed until one expires. Other cooldowns apply per trigger.
 
 ### World events
 
@@ -548,9 +548,9 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:actionbar` | `text` (up to 256 characters), optional `player` | Shows the text above the player's hotbar. |
 | `animus:choices` | `id`, `prompt`, `options` (1-8 of `id` and `text`, each with optional `color`, `hover`, `style`), optional `lifetimeSeconds` (1-600) | Shows the prompt and a row of colored answer buttons to the triggering player. Completes when shown and does not wait for the answer. |
 | `animus:command` | `command` (no leading slash), optional `as`: `console` (default) or `player`, optional `player` | Runs the command. Each `{player}` becomes the triggering player's UUID, which vanilla selectors accept, such as `clear {player} minecraft:emerald 1`. Each `{player_name}` becomes their current name. Requires the [allow-list](#commands). |
-| `animus:navigate` | Either `x`, `y`, `z` with optional `mode` (`walk`, `swim`, `fly`) and `speed` (1-5), or `route`. Optional `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). | Starts a route or follows `routes/<route>.json`. Completes when requested unless `wait` is true; see [walking a patrol](#walking-a-patrol). The [movement](/animus/05-movement-mounts-riding) limits apply. |
+| `animus:navigate` | Either `x`, `y`, `z` with optional `mode` (`walk`, `swim`, `fly`) and `speed` (1-5), or `route`. Optional `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). | Starts a route or follows `routes/<route>.json`. Completes when requested unless `wait` is true; see [walking a patrol](#walking-a-route). The [movement](/animus/05-movement-mounts-riding) limits apply. |
 | `animus:stop-navigation` | None | Stops any route, including a playing recording. Reports `stopped`. |
-| `animus:play-recording` | `recording` (an id under `recordings/`), optional `playback` (`once`, `loop` or `pingpong`; unset uses the recording's own, else `loop`), `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). `wait` needs a `once` playback. | Plays a [performance recording](/animus/19-performance-recordings) on the NPC. Completes when started unless `wait` is true, then at the last frame, with the same failures as [walking a patrol](#walking-a-patrol). Unavailable when `[recordings]` is disabled. |
+| `animus:play-recording` | `recording` (an id under `recordings/`), optional `playback` (`once`, `loop` or `pingpong`; unset uses the recording's own, else `loop`), `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). `wait` needs a `once` playback. | Plays a [performance recording](/animus/19-performance-recordings) on the NPC. Completes when started unless `wait` is true, then at the last frame, with the same failures as [walking a patrol](#walking-a-route). Unavailable when `[recordings]` is disabled. |
 | `animus:resume-patrol` | None | Restarts the NPC's declared route or recording, continuing from where combat, `/animus navigation go` or a stop interrupted it. Reports `resumed`, or `nothing-to-resume` when there is none. |
 | `animus:look` | Either `x`, `y`, `z`, or `"target": "player"` | Turns the NPC. The target must be within 64 blocks in the same world. |
 | `animus:pose` | `pose`: a name from the definition's `poses` | Turns the NPC to the yaw and pitch of that named pose. A name the definition does not declare is refused. |
@@ -571,7 +571,7 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:open-gui` | `gui`, optional `kind`: `inventory` (default), `menu`, `shop` or `gloss`, optional `player` | Opens the [chest GUI](/animus/11-guis-holograms-menus), [holographic menu](/animus/11-guis-holograms-menus#holographic-menus) or shop with that id for the triggering player. `gloss` opens a Gloss menu by its Gloss id, such as `lobby/main`, and refuses as `gloss-unavailable` when Gloss is not installed. |
 | `animus:set-flag` | `name`, optional `scope`, and either optional `value` (default true: any JSON value, including a list or map) with optional `expireSeconds` (1-31,536,000), or `"clear": true` | Sets the flag, which reads as unset once `expireSeconds` pass. `clear` unsets it. A value outside the value bounds is refused with `flag-value-unsupported`. |
 | `animus:set-quest-state` | `name`, optional `scope`, and either `value` or `random` (1-1,000,000) | Sets the stage to `value`, or to a random stage from 0 up to but not including `random`. `"random": 3` picks 0, 1 or 2. |
-| `animus:advance-quest-state` | `name`, optional `scope`, `by` (default 1), `maximum` | Adds to the stage without passing `maximum`. Reports `value`. |
+| `animus:advance-quest-state` | `name`, optional `scope`, optional `by` (default 1), optional `maximum` | Adds to the stage without passing `maximum`. Reports `value`. |
 
 `audience` is `trigger` (default) or `nearby`; `radius` applies to `nearby`, from 1 to 64 with a default of 16. `player` is the UUID of an online player the capability addresses instead of the triggering player; a capability with `player` needs no triggering player. In a preview, `player`, `audience: nearby` and messages to anyone other than the triggering player are refused, and teleports and items always are. `scope` is `player` (default), `npc`, `relationship` or `global`. A capability that addresses the triggering player fails with `no-triggering-player` when the run has none, as with `/animus behaviors run` from the console. Text that uses `{player_name}` needs a triggering player too, even with the `nearby` audience; it fails with `player-name-unknown` when the server does not know the player's name.
 
@@ -633,7 +633,7 @@ Everything an NPC says, every prompt and answer, combat greetings and warnings, 
 
 Unicode symbols such as `❤`, `⚔` and `✔` show as written. A speaker without its own color is shown in Animus pink (`#FF5FA8`) and spoken text in white.
 
-With PlaceholderAPI installed on Paper, Spigot or Folia, `%placeholders%` in `animus:say`, `animus:message`, `animus:actionbar` and `animus:title` text, in dialogue prompts and in choice text and hover are filled for each player who receives them, after `{player_name}` and `{{ }}` holes. A `say` to nearby players fills each listener's own values. See [`[placeholders]`](/animus/03-configuration#placeholders).
+With PlaceholderAPI installed on Paper, Spigot or Folia, `%placeholders%` in `animus:say`, `animus:message`, `animus:actionbar` and `animus:title` text, in dialogue prompts and in choice text and hover are filled for each player who receives them, after `{player_name}` and `{{ }}` holes. Only placeholders you write in the text are filled: in a player's name and in what a hole adds, such as `context.message` or a flag, each `%` shows as the full-width `％`, so a player cannot type a placeholder for others to see filled. A `say` to nearby players fills each listener's own values. See [`[placeholders]`](/animus/03-configuration#placeholders).
 
 ### Dialogue choices
 
@@ -664,7 +664,7 @@ An accepted click starts any matching [`dialogue_choice` trigger](#automatic-tri
 
 Commands are denied by default. A behavior can use `animus:command` only when its exact ID or its namespace is listed in `config.toml`. Each run logs the behavior ID, the NPC UUID, the sender and the command. Commands never run in a preview, and `/animus modules action` cannot reach them.
 
-> Anyone who can edit an allow-listed behavior can run console commands. Grant as narrowly as you can.
+> Anyone who can edit an allow-listed behavior can run console commands. Grant as narrowly as you can. The web editor changes a behavior that runs commands only with the [`apply:commands`](/animus/14-web-editor#console-commands) scope, which no default pairing has.
 {.is-warning}
 
 ```toml
@@ -677,15 +677,25 @@ choiceLifetimeSeconds = 60
 commandBehaviors = ["town:gate/open"]
 commandNamespaces = []
 navigationWaits = 8
+rawTextBehaviors = []
 ```
 
 Accepted ranges are 1-256 actions per tick, 1-64 per NPC per tick and no more than the tick budget, 1-1,024 queued actions, 1-4,096 pending choices and a choice lifetime of 1-600 seconds. Each list holds at most 256 entries, and `navigationWaits` accepts 1-64. The values shown are the defaults, except the example `commandBehaviors` entry, which is empty by default. Changes apply when `config.toml` is saved. [Shops](/animus/10-shops) and [chest GUIs](/animus/11-guis-holograms-menus) that run commands use the same allow-list.
+
+#### Text in commands
+
+A command can take values with `bindings`, `expressions` or `templates`, such as `"templates": {"/command": "give {{ player.name }} minecraft:emerald {{ reward }}"}`. Each value filled in this way, and each `{{ }}` hole of a template, must be letters, digits and `_ . : + -`. A value with a space, quote, bracket, slash, `@` selector or control character fails the run with `arguments-invalid` and the command does not run, so text a player typed, such as `context.message` or `context.args`, cannot add words or selectors to a console command. The literal text around a hole is yours and is not checked. The same holds for the arguments of a privileged capability from a Java module.
+
+To pass free text through, list the behavior's exact ID in `rawTextBehaviors`. Even then a command never starts with `/` and never holds a new line or other control character. In a command, `{player_name}` refuses a name with spaces or symbols other than `_ . * -`.
+
+> A raw text grant trusts everything the behavior reads: trigger context such as `context.message`, the NPC's fields, and the flags and quest stages it shares with every other behavior in its namespace. Keep raw text behaviors in a namespace of their own. The web editor changes any behavior in that namespace only with [`apply:commands`](/animus/14-web-editor#console-commands).
+{.is-warning}
 
 ### Limits and previews
 
 World and player work waits in a bounded queue and runs on the thread that owns the NPC. Past the per-tick or per-NPC budget, an action waits for a later tick. A full queue fails the action as `BUSY`, which ends that run. Waiting counts toward the module invocation deadline (`modules.invocationTimeoutMillis`), except for `animus:navigate` with `wait`, which has its own timeout. An action that misses the deadline fails its run and is dropped without running. Built-in capabilities are never suspended the way a misbehaving Java module is.
 
-A preview run refuses `command`, `combat-control`, `build`, `navigate`, `stop-navigation`, `play-recording`, `resume-patrol`, `look`, `set-appearance`, `set-equipment`, `set-attribute`, `choices`, `open-shop`, `open-gui` and every flag or quest write. `say`, `play-sound` and `spawn-particle` work in a preview only for the viewer's own `trigger` audience. Conditions read normally.
+A preview run refuses every action that changes the world, an NPC or a player: `command`, `combat-control`, `build`, `navigate`, `stop-navigation`, `play-recording`, `resume-patrol`, `look`, `pose`, `teleport`, `play-animation`, `stop-animation`, `set-appearance`, `set-equipment`, `set-attribute`, `give-item`, `take-item`, `give-book`, `choices`, `open-shop`, `open-gui`, and every flag or quest write. `say`, `message`, `title`, `actionbar`, `play-sound` and `spawn-particle` work in a preview only for the viewer's own `trigger` audience, without a `player` argument. Conditions read normally.
 
 ## Packs
 
@@ -728,6 +738,7 @@ When a required module is not installed or not active, every behavior in the pac
 | `behavior.schema.json` | JSON Schema 2020-12 for behavior documents, including every capability registered on the server, with its arguments. |
 | `npc.schema.json` | NPC definitions and their built-in `modules` settings. |
 | `pack.schema.json` | Pack manifests. |
+| `route.schema.json` | Reusable routes under `routes/`. |
 | `completions.json` | Capability IDs with kind, description, whether they need an NPC (`reach`) and each argument's type, range, allowed values and whether it is required; trigger events with their fields, reach and the `context` keys of server events; node types; variable types, scopes and lifetimes; and the expression language: roots, facts, flag scopes and functions. |
 
 The files come from the same registry the server validates with, so they list built-in capabilities and those of the Java modules loaded at the time. Run the command again after adding a module. Each file is limited to 2 MiB and the set to 4 MiB; a larger result is refused and nothing is written. The converter's `schema` command writes the same files with built-in capabilities only.
@@ -738,7 +749,8 @@ Point an editor at them by path. In Visual Studio Code, for example:
 "json.schemas": [
   {"fileMatch": ["**/behaviors/**/*.json"], "url": "./schemas/behavior.schema.json"},
   {"fileMatch": ["**/npcs/**/*.json"], "url": "./schemas/npc.schema.json"},
-  {"fileMatch": ["**/packs/*/pack.json"], "url": "./schemas/pack.schema.json"}
+  {"fileMatch": ["**/packs/*/pack.json"], "url": "./schemas/pack.schema.json"},
+  {"fileMatch": ["**/routes/**/*.json"], "url": "./schemas/route.schema.json"}
 ]
 ```
 
@@ -881,7 +893,7 @@ Player, NPC and server flags with a permission check, as a gate keeper:
 
 ## Commands
 
-All behavior commands need `animus.admin`; every one is listed under [commands](/animus/02-commands-permissions#behaviors). The three you use while writing behaviors:
+All behavior commands need `animus.behaviors` (stored variables need `animus.behaviors.state`), which `animus.admin` grants; every one is listed under [commands](/animus/02-commands-permissions#behaviors). The three you use while writing behaviors:
 
 | Command | Result |
 | --- | --- |
@@ -901,7 +913,7 @@ Cancellation cannot undo an action that already happened or forcibly stop a runn
 
 ### State lifetime
 
-Variables are never removed implicitly. Deleting or disabling a behavior, deleting an NPC, or losing a module leaves the state in place, so restoring the same behavior ID or NPC UUID finds it again. A cloned NPC gets a new UUID and no state. Removal happens only through `state purge`. A running behavior whose state is purged reads its `initial` values from then on and can write new ones.
+Variables are never removed implicitly. Deleting or disabling a behavior, deleting an NPC, or losing a module leaves the state in place, so restoring the same behavior ID or NPC UUID finds it again. A cloned NPC gets a new UUID and no state. Removal happens only through `/animus behaviors state delete`. A running behavior whose state is deleted reads its `initial` values from then on and can write new ones.
 
 ### Traces
 
@@ -949,6 +961,7 @@ concurrentTotal = 32
 defaultCooldownTicks = 0
 minimumTimerTicks = 20
 maximumCommands = 64
+maximumAreas = 256
 
 [behaviors.state]
 maximumKeys = 65536

@@ -1,16 +1,16 @@
 ---
 title: "Animus: Java Modules and API"
-description: "Trusted Java modules, the animus-api contract, interaction notices, import converters and integration hooks"
+description: "Trusted Java modules, the animus-api contract, interaction notices, import converters, integration hooks and the Bukkit plugin API"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, api, modules, developers, integration"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Trusted Java modules add actions, conditions, triggers, import converters and integration hooks to Animus. A module compiles against the standalone `animus-api` artifact (Java 25, no other dependencies) and loads from the Animus data folder at startup. The public package is `art.arcane.animus.api`. The current API version is 1.1.0.
+Trusted Java modules add actions, conditions, triggers, import converters and integration hooks to Animus. A module compiles against the standalone `animus-api` artifact (Java 25, no other dependencies) and loads from the Animus data folder at startup. The public package is `art.arcane.animus.api`. The current API version is 1.2.0. Bukkit plugins use a separate artifact; see [Bukkit plugins](#bukkit-plugins).
 
-The [reference module](https://github.com/VolmitSoftware/Animus/tree/master/examples/modules/reference) is a complete example: it registers a `reference:hello` action, counts interactions, and provides a protection hook.
+The [reference module](https://github.com/VolmitSoftware/Animus/tree/master/examples/modules/reference) is a complete example: it registers a `reference:hello` action and counts interactions. It registers no protection or economy hook, because only one module can provide each and an example that claimed one would keep a real provider from enabling.
 
 ## Depending on the API
 
@@ -21,9 +21,11 @@ repositories {
     maven { url = 'https://jitpack.io' }
 }
 dependencies {
-    compileOnly 'com.github.VolmitSoftware.Animus:animus-api:<tag or commit>'
+    compileOnly 'com.github.VolmitSoftware.Animus:animus-api:<tag>'
 }
 ```
+
+Use an API tag such as `api-1.2.0` for `<tag>`; a commit hash also works.
 
 To build the API locally instead, run this in an Animus checkout with Java 25:
 
@@ -31,7 +33,7 @@ To build the API locally instead, run this in an Animus checkout with Java 25:
 ./gradlew :animus-api:publishToMavenLocal
 ```
 
-This writes `art.arcane.animus:animus-api:<version>` to `~/.m2/repository`, with sources and JavaDoc jars. Add `mavenLocal()` to the module build and depend on it with `compileOnly`.
+This writes `art.arcane.animus:animus-api:1.2.0-SNAPSHOT` to `~/.m2/repository`, with sources and JavaDoc jars. Add `mavenLocal()` to the module build and depend on it with `compileOnly`.
 
 Compile against only the API and the JDK, and leave the API classes out of the module jar.
 
@@ -39,7 +41,7 @@ Compile against only the API and the JDK, and leave the API classes out of the m
 
 Put module jars directly in `plugins/Animus/modules/` (`config/animus/modules/` on [mod servers](/animus/16-mod-servers)) and restart the server. Modules load once per server start, in dependency order. Adding, removing or replacing a jar needs a restart; `/animus reload` and [live apply](/animus/03-configuration#live-apply) do not reload Java classes. A module jar is not a Bukkit plugin and has no `plugin.yml`.
 
-Each jar contains a generated `animus-module.json`:
+Each jar contains an `animus-module.json` at its root. Animus does not generate it; write it yourself, or have your build write it:
 
 ```json
 {
@@ -54,7 +56,9 @@ Each jar contains a generated `animus-module.json`:
 }
 ```
 
-It must match `TrustedModule.manifest()` exactly, or the module is refused before it enables. Platforms are `SPIGOT`, `PAPER`, `FOLIA`, `FABRIC`, `FORGE` and `NEOFORGE`. The `animus` namespace is reserved for [built-in capabilities](/animus/07-behaviors), which stay available when `modules.enabled` is false.
+`api` may also hold `minimumMinor`, the lowest minor of `minimumMajor` the module needs: `{"minimumMajor": 1, "maximumMajor": 1, "minimumMinor": 2}` refuses a 1.1 engine with `requires API 1.2 or newer within 1.x`. In Java the same range is `ApiRange.atLeast(new Version(1, 2, 0))`.
+
+Its `id`, `version`, `api`, `platforms` and `dependencies` must match what `TrustedModule.manifest()` returns, or the module is refused before it enables. `main` names the module's entry class and `exports` the packages its dependents may see; they appear only in this file. Platforms are `SPIGOT`, `PAPER`, `FOLIA`, `FABRIC`, `FORGE` and `NEOFORGE`. The `animus` namespace is reserved for [built-in capabilities](/animus/07-behaviors), which stay available when `modules.enabled` is false.
 
 ### Archive limits
 
@@ -88,20 +92,23 @@ deliveryBudgetMillis = 250
 | `files.deliveryBudgetMillis` | 1-60000 | Result callbacks slower than this are reported |
 | `modules.enabled` | Boolean | `false` stops new work going to Java modules; built-in actions keep working. `true` resumes them, loading them first if the server started with modules off |
 | `modules.maximumInvocations` | 1-256 | Module calls running at once |
-| `modules.invocationTimeoutMillis` | 1-60000 | A call past this deadline is asked to cancel, reported as a timeout, and its module is suspended |
+| `modules.invocationTimeoutMillis` | 1-60000 | A call past this deadline is asked to cancel and reported as a timeout. An action, condition, converter or notice past it suspends its module; [hooks](#integration-hooks) suspend only when they overrun repeatedly |
 | `modules.deliveryBudgetMillis` | 1-60000 | Module callbacks slower than this are reported |
 
-Delivery budgets only report slow callbacks; they do not interrupt Java code. When a module is suspended, capabilities that depend on it become unavailable. These settings apply live: a lower limit lets running work finish and answers new calls with `BUSY` until usage drops.
+Delivery budgets only report slow callbacks; they do not interrupt Java code. When a module is suspended, capabilities that depend on it become unavailable until it resumes; `/animus modules resume <module>` resumes it at once. These settings apply live: a lower limit lets running work finish and answers new calls with `BUSY` until usage drops.
 
 ## Commands
 
 ```none
+/animus modules status
 /animus modules list [page=1]
+/animus modules capabilities [page=1]
 /animus modules action <capability> <npc> <input>
 /animus modules condition <capability> <npc> <input>
+/animus modules resume <module>
 ```
 
-These require `animus.admin`; every module command is listed under [commands](/animus/02-commands-permissions#java-modules). `action` and `condition` call a registered capability on an existing NPC with a JSON argument object, for example `/animus modules action reference:hello guard {}`. They grant no console-command privilege, so `animus:command` cannot be called from here. `status` lists loaded modules, their lifecycle phase, outstanding work, bound hooks and converters, dropped interaction notices and hook failures.
+These require `animus.behaviors`, which `animus.admin` grants; every module command is listed under [commands](/animus/02-commands-permissions#java-modules). `action` and `condition` call a registered capability on an existing NPC with a JSON argument object, for example `/animus modules action reference:hello guard {}`. They grant no console-command privilege, so `animus:command` cannot be called from here. `status` lists loaded modules, their lifecycle phase, outstanding work, bound hooks and converters, dropped interaction notices and hook failures. `resume` brings a suspended module back now; `list` shows each module's state and why it is suspended.
 
 ## Capabilities
 
@@ -117,7 +124,7 @@ A module fires a trigger it registered with `context.triggers().publish(key, npc
 | `OK(false)` | The NPC is dormant or has no bound triggers |
 | `BUSY` | Dropped because the queue is full |
 | `NOT_FOUND` | This module did not register that trigger |
-| `UNAVAILABLE` | Dispatch cannot run here, such as on Folia; the reason is included |
+| `UNAVAILABLE` | Dispatch cannot run, for example while triggers are turned off; the reason is included |
 
 Trigger events carry no payload.
 
@@ -127,6 +134,8 @@ Handlers run on two bounded module workers with a deadline. A call holds its slo
 
 `DefinitionService` reads and replaces NPC definitions asynchronously. Snapshots are immutable and carry a revision and hash token. A replacement is a full JSON document that keeps the UUID, readable id and folder, and names the revision it was based on. Animus validates it before writing, raises the revision and keeps unmodified unknown module settings. A stale token is a conflict. The API cannot spawn NPCs: replacement definitions must be dormant, and spawning goes through `/animus spawn`.
 
+`resolve(id)` finds the handle of the NPC with a readable id such as `guard`, for a module configured by id. `list(group, page)` pages through NPCs in id order, 100 per page, each with its handle, id, folder and whether it is spawned; pass `Optional.of("world/town")` for one folder or `Optional.empty()` for all. Both use the same file queue as reads.
+
 Commands, imports and API edits share one file queue, so each validation and save completes before the next starts. API results are delivered on separate workers. Blocking both result workers uses up the shared admission budget and causes `BUSY` answers, but cannot stall a save in progress. A timeout or cancellation of a module action does not undo a definition edit that already saved; check the accepted revision when recovering from an interrupted action.
 
 ## API versions and compatibility
@@ -134,11 +143,13 @@ Commands, imports and API edits share one file queue, so each validation and sav
 `AnimusApi.API_VERSION` is the contract version. The published artifact version follows it.
 
 - A major version may remove or change contracts. A module declares the majors it supports in `ApiRange`, and the loader refuses it on any other major.
-- A minor version only adds types and methods that the engine implements, such as new `ModuleContext` methods. A module built against 1.0 runs unchanged on every 1.x engine.
-- A module that calls a 1.1 addition and also declares support for older 1.x engines must check `AnimusApi.API_VERSION.minor()` at enable time. The constant is read from the running engine.
-- Modules never implement `ModuleContext`, `DefinitionService` or the registrars, so the engine can add methods to them in a minor version.
+- A minor version stays binary compatible: a module built against 1.0 runs unchanged on every 1.x engine. The Animus build checks each API change against the last released tag.
+- A minor version can add types, and methods on interfaces the engine implements: `ModuleContext`, `DefinitionService` and the registrars.
+- Interfaces a module implements gain only `default` methods in a minor version. These are `TrustedModule`, `Capabilities.Action`, `Capabilities.Condition`, `InteractionNotice.Listener`, `ImportConverters.Converter`, `Integrations.Protection` and `Integrations.Economy`.
+- Enums can gain constants in a minor version, for example `Integrations.ProtectionAction`, `Outcome.Status`, `Platform` and `Capabilities.Kind`. Give every `switch` over them a `default` branch. An exhaustive switch without one throws when it meets a constant added later.
+- A module that calls a newer addition declares that minor with `minimumMinor` (see [installing a module](#installing-a-module)), or checks `AnimusApi.API_VERSION.minor()` at enable time when it also supports older engines. The constant is read from the running engine.
 
-Interaction notices, import converters and integration hooks require API 1.1.
+Interaction notices, import converters and integration hooks require API 1.1. `BLOCK_USE`, `DefinitionService.resolve` and `list`, and `minimumMinor` require API 1.2.
 
 ## Interaction notices
 
@@ -169,7 +180,50 @@ The converter's records go into the same reviewed bundle under `imports/<import-
 | `protection` | NPC combat (`NPC_ATTACK`, `PLAYER_ATTACK`, `MOB_ATTACK`, `MOB_CONTROL`), NPC build block changes (`BLOCK_PLACE`, `BLOCK_BREAK`) and doors, fence gates and trapdoors an NPC opens on its route (`BLOCK_USE`) | Both must allow: WorldGuard on Bukkit, nothing on mod servers |
 | `economy` | Shop and GUI money prices | Used only where the platform has no provider: always on mod servers, and on Bukkit without Vault |
 
-Hooks run synchronously on the thread that needs the answer, so they must be quick, nonblocking and thread-safe. A throw or a null answer denies the action or refuses the payment. A call past the module deadline suspends the module. A provider whose module is suspended or stopped fails closed: protection denies and money prices are refused. Hooks take effect once modules finish enabling at startup.
+Hooks run synchronously on the thread that needs the answer, so they must be quick, nonblocking and thread-safe. A throw or a null answer denies the action or refuses the payment. A provider whose module is suspended or stopped fails closed: protection denies and money prices are refused. Hooks take effect once modules finish enabling at startup.
+
+`BLOCK_USE` arrived in API 1.2. A protection hook that throws or answers null on it, as an exhaustive switch built against 1.1 does, allows the door as servers before 1.2 did. The console says so once per module.
+
+One slow hook call does not suspend its module, since a lag spike or a garbage collection pause can hold any call up. Each call past `modules.invocationTimeoutMillis` is logged, and the third within 60 seconds suspends the module. It resumes on its own after a cool-off of 30 seconds, which doubles with each further suspension up to 15 minutes and starts over after an hour without one. The console names the module and the cool-off, and `/animus modules list` shows it. Run `/animus modules resume <module>` to bring it back sooner.
+
+## Bukkit plugins
+
+A Bukkit plugin that works with Animus NPCs compiles against `animus-bukkit-api`, which holds the NPC events and a lookup service. It shares the API version and tags:
+
+```groovy
+repositories {
+    maven { url = 'https://jitpack.io' }
+}
+dependencies {
+    compileOnly 'com.github.VolmitSoftware.Animus:animus-bukkit-api:<tag>'
+}
+```
+
+`./gradlew :animus-bukkit-api:publishToMavenLocal` writes `art.arcane.animus:animus-bukkit-api:1.2.0-SNAPSHOT` instead. The classes ship inside the Animus plugin, so leave them out of your jar and add `depend: [Animus]` or `softdepend: [Animus]` to your `plugin.yml`.
+
+`AnimusNpcs` is registered with Bukkit's services manager while Animus is enabled:
+
+```java
+AnimusNpcs npcs = Bukkit.getServicesManager().load(AnimusNpcs.class);
+Optional<NpcInfo> guard = npcs.byKey("guard");
+```
+
+It finds an NPC by id (`byKey`), by UUID (`byUuid`) or by display name (`byName`, ignoring case and colors), and lists them all in id order (`all`). Each `NpcInfo` holds the UUID, id, folder, display name and whether it is spawned. Answers come from the loaded definitions and are safe from any thread.
+
+Events live in `art.arcane.animus.bukkit.event`. `getNpcId()` is the NPC's UUID and `getNpcKey()` its id.
+
+| Event | Fired when | Cancellable |
+|---|---|---|
+| `VirtualNpcInteractionEvent` | A player clicks or hits an NPC, after reach and sight checks | Yes |
+| `VirtualNpcDamageEvent` | An NPC is about to damage a player or mob | Yes |
+| `VirtualNpcDamagedByMobEvent` | A mob controlled by `/animus combat mob` is about to damage an NPC | Yes |
+| `VirtualNpcDialogueChoiceEvent` | A player picks a dialogue choice | No |
+| `VirtualNpcSpawnEvent` | An NPC becomes active, or comes back after dying | No |
+| `VirtualNpcDespawnEvent` | An active NPC is despawned, deleted or replaced by another UUID | No |
+| `VirtualNpcDeathEvent` | An NPC's health reaches zero; carries the killer when known | No |
+| `VirtualNpcWaypointEvent` | An NPC reaches a route waypoint; carries the route, index and position | No |
+
+Events fire on the thread that owns the NPC: the main thread on Paper and Spigot, and the NPC's region on Folia. Spawn, despawn and death events are marked asynchronous if they ever fire off a server thread. No world entity stands behind an NPC, so read positions from the event, as an `NpcPosition` with `toLocation()`. Mod servers fire no Bukkit events.
 
 ## Shutdown
 

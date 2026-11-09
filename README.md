@@ -97,11 +97,13 @@ The theme finds clips by their `-pov.webm`, `-observer.webm`, `-ingame.webm`, an
 Copy clips between a checkout and the bucket with [rclone](https://rclone.org) and a remote named `r2` that holds an R2 API token for the bucket:
 
 ```sh
-rclone copy . r2:volmit-docs-media --include "/*-assets/**.webm" --ignore-existing --header-upload "Content-Type: video/webm" --header-upload "Cache-Control: public, max-age=86400"
-rclone copy r2:volmit-docs-media . --include "/*-assets/**.webm" --ignore-existing
+rclone copy r2:volmit-docs-media . --include "/*-assets/**.webm" --update
+rclone copy . r2:volmit-docs-media --include "/*-assets/**.webm" --update --header-upload "Content-Type: video/webm" --header-upload "Cache-Control: public, max-age=86400"
 ```
 
-The first command uploads clips the bucket does not have yet. The second downloads clips the checkout does not have yet. Upload a new clip before pushing the page that links it. Cloudflare caches clips for up to a day and these commands never replace a clip, so give a re-recorded clip a new file name. Do not upload clips through the Wiki.js editor, which stores uploads in the wiki's database.
+The first command downloads clips the checkout does not have, and clips the bucket holds a newer copy of. The second uploads clips the bucket does not have, and clips that changed in the checkout since the bucket copy was written, such as a re-recorded clip saved over the old file. `--update` never replaces a file with an older one, so an old copy of another project's clip cannot overwrite the bucket. Run the download first, so your checkout is current before you upload. Upload a new clip before pushing the page that links it.
+
+Cloudflare caches clips for up to a day, so a replaced clip can play its old version until the cache expires. Purge the clip's URL in the Cloudflare dashboard to show the new one at once. Do not upload clips through the Wiki.js editor, which stores uploads in the wiki's database.
 
 ### Local validation
 

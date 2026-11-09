@@ -2,7 +2,7 @@
 title: "Animus: Trait Groups"
 description: "Shared settings that many NPCs take from one file, with merge rules, commands and the Citizens import option"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, npcs, groups, definitions, citizens"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -40,7 +40,7 @@ Groups live at `groups/<id>.json` in the Animus data folder (`plugins/Animus/` o
 | `revision` | Yes | Integer of at least 1. |
 | `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Matches the file name. |
 | `description` | No | At most 256 characters. Shown by `/animus groups list`. |
-| `values` | Yes | Any optional definition field: `modules`, `behaviors`, `tags`, `equipment`, `hologram`, `nameplate`, `pose`, `poses`, `movement`, `rig`, `armorStand`, `glowing`, `teamColor`, `baby`, `usingItem`, `listed`, `gravity`, `attributes`, `skin`, and `skins`. |
+| `values` | Yes | Any definition field except the identity and state fields listed below, plus `skins`. For example `modules`, `behaviors`, `tags`, `equipment`, `inventory`, `hologram`, `nameplate`, `pose`, `poses`, `movement`, `rig`, `armorStand`, `horse`, `llama`, `glowing`, `teamColor`, `baby`, `usingItem`, `listed`, `gravity`, `attributes` and `skin`. |
 | `values.skins` | No | 1-64 skin hashes. Each NPC takes one of them, chosen from its UUID, so the same NPC always gets the same skin. |
 
 Identity and state fields are refused inside `values`: `schemaVersion`, `revision`, `uuid`, `id`, `group`, `name`, `type`, `spawned`, `position`, `owner`, `migration` and `groups`, for example `$.values.name: not allowed in a group`. A group cannot list other groups. Values are checked with the same rules as an NPC, so a bad item fails the group file, as in `$.values.equipment.head.count: expected integer 1..99`. A group file is at most 256 KiB.
@@ -86,7 +86,7 @@ teamColor from harbor
 
 ## Commands
 
-All of these need `animus.admin`; see [commands](/animus/02-commands-permissions#trait-groups) for the full list. The two that change NPCs:
+All of these need `animus.npc.edit`, which `animus.admin` grants; see [commands](/animus/02-commands-permissions#trait-groups) for the full list. The two that change NPCs:
 
 ```none
 /animus groups assign <group> [folder=] [tag=] [ids=]

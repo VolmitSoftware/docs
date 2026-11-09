@@ -2,7 +2,7 @@
 title: "Animus Tutorial: Movement"
 description: "Capture routes, walk NPCs by command, record a performance and set up mounts and riding"
 published: true
-date: 2026-11-08T00:00:00.000Z
+date: 2026-11-09T00:00:00.000Z
 tags: "animus, tutorial, routes, recordings, mounts, riding"
 editor: markdown
 dateCreated: 2026-11-08T00:00:00.000Z
@@ -93,16 +93,16 @@ For a clean loop, end the recording close to where you started it.
 
 ## 6. Seat one NPC on another
 
-An NPC can ride another NPC, such as a baker on a cart horse. **Mounts** acts on the first selected NPC and shows what it rides and what rides it. [Mounted NPCs](/animus/05-movement-mounts-riding#mounted-npcs) lists the limits.
+An NPC can ride another NPC. Here the greeter rides the trader, the llama from the first part. **Mounts** acts on the first selected NPC and shows what it rides and what rides it. [Mounted NPCs](/animus/05-movement-mounts-riding#mounted-npcs) lists the limits.
 
 <div class="animus-demo">
 <p><strong>Mounts</strong> Minecraft client.</p>
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/20-mounts-ingame.webm" aria-label="Seating an NPC on a horse NPC and dismounting it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Select the rider, then click **Mounts** in the palette.
+- Select the greeter, then click **Mounts** in the palette.
 - Click **Ride another NPC**. The window closes.
-- Click the vehicle NPC with the wand.
+- Click the trader with the wand.
 - Open **Mounts** again and click **Dismount** to take the rider off.
 
 ## 7. Let players ride an NPC
@@ -114,10 +114,10 @@ A player can ride an NPC whose riding module is on. The player right-clicks the 
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Changing a horse NPC's riding speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Select the NPC, then click **Mounts** and **Riding**.
+- Select the trader, then click **Mounts** and **Riding**.
 - Turn on **Enabled** and change **Speed**.
 - Click **Save**.
-- Right-click the NPC with an empty hand to ride it. Sneak to get off.
+- Right-click the trader with an empty hand to ride it. Sneak to get off.
 
 ```none
 /animus ride status
