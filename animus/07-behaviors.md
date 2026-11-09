@@ -247,6 +247,11 @@ A `repeat` with a literal `count` runs that many times. An operand `count` is co
 
 ## Automatic triggers
 
+<div class="animus-demo">
+<p><strong>Behaviors and triggers</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/22-behaviors-list-ingame.webm" aria-label="Adding a behavior to an NPC and listing its trigger bindings" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A behavior document can declare `triggers`. An NPC runs them when its definition lists the behavior in its `behaviors` array, such as `"behaviors": ["example:greeter"]`:
 
 ```json
@@ -631,6 +636,11 @@ Unicode symbols such as `❤`, `⚔` and `✔` show as written. A speaker withou
 With PlaceholderAPI installed on Paper, Spigot or Folia, `%placeholders%` in `animus:say`, `animus:message`, `animus:actionbar` and `animus:title` text, in dialogue prompts and in choice text and hover are filled for each player who receives them, after `{player_name}` and `{{ }}` holes. A `say` to nearby players fills each listener's own values. See [`[placeholders]`](/animus/03-configuration#placeholders).
 
 ### Dialogue choices
+
+<div class="animus-demo">
+<p><strong>Conversation in play</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/24-conversation-play-ingame.webm" aria-label="Right-clicking the greeter and choosing an answer in chat" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Each answer is a bracketed button, `[ Yes ]`, with hover text. An option may set `color` (a name such as `green`, a code such as `a`, or `#RRGGBB`), `hover` (up to 256 characters; `\n` starts a new line) and `style` (`bold`, `italic`, `underlined` or `plain`). Without them, an answer whose id is `yes`, `accept`, `agree`, `ok`, `sure`, `confirm`, `hire`, `buy` or `deal` is green, an answer whose id is `no`, `pass`, `cancel`, `decline`, `leave`, `later`, `goodbye` or a similar word is red (when there is more than one answer), the rest take Animus pink, light pink, white, deep pink and gray in order, and the hover reads "Click to choose this answer".
 

@@ -79,6 +79,11 @@ Saving a definition file applies it within about a second, without `/animus relo
 
 ## Appearance, text and inventory
 
+<div class="animus-demo">
+<p><strong>Edit an NPC</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/03-edit-npc-editor.webm" aria-label="Changing an NPC's skin, equipment and scale" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 These fields are optional. Every viewer sees the same result, and it is rebuilt from the definition after a restart, a rejoin or a chunk reload. A change takes effect through `/animus edit`, a saved file or a reload, which gives viewers a fresh body.
 
 ```json
@@ -132,6 +137,11 @@ A player name that fits a profile name (16 characters, no `&` codes) stays the n
 A line may also be an object such as `{"text": "...", "marginTop": 0.25, "marginBottom": 0}`, with margins of up to 4 blocks. With a line height or any margin, each line and the name get their own display, stacked from the bottom: each line sits its bottom margin plus the line height above the one below and adds its top margin, as Citizens holograms do (0.25 blocks when only margins are set).
 
 ### Body settings
+
+<div class="animus-demo">
+<p><strong>New NPC with a body type</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/07-new-npc-body-ingame.webm" aria-label="Making a llama NPC named trader" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Each of these bodies has one optional object of its own. A setting left out keeps the look a newly spawned animal of that type has.
 

@@ -115,8 +115,18 @@ After conversion, every set of two or more NPCs whose `modules` (apart from `cit
 
 ## Web editor
 
+<div class="animus-demo">
+<p><strong>Trait groups</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/04-trait-groups-editor.webm" aria-label="Creating a trait group and assigning it to three NPCs" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 The [web editor](/animus/14-web-editor) edits group files in the same parts as an NPC, with the same checks as a saved file. An NPC's Effective part shows its effective definition with the source of each value, and the NPC browser assigns and unassigns a group by selection, folder or tag as one change. An NPC saved from the editor with a missing group is refused.
 
 ## In game
+
+<div class="animus-demo">
+<p><strong>Trait groups</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/14-trait-groups-ingame.webm" aria-label="Assigning a trait group and making a new one" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 The [toolkit](/animus/21-in-game-toolkit#trait-groups) creates, renames, describes and deletes groups from a chest window, and assigns them to the wand selection. A rename repoints every member and a delete unassigns every member, each in the same transaction as the group file, so one **[Undo]** reverts both.

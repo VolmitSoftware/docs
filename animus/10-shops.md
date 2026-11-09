@@ -58,6 +58,11 @@ The module can also set `style` (`native` or `chest`), which replaces the shop's
 
 ## Window styles
 
+<div class="animus-demo">
+<p><strong>Shops</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/25-shops-ingame.webm" aria-label="Opening a shop as a chest window and switching it to the trading screen" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A shop opens in one of two windows:
 
 - `native`: the villager trading screen, with every offer in one scrolling list.
@@ -126,6 +131,11 @@ A layout applies to the chest style only. When the GUI is not loaded or has no l
 | `imported` | Source data an importer kept. Never read. |
 
 ## Entry fields
+
+<div class="animus-demo">
+<p><strong>Shop offers</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/06-shop-offers-editor.webm" aria-label="Adding a trade and a buy offer and attaching the shop to an NPC" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 | Field | Meaning |
 | --- | --- |

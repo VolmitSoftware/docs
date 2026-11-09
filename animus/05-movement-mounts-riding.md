@@ -12,6 +12,11 @@ NPC movement runs on the server against real block collision. Animus never loads
 
 ## Manual navigation
 
+<div class="animus-demo">
+<p><strong>Navigation commands</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/17-navigation-command-ingame.webm" aria-label="Walking an NPC to the player and turning it to face him" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 ```none
 /animus navigation go guard 10 64 4 mode=walk speed=2
 /animus navigation status guard
@@ -36,6 +41,11 @@ Missing terrain pauses navigation until the chunk loads. A world change, a defin
 An NPC that is not following a route falls when the block under it is broken, burnt, blown up, pushed by a piston, taken by an entity, or changed by a build or its undo. It falls to the ground or water surface below and stays put over unloaded terrain. A walking NPC whose route leg starts while it stands in the air first falls the same way, then plans the leg. A block that another plugin removes without firing an event leaves an idle NPC where it is.
 
 ## Routes
+
+<div class="animus-demo">
+<p><strong>Route capture</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/15-route-capture-ingame.webm" aria-label="Walking a path and dropping four route points" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 An NPC follows a route, a list of points, with the `animus:navigation` module:
 
@@ -132,6 +142,11 @@ Awake routes take turns. Each tick at most `routesPerTick` of them plan or take 
 
 ## Movement settings
 
+<div class="animus-demo">
+<p><strong>Routes</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/07-routes-editor.webm" aria-label="Setting a random route with a wait range and adding points on the grid" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A definition's `movement` object applies wherever the NPC walks a route:
 
 ```json
@@ -214,6 +229,11 @@ The NPC prefers players who can already see it and keeps its facing when nobody 
 
 ## Mounted NPCs
 
+<div class="animus-demo">
+<p><strong>Mounts</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/20-mounts-ingame.webm" aria-label="Seating an NPC on a horse NPC and dismounting it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 An NPC rides another NPC through `animus:mount`:
 
 ```json
@@ -235,6 +255,11 @@ A relation that cannot be honoured leaves the NPC standing at its own position w
 | Riding itself, a cycle, a chain too deep or a full vehicle | Refused by `/animus spawn` and by `/animus edit` of a spawned NPC. A hand-edited file that creates one is reported, and every member of a cycle stays unattached |
 
 ## Riding an NPC
+
+<div class="animus-demo">
+<p><strong>Riding</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Changing a horse NPC's riding speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 A player can ride an NPC whose definition opts in:
 

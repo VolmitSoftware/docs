@@ -14,6 +14,11 @@ Combat runs on Spigot and Paper 26.1.2, 26.2 and 26.3, and on Fabric, NeoForge a
 
 ## Health and death
 
+<div class="animus-demo">
+<p><strong>Health and revive</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/29-health-revive-ingame.webm" aria-label="Hitting a killable NPC until it dies and reviving it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 `modules["animus:health"]` is the only place for an NPC's health, armor, death, drops, experience and respawn, whether or not it fights. An NPC without it cannot be hurt. On its own it needs no combat settings and never looks for targets or hits back:
 
 ```json
@@ -84,6 +89,11 @@ A combat NPC is killable only with `animus:health` and `killable: true`; the com
 Holograms bound to an NPC can show its health at all times with `npc.health`; see [holograms](/animus/11-guis-holograms-menus).
 
 ## Settings
+
+<div class="animus-demo">
+<p><strong>Combat</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/28-combat-ingame.webm" aria-label="Turning on combat, setting target rules and having the guard follow the player" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Settings live in the NPC definition as JSON. Every section and field is optional, and the defaults target nothing, so `{"enabled": true}` alone makes an NPC that fights back but never starts a fight. Add [`animus:health`](#health-and-death) to let it be hurt. `enabled` must be the JSON value `true`. An imported NPC also needs `"reviewAccepted": true`. Unknown keys and out-of-range values are rejected with the exact field, such as `$.modules.animus:combat.melee.reach`, and the definition is refused like any other invalid edit.
 

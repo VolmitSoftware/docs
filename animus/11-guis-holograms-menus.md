@@ -116,6 +116,11 @@ A window closes when the player logs out, dies, changes world or respawns, telep
 
 ## Holograms
 
+<div class="animus-demo">
+<p><strong>GUIs and holograms</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/27-guis-holograms-ingame.webm" aria-label="Showing a hologram over the greeter and binding a chest GUI to it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A hologram file in `gui/holograms/<namespace>/` is a Gloss hologram. Animus shows it to every player within `viewDistance` of its anchor, drawn with display entities that exist only in that player's client. No entity is created on the server, and each player can see a different page, variant or text.
 
 ```json

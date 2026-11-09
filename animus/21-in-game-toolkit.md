@@ -22,6 +22,11 @@ All three need `animus.admin` and a player. Every item in a toolkit window says 
 
 ## The wand
 
+<div class="animus-demo">
+<p><strong>Wand and selection</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/03-wand-selection-ingame.webm" aria-label="Selecting two NPCs with the wand" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 The wand is a blaze rod named **Animus wand**. The server knows it by a marker on the item, not by its name, so renaming it keeps it a wand and a renamed blaze rod is not one. On Paper, Spigot and Folia the marker is the persistent data key `animus:tool` with the value `wand`; on mod servers it is the same key in the item's `minecraft:custom_data`.
 
 | With the wand in your main hand | Does |
@@ -37,6 +42,11 @@ Without the wand, a click on an NPC opens its shop, GUI or hire window as usual 
 
 ## Palette
 
+<div class="animus-demo">
+<p><strong>Tool palette</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/04-palette-ingame.webm" aria-label="Hovering each tool in the palette" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 `/animus tools` shows five rows. The top item is the selection count: left opens the [Selection](#selection) screen, right opens [Manage](#manage), sneak clears the selection. The rows below group the tools.
 
 | Row | Buttons |
@@ -47,9 +57,19 @@ Without the wand, a click on an NPC opens its shop, GUI or hire window as usual 
 
 ### New NPC
 
+<div class="animus-demo">
+<p><strong>New NPC</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/06-new-npc-ingame.webm" aria-label="Making an NPC named greeter from the palette" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Asks for an id, saves `npcs/<id>.json` two blocks in front of you, facing you, with you as its `owner`, selects it and spawns it, all in one transaction; the reply names the file. The id is 1 to 64 lowercase letters, digits, `_` or `-`; a taken id is refused and nothing is written. Right-click asks for the body type first, such as `minecraft:villager`; sneak-click saves the NPC dormant so you can finish it before it shows. The NPC's world is the name your other NPCs' positions use, so the file matches them.
 
 ## Manage
+
+<div class="animus-demo">
+<p><strong>Manage and undo</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/13-manage-undo-ingame.webm" aria-label="Cloning and deleting an NPC, then undoing the delete" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 The manage screen acts on the whole selection.
 
@@ -122,6 +142,11 @@ The selection button in the bottom row of the trait group and folder screens ope
 
 ### Fields
 
+<div class="animus-demo">
+<p><strong>Edit fields</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/08-edit-fields-ingame.webm" aria-label="Renaming the greeter, toggling its glow and moving it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Every field button shows its description, its value now (or that the default applies) and what each click does.
 
 | Field | Left | Right | Sneak |
@@ -142,6 +167,11 @@ A field the toolkit cannot edit says so in its lore: items say the Equipment scr
 
 ### Attributes
 
+<div class="animus-demo">
+<p><strong>Attributes</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/09-attributes-ingame.webm" aria-label="Growing and shrinking the greeter with the scale attribute" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Lists every vanilla attribute the NPC's body carries, each with its own icon, with its value or "vanilla default". Left and right step within the attribute's bounds, sneak-left types a value and sneak-right goes back to the vanilla default. A value saved as `minecraft:<id>` keeps that spelling.
 
 ### Modules
@@ -157,6 +187,11 @@ With more than one NPC selected, a change applies to all of them in one transact
 A change that would make any NPC invalid is refused whole, nothing is saved and the chat line says which field is wrong. A new `id` renames the file in the same folder and the screen follows the NPC. A new `type` drops the settings only another body can have, such as `armorStand`, and a pose other than standing on a body that is not a player.
 
 ## Skins
+
+<div class="animus-demo">
+<p><strong>Skins</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/10-skins-ingame.webm" aria-label="Putting three skins on the greeter and relabelling one" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Lists the skin files in `skins/`. Each entry shows the skin's label, or when it has none the first NPC or trait group that wears it, then every NPC and group wearing it and the first 12 characters of its hash.
 
@@ -189,6 +224,11 @@ A skin file with a label looks like this:
 Skins only show on `minecraft:player` bodies. Other bodies in the selection are skipped and the chat line counts them.
 
 ## Equipment
+
+<div class="animus-demo">
+<p><strong>Equipment</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/11-equipment-ingame.webm" aria-label="Putting a helmet, a sword and an outfit on the greeter" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 The eight slots of the first selected NPC in a row: main hand, off hand, head, chest, legs, feet, body and saddle. A slot with an item shows that item; an empty slot is a glass pane with the slot's name.
 
@@ -303,6 +343,11 @@ Every change here is checked before it is saved: the group file must pass the gr
 
 ## Folders
 
+<div class="animus-demo">
+<p><strong>Folders</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/12-folders-ingame.webm" aria-label="Making the plaza folder and renaming it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Lists the folders under `npcs/` that hold NPCs, and `npcs/` itself, with how many NPCs sit in each and how many more are in the folders below it.
 
 | Click on a folder | Does |
@@ -349,6 +394,11 @@ The bottom row:
 - **Discard** drops the capture after asking once more.
 
 ### Route
+
+<div class="animus-demo">
+<p><strong>Route settings</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/16-route-settings-ingame.webm" aria-label="Putting a route on the trader and changing its speed, order and mode" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Sneak-click a route in the list to open it. The top item shows its point count and the NPCs that use it.
 
@@ -416,6 +466,11 @@ Run and Trace ask twice when more than 20 NPCs are selected. The replies are the
 
 ## Conversations
 
+<div class="animus-demo">
+<p><strong>Conversation editor</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/23-conversation-editor-ingame.webm" aria-label="Writing a conversation with one question in the block editor" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A conversation is a behavior of one shape, the one the web editor's Conversation tab edits: blocks of lines, each block one routine, with a question whose answers each lead to another block through a `dialogue_choice` trigger. One start runs the entry block. The editor in game edits one block at a time and keeps every key it does not edit, so a file saved here opens the same way in the web editor.
 
 | Item | Click | Does |
@@ -442,6 +497,11 @@ Lines may use `{npc.name}` and `{player_name}`; a line with `{npc.name}` is save
 Conditions, actions, sounds, waits and go-to steps show as kept steps: they can be moved or deleted, and the web editor edits them. A wait before a line and a plain sound or animation after it show in the line's lore.
 
 ## Shops
+
+<div class="animus-demo">
+<p><strong>New shop</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/26-new-shop-ingame.webm" aria-label="Making the plaza:stall shop and binding it to the trader" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Lists the files in `shops/` with their offer count, window style and how many selected NPCs bind each one. A shop file that does not load shows its first problem in red.
 
@@ -493,6 +553,11 @@ The settings screen lists what uses the file and, like the shop settings, shows 
 Layouts, lines and frames are painted in the web editor.
 
 ## Find
+
+<div class="animus-demo">
+<p><strong>Find</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/05-find-ingame.webm" aria-label="Teleporting to an NPC and selecting another from Find" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Lists the active NPCs in your world, nearest first, with the distance in the lore. A left click teleports you beside the NPC, facing it. A right click selects only that NPC. A sneak click brings the NPC to you and saves its new position.
 

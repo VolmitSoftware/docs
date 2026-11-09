@@ -109,6 +109,11 @@ Saves go through the same document store as definitions and routes, so [live app
 
 ## Recording a performance
 
+<div class="animus-demo">
+<p><strong>Recording</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/18-recording-ingame.webm" aria-label="Recording a short performance and previewing it as a ghost" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 ```none
 /animus record start <id>
 /animus record stop
@@ -151,6 +156,11 @@ While you record with the ghost on, every `ghostIntervalTicks` ticks the ghost a
 `/animus record preview <id>` plays a saved recording once, at the place it was recorded, as a ghost only you can see, then removes it. Each player can run one preview at a time and at most `maximumPreviews` run at once. A preview also ends when you quit, die, change world, teleport, lose `animus.admin`, or the server stops.
 
 ## Playing a recording on an NPC
+
+<div class="animus-demo">
+<p><strong>Recording playback</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/19-recording-playback-ingame.webm" aria-label="The greeter replaying the recording and changing its playback mode" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 A recording is a movement source of the `animus:navigation` module, alongside a `route` reference and inline `points`:
 

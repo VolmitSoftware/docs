@@ -26,6 +26,11 @@ A wrong or extra value, an unknown key or an unknown command is refused with the
 
 ## Help and completion
 
+<div class="animus-demo">
+<p><strong>Help menu</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/02-help-menu-ingame.webm" aria-label="The grouped help menu, a group page and a refused command" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 `/animus` or `/animus help` shows every command grouped by topic, in the same menu as Iris, Adapt and the other Volmit plugins. A group name on its own, such as `/animus shop`, or `/animus shop help`, shows that group with a **〈 Back** link to the one above. Each entry shows its name and its parameters, required ones in `[brackets]` and optional ones in `⊰angles⊱`; hover the name for what it does, its usage and an example, and hover a parameter for its type and default. Click a command to put it in your chat box, or to run it when it takes no values. Each topic header on the first page has a **[Docs]** link to its section on this page. Pages turn with **〈 Page 1** and **Page 3 ❭** at the bottom, or `help=2`. Paged lists, such as `/animus list`, use the same page bar.
 
 Help and tab completion list only what you have permission to run. Completion offers bare values only for the next required argument, such as NPC ids, shop ids or behavior ids, then `~ ~ ~` and the block you look at where a command takes a position, and `key=` for the optional ones.

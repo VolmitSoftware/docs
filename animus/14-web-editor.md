@@ -34,6 +34,11 @@ Schematics are not editor documents.
 
 ### NPCs, trait groups, routes, recordings, skins and packs
 
+<div class="animus-demo">
+<p><strong>Create an NPC</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/02-create-npc-editor.webm" aria-label="Creating an NPC from New document and previewing it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Browse, beside NPCs in the sidebar, lists every NPC with its folder, tags, type, world and features, and the skin's face once its PNG is loaded. Search by name, id, type, world or tag, or narrow with `tag:`, `folder:`, `type:`, `world:`, `has:` (route, combat, shop, rig, skin, behaviors) and `is:` (spawned, despawned, invalid); a leading `-` excludes a term. `folder:town` finds the NPCs in `npcs/town/` and in every folder below it; `folder:=town` finds only those directly in `npcs/town/`, and `folder:=` only those directly in `npcs/`. A search that matches nothing offers Clear search, and an empty workspace links to Create an NPC.
 
 The folder tree shows `npcs/` and its folders, nested as they are on disk. Each folder shows how many NPCs sit directly in it; a collapsed folder shows how many sit in it and every folder below it. The browser remembers which folders you collapsed, per workspace. Click a folder, or press Enter, to list its NPCs. The tree takes one Tab stop: Up and Down move through the folders, Home and End jump to the first and last, Right expands a folder and then steps into it, and Left collapses it and then steps back to its parent.
@@ -108,6 +113,11 @@ Chest GUIs, shops, holographic menus, holograms, text animations and the presets
 
 ### Conversations
 
+<div class="animus-demo">
+<p><strong>Conversation by keyboard</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/05-conversation-editor.webm" aria-label="Writing a conversation with the keyboard, previewing it and attaching it to an NPC" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A behavior shaped like a conversation opens on its **Conversation** tab, beside Visual. **New conversation** in the sidebar, or in the command palette, starts one: a greeting and a question with two answers.
 
 The tab is a tree. The Start block runs first, and what each answer leads to sits under that answer. A step is one of:
@@ -143,6 +153,11 @@ Problems show under their step: blocks nothing leads to, answers that lead to a 
 
 ### Keyboard and commands
 
+<div class="animus-demo">
+<p><strong>Shortcut sheet and sidebar</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/10-shortcuts-sidebar-editor.webm" aria-label="Opening the shortcut sheet and hiding the sidebar" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Shortcuts work anywhere outside a text box:
 
 | Keys | Does |
@@ -167,6 +182,11 @@ Edits never overwrite each other, however quickly they follow one another: each 
 A label or heading with a dotted underline holds a short note on what it is, with a **Docs** link to the matching section of this wiki. Every inspector part and subhead, every GUI editor section, and the headings of the NPC browser, folders, server, pairing, home and rig screens have one. Hover the text or reach it with Tab to read the note, press Escape to hide it, and press Enter to open the wiki. On a touch screen a tap shows the note, and a second tap or a tap elsewhere hides it.
 
 ### Completion
+
+<div class="animus-demo">
+<p><strong>Autocomplete</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/08-autocomplete-editor.webm" aria-label="Completing a placeholder, a colour tag and an item id" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Text, expression and id fields complete as you type, and so does the Code view. Ctrl+Space opens the list anywhere, on a Mac too. Arrow keys move, Enter or Tab picks, Escape closes. Each row shows its kind, its type and a short note. Matching is loose: `dsw` finds `diamond_sword`.
 
@@ -194,6 +214,11 @@ Tabs of the same browser stay in step. A tab that is not being edited reloads a 
 A local workspace's **Sync** page compares it with a paired server, validates the selection on the server and pushes it as one change set; a document the server already holds differently is only sent when you choose **Replace it with mine**, and the push asks before it replaces those copies. A push is recorded in the browser before it is sent. If its answer does not arrive, the page offers **Check the earlier push**, which asks the server what became of it rather than sending it again. **Pull** copies server documents in as one undo step.
 
 ## Pairing
+
+<div class="animus-demo">
+<p><strong>Pair with a server</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/01-pair-server-editor.webm" aria-label="Pasting a pairing link and pairing the editor with a server" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Pairing gives one browser a token for one server. Run on the server, in game or from the console:
 
@@ -292,6 +317,11 @@ The editor asks only for the area in view, keeps every answer in the browser, an
 
 ### Applying changes
 
+<div class="animus-demo">
+<p><strong>Apply and undo</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/09-apply-undo-editor.webm" aria-label="Renaming an NPC, applying it and undoing the apply" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Apply checks every document again and writes them all in one transaction, or none of them. It sends every edit made before you pressed it. An edit made while the apply is on its way stays a draft for the next apply. If another edit changed a document on the server since you opened it, nothing is written and the editor opens a three-way merge of base, yours and the server's. Fields that only one side changed merge by themselves; for each field both changed, pick a side, then apply again.
 
 Moving NPCs to another folder, or renaming or moving a folder, changes their ids. On a server workspace the next apply sends each moved NPC as a move: the server writes the new file and removes the old one in the same transaction, and the NPC keeps its revision history. The live bar counts moves among the changed drafts ("3 changed drafts, 2 moved") and lists each as the old id to the new one. If the NPC changed on the server since you opened it, or another NPC already has the new id, nothing is written and the editor shows the conflict. **Undo last apply** moves the NPCs back.
@@ -321,6 +351,11 @@ A preview shows your drafts to the in-game player who issued the token, and to n
 The editor's **Import Citizens and others** screen converts in the browser and, after a conversion, offers **Open as workspace** (the converted files as a new workspace to review) and **Send to server**. It can also upload a Citizens `saves.yml`, dtlTraders files, and a Shopkeepers `save.yml` and `config.yml` to a paired server. **Upload and stage** runs the same conversion as `/animus import citizens preview` and shows its review. **Apply** installs the import with every NPC dormant, review categories are accepted one at a time or all at once (**Accept all** asks first), and **Roll back** undoes the import and every acceptance after a confirm. Once applied, **Open the imported NPCs** leads to them in the server's catalog. Uploads are limited to 16 MiB. dtlTraders files with names dtlTraders does not use are listed as skipped. See [migrating from Citizens](/animus/13-migrating-from-citizens).
 
 ### In-game notices
+
+<div class="animus-demo">
+<p><strong>Editor link and undo</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/30-editor-pair-undo-ingame.webm" aria-label="Getting a pairing link and undoing a glow change from chat" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 When the editor changes the server, online players with `animus.editor.notify` (operators by default) hear a short sound and see one chat line saying who changed what, such as:
 

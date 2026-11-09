@@ -16,6 +16,11 @@ Put the Animus jar in `plugins/` (Paper, Spigot, Folia) or `mods/` (Fabric, NeoF
 
 ## 2. Run setup
 
+<div class="animus-demo">
+<p><strong>Setup greeting</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/01-setup-greeting-ingame.webm" aria-label="The join greeting, the setup list and the status line" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Join as an operator. While the server has no NPCs, Animus greets you two seconds after you join with **[Setup]** and **[Dismiss]**. Click **[Setup]**, or run:
 
 ```none
