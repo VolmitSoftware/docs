@@ -2,7 +2,7 @@
 title: Ascendant
 description: Discord community management and plugin publishing
 published: true
-date: 2026-11-06T16:00:00.000Z
+date: 2026-11-07T22:00:00.000Z
 tags: ascendant, discord
 editor: markdown
 dateCreated: 2026-10-28T00:00:00.000Z
@@ -45,4 +45,5 @@ Ascendant combines a Discord community bot, administration dashboard and Scribe 
 - [Server logs *Searchable message changes and audit events with Discord delivery*](/ascendant/27-server-logs)
 - [System and updates *Health readings and the reviewed update workflow*](/ascendant/28-system-updates)
 - [Temporary voice *Member-created voice rooms with owner controls*](/ascendant/29-temporary-voice)
+- [Downloads and usage *Store downloads, weekly history, bStats usage and missing data on the Overview*](/ascendant/30-downloads-and-usage)
 {.links-list}
