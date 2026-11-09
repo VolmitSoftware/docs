@@ -2,7 +2,7 @@
 title: "Repository readme"
 description: "How this documentation repository is structured"
 published: true
-date: 2026-10-20T02:00:00.000Z
+date: 2026-11-08T00:00:00.000Z
 tags: "meta"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -80,6 +80,8 @@ Wormholes demonstrations with both client modes have **No client mod** and **Cli
 
 Gloss demonstrations label Minecraft client footage and browser editor footage separately. Single-view clips use the same playback controls. Paired client clips add **First person** and **Third person** tabs.
 
+Animus demonstrations use `.animus-demo` containers with one clip each: `-ingame.webm` for Minecraft client footage and `-editor.webm` for browser editor footage.
+
 Demonstrations use half the article width on desktop and the full article width on phones and tablets. Visible clips autoplay muted and loop, including when reduced motion is enabled. Readers can pause or enable audio with the playback controls. Hidden, offscreen, and background clips pause.
 
 ### Video clips
@@ -90,7 +92,7 @@ Clips are WebM files in the Cloudflare R2 bucket `volmit-docs-media`, served fro
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/real-drops-editor.webm" aria-label="Dropped item authoring in the browser editor"></video>
 ```
 
-The theme pairs clips by their `-pov.webm`, `-observer.webm`, and `-editor.webm` endings, so keep those endings.
+The theme finds clips by their `-pov.webm`, `-observer.webm`, `-ingame.webm`, and `-editor.webm` endings, so keep those endings.
 
 Copy clips between a checkout and the bucket with [rclone](https://rclone.org) and a remote named `r2` that holds an R2 API token for the bucket:
 

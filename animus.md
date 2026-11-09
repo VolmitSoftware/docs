@@ -2,7 +2,7 @@
 title: "Animus"
 description: "JSON-defined NPCs with behaviors, navigation, combat, shops, GUIs, and a web editor"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-08T00:00:00.000Z
 tags: "animus, npc, bukkit, paper, spigot, folia, fabric, neoforge, forge"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -29,6 +29,14 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 - [Commands and permissions *Every command and node*](/animus/02-commands-permissions)
 - [Configuration *Every config.toml setting*](/animus/03-configuration)
 - [Migrating from Citizens *Import NPCs and add-on data*](/animus/13-migrating-from-citizens)
+{.links-list}
+
+## Tutorial
+
+- [First NPC *Install, then make, edit, skin and dress NPCs in game*](/animus/22-tutorial-first-npc)
+- [Movement *Routes, recordings, mounts and riding*](/animus/23-tutorial-movement)
+- [Conversations, shops and combat *Behaviors, shops, GUIs, health and pairing*](/animus/24-tutorial-interaction)
+- [Web editor *Pair, edit, apply and undo in the browser*](/animus/25-tutorial-web-editor)
 {.links-list}
 
 ## NPCs

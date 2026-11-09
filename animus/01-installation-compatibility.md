@@ -105,7 +105,7 @@ Paper and Spigot share one runtime, and so do Fabric, NeoForge and Forge. Folia 
 |---|---|---|---|---|
 | Equipment (all eight slots, item components) | Yes | Yes | Yes | Yes |
 | Stored inventory | Partial: stored and validated, read only by combat `useAmmo`; never shown, and shops and GUIs do not read it | Partial, as Paper | Partial, as Paper | Partial, as Paper |
-| Holograms | Yes; placeholders are not filled in | Yes, as Paper | Yes, as Paper | Yes, as Paper |
+| Holograms | Yes; PlaceholderAPI placeholders are filled for each player when PlaceholderAPI is installed | Yes, as Paper | Yes, as Paper | Yes; `%` placeholders are not filled |
 | Non-player bodies | Yes | Yes | Yes | Yes; a body type the server does not register is not shown |
 | Mounted NPCs | Yes | Yes | Yes; the region that owns the root vehicle owns every NPC stacked on it, and a passenger waits until its vehicle is active | Yes |
 | Poses | Partial: sneaking, sleeping, swimming and sitting show on player bodies only, other bodies stand; named poses (`animus:pose`) turn every body | Partial, as Paper | Partial, as Paper | Partial, as Paper |

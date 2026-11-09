@@ -74,7 +74,7 @@ Helper projectiles spawn only in chunks the NPC's region holds. A helper that fl
 
 A player's hit on an NPC counts only when the player's region also owns the NPC. `/animus combat status npc=<npc>` reads the NPC's published combat state; `engage`, `disengage`, `release`, `target` and `guard` run on the NPC's region and log their result. A guard teleport, a knockback and a respawn hand the NPC over like any chunk crossing.
 
-The `[combat]` limits `brainsPerTick`, `targetScansPerTick`, `pathRequestsPerTick`, `squadAlertsPerTick` and `helperUpdatesPerTick` apply to each region tick. `maximumNpcs` does not apply on Folia. `helpersPerNpc` applies to each NPC. When a region is short of combat turns, the NPCs that waited longest go first. Damage and death triggers fire as on Paper.
+The `[combat]` limits `brainsPerTick`, `targetScansPerTick`, `pathRequestsPerTick`, `squadAlertsPerTick` and `helperUpdatesPerTick` apply to each region tick. `maximumNpcs` does not apply on Folia. `helpersPerNpc` applies to each NPC. When a region is short of combat turns, the NPCs that waited longest go first. Damage and death triggers fire as on Paper. Killable NPCs (`animus:health`) take damage, die and respawn on their own region. A player's or mob's projectile is followed by the region that owns it as it flies, which tests each move against NPC bodies and hands a strike to the struck NPC's region; fire, lava and falls are read on the NPC's own region from blocks it owns; the hurt flash and death fall reach each viewer through that viewer's region, a permadeath is written on the file lane, and `/animus npc revive` on an NPC waiting to respawn runs on its region and logs the result.
 
 ## Manual attack and mob control
 
@@ -94,9 +94,17 @@ A team member on another region keeps its claim and scaffolding and works when a
 
 Build commands answer through your own region a moment later, and `animus:build` answers `queued` and logs its result. A donation takes the stack from your hand first; what the build does not need goes back into your inventory, and what does not fit drops at your feet. When Animus stops, standing scaffolding stays and comes down after the restart.
 
+## Editor terrain
+
+The web editor's terrain reads run on the region that owns each chunk. A chunk that is not loaded, or that moved to another region before the read ran, comes back `unloaded`.
+
 ## Viewers
 
 A player's view of NPCs is rebuilt after a teleport (including Folia's same-region teleport that fires no event), a world change, death and respawn, and is removed at logout. A player who leaves the range, or whose client loses the chunk, stops seeing the NPC. An NPC that starts waiting or is removed disappears for every viewer on their next tick.
+
+## Placeholders
+
+PlaceholderAPI placeholders are filled on the region that owns the player who sees the text: nameplates and holograms on the viewer's own scheduler, chat and windows on the player's region, and an `animus:message` to `all` or `world` on each recipient's region. PlaceholderAPI itself runs on Folia; an expansion that reads the viewer is safe there, while one that reads another region's blocks or entities is not. See [`[placeholders]`](/animus/03-configuration#placeholders).
 
 ## Limits
 

@@ -19,11 +19,11 @@ NPC movement runs on the server against real block collision. Animus never loads
 /animus navigation look guard 12 65 4
 ```
 
-`/animus navigation go <npc> <x> <y> <z> [mode=walk] [speed=2.0]` moves an active NPC in its current world at 1-10 blocks per second. A leg may be any length. Short legs are planned whole; longer legs are planned in segments, and the NPC walks each segment to the point closest to the goal before planning the next. Climbs and descents of any height go segment by segment over stairs and slopes, or by swimming or flying when the mode allows it.
+`/animus navigation go <npc> <x> <y> <z> [mode=walk] [speed=2.0]` moves an active NPC in its current world at 1-10 blocks per second. A leg may be any length. Short legs are planned whole; longer legs are planned in segments, and the NPC walks each segment to the point closest to the goal before planning the next. Climbs and descents of any height go segment by segment over stairs and slopes, or by swimming or flying when the mode allows it. An NPC whose `movement.style` is `fly` or `glide` flies the leg whatever `mode` says.
 
 When a plan gets no closer, Animus searches a wider area and then tries ways round to either side, so the NPC follows a cliff, wall or shore until it can head for the goal again. When none of that gets closer, the leg is blocked and the server log names the NPC and the leg once, saying whether terrain blocks it (a closed space, or a step blocked while walked) or no way round was found. A walking NPC crosses a gap in its footing narrower than a quarter block, such as the open front of a shelf beside a slab. A walking goal names a block: the NPC stands on the ground in it or the block below, or on top of the block itself when it is solid, a top slab or a stair, so a point that names the ground under the feet works. When no path reaches the goal itself, such as the top of a pillar, a short leg walks to the nearest reachable place and ends there if that is within 1.5 blocks across and 2 up or down.
 
-Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows the current position, route identity and arrival count. A manual `navigation go` or `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-riding) for the rest of the movement commands.
+Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows what the NPC is doing, its goal, its position and the arrival count, such as `Navigation guard: moving to 4.5 64 2.5, now at 3.25 64 1`. A walking goal rounds its feet height to the block, so `^ ^ ^5` works. A manual `navigation go` or `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-riding) for the rest of the movement commands.
 
 ### How bodies move
 
@@ -58,10 +58,11 @@ A reusable route lives at `routes/<name>.json` in the data folder, at most 64 Ki
 }
 ```
 
-`mode`, `speed`, `order`, `loop`, `waitTicks`, `seed`, `startOffset`, `jitter`, `points`, `guides`, `linkDistance` and `wander` may also go directly in the module instead of a `route` reference.
+`mode`, `speed`, `style`, `order`, `loop`, `waitTicks`, `seed`, `startOffset`, `jitter`, `points`, `guides`, `linkDistance` and `wander` may also go directly in the module instead of a `route` reference.
 
 | Field | Values | Meaning |
 |---|---|---|
+| `style` | A [movement style](#movement-styles) | How NPCs move on this route, instead of each NPC's own `movement.style` |
 | `order` | `sequence` (default), `pingpong`, `random`, `wander` | How the next point is chosen |
 | `loop` | Boolean, `sequence` only | `false` walks the points once and stops; `true` returns to the first point after the last |
 | `waitTicks` | 0-12000 or `[min, max]`, default 20 | Wait before the first leg and after each arrival. A range draws a new wait each time |
@@ -69,6 +70,7 @@ A reusable route lives at `routes/<name>.json` in the data folder, at most 64 Ki
 | `startOffset` | `first` (default), `random` | `random` starts at a random point after a random wait of 0 up to `waitTicks` |
 | `jitter` | 0-8 blocks, default 0, not `wander` | Each leg aims at a random whole-block x/z offset within this radius of the point |
 | `points` | 1-256 of `{x, y, z}`; 0-64 for `wander` | Points in the NPC's world. Each may set its own `waitTicks` (0-12000 or `[min, max]`) and `jitter` (0-8) instead of the route's |
+| `points[i].style` | A [movement style](#movement-styles), not on a recording step | How the NPC moves on the leg that ends at this point, instead of the route's `style`. Legs to guides use the route's |
 | `points[i].weight` | 1-1000, default 1, `random` only | How often `random` picks this point compared with the others |
 | `points[i].next` | 1-8 of `{"to": index, "weight": 1-1000}`, `sequence` only | A junction: after this point the next point is drawn from these by weight instead of `i + 1` |
 | `points[i].recording` | `{"recording": id, "fromTick": 0, "toTick": durationTicks, "playback": "once"}`, not `wander` | A recording step instead of a position: the NPC walks to the segment's first frame, plays ticks `fromTick` to `toTick` once, then goes on to the next point from the segment's last frame |
@@ -76,7 +78,7 @@ A reusable route lives at `routes/<name>.json` in the data folder, at most 64 Ki
 | `linkDistance` | 1-256, default 32, `random` only | The longest link between two points or guides |
 | `wander` | `{"radius": 1-32, "height": 0-8}`, default 25 and 3, `wander` only | How far from a center a wander target may be |
 
-Points and guides together allow at most 1280 coordinates; a recording step counts as a point. Walking routes need whole-block heights for position points. A field used with the wrong order is reported against that field.
+Points and guides together allow at most 1280 coordinates; a recording step counts as a point. Walking routes need whole-block heights for position points, except points whose leg flies: a point with `style` `fly` or `glide`, any point and guide of a route with that `style`, and the unstyled points of a module's own route when the NPC's `movement.style` is `fly` or `glide`. A field used with the wrong order is reported against that field.
 
 A point may play part of a [performance recording](/animus/19-performance-recordings#recording-steps-in-routes) instead of naming a position:
 
@@ -133,15 +135,15 @@ Awake routes take turns. Each tick at most `routesPerTick` of them plan or take 
 A definition's `movement` object applies wherever the NPC walks a route:
 
 ```json
-"movement": {"speed": 1.29, "avoidWater": false, "fly": false, "openDoors": true, "stepHeight": 1, "maximumFall": 1,
-             "pathRange": 60, "arrivalMargin": 0.5, "stuck": {"afterTicks": 120, "teleport": true}}
+"movement": {"speed": 1.29, "avoidWater": false, "openDoors": true, "stepHeight": 1, "maximumFall": 1,
+             "pathRange": 60, "arrivalMargin": 0.5, "stuck": {"afterTicks": 120, "teleport": true},
+             "style": "walk", "onLand": "walk", "auto": {"swim": true, "crawl": false}}
 ```
 
 | Field | Values | Meaning |
 |---|---|---|
 | `speed` | 1-5 blocks/second | Used by a route that sets no speed of its own, instead of the `movement_speed` attribute |
 | `avoidWater` | Boolean | `false` lets a walking route cross water at the surface |
-| `fly` | Boolean | Routes fly |
 | `openDoors` | Boolean | Walking routes go through closed wooden and copper doors, fence gates and upper trapdoors |
 | `stepHeight` | 0-1.5 | Replaces the body's own climb height and the `step_height` attribute |
 | `maximumFall` | 0-16 | Replaces the body's own drop height and the `safe_fall_distance` attribute, counted in levels: a drop onto a slab one level down is a fall of 1, and a surface lower than half a block, such as a carpet or closed trapdoor, is part of the level of the block under it |
@@ -149,8 +151,34 @@ A definition's `movement` object applies wherever the NPC walks a route:
 | `arrivalMargin` | 0-4 blocks | A point this close counts as reached |
 | `stuck.afterTicks` | 1-12000 | A leg that has not moved closer for this long, or cannot be planned, is stuck |
 | `stuck.teleport` | Boolean | `true` teleports the NPC onto the point's ground and continues; `false` ends the leg. A point buried by later building lifts to the first place the NPC fits up to 10 blocks above it, as Citizens does |
+| `style` | A [movement style](#movement-styles), default `walk` | How the NPC moves on a leg whose route and point set no `style` |
+| `onLand` | `walk` (default), `avoid` | Style `swim` only: `walk` walks the land between stretches of water; `avoid` keeps the NPC in water, so a leg that starts or ends on land is blocked |
+| `auto.swim` | Boolean, default `true` | A player body shows the swimming pose while it moves through water, whatever its style |
+| `auto.crawl` | Boolean, default `false` | A player body plans through gaps one block high and crawls while its standing height does not fit there |
 
 Every field is optional. With `openDoors`, the NPC opens each door just before it reaches it, after protection allows it (WorldGuard's `use` flag on Bukkit and any module protection hook), and closes it once it is clear, or when the route ends, is cancelled, sleeps or the NPC despawns. A refused door ends the leg as blocked. Iron doors and trapdoors stay closed, and the NPC never closes a door it did not open.
+
+### Movement styles
+
+A style says how an NPC moves along a leg: the pose viewers see, its speed and where the path may go. The leg's style is the point's `style`, else the route's `style`, else the NPC's `movement.style`. A trait group's `movement.style` applies like any other movement field. Set it with the editor's Movement, route and point dropdowns, the in-game Edit screen (`/animus tools`), or `/animus edit guard {"movement": {"style": "sneak"}}`, which replaces the whole `movement` object.
+
+| Style | Speed | Player body | Other bodies | Path |
+|---|---|---|---|---|
+| `walk` | 1x | Its own pose | Its own pose | As the route mode allows |
+| `sneak` | 0.3x | Crouches, also while it waits at a point | Name dimmed, as a sneaking player's | As walk |
+| `sprint` | 1.3x | Sprinting, with sprint dust | Sprint dust | As walk |
+| `swim` | 1.3x in water, 1x on land | Swimming pose in water | Its own pose | Crosses water; with `onLand: avoid` stays in it |
+| `crawl` | 0.3x | Crawling pose, also while it waits | Its own pose | Passes gaps one block high, player bodies only |
+| `fly` | 1x | Its own pose | Its own pose | Flies |
+| `glide` | 2x | Elytra pose while airborne | Its own pose | Flies |
+
+Speeds are vanilla's ratios to walking and multiply the leg's speed: the route's `speed`, else `movement.speed`, else the speed the `movement_speed` attribute gives. So a player NPC with `movement_speed` 0.1 (4.3 blocks per second) sneaks at 1.3 blocks per second. `glide` moves at twice walking speed, close to a vanilla elytra cruise of about 8.6 blocks per second against a walk of 4.3. No style moves faster than 10 blocks per second, so a glide at the route maximum of 5 reaches that cap. A body that sinks, such as an armor stand, never swims; a leg in `swim` walks for it.
+
+A leg in `fly` or `glide` flies on any route: it plans through the air, does not fall, opens no doors and may end in the air. A leg with a ground style, such as a point set to `walk` on a route of an NPC whose own style is `fly`, walks as the route's `mode` allows. A route with `mode: fly` flies every leg whatever its style. Flying NPCs used to set `"fly": true`; that field is gone, and a definition that still has it is refused as an unknown field.
+
+The look changes only while the NPC follows a route or a `navigation go` leg. When the route ends or is stopped, the NPC shows its own `pose` again, except that a player body left in a gap too low to stand in keeps crawling. A route that sets no style changes nothing on its own, so a `pose: sneaking` NPC still walks crouched at full speed, as an imported Citizens sneaking NPC does.
+
+With `auto.crawl`, every leg of a player body plans at crawling height, so it may take a low gap even where a slightly longer path stands upright the whole way. The crawl check reads the blocks above each step and counts against `motionCellsPerTick`. Bodies other than players have no swimming or crawling pose, so `auto` changes nothing for them.
 
 ### Named poses
 
@@ -182,7 +210,7 @@ An NPC with `animus:look-close` turns toward the nearest player in range while i
 | `npcs` | `false` | With no player in range, look at the nearest other NPC |
 | `randomLook` | off | With nobody to look at, turn to a random `yaw` and `pitch` from the ranges every `delayTicks` (1-12000) |
 
-The NPC prefers players who can already see it and keeps its facing when nobody is in range. An NPC that rides another NPC or carries a player does not look. Each NPC looks again at most every 5 ticks, within the `[npcs] lookUpdatesPerTick` budget. `animus:look` still turns the NPC; look-close turns it back on its next look. The module does not need `reviewAccepted` on imported definitions.
+The NPC prefers players who can already see it and keeps its facing when nobody is in range. An NPC that rides another NPC or carries a player does not look. Each NPC looks again at most every 5 ticks, within the `[npcs] lookUpdatesPerTick` budget. `animus:look` still turns the NPC; look-close turns it back on its next look. The module does not need `reviewAccepted` on imported definitions. `/animus npc look <npc> off` turns it off and keeps its settings; `on` turns it back on.
 
 ## Mounted NPCs
 
@@ -225,7 +253,7 @@ A player can ride an NPC whose definition opts in:
 
 Imported definitions also need literal `"reviewAccepted": true`. An imported Citizens `controllable` trait stays preserved and does not turn riding on.
 
-The player mounts with a right-click on the NPC. The click passes the same reach, line-of-sight and rate checks as any interaction, and a plugin can stop it by cancelling `VirtualNpcInteractionEvent`. Sneak-right-click keeps its usual meaning, so an administrator can still select a rideable NPC. The NPC needs room for its body and rider where it stands: on ground, at a water surface it can swim, or in open air when it flies. Each NPC carries one player, each player rides one NPC, and at most 8 players ride at once. Mounting cancels the NPC's route until the definition is applied again.
+The player mounts with a right-click on the NPC. The click passes the same reach, line-of-sight and rate checks as any interaction, and a plugin can stop it by cancelling `VirtualNpcInteractionEvent`. A sneak-right-click does not mount, and the wand selects a rideable NPC as any other. The NPC needs room for its body and rider where it stands: on ground, at a water surface it can swim, or in open air when it flies. Each NPC carries one player, each player rides one NPC, and at most 8 players ride at once. Mounting cancels the NPC's route until the definition is applied again.
 
 Press a movement key after mounting to start moving; a key already held while mounting does not count. Steering follows the player's look direction. Sprint and jump give no extra speed. The body steps up one full block and down at most three. Movement happens only on the server, through the same clearance check as navigation; the client's coordinates are never used. Block shapes the check does not recognize stop the ride, so plants, slabs, stairs and fences stop the NPC next to them. Reaching the leash holds the NPC in place without ending the ride. The NPC stays where the ride ended. Flying and swimming control are not available.
 

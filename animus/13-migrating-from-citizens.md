@@ -153,15 +153,15 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 | Poses, sneaking, sitting, armor stand | `poses` for [`animus:pose`](/animus/07-behaviors#actions), sneaking and sitting poses, armor stand parts and angles. |
 | Glowing, using an item, player-list visibility, scoreboard color and tags, gravity, baby age | `glowing`, `usingItem`, `listed`, `teamColor`, `tags`, `gravity`, `baby`. An armor stand without gravity also gets `gravity: false`. |
 | Attribute trait | `attributes`, with the older `generic_scale` and `generic.scale` names read as `scale`. A value outside the vanilla range is clamped with a warning; an id no supported Minecraft version registers is kept for review. |
-| Navigator settings | `movement`: speed, water avoidance, fall distance, pathfinding range, distance margin, stuck handling, flying and opening doors. |
-| `targetable: true` | `targetableByMobs` on `animus:combat`. |
+| Navigator settings | `movement`: speed, water avoidance, fall distance, pathfinding range, distance margin, stuck handling, flying (`flyable` becomes `movement.style: fly`) and opening doors. |
+| `targetable: true` | `targetableByMobs` on `animus:combat`, and `animus:health` that is killable unless Citizens protected the NPC. |
 | `minecraft-ai: true` on a mob with no route | A disabled wander route around its spawn point. |
 | Owner | `owner`, when it is a player. |
 | Mounts | Mount references resolved through the UUID map. |
 | Waypoints | A route, off until `accept patrols`. See [waypoints](#waypoints). |
 | Look-close | `animus:look-close`. See [look-close](#look-close). |
 | Text and commands | Generated behaviors. See [text](#text) and [commands](#commands). |
-| Sentinel | `animus:combat`, off until `accept combat`. See [Sentinel settings](#sentinel-settings). |
+| Sentinel | `animus:combat` and `animus:health`, off until `accept combat`. See [Sentinel settings](#sentinel-settings). |
 | `controllable` | `animus:riding`, off until `accept riding`. A disabled trait converts to nothing. |
 | dtlTraders `trader` | `modules["animus:shop"]`, opening nothing until `accept shops`. |
 | Builder `builder` | An `animus:builder` section, run only after `accept builder`. See [builder](#builder). |
@@ -182,6 +182,8 @@ Waypoints become a route in the NPC's `modules["animus:navigation"]`, with world
 | `wander` | `order: wander` around the region centers, or around the NPC's position. `xrange` and `yrange` become `wander.radius` and `height` (at most 32 and 8); a `delay` of -1 becomes 60 ticks |
 | `delay` trigger | The point's `waitTicks`; several delays on one point add up |
 | Speed modifier | `speed` of 4.3 blocks per second times the modifier, within 1 to 5 |
+
+Every route made from Citizens waypoints opens doors (`openDoors: true`) and drops at least 3 blocks: a Citizens fall distance below 3, which is common and blocks most legs that step off a ledge, becomes `maximumFall: 3`. Both are in the NPC's [movement](/animus/05-movement-mounts-riding) settings, so lower them there if a route should not. The import report's warnings say how many routes changed and how many had their fall distance raised.
 
 Points move to the center of their block. Citizens saves the block you clicked, which is usually the ground under the NPC's feet, so a point that names a solid block, a top slab or a stair is walked to the surface on top of it, and a stuck NPC that teleports lands there instead of inside the block. A waypoints trait with no points, which Citizens saves for many NPCs that never had a route, converts to nothing and is not counted as kept. Points in another world are left out. Other providers and the `animation`, `chat`, `command`, `speed` and `teleport` triggers are kept in `citizens:review` and reported for each NPC. Long legs and destinations no guide reaches need no extra points. Routes are described in [movement](/animus/05-movement-mounts-riding).
 
@@ -208,7 +210,7 @@ Builder's `builder` trait becomes an `animus:builder` section with `reviewAccept
 
 ## Sentinel settings
 
-Each Sentinel record becomes `modules["animus:combat"]` with `enabled` and `reviewAccepted` set to `false`. `/animus import citizens accept combat` sets both to `true`; until then the NPC neither fights nor takes combat damage. The unchanged Sentinel record stays in `citizens:review` and in the import archive.
+Each Sentinel record becomes `modules["animus:combat"]` with `enabled` and `reviewAccepted` set to `false`, and [`modules["animus:health"]`](/animus/08-combat#health-and-death) with its health, armor, invincibility, drops, experience, respawn time and spawn point. `/animus import citizens accept combat` sets both combat flags to `true`; until then the NPC neither fights nor takes damage. The unchanged Sentinel record stays in `citizens:review` and in the import archive.
 
 The module keeps three things apart:
 
@@ -218,7 +220,7 @@ The module keeps three things apart:
 
 `migrationReport` lists which source fields converted, which are unsupported or unknown, and a note for every value that was adjusted. `autoswitch` and `weapon_redirect_map` are kept, not converted.
 
-| Sentinel field | Combat setting | Notes |
+| Sentinel field | Animus setting | Notes |
 | --- | --- | --- |
 | `allTargets`, `allIgnores`, `allAvoids` | `targets`, `ignores`, `avoids` | See the target list table below. |
 | `range` | `targeting.scanRange` | Limited to 256; the server's `maximumScanRange` (default 100) applies at runtime. |
@@ -239,12 +241,12 @@ The module keeps three things apart:
 | `reach` | `melee.reach` | Limited to 6. |
 | `projectileRange`, `accuracy`, `safeShot` | `ranged.range`, `inaccuracy`, `safeShot` | Ranged attacks are enabled when the imported held item is a weapon: bow or crossbow (`arrow`), spectral arrow, trident, blaze rod (`fireball`), snowball, egg or wither skeleton skull (`wither_skull`). A held potion is not converted, because its effect is item data. |
 | `needsAmmo` | `ranged.useAmmo` | Counts the imported inventory. |
-| `health` | `defense.maximumHealth` | Maximum, not current health. |
-| `armor` | `defense.armor` | `-1` (the default) becomes `armorFromEquipment: true`. |
-| `invincible`, `protected`, `protectFromRange`, `allow_knockback`, `healRate` | `defense.invincible`, `protectedFromIgnored`, `protectFromRange`, `knockback`, `healRateTicks` | `protected` means protection from ignored targets, not region protection. |
-| `drops`, `dropChances` | `death.drops` | Plain items with their chances convert; items with extra data keep the whole original list. |
-| `enemyDrops`, `death_xp` | `death.victimDrops`, `experience` | |
-| `respawnTime`, `spawnPoint` | `respawn.delayTicks`, `locations` | `0` keeps the NPC dead (`delayTicks: -1`). Below 0 also sets `deleteOnDeath: true`, so the definition is deleted when the NPC dies, as one transaction that `/animus rollback` undoes. |
+| `health` | `animus:health` `maximumHealth` | Maximum, not current health. |
+| `armor` | `animus:health` `armor` | `-1` (the default) becomes `armorFromEquipment: true`. |
+| `invincible`, `protected`, `protectFromRange`, `allow_knockback`, `healRate` | `animus:health` `killable` (the opposite of `invincible`), `protectedFromIgnored`, `protectFromRange`, `knockback`, `regenerate` and `regenerateTicks` | `protected` means protection from ignored targets, not region protection. A heal rate of 0 turns regeneration off. |
+| `drops`, `dropChances` | `animus:health` `death.drops` | Plain items with their chances convert; items with extra data keep the whole original list. |
+| `enemyDrops`, `death_xp` | `victimDrops` on `animus:combat`, `animus:health` `death.experience` | |
+| `respawnTime`, `spawnPoint` | `animus:health` `respawn.delayTicks`, `points` | `0` becomes `afterDeath: permadeath`, so the NPC stays dead until revived. Below 0 becomes `afterDeath: delete`, so the definition is deleted when the NPC dies, as one transaction that `/animus rollback` undoes. |
 | `greeting_text`, `warning_text`, `greet_range`, `greet_rate` | `greetings.friendly`, `hostile`, `range`, `cooldownTicks` | Empty text means no line. |
 
 Target list entries:

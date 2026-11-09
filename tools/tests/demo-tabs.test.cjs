@@ -20,6 +20,8 @@ async function page(t, perspective, single = false, reducedMotion = false, rende
     + '<div class="adapt-demo"><video src="/adapt-assets/demo-pov.webm"></video><video src="/adapt-assets/demo-observer.webm"></video></div>'
     + '<div class="gloss-demo"><p>Inventory menus. Minecraft client. Silent capture.</p><video src="/gloss-assets/demos/inventory-menus-pov.webm" aria-label="Inventory menus in Minecraft"></video></div>'
     + '<div class="gloss-demo"><p>Menu authoring. Browser editor. Silent capture.</p><video src="/gloss-assets/demos/menu-editor.webm" aria-label="Menu authoring in the browser editor"></video></div>'
+    + '<div class="animus-demo"><p>Wand selection. Minecraft client.</p><video src="/animus-assets/tutorial/03-wand-selection-ingame.webm" aria-label="Selecting NPCs with the wand"></video></div>'
+    + '<div class="animus-demo"><p>Pairing. Browser editor.</p><video src="/animus-assets/tutorial/01-pair-server-editor.webm" aria-label="Pairing the web editor"></video></div>'
     + '</div></main></div></div>', { url: 'https://example.test/wormholes/03-building-portals', runScripts: 'outside-only' });
   t.after(() => dom.window.close());
   const { window } = dom;
@@ -118,6 +120,26 @@ test('single-view Gloss clips preserve labels and play independently of saved pe
     assert.equal(video.paused, true);
     visible(demo, true);
     assert.equal(video.paused, false);
+  }
+});
+
+test('single-view Animus clips mount in-game and editor footage without tabs', async t => {
+  const { window, visible } = await page(t, 'third-person');
+  const demos = [...window.document.querySelectorAll('.animus-demo')];
+  assert.equal(demos.length, 2);
+  for (const demo of demos) {
+    const video = demo.querySelector('video');
+    const label = video.getAttribute('aria-label');
+    assert.equal(demo.classList.contains('demo-ready'), true);
+    assert.equal(demo.querySelector('[role="tablist"]'), null);
+    assert.equal(video.paused, true);
+    visible(demo, true);
+    assert.equal(video.paused, false);
+    assert.equal(video.muted, true);
+    assert.equal(video.loop, true);
+    assert.equal(video.getAttribute('aria-label'), label);
+    visible(demo, false);
+    assert.equal(video.paused, true);
   }
 });
 

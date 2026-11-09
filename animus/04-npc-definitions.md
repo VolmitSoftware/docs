@@ -46,8 +46,8 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 | `behaviors` | No | `namespace:id` references to [behaviors](/animus/07-behaviors). |
 | `tags` | No | See [appearance](#appearance-text-and-inventory). |
 | `groups` | No | 1-16 [trait group](/animus/18-trait-groups) ids whose shared values the NPC takes before its own. |
-| `owner` | No | Canonical player UUID. |
-| `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat` or `animus:riding`. Unknown module data is kept as written. |
+| `owner` | No | Canonical player UUID. `/animus create`, the toolkit and the paired web editor set it to the player who made the NPC. |
+| `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat`, `animus:health` or `animus:riding`. Unknown module data is kept as written. |
 
 Appearance, inventory, `movement`, `poses` and `rig` fields are described below and on [movement, mounts and riding](/animus/05-movement-mounts-riding) and [rigs and animations](/animus/06-rigs-animations). Health, cooldowns and running behavior state never belong in a definition; Animus does not write them there.
 
@@ -62,11 +62,12 @@ Create, clone and import save definitions despawned (`spawned: false`), so they 
 /animus spawn guard
 /animus inspect guard
 /animus select guard
+/animus select
 /animus edit guard {"name":"Renamed Guard"}
 /animus despawn guard
 ```
 
-Management commands require `animus.admin`. `animus.status` is available to everyone. When an administrator clicks an NPC (sneak-click on a rideable NPC), that NPC becomes their selection; ordinary players interact normally and never see selection messages. `spawn`, `despawn`, `inspect` and `delete` accept the selected NPC when the ID is left out. Console commands always need the ID. See [commands and permissions](/animus/02-commands-permissions) for the full list.
+Management commands require `animus.admin`. `animus.status` is available to everyone. An administrator selects NPCs with the [wand](/animus/21-in-game-toolkit#the-wand) or `/animus select`; a click without the wand is an ordinary interaction for everyone. `spawn`, `despawn`, `inspect` and `delete` accept the selected NPC when the ID is left out. Console commands always need the ID. See [commands and permissions](/animus/02-commands-permissions) for the full list.
 
 `/animus edit` applies a top-level JSON patch: listed fields are replaced, the rest stay, and the revision goes up. An active NPC keeps its health and current position through an appearance-only edit. An edit that changes `position` moves it. Despawning and spawning again starts the NPC with fresh runtime state.
 
@@ -116,7 +117,7 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 
 ### Names and text lines
 
-A player name that fits a profile name (16 characters, no `&` codes) stays the normal player nameplate. Longer or colored player names, every non-player name and all hologram lines appear in one text display that rides the body, with the hologram lines above the name. Placeholders such as `%player%` are not interpreted.
+A player name that fits a profile name (16 characters, no `&` codes) stays the normal player nameplate. Longer or colored player names, every non-player name and all hologram lines appear in one text display that rides the body, with the hologram lines above the name. With PlaceholderAPI installed on Paper, Spigot or Folia, `%placeholders%` in the name and hologram lines are filled for each player who sees the NPC, and a player NPC whose name holds one shows it on the text display; see [`[placeholders]`](/animus/03-configuration#placeholders). On mod servers they show as written.
 
 `hologram` also accepts:
 
@@ -182,10 +183,11 @@ Animus also applies these to its own simulation of the NPC:
 | `step_height` | Blocks climbed without a jump, at most 1.5 | `movement.stepHeight` |
 | `jump_strength`, `gravity` | Jump height on paths, at most 3 blocks | |
 | `gravity` | How fast an idle body falls; 0 or less hovers | `gravity: false` |
-| `safe_fall_distance` | Blocks a path may drop, 0-16 | `movement.maximumFall` |
-| `max_health` | Combat maximum health | `defense.maximumHealth` |
-| `armor`, `armor_toughness` | Vanilla armor reduction of combat damage | `defense.armor` or `defense.armorFromEquipment` |
-| `knockback_resistance` | The share of combat knockback ignored; below 0 the NPC takes more | |
+| `safe_fall_distance` | Blocks a path may drop, 0-16; with the `fall` health source, the blocks an idle fall takes before it hurts | `movement.maximumFall` |
+| `fall_damage_multiplier` | Scales fall damage with the `fall` health source | |
+| `max_health` | Maximum health | `maximumHealth` in `animus:health` |
+| `armor`, `armor_toughness` | Vanilla armor reduction of damage | `armor` or `armorFromEquipment` in `animus:health` |
+| `knockback_resistance` | The share of knockback ignored; below 0 the NPC takes more | |
 | `attack_damage` | Melee damage | `melee.damage` or `melee.fromEquipment` |
 | `attack_knockback` | Adds half its value to the 0.4 base melee knockback | `melee.knockback` |
 | `attack_speed` | Melee hits per second | `melee.cooldownTicks` |
@@ -193,7 +195,7 @@ Animus also applies these to its own simulation of the NPC:
 
 `movement_speed` also sets the chase speed of a combat NPC unless `pursuit.speed` is set. The combat fields are in the NPC's `animus:combat` module; see [combat](/animus/08-combat).
 
-Every other attribute is stored and sent but changes nothing for an NPC, because it matters only to a real player or to a vanilla mob brain: `block_interaction_range`, `entity_interaction_range`, `block_break_speed`, `mining_efficiency`, `submerged_mining_speed`, `sneaking_speed`, `sweeping_damage_ratio`, `camera_distance`, `luck`, `waypoint_receive_range`, `waypoint_transmit_range`, `flying_speed`, `tempt_range`, `spawn_reinforcements`, `max_absorption`, `burning_time`, `fall_damage_multiplier`, `explosion_knockback_resistance`, `movement_efficiency`, `water_movement_efficiency`, `oxygen_bonus` and the 26.2 attributes. NPCs do not slow down in water or run out of air, so the two water attributes have nothing to change.
+Every other attribute is stored and sent but changes nothing for an NPC, because it matters only to a real player or to a vanilla mob brain: `block_interaction_range`, `entity_interaction_range`, `block_break_speed`, `mining_efficiency`, `submerged_mining_speed`, `sneaking_speed`, `sweeping_damage_ratio`, `camera_distance`, `luck`, `waypoint_receive_range`, `waypoint_transmit_range`, `flying_speed`, `tempt_range`, `spawn_reinforcements`, `max_absorption`, `burning_time`, `explosion_knockback_resistance`, `movement_efficiency`, `water_movement_efficiency`, `oxygen_bonus` and the 26.2 attributes. NPCs do not slow down in water or run out of air, so the two water attributes have nothing to change.
 
 `/animus npc attribute <npc> <attribute> [value=]` shows, sets or resets one attribute in the file; see [commands](/animus/02-commands-permissions#status-and-npc-management). The behavior action `animus:set-attribute` changes one for the running NPC only. Trait groups may set attributes; they merge attribute by attribute, see [trait groups](/animus/18-trait-groups).
 

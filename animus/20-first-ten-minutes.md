@@ -2,7 +2,7 @@
 title: "Animus: Your First Ten Minutes"
 description: "Install Animus, set it up, and make, skin and walk your first NPC"
 published: true
-date: 2026-11-07T00:00:00.000Z
+date: 2026-11-08T00:00:00.000Z
 tags: "animus, quick start, setup, first npc"
 editor: markdown
 dateCreated: 2026-11-07T00:00:00.000Z
@@ -111,6 +111,7 @@ Every Citizens NPC arrives dormant, and the features you accept turn on. One com
 
 ## Where to go next
 
+- [Tutorial](/animus/22-tutorial-first-npc): every toolkit screen, step by step, with videos.
 - [NPC definitions](/animus/04-npc-definitions): every field of `guard.json`, equipment, holograms and poses.
 - [Behaviors](/animus/07-behaviors): greetings, dialogue, quests and reactions to clicks.
 - [Combat](/animus/08-combat): guards that fight.

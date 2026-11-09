@@ -1158,6 +1158,10 @@
                 "href": "/animus/00-overview"
               },
               {
+                "title": "First ten minutes",
+                "href": "/animus/20-first-ten-minutes"
+              },
+              {
                 "title": "Installation and compatibility",
                 "href": "/animus/01-installation-compatibility"
               },
@@ -1178,6 +1182,32 @@
         ]
       },
       {
+        "title": "Tutorial",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "First NPC",
+                "href": "/animus/22-tutorial-first-npc"
+              },
+              {
+                "title": "Movement",
+                "href": "/animus/23-tutorial-movement"
+              },
+              {
+                "title": "Conversations, shops and combat",
+                "href": "/animus/24-tutorial-interaction"
+              },
+              {
+                "title": "Web editor",
+                "href": "/animus/25-tutorial-web-editor"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "title": "NPCs",
         "groups": [
           {
@@ -1188,8 +1218,16 @@
                 "href": "/animus/04-npc-definitions"
               },
               {
+                "title": "Trait groups",
+                "href": "/animus/18-trait-groups"
+              },
+              {
                 "title": "Movement, mounts, and riding",
                 "href": "/animus/05-movement-mounts-riding"
+              },
+              {
+                "title": "Performance recordings",
+                "href": "/animus/19-performance-recordings"
               },
               {
                 "title": "Rigs and animations",
@@ -1218,16 +1256,20 @@
             "title": "",
             "links": [
               {
+                "title": "In-game toolkit",
+                "href": "/animus/21-in-game-toolkit"
+              },
+              {
+                "title": "Web editor",
+                "href": "/animus/14-web-editor"
+              },
+              {
                 "title": "Shops",
                 "href": "/animus/10-shops"
               },
               {
                 "title": "GUIs, holograms, and menus",
                 "href": "/animus/11-guis-holograms-menus"
-              },
-              {
-                "title": "Web editor",
-                "href": "/animus/14-web-editor"
               }
             ]
           }

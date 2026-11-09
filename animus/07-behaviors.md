@@ -276,8 +276,8 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `proximity` | `phase`: `enter` or `leave`. `radius`: above 0, at most 64 blocks. | A viewer crosses that radius. Leaving needs half a block of extra distance. |
 | `spawn` | None. | The NPC is first presented. At startup it waits for the first behavior catalog. |
 | `despawn` | None. | A spawned NPC is despawned. It runs against the new dormant definition. |
-| `damage` | None. | The NPC's health falls. |
-| `death` | None. | The NPC's health reaches zero. No despawn trigger follows a death. `say`, `play-sound` and `spawn-particle` still come from where the NPC fell; actions that need a living body are unavailable until it respawns. |
+| `damage` | None. | The NPC's health falls. Runs read `context.damage`, `context.attacker` (a UUID) and `context.attacker_type` (`player`, `mob`, `npc`, or empty when unknown). A player attacker is the run's player. |
+| `death` | None. | The NPC's health reaches zero. Runs read `context.killer` and `context.killer_type`, and a player killer is the run's player, so `animus:command` with `{player}` rewards them. No despawn trigger follows a death. `say`, `play-sound` and `spawn-particle` still come from where the NPC fell; actions that need a living body are unavailable until it respawns. |
 | `waypoint` | Optional `waypoint`: -1 to 4,095. | The NPC arrives at a route point; -1 is a manually requested destination. Without the field, any arrival fires. |
 | `timer` | `intervalTicks`: 1 to 72,000; 20 to 72,000 in a server behavior. | The interval passes while the NPC is active, or while the server runs in a [server behavior](#server-behaviors). |
 | `dialogue_choice` | `dialogue`. Optional `choice`. | A viewer's click on that prompt from this NPC passes validation. |
@@ -307,7 +307,7 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `player_damage_entity` | Optional `entity`, `cancel`. | A player hits a living entity. NPCs are not entities: a hit on an NPC is its `interaction` with `action: attack`. Server behaviors only. |
 | `player_kill` | Optional `entity`. | A player kills a living entity. Server behaviors only. |
 | `projectile_launch` | Optional `projectile`, `shooter`, `cancel`. | A projectile such as an arrow, snowball, ender pearl or trident is launched, by a player, a mob, a dispenser or a command. Server behaviors only. |
-| `projectile_hit` | Optional `projectile`, `shooter`, `entity`, `block`, `cancel`. | A projectile hits an entity or a block. NPCs are not entities, so projectiles pass through them. Server behaviors only. |
+| `projectile_hit` | Optional `projectile`, `shooter`, `entity`, `block`, `cancel`. | A projectile hits an entity or a block. NPCs are not entities, so a projectile striking an NPC body does not fire it. Server behaviors only. |
 | `entity_shoot_bow` | Optional `shooter`, `bow`, `projectile`, `cancel`. | A player or mob shoots a bow or crossbow. Server behaviors only. |
 
 ### Interaction actions
@@ -336,9 +336,9 @@ Clicks and key presses must reach the NPC: the server measures the player's view
 
 Runs and `consume` conditions read `context.action` (`interact`, `attack`, `drop` or `swap_hands`), `context.sneaking` and `context.hand` (`main_hand` or `off_hand`; always `main_hand` for a key press). `sneaking` comes from the click itself for a right-click and from the player's sneaking state for the other inputs.
 
-Interaction, proximity and dialogue runs carry the viewer's UUID, and module runs carry the UUID the module supplied. The other events carry no player. Triggers pass no other event data to the routine. Trigger-started runs use the same variables as manual runs, and `player` and `relationship` variables resolve from the triggering player. Every routine a behavior's triggers start shares that behavior's variables.
+Interaction, proximity and dialogue runs carry the viewer's UUID, damage and death runs the attacking player's when a player dealt the hit, and module runs carry the UUID the module supplied. The other events carry no player. Triggers pass no other event data to the routine. Trigger-started runs use the same variables as manual runs, and `player` and `relationship` variables resolve from the triggering player. Every routine a behavior's triggers start shares that behavior's variables.
 
-A trigger with no player cannot start a behavior that declares a `player` or `relationship` variable. That start is counted under `START_FAILED`, and `/animus behaviors triggers` shows the most recent refusal with its field. Spawn, despawn, damage, death, waypoint and timer triggers never have a player, so `/animus behaviors validate` warns with `behavior-trigger-needs-player` on each such trigger in that behavior. The behavior is still accepted, since its other triggers may work. A `module` trigger depends on what its module supplies and is not flagged.
+A trigger with no player cannot start a behavior that declares a `player` or `relationship` variable. That start is counted under `START_FAILED`, and `/animus behaviors triggers` shows the most recent refusal with its field. Spawn, despawn, waypoint and timer triggers never have a player, and damage and death triggers have one only when a player dealt the hit, so `/animus behaviors validate` warns with `behavior-trigger-needs-player` on each such trigger in that behavior. The behavior is still accepted, since its other triggers may work. A `module` trigger depends on what its module supplies and is not flagged.
 
 Only active NPCs fire triggers. Dormant NPCs, including applied imports that are not spawned yet, fire nothing, and previews never fire triggers. Editing an active NPC's definition is neither a despawn nor a spawn. A player disconnecting fires no `leave`. Deleting an NPC fires no `despawn`, because no definition remains to run against. Stopping the server fires nothing.
 
@@ -346,7 +346,7 @@ Replacing the behavior, editing or despawning the NPC, or making the behavior un
 
 Timers, cooldowns and queue lifetimes count behavior ticks, about 50 ms each with the default `tickMillis`. `cooldownTicks` and `defaultCooldownTicks` apply per trigger on each NPC, not per player: a second player entering a `proximity` radius during the cooldown does not fire it. Interaction triggers use a [player cooldown](#interaction-actions) instead.
 
-On Folia, triggers run on the region that owns each NPC, damage and death triggers included. Where the NPC runtime is unavailable, or when `behaviors.triggers.enabled` is false, `/animus behaviors triggers` shows `UNAVAILABLE` with the reason, nothing runs, and module publishes return `UNAVAILABLE` with the same reason. Manual runs still work there.
+On Folia, triggers run on the region that owns each NPC, damage and death triggers included. Where the NPC runtime is unavailable, or when `behaviors.triggers.enabled` is false, `/animus behaviors triggers` shows `off`, with the reason on the hover and in the console, nothing runs, and module publishes return `UNAVAILABLE` with the same reason. Manual runs still work there.
 
 ### Trigger settings
 
@@ -627,6 +627,8 @@ Everything an NPC says, every prompt and answer, combat greetings and warnings, 
 - the MiniMessage tags the [chest GUI](/animus/11-guis-holograms-menus) reads: color names (`<green>`), `<#RRGGBB>`, `<color:...>`, `<bold>`, `<italic>`, `<underlined>`, `<strikethrough>`, `<obfuscated>`, `<reset>` and their closing tags.
 
 Unicode symbols such as `❤`, `⚔` and `✔` show as written. A speaker without its own color is shown in Animus pink (`#FF5FA8`) and spoken text in white.
+
+With PlaceholderAPI installed on Paper, Spigot or Folia, `%placeholders%` in `animus:say`, `animus:message`, `animus:actionbar` and `animus:title` text, in dialogue prompts and in choice text and hover are filled for each player who receives them, after `{player_name}` and `{{ }}` holes. A `say` to nearby players fills each listener's own values. See [`[placeholders]`](/animus/03-configuration#placeholders).
 
 ### Dialogue choices
 

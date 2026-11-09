@@ -18,7 +18,7 @@ If the browser cannot keep workspaces (some private windows have no IndexedDB), 
 
 A blank workspace's overview names three ways to start: **Create an NPC**, **Import** (convert a Citizens, Shopkeepers or Denizen save) and **Pair a server**.
 
-Every document is checked against the Animus schemas as you type and has Visual, Preview, Code and Split views. New documents start from a guided first step, such as an NPC from its name, folder, body, skin and position, or a behavior from the conversation, greeter, dialogue, patrol, shop, guard or quest template.
+Every document is checked against the Animus schemas as you type and has Visual, Preview, Code and Split views. The header shows the document's revision, read only: the server raises it on every apply. New documents start from a guided first step, such as an NPC from its name, folder, body, skin and position, or a behavior from the conversation, greeter, dialogue, patrol, shop, guard or quest template.
 
 A list longer than eight entries has a search field at its top: type to narrow it. A list that picks another document, such as an NPC's rig or a route's recording, ends with **+ New** and **Manage**. **+ New rig** opens the new rig form with what you typed in the search as its name and the current folder, and **Create** brings you back with the new rig picked. **Manage rigs** lists every rig. Recordings are made in game, so their list says to run `/animus record start <id>` instead.
 
@@ -26,7 +26,7 @@ A behavior's Visual view reads top to bottom: the document, its variables, its r
 
 A behavior's Preview is a dry run: pick a trigger, step through what the NPC says, asks and walks to, and answer its prompts. Loops, expressions and templates run in the browser; facts only a server knows, such as a player's health, use sample values, and a condition that reads one is marked assumed so you can flip it. Commands, combat, building, items and shop trades are listed as server-only and not run.
 
-An NPC's Preview wears its skin: the editor reads the skin document the NPC names (on a server workspace it fetches that document when you open the NPC) and loads the texture from Mojang's texture server in your browser. Until the texture arrives, or if it cannot be loaded, the stage shows the default Steve or Alex skin and the Skin line says why, with Retry texture. A PNG kept in the workspace under `editor/skins/<hash>.png`, or one you load, is used instead.
+An NPC's Preview wears its skin: the editor reads the skin document the NPC names (on a server workspace it fetches that document when you open the NPC) and loads the texture from Mojang's texture server in your browser. Until the texture arrives, or if it cannot be loaded, the stage shows the default Steve or Alex skin and the Skin line says why, with Retry texture. A PNG kept in the workspace under `editor/skins/<hash>.png`, or one you load under Appearance, is used instead. An unsigned skin without a kept PNG shows the placeholder, and the Skin line says so.
 
 `server-behaviors.json`, the list of server behaviors that run, opens like any other document and is kept when you export the workspace. Its Visual view lists the server behaviors in order: add one from the behaviors in this workspace that have the server switch on, remove one, or move it up or down. Only listed behaviors run, so an empty list runs none. Create the list from the New page; it starts with every server behavior in the workspace. The workspace overview counts how many are listed.
 
@@ -52,14 +52,15 @@ Once the workspace has a [trait group](/animus/18-trait-groups), the Trait group
 
 An NPC's Visual view puts the inspector beside the 3D stage, or under it on a phone. The inspector reads top down, and each part's heading sums it up while closed; on a phone only Identity starts open.
 
-- Identity: name, id, folder, UUID, revision, tags, the trait groups the NPC lists (in merge order, with Move earlier, Remove and a warning for a trait group the workspace does not have) and the owner's UUID.
+- Identity: name, id, folder, UUID, tags, the trait groups the NPC lists and the owner's UUID. Trait groups show as a row of chips in merge order: click one to open it, drag it or press Alt with the left or right arrow to reorder, and × removes it; a trait group the workspace does not have carries a warning. **Add group** picks one from the workspace, and **+ New group** makes a trait group named after the search text and lists it on this NPC in one undo step, then offers to open it. An NPC made in the editor while it is paired gets the pairing player as its owner; the field stays editable.
 - Effective, for an NPC with trait groups: the definition the server runs, one row per field, per module and per attribute with the trait group or NPC that set it and a link to that trait group, plus the whole effective JSON. The 3D stage draws the effective definition, so equipment, holograms and skins from trait groups show on it.
 - Body: the body type and, right under it, whether the NPC is spawned (while the NPC wears a skin, its own or one from a trait group, a body other than a player asks first, since the server refuses a skin on any other body: Remove skin changes both in one step, also taking the skin out of the trait groups that gave it, and Cancel keeps the player body), a rig from the workspace (the stage draws it), the pose (shown for player bodies only), an armor stand's parts and pose angles, the settings of a horse, llama, frog, armadillo or ender dragon as dropdowns and switches, and the traits that body shows: baby only for bodies with a baby form, tab list and raised item only for players. Fields left from the old body after a type change, such as a skin, a pose or another body's settings, are listed under the type with a button to remove each one, or all of them. The stage draws a horse's coat and markings and a llama's and frog's variant.
 - Position: the coordinates and named facings for the `animus:pose` action.
-- Appearance: the skin, picked from the workspace skins with their faces or by hash, with Remove skin, the arm model (slim or classic) and New skin from a PNG file or address; equipment by slot (only the slots the body shows, plus any other slot already filled, with a warning), hologram lines with a colored preview and their style (billboard, line height, view range), and whether the nameplate shows.
+- Appearance: the skin, picked from the workspace skins with their faces or by hash, with Remove skin, the arm model (slim or classic), the built-in skins (a click makes a skin document from that PNG, labelled with its name, and wears it in one undo step) and New skin from a PNG file or address; the stage beside it wears whatever is picked here; equipment as inventory slots laid out like the player's (armor down the left, saddle and body armor beside it, off hand and main hand below; only the slots the body shows, plus any other slot already filled, with a warning). Click a slot, or press Enter, to edit its item, count and components below the grid. Arrow keys move between slots, a right click or Delete empties one, and dragging a slot onto another swaps their items, hologram lines with a colored preview and their style (billboard, line height, view range), and whether the nameplate shows.
 - Attributes: the NPC's [attributes](/animus/04-npc-definitions#attributes). Add one from the dropdown, which can be searched: attributes are grouped under Size and movement, Combat, Senses, Player only and Other, each row shows its range and vanilla default, attributes already set are grayed out, and the ones the NPC's body type carries come first, with the rest marked as having no effect on this body; each shows a number field with its range, its vanilla default and what Animus does with it, and a reset that removes it. A value out of range is refused before it is saved. The 3D stage draws the body at its `scale`. A trait group's editor has the same part.
-- Behavior: the behaviors the NPC runs, picked from the workspace and, while connected, the server (server-wide behaviors are not offered, since they have no NPC), its route, how it walks, and its stored inventory. A reusable route shows read-only, with Edit route to open it and Make a copy for this NPC, which makes a new route the NPC alone uses (one Undo step).
-- Modules: combat, the shop a click opens (picked from the workspace shops, with **Edit shop** and **+ New shop**), another NPC to ride, and any other module, typed from its schema or as key and value rows; Advanced edits it as JSON.
+- Behavior: the behaviors the NPC runs, picked from the workspace and, while connected, the server (server-wide behaviors are not offered, since they have no NPC), its route, how it walks, and its stored inventory, drawn as rows of 9 slots for its size and edited the same way; slots past the size are flagged. A reusable route shows read-only, with Edit route to open it and Make a copy for this NPC, which makes a new route the NPC alone uses (one Undo step).
+- Health and death, under Modules after combat: whether the NPC is [killable](/animus/08-combat#health-and-death), its health, armor, regeneration, damage sources, attacker permission and protection range, whether what combat ignores can hurt it, the drops (each picked with the item picker, with a max count and chance), experience, and after death a respawn delay with respawn points on the position grid, permadeath or deletion. A dead NPC shows a notice with **Revive**. This part is the only place for health and death; the combat form has none.
+- Modules: combat, the shop a click opens (picked from the workspace shops, with **Edit shop** and **+ New shop**), another NPC to ride, hiring (its items as a row of six slots), and any other module, typed from its schema or as key and value rows; Advanced edits it as JSON.
 - Kept fields: anything else in the file, kept as written and edited as key and value rows; the server reads it.
 
 The route editor draws the points on a top-down grid. Click to add a point and drag to move one. From the keyboard, Tab reaches each point: the arrow keys move it a quarter block, Shift with an arrow moves it a whole block, and Delete removes it. Add point at takes an x, y and z. Walking points stand on whole blocks. Add recording step adds a point that plays part of a recording; it is listed and numbered with the points but not drawn, and Make a recording step and Make a position switch a point between the two. Reusable routes under `routes/` open in the same editor and are checked against the route schema.
@@ -68,7 +69,7 @@ A wait is one number or, with Range, a Min and a Max (a new wait is drawn at eac
 
 An NPC's route chooses how it moves: waypoints of its own, a reusable route, or a [recording](/animus/19-performance-recordings) with its playback, `once`, `loop` or `pingpong`; **recording default** leaves it to the recording.
 
-A trait group opens in the same parts as an NPC, editing its `values`: Group (id, description, the NPCs that list it with a picker and **Add member** to add one, tags), Body without type or presence, Appearance with a skin pool, Behavior without the inventory, Modules and Kept fields. Values are checked the way the server checks them, and a problem names its field under `$.values`. Renaming a trait group updates every NPC that lists it.
+A trait group opens in the same parts as an NPC, editing its `values`: Group (id, description, the NPCs that list it as chips, where × takes the trait group off that NPC and **Add member** adds one, tags), Body without type or presence, Appearance with a skin pool, Behavior without the inventory, Modules and Kept fields. Values are checked the way the server checks them, and a problem names its field under `$.values`. Renaming a trait group updates every NPC that lists it.
 
 Recordings are made in game; the editor changes everything around the frames. A recording's Visual view edits its id, description, tags, default playback and speed, and lists its length, frames, events, world, origin, sample rate, recorder, size and revision, beside a top-down path of the recorded positions with its events marked. Drag the scrub, or use the arrow keys on it, to move a marker along the path with the tick, seconds and states such as sneaking; Play runs it at the recording's speed and starts paused. The events list jumps the scrub to an event. To trim, move the scrub and press **Start here** and **End here**; both snap to the nearest frame, the path shows the kept part, and **Trim** cuts the frames and events outside it in one step that Undo reverses. The kept start becomes tick 0 and the new origin, every position stays where it was, and the equipment worn at the new start is kept. Code applies a hand edit only when it passes every rule the server checks, and names the first one it breaks. Browse, beside Recordings in the sidebar, lists every recording with its length, frames, events, world and size. Renaming a recording updates the NPCs and route steps that play it.
 
@@ -174,7 +175,7 @@ Text, expression and id fields complete as you type, and so does the Code view. 
 | A name in an expression or inside `{{ }}` | Declared variables with type and scope, `player.`, `npc.`, `server.` and `context.` facts, and functions |
 | `{` | Placeholders the field fills, such as `{player_name}` in say text, or a whole `{{ viewer.name }}` hole in GUI text |
 | `<` | The tags the server formats: the sixteen colors with a swatch, `#RRGGBB`, `color:`, the decorations and `reset`. `</` closes the open tags |
-| `%` | PlaceholderAPI identifiers, when the paired server has PlaceholderAPI. Each says **Not filled on the server yet**: Animus does not fill them, so they reach players as written |
+| `%` | PlaceholderAPI identifiers, when the paired server has PlaceholderAPI. The server fills them for each player who sees the text; see [`[placeholders]`](/animus/03-configuration#placeholders) |
 | An id | Items, blocks, sounds, particles, entity types, effects and worlds; routes, recordings, animations, skins, shops and GUIs in the workspace; flag and quest names the workspace already uses |
 | The first word of a command | The paired server's commands |
 
@@ -207,7 +208,7 @@ When the pairing is three days or less from expiry, the live bar says how long i
 | Option | Default | Meaning |
 |---|---|---|
 | `label=` | None | A name shown in `/animus editor tokens` |
-| `scopes=` | `read,validate,preview,apply:npcs,apply:behaviors,apply:gui,apply:rigs` | What the token may do |
+| `scopes=` | `read,validate,preview,apply:npcs,apply:behaviors,apply:gui,apply:rigs,terrain` | What the token may do |
 | `folders=` | All folders | Limit the token to NPCs in these folders under `npcs/`, such as `folders=town,harbor` |
 | `expires=` | `tokenDays` from `config.toml` (7 days) | Lifetime as a number with `d`, `h` or `m`, such as `12h` |
 
@@ -222,7 +223,10 @@ When the pairing is three days or less from expiry, the live bar says how long i
 | `apply:rigs` | Applying rigs and animations |
 | `import` | Uploading saves for a staged import and applying it |
 | `spawn` | Spawning and despawning NPCs |
+| `terrain` | Reading loaded terrain near the NPCs the token can see, for the stage and the route editor |
 | `admin` | Managing tokens and reading module status |
+
+Terrain reads (`GET /v1/terrain/surface` for 64 by 64 block tiles, `GET /v1/terrain/blocks` for up to 64 layers of one chunk) cover only chunks within `terrainRadius` of an NPC in a folder the token can reach; farther chunks come back `forbidden`. The server reads chunks it already has loaded and never loads one: others come back `unloaded`. Answers carry no block entities, signs or containers, and each one fits a relay frame. Leave `terrain` out of `scopes=` to keep the world out of the editor.
 
 To import from the editor, pair with the `import` scope, for example `/animus editor pair scopes=read,import,apply:npcs,apply:behaviors,apply:gui`.
 
@@ -274,6 +278,17 @@ A paired server opens as a server workspace listing the server's documents, grou
 Every message about a refused request says what happened and what to do next, such as pairing again with a missing scope.
 
 Live editing for one server runs in one tab at a time. A second tab on the same server shows that another tab is editing it and waits; when the first tab closes or moves to another workspace, the second takes over.
+
+### Terrain
+
+With a token that has the `terrain` scope, the editor draws the server's world around your NPCs.
+
+- **Preview stage**: the blocks around the NPC replace the grass patch, with the pack's own models, including slabs, stairs, fences, glass, leaves and water. **Terrain** turns them off, and **Radius** picks 8, 16 or 24 blocks around the NPC, 32 blocks tall.
+- **Route grid**: the ground under the grid is drawn top down from above, lighter where it rises and darker where it falls, water darker with depth. Chunks the server has not loaded show grey, and chunks outside `terrainRadius` show hatched.
+- **Placing points**: a point you click onto the grid, or drag, lands on the block an NPC can stand on there. Points inside a block, below the surface, more than 3 blocks above the ground or in water are flagged on the grid and listed under it, and so are legs that climb more than a block or drop more than 3 in a straight line.
+- **3D**: shows the route over the blocks around the picked point. Legs are straight lines; the server plans the real path.
+
+The editor asks only for the area in view, keeps every answer in the browser, and asks again with the answer's hash, so unchanged terrain is not sent twice. Without a paired server, or when the server is offline, the stage keeps its grass patch and the grid stays blank.
 
 ### Applying changes
 

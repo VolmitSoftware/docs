@@ -51,6 +51,7 @@ A permission mod can grant any node through the vanilla permission named by the 
 
 | Feature | Mod servers |
 |---|---|
+| Killable NPCs | `animus:health` works as on Paper, player and mob projectiles, fire, lava and falls included; with no controlled mobs, `mobs` as a damage source has nothing to count |
 | Combat protection | No protection adapter is installed, because mod servers have no standard protection API. Every combat hit is allowed; `/animus combat status` shows `protection=none`. A [Java module](/animus/99-java-modules-api#integration-hooks) can provide protection |
 | Combat pursuit regions (`pursuit.region`) | Not available, because no protection plugin provides regions. The NPC fights within its normal ranges, the log says so once per NPC, and `/animus combat status` counts it as `region-unavailable` |
 | Combat `permissions` and `groups` rules | Read through the permission mapping above. A permission group is the permission `group.<name>`, so it needs a permission mod that grants it |
@@ -59,6 +60,7 @@ A permission mod can grant any node through the vanilla permission named by the 
 | Mob control (`/animus combat mob <npc> <mob>`) | Not available; the command says so. Use `/animus combat target <npc> <target>` or `combat guard` instead |
 | Manual hit (`/animus combat attack <npc> <target> [damage=1]`) | Available, with the same reach, line of sight and protection checks |
 | Plugin events (`VirtualNpcInteractionEvent`, `VirtualNpcDamageEvent` and the others) | Not fired. Java modules and behavior triggers receive the same facts on every platform |
+| PlaceholderAPI placeholders (`%player_name%`) | Not filled: PlaceholderAPI is a Bukkit plugin, and mod-side placeholder mods are not read. Text shows the `%` placeholders as written; Animus's own `{player_name}` and `{{ }}` holes still work |
 | React metrics | Not published; [`/animus debug`](/animus/17-debug-react-metrics) works the same |
 | Packet previews (`/animus proof`, `/animus proof folia`) | Not available; they answer that they belong to Bukkit |
 | `packetProofEnabled` in `config.toml` | Ignored |

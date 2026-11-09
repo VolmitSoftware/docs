@@ -33,7 +33,7 @@ The wand is a blaze rod named **Animus wand**. The server knows it by a marker o
 
 The last NPC you add also becomes your `@selected` NPC, so commands that take `@selected` act on it. While you have a selection, small particles mark the corners of each selected NPC within 48 blocks; only you see them. Clearing the selection or leaving the server stops them. The selection holds at most 256 NPCs and is forgotten when you leave.
 
-Without the wand, a click on an NPC opens its shop, GUI or hire window as usual.
+Without the wand, a click on an NPC opens its shop, GUI or hire window as usual and never changes the selection.
 
 ## Palette
 
@@ -41,13 +41,13 @@ Without the wand, a click on an NPC opens its shop, GUI or hire window as usual.
 
 | Row | Buttons |
 |---|---|
-| The NPCs | **Selection wand**, **New NPC**, **Find**, **Manage**, **Edit**, **Folders**, **Trait groups** |
+| The NPCs | **Animus wand**, **New NPC**, **Find**, **Manage**, **Edit**, **Folders**, **Trait groups** |
 | Look and movement | **Skins** (right-click puts your own skin on the selection), **Equipment**, **Combat**, **Mounts**, **Routes** (right-click drops a route point here, sneak removes the last), **Recordings** |
 | What they open and run | **Behaviors**, **Shops**, **GUIs** |
 
 ### New NPC
 
-Asks for an id, saves `npcs/<id>.json` where you stand, facing the way you face, selects it and spawns it. The id is 1 to 64 lowercase letters, digits, `_` or `-`; a taken id is refused and nothing is written. Right-click asks for the body type first, such as `minecraft:villager`; sneak-click saves the NPC dormant so you can finish it before it shows. The NPC's world is the name your other NPCs' positions use, so the file matches them.
+Asks for an id, saves `npcs/<id>.json` two blocks in front of you, facing you, with you as its `owner`, selects it and spawns it, all in one transaction; the reply names the file. The id is 1 to 64 lowercase letters, digits, `_` or `-`; a taken id is refused and nothing is written. Right-click asks for the body type first, such as `minecraft:villager`; sneak-click saves the NPC dormant so you can finish it before it shows. The NPC's world is the name your other NPCs' positions use, so the file matches them.
 
 ## Manage
 
@@ -62,6 +62,7 @@ The manage screen acts on the whole selection.
 | Teleport to it | Shown when one NPC is selected |
 | Inspect | Closes the window and prints what `/animus inspect` prints for the first selected NPC |
 | Open in editor | Closes the window and sends a pairing link for the [web editor](/animus/14-web-editor), the same as `/animus editor pair` |
+| Revive | Brings each dead NPC back at full health, the same as `/animus npc revive`: a permadeath is cleared, and an NPC waiting to respawn comes back at once |
 | Edit, Equipment, Combat, Mounts, Skin, Trait groups, Folder, Route, Behaviors | Open those tools on the selection |
 | Clear selection | Empties the selection |
 
@@ -69,7 +70,7 @@ The manage screen acts on the whole selection.
 
 Buttons that need a name or a label, such as **From a player name** and renaming a skin, hide the toolkit window and ask for one line of text. When you answer, the window comes back where you left it and the change runs.
 
-The question opens as an anvil titled with what it asks for. The left slot holds a paper named with the current value, or nothing when there is none. Edit the name in the anvil's text field, then click the paper in the result slot. No experience is spent, even if the anvil shows a cost, and no item moves: the paper never reaches your inventory.
+The question opens as an anvil titled with what it asks for. The left slot holds a paper named with the current value, or nothing when there is none. Edit the name in the anvil's text field, then click the paper in the result slot. No experience is spent and no item moves: the paper never reaches your inventory. On Paper, Spigot and Folia the anvil shows no cost.
 
 | To | Do |
 |---|---|
@@ -135,13 +136,13 @@ Every field button shows its description, its value now (or that the default app
 
 A step is the schema's `multipleOf`, else 1 for whole numbers, else 0.05, 0.1 or 1 depending on the field's range. Numbers stay within the schema's bounds. A typed number outside them is refused before anything is saved. Typing nothing into a text prompt removes the key.
 
-In a list (tags, behaviors, groups, hologram lines, drops, respawn locations), a left click retypes a text entry, cycles an option entry or opens an object entry. Right removes the entry, sneak-left moves it up and sneak-right moves it down. **Add an entry** asks for the text, offers the options or, for an object, asks for its first required text field. A list of fixed length such as an armor stand's `[x, y, z]` keeps its length: its entries step like numbers and sneak-right resets the whole list. Maps such as `poses` and a melee weapon's `weaponDamage` list their entries by name; **Add an entry** asks for the name.
+In a list (tags, behaviors, groups, hologram lines, health drops, respawn points), a left click retypes a text entry, cycles an option entry or opens an object entry. Right removes the entry, sneak-left moves it up and sneak-right moves it down. **Add an entry** asks for the text, offers the options or, for an object, asks for its first required text field. A list of fixed length such as an armor stand's `[x, y, z]` keeps its length: its entries step like numbers and sneak-right resets the whole list. Maps such as `poses` and a melee weapon's `weaponDamage` list their entries by name; **Add an entry** asks for the name.
 
 A field the toolkit cannot edit says so in its lore: items say the Equipment screen sets them, and other shapes say to edit them in the web editor.
 
 ### Attributes
 
-Lists every vanilla attribute the NPC's body carries, with its value or "vanilla default". Left and right step within the attribute's bounds, sneak-left types a value and sneak-right goes back to the vanilla default. A value saved as `minecraft:<id>` keeps that spelling.
+Lists every vanilla attribute the NPC's body carries, each with its own icon, with its value or "vanilla default". Left and right step within the attribute's bounds, sneak-left types a value and sneak-right goes back to the vanilla default. A value saved as `minecraft:<id>` keeps that spelling.
 
 ### Modules
 
@@ -213,10 +214,10 @@ Acts on the whole selection and shows the first selected NPC's values. Every fil
 | Disable combat | Removes `enabled`; the rest of the profile stays |
 | Targetable by mobs | Turns `targetableByMobs` on or off |
 | Targets, Ignores, Avoids | Open the rule list of that name. The lore lists the rules the first NPC has |
-| Status | Left runs `/animus combat status <first NPC>`, right runs `/animus combat status` for the server |
+| Status | Left runs `/animus combat status npc=<first NPC>`, right runs `/animus combat status` for the server |
 | Engage, Disengage, Release | Run `/animus combat engage`, `disengage` or `release` for each selected NPC |
 | Guard me | Left makes each selected NPC guard you for now (`/animus combat guard <npc> <you>`); right stops it. To save a guard, use the Guard section |
-| Targeting, Avoidance, Squad, Guard, Pursuit, Melee, Ranged, Defense, Death, Respawn, Greetings | Open that section of the profile |
+| Targeting, Avoidance, Squad, Guard, Pursuit, Melee, Ranged, Greetings | Open that section of the profile. Health, drops and respawn are in `animus:health` on the Modules screen |
 
 The live buttons change nothing on disk; the command's reply comes as chat.
 
@@ -233,13 +234,11 @@ Each row is one setting, with the description the web editor shows as its tip. A
 | `guard.player` | Set to you | Clear | Set to you |
 | `guard.npc` | Click an NPC with the wand | Clear | Click an NPC with the wand |
 | `avoidance.returnPoint` | Set to where you stand | Clear | Set to where you stand |
-| `death.drops` | Add the item in your main hand, always dropped | Remove the last | Add the item in your main hand |
-| `respawn.locations` | Add where you stand | Remove the last | Add where you stand |
 | `melee.weaponDamage` | Type a damage for the item in your main hand | Remove that item's entry | Type a damage |
 
 Setting `guard.player` clears `guard.npc`, and the other way round. `ranged.effect` opens a screen of its own for the potion's effect id, amplifier and duration.
 
-Clicks change a draft. **Save** writes the changed rows to every selected NPC in one transaction, checked the way combat reads them; a combination combat refuses, such as `respawn.deleteOnDeath` without `delayTicks` -1, is refused whole and the chat line names the field. **Discard** drops the draft, and so does **Back**. Editing a section does not turn combat on.
+Clicks change a draft. **Save** writes the changed rows to every selected NPC in one transaction, checked the way combat reads them; a combination combat refuses, such as a `potion` weapon without an `effect`, is refused whole and the chat line names the field. **Discard** drops the draft, and so does **Back**. Editing a section does not turn combat on.
 
 ### Rule lists
 
@@ -328,8 +327,8 @@ Lists the files in `routes/` with each route's point count and how many NPCs use
 To record a new route:
 
 1. Click **Capture a route**, or right-click **Routes** in the palette. The first point is where you stand.
-2. Walk to the next place. Hold the wand and tap sneak to drop a point there. Points show as green particles while you capture, and the current point shows as flame. Sneak-click **Capture** to remove the last point; right-click it to open the points.
-3. Click **Save route**. It saves `routes/wp-<your name>.json`, or `wp-<your name>-2.json` when that file exists, as a looping walk through the points. Right-click **Save route** to also put it on the selection.
+2. Walk to the next place. Hold the wand and tap sneak to drop a point there. Points show as green sparks while you capture, and the current point, where the next one goes after, shows as an orange flame. Sneak-click **Capture** to remove the last point; right-click it to open the points.
+3. Click **Save route**. It saves `routes/wp-<your name>.json`, or `wp-<your name>-2.json` when that file exists, as a looping walk through the points. The chat line names the route and its point count, such as `Saved wp-alex, 4 points`; **[Path]** shows and copies the file path. Right-click **Save route** to also put it on the selection.
 
 Points snap to the center of the block you stand on and must stay in one world; a route holds at most 256 points. **Discard capture** drops the points and asks once more; saved files stay.
 
@@ -423,7 +422,7 @@ A conversation is a behavior of one shape, the one the web editor's Conversation
 |---|---|---|
 | Starts on | Left, right | Next or previous start: right-click, sneak and right-click, left-click, sneak and left-click, drop key, sneak and drop key, swap hands, sneak and swap hands, walk near, or command only |
 | Within N blocks | Left, right, sneak | Shown for walk near. One block wider or narrower; sneak for ten. 1 to 64 blocks |
-| Block | | The block's name, what reaches it, and any problem that would stop a save |
+| Block | | The block's name, what reaches it, and any problem that would stop a save. The window title is the behavior id on the entry block and names the block on any other |
 | Line | Left | Edit the text |
 | | Right | Insert a line after it |
 | | Sneak-left | Move it up |
@@ -452,14 +451,14 @@ Lists the files in `shops/` with their offer count, window style and how many se
 | Right | Closes the window and opens the shop for you, as `/animus shop open <shop>` does |
 | Sneak | Opens the shop's settings |
 
-**Reload shops** runs `/animus shop reload`. **New shop** asks for an id such as `town:baker` and writes `shops/town/baker.json` with one empty page and no offers; add the offers in the [web editor](/animus/14-web-editor).
+**Reload shops** runs `/animus shop reload`. **New shop** asks for an id such as `town:baker` and writes `shops/town/baker.json` with one empty page and no offers; add the offers in the [web editor](/animus/14-web-editor). Creating or deleting a shop reloads shops from the console, so chat shows only the change. Until it has offers, opening it shows an empty window that says so.
 
 The settings screen shows the values of the first selected NPC that binds the shop. Each change goes on every selected NPC that binds it, in one transaction; on more than 20 NPCs it asks twice and moves one step forward.
 
 | Button | Does |
 |---|---|
 | Open now | Opens the shop for you |
-| Window | Left for the next style, right for the previous: `default` (the shop's own `style`), `native` (the villager trading screen) or `chest`. Writes `style`, or removes it for `default` |
+| Window | Left for the next style, right for the previous, in the order `chest`, `native` (the villager trading screen) and `default` (the shop's own `style`). Writes `style`, or removes it for `default`; the reply reads `Window set to native on baker` |
 | Opens on | Cycles `openOn` through right, left and both clicks |
 | Profession, Level | Shown when a selected villager binds the shop. Profession cycles the villager professions; level steps 1 to 5 (sneak jumps to the end). Writes `villager` on villager bodies only; other bodies are skipped and the chat line counts them |
 | Reset stock | Asks twice, then runs `/animus shop reset <shop>`, clearing limits and stock for everyone |
@@ -470,7 +469,7 @@ Offers are edited in the web editor.
 
 ## GUIs and holograms
 
-One tab each for chest GUIs (`gui/inventories/`), menus (`gui/menus/`), holograms (`gui/holograms/`) and text animations (`gui/text-animations/`), chosen in the bottom row. Each entry shows its title, its file and how many selected NPCs use it. **Reload GUIs** runs `/animus gui reload`.
+One tab each for holograms (`gui/holograms/`), chest GUIs (`gui/inventories/`), menus (`gui/menus/`) and text animations (`gui/text-animations/`), chosen in the bottom row; the screen opens on holograms. Each entry shows its title, its file and how many selected NPCs use it. **Reload GUIs** runs `/animus gui reload`.
 
 | Click | Chest GUI or menu | Hologram | Text animation |
 |---|---|---|---|
@@ -495,7 +494,7 @@ Layouts, lines and frames are painted in the web editor.
 
 ## Find
 
-Lists the active NPCs in your world, nearest first, with the distance in the lore. A left click teleports you to the NPC. A right click selects only that NPC. A sneak click brings the NPC to you and saves its new position.
+Lists the active NPCs in your world, nearest first, with the distance in the lore. A left click teleports you beside the NPC, facing it. A right click selects only that NPC. A sneak click brings the NPC to you and saves its new position.
 
 On Folia the NPC moves when its definition reloads, a moment after the position is saved, instead of at once.
 

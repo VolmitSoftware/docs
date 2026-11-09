@@ -1851,12 +1851,14 @@
 
   function mountDemo(container) {
     const editor = container.querySelector('video[src$="-editor.webm"]');
-    const first = container.querySelector('video[src$="-pov.webm"]') || editor;
+    const ingame = container.querySelector('video[src$="-ingame.webm"]');
+    const first = container.querySelector('video[src$="-pov.webm"]') || ingame || editor;
     const third = container.querySelector('video[src$="-observer.webm"]');
     if (!first) {
       return;
     }
-    const choices = [[editor ? 'editor' : 'first-person', editor ? 'Browser editor' : 'First person', first]];
+    const firstLabel = first === editor ? 'Browser editor' : first === ingame ? 'Minecraft client' : 'First person';
+    const choices = [[first === editor ? 'editor' : 'first-person', firstLabel, first]];
     if (third) {
       choices.push(['third-person', 'Third person', third]);
     }
@@ -1943,7 +1945,7 @@
         demoPlayers.delete(container);
       }
     }
-    for (const container of content.querySelectorAll('.adapt-demo,.gloss-demo')) {
+    for (const container of content.querySelectorAll('.adapt-demo,.gloss-demo,.animus-demo')) {
       if (!demoPlayers.has(container)) {
         mountDemo(container);
       }

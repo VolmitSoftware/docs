@@ -39,6 +39,8 @@ Invalid TOML at startup stops Animus from starting. Animus's own writes (editor 
 | Key | Default | Meaning |
 |---|---|---|
 | `packetProofEnabled` | `false` | Enables the [packet preview tools](/animus/02-commands-permissions#packet-preview-tools) `/animus proof` and `/animus proof folia`. Ignored on mod servers |
+| `splashScreen` | `true` | Prints the ANIMUS banner with version, server and startup status when Animus starts. When false only the one-line `Enabled` summary prints. A failed start always prints the banner with `DEGRADED`. Read at startup |
+| `metrics` | `true` | Sends anonymous usage to [bStats](https://bstats.org/plugin/bukkit/Animus/35204): NPC count range, active NPCs, server platform, whether the web editor is on or paired, import sources used, trait groups in use and whether any NPC is killable. Bukkit platforms only; ignored on mod servers. The global opt-out in `plugins/bStats/config.yml` also turns it off |
 
 ## [npcs]
 
@@ -301,6 +303,8 @@ Each key replaces one player-facing shop text of at most 512 characters. `&` col
 | `shopMissing` | `&cThe shop {shop} is not available.` |
 | `shopPermission` | `&cYou cannot use this shop.` |
 | `noPages` | `&cThis shop has nothing you can use.` |
+| `empty` | `&7Nothing here yet` |
+| `emptyHint` | `&7No offers have been added to this shop` |
 | `priceLine` | `&7Price: &f{price}` |
 | `payLine` | `&7Pays: &f{price}` |
 | `freeLine` | `&7Free` |
@@ -374,6 +378,7 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `npcsPerPreview` | `64` | 1-64 | NPCs in one preview |
 | `previewMinutes` | `15` | 1-120 | How long a preview lasts |
 | `idempotencyHours` | `24` | 1-168 | How long the result of an applied change set is remembered for safe retries |
+| `terrainRadius` | `160` | 0-1024 | How far from an NPC the token can see the editor may read terrain, in blocks. `0` turns terrain reads off |
 | `relayEnabled` | `true` | | Connect out to the relay |
 | `relayUrl` | The Volmit relay | `wss://` URL | Relay address. `ws://` only on `127.0.0.1` or `localhost` |
 | `relayReconnectMinSeconds` | `1` | 1-3600 | Shortest wait before reconnecting to the relay |
@@ -428,10 +433,32 @@ pitch = 1.2
 | `readsPerPoll` | `256` | 1-65536 | Changed files read per 500 ms poll |
 | `maximumFileBytes` | `4194304` | 1024-16777216 | Larger files are refused |
 
+## [placeholders]
+
+On Paper, Spigot and Folia with [PlaceholderAPI](https://modrinth.com/plugin/placeholderapi) installed, `%placeholders%` in player-facing text are filled for each player who sees it:
+
+- NPC names and nameplates, and the hologram lines in a definition
+- standalone holograms and holographic menus
+- `animus:say`, `animus:message`, `animus:actionbar` and `animus:title` text
+- dialogue prompts and choice buttons
+- chest GUI and shop titles, item names, lore and trade offers
+
+Animus fills its own `{player_name}` and `{{ }}` holes first, then PlaceholderAPI, then colours the text, so `&` codes a placeholder returns still render. Text with no pair of `%` signs never reaches PlaceholderAPI. A placeholder that needs a player uses the player who sees the text; with no such player, or if the expansion fails, the text stays as written. The in-game toolkit shows placeholders as written, since it edits them.
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `refreshTicks` | `0` | 0, or 20-72000 | How often visible NPC nameplates and definition hologram lines that hold a placeholder are filled again. `0` fills them when the NPC is shown and when its name or appearance changes |
+
+A refresh sends only changed text, in place. A filled value is reused for the same player and text for 750 ms, so a refresh, a GUI redraw or a hologram redraw does not ask PlaceholderAPI again inside that window. Standalone holograms already redraw every `refresh.contentTicks` and pick up new values then. A player NPC whose name holds a placeholder shows the name on its text display rather than as the profile nameplate.
+
+PlaceholderAPI runs each expansion on the thread that asks. Animus asks on the thread that owns the player who sees the text: the main thread on Paper and Spigot, and the player's own region on Folia. On Folia, expansions that read that player (name, health, balance through Vault) are safe; expansions that read another region's blocks or entities are not, and are the expansion's own limit. Mod servers have no PlaceholderAPI, so `%` text reaches players as written there.
+
 ## Example
 
 ```toml
 packetProofEnabled = false
+splashScreen = true
+metrics = true
 
 [npcs]
 enabled = true

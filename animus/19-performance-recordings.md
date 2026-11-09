@@ -207,7 +207,7 @@ With `wait`, the action completes at the last frame and fails with the same code
 
 **Sleeping.** With no player near, a playback sleeps like a [route](/animus/05-movement-mounts-riding#how-many-routes-run): it holds its place in the recording and continues when a player comes near. Playbacks take turns within the same `[navigation]` budgets as routes.
 
-**Poses.** Sneaking, swimming and gliding frames put the NPC in that pose, and sprinting frames show it sprinting. Every viewer sees the same pose.
+**Poses.** On a player body, sneaking, swimming and gliding frames put the NPC in that pose, and sprinting frames show it sprinting. Other bodies have no such poses: sneaking frames dim their name as a sneaking player's is dimmed, and sprinting frames raise sprint dust. Every viewer sees the same pose.
 
 **Events.** Arm swings play as swings. Equipment changes show on the NPC the way `animus:set-equipment` shows them, without editing the definition. Door uses open and close the door after protection allows it (WorldGuard's `use` flag on Bukkit and any module protection hook); a refused door stays as it is and the performance carries on. At most 8 events run per NPC per tick, and the rest run on the next tick.
 
@@ -239,6 +239,10 @@ recording=market-loop playback=loop cursor=420/1180 state=playing
 | `finished` | A `once` playback reached its last frame |
 
 A missing or invalid recording is shown as `route-error=` with the reason. The NPC keeps playing its last valid recording, or stands at its position when it never had one. With `recordings.enabled = false`, NPCs with a recording stand still and show `route-error=recordings are disabled in config.toml`.
+
+### Making a route from a recording
+
+In the web editor, a recording's Visual view has a **Make route** row: name the route and press the button to create `routes/<id>.json` along the recorded path. It places a point wherever the recorder changed between walking, sneaking, sprinting, swimming and gliding, at least every 8 blocks and at the end, and gives each point the [movement style](/animus/05-movement-mounts-riding#movement-styles) the recorder used on the way to it, so a sneaked stretch is sneaked and a swum one swum. The points stand on whole-block heights and the route has `waitTicks` 0. A route keeps the path, not the timing, the look direction or the events; play the recording itself, or a [recording step](#recording-steps-in-routes), when those matter. Crawling is not recorded as its own flag, so a crawled stretch becomes a walked one; set its points to `crawl` by hand.
 
 ### Recording steps in routes
 

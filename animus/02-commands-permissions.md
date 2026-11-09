@@ -2,7 +2,7 @@
 title: "Animus: Commands and Permissions"
 description: "Every /animus command and permission node"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-08T00:00:00.000Z
 tags: "animus, commands, permissions"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -16,18 +16,21 @@ Animus uses the same command system as the other Volmit plugins:
 
 - **Required values are bare words, in order.** `/animus spawn guard`, `/animus clone guard deputy`.
 - **Optional values are always written `key=value`,** in any position: `/animus list page=2`, `/animus navigation go guard 10 64 -3 mode=fly speed=4`. A bare word where only optional values remain is refused.
+- **Positions read as in vanilla `/tp`.** A command that takes `x`, `y` and `z` also takes them as three bare words after its required values: `/animus create guard 12 64 -30`. `~` and `~2` count from where you stand, and `^left ^up ^forward` from where you face: `/animus create guard ~ ~ ~3`, `/animus navigation go guard ^ ^ ^5`. Left out, each coordinate and the world are your own. The console has no position, so it gives numbers: `x=0 y=64 z=0`. Block values written `x,y,z`, such as `at=` of `build start`, take `~` too: `at=~,~-1,~`.
 - **A value with spaces goes in double quotes,** also after a key: `/animus create guard name="Town Guard"`.
 - **A JSON object is one value** and may contain spaces: `/animus edit guard {"name": "Captain Guard"}`. If the JSON itself contains `=`, name the parameter: `/animus edit guard patch={"text":"a=b"}`.
 - **An NPC is named by its id**, the file name without `.json`. NPC files may sit in nested folders under `npcs/`, so a command also takes the id with its folders or the file path: `guard`, `world/town/guard` and `npcs/world/town/guard.json` name the same NPC. A folder path that does not match where the NPC lives is refused.
-- **`@selected`** stands for the NPC you selected (by interacting with it or with `/animus select`) wherever a command takes an NPC id. The console must name the id.
+- **`@selected`** stands for the NPC you selected (with the [wand](/animus/21-in-game-toolkit#the-wand) or `/animus select`) wherever a command takes an NPC id. The console must name the id.
 
-A wrong or extra value, or an unknown key, is refused with the reason and the command's usage line, and nothing changes. A required value may also be given as `key=value`.
+A wrong or extra value, an unknown key or an unknown command is refused with the reason and the usage line, and nothing changes. On Paper the chat box marks an unknown command red while you type it. A required value may also be given as `key=value`.
 
 ## Help and completion
 
-`/animus` or `/animus help` shows every command grouped by topic. A group name on its own, such as `/animus shop`, or `/animus shop help`, shows that group. Each entry shows its name, its parameters and what it does; hover it for the usage line and an example. Click a command to put it in your chat box, or to run it when it takes no values. Each topic header has a **[Docs]** link to its section on this page. Pages turn with the arrows at the bottom, or `help=2`.
+`/animus` or `/animus help` shows every command grouped by topic, in the same menu as Iris, Adapt and the other Volmit plugins. A group name on its own, such as `/animus shop`, or `/animus shop help`, shows that group with a **〈 Back** link to the one above. Each entry shows its name and its parameters, required ones in `[brackets]` and optional ones in `⊰angles⊱`; hover the name for what it does, its usage and an example, and hover a parameter for its type and default. Click a command to put it in your chat box, or to run it when it takes no values. Each topic header on the first page has a **[Docs]** link to its section on this page. Pages turn with **〈 Page 1** and **Page 3 ❭** at the bottom, or `help=2`. Paged lists, such as `/animus list`, use the same page bar.
 
-Help and tab completion list only what you have permission to run. Completion offers bare values only for the next required argument, such as NPC ids, shop ids or behavior ids, and `key=` for the optional ones.
+Help and tab completion list only what you have permission to run. Completion offers bare values only for the next required argument, such as NPC ids, shop ids or behavior ids, then `~ ~ ~` and the block you look at where a command takes a position, and `key=` for the optional ones.
+
+Players hear the same command sounds as in the other Volmit plugins, decided as Iris decides them: a soft chime while typing and tab completing, a ding once a command finishes running or a help page opens, and a low tone when a command is unknown, refused for permission or origin, missing a value or given one it cannot read, or stops with an error. The sound follows how the command ran, not what it answered, so a command that finishes with a red reply such as `Unknown NPC` still dings, and a command that answers later from a file or region thread dings when it starts that work. On Fabric, Forge and NeoForge the same vanilla sounds play.
 
 File work from commands, imports, the web editor and Java modules shares one queue. When it is full, a command answers `File queue full; try again in a moment` and changes nothing.
 
@@ -37,7 +40,7 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 
 - A link shows as **[Open]** (or **[Open editor]**) and **[Click to copy]**.
 - A pointer to these pages shows as **[Docs]**.
-- A transaction id shows its first eight characters; click them to copy the full id, or click **[Undo]** to put `/animus rollback <id>` in your chat box.
+- A transaction id shows its first eight characters; click them to copy the full id, or click **[Undo]** to put `/animus rollback <first eight characters>` in your chat box.
 - NPC ids and positions in `inspect` and `select` copy themselves when clicked, and an id in `/animus list` opens `inspect`.
 - **[Details]** holds the long form of a status line: hover to read it, click to copy it for a bug report.
 
@@ -64,27 +67,35 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 |---|---|
 | `/animus status` | One line: version, platform, NPC and trait group counts, definition files that need repair, and the runtime state. **[Details]** holds the runtime counters and the main budgets in effect; the console prints them as two more lines |
 | `/animus list [page=1]` | Saved NPCs with id, name and revision, as a paged list. Click an id to inspect it |
-| `/animus create <id> [type=minecraft:player] [name=] [folder=] [world=] [x=] [y=] [z=]` | Save a new dormant NPC at your position. `name` defaults to the id; quote a name with spaces. `folder` is the folder under `npcs/`, up to eight levels such as `world/town`; left out, the file goes directly in `npcs/`. `type` is an entity type such as `minecraft:villager` or `villager`. The console must give `world`, `x`, `y` and `z` |
-| `/animus select <npc>` | Select an NPC for commands that take `@selected`. Players only |
-| `/animus selection` | Show your selection. Players only |
+| `/animus create <id> [type=minecraft:player] [name=] [folder=] [world=] [x=] [y=] [z=]` | Save a new dormant NPC at your position, or at `x y z`, which may be relative such as `~ ~ ~3`. `name` defaults to the id; quote a name with spaces. `folder` is the folder under `npcs/`, up to eight levels such as `world/town`; left out, the file goes directly in `npcs/`. `type` is an entity type such as `minecraft:villager` or `villager`. The console must give `world`, `x`, `y` and `z` |
+| `/animus select [npc]` | Select an NPC for commands that take `@selected`. Without an id, selects the NPC you look at, or else the nearest within 16 blocks. The selected NPC glows for you for two seconds. Players only |
+| `/animus selection` | Show every NPC you selected. Players only |
 | `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or dormant, trait groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then whether it is active, with pose, equipment, text lines, owner and mount problems under **[Details]** |
 | `/animus edit <npc> <patch>` | Merge the top-level fields of a JSON object into the definition and save it as a new revision. A field set to `null` is removed, so `{"type": "minecraft:horse", "skin": null, "pose": null}` turns a skinned, seated player into a horse. A refused edit answers `Cannot save` with the first problem; when it changes `type`, the reply shows the `null` that removes the field the new body cannot show |
 | `/animus npc attribute <npc> <attribute> [value=]` | Show one [attribute](/animus/04-npc-definitions#attributes) with its source, vanilla default and range, or set it with `value=` and a number, or remove it from the file with `value=reset`. Saves a new revision |
+| `/animus npc health <npc> [setting=] [value=]` | Show the NPC's [health](/animus/08-combat#health-and-death) settings, or set `killable`, `maximum`, `regenerate` or `show-health` (`on`, `off` or a number), `after-death` (`respawn`, `permadeath` or `delete`) or `delay` (ticks), or remove one with `value=reset`. Saves a new revision |
+| `/animus npc look <npc> <on\|off\|toggle>` | Turn the NPC's [look-close](/animus/05-movement-mounts-riding#look-close) on or off. Sets `enabled` in its own `animus:look-close` and keeps the range and other settings; `on` adds the module when it has none. Saves a new revision |
+| `/animus npc revive <npc>` | Bring a dead NPC back at full health. A permadeath is cleared in the definition and the NPC spawns at its own position; an NPC waiting to respawn comes back at once |
 | `/animus clone <npc> <id>` | Copy a definition under a new id and UUID, dormant |
 | `/animus delete <npc>` | Delete the definition. The reply names the transaction, with **[Undo]** |
 | `/animus spawn <npc>` | Check the definition against the running server and mark it spawned |
 | `/animus despawn <npc>` | Mark the definition despawned and remove its body |
 | `/animus validate` | Check every definition file without changing anything |
 | `/animus reload` | Load changed definition files and rigs. Each file applies on its own; a broken file keeps its last valid version |
-| `/animus rollback <transaction>` | Undo a transaction from its receipt. See [storage and recovery](/animus/12-storage-recovery#rollback) |
+| `/animus rollback <transaction>` | Undo a transaction from its receipt. The id may be cut to its first characters, at least four, when no other receipt starts with them. See [storage and recovery](/animus/12-storage-recovery#rollback) |
 
 An administrator also selects an NPC by interacting with it. Saved file changes apply without `/animus reload`; see [live apply](/animus/03-configuration#live-apply).
 
 ```none
 /animus create guard name="Town Guard" folder=town
 /animus create guard type=villager world=world x=0 y=64 z=0
+/animus create guard ~ ~ ~3
+/animus select
 /animus edit guard {"name": "Captain Guard"}
 /animus npc attribute guard scale value=1.5
+/animus npc health villager setting=killable value=on
+/animus npc look guard off
+/animus npc revive villager
 /animus spawn guard
 ```
 
@@ -108,8 +119,8 @@ Assign and unassign take exactly one of `folder=<npc-folder>`, `tag=<tag>` or `i
 
 | Command | Effect |
 |---|---|
-| `/animus navigation go <npc> <x> <y> <z> [mode=walk] [speed=2.0]` | Send an active NPC to a point in its world. Whole-number `x` and `z` mean the center of that block, so `10 64 -3` walks to `10.5 64 -2.5`; give a fraction for an exact point. `mode` is `walk`, `swim` or `fly`; speed is 1 to 10 blocks per second |
-| `/animus navigation look <npc> <x> <y> <z>` | Turn the NPC toward a point |
+| `/animus navigation go <npc> [x] [y] [z] [mode=walk] [speed=2.0]` | Send an active NPC to a point in its world, or to you when the point is left out. `~` and `^` count from you. Whole-number `x` and `z` mean the center of that block, so `10 64 -3` walks to `10.5 64 -2.5`; give a fraction for an exact point. `mode` is `walk`, `swim` or `fly`; speed is 1 to 10 blocks per second |
+| `/animus navigation look <npc> [x] [y] [z]` | Turn the NPC toward a point, or toward you |
 | `/animus navigation status <npc>` | Show the NPC's current route and progress |
 | `/animus navigation stop <npc>` | Stop it |
 | `/animus ride status` | List current riders |
@@ -146,7 +157,7 @@ These need an active NPC whose `animus:combat` module is enabled and, for import
 | `/animus behaviors inspect <execution>` | Show one execution, by UUID, with its waits and recent steps |
 | `/animus behaviors trace <npc> [page=1]` | Show an NPC's running and recent executions; takes an id or UUID |
 | `/animus behaviors cancel <execution>` | Cancel an execution by UUID |
-| `/animus behaviors triggers [page=1]` | Trigger bindings, counters and the latest refusals |
+| `/animus behaviors triggers [page=1]` | One row per trigger binding, such as `guard \| town:wave #ask`, with its event, how often it fired and its other counters on the hover, and the latest refusals |
 | `/animus behaviors state status` | Stored variable counts, pending writes and invalid documents |
 | `/animus behaviors state delete behavior <state>` | Delete one behavior's stored variables, or `animus:flags/<namespace>` or `animus:quests/<namespace>` |
 | `/animus behaviors state delete npc <npc>` | Delete variables stored for one NPC, by id or UUID |
@@ -203,7 +214,7 @@ See [performance recordings](/animus/19-performance-recordings).
 | `/animus build list [page=1]` | Running and paused builds with their progress |
 | `/animus build schematics [page=1]` | Schematic files in `schematics/` |
 | `/animus build inspect <schematic>` | Size, block count and unknown blocks of a schematic |
-| `/animus build start <npc> [schematic=] [at=x,y,z] [option=value ...]` | Start a build led by an NPC. Without a schematic, starts the build saved in the NPC's definition |
+| `/animus build start <npc> [schematic=] [at=x,y,z] [option=value ...]` | Start a build led by an NPC. Without a schematic, starts the build saved in the NPC's definition. `at` and `container` take `~`, such as `at=~,~,~5` |
 | `/animus build pause <build>`, `resume <build>`, `cancel <build>` | Pause, resume or cancel one build, by its id or NPC. Cancel keeps the blocks already placed |
 | `/animus build rollback <build>` | Remove the blocks a build placed |
 | `/animus build survey <build>` | List what a build still needs |
