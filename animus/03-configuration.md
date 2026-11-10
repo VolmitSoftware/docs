@@ -32,6 +32,12 @@ Online players with `animus.hotload.notify` (operators by default; permission le
 
 An invalid edit is refused with its field error, and the last valid version stays in use. Each NPC file applies on its own, so one broken file does not block valid edits to others. `/animus reload` follows the same rules.
 
+An NPC definition or trait group at an older [schema version](/animus/12-storage-recovery#schema-versions) is upgraded before it loads, as at startup, and its line names the rollback transaction:
+
+```none
+[Animus]: Upgraded [npcs/town/guard.json] [schemaVersion 1 -> 2] [rollback <transaction-id>]
+```
+
 Every `config.toml` key applies live except the ones listed below. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work already running: visible NPCs, viewers, routes, fights, builds, behavior runs, queued actions and file operations above the new cap finish normally, and new work waits until usage drops under it. A smaller `viewDistance` despawns NPCs that are now out of range on the next tick. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
 
 These changes need a restart:
@@ -396,7 +402,7 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `npcsPerPreview` | `64` | 1-64 | NPCs in one preview |
 | `previewMinutes` | `15` | 1-120 | How long a preview lasts |
 | `idempotencyHours` | `24` | 1-168 | How long the result of an applied change set is remembered for safe retries |
-| `terrainRadius` | `160` | 0-1024 | How far from an NPC the token can see the editor may read terrain, in blocks. `0` turns terrain reads off |
+| `terrainRadius` | `160` | 0-1024 | How far the editor may read terrain, in blocks, around each NPC the token can see: its position, its route points and the legs between them, its schedule places, its anchors, and where it stands now while spawned. `0` turns terrain reads off |
 | `relayEnabled` | `true` | | Use the relay. The server connects only after the first `/animus editor pair`, and at each start while a token or pairing exists, so a server nobody paired never dials out |
 | `relayUrl` | `"wss://animus-relay-823521865655.us-central1.run.app"` | `wss://` URL | Relay address, the Volmit relay by default. `ws://` only on `127.0.0.1` or `localhost` |
 | `relayReconnectMinSeconds` | `1` | 1-3600 | Shortest wait before reconnecting to the relay |

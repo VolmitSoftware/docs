@@ -63,7 +63,7 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 
 ## Integrations
 
-- [Quest plugins *Quests, BeautyQuests, BetonQuest, NotQuests and Typewriter*](/animus/26-quest-plugins)
+- [Quest plugins *Quests, BeautyQuests and BetonQuest*](/animus/26-quest-plugins)
 - [Model Engine *Model Engine models on NPCs*](/animus/32-model-engine)
 - [LibsDisguises *NPCs that wear a disguise*](/animus/34-libsdisguises)
 - [MythicMobs *NPCs made from Mythic mobs, and their skills*](/animus/36-mythicmobs)

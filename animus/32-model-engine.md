@@ -2,13 +2,13 @@
 title: "Animus: Model Engine"
 description: "Show Model Engine models on NPCs, map NPC states to model animations and import modelled Citizens NPCs"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, modelengine, models, animations, integration"
 editor: markdown
 dateCreated: 2026-11-09T00:00:00.000Z
 ---
 
-With Model Engine 4 installed on Paper or Spigot, an NPC can show a Model Engine model in place of its body. The model stands where the NPC stands, turns with it, walks when it walks and plays an animation for each thing the NPC does. Each player sees the model only while they see the NPC. Without Model Engine the setting is kept and the NPC shows its own body; on Folia the NPC shows its own body too.
+With Model Engine 4 installed on Paper or Spigot, an NPC can show a Model Engine model in place of its body. The model stands where the NPC stands, turns with it, walks when it walks and plays an animation for each thing the NPC does. Each player sees the model only while they see the NPC. Without Model Engine the setting is kept and the NPC shows its own body; on Folia the NPC shows its own body too, and `/animus npc model` says so under its reply.
 
 Animus draws the model itself, so the NPC needs no Citizens trait and no Model Engine command. Models come from Model Engine's own `blueprints` folder and resource pack, as for any other Model Engine model.
 

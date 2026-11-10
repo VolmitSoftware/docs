@@ -2,7 +2,7 @@
 title: "Animus: NPC Definitions"
 description: "Definition files, spawning, live edits, appearance, text, inventory and presentation limits"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, npcs, definitions, appearance, hotload"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -16,7 +16,7 @@ Folders are yours to arrange: `npcs/guard.json`, `npcs/town/guard.json` and `npc
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "revision": 1,
   "uuid": "4f3c2a10-8d5e-4b6a-9c11-2e7f0a9b3c44",
   "id": "guard",
@@ -33,7 +33,7 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 
 | Field | Required | Accepted values |
 |---|---|---|
-| `schemaVersion` | Yes | `1`. Other versions are refused. |
+| `schemaVersion` | Yes | `2`. Older versions are upgraded at startup and newer ones are refused. |
 | `revision` | Yes | Integer of at least 1. Every accepted command or editor change raises it. |
 | `uuid` | Yes | Canonical UUID, unique across all NPCs. |
 | `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Unique across all folders. |
@@ -56,7 +56,7 @@ A wrong value names its exact field, for example `$.equipment.head.count: expect
 
 ## Activation and editing
 
-`/animus create` and the toolkit's **New NPC** save a new NPC spawned. Clone and import save definitions despawned (`spawned: false`), so they start dormant. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves `spawned: true`. The NPC is active while its chunk is loaded, and it appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC despawned and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
+`/animus create` and the toolkit's **New NPC** save a new NPC spawned. Clone saves the copy despawned (`spawned: false`), so it starts dormant. An import keeps whether the source plugin had the NPC spawned. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves `spawned: true`. The NPC is active while its chunk is loaded, and it appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC despawned and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
 
 ```none
 /animus create guard name="Town Guard" folder=town
@@ -234,9 +234,9 @@ A turtle has no settings of its own; `baby` gives a hatchling. A [trait group](/
 | `viewers.permissions` | Permission nodes, at most 256; holding any one of them matches |
 | `viewers.range` | 1-512 blocks. Players farther away are not filtered. |
 
-A player the `viewers` filter hides is never sent the NPC's body, its hologram lines or its boss bar, and is checked again as their permissions change. A boss bar shows only while the NPC is spawned and to players who can see it.
+A player the `viewers` filter hides is never sent the NPC's body, its hologram lines, its GUI hologram or its boss bar, hears none of its speech, sounds or particles, and fires none of its triggers. They are checked again as their permissions change. A `deny` filter counts only groups and permissions set for the player, so an operator still sees the NPC unless they are named or a listed group or permission is set for them. A boss bar shows only while the NPC is spawned and to players who can see it.
 
-Clicking an NPC with `clickRedirect` counts as clicking the NPC with that UUID: its triggers, shops, GUIs and `VirtualNpcInteractionEvent` see the target. The redirect applies while the target is spawned, and on Folia while the same region owns both NPCs; otherwise the click stays with the NPC that was clicked. A redirected click never starts riding.
+Clicking an NPC with `clickRedirect` counts as clicking the NPC with that UUID: its triggers, shops, GUIs and `VirtualNpcInteractionEvent` see the target. The redirect applies while the target is spawned and the `viewers` filter shows it to the player, and on Folia while the same region owns both NPCs; otherwise the click stays with the NPC that was clicked. An attack still hurts only the NPC that was hit, and its `VirtualNpcInteractionEvent` names that NPC, while the target's attack triggers fire. A redirected click never starts riding.
 
 ### Other presentation flags
 

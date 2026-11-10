@@ -2,7 +2,7 @@
 title: "Animus: MythicMobs"
 description: "NPCs made from Mythic mob types, their mob skills, the mythic:cast-skill action and Animus NPCs in Mythic skill files"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, mythicmobs, mythic, skills, integration, citizens"
 editor: markdown
 dateCreated: 2026-11-09T00:00:00.000Z
@@ -67,7 +67,7 @@ While the module is enabled and the NPC is spawned, the mob's own skills run on 
 | `~onDamaged` | A player left-clicks the NPC | The player |
 | `~onAttack` | The NPC hits an entity in [combat](/animus/08-combat) | The entity hit |
 | `~onDeath` | The NPC's health reaches zero | The killer, when it is a loaded entity |
-| `~onTimer:<ticks>` | Every that many ticks while the NPC is spawned | None |
+| `~onTimer:<ticks>` | Every that many ticks while the NPC is spawned. An edit that binds, changes or removes the mob starts, changes or stops the timers without a respawn. | None |
 
 The NPC is the skill's caster, standing where the NPC stands. `@trigger`, `@PlayersInRadius`, `@origin` and the other location and area targeters work from there. `<caster.name>` is the NPC's name, and skill cooldowns count per NPC. An NPC has no Minecraft entity, so mechanics aimed at `@self`, such as a potion or damage on the caster, do nothing.
 
@@ -93,6 +93,8 @@ The action reports `cast`: `false` when the skill's own conditions or cooldown s
 |---|---|---|
 | `@AnimusNPC{npc=king}` | Targeter | Where the NPC with id `king` stands now. Nothing while it is despawned. |
 | `animusnpc{npc=king}` | Condition | The skill's caster is the NPC with id `king`. Without `npc`, any Animus NPC. |
+
+Both also take the NPC id as `id=` or `n=`, such as `@AnimusNPC{n=king}`.
 
 ```yaml
 KingAura:

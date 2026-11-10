@@ -63,13 +63,13 @@ Quest files live in `plugins/Animus/quests/` (`config/animus/quests/` on mod ser
 
 An NPC with a quest the player can take shows a yellow `!` above its head to that player. Right-clicking it says the quest's title, the giver speaks the `offer` message (or the description), and **[ Accept ]** and **[ Decline ]** buttons follow, in the same style as [dialogue choices](/animus/07-behaviors#dialogue-choices). The buttons work for two minutes. A giver with several quests offers the first one the player can take, by id.
 
-Once a quest is active, the chat lists the stage and its objectives, and each counted objective shows its progress on the action bar. A gold `?` marks every NPC the player should talk to, bring items to, or turn the quest in at. Markers show for NPCs within 48 blocks.
+Once a quest is active, the chat lists the stage and its objectives, and each counted objective shows its progress on the action bar. A gold `?` marks every NPC the player should talk to, bring items to, or turn the quest in at. Markers show for NPCs within 48 blocks. A player without `animus.quests.use` sees no `!` and gets no offers, though quests already taken keep counting.
 
 A right-click on an NPC goes to quests first when the NPC has something for the player: an objective, a turn-in or an offer. Otherwise the click goes on to the NPC's shop or GUI, so a quest giver can also be a shopkeeper. A sneaking player with `animus.admin` selects the NPC instead.
 
-When the last stage is done, a quest with `turnIn` waits until the player right-clicks that NPC; one without `turnIn` completes at once. Completion pays the rewards and says the `complete` message.
+When the last stage is done, a quest with `turnIn` waits until the player right-clicks that NPC; one without `turnIn` completes at once. Completion pays the rewards and says the `complete` message. When an edit removes stages from a quest, a player on a removed stage counts as having done them all, so the quest waits at its turn-in NPC or completes at once.
 
-`/quests` opens the journal: a chest window with the player's active quests, their current stage and objective counts, and a **Finished** tab with each finished quest and when a repeatable one comes back.
+`/quests` opens the journal: a chest window with the player's active quests, their current stage and objective counts, and a **Finished** tab with each finished quest and when a repeatable one comes back. `/questlog` opens it too. Quests by PikaMug also uses `/quests` and takes it when installed; there, players use `/questlog`, or `/animus:quests`.
 
 ## Quest fields
 
@@ -88,13 +88,14 @@ When the last stage is done, a quest with `turnIn` waits until the player right-
 | `stages` | 1 to 32 stages, done in order. |
 | `rewards` | What completion pays; see below. |
 | `messages` | `offer`, `accept`, `decline` and `complete`, each replacing the default line. `{player}` becomes the player's name and `{quest}` the title. |
+| `imported` | Source data an importer kept. Animus keeps it and never reads it. |
 
 `requirements` takes any of:
 
 | Field | Meaning |
 |---|---|
 | `permission` | A permission node the player must hold. |
-| `quests` | Quest ids the player must have finished at least once. |
+| `quests` | Quest ids the player must have finished at least once. A quest cannot list itself. A quest that lists one that is not loaded, or one that through its own requirements needs this quest first, is refused and shown by `/animus quest problems`. |
 | `condition` | A [behavior expression](/animus/07-behaviors#expressions) that must be true, such as `flag('player', 'helped_mayor')` or `quest('player', 'intro') >= 2`. Flags and quests are those of the quest's namespace; `context.quest` is the quest id. |
 
 ## Stages and objectives
@@ -161,7 +162,7 @@ See [built-in capabilities](/animus/07-behaviors#built-in-capabilities) for thei
 
 ## Commands and permissions
 
-Players need `animus.quests.use`, which everyone has by default, to take quests and open `/quests`. Staff commands under `/animus quest` need `animus.quests`, which `animus.admin` grants:
+Players need `animus.quests.use`, which everyone has by default, to take quests and open `/quests` or `/questlog`. Staff commands under `/animus quest` need `animus.quests`, which `animus.admin` grants:
 
 ```none
 /animus quest list
@@ -176,7 +177,7 @@ See [commands](/animus/02-commands-permissions#quests) for the full list. With [
 
 ## Storage and platforms
 
-Each player's quests are saved in `plugins/Animus/state/quests/<uuid>.json` two seconds after a change and at shutdown, so progress survives restarts. A damaged file is set aside as `<name>.bad-<time>`, and that player starts without quests. Stage values live in behavior state with the rest of the namespace's quests. `/animus quest reset` clears both.
+Each player's quests are saved in `plugins/Animus/state/quests/<uuid>.json` two seconds after a change and at shutdown, so progress survives restarts. Animus reads a player's file when they join and lets it go once they leave and it is saved. A damaged file is set aside as `<name>.bad-<time>` when it is read, and that player starts without quests. Stage values live in behavior state with the rest of the namespace's quests. `/animus quest reset` clears both.
 
 Quests run the same on Paper, Spigot, Folia and the mod loaders. On Folia, quest work runs on the player's region, and a kill counts on the killer's region. On mod servers, use `/animus quest journal` for the journal; the economy is the one a [Java module](/animus/99-java-modules-api) provides, and NPC kill objectives do not count.
 

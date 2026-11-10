@@ -2,7 +2,7 @@
 title: "Animus: Behaviors"
 description: "JSON behavior documents, triggers, built-in capabilities, packs and state"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, behaviors, triggers, dialogue, quests, packs"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -348,7 +348,7 @@ Interaction, proximity and dialogue runs carry the viewer's UUID, damage and dea
 
 A trigger with no player cannot start a behavior that declares a `player` or `relationship` variable. That start is counted under `START_FAILED`, and `/animus behaviors triggers` shows the most recent refusal with its field. Spawn, despawn, waypoint and timer triggers never have a player, and damage and death triggers have one only when a player dealt the hit, so `/animus behaviors validate` warns with `behavior-trigger-needs-player` on each such trigger in that behavior. The behavior is still accepted, since its other triggers may work. A `module` trigger depends on what its module supplies and is not flagged.
 
-Only active NPCs fire triggers. Dormant NPCs, including applied imports that are not spawned yet, fire nothing, and previews never fire triggers. Editing an active NPC's definition is neither a despawn nor a spawn. A player disconnecting fires no `leave`. Deleting an NPC fires no `despawn`, because no definition remains to run against. Stopping the server fires nothing.
+Only active NPCs fire triggers. Dormant NPCs fire nothing, and previews never fire triggers. Editing an active NPC's definition is neither a despawn nor a spawn. A player disconnecting fires no `leave`. Deleting an NPC fires no `despawn`, because no definition remains to run against. Stopping the server fires nothing.
 
 Replacing the behavior, editing or despawning the NPC, or making the behavior unavailable cancels its running executions and drops its queued starts. Cancellation cannot undo an action that already happened. A `module` trigger whose module is missing makes the whole behavior unavailable.
 
@@ -543,6 +543,7 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:quest-state` | `name`, optional `scope`, at least one of `equals`, `atLeast`, `atMost` | The stage matches all of them. An unset quest is stage 0. |
 | `animus:quest-status` | `quest`, `status` (`none`, `active`, `ready` or `finished`), optional `player` | The player is at that point of the [quest](/animus/38-quests). `ready` means every stage is done and the turn-in NPC waits. |
 | `animus:can-afford` | The [cost](#charging-players) arguments of `animus:charge` | The triggering player, or the player named by `player`, holds all of it. False with no triggering player. |
+| `animus:commands-allowed` | None | The running behavior is on the [command allow-list](#commands), so `animus:command` would run. Check it before charging for a command. |
 
 ### Actions
 
@@ -623,7 +624,7 @@ The `[behaviors.state]` budgets apply, and a write over a budget fails its run w
 | `items` | 1 to 27 items, each `{"item": {...}, "amount": n}` with an item as in [equipment](/animus/04-npc-definitions#appearance-text-and-inventory) and an amount of 1 to 6,400. Items come from the hotbar and the three storage rows. |
 | `match` | How held items are compared: `strict` (default; every piece of item data), `legacy` (type, damage, name, lore, enchantments, potion and book text) or `material` (the item type only). |
 
-Charging is available on Paper, Spigot and Folia; on mod servers both capabilities refuse as unavailable. Use flags with `expireSeconds` for cooldowns and quest stages for use limits, as the [Citizens import](/animus/13-migrating-from-citizens#commands) does.
+On Paper, Spigot and Folia money goes through Vault. Mod servers charge items and levels the same way, and money through the economy a [Java module](/animus/99-java-modules-api) provides, the same one shops use. Without such a module a cost with money is never affordable there. Use flags with `expireSeconds` for cooldowns and quest stages for use limits, as the [Citizens import](/animus/13-migrating-from-citizens#commands) does.
 
 ### Walking a route
 

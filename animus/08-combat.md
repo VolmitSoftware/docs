@@ -2,7 +2,7 @@
 title: "Animus: Combat"
 description: "The combat module: target rules, weapons, guards, protection and limits"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, combat, guards, worldguard, sentinel"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -43,7 +43,7 @@ Combat runs on Spigot and Paper 26.1.2, 26.2 and 26.3, and on Fabric, NeoForge a
 
 | Field | Meaning |
 | --- | --- |
-| `killable` | Players, mobs, NPCs and their projectiles can hurt and kill it. Off by default. A Sentinel import sets it from `invincible`, and it applies once the import's combat review is accepted. |
+| `killable` | Players, mobs, NPCs and their projectiles can hurt and kill it. Off by default. A Sentinel import sets it from `invincible`. |
 | `maximumHealth` | 1-2048. Left out, the `max_health` [attribute](/animus/04-npc-definitions#attributes), or 20. Applies whether or not the NPC is killable. An NPC starts at full health each time it becomes active. Raising the maximum keeps the same share of health, so a full NPC fills to the new maximum; lowering it clamps current health to fit. |
 | `armor`, `armorFromEquipment` | A 0-1 share of each hit, or the worn pieces as for combat. Left out, the `armor` and `armor_toughness` attributes apply as vanilla armor points. |
 | `invulnerableTicks` | 0-100, default 10. Hits during this time after a hit do nothing. |
@@ -95,7 +95,7 @@ Holograms bound to an NPC can show its health at all times with `npc.health`; se
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/28-combat-ingame.webm" aria-label="Turning on combat, setting target rules and having the guard follow the player" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Settings live in the NPC definition as JSON. Every section and field is optional, and the defaults target nothing, so `{"enabled": true}` alone makes an NPC that fights back but never starts a fight. Add [`animus:health`](#health-and-death) to let it be hurt. `enabled` must be the JSON value `true`. An imported NPC also needs `"reviewAccepted": true`. Unknown keys and out-of-range values are rejected with the exact field, such as `$.modules.animus:combat.melee.reach`, and the definition is refused like any other invalid edit.
+Settings live in the NPC definition as JSON. Every section and field is optional, and the defaults target nothing, so `{"enabled": true}` alone makes an NPC that fights back but never starts a fight. Add [`animus:health`](#health-and-death) to let it be hurt. `enabled` must be the JSON value `true`. Unknown keys and out-of-range values are rejected with the exact field, such as `$.modules.animus:combat.melee.reach`, and the definition is refused like any other invalid edit.
 
 ```json
 "modules": {
@@ -275,7 +275,7 @@ Two more commands act on an active NPC directly, outside its target rules:
 
 `combat mob` makes a loaded zombie, husk, drowned, zombie villager or vindicator attack the NPC. Its own goals, targeting and path are paused while it is controlled and restored when it is released, the NPC despawns or dies, or the plugin stops. `VirtualNpcDamagedByMobEvent` can cancel the damage, and the NPC's defense applies. Mob control works on Paper, Spigot and Folia; on mod servers the command says it is unavailable.
 
-On an imported NPC, both commands work only after its combat settings are accepted (`enabled` and `reviewAccepted` both `true`).
+Both commands need literal `"enabled": true` when the NPC has `animus:combat`.
 
 ## Work limits
 
@@ -301,7 +301,7 @@ maximumScanRange = 100
 maximumSpeed = 8
 ```
 
-Every NPC with accepted combat is a combatant, up to 10,000. `maximumNpcs` (1-4096) is how many of them fight or scan at once. A guard with nothing to fight and no player within its scan range plus 16 blocks sleeps: it does not scan, holds no slot, and checks again every `idleSleepTicks`. When every slot is taken, guards that want one wait in line and get the next free slot in the order they asked. A guard that only scans gives its slot to the next one in line after each scan, while a guard that fights keeps it until the fight ends. The console says once when guards start waiting and once when a slot is free again. `/animus combat status` shows `fighting-or-scanning=<used>/<maximumNpcs>`, `waiting`, `sleeping` and `peak-waiting`. `/animus import citizens review` and `accept` say when more guards are accepted than may fight at once.
+Every NPC with combat enabled is a combatant, up to 10,000. `maximumNpcs` (1-4096) is how many of them fight or scan at once. A guard with nothing to fight and no player within its scan range plus 16 blocks sleeps: it does not scan, holds no slot, and checks again every `idleSleepTicks`. When every slot is taken, guards that want one wait in line and get the next free slot in the order they asked. A guard that only scans gives its slot to the next one in line after each scan, while a guard that fights keeps it until the fight ends. The console says once when guards start waiting and once when a slot is free again. `/animus combat status` shows `fighting-or-scanning=<used>/<maximumNpcs>`, `waiting`, `sleeping` and `peak-waiting`. `/animus import citizens review` says when an import brings more guards than may fight at once.
 
 Each tick wakes at most `brainsPerTick` NPCs and runs at most `targetScansPerTick` target scans, each looking at no more than `scanCandidates` entities and `scanCells` chunks. An NPC that finds nothing doubles its wait between scans up to `idleSleepTicks`; damage, an alert or an operation wakes it at once. Scans read loaded chunks only and never load terrain.
 

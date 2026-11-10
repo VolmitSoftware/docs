@@ -2,7 +2,7 @@
 title: "Animus: Movement, Mounts and Riding"
 description: "Navigation, routes, look-close, movement settings, mounted NPCs, player riding and hiring"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, navigation, routes, mounts, riding, hire"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -151,7 +151,7 @@ Instead of route points, the module can replay a player's recorded movement with
 
 See [performance recordings](/animus/19-performance-recordings) for capturing a recording and how playback handles terrain, interruptions and resuming.
 
-An invalid route edit is reported with its field, such as `$.points[3].next[1].to: out of range` or `$.points[2].waitTicks: min above max`, and the NPC keeps the last valid route. A restart starts declared routes from their first point, or from a random one with `startOffset: random`. A navigation module on an imported definition runs only with literal `"reviewAccepted": true`.
+An invalid route edit is reported with its field, such as `$.points[3].next[1].to: out of range` or `$.points[2].waitTicks: min above max`, and the NPC keeps the last valid route. A restart starts declared routes from their first point, or from a random one with `startOffset: random`.
 
 ### How many routes run
 
@@ -264,7 +264,7 @@ An NPC with `animus:look-close` turns toward the nearest player in range while i
 "animus:look-close": {"range": 8, "headOnly": true, "perPlayer": true, "permissions": ["harbor.pass"], "turnRate": {"yaw": 6, "pitch": 3}}
 ```
 
-The NPC prefers players who can already see it and keeps its facing when nobody is in range. An NPC that rides another NPC or carries a player does not look. Each NPC looks again at most every 5 ticks, within the `[npcs] lookUpdatesPerTick` budget. `animus:look` still turns the NPC; look-close turns it back on its next look. The module does not need `reviewAccepted` on imported definitions. `/animus npc look <npc> off` turns it off and keeps its settings; `on` turns it back on.
+The NPC prefers players who can already see it and keeps its facing when nobody is in range. An NPC that rides another NPC or carries a player does not look. Each NPC looks again at most every 5 ticks, within the `[npcs] lookUpdatesPerTick` budget. `animus:look` still turns the NPC; look-close turns it back on its next look. `/animus npc look <npc> off` turns it off and keeps its settings; `on` turns it back on.
 
 ### Returning home
 
@@ -283,9 +283,9 @@ An NPC with `animus:home` goes back to a place in its own world once it has stoo
 | `yaw`, `pitch` | the NPC's own | The facing after a teleport home |
 | `delayTicks` | 0 | How long the NPC must stand idle away from home first, up to 72000 |
 | `distance` | 0 | Only return from at least this many blocks away, up to 256; 0 returns from any distance |
-| `return` | `teleport` | `teleport` moves the NPC at once onto clear, loaded ground; `walk` walks it there as `/animus navigation go` does |
+| `return` | `teleport` | `teleport` moves the NPC at once onto clear, loaded ground, on Folia in any region; `walk` walks it there as `/animus navigation go` does |
 
-An NPC is idle when it follows no route, recording or `navigation go` leg, guards no one, has not attacked for 5 seconds, and neither rides nor carries a rider, so one moved by a fight, a manual leg or a behavior goes home once it has stood still that long. It checks about once a second. A route that never ends keeps the NPC busy, so its home never applies. The module does not need `reviewAccepted` on imported definitions.
+An NPC is idle when it follows no route, recording or `navigation go` leg, guards no one, has not attacked for 5 seconds, and neither rides nor carries a rider, so one moved by a fight, a manual leg or a behavior goes home once it has stood still that long. It checks about once a second. When a return fails, such as a teleport to an unloaded home, the server log says so once, and the NPC keeps trying quietly until a return works. A route that never ends keeps the NPC busy, so its home never applies.
 
 ## Mounted NPCs
 
@@ -336,7 +336,7 @@ A player can ride an NPC whose definition opts in:
 | `leash` | 64 | 4-256 blocks horizontally from where the ride began |
 | `lifetimeSeconds` | 600 | 30-3600 |
 
-Imported definitions also need literal `"reviewAccepted": true`. An imported Citizens `controllable` trait stays preserved and does not turn riding on.
+An imported Citizens `controllable` trait that is on becomes this module, switched on.
 
 The player mounts with a right-click on the NPC. The click passes the same reach, line-of-sight and rate checks as any interaction, and a plugin can stop it by cancelling `VirtualNpcInteractionEvent`. A sneak-right-click does not mount, and the wand selects a rideable NPC as any other. The NPC needs room for its body and rider where it stands: on ground, at a water surface it can swim, or in open air when it flies. Each NPC carries one player, each player rides one NPC, and at most 8 players ride at once. Mounting cancels the NPC's route until the definition is applied again.
 

@@ -2,20 +2,20 @@
 title: "Animus: Migrating from Citizens"
 description: "Import Citizens NPCs with Sentinel, dtlTraders, Shopkeepers, Builder and Denizen data"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, citizens, migration, import, sentinel, denizen, shopkeepers, converter"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Animus reads the Citizens `saves.yml` and turns every NPC into its own definition file. Nothing runs until you apply the import, and routes, combat, riding, shops, builds and converted scripts stay off until you accept them. You can undo the whole migration with one command.
+Animus reads the Citizens `saves.yml` and turns every NPC into its own definition file. Nothing runs until you apply the import. Apply installs everything that converts and turns it on: NPCs spawn as Citizens had them, and their routes, schedules, combat, riding, shops, builds, commands and converted scripts run. You can undo the whole migration with one command.
 
 The import commands need `animus.import`, which `animus.admin` grants. They work the same on Paper, Spigot, Folia and mod servers. On mod servers the data folder is `config/animus/` instead of `plugins/Animus/`.
 
 ## Steps
 
 1. Back up the server. Stop it.
-2. Remove the Citizens jar (and Sentinel, dtlTraders, Builder, CitizensCMD, CommandNPC and Denizen) from `plugins/`. Keep their data folders. Animus refuses to apply, accept or run imported NPCs while Citizens is enabled, so the same NPC never runs twice.
+2. Remove the Citizens jar (and Sentinel, dtlTraders, Builder, CitizensCMD, CommandNPC and Denizen) from `plugins/`. Keep their data folders. Animus refuses to apply the import or run imported NPCs while Citizens is enabled, so the same NPC never runs twice.
 3. Leave `plugins/Citizens/saves.yml` where it is, or copy it to `plugins/Animus/imports/saves.yml`. Animus also looks in `imports/inbox/saves.yml`. Files that belong to the same NPCs are read from beside the save:
 
    | File | Beside `plugins/Citizens/saves.yml` | Beside a copied save |
@@ -31,7 +31,7 @@ The import commands need `animus.import`, which `animus.admin` grants. They work
    /animus import citizens preview
    ```
 
-   This converts the save, stages a plan and prints the counts: NPCs, valid definitions, skins, folders, the routes, look-close and behaviors it made, what stays off and what is kept but not run. Nothing is installed. A save that changes while it is read, does not parse or does not end with a line break is read again after a moment, since Citizens may be saving it; if it still looks cut off, the preview is refused and you run it again later. A definition counts as valid only when it also passes the spawn checks that do not depend on the server, such as a skin needing a player body. A spawned NPC that still cannot start is logged once as a warning that names the field. The full report is `imports/<import-id>/report.json`, with one report per NPC under `reports/`.
+   This converts the save, stages a plan and prints the counts: NPCs, valid definitions, skins, folders, the routes, look-close and behaviors it made, what is kept but not converted, and the command namespaces the imported commands need. Nothing is installed. A save that changes while it is read, does not parse or does not end with a line break is read again after a moment, since Citizens may be saving it; if it still looks cut off, the preview is refused and you run it again later. A definition counts as valid only when it also passes the spawn checks that do not depend on the server, such as a skin needing a player body. A spawned NPC that still cannot start is logged once as a warning that names the field. The full report is `imports/<import-id>/report.json`, with one report per NPC under `reports/`.
 
    One record that does not convert stops the whole import: the preview is refused with `<n> of <m> records do not convert; see imports/<import-id>/report.json`, and apply refuses an import with invalid records. Each failing NPC's report lists its problems under `validationErrors`; fix them in the save or remove those NPCs, then preview again. A save holds at most 10,000 NPC records.
 
@@ -44,29 +44,20 @@ The import commands need `animus.import`, which `animus.admin` grants. They work
    /animus import citizens apply
    ```
 
-   Every NPC is installed at its Citizens position, despawned. Citizens and dtlTraders shops are installed in the same step, and `.schem` and `.nbt` schematics are copied into `schematics/`. Text and command behaviors made from the save are installed in `behaviors/citizens/`. Apply, accept and rollback reload the shops, GUIs and behaviors they change, so new shops trade and removed ones close at once, with no reload or restart.
+   Every NPC is installed at its Citizens position and spawns, except NPCs that were despawned in Citizens. Their routes, schedules, combat, riding, shops and builds are on. Citizens and dtlTraders shops are installed in the same step, and `.schem` and `.nbt` schematics are copied into `schematics/`. Text and command behaviors made from the save are installed in `behaviors/citizens/` and run at once. Apply and rollback reload the shops, GUIs and behaviors they change, so new shops trade and removed ones close at once, with no reload or restart.
 
-   Apply refuses a preview whose save changed after it was taken, with `<save> changed since the preview`, so NPCs saved in between are not dropped. Run `preview` again, then `apply`. If apply stops part way, for example on a full disk or a schematic that cannot be copied, everything it installed stays recorded: run `apply` again to finish, or `rollback` to undo it. Until then `preview` is refused and the startup notice says an apply was interrupted.
-8. Review, then accept:
+   When imported behaviors, shops or schedules run commands, apply adds their namespaces (`citizens`, and `denizen` for converted Denizen scripts) to `commandNamespaces` under `[behaviors.actions]` in `config.toml`, so those commands run as they did under Citizens. Only that key changes; comments and the rest of the file stay, and behaviors in any other namespace still need their own entry. Applying an import whose commands need a namespace that is not allowed yet needs `animus.editor.commands` in game, or `apply:commands` in the editor; the console may always. Rollback takes out only the namespaces apply added.
+
+   Every guard becomes a combatant; at most `[combat] maximumNpcs` fight or scan at once and guards with no player near sleep. Apply and `review` say when more guards are imported than that. See [combat work limits](/animus/08-combat#work-limits).
+
+   Apply refuses a preview whose save changed after it was taken, with `<save> changed since the preview`, so NPCs saved in between are not dropped. Run `preview` again, then `apply`. Apply also refuses an import an older Animus staged with NPC files at an older [schema version](/animus/12-storage-recovery#schema-versions): `Import <id> was previewed by an older Animus and is not applied: <file> is schemaVersion 1, this one writes 2; run /animus import citizens preview again, then /animus import citizens apply`. The editor's import screen says to upload and stage the save again. If apply stops part way, for example on a full disk or a schematic that cannot be copied, everything it installed stays recorded: run `apply` again to finish, or `rollback` to undo it. Until then `preview` is refused and the startup notice says an apply was interrupted.
+8. Review:
 
    ```text
    /animus import citizens review
-   /animus import citizens accept all
    ```
 
-   `review` lists how many NPCs wait in each category. Accept them all, or one category at a time with `accept <category>`:
-
-   | Category | What accepting it does |
-   | --- | --- |
-   | `spawn` | Spawns every NPC Citizens had spawned. NPCs that were despawned in Citizens stay despawned. Look-close and text start with the NPC. |
-   | `patrols` | Turns on the routes made from Citizens waypoints. |
-   | `schedules` | Turns on the schedules made from NPC Destinations. Their arrival commands also need `commands`. See [NPC schedules](/animus/30-npc-schedules#importing-npc-destinations). |
-   | `combat` | Turns on the Sentinel settings converted to `animus:combat`. Every guard becomes a combatant; at most `[combat] maximumNpcs` fight or scan at once and guards with no player near sleep. `review` and `accept` say when more guards are accepted than that. See [combat work limits](/animus/08-combat#work-limits). |
-   | `riding` | Turns on riding for NPCs that had the `controllable` trait. |
-   | `shops` | Lets Citizens, dtlTraders and Shopkeepers NPCs open their shop on click. |
-   | `builder` | Lets Builder sections run with `/animus build start <npc-id>`. A build Builder saved in the middle of building starts again on the NPC's next spawn; other builds never start on their own. |
-   | `denizen` | Lists the behaviors converted from Denizen scripts on the NPCs that had the assignment and enables the converted server behaviors. See [Denizen](#denizen). |
-   | `commands` | Adds the namespaces of the imported command behaviors and of imported Citizens shops that run commands (`citizens`, `denizen`) to `[behaviors.actions] commandNamespaces` in `config.toml`, so they may run their commands. Only that key changes; comments and the rest of the file stay. It is not part of `all`: read the commands first. Rollback takes out only the namespaces it added. |
+   `review` reports what was installed and converted, what was kept but not converted, the command namespaces the import added, and where the reports are.
 
 The migration records its progress in `imports/citizens/state.json`.
 
@@ -80,7 +71,7 @@ The mode, `mode=` on the command, decides what happens when an incoming NPC's id
 | `replace` | Replace matching files only when the UUID, readable ID and Citizens numeric ID all agree. Each replaced definition gets a higher revision. New records are added, and records missing from the import are never deleted. |
 | `duplicate` with `copy=<label>` | Install a second copy with new, repeatable UUIDs and readable IDs `citizens-<id>-<label>` under `npcs/copy-<label>/`. Known NPC references inside the copy, such as mounts and guarded NPCs, point to the copy. |
 
-A label uses 1-32 lowercase letters, digits, `_` or `-`, and each copy needs a different label. An identity that collides at a different path refuses replacement. Every imported definition is installed despawned with combat off, whatever the mode. Original records and unknown review data are kept; references whose meaning Animus does not know are not translated in a copy.
+A label uses 1-32 lowercase letters, digits, `_` or `-`, and each copy needs a different label. An identity that collides at a different path refuses replacement. Every imported definition is installed as converted, whatever the mode. Original records and unknown review data are kept; references whose meaning Animus does not know are not translated in a copy.
 
 ## Citizens commands in Animus
 
@@ -116,7 +107,7 @@ The lower-level commands work on any Citizens save file placed in `plugins/Animu
 
 `<preview>` is the import id that `import preview` prints, and `<application>` the id that `stage` prints.
 
-`import apply` installs with the default `reject` mode. `stage` prepares an application plan for another mode and prints its application ID, mode, counts, plan path and the exact apply command; it changes no definitions. The plan lives at `imports/<import-id>/applications/<application-id>/plan.json`. Do not edit generated plans: a changed plan must be staged again.
+`import apply` installs with the default `reject` mode. `import apply`, `stage` and `plan` refuse an import an older Animus previewed with NPC files at an older schema version, and say to run `/animus import preview <file>` again and use the import id it reports. `stage` prepares an application plan for another mode and prints its application ID, mode, counts, plan path and the exact apply command; it changes no definitions. The plan lives at `imports/<import-id>/applications/<application-id>/plan.json`. Do not edit generated plans: a changed plan must be staged again.
 
 Applying checks the plan against the current definitions. If a definition changed or a new collision appeared since staging, nothing is installed and you stage again. Applying the same plan twice reports `already-applied` while its files are unchanged; changed or missing files are reported, never overwritten. Rollback restores the previous definitions and refuses if you edited them after applying. Keep `backups/` and `state/objects/transaction-data/` together if you want to keep rollback history.
 
@@ -166,11 +157,11 @@ A Shopkeepers `save.yml` (with its `config.yml`, if you have it) converts the sa
 
 A Denizen folder converts the same way: choose **Choose Denizen folder** and pick `plugins/Denizen`. The editor reads every `.dsc` and `.yml` file under `scripts/`, `server_flags.dat` and `player_flags/`, lists any other files it skipped, and binds assignments to the NPCs of the Citizens save chosen above. Its zip holds the folder under `imports/denizen/` and the staged `imports/denizen/<import-id>/` tree; unzip it beside the Citizens import and run `/animus import citizens` as in [Denizen](#denizen).
 
-The same screen can also upload the files to a paired server and run stage, review, apply, accept and rollback there, with the same results as the commands.
+The same screen can also upload the files to a paired server and run stage, review, apply and rollback there, with the same results as the commands.
 
 ## Where the files go
 
-Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes in `npcs/citizens/`. The world name is lowercased with other characters changed to `-` (`World Nether` becomes `world-nether`) and cut to 48 characters. The ID is always `citizens-<Citizens id>` and the UUID is the Citizens UUID, so the same save always gives the same files. You can move the files into any folders under `npcs/`; importing the same save again updates each NPC where it now lives, and only new NPCs go in `npcs/<world>/`. Skins go in `skins/<sha256>.json`, one file for each different skin. Citizens shops go in `shops/citizens/<name>.json`.
+Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes in `npcs/citizens/`. The world name is lowercased with other characters changed to `-` (`World Nether` becomes `world-nether`) and cut to 48 characters. The ID is always `citizens-<Citizens id>` and the UUID is the Citizens UUID, so the same save always gives the same files. You can move the files into any folders under `npcs/`; importing the same save again updates each NPC where it now lives, and only new NPCs go in `npcs/<world>/`. Skins go in `skins/<sha256>.json`, one file for each different skin. Citizens shops go in `shops/citizens/<name>.json`. Installed files from an import made with an older Animus are upgraded automatically at the next start, by `/animus reload`, or by live apply when they are copied in, as described in [Schema versions](/animus/12-storage-recovery#schema-versions).
 
 ## What converts
 
@@ -193,24 +184,24 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 | Click redirect | `clickRedirect`. |
 | Navigator settings | `movement`: speed, water avoidance, fall distance, pathfinding range, distance margin, stuck handling, flying (`flyable` becomes `movement.style: fly`) and opening doors. |
 | `targetable: true` | `targetableByMobs` on `animus:combat`, and `animus:health` that is killable unless Citizens protected the NPC. |
-| `minecraft-ai: true` on a mob with no route | A disabled wander route around its spawn point. |
+| `minecraft-ai: true` on a mob with no route | A wander route around its spawn point. |
 | Owner | `owner`, when it is a player. |
 | Mounts | Mount references resolved through the UUID map. |
-| Waypoints | A route, off until `accept patrols`. See [waypoints](#waypoints). |
-| NPC Destinations `npcdestinations` | `animus:schedule`, off until `accept schedules`. See [importing NPC Destinations](/animus/30-npc-schedules#importing-npc-destinations). |
+| Waypoints | A route. See [waypoints](#waypoints). |
+| NPC Destinations `npcdestinations` | `animus:schedule`. See [importing NPC Destinations](/animus/30-npc-schedules#importing-npc-destinations). |
 | Look-close and gradual rotation | `animus:look-close`. See [look-close](#look-close). |
-| Follow | A guard in `animus:combat`, off until `accept combat`. See [follow](#follow). |
+| Follow | A guard in `animus:combat`. See [follow](#follow). |
 | Home | `animus:home`. See [home and pausing](#home-and-pausing). |
 | Pause pathfinding | `pause` on the NPC's route. See [home and pausing](#home-and-pausing). |
 | Text and commands | Generated behaviors. See [text](#text) and [commands](#commands). |
-| Sentinel | `animus:combat` and `animus:health`, off until `accept combat`. See [Sentinel settings](#sentinel-settings). |
-| `controllable` | `animus:riding`, off until `accept riding`. A disabled trait converts to nothing. |
-| Citizens shops (`/npc shop`) and the `shop` trait | Shops in `shops/citizens/`, and `modules["animus:shop"]` on NPCs that open a shop on right click, opening nothing until `accept shops`. See [shops](#shops). |
+| Sentinel | `animus:combat` and `animus:health`. See [Sentinel settings](#sentinel-settings). |
+| `controllable` | `animus:riding`. A disabled trait converts to nothing. |
+| Citizens shops (`/npc shop`) and the `shop` trait | Shops in `shops/citizens/`, and `modules["animus:shop"]` on NPCs that open a shop on right click. See [shops](#shops). |
 | Drops trait | `death.drops` in `animus:health`. See [drops](#drops). |
 | CitizensCMD and CommandNPC commands | The NPC's command behavior. See [command add-ons](#command-add-ons). |
-| dtlTraders `trader` | `modules["animus:shop"]`, opening nothing until `accept shops`. |
+| dtlTraders `trader` | `modules["animus:shop"]`. |
 | Model Engine `meg_model` | `animus:modelengine`, the first model with its scale. See [Model Engine](/animus/32-model-engine#importing-modelled-citizens-npcs). |
-| Builder `builder` | An `animus:builder` section, run only after `accept builder`. See [builder](#builder). |
+| Builder `builder` | An `animus:builder` section. See [builder](#builder). |
 | Denizen assignments, triggers and flags | Converted from the Denizen folder when it is present. See [Denizen](#denizen). |
 | LibsDisguises disguises | `disguise`, from the disguise LibsDisguises saved for the NPC or a script that disguises its UUID. See [LibsDisguises](/animus/34-libsdisguises#citizens-npcs). |
 
@@ -246,7 +237,7 @@ A look trait on another body type, such as a sheep trait on a player, changed no
 
 ### Waypoints
 
-Waypoints become a route in the NPC's `modules["animus:navigation"]`, with world mappings applied. It stays off until you accept `patrols`.
+Waypoints become a route in the NPC's `modules["animus:navigation"]`, with world mappings applied. The NPC walks it once the import is applied.
 
 | Citizens | Animus route |
 | --- | --- |
@@ -263,7 +254,7 @@ Waypoints become a route in the NPC's `modules["animus:navigation"]`, with world
 
 Every route made from Citizens waypoints opens doors (`openDoors: true`) and drops at least 3 blocks: when the Citizens save sets a fall distance below 3, which is common and blocks most legs that step off a ledge, it becomes `maximumFall: 3`. A save with no fall distance leaves `maximumFall` unset. Both are in the NPC's [movement](/animus/05-movement-mounts-riding) settings, so lower them there if a route should not. The import report's warnings say how many routes changed and how many had their fall distance raised.
 
-Points move to the center of their block. Citizens saves the block you clicked, which is usually the ground under the NPC's feet, so a point that names a solid block, a top slab or a stair is walked to the surface on top of it, and a stuck NPC that teleports lands there instead of inside the block. A waypoints trait with no points, which Citizens saves for many NPCs that never had a route, converts to nothing and is not counted as kept. Points in another world are left out. `citizens:waypoints-<id>` runs each point's chat lines and commands, in order, on the `waypoint` trigger for that point; `<npc>` and `<id>` are written in, and a line or command that names the player (`<p>` or `<player>`) is left out, since an arrival has no player. Its commands stay denied like [commands](#commands), and `accept commands` allows them with the rest. Animations become `swing`, `swing_offhand`, `hurt`, `crit`, `magic_crit`, `wake`, `sleep`, `sit`, `sneak`, `stand`, `use_item` and `stop_using_item`; elytra flight has no Animus animation and is reported. Any other provider is kept in `citizens:review` and reported for each NPC. Long legs and destinations no guide reaches need no extra points. Routes are described in [movement](/animus/05-movement-mounts-riding).
+Points move to the center of their block. Citizens saves the block you clicked, which is usually the ground under the NPC's feet, so a point that names a solid block, a top slab or a stair is walked to the surface on top of it, and a stuck NPC that teleports lands there instead of inside the block. A waypoints trait with no points, which Citizens saves for many NPCs that never had a route, converts to nothing and is not counted as kept. Points in another world are left out. `citizens:waypoints-<id>` runs each point's chat lines and commands, in order, on the `waypoint` trigger for that point; `<npc>` and `<id>` are written in, and a line or command that names the player (`<p>` or `<player>`) is left out, since an arrival has no player. Its commands run under the `citizens` namespace like the other [commands](#commands). Animations become `swing`, `swing_offhand`, `hurt`, `crit`, `magic_crit`, `wake`, `sleep`, `sit`, `sneak`, `stand`, `use_item` and `stop_using_item`; elytra flight has no Animus animation and is reported. Any other provider is kept in `citizens:review` and reported for each NPC. Long legs and destinations no guide reaches need no extra points. Routes are described in [movement](/animus/05-movement-mounts-riding).
 
 ### Look-close
 
@@ -275,7 +266,7 @@ The rotation trait's turning speed becomes `turnRate` when it differs from Citiz
 
 ### Follow
 
-Citizens' `followtrait` becomes a `guard` in `animus:combat` that follows the same player, or the same NPC when the UUID is an imported NPC's. The margin becomes `followDistance` (2 blocks when unset) and `pointRange` is 1, so the NPC walks up close behind. `protect` keeps its meaning: with it the NPC attacks whatever hurts the one it follows; without it the guard has `protect: false` and `fightBack: false` and only follows. Like every imported combat module it stays off until you accept `combat`. A guard catches up by teleport when its charge is more than 24 blocks away or in another world; set `catchUpDistance` to 0 to make it walk. See [guards](/animus/08-combat).
+Citizens' `followtrait` becomes a `guard` in `animus:combat` that follows the same player, or the same NPC when the UUID is an imported NPC's. The margin becomes `followDistance` (2 blocks when unset) and `pointRange` is 1, so the NPC walks up close behind. `protect` keeps its meaning: with it the NPC attacks whatever hurts the one it follows; without it the guard has `protect: false` and `fightBack: false` and only follows. A guard catches up by teleport when its charge is more than 24 blocks away or in another world; set `catchUpDistance` to 0 to make it walk. See [guards](/animus/08-combat).
 
 ### Anchors and mirroring
 
@@ -312,7 +303,7 @@ Each command keeps its checks, in this order, with Citizens' error message when 
 
 The command trait's own `cost`, `experienceCost` and `itemRequirements` are charged once per click before any command runs. `customErrorMessages` replace the default messages and `hideErrorMessages` sends none. The flags and stages are named `commands-<id>-<command>-cooldown`, `-global-cooldown`, `-uses` and `-global-uses` in the `citizens` namespace; `/animus behaviors state delete` resets them. Uses and cooldowns counted in Citizens start again from zero. An item cost that cannot be matched exactly, because its item data has no item component, leaves that command out and the report says so. Temporary permissions are reported and not granted.
 
-Commands and skill casts stay denied until you list the behavior in `config.toml`, for example `commandBehaviors = ["citizens:commands-12"]` under `[behaviors.actions]`, or `commandNamespaces = ["citizens"]` for all of them, and save the file; it applies at once. The preview and `review` list how many wait and which namespaces they need, and `accept commands` adds those namespaces for you.
+Commands and skill casts run once the import is applied, because apply adds `citizens` to `commandNamespaces` under `[behaviors.actions]` in `config.toml`. The preview says how many imported behaviors and shops run commands. A command's cost, cooldown and use count are taken before it runs, and only after an [`animus:commands-allowed`](/animus/07-behaviors#conditions) check, so a command the allow-list refuses costs the player nothing.
 
 > Read each command in `behaviors/citizens/` before you allow it. Anyone who can edit an allowed behavior can run console commands.
 {.is-warning}
@@ -327,7 +318,7 @@ Commands saved by the CitizensCMD and CommandNPC add-ons join the same `citizens
 | `[message]` lines | `animus:message`, with `{name}` as the NPC's name. |
 | `[<permission>]` lines | Player commands, run with the player's own permissions. |
 | `cooldown` | A flag per player and NPC; `-1` (one click) never expires. |
-| `price` | Charged on right click, at once rather than on a second click. Left-click commands run without charging, as CitizensCMD runs them. |
+| `price` | Charged on right click before the commands and their delays run, at once rather than on a second click. Left-click commands run without charging, as CitizensCMD runs them. |
 | `permission` | A permission check for the NPC's commands. |
 
 `[server]` and `[sound]` lines are reported and not converted.
@@ -336,7 +327,7 @@ Commands saved by the CitizensCMD and CommandNPC add-ons join the same `citizens
 | --- | --- |
 | Command, click type and permission | A command on that click behind a permission check, with the no-permission message unless the line hides it. `%name` becomes the player's name. |
 | Console, operator | Console commands; operator commands run from the console. |
-| Cost, delay and cooldown | A charge, a wait before the command and a flag per player that expires after the cooldown, with the line's cooldown message. |
+| Cost, delay and cooldown | A wait, then a charge just before the command and a flag per player that expires after the cooldown, with the line's cooldown message. |
 | Random | One of the NPC's commands at random per click. |
 
 BungeeCord `server` commands are reported and not converted.
@@ -348,7 +339,7 @@ BungeeCord `server` commands are reported and not converted.
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/40-citizens-economy-ingame.webm" aria-label="Trading in an imported Citizens shop and using a paid command NPC" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Citizens keeps its shops in `shops.yml`: named shops, and each NPC's own shop. Each converts to `shops/citizens/<name>.json` with the id `citizens:<name>`, where the name is lowercased with other characters as `-`; an NPC's own shop is `citizens:npc-<id>`. An NPC whose `shop` trait opens a shop on right click gets `modules["animus:shop"]` for the named shop, or for its own shop when no named shop has that name. Shops open nothing until `accept shops`; `/animus shop open <shop>` opens one by hand.
+Citizens keeps its shops in `shops.yml`: named shops, and each NPC's own shop. Each converts to `shops/citizens/<name>.json` with the id `citizens:<name>`, where the name is lowercased with other characters as `-`; an NPC's own shop is `citizens:npc-<id>`. An NPC whose `shop` trait opens a shop on right click gets `modules["animus:shop"]` for the named shop, or for its own shop when no named shop has that name. Shops open on click once the import is applied; `/animus shop open <shop>` opens one by hand.
 
 | Citizens shop | Animus |
 | --- | --- |
@@ -359,7 +350,7 @@ Citizens keeps its shops in `shops.yml`: named shops, and each NPC's own shop. E
 | Items for money | A `sell` entry. |
 | Items for items | A `trade` entry, with any money as its price. |
 | Money for commands | A `command` entry. Command results and command costs both run after the purchase, `<p>` becoming the player's name. |
-| Experience cost | The entry's `levels`, taken with the price. |
+| Experience cost | The entry's `levels`, taken with the price. Entries with no experience cost get no `levels`. |
 | Experience result | The command `xp add {player} <levels> levels`, run from the console. |
 | Permission cost | The entry's `permission`. Citizens takes the permission away; Animus only checks it. |
 | `timesPurchasable`, `globalTimesPurchasable` | The entry's `limit` per player and for everyone. Purchases counted in Citizens start again from zero. |
@@ -373,11 +364,11 @@ The drops trait becomes `death.drops` in the NPC's [`animus:health`](/animus/08-
 
 ### Builder
 
-Builder's `builder` trait becomes an `animus:builder` section with `reviewAccepted: false`: the schematic name (as `<name>.schem`), pattern, ignore-air, ignore-liquid, excavate, hold-items, required materials (as `materials: donate`), move timeout, Y offset, layers and silent mode. The whole trait is kept under `animus:builder.imported` and in `citizens:review`, and every key that does not convert is reported. A build Builder saved while building or collecting materials gets the behavior `citizens:builder-<id>`, which starts it again once, on the NPC's first spawn after `accept builder`; blocks already in place are skipped. Outstanding materials, the resume point and Denizen task names are kept, not run. Constructor's `constructor` trait is kept for review and its keys are reported. Builder `.schematic` files must be saved again as `.schem`; see [building](/animus/09-building).
+Builder's `builder` trait becomes an `animus:builder` section: the schematic name (as `<name>.schem`), pattern, ignore-air, ignore-liquid, excavate, hold-items, required materials (as `materials: donate`), move timeout, Y offset, layers and silent mode. The whole trait is kept under `animus:builder.imported` and in `citizens:review`, and every key that does not convert is reported. A build Builder saved while building or collecting materials gets the behavior `citizens:builder-<id>`, which starts it again once, on the NPC's first spawn; blocks already in place are skipped. Other builds start with `/animus build start <npc-id>`. Outstanding materials, the resume point and Denizen task names are kept, not run. Constructor's `constructor` trait is kept for review and its keys are reported. Builder `.schematic` files must be saved again as `.schem`; see [building](/animus/09-building).
 
 ## Sentinel settings
 
-Each Sentinel record becomes `modules["animus:combat"]` with `enabled` and `reviewAccepted` set to `false`, and [`modules["animus:health"]`](/animus/08-combat#health-and-death) with its health, armor, invincibility, drops, experience, respawn time and spawn point. `/animus import citizens accept combat` sets both combat flags to `true`; until then the NPC neither fights nor takes damage. The unchanged Sentinel record stays in `citizens:review` and in the import archive.
+Each Sentinel record becomes `modules["animus:combat"]` with `enabled` set to `true`, and [`modules["animus:health"]`](/animus/08-combat#health-and-death) with its health, armor, invincibility, drops, experience, respawn time and spawn point. The guard fights and takes damage once the import is applied. The unchanged Sentinel record stays in `citizens:review` and in the import archive.
 
 The module keeps three things apart:
 
@@ -439,12 +430,12 @@ Target list entries:
 
 ## Shopkeepers
 
-`/animus import citizens preview` also imports a Shopkeepers save. There is no separate command: the Shopkeepers shops join the same preview, apply, review, accept and rollback, so one rollback undoes both imports in order.
+`/animus import citizens preview` also imports a Shopkeepers save. There is no separate command: the Shopkeepers shops join the same preview, apply, review and rollback, so one rollback undoes both imports in order.
 
 1. Remove the Shopkeepers jar from `plugins/` and keep its data folder. Animus refuses to apply Shopkeepers shops while Shopkeepers is enabled, so no shop trades twice.
 2. Leave `plugins/Shopkeepers/data/save.yml` where it is, or copy it to `plugins/Animus/imports/shopkeepers/save.yml` (`imports/inbox/shopkeepers/save.yml` also works). The `config.yml` beside it is read too (`plugins/Shopkeepers/config.yml`, or `config.yml` next to the copied save): its currency items, high currency value, minimum cost and trade log setting change how player shops convert.
 3. Run `/animus import citizens preview`. The preview lists shops, trading offers, offers that only show, offers kept in the source, new mob NPCs and how many Citizens links it found. The report is `imports/shopkeepers/<import-id>/report.json`, with one report per shopkeeper under `reports/`.
-4. Run `/animus import citizens apply`, then `review` and `accept shops` (and `accept spawn` for the new mob NPCs).
+4. Run `/animus import citizens apply`. The shops open on their NPCs and the new mob NPCs spawn at once.
 
 The order does not matter. With both saves present, both stage together. If the Citizens import is already applied, a Shopkeepers save found later stages on its own and binds to the installed NPCs. If the Shopkeepers save is applied first, its Citizens shopkeepers wait, and they bind when the Citizens import is applied.
 
@@ -456,21 +447,20 @@ The order does not matter. With both saves present, both stage together. If the 
 | Buying player shop | The player gives the item and gets the price in base currency from the container. |
 | Trading player shop | The player gives the first and second item and gets the result item from the container. |
 | Book player shop | Kept in the source and reported. A book offer copies a book by title, which is not an item-for-item trade. |
-| Citizens object | `modules["animus:shop"]` on the NPC converted from that Citizens NPC, matched by its Citizens UUID (or numeric id). It opens nothing until `accept shops`. |
-| Mob object | A new NPC `npcs/shopkeepers/shopkeeper-<id>.json` of that mob at the shopkeeper's place, despawned until `accept spawn`, with its shop bound. A villager's profession and level go to `modules["animus:shop"].villager`, which its trading screen title shows. Other mob settings (villager type, baby, equipment and so on) are kept in `modules["shopkeepers:review"]`. |
+| Citizens object | `modules["animus:shop"]` on the NPC converted from that Citizens NPC, matched by its Citizens UUID (or numeric id). |
+| Mob object | A new NPC `npcs/shopkeepers/shopkeeper-<id>.json` of that mob at the shopkeeper's place, spawned, with its shop bound. A villager's profession and level go to `modules["animus:shop"].villager`, which its trading screen title shows. Other mob settings (villager type, baby, equipment and so on) are kept in `modules["shopkeepers:review"]`. |
 | Sign, hanging sign or virtual object | The shop only, with the sign data kept in the shop's `imported` section. Open it with `/animus shop open <shop>` or bind it to an NPC. |
 
 Items are written exactly: Shopkeepers saves each item component as the text the give command reads, and that text becomes the item's `components`. An offer with item data that cannot be written exactly (old Bukkit item meta, components over 4096 characters) shows in the shop, trades nothing, and keeps the data in `imported`; the report lists it. A player shop without an owner or a container also only shows its offers. Owners, members, hire settings and expiry are kept in the shop's `imported` section and not used. Owned shops are described in [container shops](/animus/10-shops#container-shops).
 
 ## Denizen
 
-`/animus import citizens preview` also converts Denizen scripts and flags, so Denizen can be removed after the migration. There is no separate command: the Denizen part joins the same preview, apply, review, accept and rollback, and it needs the Citizens save beside it.
+`/animus import citizens preview` also converts Denizen scripts and flags, so Denizen can be removed after the migration. There is no separate command: the Denizen part joins the same preview, apply, review and rollback, and it needs the Citizens save beside it.
 
-1. Remove the Denizen jar from `plugins/` and keep `plugins/Denizen/`. Animus refuses to apply or accept the converted scripts while Denizen is enabled, so no script runs twice.
+1. Remove the Denizen jar from `plugins/` and keep `plugins/Denizen/`. Animus refuses to apply the converted scripts while Denizen is enabled, so no script runs twice.
 2. Leave `plugins/Denizen/` where it is, or copy its `scripts/` folder, `server_flags.dat`, `player_flags/` and `notables.yml` to `plugins/Animus/imports/denizen/` (`imports/inbox/denizen/` also works). Animus reads every `.dsc` and `.yml` file under `scripts/`, and the noted cuboids and ellipsoids in `notables.yml` for area events. It never reads `secrets.secret`.
 3. Run `/animus import citizens preview`. The preview counts the scripts, the behaviors made and the NPCs they belong to, the flag values imported and kept, and the items kept with a reason. The report is `imports/denizen/<import-id>/report.json`. It lists every script, command, tag and event as converted or kept, and every kept item with its file, line and reason.
-4. `/animus import citizens apply` installs the behaviors in `behaviors/denizen/`, the chest GUIs in `gui/inventories/denizen/` and the flag values as behavior state. Restart once so the imported flag values load. The behaviors are not bound to any NPC, and the server behaviors are not enabled, until you accept them.
-5. Run `review`, then `/animus import citizens accept denizen`, which lists the behaviors on the NPCs that had the assignment and enables the [server behaviors](/animus/07-behaviors#server-behaviors) the report lists in `serverBehaviors`. [Held behaviors](#guards-that-do-not-convert) stay unbound and off.
+4. `/animus import citizens apply` installs the behaviors in `behaviors/denizen/`, the chest GUIs in `gui/inventories/denizen/` and the flag values as behavior state, lists the behaviors on the NPCs that had the assignment, and enables the [server behaviors](/animus/07-behaviors#server-behaviors) the report lists in `serverBehaviors`. Restart once so the imported flag values load. [Held behaviors](#guards-that-do-not-convert) stay unbound and off.
 
 Rollback removes the behaviors, the GUIs, the imported state and the NPC bindings with the rest of the import.
 
@@ -509,26 +499,26 @@ Rollback removes the behaviors, the GUIs, the imported state and the NPC binding
 | `give`, `take` | `animus:give-item` and `animus:take-item` with the material and `quantity:` |
 | `teleport` | `animus:teleport` of the player or the NPC to the other one or to a literal location |
 | `adjust` | `name` and `item_in_hand` of the NPC become `animus:set-appearance` and `animus:set-equipment` |
-| `execute` | `animus:command`, denied until allow-listed. `as_player` runs as the player. `as_op` also runs as the player, without operator rights, so a command that needs them fails; the report's `issues` lists each one |
+| `execute` | `animus:command`, allowed by the `denizen` namespace that apply adds. `as_player` runs as the player. `as_op` also runs as the player, without operator rights, so a command that needs them fails; the report's `issues` lists each one |
 | `execute` of `sentinel ...` | `animus:combat-control` on the behavior's NPC, since Sentinel is replaced by Animus combat: `addtarget <player>` attacks the triggering player, `removetarget <player>`, `forgive` and `forgiveall` release the target, `guard <player>` guards the triggering player and `guard` alone stops guarding. Target types (`addtarget monsters`), other NPCs (`--id 12`) and Sentinel settings such as `range` are kept with the reason; set them in the NPC's `animus:combat` |
 | `trait state:true sentinel`, `trait state:false sentinel` | `animus:combat-control` `enable` or `disable`. A `trait sentinel` toggle is kept |
 | `look`, `walk`, `equip` | `animus:look` at the player or a literal location, `animus:navigate` to a literal location, `animus:set-equipment` with plain materials |
 | `playsound`, `playeffect` | `animus:play-sound` and `animus:spawn-particle` at the NPC or, for `<player>`, with `at: player`. Bukkit sound names become keys (`ENTITY_VILLAGER_YES` is `minecraft:entity.villager.yes`); the report's `sounds` lists every name read. Old particle names are renamed; particle speed and visibility are not carried |
 | Flag values | Every flag of each player (`player_flags/`), NPC (`denizen_flags` in the Citizens save) and the server (`server_flags.dat`) becomes a `denizen` flag with its typed value: `true`/`false` a boolean, a whole number an integer, a decimal number a decimal, `li@` a list, `map@` a map, anything else text. An expiring flag keeps its expiry time. A player's interact steps become the relationship stage with every NPC that has the script |
 
-Server behaviors run with no NPC, so a command there that needs one (`chat`, `look`, `walk`, `equip`, `flag npc`, `zap`, `<npc.*>` tags, sounds and particles at the NPC) is kept. Generated behaviors that use `animus:command` stay denied until listed, for example `commandNamespaces = ["denizen"]` under `[behaviors.actions]`; the preview and `review` name them, and `accept commands` adds the namespace. Read each command first.
+Server behaviors run with no NPC, so a command there that needs one (`chat`, `look`, `walk`, `equip`, `flag npc`, `zap`, `<npc.*>` tags, sounds and particles at the NPC) is kept. Generated behaviors that use `animus:command` run once applied, because apply adds `denizen` to `commandNamespaces` under `[behaviors.actions]`.
 
 ### Guards that do not convert
 
 A line that limits or ends a script and does not convert never lets the rest run unchecked. When an `if`, `else if`, `choose`, `while`, `foreach` or `repeat` does not convert and its block could stop the script (a `stop`, a `determine`, a `queue` command, an `inject` or a `ratelimit` inside it), the routine ends at that line, as if the guard had stopped it. The same happens at a `ratelimit`, `queue` or `inject` line that does not convert, and at an `inject` of a task that can stop, since Animus would end only the task. Every later line is kept with the reason `never runs`. A block that cannot stop the script is skipped, as if its condition were false, and the lines after it run.
 
-Any of these, an unconverted `determine` or `cooldown`, and a command script `permission` that is not plain text of 1-256 characters hold the behavior: `behaviorStatus` marks it `held`, and `heldBehaviors` in the report lists its lines and the NPCs it would have been bound to. Accepting the review leaves a held behavior off every NPC and out of `server-behaviors.json`.
+Any of these, an unconverted `determine` or `cooldown`, and a command script `permission` that is not plain text of 1-256 characters hold the behavior: `behaviorStatus` marks it `held`, and `heldBehaviors` in the report lists its lines and the NPCs it would have been bound to. Apply leaves a held behavior off every NPC and out of `server-behaviors.json`: a guard that did not convert would let the behavior run for players the script kept out.
 
 #### Releasing a held behavior
 
 `/animus import denizen held` lists each held behavior, the NPCs it was made for or whether it is a server behavior, whether it runs commands, and the lines that did not convert with their reasons. Read the behavior in `behaviors/denizen/`, and fix it in the [editor](/animus/14-web-editor) or by hand if a guard matters.
 
-`/animus import denizen release <behavior>` shows what it would release. `/animus import denizen release <behavior> confirm` lists the behavior on those NPCs and, for a server behavior, in `server-behaviors.json`, in one transaction. A server behavior starts once the behaviors reload. Both commands need `animus.import`. Releasing a behavior that runs commands in game also needs `animus.editor.commands`, and its commands stay denied until `accept commands`. `/animus import citizens rollback` undoes every release with the rest of the import.
+`/animus import denizen release <behavior>` shows what it would release. `/animus import denizen release <behavior> confirm` lists the behavior on those NPCs and, for a server behavior, in `server-behaviors.json`, in one transaction. A server behavior starts once the behaviors reload. Both commands need `animus.import`. Releasing a behavior that runs commands in game also needs `animus.editor.commands`. `/animus import citizens rollback` undoes every release with the rest of the import.
 
 ### Kept with a reason
 
@@ -543,7 +533,7 @@ Each line below stays out of the behaviors and is listed in the report with its 
 
 To rewrite kept logic by hand, see [moving imported flags and assignments](/animus/07-behaviors#moving-imported-flags-and-assignments).
 
-## Kept but not run
+## Kept but not converted
 
 These are kept in each definition under `modules["citizens:review"]` and in the original archive, and are listed by `review`:
 
@@ -555,7 +545,7 @@ These are kept in each definition under `modules["citizens:review"]` and in the 
 
 ## Quest plugins
 
-Quest files that name Citizens NPCs are pointed at the imported NPCs one plugin at a time, with `/animus import quests apply`, `import beautyquests apply`, `import betonquest apply` or `import typewriter apply`. NotQuests data keeps working as it is. See [after a Citizens import](/animus/26-quest-plugins#after-a-citizens-import).
+Quest files that name Citizens NPCs are pointed at the imported NPCs one plugin at a time, with `/animus import quests apply`, `import beautyquests apply` or `import betonquest apply`. See [after a Citizens import](/animus/26-quest-plugins#after-a-citizens-import).
 
 ## Rolling back
 
@@ -563,6 +553,6 @@ Quest files that name Citizens NPCs are pointed at the imported NPCs one plugin 
 /animus import citizens rollback
 ```
 
-This undoes every acceptance, the shops, the generated behaviors and the NPC definitions, newest first, and deletes the copied schematics that have not changed. The removed shops and behaviors leave their catalogs at once, so `/animus behaviors reload` afterwards reports nothing missing. If you edited an imported NPC or shop after the import, rollback stops at the step that wrote it rather than overwrite the edit, and says which transaction it stopped at. The steps it already undid stay undone, and the copied schematics and command namespaces are removed either way. Undo the edit, for example with `/animus rollback <transaction-id>`, and run `/animus import citizens rollback` again; it continues where it stopped. The staged preview stays, so `/animus import citizens apply` installs it again.
+This undoes the shops, the generated behaviors and the NPC definitions, newest first, and deletes the copied schematics that have not changed. The removed shops and behaviors leave their catalogs at once, so `/animus behaviors reload` afterwards reports nothing missing. If you edited an imported NPC or shop after the import, rollback stops at the step that wrote it rather than overwrite the edit, and says which transaction it stopped at. The steps it already undid stay undone, and the copied schematics and command namespaces are removed either way. Undo the edit, for example with `/animus rollback <transaction-id>`, and run `/animus import citizens rollback` again; it continues where it stopped. The staged preview stays, so `/animus import citizens apply` installs it again.
 
 Reinstall Citizens only after a rollback. Roll back the [quest links](/animus/26-quest-plugins#rolling-back) too, with `rollback` of each `import` quest command you applied.

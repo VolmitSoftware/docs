@@ -2,7 +2,7 @@
 title: "Animus: Mod Servers"
 description: "Running Animus on Fabric, NeoForge and Forge servers, and what differs from Bukkit"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, fabric, neoforge, forge, mods, compatibility"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -67,6 +67,7 @@ A permission mod can grant any node through the vanilla permission named by the 
 | Combat `permissions` and `groups` rules | Read through the permission mapping above. A permission group is the permission `group.<name>`, so it needs a permission mod that grants it |
 | Build protection | No protection adapter: every block a [build](/animus/09-building) changes is allowed; `/animus build` shows `protection=none` |
 | Money prices in shops, GUIs and hiring | No economy unless a Java module provides one. Use item prices |
+| `animus:charge` and `animus:can-afford` | Items and levels work as on Paper. Money uses the same economy as shops, so without a Java module that provides one a cost with money is never affordable |
 | Mob control (`/animus combat mob <npc> <mob>`) | Not available; the command says so. Use `/animus combat target <npc> <target>` or `combat guard` instead |
 | Manual hit (`/animus combat attack <npc> <target> [damage=1]`) | Available, with the same reach, line of sight and protection checks |
 | Plugin events (`VirtualNpcInteractionEvent`, `VirtualNpcDamageEvent` and the others) | Not fired. Behavior triggers receive the same facts on every platform; Java modules receive interaction notices |

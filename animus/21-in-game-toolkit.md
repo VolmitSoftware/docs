@@ -2,7 +2,7 @@
 title: "Animus: In-Game Toolkit"
 description: "Chest-GUI screens and a selection wand that edit NPCs, groups, routes, behaviors, shops and skins without leaving the game"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, gui, tools, wand, selection"
 editor: markdown
 dateCreated: 2026-11-07T00:00:00.000Z
@@ -250,7 +250,7 @@ Acts on the whole selection and shows the first selected NPC's values. Every fil
 
 | Button | Does |
 |---|---|
-| Enable combat | Writes `"enabled": true` in `modules["animus:combat"]`. On an imported NPC it also writes `"reviewAccepted": true`, and the chat line says how many imports it accepted |
+| Enable combat | Writes `"enabled": true` in `modules["animus:combat"]` |
 | Disable combat | Removes `enabled`; the rest of the profile stays |
 | Targetable by mobs | Turns `targetableByMobs` on or off |
 | Targets, Ignores, Avoids | Open the rule list of that name. The lore lists the rules the first NPC has |

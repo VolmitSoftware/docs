@@ -2,7 +2,7 @@
 title: "Animus: Building"
 description: "NPCs that build schematics block by block, with scaffolding, materials and undo"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, building, schematics, builder"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -172,7 +172,7 @@ An NPC definition can hold a build request, which `/animus build start <npc-id>`
 }
 ```
 
-`options` uses the JSON names of the options above: `anchor`, `rotation`, `mirror`, `offset` (`{"x", "y", "z"}`), `pattern`, `layers`, `groupAll`, `ignoreAir`, `ignoreLiquids`, `excavate`, `speed`, `placeIntervalTicks`, `reach`, `moveTimeoutSeconds`, `holdBlock`, `silent`, `materials`, `container` and `scaffolding`. An imported section also needs `"reviewAccepted": true`. A saved build never starts on its own.
+`options` uses the JSON names of the options above: `anchor`, `rotation`, `mirror`, `offset` (`{"x", "y", "z"}`), `pattern`, `layers`, `groupAll`, `ignoreAir`, `ignoreLiquids`, `excavate`, `speed`, `placeIntervalTicks`, `reach`, `moveTimeoutSeconds`, `holdBlock`, `silent`, `materials`, `container` and `scaffolding`. A saved build never starts on its own, except a build an imported Builder trait left part way, which starts again once on the NPC's first spawn.
 
 ## Saved state
 

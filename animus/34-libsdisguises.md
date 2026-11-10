@@ -2,7 +2,7 @@
 title: "Animus: LibsDisguises"
 description: "NPCs that look like a LibsDisguises disguise, what each disguise option becomes, and importing the disguises Citizens NPCs wore"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, npcs, libsdisguises, disguises, citizens"
 editor: markdown
 dateCreated: 2026-11-09T00:00:00.000Z
@@ -76,7 +76,7 @@ A custom disguise is read again whenever its text in `disguises.yml` changes, th
 
 ## Without LibsDisguises
 
-When LibsDisguises is not installed, or a disguise cannot be read, the NPC shows its own `type` and body fields, and the `disguise` field stays in the file. `/animus npc disguise <npc>` says when LibsDisguises is missing, and the server log names why a disguise could not be read. On [mod servers](/animus/16-mod-servers) the field is kept and never shown.
+When LibsDisguises is not installed, or a disguise cannot be read, the NPC shows its own `type` and body fields, and the `disguise` field stays in the file. Without LibsDisguises, `/animus npc disguise` is left out of help and completion, and typed anyway it answers that it needs LibsDisguises. When LibsDisguises cannot read a disguise, `/animus npc disguise <npc>` shows why, and the server log names it. On [mod servers](/animus/16-mod-servers) the field is kept and never shown.
 
 ## Citizens NPCs
 

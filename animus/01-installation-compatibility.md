@@ -27,7 +27,7 @@ Optional plugins on Paper, Spigot and Folia:
 | Gloss | Importing and exporting GUIs, holograms and menus in [Gloss formats](/animus/11-guis-holograms-menus) |
 | React | Receiving Animus [metrics](/animus/17-debug-react-metrics) |
 | PlaceholderAPI | Filling `%placeholders%` in NPC names, holograms, messages and GUIs; see [placeholders](/animus/03-configuration#placeholders) |
-| Quests (PikaMug), BeautyQuests, BetonQuest, NotQuests, Typewriter | Animus NPCs as quest givers, conversation partners and objectives, and relinking quests after a Citizens import; see [quest plugins](/animus/26-quest-plugins) |
+| Quests (PikaMug), BeautyQuests, BetonQuest | Animus NPCs as quest givers, conversation partners and objectives, and relinking quests after a Citizens import; see [quest plugins](/animus/26-quest-plugins) |
 | Model Engine 4 | Showing [Model Engine models](/animus/32-model-engine) on NPCs, on Paper and Spigot |
 | LibsDisguises | NPCs that look like a LibsDisguises disguise, and importing the disguises Citizens NPCs wore; see [LibsDisguises](/animus/34-libsdisguises) |
 | MythicMobs | NPCs made from Mythic mobs, their skills and the `mythic:cast-skill` action; see [MythicMobs](/animus/36-mythicmobs) |

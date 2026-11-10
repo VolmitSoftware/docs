@@ -2,7 +2,7 @@
 title: "Animus: Storage and Recovery"
 description: "How Animus stores documents, recovers from bad edits and crashes, and rolls changes back"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, storage, recovery, rollback, backups"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -131,7 +131,7 @@ At the same times, Animus removes checkpoint and import copies under `state/obje
 
 ## Schema versions
 
-Every versioned document carries a `schemaVersion`: NPC definitions, behaviors, pack manifests (`pack.json`), shops, routes, recordings, trait groups, chest GUIs, holograms, text animations, rigs, animations and `server-behaviors.json`. Each kind is at version 1, except holograms, which keep Gloss's version 3.
+Every versioned document carries a `schemaVersion`: NPC definitions, behaviors, pack manifests (`pack.json`), shops, routes, recordings, trait groups, chest GUIs, holograms, text animations, rigs, animations and `server-behaviors.json`. NPC definitions and trait groups are at version 2, holograms keep Gloss's version 3, and every other kind is at version 1.
 
 At startup, before loading and before backups rotate, Animus upgrades any document whose version is older than the running build reads:
 
@@ -139,6 +139,10 @@ At startup, before loading and before backups rotate, Animus upgrades any docume
 - Upgraded documents are written in transactions of up to 2,000 documents, each with a rollback receipt. The log names every transaction, and `/animus rollback <transaction-id>` on each one restores the original files.
 - A document at the current version is never rewritten.
 - A document newer than the running build reads, or one that cannot be upgraded, is left unchanged and reported by the normal loader.
+
+NPC definitions and trait groups copied into the data folder while the server runs are upgraded the same way before they load, in one transaction with a rollback receipt. [Live apply](/animus/03-configuration#live-apply) names the transaction in its chat line and the log, and `/animus reload` starts its reply with `Upgraded <n> files to schemaVersion 2; rollback <transaction-id>`. The [web editor](/animus/14-web-editor) upgrades them in the browser as a folder, zip or workspace opens.
+
+NPC files and trait groups from an import made with an older Animus are upgraded automatically, and every converted module in them runs as converted.
 
 ## Validating offline
 

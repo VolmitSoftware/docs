@@ -2,7 +2,7 @@
 title: "Animus Tutorial: Introduction"
 description: "Install Animus, set it up, and make, skin and walk your first NPC"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, tutorial, quick start, setup, first npc"
 editor: markdown
 dateCreated: 2026-11-07T00:00:00.000Z
@@ -102,10 +102,9 @@ Back up the server, stop it, remove the Citizens jar but keep its data folder, s
 ```none
 /animus import citizens preview
 /animus import citizens apply
-/animus import citizens accept all
 ```
 
-Every Citizens NPC arrives dormant, and the features you accept turn on. One command, `/animus import citizens rollback`, undoes all of it. Read [migrating from Citizens](/animus/13-migrating-from-citizens) first: it covers Sentinel, Denizen, dtlTraders and Shopkeepers data too.
+Every Citizens NPC arrives as it was, with its routes, guards, shops and commands running. One command, `/animus import citizens rollback`, undoes all of it. Read [migrating from Citizens](/animus/13-migrating-from-citizens) first: it covers Sentinel, Denizen, dtlTraders and Shopkeepers data too.
 
 ## Where to go next
 

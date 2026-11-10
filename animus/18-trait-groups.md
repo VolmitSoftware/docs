@@ -2,7 +2,7 @@
 title: "Animus: Trait Groups"
 description: "Shared settings that many NPCs take from one file, with merge rules, commands and the Citizens import option"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, npcs, groups, definitions, citizens"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -16,7 +16,7 @@ Groups live at `groups/<id>.json` in the Animus data folder (`plugins/Animus/` o
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "revision": 1,
   "id": "town-guards",
   "description": "Watch uniform, look-close and the route",
@@ -36,7 +36,7 @@ Groups live at `groups/<id>.json` in the Animus data folder (`plugins/Animus/` o
 
 | Field | Required | Accepted values |
 |---|---|---|
-| `schemaVersion` | Yes | `1`. |
+| `schemaVersion` | Yes | `2`. |
 | `revision` | Yes | Integer of at least 1. |
 | `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Matches the file name. |
 | `description` | No | At most 256 characters. Shown by `/animus groups list`. |

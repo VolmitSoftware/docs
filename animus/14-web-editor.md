@@ -2,7 +2,7 @@
 title: "Animus: Web Editor"
 description: "Pairing the web editor with a server and what it edits"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, editor, web, pairing"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -13,6 +13,8 @@ The web editor runs in the browser at <https://animus-editor.web.app>. It edits 
 ## Working without a server
 
 A workspace lives in the browser and is never uploaded. Start one blank, from the example packs, or by opening a data folder (`plugins/Animus`, or `config/animus` on mod servers) as a folder or a zip. Opening a folder copies it into a new workspace: edits stay in the browser and do not go back into the folder. Export a workspace as a zip (**Export**, then **Export the data folder zip**) to copy it back to a server by hand. A folder or zip with no Animus documents, such as the server root, `plugins/` itself or a file that is not a zip, opens nothing and saves nothing; the home page says what it found and what to pick. A deleted workspace can be restored from the home page until you close the tab.
+
+NPC definitions and trait groups at an older [schema version](/animus/12-storage-recovery#schema-versions) are upgraded in the browser as a folder, zip or stored workspace opens, the same way the server upgrades them. The notice and the workspace overview count and list the upgraded files, and **Export** and **Send** write the current version.
 
 If the browser cannot keep workspaces (some private windows have no IndexedDB), a banner says so: everything works until the tab closes, so export a zip first. If the browser refuses to store an edit (for example when it is out of storage space for the site), the edit stays on screen and a banner names the cause, with **Save again** and **Export zip**.
 
@@ -70,7 +72,7 @@ An NPC's Visual view puts the inspector beside the 3D stage, or under it on a ph
 
 - Identity: name, id, folder, UUID, tags, the trait groups the NPC lists and the owner's UUID. Trait groups show as a row of chips in merge order: click one to open it, drag it or press Alt with the left or right arrow to reorder, and × removes it; a trait group the workspace does not have carries a warning. **Add group** picks one from the workspace, and **+ New group** makes a trait group named after the search text and lists it on this NPC in one undo step, then offers to open it. An NPC made in the editor while it is paired gets the pairing player as its owner; the field stays editable.
 - Effective, for an NPC with trait groups: the definition the server runs, one row per field, per module and per attribute with the trait group or NPC that set it and a link to that trait group, plus the whole effective JSON. The 3D stage draws the effective definition, so equipment, holograms and skins from trait groups show on it.
-- Body: the body type and, right under it, whether the NPC is spawned. Also a rig from the workspace (the stage draws it), the pose (shown for player bodies only), an armor stand's parts and pose angles, the settings of its body (a horse's coat, a sheep's wool, a villager's profession, a player's skin layers and the rest) as dropdowns, numbers and switches, and the traits that body shows: baby only for bodies with a baby form, tab list and raised item only for players. The stage draws a horse's coat and markings and a llama's and frog's variant. Bodies the stage has no model for, such as a sheep or a villager, show a note instead of a preview; the server shows them.
+- Body: the body type and, right under it, whether the NPC is spawned. Also a rig from the workspace (the stage draws it), the pose (shown for player bodies only), an armor stand's parts and pose angles, the settings of its body (a horse's coat, a sheep's wool, a villager's profession, a player's skin layers and the rest) as dropdowns, numbers and switches, and the traits that body shows: baby only for bodies with a baby form, tab list and raised item only for players. The stage draws every body type with the client's own models, and the settings that change how a body looks: coats, markings and variants, wool colour and shearing, collars, slime, magma cube and phantom sizes, villager clothes and badges, tropical fish patterns and colours, sitting, lying and the other poses, a painting's art and side, an item frame's item and turn, a falling block's or block display's block state, an item display's item and transform, a text display's text, and the saddles, harnesses and body armor a mob wears. Fish out of water lie on their side and squids tip over, as in game. A note under the stage names what it draws differently: a baby is drawn grown, an animated state such as an armadillo rolling up is drawn at rest, and a display that turns toward the viewer is drawn fixed. A LibsDisguises `disguise` that names a vanilla type, such as `zombie setBaby true`, draws that body; its options, and custom disguises, show in game only.
   - While the NPC wears a skin, its own or one from a trait group, choosing a body other than a player asks first, since the server refuses a skin on any other body. Remove skin changes both in one step, also taking the skin out of the trait groups that gave it, and Cancel keeps the player body.
   - Fields left from the old body after a type change, such as a skin, a pose or another body's settings, are listed under the type with a button to remove each one, or all of them.
 - Position: the coordinates and named facings for the `animus:pose` action.
@@ -137,7 +139,7 @@ The form has three tabs:
 - **Stages**: each stage has its journal text, whether its objectives count at once or one after another, and its objectives. **+ Add objective** picks talk, bring, kill, reach, collect or custom. Changing an objective's type keeps its id, journal text and every field the new type also takes. The arrows reorder stages and objectives. NPC fields pick from the workspace NPCs by their id, items suggest every item, and mob types and worlds complete from the server's lists when paired.
 - **Rewards**: items with amounts, money, experience, commands (console or player) and behavior flags with a value and scope.
 
-Problems show at the field and mark their tab: anything the schema or the server refuses, objective ids repeated within a stage, NPCs and quests the workspace does not have, unknown items, a note that rewards with items, money or commands need the `apply:commands` scope to apply, and a note that reward commands need the command allow-list.
+Problems show at the field and mark their tab: anything the schema or the server refuses, objective ids repeated within a stage, NPCs and quests the workspace does not have, unknown items, a note that rewards with items, money, experience or commands need the `apply:commands` scope to apply, and a note that reward commands need the command allow-list.
 
 The preview shows the giver's offer with its Accept and Decline buttons, and the `/quests` journal entry at each stage and once finished, with progress counts at zero. Under it is the expression behaviors use to read the stage, such as `quest('player', 'bread')`.
 
@@ -279,9 +281,9 @@ When the pairing is three days or less from expiry, the live bar says how long i
 | `apply:commands` | Changing documents that run console commands. Never a default; see [console commands](#console-commands) |
 | `import` | Uploading saves for a staged import and applying it |
 | `spawn` | Spawning and despawning NPCs |
-| `terrain` | Reading loaded terrain near the NPCs the token can see, for the stage and the route editor |
+| `terrain` | Reading loaded terrain where the NPCs the token can see stand and walk, for the stage and the route editor |
 
-Terrain reads (`GET /v1/terrain/surface` for 64 by 64 block tiles, `GET /v1/terrain/blocks` for up to 64 layers of one chunk) cover only chunks within `terrainRadius` of an NPC in a folder the token can reach; farther chunks come back `forbidden`. The server reads chunks it already has loaded and never loads one: others come back `unloaded`. Answers carry no block entities, signs or containers, and each one fits a relay frame. Leave `terrain` out of `scopes=` to keep the world out of the editor.
+Terrain reads (`GET /v1/terrain/surface` for 64 by 64 block tiles, `GET /v1/terrain/blocks` for up to 64 layers of one chunk) cover only chunks within `terrainRadius` of where an NPC in a folder the token can reach stands or goes: its position, every point of its `animus:navigation` route (inline or a reusable route) and the straight legs it walks between them, its `animus:schedule` places and the legs between them in time order, its anchors, and, while it is spawned, where it stands now. A route point that teleports carries the route on in the target world. Farther chunks come back `forbidden`. `GET /v1/terrain/position?npc=<id>` answers where a spawned NPC stands now, read from the server at most once a second. The server reads chunks it already has loaded and never loads one: others come back `unloaded`. Answers carry no block entities, signs or containers, and each one fits a relay frame. Leave `terrain` out of `scopes=` to keep the world out of the editor.
 
 To import from the editor, pair with the `import` scope, for example `/animus editor pair scopes=read,import,apply:npcs,apply:behaviors,apply:gui`.
 
@@ -292,16 +294,17 @@ A behavior that uses `animus:command` or another privileged capability, and a sh
 - a behavior that uses `animus:command`, another privileged capability or `animus:give-item`;
 - any behavior in the namespace of a `rawTextBehaviors` entry, since it shares flags with that behavior;
 - a chest GUI, menu or hologram with a `command`, `give` or `economy` action;
-- a shop with `commands` or any buy, sell, trade or command entry, since its prices and goods create items and money.
-- a quest whose rewards include items, money or commands.
+- a shop with `commands` or any buy, sell, trade or command entry, since its prices and goods create items and money;
+- a quest whose rewards include items, money, experience or commands, and any quest in the namespace of a `rawTextBehaviors` entry, since its reward flags and stages reach that behavior;
+- an NPC or trait group whose [schedule](/animus/30-npc-schedules) has arrival commands.
 
 The rules:
 
 - Applying such a document, new or changed, needs `apply:commands` as well as the kind's own apply scope. This holds for any edit to such a document, even one that leaves its commands as they were, because the text and variables around a command decide what it runs. Deleting one does not need it.
 - Undo needs `apply:commands` when it would write back a document that runs commands.
-- Import apply and accept need `apply:commands` when accepting the `commands` category, which adds the imported namespaces to the allow-list, and whenever the allow-list names anything, since an imported document could land under it. Rollback never needs it.
+- Import apply needs `apply:commands` when the import's commands need a namespace the allow-list does not name yet, since apply adds it, and whenever the allow-list names anything, since an imported document could land under it. Rollback never needs it.
 - Only the console, or a player with `animus.editor.commands`, may pair `apply:commands`. No default pairing has it: `/animus editor pair scopes=read,validate,preview,apply:behaviors,apply:gui,apply:commands`.
-- A player who loses `animus.editor.commands` loses `apply:commands` from their tokens at the next check (every 60 seconds); the rest of each token keeps working. `/animus import citizens accept commands` in game needs the same permission.
+- A player who loses `animus.editor.commands` loses `apply:commands` from their tokens at the next check (every 60 seconds); the rest of each token keeps working. `/animus import citizens apply` in game needs the same permission when it adds a namespace.
 
 Without the scope the apply is refused with `scope-missing` and nothing is written. Values a behavior or GUI fills into a command at run time are limited to a safe set of characters; see [text in commands](/animus/07-behaviors#text-in-commands).
 
@@ -358,14 +361,15 @@ Live editing for one server runs in one tab at a time. A second tab on the same 
 
 ### Terrain
 
-With a token that has the `terrain` scope, the editor draws the server's world around your NPCs.
+With a token that has the `terrain` scope, the editor draws the server's world around your NPCs and along everywhere they walk.
 
-- **Preview stage**: the blocks around the NPC replace the grass patch, with the pack's own models, including slabs, stairs, fences, glass, leaves and water. **Terrain** turns them off, and **Radius** picks 8, 16 or 24 blocks around the NPC, 32 blocks tall.
-- **Route grid**: the ground under the grid is drawn top down from above, lighter where it rises and darker where it falls, water darker with depth. Chunks the server has not loaded show grey, and chunks outside `terrainRadius` show hatched.
+- **Preview stage**: the blocks around the NPC and along its route replace the grass patch, with the pack's own models, including slabs, stairs, fences, glass, leaves and water. **Terrain** turns them off, and **Radius** picks 8, 16 or 24 blocks on each side of the NPC, its points and the legs between them, 32 blocks tall around the route's height at each spot. Drag the view along the route to see it. One view loads at most 256 chunks; past that, every point still loads and the legs load from their start.
+- **Live position**: while the NPC is spawned, the stage shows it where it stands on the server now, checked every second and a half, and loads the blocks around each new spot as it walks.
+- **Route grid**: the ground under the grid is drawn top down from above, lighter where it rises and darker where it falls, water darker with depth. A grid wider than 64 tiles of 64 blocks draws the ground within 24 blocks of the route instead of all of it. Chunks the server has not loaded show grey, and chunks outside `terrainRadius` show hatched.
 - **Placing points**: a point you click onto the grid, or drag, lands on the block an NPC can stand on there. Points inside a block, below the surface, more than 3 blocks above the ground or in water are flagged on the grid and listed under it, and so are legs that climb more than a block or drop more than 3 in a straight line.
-- **3D**: shows the route over the blocks around the picked point. Legs are straight lines; the server plans the real path.
+- **3D**: shows the whole route over its blocks and frames the picked point. Legs are straight lines; the server plans the real path.
 
-The editor asks only for the area in view, keeps every answer in the browser, and asks again with the answer's hash, so unchanged terrain is not sent twice. Without a paired server, or when the server is offline, the stage keeps its grass patch and the grid stays blank.
+The editor asks only for the ground it draws, keeps every answer in the browser, and asks again with the answer's hash, so unchanged terrain is not sent twice. Without a paired server, or when the server is offline, the stage keeps its grass patch and the grid stays blank.
 
 ### Applying changes
 
@@ -400,7 +404,7 @@ A preview shows your drafts to the in-game player who issued the token, and to n
 
 ### Importing
 
-The editor's **Import Citizens and others** screen converts in the browser and, after a conversion, offers **Open as workspace** (the converted files as a new workspace to review), **Send to server** and **Download data-folder bundle** right under its review. Warnings name each NPC by its Citizens id and name. It can also upload a Citizens `saves.yml`, dtlTraders files, and a Shopkeepers `save.yml` and `config.yml` to a paired server. **Upload and stage** runs the same conversion as `/animus import citizens preview` and shows its review. **Apply** installs the import with every NPC dormant, review categories are accepted one at a time or all at once (**Accept all** asks first), and **Roll back** undoes the import and every acceptance after a confirm. Once applied, **Open the imported NPCs** leads to them in the server's catalog. Uploads are limited to 16 MiB. dtlTraders files with names dtlTraders does not use are listed as skipped. See [migrating from Citizens](/animus/13-migrating-from-citizens).
+The editor's **Import Citizens and others** screen converts in the browser and, after a conversion, offers **Open as workspace** (the converted files as a new workspace to review), **Send to server** and **Download data-folder bundle** right under its review. Warnings name each NPC by its Citizens id and name. It can also upload a Citizens `saves.yml`, dtlTraders files, and a Shopkeepers `save.yml` and `config.yml` to a paired server. **Upload and stage** runs the same conversion as `/animus import citizens preview` and shows its review. **Apply** installs the import after a confirm, with every NPC spawned as Citizens had it and everything that converted turned on; the confirm names the command namespaces it adds. **Roll back** undoes the import after a confirm. Once applied, **Open the imported NPCs** leads to them in the server's catalog. Uploads are limited to 16 MiB. dtlTraders files with names dtlTraders does not use are listed as skipped. See [migrating from Citizens](/animus/13-migrating-from-citizens).
 
 ### In-game notices
 
@@ -415,7 +419,7 @@ When the editor changes the server, online players with `animus.editor.notify` (
 [Animus]: Brian's editor applied 3 NPCs, 1 behavior (tx 1a2b3c4d)
 ```
 
-The player who paired the token gets the notices for that token even without the permission. Notices cover an apply, **Undo last apply**, an import being applied, accepted or rolled back, spawning and despawning from the editor, a completed pairing, a revoked token, and a refused apply, undo, import step or spawn, which plays a low note and names the reason, such as `apply refused: conflict`.
+The player who paired the token gets the notices for that token even without the permission. Notices cover an apply, **Undo last apply**, an import being applied or rolled back, spawning and despawning from the editor, a completed pairing, a revoked token, and a refused apply, undo, import step or spawn, which plays a low note and names the reason, such as `apply refused: conflict`.
 
 A notice comes once the server has reloaded what changed, so it reports the real result: if the reload refused a file, the line names the number of problems, the hover shows the first one, and the low note plays. Click the `(tx ...)` part to copy the transaction id. Click the rest of the line to put `/animus rollback <transaction-id>` into the chat box without running it.
 

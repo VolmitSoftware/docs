@@ -2,7 +2,7 @@
 title: "Animus: Overview"
 description: "What Animus is, how its NPCs work, and where each topic is documented"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, npc, overview"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -20,7 +20,7 @@ Saving any of these files applies it within about a second; see [live apply](/an
 
 ### Spawned, despawned and active
 
-A cloned or imported NPC is saved despawned (`"spawned": false`), which these pages call dormant: it is stored and editable, but has no body, fires no triggers and costs nothing at run time. A new NPC made with **New NPC** in the [toolkit](/animus/21-in-game-toolkit#new-npc) or with `/animus create` spawns at once; a sneak-click on **New NPC** saves it dormant. `/animus spawn <id>` marks it spawned, and `/animus despawn <id>` marks it despawned again. Both are saved, so a restart keeps them.
+A cloned NPC is saved despawned (`"spawned": false`), which these pages call dormant: it is stored and editable, but has no body, fires no triggers and costs nothing at run time. A new NPC made with **New NPC** in the [toolkit](/animus/21-in-game-toolkit#new-npc) or with `/animus create` spawns at once; a sneak-click on **New NPC** saves it dormant. An NPC imported from Citizens spawns when the import is applied unless Citizens had it despawned. `/animus spawn <id>` marks it spawned, and `/animus despawn <id>` marks it despawned again. Both are saved, so a restart keeps them.
 
 A spawned NPC is active while it is loaded in a world: its chunk is loaded and it runs its routes, triggers and combat. A spawned NPC in an unloaded chunk waits and becomes active again when the chunk loads. See [activation and editing](/animus/04-npc-definitions#activation-and-editing).
 
@@ -70,7 +70,7 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | [Commands and permissions](/animus/02-commands-permissions) | Every `/animus` command and permission node |
 | [Configuration](/animus/03-configuration) | Every `config.toml` setting and live apply |
 | [Migrating from Citizens](/animus/13-migrating-from-citizens) | Importing Citizens, Sentinel, Denizen, dtlTraders and Shopkeepers data |
-| [Quest plugins](/animus/26-quest-plugins) | NPCs in Quests, BeautyQuests, BetonQuest, NotQuests and Typewriter, and relinking quests after a Citizens import |
+| [Quest plugins](/animus/26-quest-plugins) | NPCs in Quests, BeautyQuests and BetonQuest, and relinking quests after a Citizens import |
 | [NPC definitions](/animus/04-npc-definitions) | Definition fields, spawning, appearance, equipment, holograms and poses |
 | [Trait groups](/animus/18-trait-groups) | Values shared by many NPCs, and how they merge |
 | [LibsDisguises](/animus/34-libsdisguises) | NPCs that look like a LibsDisguises disguise, and importing Citizens disguises |

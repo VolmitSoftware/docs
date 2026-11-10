@@ -2,7 +2,7 @@
 title: "Animus: Java Modules and API"
 description: "Trusted Java modules, the animus-api contract, interaction notices, import converters, integration hooks and the Bukkit plugin API"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, api, modules, developers, integration"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -169,7 +169,7 @@ Paper, Spigot, Folia, Fabric, Forge and NeoForge all send notices. Notices with 
 
 A Citizens `.yml` saves file uses the built-in Citizens converter. For any other file, or with `converter=`, the named converter runs. Without `converter=`, the one converter whose `detect` recognizes the file runs; when none or several recognize it, the command lists the reasons.
 
-The converter's records go into the same reviewed bundle under `imports/<import-id>/` as a Citizens import: `report.json`, per-record reports, and dormant definitions named `<namespace>-<name>-<sourceId>`. `/animus import apply`, `import stage` with `reject`, `replace` or `duplicate`, and `import apply-plan` then work as they do for Citizens; see [migrating from Citizens](/animus/13-migrating-from-citizens). Animus sets the id, revision, `spawned=false` and migration provenance, keeps a valid `uuid` or derives a stable one from the converter and source id, and disables imported combat and patrols until they are reviewed. Records that fail validation are listed in `report.json` and block apply. Module imports cannot include skins.
+The converter's records go into the same reviewed bundle under `imports/<import-id>/` as a Citizens import: `report.json`, per-record reports, and definitions named `<namespace>-<name>-<sourceId>`. `/animus import apply`, `import stage` with `reject`, `replace` or `duplicate`, and `import apply-plan` then work as they do for Citizens; see [migrating from Citizens](/animus/13-migrating-from-citizens). Animus sets the id, revision and migration provenance, keeps a valid `uuid` or derives a stable one from the converter and source id, and keeps the converter's `spawned` (`true` when the record leaves it out). Combat and patrols run as the converter wrote them. Records that fail validation are listed in `report.json` and block apply. Module imports cannot include skins.
 
 ## Integration hooks
 
@@ -178,7 +178,7 @@ The converter's records go into the same reviewed bundle under `imports/<import-
 | Point | Called for | Combined with the platform |
 |---|---|---|
 | `protection` | NPC combat (`NPC_ATTACK`, `PLAYER_ATTACK`, `MOB_ATTACK`, `MOB_CONTROL`), NPC build block changes (`BLOCK_PLACE`, `BLOCK_BREAK`) and doors, fence gates and trapdoors an NPC opens on its route (`BLOCK_USE`) | Both must allow: WorldGuard on Bukkit, nothing on mod servers |
-| `economy` | Shop and GUI money prices | Used only where the platform has no provider: always on mod servers, and on Bukkit without Vault |
+| `economy` | Shop, GUI and `animus:charge` money prices | Used only where the platform has no provider: always on mod servers, and on Bukkit without Vault |
 
 Hooks run synchronously on the thread that needs the answer, so they must be quick, nonblocking and thread-safe. A throw or a null answer denies the action or refuses the payment. A provider whose module is suspended or stopped fails closed: protection denies and money prices are refused. Hooks take effect once modules finish enabling at startup.
 

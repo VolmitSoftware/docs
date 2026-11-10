@@ -2,7 +2,7 @@
 title: "Animus: NPC Schedules"
 description: "Places an NPC goes at set times of the Minecraft day, what it does there, and importing NPC Destinations"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-10T00:00:00.000Z
 tags: "animus, schedules, navigation, npc destinations, citizens"
 editor: markdown
 dateCreated: 2026-11-09T00:00:00.000Z
@@ -36,7 +36,6 @@ A schedule gives an NPC a place for each part of the Minecraft day. A baker can 
 | `enabled` | Boolean, `true` when the object is present | `false` keeps the locations and stops the schedule |
 | `speed` | 1-10 blocks per second | How fast the NPC walks between places. The NPC's `movement.speed` by default, else 2 |
 | `locations` | 1-64 locations | The places, in any order |
-| `reviewAccepted` | Boolean | An imported schedule runs only once this is `true`; see [importing NPC Destinations](#importing-npc-destinations) |
 
 Each location:
 
@@ -51,7 +50,7 @@ Each location:
 | `staySeconds` | Seconds, or `[min, max]` | How long it stays before it draws again among the locations with the same `time` |
 | `wander` | `{"radius": 1-32}` or `{"area": [x1, y1, z1, x2, y2, z2]}`, with optional `waitSeconds` | Walks to random blocks around the place: within `radius` on x and z at the place's height, or anywhere in the area. `waitSeconds` (seconds or `[min, max]`, default 1) is the pause between wander legs |
 | `pose` | `standing`, `sneaking`, `sleeping`, `sitting` | Pose on arrival, player bodies only |
-| `equipment` | Slot to [item](/animus/04-npc-definitions#appearance-text-and-inventory) | Items put on at arrival |
+| `equipment` | Slot to [item](/animus/04-npc-definitions#appearance-text-and-inventory) | Items put on at arrival. Only the slots the body shows, as for the NPC's own `equipment` |
 | `clearEquipment` | Boolean | Empties every other slot on arrival |
 | `skin` | A skin file hash from `skins/` | Skin shown on a player body |
 | `skinOnDeparture` | Boolean | Shows the skin as the NPC sets out instead of on arrival |
@@ -95,17 +94,15 @@ A location with `wander` starts wandering after its first `waitSeconds` and keep
 
 They need `animus.npc.edit`. Every change is saved as a new revision, so `/animus rollback` undoes it. Any other field, such as `equipment` or `commands`, is set with `/animus edit` or in the web editor.
 
+Arrival commands run from the console, so changing an NPC whose schedule has any needs more than `animus.npc.edit`: `/animus edit` needs `animus.editor.commands` in game, and the web editor needs the [`apply:commands`](/animus/14-web-editor#console-commands) scope. The same holds for a trait group whose schedule has arrival commands. The console may always.
+
 ## Web editor
 
 The NPC's **Modules** section adds a schedule from **Add a known module**: it starts with one location at the block the NPC stands on, at time 1000. Each location is a form with its fields, and the list has add, move and remove buttons. The NPC browser turns `animus:schedule` on and off for several NPCs at once.
 
 ## Importing NPC Destinations
 
-[NPC Destinations](https://www.spigotmc.org/resources/13863/) (nuNPCDestinations) keeps its locations in the Citizens save, under each NPC's `npcdestinations` trait. The [Citizens import](/animus/13-migrating-from-citizens) converts that trait into `animus:schedule`. The schedule stays off until you accept `schedules`:
-
-```text
-/animus import citizens accept schedules
-```
+[NPC Destinations](https://www.spigotmc.org/resources/13863/) (nuNPCDestinations) keeps its locations in the Citizens save, under each NPC's `npcdestinations` trait. The [Citizens import](/animus/13-migrating-from-citizens) converts that trait into `animus:schedule`, which runs as soon as the import is applied.
 
 | NPC Destinations | Animus |
 |---|---|
@@ -116,7 +113,7 @@ The NPC's **Modules** section adds a schedule from **Add a known module**: it st
 | Timed minimum and maximum | `staySeconds` |
 | Wander distance, wait minimum and maximum | `wander.radius` (at most 32) and `wander.waitSeconds` |
 | Weather (clear only, storms only) | `weather` |
-| Items and clear items | `equipment` and `clearEquipment` |
+| Items and clear items | `equipment` and `clearEquipment`. An item in a slot the body does not show is left out and reported |
 | Skin with its texture | A file in `skins/` and `skin`. Without "apply on arrival" it becomes `skinOnDeparture` |
 | Arrival commands | `commands` |
 | Animations add-on sleep and sit | `pose: sleeping` and `pose: sitting` |
@@ -124,6 +121,6 @@ The NPC's **Modules** section adds a schedule from **Add a known module**: it st
 | Teleport when no path is found | `movement.stuck.teleport` |
 | The older `x:y:z:time` location list | Locations in the NPC's world |
 
-Arrival commands run only once `citizens` is in `[behaviors.actions] commandNamespaces`, which `/animus import citizens accept commands` adds; read them first. A Citizens route the NPC had is left out, because NPC Destinations walked the NPC instead.
+Arrival commands run under the `citizens` namespace, which apply adds to `[behaviors.actions] commandNamespaces`. A Citizens route the NPC had is left out, because NPC Destinations walked the NPC instead.
 
 Some settings have no Animus equivalent and stay in `modules["citizens:review"]`, each with its reason in the NPC's report: pausing for nearby players, iron doors, wandering only onto allowed blocks, the per-location Citizens pathfinder settings, and the other animations of the Animations add-on. A WorldGuard wander region is reported for review: give the location `wander.area` with the region's corners. The Sentinel and Jobs Reborn add-on settings of a location are reported as needing an integration Animus does not have.
