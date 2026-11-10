@@ -24,6 +24,7 @@ On Folia 26.1.2, 26.2 and 26.3, each saved NPC runs on the region that owns its 
 | Mounted NPCs (`animus:mount`) | Yes; see [mounted NPCs](#mounted-npcs) |
 | Combat module, `/animus combat`, the `animus:combat` action, hiring | Yes; see [combat](#combat) |
 | Ender dragon wing phases | Yes |
+| Model Engine models (`animus:modelengine`) | No; the NPC shows its own body |
 | `/animus combat attack`, `/animus combat mob` | Yes; see [manual attack and mob control](#manual-attack-and-mob-control) |
 | Builds (`/animus build`, `animus:build`), scaffolding, doors and beds | Yes; see [builds](#builds) |
 | Packet preview (`/animus proof`) | No. Use the [stationary preview](#stationary-preview) |

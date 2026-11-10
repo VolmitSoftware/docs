@@ -70,20 +70,26 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | [Commands and permissions](/animus/02-commands-permissions) | Every `/animus` command and permission node |
 | [Configuration](/animus/03-configuration) | Every `config.toml` setting and live apply |
 | [Migrating from Citizens](/animus/13-migrating-from-citizens) | Importing Citizens, Sentinel, Denizen, dtlTraders and Shopkeepers data |
+| [Quest plugins](/animus/26-quest-plugins) | NPCs in Quests, BeautyQuests, BetonQuest, NotQuests and Typewriter, and relinking quests after a Citizens import |
 | [NPC definitions](/animus/04-npc-definitions) | Definition fields, spawning, appearance, equipment, holograms and poses |
 | [Trait groups](/animus/18-trait-groups) | Values shared by many NPCs, and how they merge |
+| [LibsDisguises](/animus/34-libsdisguises) | NPCs that look like a LibsDisguises disguise, and importing Citizens disguises |
 | [Movement, mounts and riding](/animus/05-movement-mounts-riding) | Navigation, routes, look-close, mounted NPCs, riding and hiring |
+| [NPC schedules](/animus/30-npc-schedules) | Places an NPC goes at set times of day, and importing NPC Destinations |
 | [Performance recordings](/animus/19-performance-recordings) | Recording a player's movement and replaying it on an NPC |
 | [Rigs and animations](/animus/06-rigs-animations) | Bone rigs, animation clips and the resource pack |
+| [Model Engine](/animus/32-model-engine) | Model Engine models on NPCs and importing modelled Citizens NPCs |
 | [Behaviors](/animus/07-behaviors) | JSON behaviors, triggers, actions and stored state |
 | [Combat](/animus/08-combat) | The combat module, targets, guards and protection |
 | [Building](/animus/09-building) | NPCs that build schematics |
 | [In-game toolkit](/animus/21-in-game-toolkit) | Editing NPCs in game with `/animus tools` |
 | [Web editor](/animus/14-web-editor) | Pairing the web editor and what it edits |
 | [Shops](/animus/10-shops) | Shops, trades, stock and the dtlTraders importer |
+| [Quests](/animus/38-quests) | Animus quests: givers, stages, objectives, rewards and the journal |
 | [GUIs, holograms and menus](/animus/11-guis-holograms-menus) | Chest GUIs, holograms and holographic menus in Gloss formats |
 | [Storage and recovery](/animus/12-storage-recovery) | Last-valid recovery, transactions, rollback and limits |
 | [Folia](/animus/15-folia) | How NPCs run on Folia regions and what differs there |
 | [Mod servers](/animus/16-mod-servers) | Fabric, NeoForge and Forge (experimental) |
+| [MythicMobs](/animus/36-mythicmobs) | NPCs made from Mythic mobs, their skills and the `mythic:cast-skill` action |
 | [Debug, React and metrics](/animus/17-debug-react-metrics) | `/animus debug summary` and the metrics published to React |
 | [Java modules and API](/animus/99-java-modules-api) | Trusted modules, capabilities and the Java API |

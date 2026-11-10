@@ -54,6 +54,11 @@ A permission mod can grant any node through the vanilla permission named by the 
 
 ## What differs from Bukkit
 
+<div class="animus-demo">
+<p><strong>Fabric server</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/43-fabric-ingame.webm" aria-label="A fox body, an item display, a schedule walk, an anchor and the quest journal on Fabric" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 | Feature | Mod servers |
 |---|---|
 | Killable NPCs | `animus:health` works as on Paper, player and mob projectiles, fire, lava and falls included; with no controlled mobs, `mobs` as a damage source has nothing to count |

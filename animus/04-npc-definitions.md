@@ -39,15 +39,16 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 | `id` | Yes | 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit. Unique across all folders. |
 | `group` | Yes | The folder the file sits in under `npcs/`, such as `town/market`, or empty for a file directly in `npcs/`. Each folder name follows the `id` rules, at most 8 deep. Animus sets it from where the file is, so a file moved to another folder takes that folder. It is not a [trait group](/animus/18-trait-groups); those go in `groups`. |
 | `name` | Yes | Printable Unicode and spaces, at most 256 UTF-16 code units, no control characters. `&` color codes apply. |
-| `type` | Yes | An entity type, such as `minecraft:llama` or `llama`. Only these bodies can be shown, so an NPC of any other type is saved but refused at spawn with `packet presentation is unavailable for <type>`: `minecraft:player`, `minecraft:armor_stand`, `minecraft:horse`, `minecraft:turtle`, `minecraft:frog`, `minecraft:llama`, `minecraft:armadillo` and `minecraft:ender_dragon`. |
+| `type` | Yes | An entity type, such as `minecraft:llama` or `llama`. Animus shows every living entity type, such as `minecraft:zombie` or the body a [`disguise`](/animus/34-libsdisguises) gives, and every body listed under [body settings](#body-settings), such as `minecraft:painting`; a server shows those its Minecraft version registers. `/animus create`, `/animus edit` and their completion offer every body the server shows. A type the server cannot show is saved but refused at spawn with `packet presentation is unavailable for <type>`. |
 | `spawned` | Yes | `true` when the NPC is spawned: it becomes active whenever its chunk is loaded. `false` keeps it dormant. |
 | `position` | Yes | `world`, and `x`, `y`, `z`, `yaw`, `pitch` as finite numbers within ±30000000. `pitch` must be within -90 to 90 for the NPC to spawn; `/animus spawn` refuses anything else. On Bukkit, `world` is a world name, a world UUID or a dimension key such as `minecraft:the_nether`; mod servers take the forms [their own page](/animus/16-mod-servers#worlds) lists. |
 | `skin` | No | SHA-256 of a skin document in `skins/`. |
+| `disguise` | No | A [LibsDisguises](/animus/34-libsdisguises) disguise, as `/disguise` takes it or the name of a custom disguise, such as `zombie setBaby true`. With LibsDisguises installed, the NPC shows that body in place of its own `type` and body fields. |
 | `behaviors` | No | `namespace:id` references to [behaviors](/animus/07-behaviors). |
 | `tags` | No | See [appearance](#appearance-text-and-inventory). |
 | `groups` | No | 1-16 [trait group](/animus/18-trait-groups) ids whose shared values the NPC takes before its own. |
 | `owner` | No | Canonical player UUID. `/animus create`, the toolkit and the paired web editor set it to the player who made the NPC. |
-| `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat`, `animus:health` or `animus:riding`. Unknown module data is kept as written. |
+| `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat`, `animus:health`, `animus:riding` or [`mythic:mob`](/animus/36-mythicmobs#the-mythicmob-module). `animus:modelengine` shows a [Model Engine model](/animus/32-model-engine). Unknown module data is kept as written. |
 
 Appearance, inventory, `movement`, `poses` and `rig` fields are described below and on [movement, mounts and riding](/animus/05-movement-mounts-riding) and [rigs and animations](/animus/06-rigs-animations). Health, cooldowns and running behavior state never belong in a definition; Animus does not write them there.
 
@@ -109,8 +110,11 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 | `hologram.lines` | Required in a `hologram`. At most 16 lines of at most 256 characters each. `&` color and format codes apply. |
 | `nameplate.visible` | `false` hides the name. Default `true`. |
 | `pose` | `standing` (default). Player bodies also accept `sneaking`, `sleeping`, `swimming` and `sitting`. |
-| `armorStand` | Armor stand bodies only: `small`, `arms`, `basePlate` (default `true`), `invisible`, and `head`, `body`, `leftArm`, `rightArm`, `leftLeg`, `rightLeg` as `[x, y, z]` degrees within ±360. Parts without angles keep the client's default pose. |
-| `horse`, `llama`, `frog`, `armadillo`, `dragon` | Settings only that body has; see [body settings](#body-settings). |
+| `armorStand` | Armor stand bodies only: `small`, `arms`, `basePlate` (default `true`), `invisible`, `marker` (no hitbox, so players cannot click it), and `head`, `body`, `leftArm`, `rightArm`, `leftLeg`, `rightLeg` as `[x, y, z]` degrees within ±360. Parts without angles keep the client's default pose. |
+| `horse`, `sheep`, `villager`, `player`, `fallingBlock` and the other body fields | Settings only that body has; see [body settings](#body-settings). |
+| `bossBar` | A boss bar shown to players near the NPC; see [boss bars, viewers and click redirects](#boss-bars-viewers-and-click-redirects). |
+| `viewers` | Which players see the NPC. |
+| `clickRedirect` | The UUID of another NPC that receives this NPC's clicks. |
 | `inventory` | `size` is a multiple of 9 from 9 to 72; `slots` maps slot numbers below `size` to items. |
 | `owner` | The owning player's UUID. |
 | `tags` | At most 32 distinct labels of 1-32 lowercase letters, digits, `_` or `-`, starting with a letter or digit. The [web editor](/animus/14-web-editor) uses them to find and group NPCs. The server stores them and does not act on them. |
@@ -157,8 +161,82 @@ Each of these bodies has one optional object of its own. A setting left out keep
 | `frog` | `variant`: `temperate` (default), `warm` or `cold`. |
 | `armadillo` | `state`: `idle` (default), `rolling`, `scared` (rolled up) or `unrolling`. |
 | `dragon` | `phase`: `hovering` or `sitting`, how a still dragon rests. Left out, it sits on solid ground and hovers in the air. A moving dragon always flaps. |
+| `player` | `gameMode`: `survival` (default), `creative`, `adventure` or `spectator` (only a see-through head shows). `cape`, `hat`, `jacket`, `leftSleeve`, `rightSleeve`, `leftPants`, `rightPants`: `shown` (default) or `hidden`. |
+| `sheep` | `color`: a dye color (default `white`). `sheared`: `true` for shorn wool. |
+| `wolf` | `variant`: `pale` (default), `spotted`, `snowy`, `black`, `ashen`, `rusty`, `woods`, `chestnut` or `striped`. `collar`: a dye color, which shows the wolf as tamed. `sitting`, `angry`, `interested`. |
+| `cat` | `variant`: `tabby`, `black`, `red`, `siamese`, `british_shorthair`, `calico`, `persian`, `ragdoll`, `white`, `jellie` or `all_black`. `collar`: a dye color. `sitting`, `lying`. |
+| `parrot` | `variant`: `red_blue` (default), `blue`, `green`, `yellow_blue` or `gray`. `sitting`. |
+| `fox` | `type`: `red` (default) or `snow`. `sitting`, `crouching`, `interested`, `pouncing`, `sleeping`, `faceplanted`. |
+| `axolotl` | `variant`: `lucy` (default), `wild`, `gold`, `cyan` or `blue`. `playingDead`. |
+| `rabbit` | `type`: `brown`, `white`, `black`, `white_splotched`, `gold`, `salt` or `evil`. |
+| `villager`, `zombieVillager` | `type`: `desert`, `jungle`, `plains` (default), `savanna`, `snow`, `swamp` or `taiga`. `profession`: `none` (default), `armorer`, `butcher`, `cartographer`, `cleric`, `farmer`, `fisherman`, `fletcher`, `leatherworker`, `librarian`, `mason`, `nitwit`, `shepherd`, `toolsmith` or `weaponsmith`. `level`: `novice` (default), `apprentice`, `journeyman`, `expert` or `master`. |
+| `creeper` | `powered`: the charged glow. |
+| `slime`, `magmaCube` | `size`: 1 to 127. |
+| `phantom` | `size`: 0 (default) to 64. |
+| `mooshroom` | `variant`: `red` (default) or `brown`. |
+| `panda` | `mainGene`, `hiddenGene`: `normal`, `lazy`, `worried`, `playful`, `brown`, `weak` or `aggressive`. `sitting`, `rolling`, `sneezing`, `eating`. |
+| `goat` | `leftHorn`, `rightHorn`: `shown` (default) or `hidden`. `screaming`. |
+| `pig`, `cow`, `chicken` | `variant`: `temperate` (default), `warm` or `cold`. |
+| `shulker` | `color`: a dye color; left out, the undyed purple shell. `peek`: 0 (default, closed) to 100. |
+| `pufferfish` | `puff`: `deflated` (default), `half` or `full`. |
+| `tropicalFish` | `pattern`: `kob` (default), `sunstreak`, `snooper`, `dasher`, `brinely`, `spotty`, `flopper`, `stripey`, `glitter`, `blockfish`, `betty` or `clayfish`. `baseColor`, `patternColor`: dye colors. |
+| `snowGolem` | `pumpkin`: `shown` (default) or `hidden`. |
+| `polarBear` | `standing`. |
+| `piglin`, `allay` | `dancing`. |
+| `bee` | `nectar`, `stung`, `angry`. |
+| `vex` | `charging`. |
+| `evoker` | `spell`: `none` (default), `summon_vex`, `fangs`, `wololo`, `disappear` or `blindness`. |
+| `sniffer` | `state`: `idling` (default), `feeling_happy`, `scenting`, `sniffing`, `searching`, `digging` or `rising`. |
+| `bat` | `resting`: hangs upside down. |
+| `copperGolem` | `weather`: `unaffected` (default), `exposed`, `weathered` or `oxidized`. |
+| `donkey`, `mule` | `chest`: carry a chest. The saddle is the `saddle` equipment slot. |
+| `enderman` | `angry`: the open-mouthed scream. |
+| `wither` | `invulnerableTicks`: 0 (default) to 1000, the blue charge glow while above 0. `armored`: the arrow shield. |
+| `camel` | `sitting`, `dashing`. The saddle is the `saddle` equipment slot. |
+| `painting` | `variant`: the painting's id, such as `minecraft:kebab`. `facing`: `north`, `south` (default), `west` or `east`. |
+| `itemFrame`, `glowItemFrame` | `item`: an item. `rotation`: 0 (default) to 7 eighth turns. `facing`: `down`, `up`, `north`, `south` (default), `west` or `east`. |
+| `fallingBlock` | `block`: a block state such as `minecraft:oak_stairs[facing=east]`; sand when left out. |
+| `endCrystal` | `base`: `shown` (default) or `hidden`. |
+| `blockDisplay` | `block`: a block state. `billboard`: `fixed` (default), `vertical`, `horizontal` or `center`. |
+| `itemDisplay` | `item`: an item. `transform`: `none` (default), `thirdperson_lefthand`, `thirdperson_righthand`, `firstperson_lefthand`, `firstperson_righthand`, `head`, `gui`, `ground` or `fixed`. `billboard` as for block displays. |
+| `textDisplay` | `text`: up to 256 characters, `&` codes apply. `billboard` as for block displays. `alignment`: `center` (default), `left` or `right`. `lineWidth`: 1-1024 pixels. `shadowed`, `seeThrough`. |
+| `droppedItem` (`minecraft:item` bodies) | `item`: the item lying on the ground. |
+
+Dye colors are `white`, `orange`, `magenta`, `light_blue`, `yellow`, `lime`, `pink`, `gray`, `light_gray`, `cyan`, `purple`, `blue`, `brown`, `green`, `red` and `black`. A field with no other default shows what a newly spawned animal of that type shows. Every platform shows every setting. Paintings, item frames, falling blocks, end crystals, displays and dropped items are not living, so they have no health, attributes, equipment or held item, and a block or item the server does not know shows the body's default. Item frames, paintings and displays have no hitbox, so players cannot click them.
 
 A turtle has no settings of its own; `baby` gives a hatchling. A [trait group](/animus/18-trait-groups) may hold one body's settings for the NPCs of that body type.
+
+### Boss bars, viewers and click redirects
+
+<div class="animus-demo">
+<p><strong>Presentation</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/39-presentation-ingame.webm" aria-label="A sheared sheep, a boss bar, a speech bubble and a click redirect" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+```json
+"bossBar": {"title": "&6The King", "color": "yellow", "style": "segmented_6", "flags": ["darken_sky"], "range": 40, "progress": "health"},
+"viewers": {"mode": "allow", "groups": ["nobles"], "permissions": ["court.enter"]},
+"clickRedirect": "0a1b2c3d-0000-4000-8000-000000000606"
+```
+
+| Field | Values |
+|---|---|
+| `bossBar.title` | Up to 256 characters; `&` codes apply. The NPC's name by default. |
+| `bossBar.color` | `pink`, `blue`, `red`, `green`, `yellow`, `purple` (default) or `white` |
+| `bossBar.style` | `solid` (default), `segmented_6`, `segmented_10`, `segmented_12` or `segmented_20` |
+| `bossBar.flags` | Any of `darken_sky`, `play_boss_music` and `create_fog` |
+| `bossBar.range` | 1-256 blocks, default 64. Players this close to the NPC see the bar. |
+| `bossBar.progress` | 0 to 1, or `health` to follow the NPC's health. Full by default. |
+| `bossBar.permission` | Only players with this permission see the bar. |
+| `viewers.mode` | `deny` (default) hides the NPC from every player, group and permission listed. `allow` shows it only to players who match every list it has. |
+| `viewers.players` | Player UUIDs, at most 256 |
+| `viewers.groups` | Permission groups, at most 256. A player is in a group when they have the `group.<name>` permission, which LuckPerms and most permission plugins give a group's members. |
+| `viewers.permissions` | Permission nodes, at most 256; holding any one of them matches |
+| `viewers.range` | 1-512 blocks. Players farther away are not filtered. |
+
+A player the `viewers` filter hides is never sent the NPC's body, its hologram lines or its boss bar, and is checked again as their permissions change. A boss bar shows only while the NPC is spawned and to players who can see it.
+
+Clicking an NPC with `clickRedirect` counts as clicking the NPC with that UUID: its triggers, shops, GUIs and `VirtualNpcInteractionEvent` see the target. The redirect applies while the target is spawned, and on Folia while the same region owns both NPCs; otherwise the click stays with the NPC that was clicked. A redirected click never starts riding.
 
 ### Other presentation flags
 
@@ -166,7 +244,7 @@ A turtle has no settings of its own; `baby` gives a hatchling. A [trait group](/
 |---|---|
 | `glowing` | Outline around the body |
 | `teamColor` | One of the sixteen chat colors; colors the glow and the name |
-| `baby` | Baby form of ageable, zombie, piglin and zoglin bodies, which includes the horse, llama, turtle, frog and armadillo |
+| `baby` | Baby form of ageable, zombie, piglin and zoglin bodies, such as the horse, llama, turtle, sheep, villager and zombie villager |
 | `usingItem` | Main-hand item is raised, as when blocking or drawing a bow |
 | `listed` | A player body shows in the tab list |
 | `gravity` | `false` makes the body hover instead of falling, whatever its `gravity` attribute says |
@@ -210,7 +288,32 @@ Every other attribute is stored and sent but changes nothing for an NPC, because
 
 ### Poses
 
-Sneaking, sleeping and swimming set the body's pose. A sitting player rides a hidden armor stand at its position, so its body appears lower; hits are still measured against the standing body. A sitting NPC cannot also ride another NPC. Named look directions for behaviors are set with `poses`; see [movement](/animus/05-movement-mounts-riding#named-poses).
+Sneaking, sleeping and swimming set the body's pose. The behavior action `animus:animate` changes it for the running NPC. A sitting player rides a hidden armor stand at its position, so its body appears lower; hits are still measured against the standing body. A sitting NPC cannot also ride another NPC. Named look directions for behaviors are set with `poses`; see [movement](/animus/05-movement-mounts-riding#named-poses).
+
+### Anchors
+
+`anchors` names places the NPC can be sent to: `animus:navigate` with `anchor` walks it there, and `animus:teleport` with `"target": "npc"` and `anchor` moves it there at once.
+
+```json
+"anchors": {"gate": {"x": 12.5, "y": 64, "z": -3.5}, "pier": {"x": 0.5, "y": 101, "z": 0.5, "world": "world_nether"}}
+```
+
+Names are 1-32 lowercase letters, digits, `_` or `-`, at most 64 anchors. Without `world` an anchor is in the NPC's own world. Walking reaches only anchors in that world; teleport the NPC to the others. `/animus npc anchor` lists, adds and removes them.
+
+### Mirroring the viewer
+
+A player-bodied NPC with `animus:mirror` shows each viewer that viewer's own skin; other viewers see theirs.
+
+```json
+"modules": {"animus:mirror": {"skin": true, "name": true, "equipment": true}}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` when the object is present | Turns the module on |
+| `skin` | `true` | The viewer's own skin, on a player body. A viewer whose skin the server cannot read, as in offline mode, sees the NPC's own |
+| `name` | `false` | The viewer's own name above the NPC |
+| `equipment` | `false` | What the viewer held and wore when the NPC came into view |
 
 ### Inventory and owner
 

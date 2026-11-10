@@ -1226,6 +1226,10 @@
                 "href": "/animus/05-movement-mounts-riding"
               },
               {
+                "title": "NPC schedules",
+                "href": "/animus/30-npc-schedules"
+              },
+              {
                 "title": "Performance recordings",
                 "href": "/animus/19-performance-recordings"
               },
@@ -1268,8 +1272,38 @@
                 "href": "/animus/10-shops"
               },
               {
+                "title": "Quests",
+                "href": "/animus/38-quests"
+              },
+              {
                 "title": "GUIs, holograms, and menus",
                 "href": "/animus/11-guis-holograms-menus"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Integrations",
+        "groups": [
+          {
+            "title": "",
+            "links": [
+              {
+                "title": "Quest plugins",
+                "href": "/animus/26-quest-plugins"
+              },
+              {
+                "title": "Model Engine",
+                "href": "/animus/32-model-engine"
+              },
+              {
+                "title": "LibsDisguises",
+                "href": "/animus/34-libsdisguises"
+              },
+              {
+                "title": "MythicMobs",
+                "href": "/animus/36-mythicmobs"
               }
             ]
           }

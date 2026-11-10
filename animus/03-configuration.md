@@ -309,6 +309,7 @@ Each key replaces one player-facing shop text of at most 512 characters. `&` col
 | `outOfStock` | `&c{item} is out of stock.` |
 | `economyUnavailable` | `&cMoney trades are unavailable: {reason}` |
 | `insufficientFunds` | `&cYou need {price} for that.` |
+| `notEnoughLevels` | `&cYou need {levels} levels for that.` |
 | `inventoryFull` | `&cYour inventory has no room for {item}.` |
 | `notEnoughItems` | `&cYou do not have the items for that.` |
 | `nothingToSell` | `&cYou have no {item} to sell.` |
@@ -323,6 +324,7 @@ Each key replaces one player-facing shop text of at most 512 characters. `&` col
 | `emptyHint` | `&7No offers have been added to this shop` |
 | `priceLine` | `&7Price: &f{price}` |
 | `payLine` | `&7Pays: &f{price}` |
+| `levelsLine` | `&7Levels: &f{levels}` |
 | `freeLine` | `&7Free` |
 | `needsLine` | `&7Needs:` |
 | `givesLine` | `&7Gives:` |

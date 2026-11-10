@@ -44,6 +44,7 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 - [NPC definitions *Files, spawning, appearance, and limits*](/animus/04-npc-definitions)
 - [Trait groups *Values shared by many NPCs*](/animus/18-trait-groups)
 - [Movement, mounts, and riding *Routes, mounts, riders, and hiring*](/animus/05-movement-mounts-riding)
+- [NPC schedules *Places an NPC goes at set times of day*](/animus/30-npc-schedules)
 - [Performance recordings *Record a player, replay it on an NPC*](/animus/19-performance-recordings)
 - [Rigs and animations *Bone rigs, clips, and resource packs*](/animus/06-rigs-animations)
 - [Behaviors *Triggers, capabilities, and packs*](/animus/07-behaviors)
@@ -56,7 +57,16 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 - [In-game toolkit *Edit NPCs in game with /animus tools*](/animus/21-in-game-toolkit)
 - [Web editor *Pairing and editing in the browser*](/animus/14-web-editor)
 - [Shops *Buy, sell, and trade pages*](/animus/10-shops)
+- [Quests *Givers, stages, rewards, and the journal*](/animus/38-quests)
 - [GUIs, holograms, and menus *Gloss-format windows and text*](/animus/11-guis-holograms-menus)
+{.links-list}
+
+## Integrations
+
+- [Quest plugins *Quests, BeautyQuests, BetonQuest, NotQuests and Typewriter*](/animus/26-quest-plugins)
+- [Model Engine *Model Engine models on NPCs*](/animus/32-model-engine)
+- [LibsDisguises *NPCs that wear a disguise*](/animus/34-libsdisguises)
+- [MythicMobs *NPCs made from Mythic mobs, and their skills*](/animus/36-mythicmobs)
 {.links-list}
 
 ## Operations

@@ -161,6 +161,7 @@ A layout applies to the chest style only. When the GUI is not loaded or has no l
 | `type` | `static` (decoration), `buy`, `sell`, `trade` or `command`. Buy and command entries belong in the buy grid, sell in the sell grid, trade in the trade grid. |
 | `item` | The icon, and for buy and sell the goods: `id`, `count` (1 to 99) and `components` in `/give` syntax such as `[custom_name="Fresh"]`. |
 | `price` | Money for `item.count` items, from 0 to 1,000,000,000,000 with at most 4 decimals. A full stack costs the price per item times the stack. Optional for trades. |
+| `levels` | Experience levels a buy, command or trade entry costs, a whole number from 0 to 100,000, taken with the price. A full stack costs the levels per item times the stack, rounded up. A player with too few levels is refused and nothing is taken. Not allowed in a container shop. |
 | `display` | `name`, `lore` lines, `showPrice` and `showLimit` (both default true). |
 | `needs`, `gives` | For trades: 1 to 27 items each, as `{"item": {...}, "amount": n}`. |
 | `allowStack`, `sellPartial`, `dropWhenFull` | Shift click takes a full stack; a sale may take fewer items than listed (never zero); items that do not fit drop at the player's feet instead of refusing. |
@@ -234,6 +235,8 @@ All need `animus.shops`, which `animus.admin` grants; the shop import needs `ani
 Run `/animus shop reload` after editing files by hand. Editor applies, `/animus rollback`, and import apply, accept and rollback reload shops and GUIs on their own.
 
 ## Importing from dtlTraders
+
+Citizens' own shops (`/npc shop`) and Shopkeepers shops import with the [Citizens migration](/animus/13-migrating-from-citizens#shops).
 
 Copy the dtlTraders data folder (the one with `shops/` or `guis.yml`, and `data.dat`) to `plugins/Animus/imports/inbox/dtltraders/`, and optionally the Citizens `saves.yml` beside it in `imports/inbox/`. Then run these, where `<preview>` is the id the first command prints:
 

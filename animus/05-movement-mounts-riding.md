@@ -49,6 +49,11 @@ An NPC that is not following a route falls when the block under it is broken, bu
 ## Routes
 
 <div class="animus-demo">
+<p><strong>Follow and route points</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/38-motion-ingame.webm" aria-label="A guard following the player and a ferryman crossing the river" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="animus-demo">
 <p><strong>Route capture</strong> Minecraft client.</p>
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/15-route-capture-ingame.webm" aria-label="Walking a path and dropping four route points" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
@@ -60,6 +65,8 @@ An NPC follows a route, a list of points, with the `animus:navigation` module:
   "animus:navigation": {"enabled": true, "route": "town-walk"}
 }
 ```
+
+To send an NPC to different places at different times of day, give it a [schedule](/animus/30-npc-schedules) instead.
 
 A reusable route lives at `routes/<name>.json` in the data folder, at most 64 KiB:
 
@@ -87,6 +94,8 @@ A reusable route lives at `routes/<name>.json` in the data folder, at most 64 Ki
 | `jitter` | 0-8 blocks, default 0, not `wander` | Each leg aims at a random whole-block x/z offset within this radius of the point |
 | `points` | 1-256 of `{x, y, z}`; 0-64 for `wander` | Points in the NPC's world. Each may set its own `waitTicks` (0-12000 or `[min, max]`) and `jitter` (0-8) instead of the route's |
 | `points[i].style` | A [movement style](#movement-styles), not on a recording step | How the NPC moves on the leg that ends at this point, instead of the route's `style`. Legs to guides use the route's |
+| `points[i].speed` | 1-5 blocks per second, not `wander` or a recording step | From this arrival on, the route walks at this speed until another point sets one. A restart starts again at the route's `speed` |
+| `points[i].teleport` | `{x, y, z}` with optional `yaw`, `pitch` and `world`, not `wander` or a recording step | On arrival the NPC moves here at once, before its wait, and the next leg starts from here. With `world`, a loaded world by name, the NPC moves to that world and walks the rest of the route there; on Folia a teleport to another world is refused. Ground that is not loaded or not clear leaves it where it arrived, and the server log says so |
 | `points[i].weight` | 1-1000, default 1, `random` only | How often `random` picks this point compared with the others |
 | `points[i].next` | 1-8 of `{"to": index, "weight": 1-1000}`, `sequence` only | A junction: after this point the next point is drawn from these by weight instead of `i + 1` |
 | `points[i].recording` | `{"recording": id, "fromTick": 0, "toTick": durationTicks, "playback": "once"}`, not `wander` | A recording step instead of a position: the NPC walks to the segment's first frame, plays ticks `fromTick` to `toTick` once, then goes on to the next point from the segment's last frame |
@@ -118,6 +127,21 @@ With `seed: npc` each NPC draws its route choices (destinations, junctions, wait
 The `waypoint` trigger and `VirtualNpcWaypointEvent` report point `i` as `i` and guide `j` as the number of points plus `j`. A wander arrival reports the center it used, or 0 without points.
 
 A `sequence` or `pingpong` leg that terrain blocks stops the route. A `random` route waits the larger of its `waitTicks` and 100 ticks, then picks a new destination; a `wander` route waits the larger of its `waitTicks` and 20 ticks and picks a new target. Neither stops on its own. A behavior that waits for a route refuses one that never finishes: a looping `sequence`, a `sequence` whose junctions can reach a point with no way to the end, a `pingpong` over more than one point, and every `random` or `wander` route.
+
+The module's `pause` makes a route stand still while players are near, so the NPC can talk to them:
+
+```json
+"animus:navigation": {"enabled": true, "route": "harbor-walk", "pause": {"playerRange": 4, "onClick": true, "ticks": 60, "lockoutTicks": 100}}
+```
+
+| `pause` field | Default | Meaning |
+|---|---|---|
+| `playerRange` | 0 | A player within this many blocks (up to 64) pauses the route; 0 never does. Checked every 5 ticks |
+| `onClick` | `false` | A right-click on the NPC pauses the route |
+| `ticks` | 20 | How long a pause lasts, 1-12000. A player who stays near starts a new one when it ends |
+| `lockoutTicks` | 0 | After a pause starts, no new one starts for this long, up to 72000 |
+
+A paused NPC stands where it is in the middle of its leg and goes on from there; a pause does not count toward being stuck. While paused it turns to players as an idle NPC does, even without `whileNavigating`. A recording does not pause.
 
 Instead of route points, the module can replay a player's recorded movement with `recording`, the id of a file under `recordings/`. A module sets only one of `recording`, `route` and inline `points`. `playback` is `once`, `loop` or `pingpong`; without it the recording's own `playback` applies, then `loop`:
 
@@ -230,8 +254,38 @@ An NPC with `animus:look-close` turns toward the nearest player in range while i
 | `whileNavigating` | `false` | Also look while planning or moving along a route. The NPC always looks while waiting at a point |
 | `npcs` | `false` | With no player in range, look at the nearest other NPC |
 | `randomLook` | off | With nobody to look at, turn to a random `yaw` and `pitch` from the ranges every `delayTicks` (1-12000) |
+| `headOnly` | `false` | Turn only the head; the body keeps the facing it had. Random looks and NPC targets turn only the head too |
+| `perPlayer` | `false` | Each player in range sees the NPC look at them, at the same time. Other viewers see its own facing |
+| `permissions` | none | Up to 8 permission nodes; only players holding every one are looked at |
+| `turnRate` | none | `{"yaw": 0-360, "pitch": 0-180}` degrees a tick (defaults 40 and 10): turn toward the target gradually instead of at once. A `pitch` of 0 keeps the pitch where it is. A per-player look turns at once |
+| `switchTicks` | none | 1-12000: every this many ticks, look at a random player among the nearest in range instead of always the nearest, and keep looking at that one until the next switch |
+
+```json
+"animus:look-close": {"range": 8, "headOnly": true, "perPlayer": true, "permissions": ["harbor.pass"], "turnRate": {"yaw": 6, "pitch": 3}}
+```
 
 The NPC prefers players who can already see it and keeps its facing when nobody is in range. An NPC that rides another NPC or carries a player does not look. Each NPC looks again at most every 5 ticks, within the `[npcs] lookUpdatesPerTick` budget. `animus:look` still turns the NPC; look-close turns it back on its next look. The module does not need `reviewAccepted` on imported definitions. `/animus npc look <npc> off` turns it off and keeps its settings; `on` turns it back on.
+
+### Returning home
+
+An NPC with `animus:home` goes back to a place in its own world once it has stood idle away from it:
+
+```json
+"modules": {
+  "animus:home": {"x": 12.5, "y": 64, "z": -3.5, "yaw": 180, "delayTicks": 100, "distance": 2, "return": "walk"}
+}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` when the object is present | Turns the module on |
+| `x`, `y`, `z` | required | The home, in the NPC's own world |
+| `yaw`, `pitch` | the NPC's own | The facing after a teleport home |
+| `delayTicks` | 0 | How long the NPC must stand idle away from home first, up to 72000 |
+| `distance` | 0 | Only return from at least this many blocks away, up to 256; 0 returns from any distance |
+| `return` | `teleport` | `teleport` moves the NPC at once onto clear, loaded ground; `walk` walks it there as `/animus navigation go` does |
+
+An NPC is idle when it follows no route, recording or `navigation go` leg, guards no one, has not attacked for 5 seconds, and neither rides nor carries a rider, so one moved by a fight, a manual leg or a behavior goes home once it has stood still that long. It checks about once a second. A route that never ends keeps the NPC busy, so its home never applies. The module does not need `reviewAccepted` on imported definitions.
 
 ## Mounted NPCs
 

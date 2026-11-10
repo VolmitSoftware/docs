@@ -70,11 +70,11 @@ An NPC's Visual view puts the inspector beside the 3D stage, or under it on a ph
 
 - Identity: name, id, folder, UUID, tags, the trait groups the NPC lists and the owner's UUID. Trait groups show as a row of chips in merge order: click one to open it, drag it or press Alt with the left or right arrow to reorder, and × removes it; a trait group the workspace does not have carries a warning. **Add group** picks one from the workspace, and **+ New group** makes a trait group named after the search text and lists it on this NPC in one undo step, then offers to open it. An NPC made in the editor while it is paired gets the pairing player as its owner; the field stays editable.
 - Effective, for an NPC with trait groups: the definition the server runs, one row per field, per module and per attribute with the trait group or NPC that set it and a link to that trait group, plus the whole effective JSON. The 3D stage draws the effective definition, so equipment, holograms and skins from trait groups show on it.
-- Body: the body type and, right under it, whether the NPC is spawned. Also a rig from the workspace (the stage draws it), the pose (shown for player bodies only), an armor stand's parts and pose angles, the settings of a horse, llama, frog, armadillo or ender dragon as dropdowns and switches, and the traits that body shows: baby only for bodies with a baby form, tab list and raised item only for players. The stage draws a horse's coat and markings and a llama's and frog's variant.
+- Body: the body type and, right under it, whether the NPC is spawned. Also a rig from the workspace (the stage draws it), the pose (shown for player bodies only), an armor stand's parts and pose angles, the settings of its body (a horse's coat, a sheep's wool, a villager's profession, a player's skin layers and the rest) as dropdowns, numbers and switches, and the traits that body shows: baby only for bodies with a baby form, tab list and raised item only for players. The stage draws a horse's coat and markings and a llama's and frog's variant. Bodies the stage has no model for, such as a sheep or a villager, show a note instead of a preview; the server shows them.
   - While the NPC wears a skin, its own or one from a trait group, choosing a body other than a player asks first, since the server refuses a skin on any other body. Remove skin changes both in one step, also taking the skin out of the trait groups that gave it, and Cancel keeps the player body.
   - Fields left from the old body after a type change, such as a skin, a pose or another body's settings, are listed under the type with a button to remove each one, or all of them.
 - Position: the coordinates and named facings for the `animus:pose` action.
-- Appearance: the skin, hologram lines and the nameplate.
+- Appearance: the skin, hologram lines, the nameplate, the boss bar, who may see the NPC and the NPC that receives its clicks.
   - The skin is picked from the workspace skins with their faces or by hash, with Remove skin and the arm model (slim or classic). A built-in skin makes a skin document from that PNG, labelled with its name, and wears it in one undo step. New skin takes a PNG file or address. The stage beside it wears whatever is picked here.
   - Equipment shows as inventory slots laid out like the player's: armor down the left, saddle and body armor beside it, off hand and main hand below. Only the slots the body shows appear, plus any other slot already filled, with a warning. Click a slot, or press Enter, to edit its item, count and components below the grid. Arrow keys move between slots, a right click or Delete empties one, and dragging a slot onto another swaps their items.
   - Hologram lines show with a colored preview and their style (billboard, line height, view range), and a switch sets whether the nameplate shows.
@@ -126,6 +126,20 @@ Chest GUIs, shops, holographic menus, holograms, text animations and the presets
 - **Presets**: per-kind defaults and named presets for Gloss documents. Animus refuses a chest GUI, hologram or text animation that names a preset. Its editor offers **Copy this preset's fields into the document**, which copies the kind's defaults and the preset chain under the document's own fields and removes `preset`.
 
 **Import Gloss bundle** and **Export Gloss bundle** read and write Gloss Web workspace files. An exported bundle imports back to the same ids. Gloss folders, titles that are not Animus ids, and images are not kept, and the import lists each one.
+
+### Quests
+
+A [quest](/animus/38-quests) opens in a form beside its preview. **New document**, then **Quest**, asks for a title and, optionally, the NPC that offers it; the quest starts with one stage that collects wheat and an experience reward.
+
+The form has three tabs:
+
+- **Quest**: the title (color codes and MiniMessage), the description players read in the offer and the journal, the journal icon, the givers and the turn in NPC, the required permission, quests finished first and a behavior condition, how often it repeats (once, after a cooldown, daily), and the offer, accepted, declined and completed lines.
+- **Stages**: each stage has its journal text, whether its objectives count at once or one after another, and its objectives. **+ Add objective** picks talk, bring, kill, reach, collect or custom. Changing an objective's type keeps its id, journal text and every field the new type also takes. The arrows reorder stages and objectives. NPC fields pick from the workspace NPCs by their id, items suggest every item, and mob types and worlds complete from the server's lists when paired.
+- **Rewards**: items with amounts, money, experience, commands (console or player) and behavior flags with a value and scope.
+
+Problems show at the field and mark their tab: anything the schema or the server refuses, objective ids repeated within a stage, NPCs and quests the workspace does not have, unknown items, a note that rewards with items, money or commands need the `apply:commands` scope to apply, and a note that reward commands need the command allow-list.
+
+The preview shows the giver's offer with its Accept and Decline buttons, and the `/quests` journal entry at each stage and once finished, with progress counts at zero. Under it is the expression behaviors use to read the stage, such as `quest('player', 'bread')`.
 
 ### Conversations
 
@@ -279,6 +293,7 @@ A behavior that uses `animus:command` or another privileged capability, and a sh
 - any behavior in the namespace of a `rawTextBehaviors` entry, since it shares flags with that behavior;
 - a chest GUI, menu or hologram with a `command`, `give` or `economy` action;
 - a shop with `commands` or any buy, sell, trade or command entry, since its prices and goods create items and money.
+- a quest whose rewards include items, money or commands.
 
 The rules:
 
