@@ -61,7 +61,7 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 
 | Page | Covers |
 |---|---|
-| [First ten minutes](/animus/20-first-ten-minutes) | Install, set up, and make, skin and walk your first NPC |
+| [Tutorial: introduction](/animus/20-tutorial-introduction) | Install, set up, and make, skin and walk your first NPC |
 | [Tutorial: first NPC](/animus/22-tutorial-first-npc) | Make, edit, skin, dress and sort NPCs with the in-game toolkit |
 | [Tutorial: movement](/animus/23-tutorial-movement) | Routes, recordings, mounts and riding in game |
 | [Tutorial: conversations, shops and combat](/animus/24-tutorial-interaction) | Behaviors, conversations, shops, holograms, GUIs, combat and health |

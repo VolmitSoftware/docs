@@ -337,7 +337,7 @@ See [web editor](/animus/14-web-editor#pairing).
 | `/animus tools wand` | Give the selection wand: click an NPC to select it, sneak-click to add or remove it. Players only |
 | `/animus tools manage` | Open the manage screen for your selection. Players only |
 
-New operators see a one-line greeting with **[Setup]** two seconds after joining while the server has no NPCs or an unfinished import. See [your first ten minutes](/animus/20-first-ten-minutes) and the [in-game toolkit](/animus/21-in-game-toolkit).
+New operators see a one-line greeting with **[Setup]** two seconds after joining while the server has no NPCs or an unfinished import. See the [tutorial introduction](/animus/20-tutorial-introduction) and the [in-game toolkit](/animus/21-in-game-toolkit).
 
 ## Diagnostics
 

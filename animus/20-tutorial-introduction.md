@@ -1,14 +1,14 @@
 ---
-title: "Animus: Your First Ten Minutes"
+title: "Animus Tutorial: Introduction"
 description: "Install Animus, set it up, and make, skin and walk your first NPC"
 published: true
 date: 2026-11-09T00:00:00.000Z
-tags: "animus, quick start, setup, first npc"
+tags: "animus, tutorial, quick start, setup, first npc"
 editor: markdown
 dateCreated: 2026-11-07T00:00:00.000Z
 ---
 
-This page takes you from an empty server to an NPC that wears a skin and walks a route, mostly with commands. Run them in game as an operator; each one can be pasted as it stands. The [tutorial](/animus/22-tutorial-first-npc) is the longer path: it covers every in-game toolkit screen, step by step, with videos.
+This page takes you from an empty server to an NPC that wears a skin and walks a route in about ten minutes, mostly with commands. Run them in game as an operator; each one can be pasted as it stands. The rest of the tutorial, starting with [first NPC](/animus/22-tutorial-first-npc), is the longer path: it covers every in-game toolkit screen, step by step, with videos.
 
 ## 1. Install
 
@@ -109,7 +109,7 @@ Every Citizens NPC arrives dormant, and the features you accept turn on. One com
 
 ## Where to go next
 
-- [Tutorial](/animus/22-tutorial-first-npc): every toolkit screen, step by step, with videos.
+- [Tutorial: first NPC](/animus/22-tutorial-first-npc): every toolkit screen, step by step, with videos.
 - [NPC definitions](/animus/04-npc-definitions): every field of `guard.json`, equipment, holograms and poses.
 - [Behaviors](/animus/07-behaviors): greetings, dialogue, quests and reactions to clicks.
 - [Combat](/animus/08-combat): guards that fight.

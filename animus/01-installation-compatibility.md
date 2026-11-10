@@ -35,7 +35,7 @@ Optional plugins on Paper, Spigot and Folia:
 3. Start the server. Animus creates `plugins/Animus/` and writes a default `config.toml`.
 4. Run `/animus status` to check that it started.
 
-Next, follow [your first ten minutes](/animus/20-first-ten-minutes) to make, skin and walk a first NPC. Moving from Citizens? Follow [migrating from Citizens](/animus/13-migrating-from-citizens) before you create NPCs by hand.
+Next, follow the [tutorial introduction](/animus/20-tutorial-introduction) to make, skin and walk a first NPC. Moving from Citizens? Follow [migrating from Citizens](/animus/13-migrating-from-citizens) before you create NPCs by hand.
 
 ## Install on a mod server
 
@@ -50,7 +50,7 @@ Put the jar for your loader and Minecraft version in the server's `mods/` folder
 | NeoForge | `Animus v0.1.0 [NeoForge] <minecraft>+<neoforge>.jar` |
 | Forge | `Animus v0.1.0 [Forge] <minecraft>+<forge>.jar` |
 
-The Fabric jar carries the Fabric API modules it needs, so the full Fabric API is not required. The data folder is `config/animus/`. See [mod servers](/animus/16-mod-servers), then [your first ten minutes](/animus/20-first-ten-minutes).
+The Fabric jar carries the Fabric API modules it needs, so the full Fabric API is not required. The data folder is `config/animus/`. See [mod servers](/animus/16-mod-servers), then the [tutorial introduction](/animus/20-tutorial-introduction).
 
 ## File layout
 

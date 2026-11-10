@@ -1158,10 +1158,6 @@
                 "href": "/animus/00-overview"
               },
               {
-                "title": "First ten minutes",
-                "href": "/animus/20-first-ten-minutes"
-              },
-              {
                 "title": "Installation and compatibility",
                 "href": "/animus/01-installation-compatibility"
               },
@@ -1187,6 +1183,10 @@
           {
             "title": "",
             "links": [
+              {
+                "title": "Introduction",
+                "href": "/animus/20-tutorial-introduction"
+              },
               {
                 "title": "First NPC",
                 "href": "/animus/22-tutorial-first-npc"

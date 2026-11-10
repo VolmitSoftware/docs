@@ -24,7 +24,6 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 ## Start here
 
 - [Overview *How Animus NPCs work, and a glossary*](/animus/00-overview)
-- [First ten minutes *Install, set up, and make your first NPC*](/animus/20-first-ten-minutes)
 - [Installation and compatibility *Requirements, files, and platform differences*](/animus/01-installation-compatibility)
 - [Commands and permissions *Every command and node*](/animus/02-commands-permissions)
 - [Configuration *Every config.toml setting*](/animus/03-configuration)
@@ -33,6 +32,7 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 
 ## Tutorial
 
+- [Introduction *Install, set up, and make your first NPC in ten minutes*](/animus/20-tutorial-introduction)
 - [First NPC *Install, then make, edit, skin and dress NPCs in game*](/animus/22-tutorial-first-npc)
 - [Movement *Routes, recordings, mounts and riding*](/animus/23-tutorial-movement)
 - [Conversations, shops and combat *Behaviors, shops, GUIs, health and pairing*](/animus/24-tutorial-interaction)

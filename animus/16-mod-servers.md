@@ -37,7 +37,7 @@ A world is named by its dimension: `minecraft:overworld`, `minecraft:the_nether`
 
 The `world` facts of behavior expressions and the `viewer.world` placeholder give the dimension key. Bukkit gives the world name instead, so a behavior meant for both platforms compares worlds with `same_world`, and a GUI that shows or tests a world on both reads `viewer.world_key`.
 
-After installing, run `/animus status` from the console or as an operator to check that Animus started, then follow [your first ten minutes](/animus/20-first-ten-minutes).
+After installing, run `/animus status` from the console or as an operator to check that Animus started, then follow the [tutorial introduction](/animus/20-tutorial-introduction).
 
 ## Commands and permissions
 
