@@ -2,7 +2,7 @@
 title: "Animus: Migrating from Citizens"
 description: "Import Citizens NPCs with Sentinel, dtlTraders, Shopkeepers, Builder and Denizen data"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-11T00:00:00.000Z
 tags: "animus, citizens, migration, import, sentinel, denizen, shopkeepers, converter"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -152,6 +152,11 @@ Import archives and transaction files can hold player names and other private da
 ## Converting in the browser
 
 The [web editor](/animus/14-web-editor) converts a `saves.yml` in the browser with the same rules: open it, choose **Import Citizens and others**, and pick the file. The file is read on your computer and converting never uploads it. The browser reads only the save, so Citizens shops and the CitizensCMD and CommandNPC commands convert when the server or the converter previews the import with those files beside the save. The review leads with the migration warnings and the records that will not load, and downloads a zip to unpack into the data folder. The zip holds `imports/saves.yml` and the staged `imports/<import-id>/` folder, so `/animus import citizens preview` on the server finds the same preview and continues from step 6.
+
+<div class="animus-demo">
+<p><strong>Browser conversion</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/48-citizens-import-editor.webm" aria-label="Converting a Citizens save in the browser" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 A Shopkeepers `save.yml` (with its `config.yml`, if you have it) converts the same way; its zip holds `imports/shopkeepers/save.yml` and the staged `imports/shopkeepers/<import-id>/` folder. Load the Citizens save first so the browser checks the links.
 

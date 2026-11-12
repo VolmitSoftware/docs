@@ -2,7 +2,7 @@
 title: "Animus: Web Editor"
 description: "Pairing the web editor with a server and what it edits"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-11T00:00:00.000Z
 tags: "animus, editor, web, pairing"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -14,29 +14,76 @@ The web editor runs in the browser at <https://animus.volmitsoftware.com>. It ed
 
 A workspace lives in the browser and is never uploaded. Start one blank, from the example packs, or by opening a data folder (`plugins/Animus`, or `config/animus` on mod servers) as a folder or a zip. Opening a folder copies it into a new workspace: edits stay in the browser and do not go back into the folder. Export a workspace as a zip (**Export**, then **Export the data folder zip**) to copy it back to a server by hand. A folder or zip with no Animus documents, such as the server root, `plugins/` itself or a file that is not a zip, opens nothing and saves nothing; the home page says what it found and what to pick. A deleted workspace can be restored from the home page until you close the tab.
 
+<div class="animus-demo">
+<p><strong>Export a workspace</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/17-export-workspace-editor.webm" aria-label="Exporting a workspace as a data folder zip" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 NPC definitions and trait groups at an older [schema version](/animus/12-storage-recovery#schema-versions) are upgraded in the browser as a folder, zip or stored workspace opens, the same way the server upgrades them. The notice and the workspace overview count and list the upgraded files, and **Export** and **Send** write the current version.
+
+<div class="animus-demo">
+<p><strong>Workspace overview</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/43-workspace-overview-editor.webm" aria-label="Opening a zip and fixing two documents that need repair from the overview" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 If the browser cannot keep workspaces (some private windows have no IndexedDB), a banner says so: everything works until the tab closes, so export a zip first. If the browser refuses to store an edit (for example when it is out of storage space for the site), the edit stays on screen and a banner names the cause, with **Save again** and **Export zip**.
 
 A blank workspace's overview names three ways to start: **Create an NPC**, **Import** (convert a Citizens, Shopkeepers or Denizen save) and **Pair a server**.
 
+<div class="animus-demo">
+<p><strong>Workspaces on the home page</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/13-offline-home-editor.webm" aria-label="Starting a workspace, then renaming, copying and restoring one" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Every document is checked against the Animus schemas as you type and has Visual, Preview, Code and Split views. The header shows the document's revision, read only: the server raises it on every apply. Text typed in Code joins the draft only with **Apply to draft**. Until then it stays with the document while you open others: the sidebar marks the document **code**, the other views say the Code draft is not applied, and closing the tab asks first. New documents start from a guided first step, such as an NPC from its name, folder, body, skin and position, or a behavior from the conversation, greeter, dialogue, patrol, shop, guard or quest template.
+
+<div class="animus-demo">
+<p><strong>New document</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/14-new-document-editor.webm" aria-label="Creating a behavior from New document and switching between its views" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="animus-demo">
+<p><strong>Code view</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/21-json-view-editor.webm" aria-label="Renaming an NPC in the JSON while the preview and Visual view follow" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 A list longer than eight entries has a search field at its top: type to narrow it. A list that picks another document, such as an NPC's rig or a route's recording, ends with **+ New** and **Manage**. **+ New rig** opens the new rig form with what you typed in the search as its name and the current folder, and **Create** brings you back with the new rig picked. **Manage rigs** lists every rig. Recordings are made in game, so their list says to run `/animus record start <id>` instead.
 
 A behavior's Visual view reads top to bottom: the document, its variables, its routines as a tree, then its triggers.
 
 - A collapsed step shows its type and what it does in plain words, such as "Say: Welcome" or "While count < 3". Up and Down move between steps, Right and Left open and close one, and Delete asks in place before removing it (Escape keeps it). A step you close stays closed while you edit the rest.
+
+<div class="animus-demo">
+<p><strong>Behavior steps</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/18-behavior-nodes-editor.webm" aria-label="Adding a Say step to the end of a routine" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - Wherever a step takes a value (a `set`, a `repeat` count, a `foreach` list, a `return`, a call's arguments) you choose a typed value, a variable of a matching type, an expression, or a template with `{{ }}` holes.
+
+<div class="animus-demo">
+<p><strong>Typed values</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/19-typed-values-editor.webm" aria-label="Setting a count to an expression that is checked against its type" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - Expressions and templates check themselves as you type and offer variables, `player.` and `npc.` facts, event `context.` keys and functions below the field; use the arrow keys and Enter to pick one.
 - An action's argument can also be filled when the step runs: pick From a variable, From an expression or From a template, and the editor writes the placeholder for you.
 - The Server behavior switch in the Document section makes the behavior server-wide: NPC events, `npc` and `relationship` scopes and NPC-only capabilities disappear from the pickers, and timers start at 20 ticks.
 
 A behavior's Preview is a dry run: pick a trigger, step through what the NPC says, asks and walks to, and answer its prompts. Loops, expressions and templates run in the browser; facts only a server knows, such as a player's health, use sample values, and a condition that reads one is marked assumed so you can flip it. Commands, combat, building, items and shop trades are listed as server-only and not run.
 
+<div class="animus-demo">
+<p><strong>Behavior dry run</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/16-dry-run-editor.webm" aria-label="Running a behavior in the browser preview and answering its prompts" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 An NPC's Preview wears its skin: the editor reads the skin document the NPC names (on a server workspace it fetches that document when you open the NPC) and loads the texture from Mojang's texture server in your browser. Until the texture arrives, or if it cannot be loaded, the stage shows the default Steve or Alex skin and the Skin line says why, with Retry texture. A PNG kept in the workspace under `editor/skins/<hash>.png`, or one you load under Appearance, is used instead. An unsigned skin without a kept PNG shows the placeholder, and the Skin line says so.
 
 `server-behaviors.json`, the list of server behaviors that run, opens like any other document and is kept when you export the workspace. Its Visual view lists the server behaviors in order: add one from the behaviors in this workspace that have the server switch on, remove one, or move it up or down. Only listed behaviors run, so an empty list runs none. Create the list from the New page; it starts with every server behavior in the workspace. The workspace overview counts how many are listed.
+
+<div class="animus-demo">
+<p><strong>Server behaviors</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/20-server-behaviors-editor.webm" aria-label="Making a behavior server-wide and adding it to server-behaviors.json" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 Schematics are not editor documents.
 
@@ -59,6 +106,11 @@ Below the tree, the buttons act on the selected folder:
 
 Folder names follow the server's rules: 1-64 lowercase letters, digits, `_` or `-`, starting with a letter or digit, at most 8 folders deep. A name the server would refuse is refused before anything changes, in the server's words.
 
+<div class="animus-demo">
+<p><strong>NPC folders</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/27-npc-folders-editor.webm" aria-label="Making, nesting and filling NPC folders" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Select NPCs to mark them spawned or despawned (first in the bar), tag or untag them, move them to a folder (pick one from the tree, `npcs/` itself included, or type a new path such as `town/market`), switch a module on or off or remove it, or delete them. Each change is one undo step.
 
 Once the workspace has a [trait group](/animus/18-trait-groups), the Trait groups form above the list assigns or unassigns one, like `/animus groups assign` and `unassign`: for the selected NPCs, for one folder (that folder only, not the ones below it), or for every NPC whose tags include a tag, counting tags that come from its trait groups.
@@ -80,10 +132,40 @@ An NPC's Visual view puts the inspector beside the 3D stage, or under it on a ph
   - The skin is picked from the workspace skins with their faces or by hash, with Remove skin and the arm model (slim or classic). A built-in skin makes a skin document from that PNG, labelled with its name, and wears it in one undo step. New skin takes a PNG file or address. The stage beside it wears whatever is picked here.
   - Equipment shows as inventory slots laid out like the player's: armor down the left, saddle and body armor beside it, off hand and main hand below. Only the slots the body shows appear, plus any other slot already filled, with a warning. Click a slot, or press Enter, to edit its item, count and components below the grid. Arrow keys move between slots, a right click or Delete empties one, and dragging a slot onto another swaps their items.
   - Hologram lines show with a colored preview and their style (billboard, line height, view range), and a switch sets whether the nameplate shows.
+
+<div class="animus-demo">
+<p><strong>NPC skin</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/22-npc-appearance-skin-editor.webm" aria-label="Putting a workspace skin and then a built-in skin on an NPC" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="animus-demo">
+<p><strong>Equipment</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/23-npc-equipment-inventory-editor.webm" aria-label="Giving an NPC a golden helmet, a leather tunic and three bread in the main hand" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - Attributes: the NPC's [attributes](/animus/04-npc-definitions#attributes). Add one from the dropdown, which can be searched: attributes are grouped under Size and movement, Combat, Senses, Player only and Other, each row shows its range and vanilla default, attributes already set are grayed out, and the ones the NPC's body type carries come first, with the rest marked as having no effect on this body; each shows a number field with its range, its vanilla default and what Animus does with it, and a reset that removes it. A value out of range is refused before it is saved. The 3D stage draws the body at its `scale`. A trait group's editor has the same part.
+
+<div class="animus-demo">
+<p><strong>Attributes</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/24-npc-attributes-editor.webm" aria-label="Setting an NPC's scale to 2 and seeing it on the stage" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - Behavior: the behaviors the NPC runs, picked from the workspace and, while connected, the server (server-wide behaviors are not offered, since they have no NPC), its route, how it walks, and its stored inventory, drawn as rows of 9 slots for its size and edited the same way; slots past the size are flagged. A reusable route shows read-only, with Edit route to open it and Make a copy for this NPC, which makes a new route the NPC alone uses (one Undo step).
+
 - Health and death, under Modules after combat: whether the NPC is [killable](/animus/08-combat#health-and-death), its health, armor, regeneration, damage sources, attacker permission and protection range, whether what combat ignores can hurt it, the drops (each picked with the item picker, with a max count and chance), experience, and after death a respawn delay with respawn points on the position grid, permadeath or deletion. A dead NPC shows a notice with **Revive**. This part is the only place for health and death; the combat form has none.
+
+<div class="animus-demo">
+<p><strong>Health and death</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/25-npc-health-editor.webm" aria-label="Setting an NPC's health, armor, regeneration and respawn delay" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - Modules: combat, the shop a click opens (picked from the workspace shops, with **Edit shop** and **+ New shop**), another NPC to ride, hiring (its items as a row of six slots), and any other module, typed from its schema or as key and value rows; Advanced edits it as JSON.
+
+<div class="animus-demo">
+<p><strong>Combat</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/26-npc-combat-locations-editor.webm" aria-label="Setting a guard's targets and a return point" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - Kept fields: anything else in the file, kept as written and edited as key and value rows; the server reads it.
 
 The route editor draws the points on a top-down grid. Click to add a point and drag to move one. From the keyboard, Tab reaches each point: the arrow keys move it a quarter block, Shift with an arrow moves it a whole block, and Delete removes it. Add point at takes an x, y and z. Walking points stand on whole blocks. Add recording step adds a point that plays part of a recording; it is listed and numbered with the points but not drawn, and Make a recording step and Make a position switch a point between the two. Reusable routes under `routes/` open in the same editor and are checked against the route schema.
@@ -96,19 +178,74 @@ A trait group opens in the same parts as an NPC, editing its `values`: Group (id
 
 Recordings are made in game; the editor changes everything around the frames. A recording's Visual view edits its id, description, tags, default playback and speed, and lists its length, frames, events, world, origin, sample rate, recorder, size and revision, beside a top-down path of the recorded positions with its events marked. Drag the scrub, or use the arrow keys on it, to move a marker along the path with the tick, seconds and states such as sneaking; Play runs it at the recording's speed and starts paused. The events list jumps the scrub to an event. To trim, move the scrub and press **Start here** and **End here**; both snap to the nearest frame, the path shows the kept part, and **Trim** cuts the frames and events outside it in one step that Undo reverses. The kept start becomes tick 0 and the new origin, every position stays where it was, and the equipment worn at the new start is kept. Code applies a hand edit only when it passes every rule the server checks, and names the first one it breaks. Browse, beside Recordings in the sidebar, lists every recording with its length, frames, events, world and size. Renaming a recording updates the NPCs and route steps that play it.
 
+<div class="animus-demo">
+<p><strong>Recordings list</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/29-recordings-list-editor.webm" aria-label="Browsing recordings and opening one" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="animus-demo">
+<p><strong>Recording details</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/30-recording-details-editor.webm" aria-label="Changing a recording's description, tags and playback" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="animus-demo">
+<p><strong>Recording playback</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/31-recording-playback-editor.webm" aria-label="Playing and scrubbing a recording and jumping to an event" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 A skin document shows the face once its PNG is loaded, its hash, arm model and signature, the NPCs and trait groups that wear it, and the controls to load the PNG into the preview from a file or a web address that allows it. A skin's id is the hash of its text, so changing its arm model makes a new skin document: from the skin document every NPC and trait group wearing it moves to the new one and the old one is removed; from an NPC or trait group only that one moves, and the old skin stays while others wear it. Each is one Undo step. A signed skin keeps its model, since the model is part of the signed data. Deleting a skin lists who wears it first. Looking a skin up by player name is not offered. A pack's manifest edits its name, version and description, and the Java modules its behaviors use: each is required (without it the pack is unavailable) or optional, with its own configuration.
+
+<div class="animus-demo">
+<p><strong>Pack manifest</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/28-npc-packs-editor.webm" aria-label="Making a pack's Java module optional" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 ### Rig and animation editor
 
 An animation whose rig is not in the workspace opens as a form of its fields, with a note naming the missing rig. Open a rig, or an animation (which opens its rig), to get the rig editor: the bone tree on the left, the 3D stage in the middle, the bone inspector on the right and the timeline underneath. On a phone the stage stays on top and a switch under it shows Bones, Inspector or Timeline.
 
 - **Bones.** Add a child, rename (the rig's animations follow), reparent or delete. With the tree focused, Up and Down move between bones, Right goes to the first child and Left to the parent.
+
+<div class="animus-demo">
+<p><strong>Bone tree</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/32-rig-tree-editor.webm" aria-label="Adding a bone and moving another under a new parent" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Inspector.** Pivot, rest rotation and the visual: an item display (item, count, components, item context), a block display (block state) or a text display (text, billboard, background as `#AARRGGBB`, line width, shadow), with its offset, rotation and scale. Sockets hang equipment slots from a bone; the stage shows a sample item at each socket. The server reads sockets but does not attach equipment to them yet.
 - **Stage.** Drag to orbit, Shift or right drag to pan, Ctrl and the wheel (or a pinch) to zoom. Click the stage and use the arrow keys to orbit, Shift and the arrows to pan, + and - to zoom and 0 to reset. A vertical swipe over the stage on a phone scrolls the page. The Move, Rotate and Scale handles drag along their axis; focus a handle with Tab and use the arrow keys to nudge it (Shift for smaller steps). In the rest pose a handle edits the pivot, rest rotation or visual scale. With an animation open it keys the bone at the playhead.
+
+<div class="animus-demo">
+<p><strong>Stage handles</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/33-rig-gizmo-editor.webm" aria-label="Rotating and moving bones with the stage handles" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Timeline.** Pick an animation or make a new one, then play, set the speed, the loop mode and the duration. `once` plays to the end and then the NPC goes back to its `idle` animation, which the preview shows too; `hold` keeps the last pose. Each track has a lane with its keyframes: click a lane name to select the track and change its blend (`replace`, `add` or `multiply`), move it up or down, or delete it. Drag a keyframe along its lane, or focus it and use Left and Right (Shift for quarter ticks). The selected keyframe has its tick, value and easing, Copy to the playhead, and Delete. A bezier easing is written `bezier(x1,y1,x2,y2)` with numbers like `0.25`, and the x values stay between 0 and 1. Shortening the duration lists the keyframes and events past the new end and offers to trim them.
+
+<div class="animus-demo">
+<p><strong>Timeline</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/34-rig-timeline-editor.webm" aria-label="Setting an animation's speed, loop mode and duration" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="animus-demo">
+<p><strong>Keyframes</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/35-rig-keyframes-editor.webm" aria-label="Easing one keyframe and adding another" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Events.** The events lane under the tracks holds sounds and particles at a tick, with their arguments. They are saved with the animation; the server does not play them.
 - **Animation names.** The names behaviors play an animation by. `idle` and `walk` are the two navigation switches between on its own. Each name can be renamed, pointed at another of the rig's animations, opened or removed. A name whose animation is missing, or belongs to another rig, is marked; the server skips it. Create makes a missing animation.
+
+<div class="animus-demo">
+<p><strong>Animation names</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/36-rig-animations-editor.webm" aria-label="Pointing an animation name at another animation and opening it" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Import .bbmodel** turns a Blockbench model into a rig with its animations. Sound keyframes that name a vanilla sound become sound events. Keyframes with two values keep both. Particle and script keyframes are left out, and catmullrom and bezier curves play as `ease_in_out`; the import summary counts each. Groups named `hitbox` or `shadow` are Model Engine's hitbox and shadow, not drawn there, so the import leaves them out and warns.
+
+<div class="animus-demo">
+<p><strong>Blockbench import</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/37-bbmodel-import-editor.webm" aria-label="Importing a .bbmodel file as a rig with its animations" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Download server files** saves the rig, its animations and their pack sources as `<rig>-server-files.zip`. Unzip it into `plugins/Animus` on the server, then run `/animus pack build` to make the resource pack.
 
 The stage says when the Minecraft models are still loading, when the site has no model pack, when the download failed (with Retry), when the browser has no WebGL2, and when an image or an item cannot be drawn.
@@ -118,14 +255,37 @@ The stage says when the Minecraft models are still loading, when the site has no
 Chest GUIs, shops, holographic menus, holograms, text animations and the presets file open in visual editors. The preview is the large column and the fields sit beside it; on a phone they stack. The editors offer only what Animus reads, and flag anything the server would refuse at the exact field, in the server's words.
 
 - **Chest GUI**: the window is drawn as the game draws it. Click a slot, or Tab to it and press Enter, to edit what draws it. Pick a key under **Mask brush** and drag across slots to paint the mask. The tabs cover the window (title, size, mask, show, close on teleport, refresh, select), keys, the list, variants and named action lists. In Preview, tap a slot to read its name and lore.
+
+<div class="animus-demo">
+<p><strong>Chest GUI</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/38-chest-gui-editor.webm" aria-label="Turning a slot into a button that sends a message" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Shop**: the offers sit on one side as rows that read like trades, such as "2 emerald + 1 book → 1 enchanted book", grouped by grid and page in the order players see them. **+ Add offer** picks the kind: trade, buy, sell, command or decoration. Click a row to edit it in place: the items with their counts, enchantments and model number, the money price, commands, name and lore, stock, limits and permission, each label with a short tip. Drag a row, or press Alt with the up and down arrows, to reorder it within its group; tick rows to delete several, and **Undo** brings deleted offers back. Changing an offer's kind removes the fields the new kind cannot use and moves it to that kind's grid.
   The other side shows the **Trading screen** and the **Chest window** as tabs, marking the one players get. Both follow every edit, and clicking an offer in either opens it on the board. **Limits used up** and **No permissions** show offers crossed out as such a player sees them. A shop with a `layout` chest GUI is drawn in that GUI, page by page.
   The **Shop** tab sets the title, window style, layout GUI (with **+ New chest GUI**), permission, modes in order, purchase switches, pages, and the owner and up to eight containers. A shop with containers sells through trades only, so its offers are trades or decorations, with no price and no stock of their own. The **NPCs** tab lists the NPCs and trait groups whose shop module opens the shop, with each one's window style and, for a villager, the profession and level its trading screen title shows; **Attach to NPC...** adds the shop to another NPC in one undo step.
   Problems show at the offer: anything the server refuses, notes for what the chosen window style cannot show exactly, items not picked, counts of zero, and limits that work against each other. **New shop** starts blank or from villager trades, a money shop or a command shop.
 - **Hologram**: rows of text, items, heads, blocks and entities, each with **Show when** and **Scale**, plus pages, variants, placement (anchor, yaw, pitch, view distance, refresh), style and click actions. The stage draws the text rows as one text display, as the server sends them: color codes and MiniMessage tags read the way the server reads them, a color carrying on to the next row, and the style's background, shadow, alignment, opacity, line width, scale and fixed light. A billboard other than `center`, `seeThrough` off, `glowColor` and `shadowRadius` are listed under the stage, which draws text facing the camera and over blocks. Heads are drawn without a skin and entities as a labelled box; the server shows the real thing.
+
+<div class="animus-demo">
+<p><strong>Hologram</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/39-hologram-animation-editor.webm" aria-label="Adding a hologram row that plays a text animation" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Menu**: click a component on the stage or in the list to edit it. Components have an offset, show, motion, hover and click box, a tooltip, icon styles and list or tab layout. Menus also have constants and named action lists.
+
+<div class="animus-demo">
+<p><strong>Menu</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/40-menu-editor.webm" aria-label="Moving a menu component and giving it a hover effect and a sound" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Text animation**: edit the frames, mode, interval and show beside a preview that plays the frames the way the server does. **Pause** and the frame buttons hold or step it. If your system asks for reduced motion, the preview starts paused.
 - **Presets**: per-kind defaults and named presets for Gloss documents. Animus refuses a chest GUI, hologram or text animation that names a preset. Its editor offers **Copy this preset's fields into the document**, which copies the kind's defaults and the preset chain under the document's own fields and removes `preset`.
+
+<div class="animus-demo">
+<p><strong>GUI presets</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/41-gui-presets-style-editor.webm" aria-label="Copying a preset's fields into a text animation" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 **Import Gloss bundle** and **Export Gloss bundle** read and write Gloss Web workspace files. An exported bundle imports back to the same ids. Gloss folders, titles that are not Animus ids, and images are not kept, and the import lists each one.
 
@@ -209,6 +369,11 @@ The shortcut sheet (`?`, or **Keyboard shortcuts** in the command palette) lists
 
 Edits never overwrite each other, however quickly they follow one another: each field you change is kept and is its own undo step, and typing in one field is one step. Undo and Redo keep 50 steps each per workspace, also after a reload, and their notices say what they reverted, such as "Undid: rename town:baker". The command palette (also **Commands** in the top bar) opens a document by name or id, switches workspace, makes a new document, exports, undoes, redoes and changes the theme: type part of a name, move with the arrow keys and press Enter. In the document list the arrow keys move between documents, and the Visual, Preview, Code and Split tabs move with Left and Right. Each kind in the sidebar, and each NPC folder, folds from its header (Enter, or Left and Right); **Collapse all** and **Expand all** sit above the list, and what you fold stays folded for that workspace. In an open list, the arrow keys, Home and End move, typing jumps to a match, Enter picks and Escape closes without a change.
 
+<div class="animus-demo">
+<p><strong>Command palette</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/42-command-palette-editor.webm" aria-label="Opening a document and changing the theme from the command palette" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 ### Field notes
 
 A label or heading with a dotted underline holds a short note on what it is, with a **Docs** link to the matching section of this wiki. Every inspector part and subhead, every GUI editor section, and the headings of the NPC browser, folders, server, pairing, home and rig screens have one. Hover the text or reach it with Tab to read the note, press Escape to hide it, and press Enter to open the wiki. On a touch screen a tap shows the note, and a second tap or a tap elsewhere hides it.
@@ -244,6 +409,16 @@ Tabs of the same browser stay in step. A tab that is not being edited reloads a 
 ### Sending a workspace to a server
 
 A local workspace's **Sync** page connects to a paired server, compares the workspace with it, validates the selection on the server and pushes it as one change set; a document the server already holds differently is only sent when you choose **Replace it with mine**, and the push asks before it replaces those copies. A push is recorded in the browser before it is sent. If its answer does not arrive, the page offers **Check the earlier push**, which asks the server what became of it rather than sending it again. **Pull** copies server documents in as one undo step.
+
+<div class="animus-demo">
+<p><strong>Compare a data folder</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/15-data-folder-sync-editor.webm" aria-label="Opening a data folder as a workspace and comparing it with a server" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
+<div class="animus-demo">
+<p><strong>Replace on push</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/45-live-confirm-editor.webm" aria-label="Confirming a push that replaces an NPC on the server" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 ## Pairing
 
@@ -355,6 +530,11 @@ A paired server opens as a server workspace listing the server's documents, grou
 - **Apply**: write every changed draft as one change set. A refused apply keeps your change note for the retry.
 - **Undo last apply**: roll the last applied change set back, after a confirm. Escape cancels.
 
+<div class="animus-demo">
+<p><strong>Live bar</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/44-live-bar-editor.webm" aria-label="The live bar going offline, reconnecting and coming back online" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 Every message about a refused request says what happened and what to do next, such as pairing again with a missing scope.
 
 Live editing for one server runs in one tab at a time. A second tab on the same server shows that another tab is editing it and waits; when the first tab closes or moves to another workspace, the second takes over.
@@ -364,10 +544,21 @@ Live editing for one server runs in one tab at a time. A second tab on the same 
 With a token that has the `terrain` scope, the editor draws the server's world around your NPCs and along everywhere they walk.
 
 - **Preview stage**: the blocks around the NPC and along its route replace the grass patch, with the pack's own models, including slabs, stairs, fences, glass, leaves and water. **Terrain** turns them off, and **Radius** picks 8, 16 or 24 blocks on each side of the NPC, its points and the legs between them, 32 blocks tall around the route's height at each spot. Drag the view along the route to see it. One view loads at most 256 chunks; past that, every point still loads and the legs load from their start.
+
+<div class="animus-demo">
+<p><strong>Terrain stage</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/46-terrain-stage-editor.webm" aria-label="Server blocks drawn around an NPC and its route" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
+
 - **Live position**: while the NPC is spawned, the stage shows it where it stands on the server now, checked every second and a half, and loads the blocks around each new spot as it walks.
 - **Route grid**: the ground under the grid is drawn top down from above, lighter where it rises and darker where it falls, water darker with depth. A grid wider than 64 tiles of 64 blocks draws the ground within 24 blocks of the route instead of all of it. Chunks the server has not loaded show grey, and chunks outside `terrainRadius` show hatched.
 - **Placing points**: a point you click onto the grid, or drag, lands on the block an NPC can stand on there. Points inside a block, below the surface, more than 3 blocks above the ground or in water are flagged on the grid and listed under it, and so are legs that climb more than a block or drop more than 3 in a straight line.
 - **3D**: shows the whole route over its blocks and frames the picked point. Legs are straight lines; the server plans the real path.
+
+<div class="animus-demo">
+<p><strong>Route in 3D</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/47-route-3d-editor.webm" aria-label="Viewing a route in 3D over the terrain and framing one point" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 The editor asks only for the ground it draws, keeps every answer in the browser, and asks again with the answer's hash, so unchanged terrain is not sent twice. Without a paired server, the stage keeps its grass patch and the grid stays blank. When the server is paired but cannot send terrain, the stage says why on its lower edge: the pairing has no `terrain` scope (pairings made before terrain existed; run `/animus editor pair` again), the server has terrain switched off, the server is offline or too old, or the chunks are unloaded because no player is near them.
 
@@ -405,6 +596,11 @@ A preview shows your drafts to the in-game player who issued the token, and to n
 ### Importing
 
 The editor's **Import Citizens and others** screen converts in the browser and, after a conversion, offers **Open as workspace** (the converted files as a new workspace to review), **Send to server** and **Download data-folder bundle** right under its review. Warnings name each NPC by its Citizens id and name. It can also upload a Citizens `saves.yml`, dtlTraders files, and a Shopkeepers `save.yml` and `config.yml` to a paired server. **Upload and stage** runs the same conversion as `/animus import citizens preview` and shows its review. **Apply** installs the import after a confirm, with every NPC spawned as Citizens had it and everything that converted turned on; the confirm names the command namespaces it adds. **Roll back** undoes the import after a confirm. Once applied, **Open the imported NPCs** leads to them in the server's catalog. Uploads are limited to 16 MiB. dtlTraders files with names dtlTraders does not use are listed as skipped. See [migrating from Citizens](/animus/13-migrating-from-citizens).
+
+<div class="animus-demo">
+<p><strong>Server import</strong> Browser editor.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/49-server-import-editor.webm" aria-label="Uploading, reviewing and installing an import on a server" autoplay muted loop playsinline controls preload="metadata"></video>
+</div>
 
 ### In-game notices
 
