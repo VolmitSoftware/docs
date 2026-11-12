@@ -369,7 +369,7 @@ With a token that has the `terrain` scope, the editor draws the server's world a
 - **Placing points**: a point you click onto the grid, or drag, lands on the block an NPC can stand on there. Points inside a block, below the surface, more than 3 blocks above the ground or in water are flagged on the grid and listed under it, and so are legs that climb more than a block or drop more than 3 in a straight line.
 - **3D**: shows the whole route over its blocks and frames the picked point. Legs are straight lines; the server plans the real path.
 
-The editor asks only for the ground it draws, keeps every answer in the browser, and asks again with the answer's hash, so unchanged terrain is not sent twice. Without a paired server, or when the server is offline, the stage keeps its grass patch and the grid stays blank.
+The editor asks only for the ground it draws, keeps every answer in the browser, and asks again with the answer's hash, so unchanged terrain is not sent twice. Without a paired server, the stage keeps its grass patch and the grid stays blank. When the server is paired but cannot send terrain, the stage says why on its lower edge: the pairing has no `terrain` scope (pairings made before terrain existed; run `/animus editor pair` again), the server has terrain switched off, the server is offline or too old, or the chunks are unloaded because no player is near them.
 
 ### Applying changes
 
