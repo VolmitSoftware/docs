@@ -142,7 +142,7 @@ The [web editor](/animus/14-web-editor)'s Blockbench import and its Download ser
 
 The server also reads `models/<namespace>/<name>.bbmodel` and converts each into rig `namespace:name` with the same rules as the editor:
 
-- Every group becomes a bone.
+- Every group becomes a bone, except groups named `hitbox` or `shadow` (any case). Those are Model Engine's hitbox and shadow: they are left out with their cubes and animation tracks, the import warns about each, and the NPC keeps its body type's hitbox.
 - A cube rotation that is not on one axis in 22.5-degree steps up to 45 degrees becomes a bone of its own.
 - The model turns 180 degrees to face +Z: pivots become `(-x, y, -z) / 16` and rotations `(-x, y, -z)`. Item displays turn their models back.
 - Each Blockbench animation becomes an animation document.

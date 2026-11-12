@@ -184,6 +184,7 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 | Click redirect | `clickRedirect`. |
 | Navigator settings | `movement`: speed, water avoidance, fall distance, pathfinding range, distance margin, stuck handling, flying (`flyable` becomes `movement.style: fly`) and opening doors. |
 | `targetable: true` | `targetableByMobs` on `animus:combat`, and `animus:health` that is killable unless Citizens protected the NPC. |
+| `protected: false` (`/npc vulnerable`) | `animus:health` with `killable: true`. An NPC Citizens left protected, its default, takes no damage. The import preview and review say how many NPCs can be hurt and how many stay protected. |
 | `minecraft-ai: true` on a mob with no route | A wander route around its spawn point. |
 | Owner | `owner`, when it is a player. |
 | Mounts | Mount references resolved through the UUID map. |
@@ -360,7 +361,7 @@ An item whose costs and results do not fit one entry is shown as a `static` entr
 
 ### Drops
 
-The drops trait becomes `death.drops` in the NPC's [`animus:health`](/animus/08-combat#health-and-death), each with its chance. An NPC without a health module gets one, killable when Citizens left it vulnerable (`/npc vulnerable`), since only then could it die and drop anything.
+The drops trait becomes `death.drops` in the NPC's [`animus:health`](/animus/08-combat#health-and-death), each with its chance. An NPC without a health module gets one, killable when Citizens left it vulnerable (`/npc vulnerable`), since only then could it die and drop anything. A vulnerable NPC is killable with or without drops.
 
 ### Builder
 
