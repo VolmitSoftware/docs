@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-The web editor runs in the browser at <https://animus-editor.web.app>. It edits NPCs, trait groups, routes, recordings, skins, behaviors, packs, shops, chest GUIs, menus, holograms, text animations, rigs and animations, with a 3D preview of each NPC. It works on its own against local files, and against a live server once paired.
+The web editor runs in the browser at <https://animus.volmitsoftware.com>. It edits NPCs, trait groups, routes, recordings, skins, behaviors, packs, shops, chest GUIs, menus, holograms, text animations, rigs and animations, with a 3D preview of each NPC. It works on its own against local files, and against a live server once paired.
 
 ## Working without a server
 
@@ -331,7 +331,7 @@ The editor reaches a server in one of two ways. Both are on by default, and a pa
 - Put a TLS proxy in front of the loopback listener and set `advertisedUrl` to its public `https://` address, or
 - Set `tlsCertificate` and `tlsPrivateKey` to PEM files and set `listenAddress` to the address to bind.
 
-Animus refuses a non-loopback `listenAddress` without TLS. When the port is taken, for example by a second server on the same machine, the log says `Editor listener failed: cannot bind 127.0.0.1:9797 (Address already in use); set [editor] port to a free port or listenerEnabled = false`, the banner says `DEGRADED (editor listener)`, and the relay keeps working. `allowedOrigins` must include `https://animus-editor.web.app`, as it does by default.
+Animus refuses a non-loopback `listenAddress` without TLS. When the port is taken, for example by a second server on the same machine, the log says `Editor listener failed: cannot bind 127.0.0.1:9797 (Address already in use); set [editor] port to a free port or listenerEnabled = false`, the banner says `DEGRADED (editor listener)`, and the relay keeps working. `allowedOrigins` must include `https://animus.volmitsoftware.com`, as it does by default.
 
 The listener checks the token and scope from the request head before it reads a body, so only a paired browser can send a large one; pairing and the other open endpoints take at most 4 KiB. A request head must arrive within 5 seconds of its first byte, and a body without a token within 5 seconds of the head. An idle connection closes after 15 seconds, and one address may hold at most 16 of the `openConnections`; an IPv6 address counts by its /64.
 

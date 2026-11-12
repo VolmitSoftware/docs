@@ -53,7 +53,7 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | Live apply | A saved data file taking effect within a second, without a reload. The chat line and permission call it hotload. See [live apply](/animus/03-configuration#live-apply) |
 | Note block chime | The sound operators hear when a saved file is applied or refused |
 | Transaction | One saved change with a rollback receipt. Replies show its id as `tx`, with **[Undo]** |
-| Web editor | The web editor at [animus-editor.web.app](https://animus-editor.web.app) |
+| Web editor | The web editor at [animus.volmitsoftware.com](https://animus.volmitsoftware.com) |
 | Pairing link | The single-use link `/animus editor pair` prints to connect the web editor to a server |
 | Module | Per-NPC feature settings in a definition's `modules`, such as `animus:navigation`. A Java module is a trusted jar in `modules/` that adds capabilities |
 

@@ -380,14 +380,14 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | Key | Default | Range | Meaning |
 |---|---|---|---|
 | `enabled` | `true` | | Serve the editor API |
-| `editorUrl` | `"https://animus-editor.web.app"` | `http` or `https` URL | Address used in pairing links |
+| `editorUrl` | `"https://animus.volmitsoftware.com"` | `http` or `https` URL | Address used in pairing links |
 | `listenerEnabled` | `true` | | Run the direct listener |
 | `listenAddress` | `"127.0.0.1"` | Host or address | Where the listener binds. A non-loopback address needs `tlsCertificate` and `tlsPrivateKey` |
 | `port` | `9797` | 0-65535 | Listener port. `0` binds any free port; the listener status and pairing links show the one it bound |
 | `advertisedUrl` | `""` | `http` or `https` URL | Public `https://` address of a TLS proxy in front of the listener, put into pairing links |
 | `tlsCertificate` | `""` | File path | PEM certificate. Set together with `tlsPrivateKey` |
 | `tlsPrivateKey` | `""` | File path | PEM private key |
-| `allowedOrigins` | `["https://animus-editor.web.app", "https://animus-editor.firebaseapp.com"]` | At most 32 | Browser origins accepted, as `scheme://host[:port]`. `http://` only on loopback. To use an editor you serve yourself, add its origin, such as `http://127.0.0.1:8098` |
+| `allowedOrigins` | `["https://animus.volmitsoftware.com", "https://animus-editor.web.app", "https://animus-editor.firebaseapp.com"]` | At most 32 | Browser origins accepted, as `scheme://host[:port]`. `http://` only on loopback. To use an editor you serve yourself, add its origin, such as `http://127.0.0.1:8098` |
 | `tokenDays` | `7` | 1-365 | Default lifetime of a pairing |
 | `auditDays` | `30` | 1-3650 | Days of editor audit log kept |
 | `requestBodyBytes` | `4194304` | 1024-67108864 | Size of one request |

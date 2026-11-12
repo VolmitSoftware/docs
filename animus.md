@@ -19,7 +19,7 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 | Java | 25 or newer |
 | Main command | `/animus` |
 | Config file | `plugins/Animus/config.toml` |
-| Editor | [animus-editor.web.app](https://animus-editor.web.app) |
+| Editor | [animus.volmitsoftware.com](https://animus.volmitsoftware.com) |
 
 ## Start here
 

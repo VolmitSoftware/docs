@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-08T00:00:00.000Z
 ---
 
-This is the last part of the Animus tutorial. The [web editor](https://animus-editor.web.app) edits every Animus document in the browser, with a 3D preview of each NPC. Paired with a server, it reads the server's documents and writes your changes back as one transaction. [Web editor](/animus/14-web-editor) is the full reference. The steps below assume the server from the [earlier parts](/animus/22-tutorial-first-npc).
+This is the last part of the Animus tutorial. The [web editor](https://animus.volmitsoftware.com) edits every Animus document in the browser, with a 3D preview of each NPC. Paired with a server, it reads the server's documents and writes your changes back as one transaction. [Web editor](/animus/14-web-editor) is the full reference. The steps below assume the server from the [earlier parts](/animus/22-tutorial-first-npc).
 
 ## 1. Pair with a server
 
