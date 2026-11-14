@@ -2,7 +2,7 @@
 title: "Animus: Performance Recordings"
 description: "Recording a player's movement and replaying it on an NPC: files, capture commands, the ghost, playback and settings"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, recordings, playback, navigation, ghost"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -111,7 +111,7 @@ Saves go through the same document store as definitions and routes, so [live app
 
 <div class="animus-demo">
 <p><strong>Recording</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/18-recording-ingame.webm" aria-label="Recording a short performance and previewing it as a ghost" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/18-recording-ingame.webm" aria-label="Recording a short performance for the greeter and previewing it as a ghost" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 ```none
@@ -126,17 +126,19 @@ Saves go through the same document store as definitions and routes, so [live app
 
 All of them need `animus.record`, which `animus.admin` grants. Every command except `status` must be run by a player.
 
+In game, **Movement** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#recordings) records you for that NPC: click **Recording**, then **New recording**, and type a name. Chat says the recording copies what you hold and wear, and a countdown of 3 seconds runs, so walking out of the menu is not recorded, then chat offers **[Stop and save]** and **[Cancel]**. The saved recording goes on the NPC. In Advanced mode, **Show my trail** turns the ghost on or off, as `record ghost` does.
+
 | Command | Effect |
 |---|---|
-| `record start <id>` | Starts recording you as `recordings/<id>.json`. Your current position becomes the origin |
-| `record stop` | Ends the recording and saves it |
+| `record start <id>` | Starts recording you as `recordings/<id>.json`. Your current position becomes the origin. The reply offers **[Stop and save]** and **[Cancel]** |
+| `record stop` | Ends the recording and saves it. The reply gives its length in seconds, such as `Saved recording Wave, 20 s; tx …` |
 | `record cancel` | Ends the recording and throws it away |
 | `record status [page=1]` | Shows who is recording, for how long and how many frames are captured |
 | `record ghost [enabled=toggle]` | Shows or hides your ghost while you record; `enabled` is `on`, `off` or `toggle` |
 | `record preview <id>` | Plays a saved recording to you as a ghost |
 | `record clear` | Ends your preview early |
 
-While recording, Animus reads your position, look direction, ground contact, sneaking, sprinting, swimming, gliding and jumps every `sampleTicks` ticks. It also notes each arm swing, each change to your hands and armor, and each door, fence gate or trapdoor you open or close with a right-click. At most `maximumSessions` players record at once.
+While recording, Animus reads your position, look direction, ground contact, sneaking, sprinting, swimming, gliding and jumps every `sampleTicks` ticks. It also notes each arm swing, each change to your hands and armor, and each door, fence gate or trapdoor you open or close with a right-click. The [wand](/animus/21-in-game-toolkit#the-wand) is never recorded: a hand that holds it records as empty. At most `maximumSessions` players record at once.
 
 A recording ends and saves when you run `record stop` or when it reaches `maximumTicks` (12000 ticks, 10 minutes, by default). It also ends and saves what it has, and tells you why, when you:
 
@@ -147,7 +149,7 @@ A recording ends and saves when you run `record stop` or when it reaches `maximu
 
 A recording still open when the server stops is saved too.
 
-A recording shorter than 20 ticks is thrown away instead of saved. When the saved file would be larger than `maximumFileBytes`, the save is refused with the size and the recording stays open: raise the limit and run `record stop` again, or `record cancel`.
+A recording shorter than 20 ticks, 1 second, is thrown away instead of saved. When the saved file would be larger than `maximumFileBytes`, the save is refused with the size and the recording stays open: raise the limit and run `record stop` again, or `record cancel`.
 
 ## The ghost
 
@@ -161,7 +163,7 @@ While you record with the ghost on, every `ghostIntervalTicks` ticks the ghost a
 
 <div class="animus-demo">
 <p><strong>Recording playback</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/19-recording-playback-ingame.webm" aria-label="The greeter replaying the recording and changing its playback mode" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/19-recording-playback-ingame.webm" aria-label="The greeter replaying the recording and changing how it repeats" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A recording is a movement source of the `animus:navigation` module, alongside a `route` reference and inline `points`:
@@ -173,6 +175,8 @@ A recording is a movement source of the `animus:navigation` module, alongside a 
 ```
 
 `recording` cannot be combined with `route` or `points`; a module that sets more than one of them is refused.
+
+In the Animus menu, a click on a recording in an NPC's **Recording** list puts it on the selected NPCs, and the recording's details set their **Playback** to **Once**, **Loop** or **Back and forth** (`pingpong`).
 
 | `playback` | Effect |
 |---|---|
@@ -254,7 +258,7 @@ A missing or invalid recording is shown as `route-error=` with the reason. The N
 
 ### Making a route from a recording
 
-In the web editor, a recording's Visual view has a **Make route** row: name the route and press the button to create `routes/<id>.json` along the recorded path. It places a point wherever the recorder changed between walking, sneaking, sprinting, swimming and gliding, at least every 8 blocks and at the end, and gives each point the [movement style](/animus/05-movement-mounts-riding#movement-styles) the recorder used on the way to it, so a sneaked stretch is sneaked and a swum one swum. The points stand on whole-block heights and the route has `waitTicks` 0. A route keeps the path, not the timing, the look direction or the events; play the recording itself, or a [recording step](#recording-steps-in-routes), when those matter. Crawling is not recorded as its own flag, so a crawled stretch becomes a walked one; set its points to `crawl` by hand.
+In the web editor, a recording's page has **Make route**: name the route and press **Make route** to create `routes/<id>.json` along the recorded path. It places a point wherever the recorder changed between walking, sneaking, sprinting, swimming and gliding, at least every 8 blocks and at the end, and gives each point the [movement style](/animus/05-movement-mounts-riding#movement-styles) the recorder used on the way to it, so a sneaked stretch is sneaked and a swum one swum. The points stand on whole-block heights and the route has `waitTicks` 0. A route keeps the path, not the timing, the look direction or the events; play the recording itself, or a [recording step](#recording-steps-in-routes), when those matter. Crawling is not recorded as its own flag, so a crawled stretch becomes a walked one; set its points to `crawl` by hand.
 
 ### Recording steps in routes
 

@@ -2,7 +2,7 @@
 title: Gloss
 description: Set up Gloss displays, menus, chat effects, scoreboards, and server text
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-21T00:31:30.433Z
@@ -74,6 +74,7 @@ On first start, Gloss can import menus, images, panels, previews, and settings f
 - [Data Files & Hot Reload](/gloss/03-data-files)
 - [Web Editor & Sync](/gloss/18-web-editor)
 - [Web editor tutorial](/gloss/18-web-editor-tutorial)
+- [Self-Hosted Editor Relay](/gloss/18b-sync-relay)
 - [Localization](/gloss/19-localization)
 - [Behaviors and State](/gloss/19b-behaviors)
 - [Particle Layers](/gloss/25-particle-layers)

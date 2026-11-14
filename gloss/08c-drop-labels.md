@@ -2,7 +2,7 @@
 title: "Drop Labels"
 description: "Label dropped items and render them as display-backed models"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,7 +12,7 @@ Gloss can label dropped items and render them as display-backed models.
 
 The `DROP` limits in `[visibility]` apply to drop labels, their boxes and real-drop cosmetic models. Refusing a cosmetic model keeps the original dropped item visible for that viewer. Entity limits do not delete items or change pickup, merging or despawn rules. Labels and models use separate admission groups.
 
-Open the editor with `/gloss web edit real-drops default`. Documents are schema 4.
+Documents are schema 4. A [paired web editor](/gloss/18-web-editor#pairing) lists the profile under World as Real drops.
 
 With `[features] drops = true` (the default) every item entity that spawns gets a visible custom name. Its text comes from `labels` in the Real Drops document, `plugins/Gloss/real-drops/default.json`, so the fallback presentation and each variant can word labels differently. The name is used whether or not `[features] realDrops` is on.
 
@@ -186,7 +186,7 @@ An omitted `labels.style` uses center billboard, glyph shadow, see-through, cent
 
 Labels retain their authored functions, viewer expressions, and named particle spans. Viewer-dependent formats keep a literal count/type name on the underlying item; their authored text is evaluated only for the player viewing the label. Label particles use the label's vertical offset and the configured global particle range; a larger display view range does not increase the particle range.
 
-The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including label text, per-material names, bundle text, display style, box, particles, physics, script, and animation. On the drop stage, a cube draws the block's real model and a flat item draws the item's extruded texture, both over the rendered world, and each sample drop shows the label its presentation produces.
+The editor's **Presentation** selector edits the default or any conditional variant with the same forms, including label text, per-material names, bundle text, display style, box, particles, physics, script, and animation. Adding variants, the audience, physics and script are in Advanced mode. On the drop stage, a cube draws the block's real model and a flat item draws the item's extruded texture, both over the rendered world, and each sample drop shows the label its presentation produces.
 
 `NATURAL` keeps the airborne rotation and settles the nearest face toward the ground. Partial blocks are positioned against their actual bounds instead of intersecting the surface.
 

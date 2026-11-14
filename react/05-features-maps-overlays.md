@@ -24,9 +24,11 @@ All heatmaps and overlays below inherit these fields unless noted.
 
 In-game heatmaps face north. X increases east/right and Z increases south/down. Unloaded, quiet, measured, center, and MCA-boundary chunks use distinct markings.
 
-React Web shows the selected heatmap on a pan-and-zoom coordinate plane. Close views show individual chunks; wider views group them into larger cells. Spawn and world-border controls can recenter the map.
+React Web shows these heatmaps on each server's **Map** page. Pick the world and the heatmap at the top of the map. The zoom buttons, the mouse wheel and dragging the grid move the view, and Center spawn returns to the world spawn. The grid is a north-up square that fits the page at any width. Close views show individual chunks; wider views group them into larger cells.
 
-Selecting a square shows its center as `world X Z`; grouped cells use the center of the represented area. Admins can choose an online player and confirm a safe teleport inside that chunk. The destination may load or generate the chunk.
+Select a cell with a click or the arrow keys to see its chunks, block range, region file and samples under the grid. Copy position copies its center as `world X Z`; grouped cells use the center of the represented area. Admins can choose an online player and confirm a safe teleport to that center. The destination may load or generate the chunk.
+
+In Advanced mode the map also has center X, center Z and radius fields, applied on Enter or when the field loses focus, buttons that move the view one radius north, south, east or west, Fit border, and the spatial sampler tiles.
 
 Coordinate-grid detail queries use `centerChunkX`, `centerChunkZ`, and `radius`. `radius` is bounded to 1–1,875,000 chunks, and invalid requests receive HTTP 400.
 

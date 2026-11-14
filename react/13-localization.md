@@ -35,8 +35,8 @@ See [Languages](/languages) for the picker, permissions, the full locale list, f
 
 ## React Web locale selection
 
-The language button switches React Web without reloading the page. The browser stores the choice under `reactor.locale`. On the first visit, it tries a supported browser language, then `REACTOR_LANGUAGE`, then `en_US`. This choice does not change the server setting.
+**Select language** in the top bar's **...** menu switches React Web without reloading the page, and so does **Settings** > **General** > **Language**. The browser stores the choice under `reactor.locale`. On the first visit, it tries a supported browser language, then `REACTOR_LANGUAGE`, then `en_US`. This choice does not change the server setting.
 
-`he_IL` uses right-to-left page direction. Commands, pairing codes, and technical values remain left-to-right.
+`he_IL` uses right-to-left page direction. Commands, pairing links, and technical values remain left-to-right.
 
 Complete browser catalogs live at `react-web/web/languages/<locale>.json`. The optional `reactor-language.json` overlay applies only to `REACTOR_LANGUAGE`. React Web validates a catalog before switching and keeps the previous language if loading fails.

@@ -2,13 +2,13 @@
 title: "Animus Tutorial: Introduction"
 description: "Install Animus, set it up, and make, skin and walk your first NPC"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, tutorial, quick start, setup, first npc"
 editor: markdown
 dateCreated: 2026-11-07T00:00:00.000Z
 ---
 
-This page takes you from an empty server to an NPC that wears a skin and walks a route in about ten minutes, mostly with commands. Run them in game as an operator; each one can be pasted as it stands. The rest of the tutorial, starting with [first NPC](/animus/22-tutorial-first-npc), is the longer path: it covers every in-game toolkit screen, step by step, with videos.
+This page takes you from an empty server to an NPC that wears a skin and walks a route in about ten minutes, mostly with commands. Run them in game as an operator; each one can be pasted as it stands. The rest of the tutorial, starting with [first NPC](/animus/22-tutorial-first-npc), is the longer way: it covers the Animus menu, step by step, with videos.
 
 ## 1. Install
 
@@ -21,22 +21,23 @@ Put the Animus jar in `plugins/` (Paper, Spigot, Folia) or `mods/` (Fabric, NeoF
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/01-setup-greeting-ingame.webm" aria-label="The join greeting, the setup list and the status line" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Join as an operator. While the server has no NPCs, Animus greets you two seconds after you join with **[Setup]** and **[Dismiss]**. Click **[Setup]**, or run:
+Join as an operator. While the server has no NPCs, Animus shows a hint two seconds after you join: `Ready. /animus gui opens the menu`, with **[Menu]** and **[Dismiss]**. **[Menu]** runs `/animus gui`, which opens the [Animus menu](/animus/21-in-game-toolkit). For the first steps, run:
 
 ```none
 /animus setup
 ```
 
-It lists the steps on this page and marks the ones already done:
+It lists them and marks the ones already done:
 
 ```none
 Setup | no NPCs | editor not paired
-1. Create an NPC where you stand [Create]
-2. Set a skin and placement [Toolkit]
-3. Edit NPCs in your browser [Pair editor]
+1. Make an NPC [New NPC]
+2. Change it [Menu]
+3. Edit in your browser [Pair]
+Every step in the wiki [Docs]
 ```
 
-When it finds Citizens, Shopkeepers or Denizen data, importing it comes first; see step 8 below. Running `/animus setup` turns the join greeting off for every operator; `/animus setup` itself keeps working.
+**[New NPC]** and **[Menu]** both run `/animus gui`, which opens the Animus menu at Home, and **[Pair]** sends a pairing link for the web editor. When Animus finds Citizens, Shopkeepers or Denizen data, importing it comes first and the hint shows **[Setup]** instead; see step 8 below. Running `/animus setup` turns the join hint off for every operator; `/animus setup` itself keeps working.
 
 ## 3. Make an NPC at your feet
 
@@ -58,7 +59,7 @@ Skins only show on player bodies. The quickest way is a Minecraft account's name
 
 Animus looks the account up on Mojang, saves its signed skin once in `skins/<sha256>.json` and points the guard's `skin` field at it, so other NPCs can share it. It works from the console too, and `/animus npc skin guard reset` takes the skin off. The server needs internet access for the lookup; online mode is not required.
 
-Other ways: the in-game toolkit's **Skins** screen (`/animus tools`, then **Skins**) has **Use my skin** and **From a player name**, and the [web editor](/animus/14-web-editor) (step 7) makes a skin from a PNG file or a web address under **Appearance**.
+Other ways: in the [Animus menu](/animus/21-in-game-toolkit#skins), the guard's **Skin** has **My skin** and **Player name**, and the [web editor](/animus/14-web-editor) (step 7) makes a skin from a PNG file or a web address under **Appearance**.
 
 ## 5. Move it and name it
 
@@ -72,14 +73,14 @@ Other ways: the in-game toolkit's **Skins** screen (`/animus tools`, then **Skin
 
 ## 6. Give it a route
 
-A route is a list of points the NPC walks. Record one by walking it:
+A route is points on the ground; the NPC walks from one to the next and finds its own way between them. Make one by walking it:
 
-1. Run `/animus tools wand` and click the guard with the wand to select it.
-2. Run `/animus tools`, open **Routes** and click **Capture a route**. The first point is where you stand.
-3. Walk to the next place, hold the wand and tap sneak to drop a point. Repeat for each point.
-4. Run `/animus tools` again, open **Routes** and right-click **Save route**. It saves `routes/wp-<your name>.json` and puts it on the guard, which starts walking it.
+1. Run `/animus tools wand` and right-click the guard with the wand. Its screen opens.
+2. Click **Movement**, **Route**, then **New route**. Animus suggests the name `guard-route`; click the paper in the anvil's result slot to keep it. The window closes.
+3. Walk to the first place, hold the wand and tap sneak to drop a point. Repeat for each point.
+4. Click **[Save]** in chat. It saves `routes/guard-route.json` and puts it on the guard, which starts walking it.
 
-The [toolkit's Routes screen](/animus/21-in-game-toolkit#routes) edits the points afterwards. Saving a route file applies it within a second, so you can also edit the JSON and watch the guard follow. [Routes](/animus/05-movement-mounts-riding#routes) covers random order, wandering and waits.
+The [route's details](/animus/21-in-game-toolkit#route-details) change its points and settings afterwards. Saving a route file applies it within a second, so you can also edit the JSON and watch the guard follow. [Routes](/animus/05-movement-mounts-riding#routes) covers random order, wandering and waits.
 
 ## 7. Pair the web editor
 
@@ -108,7 +109,7 @@ Every Citizens NPC arrives as it was, with its routes, guards, shops and command
 
 ## Where to go next
 
-- [Tutorial: first NPC](/animus/22-tutorial-first-npc): every toolkit screen, step by step, with videos.
+- [Tutorial: first NPC](/animus/22-tutorial-first-npc): the Animus menu, step by step, with videos.
 - [NPC definitions](/animus/04-npc-definitions): every field of `guard.json`, equipment, holograms and poses.
 - [Behaviors](/animus/07-behaviors): greetings, dialogue, quests and reactions to clicks.
 - [Combat](/animus/08-combat): guards that fight.

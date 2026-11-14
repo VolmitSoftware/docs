@@ -2,7 +2,7 @@
 title: "Animus: Trait Groups"
 description: "Shared settings that many NPCs take from one file, with merge rules, commands and the Citizens import option"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, npcs, groups, definitions, citizens"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -120,13 +120,13 @@ After conversion, every set of two or more NPCs whose `modules` (apart from `cit
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/04-trait-groups-editor.webm" aria-label="Creating a trait group and assigning it to three NPCs" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-The [web editor](/animus/14-web-editor) edits group files in the same parts as an NPC, with the same checks as a saved file. An NPC's Effective part shows its effective definition with the source of each value, and the NPC browser assigns and unassigns a group by selection, folder or tag as one change. An NPC saved from the editor with a missing group is refused.
+The [web editor](/animus/14-web-editor) edits group files in the same parts as an NPC, with the same checks as a saved file. An NPC's **What it takes** list, under Trait groups on Basics in Advanced, shows its effective definition with the source of each value, and in Advanced the NPC list adds picked NPCs to a group or takes them out as one change (filter by a folder or a tag and select all to reach those). An NPC saved from the editor with a missing group is refused.
 
 ## In game
 
 <div class="animus-demo">
 <p><strong>Trait groups</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/14-trait-groups-ingame.webm" aria-label="Assigning a trait group and making a new one" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/14-trait-groups-ingame.webm" aria-label="Making a trait group for two NPCs, taking it off and putting it back" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-The [toolkit](/animus/21-in-game-toolkit#trait-groups) creates, renames, describes and deletes groups from a chest window, and assigns them to the wand selection. A rename repoints every member and a delete unassigns every member, each in the same transaction as the group file, so one **[Undo]** reverts both.
+In Advanced mode, **Trait groups** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#trait-groups) makes, renames, describes and deletes trait groups, and puts them on the selected NPCs or takes them off. A rename moves every member to the new id and a delete takes the trait group off every member, each saved together with the trait group file, so one **[Undo]** reverts both.

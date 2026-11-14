@@ -2,7 +2,7 @@
 title: "Entity Overlays"
 description: "Show nearby entity health, names, combat attributes, React counts, and Adapt Insight"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-09-05T20:00:00.000Z
@@ -33,7 +33,7 @@ Attack and armor are current Bukkit attribute values. An entity without an attri
 
 ## Configuration
 
-Edit `plugins/Gloss/entity-overlays/default.json`, or open it with `/gloss web edit entity-overlays default`. Valid edits reload automatically. Set `enabled` to `false` in this document to stop overlays.
+Edit `plugins/Gloss/entity-overlays/default.json`, or Entity overlays under World in a [paired web editor](/gloss/18-web-editor#pairing). Valid edits reload automatically. Set `enabled` to `false` in this document to stop overlays.
 
 The shared engine also requires `[features] holograms = true` in `gloss.toml`. If that engine is disabled, React can return to native stack labels.
 
@@ -186,7 +186,7 @@ An Insight target can appear beyond the ordinary overlay radius, and the hologra
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/entity-overlays-editor.webm" aria-label="Entity overlay authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Import, export, undo and live sync use the singleton id `default`, exported to
+Import, export, undo and publishing use the singleton id `default`, exported to
 `entity-overlays/default.json`. Sample controls change the preview only, never Adapt or React
 configuration. Check text size and placement in a Minecraft client. The browser preview does not reproduce the client renderer. See [Web Editor & Sync](/gloss/18-web-editor).
 
@@ -197,7 +197,7 @@ configuration. Check text size and placement in a Minecraft client. The browser 
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/nametag-editor.webm" aria-label="Nametag authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Enable `nametags = true` under `[features]` in `gloss.toml`. Edit schema-1 `nametags/<id>.json` documents with `/gloss web edit nametags <id>`. A nametag controls the player's prefix, account-name color, suffix, vanilla label visibility, and collision rule.
+Enable `nametags = true` under `[features]` in `gloss.toml`. Edit schema-1 `nametags/<id>.json` documents in the files, or under Players in a [paired web editor](/gloss/18-web-editor#pairing). A nametag controls the player's prefix, account-name color, suffix, vanilla label visibility, and collision rule.
 
 ```json
 {
@@ -254,7 +254,7 @@ The selected prefix, name color, and suffix also appear in rendered player-name 
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/nameplate-editor.webm" aria-label="Nameplate authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Enable `nameplates = true` under `[features]`; the hologram and entity-overlay engine must also be enabled. Nameplates are schema-1 documents under `nameplates/<id>.json`, opened with `/gloss web edit nameplates <id>`. They replace the vanilla overhead label with ordered text rows and shared Gloss display styling.
+Enable `nameplates = true` under `[features]`; the hologram and entity-overlay engine must also be enabled. Nameplates are schema-1 documents under `nameplates/<id>.json`, listed under Players in a [paired web editor](/gloss/18-web-editor#pairing). They replace the vanilla overhead label with ordered text rows and shared Gloss display styling.
 
 ```json
 {

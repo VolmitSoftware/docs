@@ -2,7 +2,7 @@
 title: "Animus: Mod Servers"
 description: "Running Animus on Fabric, NeoForge and Forge servers, and what differs from Bukkit"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, fabric, neoforge, forge, mods, compatibility"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -41,7 +41,7 @@ After installing, run `/animus status` from the console or as an operator to che
 
 ## Commands and permissions
 
-`/animus` has the same subcommands, arguments, replies and tab completion as on Bukkit; see [commands and permissions](/animus/02-commands-permissions).
+`/animus` has the same subcommands, arguments, replies and tab completion as on Bukkit; see [commands and permissions](/animus/02-commands-permissions). `/animus gui` opens the [Animus menu](/animus/21-in-game-toolkit), and the menu, the wand and the anvil questions work as on Paper.
 
 | Node | Who has it |
 |---|---|
@@ -66,7 +66,7 @@ A permission mod can grant any node through the vanilla permission named by the 
 | Combat pursuit regions (`pursuit.region`) | Not available, because no protection plugin provides regions. The NPC fights within its normal ranges, the log says so once per NPC, and `/animus combat status` counts it as `region-unavailable` |
 | Combat `permissions` and `groups` rules | Read through the permission mapping above. A permission group is the permission `group.<name>`, so it needs a permission mod that grants it |
 | Build protection | No protection adapter: every block a [build](/animus/09-building) changes is allowed; `/animus build` shows `protection=none` |
-| Money prices in shops, GUIs and hiring | No economy unless a Java module provides one. Use item prices |
+| Money prices in shops, GUIs and hiring | No economy unless a Java module provides one. Use item prices. With no economy, shop prices are written by `[shops] priceFormat` |
 | `animus:charge` and `animus:can-afford` | Items and levels work as on Paper. Money uses the same economy as shops, so without a Java module that provides one a cost with money is never affordable |
 | Mob control (`/animus combat mob <npc> <mob>`) | Not available; the command says so. Use `/animus combat target <npc> <target>` or `combat guard` instead |
 | Manual hit (`/animus combat attack <npc> <target> [damage=1]`) | Available, with the same reach, line of sight and protection checks |

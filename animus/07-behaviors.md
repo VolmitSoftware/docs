@@ -2,7 +2,7 @@
 title: "Animus: Behaviors"
 description: "JSON behavior documents, triggers, built-in capabilities, packs and state"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, behaviors, triggers, dialogue, quests, packs"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -33,6 +33,8 @@ A behavior is a JSON document that tells an NPC what to do. Plugin-wide budgets 
 ```
 
 This example calls `reference:hello`, a capability from a [Java module](/animus/99-java-modules-api). Its action returns a JSON message to the engine and sends nothing to players. For actions that reach the world and players without any module, see [built-in capabilities](#built-in-capabilities).
+
+In game, **Talk** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#conversations) writes conversations, the behaviors that talk with lines and answers. In Advanced mode, **Behaviors** puts any behavior on NPCs and runs, traces and checks it. Other behaviors are edited in their files or in the [web editor](/animus/14-web-editor).
 
 ## Documents
 
@@ -249,7 +251,7 @@ A `repeat` with a literal `count` runs that many times. An operand `count` is co
 
 <div class="animus-demo">
 <p><strong>Behaviors and triggers</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/22-behaviors-list-ingame.webm" aria-label="Adding a behavior to an NPC and listing its trigger bindings" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/22-behaviors-list-ingame.webm" aria-label="Taking the greeter's conversation off and putting it back, then listing trigger bindings" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A behavior document can declare `triggers`. An NPC runs them when its definition lists the behavior in its `behaviors` array, such as `"behaviors": ["example:greeter"]`:
@@ -280,7 +282,7 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `interaction` | Optional `action` (see [interaction actions](#interaction-actions)): `interact` (default). Optional `consume`: an expression checked as the input arrives. Optional `playerCooldownTicks` (0 to 72,000) and `whileRunning` (`drop` or `queue`). | A viewer's click passes server validation and no listener cancels `VirtualNpcInteractionEvent`, or the viewer presses the drop or swap-hands key while looking at the NPC in reach. When `consume` holds, shops, hiring, GUIs, riding and selection do not see the click, and a drop or swap does not happen. |
 | `proximity` | `phase`: `enter` or `leave`. `radius`: above 0, at most 64 blocks. Optional `playerCooldownTicks` (0 to 72,000) gives each player their own cooldown instead of one for the trigger. | A viewer crosses that radius. Leaving needs half a block of extra distance. |
 | `spawn` | None. | The NPC is first presented. At startup it waits for the first behavior catalog. |
-| `despawn` | None. | A spawned NPC is despawned. It runs against the new dormant definition. |
+| `despawn` | None. | A spawned NPC is despawned. It runs against the new despawned definition. |
 | `damage` | None. | The NPC's health falls. Runs read `context.damage`, `context.attacker` (a UUID) and `context.attacker_type` (`player`, `mob`, `npc`, or empty when unknown). A player attacker is the run's player. |
 | `death` | None. | The NPC's health reaches zero. Runs read `context.killer` and `context.killer_type`, and a player killer is the run's player, so `animus:command` with `{player}` rewards them. No despawn trigger follows a death. `say`, `play-sound` and `spawn-particle` still come from where the NPC fell; actions that need a living body are unavailable until it respawns. |
 | `waypoint` | Optional `waypoint`: -1 to 4,095. | The NPC arrives at a route point; -1 is a manually requested destination. Without the field, any arrival fires. |
@@ -348,7 +350,7 @@ Interaction, proximity and dialogue runs carry the viewer's UUID, damage and dea
 
 A trigger with no player cannot start a behavior that declares a `player` or `relationship` variable. That start is counted under `START_FAILED`, and `/animus behaviors triggers` shows the most recent refusal with its field. Spawn, despawn, waypoint and timer triggers never have a player, and damage and death triggers have one only when a player dealt the hit, so `/animus behaviors validate` warns with `behavior-trigger-needs-player` on each such trigger in that behavior. The behavior is still accepted, since its other triggers may work. A `module` trigger depends on what its module supplies and is not flagged.
 
-Only active NPCs fire triggers. Dormant NPCs fire nothing, and previews never fire triggers. Editing an active NPC's definition is neither a despawn nor a spawn. A player disconnecting fires no `leave`. Deleting an NPC fires no `despawn`, because no definition remains to run against. Stopping the server fires nothing.
+Only active NPCs fire triggers. Despawned NPCs fire nothing, and previews never fire triggers. Editing an active NPC's definition is neither a despawn nor a spawn. A player disconnecting fires no `leave`. Deleting an NPC fires no `despawn`, because no definition remains to run against. Stopping the server fires nothing.
 
 Replacing the behavior, editing or despawning the NPC, or making the behavior unavailable cancels its running executions and drops its queued starts. Cancellation cannot undo an action that already happened. A `module` trigger whose module is missing makes the whole behavior unavailable.
 
@@ -537,7 +539,7 @@ This greeter faces the player who started it, asks a question, and records that 
 | Capability | Arguments | True when |
 | --- | --- | --- |
 | `animus:has-permission` | `permission` | The triggering player holds the permission. False with no triggering player. |
-| `animus:npc-state` | At least one of `spawned`, `minimumHealth`, `maximumHealth` | The NPC matches all of them. A dormant or removed NPC has `spawned` false and health 0. |
+| `animus:npc-state` | At least one of `spawned`, `minimumHealth`, `maximumHealth` | The NPC matches all of them. A despawned or removed NPC has `spawned` false and health 0. |
 | `animus:player-in-range` | `radius` (1-64), optional `anyPlayer` | The triggering player, or any player with `anyPlayer`, is within the radius in the NPC's world. |
 | `animus:flag-state` | `name`, optional `scope`, optional `value` (default true: any JSON value, including a list or map) | The flag has exactly that value: `3` never equals `3.0` or `"3"`. An unset or expired flag is false: it equals `false` and nothing else. |
 | `animus:quest-state` | `name`, optional `scope`, at least one of `equals`, `atLeast`, `atMost` | The stage matches all of them. An unset quest is stage 0. |
@@ -946,7 +948,7 @@ While a catalog scan is pending, further catalog commands report busy. A run sta
 
 ### Manual runs
 
-Each NPC allows one active manual run at a time, dormant NPCs included. Trigger-started runs are counted separately under their own budgets. A manual run is tied to the exact definition and program it started with: replacing, deleting or despawning the definition cancels it, and so does a reload of the NPC file even when nothing changed. An unchanged behavior keeps running across a catalog reload. Accepting a new revision of the behavior cancels runs of the earlier program, while a rejected edit leaves them running on the previous valid program.
+Each NPC allows one active manual run at a time, despawned NPCs included. Trigger-started runs are counted separately under their own budgets. A manual run is tied to the exact definition and program it started with: replacing, deleting or despawning the definition cancels it, and so does a reload of the NPC file even when nothing changed. An unchanged behavior keeps running across a catalog reload. Accepting a new revision of the behavior cancels runs of the earlier program, while a rejected edit leaves them running on the previous valid program.
 
 Cancellation cannot undo an action that already happened or forcibly stop a running Java module call.
 

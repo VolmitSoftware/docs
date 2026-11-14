@@ -2,7 +2,7 @@
 title: "Container Previews"
 description: "Show container contents in a holographic card when a player looks at them"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,8 +10,8 @@ dateCreated: 2026-08-19T00:00:00.000Z
 Container previews show a private holographic card when a player looks at a supported block or entity. The inventory does not open.
 
 Preview layouts are JSON documents in `plugins/Gloss/previews/`. Gloss includes 14 layouts, supports
-custom ones, and reloads the folder while the server runs. `/gloss web edit container-preview <id>`
-opens one in a restricted live editor session; `/gloss web workspace` includes every preview.
+custom ones, and reloads the folder while the server runs. A [paired web editor](/gloss/18-web-editor#pairing)
+lists every preview under Menus and screens.
 
 Container preview cards use the `PREVIEW` limits in `[visibility]`. All content and card parts are admitted together; a refused preview remains hidden until its normal updates can admit it. Reduced and minimal detail omit particle layers, and culled detail hides the card.
 
@@ -475,8 +475,8 @@ The preview lexer treats `%` as modulo, so raw `%player_name%` is not placeholde
 `player.name`, `papi('player_name')` or `papiNumber('player_ping', 0)` instead, and a registered
 `PreviewStateProvider` for typed domain state PAPI does not expose.
 
-In the web editor, right-click a container-preview document and choose **Create random preview** to
-insert an editable example using all four element types.
+In the web editor, open the **...** menu of a container preview's **Elements** list and choose **Create random preview** to
+replace its content with an editable example using all four element types. **New document > Random** creates a new one.
 
 ## The included documents
 

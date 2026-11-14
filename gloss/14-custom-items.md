@@ -2,7 +2,7 @@
 title: "Custom Items & Item Providers"
 description: "Use items from supported plugins in Gloss menus and panels"
 published: true
-date: 2026-09-19T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -118,8 +118,8 @@ When the sender also has `gloss.items.export`, the status output includes `/glos
 
 ## The custom item catalog
 
-`/gloss item export` writes `plugins/Gloss/custom-items.json`. In the web editor, open **Settings**,
-choose **Import custom item catalog**, and select that file. Without a catalog, the custom-item field
+`/gloss item export` writes `plugins/Gloss/custom-items.json`. In the web editor, switch to Advanced, open **Help > Settings**,
+choose **Import catalog** under **Custom item catalog**, and select that file. Without a catalog, the custom-item field
 accepts free text.
 
 The catalog adds autocomplete and offline checks, but the server performs the final lookup when a

@@ -2,7 +2,7 @@
 title: "Panels"
 description: "Place persistent hologram menus in the world"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -110,8 +110,8 @@ definition and logs the failure by filename; a broken file on first startup does
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/world-panel-editor.webm" aria-label="World panel authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-In a menu flow map, use **Create world panel** to supply an id, root menu, world key and world UUID.
-**Import world panel** reads a runtime panel file; **Export world panel** writes that definition
+In a menu flow map, an Advanced kind, open the inspector's **World panel** section and use **Create world panel** to supply an id, root menu, world key and world UUID.
+**Import** reads a runtime panel file. Once linked, **Export world panel** in the inspector's **...** menu writes that definition
 without the local flow layout. The inspector edits placement, world binding, follow behavior,
 visibility and `show`. Duplicating a linked panel assigns a new runtime id and UUID while copying
 its settings, and applied edits support undo and redo.
@@ -307,14 +307,10 @@ stays open. `/gloss panel cancel` discards the staged state and clears the previ
 
 ## Opening a panel in the web editor
 
-```
-/gloss web edit panel <panel>
-```
-
-This needs `gloss.web.edit` and opens the panel, its reachable menus and their images. Browser
-autosave stays local, and **Publish to Server** applies the project after revision checks.
-`/gloss web workspace` opens every editable Gloss document and image instead of one panel graph.
-See [Web Editor & Sync](/gloss/18-web-editor).
+A [paired web editor](/gloss/18-web-editor#pairing) lists every panel under Menus and screens as a
+flow map (an Advanced kind) with its world panel linked, next to the menus and images it uses. Browser autosave stays local, and
+**Publish** sends your changes; the server applies each one after checking it still matches the copy
+you started from. Pairing needs `gloss.editor.pair`.
 
 ## Configuration
 
@@ -339,8 +335,7 @@ definition and logs the failure with the filename. Panel files must be UTF-8 JSO
 | Node | Default | Grants |
 |---|---|---|
 | `gloss.panels` | op | Every `/gloss panel` node, plus `/gloss menu create` |
-| `gloss.web.edit` | op | `/gloss web edit panel <panel>` |
-| `gloss.web.workspace` | op | `/gloss web workspace` |
+| `gloss.editor.pair` | op | `/gloss editor pair`, to edit panels in the web editor |
 | `gloss.open.<menuId>` | op | Navigating from a panel into a non-root menu |
 
 `gloss.panels` also covers `/gloss menu create`, which writes a menu document and a panel document

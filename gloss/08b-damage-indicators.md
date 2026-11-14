@@ -2,7 +2,7 @@
 title: "Damage Indicators"
 description: "Show damage and healing numbers beside entities"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Gloss can show a floating number beside an entity when it takes damage or heals.
 
-Open the editor with `/gloss web edit damage-indicators default`. The profile is schema 4.
+The profile is schema 4. A [paired web editor](/gloss/18-web-editor#pairing) lists it under World as Damage indicators.
 
 The indicator document accepts `show`, defaulting to `true`. It combines with `audience.when` for
 each viewer and uses the same event snapshot. Dynamic conditions are reevaluated while an indicator
@@ -157,7 +157,7 @@ The indicator stage previews damage, healing, criticals, motion, scale and fadin
 | `gloss.indicators.show` | `true` | This player sees damage and heal indicators |
 | `gloss.indicators.reset` | `op` | `/gloss indicators reset`, which restores the default file |
 
-`/gloss web edit damage-indicators default` opens the document. Disabling `[features] damageIndicators` removes current indicators and stops new ones; enabling it again does not require a restart.
+Disabling `[features] damageIndicators` removes current indicators and stops new ones; enabling it again does not require a restart.
 
 ## Reference
 

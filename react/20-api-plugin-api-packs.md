@@ -13,7 +13,7 @@ Plugin API packs add React metrics without Java code. Put each trusted `.toml` f
 ## Install a pack
 
 1. Review its target plugin, versions, sources, and `trusted` setting.
-2. Copy it to `plugins/React/plugin-apis/` or add it through React Web.
+2. Copy it to `plugins/React/plugin-apis/`, or add it in React Web under **Plugins** > **API packs** (see below).
 3. Run `/react plugin-api reload`.
 4. Check `/react plugin-api status`.
 
@@ -55,3 +55,13 @@ Packs cannot call arbitrary fields or methods.
 Each metric becomes `plugin-api-<pack-id>-<metric-id>` and is available in monitors, history, React Web, and `%react_sampler.<id>%`.
 
 Use `trusted = true` only for a pack you have reviewed. It allows source types with broader access.
+
+## Manage packs in React Web
+
+Admins see **Plugins** > **API packs** on each server page. The list shows every installed pack with its state, its target plugin and how many of its metrics report. Files that failed to load are listed above it with the reason.
+
+- **New pack** opens an editor with a starting template. **Validate** checks the TOML, and **Install pack** validates again and saves it to the server's pack folder.
+- **Edit** opens an installed pack in the same editor; there the last button reads **Save**.
+- **Delete** asks before it removes the pack from that server.
+
+In Advanced mode the page also lists every pack metric with its sampler id and whether it is reporting, or why not.

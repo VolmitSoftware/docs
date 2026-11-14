@@ -13,7 +13,7 @@ Operator actions queue one-time cleanup or lag-response jobs. Every action TOML 
 
 List actions with `/react action audit` (aliases `list`, `ls`). Disabling an action prevents new tickets from running.
 
-The HTTP API treats `purge-entities`, `purge-chunks`, `collect-garbage`, `action-quarantine-hot-chunks`, `action-trim-entities-by-age-priority`, and `action-incident-playbook` as destructive. Those IDs require an admin token and `confirm:true`; operator tokens can run only non-destructive actions. Authorization uses the canonical runtime ID, so the `action-` prefix cannot bypass confirmation.
+The HTTP API treats `purge-entities`, `purge-chunks`, `collect-garbage`, `action-quarantine-hot-chunks`, `action-trim-entities-by-age-priority`, and `action-incident-playbook` as destructive. Those IDs require a pairing with the `admin` scope and `confirm:true`; an operator pairing can run only non-destructive actions. Authorization uses the canonical runtime ID, so the `action-` prefix cannot bypass confirmation.
 
 ### `collect-garbage`
 

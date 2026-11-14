@@ -25,6 +25,25 @@ Samplers are React's measurement units. They feed monitors, map renderers, and P
   first and last source timestamps. Repeated cached readings remain separate captures.
 - History is kept on disk under `plugins/React/history/`. Retention per tier is in
   [01 - Installation & Configuration](/react/01-installation-configuration#metric-history).
+- In React Web, switch to Advanced mode to see the **Metrics** page. It lists every sampler with
+  its current, minimum and maximum reading (twenty to a page, the unit once under its name) and
+  charts one sampler's stored history over the last hour, day, week, 30 days or everything kept;
+  the chart's (i) names the stored span, point count and resolution. A sampler that has stored nothing says so instead of
+  showing a date range. The address carries the sampler (`?metric=<id>`), and the sampler rows on
+  **Performance > Internals** open their history there. A sampler missing from the latest live
+  update shows `--` until it reports again.
+- The charts on **Overview** and **Performance** (tick time and its percentiles, heap, disk and
+  network rates, React's own tick time) have a range switch in their heading. **Live** draws the
+  readings since the page opened. **1h**, **6h** and **24h** draw what the server kept, as 360
+  averages of 10 seconds, 1 minute and 4 minutes, and keep adding live readings. The pick applies
+  to every chart of that server, and the browser remembers it. React keeps these ranges in memory
+  for those samplers only (about 170 KB, whatever the uptime), fills them from the stored history
+  when it starts, so they survive a restart, and updates them on its history thread, never the
+  server thread.
+- `GET /api/v1/metrics/range?range=1h` (or `6h`, `24h`; optional `ids=a,b` to narrow the samplers)
+  returns one range in one response: `range`, `stepMs`, `fromMs`, `toMs` and, per sampler, 360
+  `values`, oldest first, `null` where nothing was recorded. The bucket that is still filling is
+  left out. It uses the configured read authentication.
 - A sampler that cannot measure reports unavailable rather than a healthy-looking zero. Samplers
   that read main-thread state report unavailable until their first main-thread reading completes,
   and each completed reading is served immediately. `event-time`, `events-listeners`,

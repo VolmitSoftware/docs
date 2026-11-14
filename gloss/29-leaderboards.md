@@ -2,13 +2,15 @@
 title: "Leaderboards"
 description: "Rank players by a statistic, placeholder or metric and show the rows in any text"
 published: true
-date: 2026-11-04T00:49:48.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-11-03T22:20:00.000Z
 ---
 
 A leaderboard ranks players by a number that Gloss samples while they are online. Each file in `plugins/Gloss/leaderboards/` is one board, and its file name is the board's id. Boards draw nothing themselves. Holograms, scoreboards and other text read their rows through expressions.
+
+A [paired web editor](/gloss/18-web-editor#pairing) lists every board under HUD and server list. The editor's form sets the source, rows, order, resets, offline players and row text, and keeps any other keys in the file.
 
 ## Document
 

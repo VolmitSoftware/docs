@@ -2,7 +2,7 @@
 title: "Animus: Configuration"
 description: "Every config.toml setting, its default and range, and how changes apply live"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, configuration, config.toml, hotload"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -65,7 +65,7 @@ A file refused at startup stops Animus from starting: the log has one line that 
 |---|---|---|---|
 | `enabled` | `true` | | Run the NPC runtime |
 | `viewDistance` | `48` | 8-256 blocks | How close a player must be to see an NPC |
-| `maximumVisible` | `64` | 1-128 | NPCs shown to one player at once. Past it, the nearest NPCs found first show and the rest stay hidden for that player; the console warns, at most every 10 minutes, naming a player who reached it |
+| `maximumVisible` | `128` | 1-128 | NPCs shown to one player at once. With more in range, that player sees the nearest ones; see below |
 | `maximumViewers` | `256` | 1-1024 | Players that receive NPCs |
 | `updatesPerTick` | `64` | 1-64 | Players whose NPC view is updated per tick; with more players, they take turns |
 | `packetsPerTick` | `512` | 1-1024 | NPC packets per tick, split evenly across the players updated (per region on Folia). A share one player leaves unused goes to the next |
@@ -74,6 +74,10 @@ A file refused at startup stops Animus from starting: the log has one line that 
 | `simulationPerTick` | `512` | 16-65536 | NPC upkeep per tick: one idle fall step or one rig animation step each (per region on Folia) |
 | `queuePerViewer` | `24` | 4-32 | Packet operations one player may have waiting to send. Cosmetic updates stop at three quarters of it |
 | `degradedIntervalTicks` | `4` | 1-40 | While a budget runs short, cosmetic updates and moves of distant NPCs happen on one update in this many. `1` turns the spreading off |
+
+When more NPCs are in range than `maximumVisible`, each player sees the nearest ones. Animus ranks them again when the player has moved 2 blocks, at most every 4 updates of that player's view, and at once after a jump of 16 blocks or more, such as a teleport. It also ranks at once when a shown NPC leaves while others wait, and every 10 updates while NPCs are left out. An NPC whose chunk has not reached the player yet is counted, so when a crowd comes into view the places fill nearest first as the chunks arrive. A shown NPC, or one about to be shown, keeps its place until another one is 4 blocks nearer, so NPCs at the edge of the crowd do not swap in and out.
+
+The cap limits how many NPC bodies one player's game has to draw. 128 leaves room for a busy town within the default 48-block `viewDistance`, and it matches the 256 entity IDs a player can be sent for NPCs, since an NPC whose name floats above it as text takes two: the body and the text. The packets those bodies need are limited separately by `packetsPerTick`, `queuePerViewer` and `pendingSpawnsPerViewer`, so a higher cap does not send more per tick. A config.toml written before 128 became the default keeps `maximumVisible = 64`; Animus never rewrites the file, so change the value by hand.
 
 When a tick has less packet budget than work, despawns go first, then moves, equipment, mounts and new spawns, then cosmetic updates such as look-close turns, rig bones, recording poses, arm swings and timed hologram text. Each update sends the NPC's latest state, so several changes in one tick go out as one. After a tick where despawns or moves had to wait, cosmetic updates pause for 20 ticks. `/animus status` then shows `presentation=strained`.
 
@@ -295,7 +299,7 @@ See [building](/animus/09-building).
 | `enabled` | `true` | | Run shops |
 | `economy` | `"auto"` | `auto` or `none` | `auto` uses the server's economy when there is one; `none` turns money prices off |
 | `style` | `"chest"` | `chest` or `native` | The window a shop opens when neither the shop nor its NPC chooses: the chest window or the villager trading screen |
-| `priceFormat` | `"#,##0.##"` | Java decimal pattern | How prices are written |
+| `priceFormat` | `"#,##0.##"` | Java decimal pattern | How prices are written while no economy is ready. With one, prices read in the economy's own format, such as `$2.00` or `2 Coins` |
 | `flushMillis` | `2000` | 100-60000 | How long limit and stock counter changes wait before they are written |
 
 ### [shops.messages]
@@ -380,6 +384,7 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | Key | Default | Range | Meaning |
 |---|---|---|---|
 | `enabled` | `true` | | Serve the editor API |
+| `serverName` | `""` | At most 64 characters | The server's name in the editor. Empty uses the MOTD without colour codes, or the server folder's name when the MOTD is empty or the default |
 | `editorUrl` | `"https://animus.volmitsoftware.com"` | `http` or `https` URL | Address used in pairing links |
 | `listenerEnabled` | `true` | | Run the direct listener |
 | `listenAddress` | `"127.0.0.1"` | Host or address | Where the listener binds. A non-loopback address needs `tlsCertificate` and `tlsPrivateKey` |
@@ -388,13 +393,13 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `tlsCertificate` | `""` | File path | PEM certificate. Set together with `tlsPrivateKey` |
 | `tlsPrivateKey` | `""` | File path | PEM private key |
 | `allowedOrigins` | `["https://animus.volmitsoftware.com", "https://animus-editor.web.app", "https://animus-editor.firebaseapp.com"]` | At most 32 | Browser origins accepted, as `scheme://host[:port]`. `http://` only on loopback. To use an editor you serve yourself, add its origin, such as `http://127.0.0.1:8098` |
-| `tokenDays` | `7` | 1-365 | Default lifetime of a pairing |
+| `tokenDays` | `7` | 1-365 | Days a pairing lasts without use. Each use starts the days again |
 | `auditDays` | `30` | 1-3650 | Days of editor audit log kept |
 | `requestBodyBytes` | `4194304` | 1024-67108864 | Size of one request |
 | `importBodyBytes` | `16777216` | 1024-268435456 | Size of one uploaded import |
 | `changeSetDocuments` | `512` | 1-512 | Documents in one change set |
 | `concurrentRequestsPerToken` | `8` | 1-64 | Requests one paired browser may have running |
-| `requestsPerSecond` | `20` | 1-1000 | Requests per second per paired browser |
+| `requestsPerSecond` | `20` | 1-1000 | Requests per second per paired browser, bursting to twice that. A browser over it is told when to retry, and the console logs one line per browser per minute |
 | `pairAttemptsPerMinute` | `10` | 1-600 | Pairing attempts accepted per minute |
 | `openConnections` | `64` | 1-1024 | Open listener connections |
 | `eventFramesPerSecond` | `20` | 1-100 | Event messages per second per connection |
@@ -467,7 +472,7 @@ On Paper, Spigot and Folia with [PlaceholderAPI](https://modrinth.com/plugin/pla
 - dialogue prompts and choice buttons
 - chest GUI and shop titles, item names, lore and trade offers
 
-Animus fills its own `{player_name}` and `{{ }}` holes first, then PlaceholderAPI, then colours the text, so `&` codes a placeholder returns still render. Text with no pair of `%` signs never reaches PlaceholderAPI. A placeholder that needs a player uses the player who sees the text; with no such player, or if the expansion fails, the text stays as written. The in-game toolkit shows placeholders as written, since it edits them.
+Animus fills its own `{player_name}` and `{{ }}` holes first, then PlaceholderAPI, then colours the text, so `&` codes a placeholder returns still render. Text with no pair of `%` signs never reaches PlaceholderAPI. A placeholder that needs a player uses the player who sees the text; with no such player, or if the expansion fails, the text stays as written. The Animus menu shows placeholders as written, since it edits them.
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
@@ -487,7 +492,7 @@ metrics = true
 [npcs]
 enabled = true
 viewDistance = 48
-maximumVisible = 64
+maximumVisible = 128
 
 [behaviors.actions]
 commandBehaviors = ["town:gate/open"]

@@ -2,7 +2,7 @@
 title: "Animus: Combat"
 description: "The combat module: target rules, weapons, guards, protection and limits"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, combat, guards, worldguard, sentinel"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -65,7 +65,7 @@ Every hit asks [protection](#protection) first, as combat hits do, so WorldGuard
 
 On death, drops and experience fall where it died, the player who dealt the last blow, or shot the projectile that did, gets a mob kill on their statistics, and the `death` [behavior trigger](/animus/07-behaviors#automatic-triggers) runs with the killer as its player. A behavior gives commands, rewards or messages on death with `animus:command` or `animus:message` from that trigger; `context.killer` and `context.killer_type` say who it was.
 
-After a respawn delay it comes back at full health at its next point and walks back to its post, as combat NPCs do after a fight; a patrolling NPC picks up its route from the first point. With `permadeath` it stays dead: after its fall has played, Animus sets `dead` to `true` in its definition as one transaction. The definition is kept, the NPC is not shown, and a restart keeps it dead. `/animus npc revive <npc>`, **Revive** in the toolkit's Manage screen or the editor's Revive button clears the mark, and it spawns at its definition position. On an NPC that is merely waiting to respawn, revive brings it back at once. A revive during the fall that cannot bring the NPC back, because no respawn point is loaded, changes nothing: the permadeath is still recorded when the fall ends.
+After a respawn delay it comes back at full health at its next point and walks back to its post, as combat NPCs do after a fight; a patrolling NPC picks up its route from the first point. With `permadeath` it stays dead: after its fall has played, Animus sets `dead` to `true` in its definition as one transaction. The definition is kept, the NPC is not shown, and a restart keeps it dead. `/animus npc revive <npc>`, **Revive** on an NPC's screen in the Animus menu (Advanced mode) or the editor's Revive button clears the mark, and it spawns at its definition position. On an NPC that is merely waiting to respawn, revive brings it back at once. A revive during the fall that cannot bring the NPC back, because no respawn point is loaded, changes nothing: the permadeath is still recorded when the fall ends.
 
 ### Projectiles and the environment
 
@@ -92,7 +92,7 @@ Holograms bound to an NPC can show its health at all times with `npc.health`; se
 
 <div class="animus-demo">
 <p><strong>Combat</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/28-combat-ingame.webm" aria-label="Turning on combat, setting target rules and having the guard follow the player" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/28-combat-ingame.webm" aria-label="Turning on combat for the guard, setting what it attacks and having it guard the player" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Settings live in the NPC definition as JSON. Every section and field is optional, and the defaults target nothing, so `{"enabled": true}` alone makes an NPC that fights back but never starts a fight. Add [`animus:health`](#health-and-death) to let it be hurt. `enabled` must be the JSON value `true`. Unknown keys and out-of-range values are rejected with the exact field, such as `$.modules.animus:combat.melee.reach`, and the definition is refused like any other invalid edit.
@@ -138,6 +138,8 @@ A combat NPC that respawns comes back with full ammunition and no target, and th
 Current health, targets, cooldowns, ammunition and greeting memory are runtime state. They are never written into the definition and do not survive a restart or despawn.
 
 `"targetableByMobs": true` in the module lets nearby hostile mobs attack the NPC; see [limits](#limits).
+
+In game, **Combat** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#combat) turns combat on, picks who the NPC attacks, sets whether it can be hurt and its health, and makes it guard you. In Advanced mode it also edits the rule lists and every section above, and **Guard me now** makes the NPC guard you until it is released, without saving anything.
 
 ## Target rules
 

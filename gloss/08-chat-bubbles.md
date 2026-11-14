@@ -2,7 +2,7 @@
 title: "Chat Bubbles"
 description: "Show a player's chat above their head"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Gloss can show chat above the player who sent it.
 
-Open the editor with `/gloss web edit bubble-style <id>`. Styles are schema 5, in `bubbles/<id>.json`.
+Styles are schema 5, in `bubbles/<id>.json`. A [paired web editor](/gloss/18-web-editor#pairing) lists them under Chat as Bubble styles.
 
 A player who cannot see the speaker does not see their bubble. Vanish works.
 
@@ -128,7 +128,7 @@ Gloss selects the style once per message. Changes apply to new bubbles, not ones
 
 The bubble keeps the formatting and emoji already allowed in chat, with or without the channel engine. It does not grant color formatting or emoji that the sender lacks permission to use.
 
-Wrapping counts visible characters and keeps color and decoration state. One message uses one multiline display. Older messages move upward to make room for newer ones.
+Wrapping counts visible characters, the prefix included, and keeps color and decoration state. One message uses one multiline display. Older messages move upward to make room for newer ones.
 
 `prefix` takes expressions, PlaceholderAPI, emoji, legacy colors and MiniMessage. A closed tag styles only the label, an open one carries into the message:
 
@@ -260,7 +260,7 @@ Channel messages apply enabled emoji tokens and triggers when the sender has `gl
 <video src="https://media.volmitsoftware.com/gloss-assets/demos/channel-editor.webm" aria-label="Chat channel authoring, browser editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-Enable `channels = true` under `[features]` in `gloss.toml` to use Gloss chat formatting and mentions. The switch applies on config reload, including when enabling channels after startup. Chat commands are registered at startup and become usable when channels are enabled. Channel documents use schema 1 under `channels/<id>.json`. Open the global channel with `/gloss web edit channel global` and choose **Mentions** to edit its enabled switch, highlighted message format, tagged-name style, and sound.
+Enable `channels = true` under `[features]` in `gloss.toml` to use Gloss chat formatting and mentions. The switch applies on config reload, including when enabling channels after startup. Chat commands are registered at startup and become usable when channels are enabled. Channel documents use schema 2 under `channels/<id>.json`. In a [paired web editor](/gloss/18-web-editor#pairing), open the global channel under Chat; its **Player mentions** section edits the enabled switch, the tagged message format, the tagged-name style, and the sound.
 
 Type `@Alex` to mention the online player whose account name is Alex. Matching is case-insensitive and uses the whole name. The tagged recipient sees the highlighted message and hears one notification sound; other recipients see the ordinary channel format. Repeating the same mention in one message does not play multiple sounds. Only recipients allowed to hear the channel receive the notification.
 

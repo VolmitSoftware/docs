@@ -2,7 +2,7 @@
 title: "Holograms"
 description: "Create, edit, position, and format persistent Gloss holograms"
 published: true
-date: 2026-11-05T18:30:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -12,7 +12,7 @@ Each JSON file in `plugins/Gloss/holograms/` defines one persistent hologram. Th
 
 Hologram text, object lines and box parts share the limits in `[visibility]`. Each entity shown to one viewer consumes one unit; a world display shown to ten viewers consumes ten units. Existing groups reconcile their membership and admission on each refresh; a refused group stays hidden and retries on its next refresh. Reduced and minimal detail omit boxes and particle layers; culled detail hides the hologram. Text and object-line groups are admitted independently of optional boxes. World displays require a server API that can hide an entity before viewer admission; Gloss does not publish a display when that capability fails.
 
-`/gloss web edit hologram <id>` opens one hologram in a restricted live editor session; `/gloss web workspace` includes every hologram. Check text size and placement in a Minecraft client, since the browser preview does not reproduce the client renderer.
+A [paired web editor](/gloss/18-web-editor#pairing) lists every hologram under World. Check text size and placement in a Minecraft client, since the browser preview does not reproduce the client renderer.
 
 ## The hologram document
 
@@ -28,7 +28,7 @@ Hologram text, object lines and box parts share the limits in `[visibility]`. Ea
   },
   "lines": [
     "&d&lSpawn",
-    "Welcome, %player_name%!"
+    "&7Welcome, %player_name%!"
   ],
   "style": {"billboard": "fixed", "seeThrough": true, "scaleX": 2.0, "scaleY": 2.0, "scaleZ": 2.0},
   "box": {"enabled": true, "padding": 4, "borderWidth": 1, "backgroundArgb": "#B31B1B22", "borderArgb": "#FFAAAAAA"},
@@ -218,7 +218,7 @@ Particle emission and animation playback retain their own clocks; direct documen
 
 With `[holograms] perViewerPlaceholders = true`, each nearby player sees their own placeholder and viewer-expression values, including `viewer.*`, `pack.*`, `lang()` and `leaderboard.<id>.me.*`; viewer-independent text stays shared. [Expressions & Placeholders](/gloss/13-expressions-placeholders) lists what counts as viewer-dependent. Set it to `false` and player-only values stay unresolved unless a dynamic `show` or conditional variant needs per-viewer rendering.
 
-Displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap at a smaller pixel width. Configured entries stay separate logical lines, with a reset between them so `&k` and other styles cannot bleed into the next line.
+Displays default to the native maximum line width of `16384`. Set `style.lineWidth` to wrap at a smaller pixel width. The text lines of a hologram share one display, so the colour and formats at the end of one line carry into the next, the same way Minecraft reads `&` codes. Start a line with a colour or `&r` to change its style. Scaled text lines are separate displays and start with no formatting.
 
 ### High-frequency animations
 

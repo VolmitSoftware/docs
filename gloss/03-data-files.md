@@ -2,7 +2,7 @@
 title: "Data Files & Hot Reload"
 description: "Find Gloss data files, reload behavior, reset commands, and import rules"
 published: true
-date: 2026-11-03T23:40:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -118,9 +118,9 @@ Values apply in this order: collection defaults, parent presets, selected preset
 
 Presets cannot supply `schemaVersion`, `revision`, `id`, `uuid`, or another `preset` selection. Those remain document-owned. Missing parents, inheritance cycles, unknown collection names, and invalid resolved documents are errors. Preset names are local to their collection. Omitting `presets.json` preserves ordinary document behavior; omitting `preset` still applies that collection's global defaults.
 
-Catalog edits refresh dependent documents without rewriting their authored JSON or incrementing their revisions. Invalid edits retain the last working documents. A focused editor session carries a read-only preset snapshot and must be reopened if the server's catalog changes before publication. Workspace sessions can edit the catalog and dependent documents together.
+Catalog edits refresh dependent documents without rewriting their authored JSON or incrementing their revisions. Invalid edits retain the last working documents. A paired web editor edits the catalog and the documents that use it together.
 
-Open an existing catalog with `/gloss web edit presets presets`, or create it in the workspace editor. Visual edits and in-game menu, panel, board and hologram updates preserve inherited fields that were not changed. Catalogs are limited to 2 MiB of source, 128 nested object or array levels, and an estimated 64 MiB of prepared data including expanded parent presets.
+Open the catalog in a [paired web editor](/gloss/18-web-editor#pairing), or create it there (Presets is an Advanced kind). Form edits and in-game menu, panel, board and hologram updates preserve inherited fields that were not changed. Catalogs are limited to 2 MiB of source, 128 nested object or array levels, and an estimated 64 MiB of prepared data including expanded parent presets.
 
 ## Reloading
 

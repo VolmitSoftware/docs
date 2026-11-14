@@ -2,7 +2,7 @@
 title: "Emoji, Text & Animations"
 description: "Format Gloss text, add emoji, and reuse text animations"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-08-19T00:00:00.000Z
 
 Gloss uses one text pipeline for holograms, scoreboards, tablists, menu text, bubble prefixes, drop labels, and the MOTD. Emoji files live in `plugins/Gloss/emoji/`; animation files live in `plugins/Gloss/animations/`.
 
-`/gloss web edit emoji <id>` and `/gloss web edit animation <id>` open focused live editor sessions; `/gloss web workspace` includes both document families.
+A [paired web editor](/gloss/18-web-editor#pairing) lists emoji under Chat and animations under Shared resources.
 
 The Velocity edition reads the same emoji and animation documents from its own `emoji/` and `animations/` folders, so the same ids resolve on both sides of a network. Proxy text has no PlaceholderAPI or world context, so `show` there is a proxy expression. See [Velocity Proxy](/gloss/27-velocity).
 
@@ -54,7 +54,15 @@ A metric token such as `|metric.adapt.player-sessions|` renders compactly: `42`,
 | `&` codes | Standard legacy translation (`&d`, `&l`, `&r`, and the rest) |
 | `[RRGGBB]` | Exactly six hex digits with `]` immediately after. `[ff00aa]Gloss` works, `[f0a]` and `[ff00aaa]` are left untouched |
 
-Bracket hex is case-insensitive and converted before `&` codes, and both can appear in the same line. Players receive colors, decorations, click actions and hover text; consoles receive readable plain text.
+Bracket hex is case-insensitive and converted before `&` codes, and both can appear in the same line. `&#RRGGBB`, `&xRRGGBB` and `&x&R&R&G&G&B&B` also set a hex colour. Players receive colors, decorations, click actions and hover text; consoles receive readable plain text.
+
+Codes combine the way Minecraft combines them:
+
+- A colour, including a hex colour, turns off bold, italic, underline, strikethrough and `&k`. Put format codes after the colour: `&6&lTitle`, not `&l&6Title`.
+- A format code adds to the current style, so `&l&o` is bold and italic.
+- `&r` returns to plain white text.
+- Text that is one display or one message keeps its formatting across line breaks. This covers hologram lines, bubbles, entity overlays and nameplates, drop labels, damage indicators, the tab header and footer, and the two MOTD lines. Start a line with a colour or `&r` to change it.
+- Text sent as separate lines starts each line fresh: menu text icons (one display per line), item lore, and scoreboard rows.
 
 ### Chat
 
@@ -226,7 +234,7 @@ This timeline scrolls a welcome message, flashes a boost notice, then replaces i
 
 `align` counts visible code points and ignores legacy and bracket-hex formatting; `middle` is an alias for `center`. Padding is character-cell based, so proportional and custom fonts can still look uneven, and content longer than the requested width is returned whole.
 
-Legacy `&k` obfuscation works on every text-pipeline surface. End it with `&r` or a later color code. Gloss scopes every logical line with a reset so obfuscation cannot leak into the next scoreboard row, hologram line or MOTD line. Keep `&k` outside a character-transform helper, as in `&k{{ marquee('MAGIC', 5, floor(time.seconds * 4)) }}&r`.
+Legacy `&k` obfuscation works on every text-pipeline surface. End it with `&r` or a later color code. Inside one display it carries into the next line like any other format, so end it before the line break unless the next hologram or MOTD line should be obfuscated too. Scoreboard rows and menu text lines start fresh. Keep `&k` outside a character-transform helper, as in `&k{{ marquee('MAGIC', 5, floor(time.seconds * 4)) }}&r`.
 
 Pass `floor(time.seconds / 2)` as the step for content that must stay visible on the default tablist cadence. Animated boards, tablists, persistent holograms and menu text with no explicit `refreshTicks` sample clock-driven expressions and named animations every tick, while each expression still decides when its visible state changes.
 

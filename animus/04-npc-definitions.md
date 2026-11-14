@@ -2,7 +2,7 @@
 title: "Animus: NPC Definitions"
 description: "Definition files, spawning, live edits, appearance, text, inventory and presentation limits"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, npcs, definitions, appearance, hotload"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -40,14 +40,14 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 | `group` | Yes | The folder the file sits in under `npcs/`, such as `town/market`, or empty for a file directly in `npcs/`. Each folder name follows the `id` rules, at most 8 deep. Animus sets it from where the file is, so a file moved to another folder takes that folder. It is not a [trait group](/animus/18-trait-groups); those go in `groups`. |
 | `name` | Yes | Printable Unicode and spaces, at most 256 UTF-16 code units, no control characters. `&` color codes apply. |
 | `type` | Yes | An entity type, such as `minecraft:llama` or `llama`. Animus shows every living entity type, such as `minecraft:zombie` or the body a [`disguise`](/animus/34-libsdisguises) gives, and every body listed under [body settings](#body-settings), such as `minecraft:painting`; a server shows those its Minecraft version registers. `/animus create`, `/animus edit` and their completion offer every body the server shows. A type the server cannot show is saved but refused at spawn with `packet presentation is unavailable for <type>`. |
-| `spawned` | Yes | `true` when the NPC is spawned: it becomes active whenever its chunk is loaded. `false` keeps it dormant. |
+| `spawned` | Yes | `true` when the NPC is spawned: it becomes active whenever its chunk is loaded. `false` keeps it despawned: saved, not in the world. |
 | `position` | Yes | `world`, and `x`, `y`, `z`, `yaw`, `pitch` as finite numbers within ±30000000. `pitch` must be within -90 to 90 for the NPC to spawn; `/animus spawn` refuses anything else. On Bukkit, `world` is a world name, a world UUID or a dimension key such as `minecraft:the_nether`; mod servers take the forms [their own page](/animus/16-mod-servers#worlds) lists. |
 | `skin` | No | SHA-256 of a skin document in `skins/`. |
 | `disguise` | No | A [LibsDisguises](/animus/34-libsdisguises) disguise, as `/disguise` takes it or the name of a custom disguise, such as `zombie setBaby true`. With LibsDisguises installed, the NPC shows that body in place of its own `type` and body fields. |
 | `behaviors` | No | `namespace:id` references to [behaviors](/animus/07-behaviors). |
 | `tags` | No | See [appearance](#appearance-text-and-inventory). |
 | `groups` | No | 1-16 [trait group](/animus/18-trait-groups) ids whose shared values the NPC takes before its own. |
-| `owner` | No | Canonical player UUID. `/animus create`, the toolkit and the paired web editor set it to the player who made the NPC. |
+| `owner` | No | Canonical player UUID. `/animus create`, the Animus menu and the paired web editor set it to the player who made the NPC. |
 | `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat`, `animus:health`, `animus:riding` or [`mythic:mob`](/animus/36-mythicmobs#the-mythicmob-module). `animus:modelengine` shows a [Model Engine model](/animus/32-model-engine). Unknown module data is kept as written. |
 
 Appearance, inventory, `movement`, `poses` and `rig` fields are described below and on [movement, mounts and riding](/animus/05-movement-mounts-riding) and [rigs and animations](/animus/06-rigs-animations). Health, cooldowns and running behavior state never belong in a definition; Animus does not write them there.
@@ -56,7 +56,7 @@ A wrong value names its exact field, for example `$.equipment.head.count: expect
 
 ## Activation and editing
 
-`/animus create` and the toolkit's **New NPC** save a new NPC spawned. Clone saves the copy despawned (`spawned: false`), so it starts dormant. An import keeps whether the source plugin had the NPC spawned. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves `spawned: true`. The NPC is active while its chunk is loaded, and it appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC despawned and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
+`/animus create` and **New NPC** in the [Animus menu](/animus/21-in-game-toolkit#new-npc) save a new NPC spawned. A clone, or a copy made with **Copy** in the menu, is saved despawned (`spawned: false`). An import keeps whether the source plugin had the NPC spawned. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves `spawned: true`. The NPC is active while its chunk is loaded, and it appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC despawned and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
 
 ```none
 /animus create guard name="Town Guard" folder=town
@@ -125,7 +125,7 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 
 ### Names and text lines
 
-A player name that fits a profile name (16 characters, no `&` codes) stays the normal player nameplate. Longer or colored player names, every non-player name and all hologram lines appear in one text display that rides the body, with the hologram lines above the name. With PlaceholderAPI installed on Paper, Spigot or Folia, `%placeholders%` in the name and hologram lines are filled for each player who sees the NPC, and a player NPC whose name holds one shows it on the text display; see [`[placeholders]`](/animus/03-configuration#placeholders). On mod servers they show as written.
+A player name that fits a profile name (16 characters, no `&` codes) stays the normal player nameplate. Longer or colored player names, every non-player name and all hologram lines appear in one text display that rides the body, with the hologram lines above the name. Color and format codes work as in vanilla: a color code clears bold, italic, underline, strikethrough and obfuscated, a format code adds to the style and `&r` resets it. In that one display a style carries on to the lines below until the next color code or `&r`; the name always starts unstyled. With PlaceholderAPI installed on Paper, Spigot or Folia, `%placeholders%` in the name and hologram lines are filled for each player who sees the NPC, and a player NPC whose name holds one shows it on the text display; see [`[placeholders]`](/animus/03-configuration#placeholders). On mod servers they show as written.
 
 `hologram` also accepts:
 
@@ -137,13 +137,13 @@ A player name that fits a profile name (16 characters, no `&` codes) stays the n
 | `interpolationDelay`, `interpolationDuration` | 0-1200 ticks |
 | `lineHeight` | 0-4 blocks |
 
-A line may also be an object such as `{"text": "...", "marginTop": 0.25, "marginBottom": 0}`, with margins from -4 to 4 blocks. With a line height or any margin, each line and the name get their own display, stacked from the bottom: each line sits its bottom margin plus the line height above the one below and adds its top margin, as Citizens holograms do (0.25 blocks when only margins are set).
+A line may also be an object such as `{"text": "...", "marginTop": 0.25, "marginBottom": 0}`, with margins from -4 to 4 blocks. With a line height or any margin, each line and the name get their own display, stacked from the bottom: each line sits its bottom margin plus the line height above the one below and adds its top margin, as Citizens holograms do (0.25 blocks when only margins are set). Each of those displays starts unstyled, so no style carries from one line to the next.
 
 ### Body settings
 
 <div class="animus-demo">
 <p><strong>New NPC with a body type</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/07-new-npc-body-ingame.webm" aria-label="Making a llama NPC named trader" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/07-new-npc-body-ingame.webm" aria-label="Making a llama NPC named Trader by searching the bodies" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 Each of these bodies has one optional object of its own. A setting left out keeps the look a newly spawned animal of that type has.
@@ -333,7 +333,7 @@ A player's click is checked against the NPC's current state for reach, line of s
 |---|---:|---|
 | `enabled` | `true` | Boolean |
 | `viewDistance` | 48 | 8-256 blocks |
-| `maximumVisible` | 64 | 1-128 NPCs per viewer |
+| `maximumVisible` | 128 | 1-128 NPCs per viewer |
 | `maximumViewers` | 256 | 1-1024 |
 | `updatesPerTick` | 64 | 1-64 viewers updated per tick |
 | `packetsPerTick` | 512 | 1-1024 NPC packets per tick, split evenly across the viewers updated (per region on Folia) |
@@ -343,7 +343,7 @@ A player's click is checked against the NPC's current state for reach, line of s
 | `queuePerViewer` | 24 | 4-32 packet operations a viewer may have waiting to send |
 | `degradedIntervalTicks` | 4 | 1-40 updates between two cosmetic updates while a budget runs short |
 
-A player sees only NPCs within `viewDistance`, and at most `maximumVisible` of them at once. Past that cap, further NPCs show only as others leave the player's view, so raise `maximumVisible` where many NPCs stand together. A spawned NPC is shown only while its chunk is loaded; Animus never loads a chunk to show one.
+A player sees only NPCs within `viewDistance`, and at most `maximumVisible` of them at once. With more in range, they see the nearest ones, ranked again as they move; a shown NPC keeps its place until another is 4 blocks nearer, so NPCs at the edge do not flicker. A `config.toml` that still says `maximumVisible = 64` keeps 64; see [configuration](/animus/03-configuration#npcs). A spawned NPC is shown only while its chunk is loaded; Animus never loads a chunk to show one.
 
 When a tick has less packet budget than work, updates give way in this order:
 

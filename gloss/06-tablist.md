@@ -2,7 +2,7 @@
 title: "Tablist"
 description: "Configure the in-game player list"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -162,10 +162,10 @@ plugin.
 
 Edits to `tablist.json` and to `gloss.toml` both apply automatically.
 
-The web editor can edit, export and live-sync the tablist document. Open it alone with
-`/gloss web edit tablist tablist`, or include it in `/gloss web workspace`. `/gloss tablist reset`
+The web editor can edit, export and publish the tablist document; a
+[paired editor](/gloss/18-web-editor#pairing) lists it under HUD and server list. `/gloss tablist reset`
 restores the default copy.
 
-The layout inspector edits the entry count, fixed cells, roster sections, named textures, and complete conditional presentations. Each section exposes its origin, dimensions, filter, ordered sort keys, format, overflow policy, NPC inclusion, skin, and hat visibility. The preview selects conditional presentations and applies sampled viewer and subject expressions, section filters, sorting, and overflow counts. Texture and hat appearance require an in-game client; the editor preserves their authored values through edits, export, and live sync.
+The layout inspector edits the entry count, fixed cells, roster sections, named textures, and complete conditional presentations. Each section exposes its origin, dimensions, filter, ordered sort keys, format, overflow policy, NPC inclusion, skin, and hat visibility. The preview selects conditional presentations and applies sampled viewer and subject expressions, section filters, sorting, and overflow counts. Texture and hat appearance require an in-game client; the editor preserves their authored values through edits, export, and publishing.
 
 Tablist documents use schema 3. Use the import preview to convert earlier formats; layouts needing extra blank cells to preserve their authored columns are reported as approximate conversions. See [Data Files & Hot Reload](/gloss/03-data-files) and [Server List MOTD](/gloss/06b-server-list-motd).

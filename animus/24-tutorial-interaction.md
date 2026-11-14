@@ -1,43 +1,40 @@
 ---
 title: "Animus Tutorial: Conversations, Shops and Combat"
-description: "Give NPCs behaviors, conversations, shops, GUIs, holograms, combat and health, then pair the web editor"
+description: "Give NPCs conversations, behaviors, shops, holograms, GUIs, combat and health, then pair the web editor"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, tutorial, behaviors, conversations, shops, guis, combat"
 editor: markdown
 dateCreated: 2026-11-08T00:00:00.000Z
 ---
 
-This is the third part of the Animus tutorial. It gives NPCs something to do when players meet them: behaviors, a conversation, a shop, a chest GUI and a hologram, combat rules and health. It ends by pairing the web editor, where the [last part](/animus/25-tutorial-web-editor) continues. It uses the greeter, trader, guard and `greeter-copy` from [the first part](/animus/22-tutorial-first-npc), and every shop, hologram and GUI it uses is made on the way.
+This is the third part of the Animus tutorial. It gives NPCs something to do when players meet them: a conversation, a shop, a hologram and a chest GUI, combat and health. It ends by pairing the web editor, where the [last part](/animus/25-tutorial-web-editor) continues. It uses the greeter, trader, guard and `greeter-copy` from [the first part](/animus/22-tutorial-first-npc), and every shop, hologram and GUI it uses is made on the way.
 
 ## 1. Write a conversation
 
-A conversation is a [behavior](/animus/07-behaviors): a file under `behaviors/` that runs when something triggers it, here a right click. It is made of blocks of lines. A block can end in a question, and each answer leads to another block. **New conversation** saves a conversation that says "Hello" on a right click and opens it in the conversation editor, one block at a time. Edits stay in the window until you save. [Conversations](/animus/21-in-game-toolkit#conversations) lists every button.
+A conversation is a [behavior](/animus/07-behaviors) that talks: lines the NPC says, and answers players pick. It is made of blocks of lines. A block can end in a question, and each answer leads to another block. **Talk** on the NPC screen makes the NPC's first conversation, one that says "Hello" on a right click, and opens it in the conversation editor, one block at a time. Changes stay in the window until you click **Save**. [Conversations](/animus/21-in-game-toolkit#conversations) lists every button.
 
 <div class="animus-demo">
 <p><strong>Conversation editor</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/23-conversation-editor-ingame.webm" aria-label="Writing a conversation with one question in the block editor" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/23-conversation-editor-ingame.webm" aria-label="Writing the greeter's conversation with one question in the block editor" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Select the greeter, then click **Behaviors** in the palette.
-- Click **New conversation** and type `plaza:welcome`. It saves `behaviors/plaza/welcome.json`.
-- Left-click the line and type `Welcome to the plaza, {player_name}.`
-- Click **Add choice** and type an answer. The block gets a question, "Choose one.", to edit.
-- Right-click the choice to open the block it leads to, then click **Add line**.
+- Right-click the greeter with the wand, then click **Talk**. The conversation is made, put on the greeter and opened.
+- Click the line and type `Welcome to the plaza, {player_name}.`
+- Click **Add choice** and type `Where is the bakery?`, then, when it asks for the NPC's answer, `Follow the lanterns north.` The block gets a question, "Choose one.", to edit, and the choice's lore reads `Then: Follow the lanterns north.`
 - Click **Back**, then **Save**.
-- Click **Attach to selection** to give the conversation to the greeter.
 
-## 2. Attach a behavior
+## 2. See the NPC's behaviors
 
-**Behaviors** lists every behavior file. Each entry shows its file, what triggers it, whether it is a conversation and how many selected NPCs run it. [Behaviors in the toolkit](/animus/21-in-game-toolkit#behaviors) covers the controls.
+A behavior is what an NPC does when something happens: a click, a player nearby, a timer. In Advanced mode, **Behaviors** on the NPC screen lists every behavior file. Each entry says whether it is a conversation and how many selected NPCs have it. [Behaviors in the menu](/animus/21-in-game-toolkit#behaviors) covers the controls.
 
 <div class="animus-demo">
 <p><strong>Behaviors and triggers</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/22-behaviors-list-ingame.webm" aria-label="Adding a behavior to an NPC and listing its trigger bindings" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/22-behaviors-list-ingame.webm" aria-label="Taking the greeter's conversation off and putting it back, then listing trigger bindings" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- With the greeter selected, open **Behaviors** again. `plaza:welcome` shows that one selected NPC runs it.
-- Right-click `plaza:welcome` to take it off the selection, then left-click it to add it back.
+- Switch to Advanced with the **Mode** lever on the greeter's screen, then click **Behaviors**. The greeter's conversation shows it is on 1 of 1 selected.
+- Right-click it and click **Remove from NPC** to take it off the greeter. Click **Back**: the conversation now shows it is on 0 of 1. Click it to put it back.
 - Click **Trigger bindings** to list in chat what each NPC listens for.
 
 ```none
@@ -58,78 +55,77 @@ Players start the conversation by right-clicking the NPC. Lines show in chat wit
 
 ## 4. Make a shop
 
-A [shop](/animus/10-shops) is a file under `shops/` with offers. An NPC opens it on a click, either as a chest window or as the villager trading screen. **Shops** lists the shop files with their offer count, window style and how many selected NPCs bind each one. **New shop** writes an empty shop file, and `/animus shop stock` adds offers to it in game. [Shops in the toolkit](/animus/21-in-game-toolkit#shops) lists the settings.
+A [shop](/animus/10-shops) is a trade window an NPC opens, either as a chest window or as the villager trading screen. Its file sits under `shops/`. **Shop** on the NPC screen lists the shop files with their offer count and how many selected NPCs use each one. **New shop** makes an empty shop, and **Add held item** sells what you hold in it. [Shops in the menu](/animus/21-in-game-toolkit#shops) lists the settings.
 
 <div class="animus-demo">
 <p><strong>New shop</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/26-new-shop-ingame.webm" aria-label="Making the plaza:stall shop and binding it to the trader" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/26-new-shop-ingame.webm" aria-label="Making the plaza:stall shop on the trader and stocking it with bread" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-A click on an NPC does one thing, and the trader still carries players from the [movement part](/animus/23-tutorial-movement). Turn its riding off first: select the trader, click **Mounts** and **Riding**, turn off **Enabled** and click **Save**.
+A click on an NPC does one thing, and the trader still carries players from the [movement part](/animus/23-tutorial-movement). Turn its riding off first: on the trader's screen, click **Movement**, **Mounts and riding** and **Riding**, click **Enabled** to turn it off, and click **Save**.
 
-- With the trader selected, click **Shops** in the palette.
-- Click **New shop** and type `plaza:stall`. It writes `shops/plaza/stall.json` with no offers.
-- Left-click `plaza:stall` to bind it to the trader.
-- Hold a stack of bread and add it as an offer. Players can then buy that stack for 5:
+- On the trader's screen, click **Shop**, then **New shop**, and type `plaza:stall`. It writes `shops/plaza/stall.json` with no offers, puts it on the trader and opens its details.
+- Close the window, hold a stack of bread and run `/animus tools`. The trader is selected, so its screen opens.
+- Click **Shop**, right-click `plaza:stall`, click **Add held item** and type `5`. Players can buy that stack for 5, which the shop writes in the server economy's format, such as `$5.00`. Without an economy plugin the offer is still added, but players cannot pay for it.
+
+To trade the bread for items instead, hold emeralds in your off hand and run:
 
 ```none
-/animus shop stock plaza:stall price=5
+/animus shop stock plaza:stall mode=trade
 ```
-
-- To trade the bread for items instead, hold emeralds in your off hand and run `/animus shop stock plaza:stall mode=trade`.
 
 ## 5. Open the shop
 
-The shop opens for a player who right-clicks the trader, or for you from the list.
+The shop opens for a player who right-clicks the trader, or for you from its details.
 
 <div class="animus-demo">
 <p><strong>Shops</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/25-shops-ingame.webm" aria-label="Opening a shop as a chest window and switching it to the trading screen" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/25-shops-ingame.webm" aria-label="Stepping a shop through its window styles and opening it as a player" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- In **Shops**, right-click `plaza:stall` to open it for yourself.
-- Sneak-click it for its settings. **Window** steps through `chest`, `native` (the trading screen) and `default` (the shop's own style).
-- Close the window and right-click the trader to see what players get.
+- On the trader's screen, click **Shop** and right-click `plaza:stall`.
+- Click **Window style** to step through **Chest window**, **Villager trades** and **Shop default**, the shop's own style.
+- Click **Open** to see the shop as the trader opens it, here as villager trades.
+- Close the window and right-click the trader with an empty hand to see the shop as players do.
 
 ```none
-/animus shop open plaza:stall
+/animus shop open plaza:stall npc=trader
 ```
 
 ## 6. Add a hologram and a chest GUI
 
-A hologram floats above an NPC. A chest GUI opens when a player clicks the NPC. An NPC shows one hologram and opens one GUI at a time. Make one of each first:
+A hologram is floating text above an NPC. A chest GUI is a chest window you design, opened when a player clicks the NPC. An NPC opens one GUI at a time. [Hologram](/animus/21-in-game-toolkit#hologram) and [GUIs and holograms](/animus/21-in-game-toolkit#guis-and-holograms) in the menu cover the settings, and [GUIs, holograms and menus](/animus/11-guis-holograms-menus) covers the files. Make a saved hologram and a chest GUI first:
 
 ```none
 /animus hologram create plaza:sign text="Welcome to the plaza"
 /animus gui create plaza:menu rows=3
 ```
 
-**GUIs** in the palette has a tab each for chest GUIs, menus, holograms and text animations, chosen in the bottom row. [GUIs and holograms in the toolkit](/animus/21-in-game-toolkit#guis-and-holograms) lists the settings, and [GUIs, holograms and menus](/animus/11-guis-holograms-menus) covers the files.
-
 <div class="animus-demo">
 <p><strong>GUIs and holograms</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/27-guis-holograms-ingame.webm" aria-label="Showing a hologram over the greeter and binding a chest GUI to it" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/27-guis-holograms-ingame.webm" aria-label="Adding a hologram line and a saved hologram to the greeter, then opening a chest GUI from the guard" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Select the greeter, then click **GUIs** in the palette.
-- On the **Holograms** tab, left-click `plaza:sign` to show it above the greeter.
-- Sneak-click it and click **Offset Y** to raise it; **Above the head** removes the offset.
-- Select the guard. The greeter's right click belongs to its conversation, so the GUI goes on the guard.
-- On the **Chest GUIs** tab, right-click `plaza:menu` to see it, and left-click it to open it on the guard's click.
+- On the greeter's screen, click **Hologram**, then **Add line**, and type `&6Town greeter`. The line floats above the greeter.
+- Click **Saved hologram** and click `plaza:sign` to show it above the greeter too.
+- Click **Height** a few times to raise it. Sneak-click it and type nothing to put it back above the head.
+- Right-click the guard with the wand. The greeter's right click belongs to its conversation, so the GUI goes on the guard.
+- In Advanced, click **GUIs**. On the **Chest GUIs** tab, right-click `plaza:menu` and click **Show to me** to see it. Click **Back**, then click `plaza:menu` to open it from the guard's click.
 
 ## 7. Turn on combat
 
-The combat module lets an NPC pick targets, fight and guard. **Combat** acts on the whole selection. Target rules say whom the NPC attacks, such as monsters or anything below half health. **Guard me** makes the NPC follow and protect you until it despawns. Combat ignores players in creative and spectator mode, so switch to survival to be guarded. [Combat](/animus/08-combat) covers weapons and protection, and [combat in the toolkit](/animus/21-in-game-toolkit#combat) lists the screens.
+Combat is whether the NPC fights, who it targets and its health. **Combat** on the NPC screen changes every selected NPC, and each control saves at once. **Guard me** makes the NPC follow you and fight what hurts you. Combat ignores players in creative and spectator mode, so switch to survival to be guarded. [Combat](/animus/08-combat) covers weapons and protection, and [combat in the menu](/animus/21-in-game-toolkit#combat) lists the screens.
 
 <div class="animus-demo">
 <p><strong>Combat</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/28-combat-ingame.webm" aria-label="Turning on combat, setting target rules and having the guard follow the player" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/28-combat-ingame.webm" aria-label="Turning on combat for the guard, setting what it attacks and having it guard the player" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Select the guard you made in [the first part](/animus/22-tutorial-first-npc#4-make-an-npc), then click **Combat** in the palette. If you have no guard, left-click **New NPC** in the palette and type `guard`.
-- Click **Enable combat**.
-- Click **Targets**, left-click **Monsters**, then left-click **Health below**. Click **Save**; the reply shows the rules as the file reads them.
-- Click **Back**, then left-click **Guard me**. Right-click it to stop.
+- Right-click the guard you made in [the first part](/animus/22-tutorial-first-npc#4-make-an-npc) with the wand, then click **Combat**. If you have no guard, click **New NPC** on Home and make one named `Guard`.
+- Click **Fights** to turn it on.
+- Click **Attacks** until it reads **Monsters**.
+- In Advanced, click **Targets**, then **Health below**, which turns on at 50%. Click **Save**; the reply shows the rules as the file reads them.
+- Click **Back**, then **Guard me**. Click it again to stop.
 
 ```none
 /animus combat status npc=guard
@@ -137,14 +133,14 @@ The combat module lets an NPC pick targets, fight and guard. **Combat** acts on 
 
 ## 8. Make an NPC killable
 
-An NPC cannot be hurt until its health module makes it killable. With `show-health` on, the player who hits it sees its name and health above the hotbar. A dead NPC falls and disappears, then respawns after a delay; revive brings it back at once. [Health and death](/animus/08-combat#health-and-death) covers drops, respawn points and permadeath.
+An NPC cannot be hurt until its health settings make it killable. With `show-health` on, the player who hits it sees its name and health above the hotbar. A dead NPC falls and disappears, then respawns after a delay; revive brings it back at once. [Health and death](/animus/08-combat#health-and-death) covers drops, respawn points and permadeath.
 
 <div class="animus-demo">
 <p><strong>Health and revive</strong> Minecraft client.</p>
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/29-health-revive-ingame.webm" aria-label="Hitting a killable NPC until it dies and reviving it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-This uses `greeter-copy`, the dormant copy from [the first part](/animus/22-tutorial-first-npc#13-clone-delete-and-undo). Spawning it shows it where the greeter stood when you cloned it.
+This uses `greeter-copy`, the despawned copy from [the first part](/animus/22-tutorial-first-npc#13-copy-delete-and-undo). Spawning it shows it where the greeter stood when you copied it.
 
 ```none
 /animus spawn greeter-copy
@@ -154,24 +150,24 @@ This uses `greeter-copy`, the dormant copy from [the first part](/animus/22-tuto
 /animus npc revive greeter-copy
 ```
 
-Hit the copy until it dies, then revive it. **Revive** in the palette's **Manage** screen does the same as the last command.
+Hit the copy until it dies, then revive it. On the Combat screen, **Can be hurt** and **Health** set the first and third of these, and **Revive** on the NPC screen in Advanced does the same as the last command.
 
 ## 9. Pair the web editor and undo a change
 
-The [web editor](/animus/14-web-editor) edits what the toolkit cannot paint: shop offers, GUI layouts, hologram lines and behavior graphs. **Open in editor** sends a pairing link to chat. The link works once, within 10 minutes. Every change, from the toolkit, a command or the editor, has a transaction id, and **[Undo]** on its chat line puts the rollback command in your chat box.
+The [web editor](/animus/14-web-editor) edits what the menu cannot draw: shop offers, GUI layouts, saved hologram lines and behavior graphs. **Web editor** on Home sends a pairing link to chat. The link works once, within 10 minutes. Every change from the menu or a command has **[Undo]** on its chat line, and one click reverts it.
 
 <div class="animus-demo">
 <p><strong>Editor link and undo</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/30-editor-pair-undo-ingame.webm" aria-label="Getting a pairing link and undoing a glow change from chat" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/30-editor-pair-undo-ingame.webm" aria-label="Getting a pairing link from Home and undoing a rename from chat" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- In **Manage**, click **Open in editor**. Click **[Open editor]** in the reply, or **[Click to copy]**.
-- Make a change, such as turning on `glowing` in **Edit**, **Body**.
-- Click **[Undo]** on the change's chat line and press Enter.
+- On Home, click **Web editor**. Click **[Open editor]** in the reply, or **[Copy]**.
+- Make a change, such as a new **Name** for the greeter.
+- Close the window and click **[Undo]** on the change's chat line. The old name comes back.
 
 ```none
 /animus editor pair
-/animus rollback <transaction>
+/animus undo
 ```
 
 Next: [the web editor](/animus/25-tutorial-web-editor).

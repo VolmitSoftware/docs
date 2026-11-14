@@ -2,7 +2,7 @@
 title: "Server List MOTD"
 description: "Configure server-list responses, request selectors, icons and server links"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -191,12 +191,12 @@ A refresh failure retains the previous prepared response and logs the cause. Unt
 
 Edits to `motd.json` and to `[features] motd` in `gloss.toml` both apply automatically.
 
-The web editor can live-sync this singleton with `/gloss web edit motd motd`, or include it in
-`/gloss web workspace`.
+A [paired web editor](/gloss/18-web-editor#pairing) lists this document under HUD and server list and
+publishes your changes to it.
 
 The editor exposes rotation, icon sets, server state, request selectors, count policies, hover-sample modes, and independent server links in the inspector. Unknown imported fields remain in the exported document, including fields inside policy objects. Edits participate in undo and redo.
 
-Enable **Status request simulator** in the preview to supply a requested hostname, client protocol number, an ISO timestamp with `Z` or a UTC offset, real online and maximum counts, and a server-state override. Select Paper, Spigot, or Velocity to apply that platform's supported status fields. A blank protocol represents unavailable metadata; a blank state uses the document state. The simulator shows eligible responses, the selected entry, resolved icon path, and published links. Turn off **MOTD feature enabled** to check independently published links.
+In Advanced mode, enable **Status request simulator** above the preview to supply a requested hostname, client protocol number, an ISO timestamp with `Z` or a UTC offset, real online and maximum counts, and a server-state override. Select Paper, Spigot, or Velocity to apply that platform's supported status fields. A blank protocol represents unavailable metadata; a blank state uses the document state. The simulator shows eligible responses, the selected entry, resolved icon path, and published links. Turn off **MOTD feature enabled** to check independently published links.
 
 **Refresh ping** advances the simulated sequence position and weighted sample. Time rotation uses the supplied timestamp. Named time zones apply IANA calendar and daylight-saving rules. The preview's weighted samples are reproducible; they do not predict a live server's random selection. Direct entry inspection bypasses request selectors.
 

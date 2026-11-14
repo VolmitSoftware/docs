@@ -1,8 +1,8 @@
 ---
 title: "Configuration"
-description: "Configure Gloss features, rendering, editor sync, previews, and integrations"
+description: "Configure Gloss features, rendering, the web editor, previews, and integrations"
 published: true
-date: 2026-11-02T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -19,7 +19,7 @@ A valid save reloads. Invalid TOML keeps the current settings. A startup load or
 | `language` | `"en_US"` | Server default for players without a personal override. Repository translations download in the background when selected and merge repository updates afterwards; custom IDs use their local file, then its `[meta]` base, then English. Blank values become `en_US`. Select defaults or player overrides with `/gloss language`; see [Localization](/gloss/19-localization) |
 | `metrics` | `true` | Send anonymous bStats usage metrics |
 | `updateNotifications` | `true` | Check Gloss's stable GitHub releases for shared update notices and `/volmit plugins updates`. See [Update notifications](/volmlib/api/github-releases) |
-| `splashScreen` | `true` | Console banner. A failed enable still prints it |
+| `splashScreen` | `true` | Console banner, naming the `editorUrl` editor. A failed enable still prints it |
 
 ## Bedrock viewers
 
@@ -385,8 +385,8 @@ Damage conditions can use applied-delta event values plus immutable affected-ent
 ## `real-drops/default.json`
 
 Real Drops settings live in `plugins/Gloss/real-drops/default.json`, a schema-4 file with a base
-`presentation`, conditional `variants` and an `audience.when`. It reloads automatically and opens
-in the web editor with `/gloss web edit real-drops default`.
+`presentation`, conditional `variants` and an `audience.when`. It reloads automatically, and a paired
+[web editor](/gloss/18-web-editor) lists it under World as Real drops.
 
 It also holds the drop label text: `presentation.labels.format`, per-material `names`, `useItemDisplayNames`, `show`, `preserveCustomNames`, and the `bundle` formats. Every key, default and range is on [Drop Labels](/gloss/08c-drop-labels#real-drops).
 
@@ -408,37 +408,46 @@ All three apply the moment the config reloads. See [Components & Hitboxes](/glos
 
 ## `[editor]`
 
-| Key | Default | Meaning |
-|---|---|---|
-| `builderUrl` | `"https://gloss.volmitsoftware.com"` | Base URL of the hosted web editor |
-
-`builderUrl` must begin with `http://` or `https://` and cannot contain spaces or unsafe URL
-characters. Invalid values reset to the default.
-
-## `[editor.sync]`
+The web editor's pairing, the server's own listener and its relay connection. See [Web Editor & Sync](/gloss/18-web-editor#pairing) for how pairing works.
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `enabled` | `true` | Not applicable | Enable live editor sync sessions through the relay |
-| `endpoint` | `"https://sync.gloss.volmitsoftware.com/v3"` | Not applicable | Relay endpoint URL |
-| `createToken` | `""` | Not applicable | Relay session creation token |
-| `sessionMinutes` | `60` | 5 – 1440 | Minutes an editor sync session stays alive |
-| `pollSeconds` | `3` | 1 – 60 | Seconds between relay polls during an active session |
-| `maxProjectMiB` | `8` | 1 – 32 | Maximum editor sync project size in mebibytes |
+| `enabled` | `true` | | Turn the web editor on: pairing, the listener and the relay connection |
+| `serverName` | `""` | At most 64 characters | Name the editor shows for this server. Empty uses the first line of the MOTD, else the server folder's name |
+| `editorUrl` | `"https://gloss.volmitsoftware.com"` | | Editor address that pairing links open |
+| `listenerEnabled` | `true` | | Serve the editor on this server's own HTTP listener |
+| `listenAddress` | `"127.0.0.1"` | | Address the listener binds. Plain HTTP only on loopback; any other address needs `tlsCertificate` and `tlsPrivateKey` |
+| `port` | `9799` | 0 to 65535 | Listener port; `0` picks a free one |
+| `advertisedUrl` | `""` | | The `https://` address of a TLS proxy in front of the loopback listener. Pairing links carry it |
+| `tlsCertificate` | `""` | | PEM certificate chain, relative to the Gloss folder |
+| `tlsPrivateKey` | `""` | | Unencrypted PKCS#8 PEM private key for `tlsCertificate`, relative to the Gloss folder |
+| `allowedOrigins` | `["https://gloss.volmitsoftware.com", "https://gloss-editor.web.app", "https://gloss-editor.firebaseapp.com"]` | At most 32 | Exact browser origins (`scheme://host[:port]`) the listener accepts; `http://` only on loopback |
+| `tokenDays` | `7` | 1 to 365 | Days a pairing lasts after its last use, unless `/gloss editor pair expires=` set another time |
+| `requestBodyBytes` | `4194304` (4 MiB) | 65536 to 67108864 | Largest request body a paired browser may send to the listener |
+| `concurrentRequestsPerToken` | `8` | 1 to 64 | Requests one pairing may run at once |
+| `requestsPerSecond` | `20` | 1 to 1000 | Requests per second one pairing may send, bursting to twice that |
+| `pairAttemptsPerMinute` | `10` | 1 to 600 | Pairing attempts per minute from one address |
+| `openConnections` | `64` | 1 to 1024 | Listener connections and live update streams open at once |
+| `eventFramesPerSecond` | `20` | 1 to 100 | Live update messages per second sent to one editor |
+| `maxProjectMiB` | `64` | 1 to 1024 | Server limit on the workspace's image bytes and on uploads waiting for a publish, in MiB. A larger publish is refused with a line naming this key and its value |
+| `relayEnabled` | `true` | | Connect out to the relay, so browsers reach this server without an open port |
+| `relayUrl` | `"wss://gloss-relay-437930007071.us-central1.run.app"` | | Relay address: `wss://host[:port][/path]`, or `ws://` on loopback |
+| `relayReconnectMinSeconds` | `1` | 1 to 3600 | Seconds before the first reconnect to the relay; the wait doubles up to `relayReconnectMaxSeconds` |
+| `relayReconnectMaxSeconds` | `60` | `relayReconnectMinSeconds` to 3600 | Longest wait between relay reconnects |
+| `relayFrameBytes` | `1048576` (1 MiB) | 65536 to 16777216 | Largest relay message. Keep it equal to the relay's `MAX_FRAME_BYTES` |
+| `relayConcurrentRequests` | `64` | 1 to 1024 | Relayed requests this server runs at once |
 
-`endpoint` must satisfy all of these rules. Invalid values reset to the default:
+Values outside a range are clamped. Gloss checks the addresses when it loads the file:
 
-- it parses as an absolute URI with a scheme and a host
-- no user info, no query string and no fragment
-- scheme `https`, or scheme `http` with host `localhost`, `127.0.0.1`, `::1` or `[::1]`
-- a path ending in `/v3`, containing none of `//`, `/../` or `/./`
-- a rebuilt, lowercase-scheme, lowercase-host form no longer than 1024 characters
+- `editorUrl` must be a plain `http://` or `https://` link without spaces, quotes or angle brackets; anything else uses the default.
+- `advertisedUrl` must be an `https://` address, or `http://` on loopback; anything else is ignored with a warning.
+- `relayUrl` must be `wss://host[:port][/path]`, or `ws://` on loopback, with no user info, query or fragment; anything else uses the default relay with a warning. A `relayUrl` line already in the file stays as it is when the default changes. To move to the default, delete the line (the default applies when the file reloads, and Gloss writes the line back at the next start) or set it, then pair browsers again.
+- An `allowedOrigins` entry that is not `scheme://host[:port]`, or is `http://` on another host, is dropped with a warning.
+- `tlsCertificate` and `tlsPrivateKey` work only together. With one of them empty, TLS stays off and Gloss logs a warning.
 
-Gloss normalizes the scheme, host, and trailing slash before storing the endpoint.
+With `enabled = false`, `/gloss editor` answers `Editor not running; set [editor] enabled = true in gloss.toml`. The relay connection opens at the first `/gloss editor pair`, then at every start while a token exists.
 
-`createToken` is sanitized separately. Null or blank stays empty. Anything else must already be free of surrounding whitespace, be 22 to 128 characters long, and consist only of `A-Z`, `a-z`, `0-9`, `_` and `-`. A value that fails any of those is blanked. Gloss logs `editor.sync.createToken is invalid; live editor session creation will use no token.` A custom relay that admits anonymous creation receives the untokened request. The official endpoint instead refuses session creation locally and tells the command sender to configure `[editor.sync] createToken`.
-
-See [Web Editor & Sync](/gloss/18-web-editor).
+Every `[editor]` key applies when `gloss.toml` reloads. A listener key restarts only the listener, a relay key only the relay connection, and paired browsers stay paired. The server's key and the tokens live in `plugins/Gloss/editor/`.
 
 ## `[menus]`
 

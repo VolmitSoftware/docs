@@ -2,7 +2,7 @@
 title: "Behaviors and State"
 description: "Run actions from player events, chat matches, timers, and named events"
 published: true
-date: 2026-11-03T23:40:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T22:00:00.000Z
@@ -101,7 +101,7 @@ Disconnecting resets the player's session and cancels its pending tasks; disabli
 
 `fire` uses a one-based entry number and runs the selected entry with its permission and condition checks; it does not require its usual event selector to match. Set `player` when actions need a player.
 
-In the [web editor](/gloss/18-web-editor), create or import a Behaviors document. The inspector edits matching limits, trigger names, chat patterns, conditions, and permissions. **State declarations** provides named rows with scope, type, and an optional default value. The **Override** switch enables an explicit default; disabled, the declared type supplies its default. Renaming a key does not rewrite expressions or actions referring to that key.
+In the [web editor](/gloss/18-web-editor), switch to Advanced and create or import a Behaviors document. Its form in the centre edits trigger names, chat patterns, conditions, permissions, and the **Chat matching** limits. **State declarations** provides named rows with scope, type, and an optional default value. The **Override** switch enables an explicit default; disabled, the declared type supplies its default. Renaming a key does not rewrite expressions or actions referring to that key.
 
 Action lists support add, remove, reorder, and undo. The shared action controls include commands, sounds, messages, navigation, teleportation, proxy connections, dialogs, and supported flow and state actions. Nested controls edit `sequence` steps and `onSkip`, `parallel` branches, `repeat` steps, `if`/`chance`/`cooldown` branches, and `switch` cases and defaults. Sequence steps expose their `atTicks` cue. State actions expose the key, value expression, and target role. Use the remaining action fields or Code view for payloads without dedicated controls.
 

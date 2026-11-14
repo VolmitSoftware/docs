@@ -2,7 +2,7 @@
 title: "Localization"
 description: "Select server and player languages and edit message files"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -35,7 +35,7 @@ A base can name its own base, up to four levels. A base of `en_US`, or none, use
 
 Cooperative plugin reload waits for open language-editor inventories to close on their players' owning regions before stopping services or cancelling plugin tasks. Cleanup failures fail the reload stage. Direct plugin disable only closes inventories owned by the current thread and reports other views that could not be closed.
 
-The web editor keeps a separate, browser-local language. It does not read or change the server or
+The web editor keeps a separate, browser-local language, set under **Help > Settings > Language**. It does not read or change the server or
 player settings.
 
 ## Key names

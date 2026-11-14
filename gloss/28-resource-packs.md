@@ -2,7 +2,7 @@
 title: "Resource Packs & Glyph Fonts"
 description: "Author bitmap glyphs, build named fonts, and deliver the Gloss resource pack"
 published: true
-date: 2026-10-09T16:52:52.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-10-07T00:00:00.000Z
@@ -10,7 +10,7 @@ dateCreated: 2026-10-07T00:00:00.000Z
 
 Gloss builds Java resource packs from PNG images and `glyphs/*.json` documents. Glyph expressions use the declared font only after the viewer reports the current Gloss pack successfully loaded. Other viewers receive the declared text fallback.
 
-In the [web editor](/gloss/18-web-editor), create a **Glyphs** document or open one with `/gloss web edit glyph <id>`. Its inspector edits font identity, bitmaps, overlays, spacing, and waypoint styles. Import PNG files through the image manager and use their paths relative to `images/`. Code view provides the same fields with validation and completion; exporting and live sync retain additional authored fields.
+In the [web editor](/gloss/18-web-editor), switch to Advanced and create a **Glyphs** document, or open one from a [paired server](/gloss/18-web-editor#pairing). Its form in the centre edits font identity, bitmaps, overlays, spacing, and waypoint styles. Import PNG files through **File > Images** and use their paths relative to `images/`. Code view provides the same fields with validation and completion; exporting and publishing retain additional authored fields.
 
 ## Enable and deliver a pack
 

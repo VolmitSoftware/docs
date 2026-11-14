@@ -2,7 +2,7 @@
 title: "Animus: Commands and Permissions"
 description: "Every /animus command and permission node"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, commands, permissions"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -16,16 +16,16 @@ Animus uses the same command system as the other Volmit plugins:
 
 - **Required values are bare words, in order.** `/animus spawn guard`, `/animus clone guard deputy`.
 - **Optional values are written `key=value`,** in any position: `/animus list page=2`, `/animus navigation go guard 10 64 -3 mode=fly speed=4`.
-- **Show-or-set commands also take their optional values as bare words,** in the order the usage line lists them: `/animus select guard`, `/animus list 2`, `/animus npc attribute guard scale 1.5`, `/animus npc health guard killable on`. These are `select`, `combat status`, `npc attribute`, `npc health`, `npc model`, `npc disguise`, `npc anchor` and `quest progress`, every `page` of a paged list (and `kind` of `gui list`), `debug mode`, `debug network` and `record ghost`. Any other leftover word is refused with the key to write it with, such as `Unexpected "3.5"; write speed=3.5`.
+- **Show-or-set commands also take their optional values as bare words,** in the order the usage line lists them: `/animus select guard`, `/animus list 2`, `/animus npc attribute guard scale 1.5`, `/animus npc health guard killable on`. These are `select`, `undo`, `tools mode`, `combat status`, `npc attribute`, `npc health`, `npc model`, `npc disguise`, `npc anchor` and `quest progress`, every `page` of a paged list (and `kind` of `gui list`), `debug mode`, `debug network` and `record ghost`. Any other leftover word is refused with the key to write it with, such as `Unexpected "3.5"; write speed=3.5`.
 - **Positions read as in vanilla `/tp`.** A command that takes `x`, `y` and `z` also takes them as three bare words after its required values: `/animus create guard 12 64 -30`. `~` and `~2` count from where you stand, and `^left ^up ^forward` from where you face: `/animus create guard ~ ~ ~3`, `/animus navigation go guard ^ ^ ^5`. Left out, each coordinate and the world are your own. The console has no position, so it gives numbers: `x=0 y=64 z=0`. Block values written `x,y,z`, such as `at=` of `build start`, take `~` too: `at=~,~-1,~`.
 - **A value with spaces goes in double quotes,** also after a key: `/animus create guard name="Town Guard"`.
 - **A JSON object is one value** and may contain spaces: `/animus edit guard {"name": "Captain Guard"}`. If the JSON itself contains `=`, name the parameter: `/animus edit guard patch={"text":"a=b"}`.
 - **An NPC is named by its id**, the file name without `.json`. NPC files may sit in nested folders under `npcs/`, so a command also takes the id with its folders or the file path: `guard`, `world/town/guard` and `npcs/world/town/guard.json` name the same NPC. A folder path that does not match where the NPC lives is refused.
-- **`@selected`** stands for the NPC you selected wherever a command takes an NPC id. The wand, the toolkit screens and `/animus select` share one selection, so `/animus selection`, the Edit screen and `@selected` always mean the same NPCs. With several NPCs selected, `@selected` is refused; name one, or `/animus select <npc>` to keep only it. The console must name the id.
+- **`@selected`** stands for the NPC you selected wherever a command takes an NPC id. The wand, the [Animus menu](/animus/21-in-game-toolkit) and `/animus select` share one selection, so `/animus selection`, the menu and `@selected` always mean the same NPCs. With several NPCs selected, `@selected` is refused; name one, or `/animus select <npc>` to keep only it. The console must name the id.
 
 Group names answer to the singular and the plural: `shop` or `shops`, `gui` or `guis`, `behaviors` or `behavior`, `groups` or `group`, and so on for `npc`, `build`, `record`, `pack`, `modules`, `rigs`, `tools` and `import`. Help shows the first form.
 
-A wrong or extra value, an unknown key or an unknown command is refused with the reason and the usage line, and nothing changes. On Paper the chat box marks an unknown command red while you type it. A required value may also be given as `key=value`.
+A wrong or extra value or an unknown key is refused with the reason and the usage line, and nothing changes. A value that cannot be read says what the parameter takes: `page takes a number`, `<key> takes true or false` or `<key> cannot be "<value>"`. An unknown command answers in one red line, with the closest command name when one is close and **[Help]**, such as `Unknown command "creat". Did you mean create? [Help]`, or `Unknown command "skn" in /animus npc. Did you mean skin? [Help]` inside a command group. Click the suggested name to put the command in your chat box. On Paper the chat box marks an unknown command red while you type it. A required value may also be given as `key=value`.
 
 ## Help and completion
 
@@ -36,14 +36,20 @@ A wrong or extra value, an unknown key or an unknown command is refused with the
 
 <div class="animus-demo">
 <p><strong>Help menu</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/02-help-menu-ingame.webm" aria-label="The grouped help menu, a group page and a refused command" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/02-help-menu-ingame.webm" aria-label="The help page, one command's help, every command by topic and a mistyped command" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-`/animus` or `/animus help` shows every command grouped by topic, starting with `setup` and `tools`, in the same menu as Iris, Adapt and the other Volmit plugins. A group name on its own, such as `/animus shop`, or `/animus shop help`, shows that group with a **〈 Back** link to the one above. Each entry shows its name and its parameters, required ones in `[brackets]` and optional ones in `⊰angles⊱`; hover the name for what it does, its usage and an example, and hover a parameter for its type and default. Click a command to put it in your chat box, or to run it when it takes no values. Each topic header on the first page has a **[Docs]** link to its section on this page. Pages turn with **〈 Page 1** and **Page 3 ❭** at the bottom, or `help=2`. Paged lists, such as `/animus list`, use the same page bar.
+`/animus` on its own shows help, the same as `/animus help`, in the form your [menu mode](/animus/21-in-game-toolkit#simple-and-advanced) picks. `/animus gui` (or its alias `guis`) on its own opens the [Animus menu](/animus/21-in-game-toolkit).
 
-Help and tab completion list only what you have permission to run, and leave out the commands for a plugin that is not running: `mythic` (MythicMobs), `npc model` (Model Engine), `npc disguise` (LibsDisguises) and `import quests`, `import beautyquests` and `import betonquest` (each quest plugin). Typed anyway, such a command answers that it needs its plugin. Completion offers bare values for the next required argument, such as NPC ids, shop ids or behavior ids, then for the next bare optional value, such as a health setting and then the values that setting takes, then `~ ~ ~` and the block you look at where a command takes a position, and `key=` for the optional ones. Completion matches what you typed before it cuts the list, so on a server with thousands of NPCs `citizens-45` still completes to `citizens-450`.
+In Simple mode, the default, `/animus` and `/animus help` print one short page that leaves your chat as it was: `Common commands; click one to use it`, then `gui`, `create`, `select`, `spawn`, `despawn`, `delete`, `list`, `undo` and `editor pair`, each with what it does, starting with `gui - Open the Animus menu`, then **[All commands]**. It lists only the commands you may run. Click a command to put it in your chat box, and hover it for its usage. **[All commands]** runs `/animus help all`.
 
-Players hear the same command sounds as in the other Volmit plugins, decided as Iris decides them: a soft chime while typing and tab completing, a ding once a command finishes running or a help page opens, and a low tone when a command is unknown, refused for permission or origin, missing a value or given one it cannot read, or stops with an error. The sound follows how the command ran, not what it answered, so a command that finishes with a red reply such as `Unknown NPC` still dings, and a command that answers later from a file or region thread dings when it starts that work. On Fabric, Forge and NeoForge the same vanilla sounds play.
+In Advanced mode, on the console, and with `/animus help all` or a page number such as `/animus help 2`, help shows every command grouped by topic, starting with `setup`, `gui` and `tools`, in the same menu as Iris, Adapt and the other Volmit plugins. The topics are Tools, NPCs, Movement, Recordings, Combat, Content, Services, Web editor, Quests, Behaviors, Trait groups and Diagnostics. A group name on its own, such as `/animus shop`, or `/animus shop help`, shows that group with a **〈 Back** link to the one above. Each entry shows its name and its parameters, required ones in `[brackets]` and optional ones in `⊰angles⊱`; hover the name for what it does, its usage and an example, and hover a parameter for its type and default. Click a command to put it in your chat box, or to run it when it takes no values. Each topic header on the first page has a **[Docs]** link to its section on this page; Recordings links to [recording](/animus/19-performance-recordings#recording-a-performance) and Web editor to [pairing](/animus/14-web-editor#pairing). Pages turn with **〈 Page 1** and **Page 3 ❭** at the bottom, or `help=2`. Paged lists, such as `/animus list`, use the same page bar.
+
+`/animus help <command>` prints one command's description and its usage with **[Docs]**, such as `/animus help create` or `/animus help npc skin`. A command group's name opens its page. A name that is no command answers `No help for "<name>"` with **[Help]**.
+
+Help and tab completion list only what you have permission to run, and leave out the commands for a plugin that is not running: `mythic` (MythicMobs), `npc model` (Model Engine), `npc disguise` (LibsDisguises) and `import quests`, `import beautyquests` and `import betonquest` (each quest plugin). Typed anyway, such a command answers that it needs its plugin. A player who may open the Animus menu is offered `gui` even without `animus.gui`. Completion offers bare values for the next required argument, such as NPC ids, shop ids or behavior ids, then for the next bare optional value, such as a health setting and then the values that setting takes, then `~ ~ ~` and the block you look at where a command takes a position, and `key=` for the optional ones. Completion matches what you typed before it cuts the list, so on a server with thousands of NPCs `citizens-45` still completes to `citizens-450`.
+
+Players hear the same command sounds as in the other Volmit plugins: a soft chime while typing and tab completing, a ding when a command answers or a help page opens, and a low tone when a command is unknown, refused for permission or origin, missing a value or given one it cannot read, or answers in red, such as `Unknown NPC`. A command that answers later from a file or region thread plays its sound when that answer arrives. A command that only opens a window, such as `/animus gui`, plays nothing. In the Animus menu a handled click ticks quietly, and a refusal plays the low tone. On Fabric, Forge and NeoForge the same vanilla sounds play.
 
 File work from commands, imports, the web editor and Java modules shares one queue that holds 32 jobs. When it is full, a command answers `File queue full; try again in a moment` and changes nothing. A script that sends many commands at once, such as creating hundreds of NPCs, should pace them or retry the refused ones.
 
@@ -53,7 +59,8 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 
 - A link shows as **[Open]** (or **[Open editor]**) and **[Click to copy]**.
 - A pointer to these pages shows as **[Docs]**.
-- A transaction id shows its first eight characters; click them to copy the full id, or click **[Undo]** to put `/animus rollback <first eight characters>` in your chat box.
+- A reply that reports a change ends with **[Undo]**. One click reverts that change: it runs `/animus undo` with the change's id. In Advanced mode and on the console the reply also shows the change id after `tx`, its first eight characters; click them to copy the full id. In Simple mode the id is left out and **[Undo]** stays.
+- A reply that leaves a step to do ends with a clickable `Next:` command, such as `Despawned guard; tx 1a2b3c4d [Undo]; Next: /animus spawn guard`. Click it to put the command in your chat box.
 - NPC ids and positions in `inspect` and `select` copy themselves when clicked, and an id in `/animus list` opens `inspect`.
 - **[Details]** holds the long form of a status line: hover to read it, click to copy it for a bug report.
 
@@ -72,24 +79,24 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 | `animus.editor.commands` | Operators | Pairing the [web editor](/animus/14-web-editor#console-commands) with `apply:commands`, which can run console commands, `/animus import citizens apply` of an import whose commands need a namespace the allow-list does not name yet, and `/animus edit` on an NPC whose [schedule](/animus/30-npc-schedules) has arrival commands. The console may always do all three |
 | `animus.editor.notify` | Operators | The sound and chat line when the [web editor](/animus/14-web-editor#in-game-notices) changes the server or is refused. The player who paired the token gets its notices without it |
 
-`animus.admin` is the parent of the management nodes below, so a server that grants `animus.admin` keeps every command. Grant the child nodes to give staff part of it. The toolkit checks the same nodes on every click: a screen or button needs the node of the command it stands for.
+`animus.admin` is the parent of the management nodes below, so a server that grants `animus.admin` keeps every command. Grant the child nodes to give staff part of it. The [Animus menu](/animus/21-in-game-toolkit#permissions) checks the same nodes on every click: a screen or button needs the node of what it changes.
 
-| Node | Commands | Toolkit |
+| Node | Commands | Animus menu |
 |---|---|---|
 | `animus.npc.view` | `list`, `inspect`, `select`, `selection`, `validate` | Inspect |
-| `animus.npc.create` | `create`, `mythic`, `clone` | New NPC, Clone |
-| `animus.npc.edit` | `edit`, `spawn`, `despawn`, `schedule`, `npc rename`, `npc attribute`, `npc health`, `npc model`, `npc disguise`, `npc look`, `npc anchor`, `npc revive`, `groups` | Edit, Equipment, Mounts, Folders, Trait groups, Spawn, Despawn, Revive |
+| `animus.npc.create` | `create`, `mythic`, `clone` | New NPC, Copy |
+| `animus.npc.edit` | `edit`, `spawn`, `despawn`, `schedule`, `npc rename`, `npc attribute`, `npc health`, `npc model`, `npc disguise`, `npc look`, `npc anchor`, `npc revive`, `groups` | Name, Body, Equipment, Hologram, Spawned, Revive, All fields, Attributes, Modules, Movement settings, Folder, Trait groups, Mounts and riding with its Riding settings |
 | `animus.npc.delete` | `delete` | Delete |
-| `animus.npc.skin` | `npc skin` | Skins |
-| `animus.npc.move` | `npc move`, `npc tp`, `navigation`, `ride` | Routes, route capture, bring an NPC to you |
-| `animus.tools` | `tools`, `setup` | The wand and the palette; each tool also needs its own node |
-| `animus.behaviors` | `behaviors`, `modules` | Behaviors, conversations |
+| `animus.npc.skin` | `npc skin` | Skin |
+| `animus.npc.move` | `npc move`, `npc tp`, `navigation`, `ride` | Routes, route points, Bring here, Stand still, Walk once, Start, Stop now |
+| `animus.tools` | `tools`, `setup`, `undo`, and `gui` on its own | The menu and the wand; each screen also needs its own node |
+| `animus.behaviors` | `behaviors`, `modules` | Talk, Behaviors, the conversation editor |
 | `animus.behaviors.state` | `behaviors state` | |
-| `animus.combat` | `combat` | Combat, target rules |
+| `animus.combat` | `combat` | Combat, its settings sections, target rules |
 | `animus.import` | `import`, including `import shops`, `import gloss` and the quest plugin links | |
-| `animus.editor.pair` | `editor` | Open in editor |
-| `animus.shops` | `shop`, including `shop stock` | Shops |
-| `animus.gui` | `gui`, including `gui create`, and `hologram` | GUIs |
+| `animus.editor.pair` | `editor` | Web editor, Open in editor |
+| `animus.shops` | `shop`, including `shop stock` | Shop |
+| `animus.gui` | The `gui` commands, such as `gui open` and `gui create`, and `hologram` | GUIs, saved holograms |
 | `animus.build` | `build`, except `donate` | |
 | `animus.record` | `record` | Recordings |
 | `animus.rigs` | `rigs`, `pack` | |
@@ -105,13 +112,13 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 
 | Command | Effect |
 |---|---|
-| `/animus status` | One line: version, platform, NPC and trait group counts, definition files that need repair, and the runtime state. For players with `animus.admin`, **[Details]** holds the runtime counters and the main budgets in effect; the console prints them as two more lines |
+| `/animus status` | One line: version, platform, NPC and trait group counts, such as `12 NPCs, 2 trait groups`, definition files that need repair, and the runtime state. For players with `animus.admin`, **[Details]** holds the runtime counters and the main budgets in effect; the console prints them as two more lines |
 | `/animus list [page=1]` | Saved NPCs with id, name and revision, as a paged list. Click an id to inspect it. `/animus list 2` shows page 2 |
-| `/animus create <id> [type=minecraft:player] [name=] [folder=] [world=] [x=] [y=] [z=] [spawned=true]` | Save a new NPC at your position facing your way, or at `x y z`, which may be relative such as `~ ~ ~3`, and spawn it. `spawned=false` saves it despawned. `name` defaults to the id; quote a name with spaces. `folder` is the folder under `npcs/`, up to eight levels such as `world/town`; left out, the file goes directly in `npcs/`. `type` is a body the server shows, with or without `minecraft:`: every living entity type and every body with [settings of its own](/animus/04-npc-definitions#body-settings), such as `painting` or `text_display`. Any other type is refused with the list. The console must give `world`, `x`, `y` and `z`, and its NPCs face south. An id another NPC has, in any folder, is refused with `An NPC named <id> already exists` |
+| `/animus create <id> [type=minecraft:player] [name=] [folder=] [world=] [x=] [y=] [z=] [spawned=true]` | Save a new NPC at your position facing your way, or at `x y z`, which may be relative such as `~ ~ ~3`, and spawn it. `spawned=false` saves it despawned. The reply is `Made <id> [Edit] [Undo]`, and the NPC becomes your selection; **[Edit]** opens its screen in the [Animus menu](/animus/21-in-game-toolkit). With `spawned=false` it adds `Next: /animus spawn <id>`. `name` defaults to the id; quote a name with spaces. `folder` is the folder under `npcs/`, up to eight levels such as `world/town`; left out, the file goes directly in `npcs/`. `type` is a body the server shows, with or without `minecraft:`: every living entity type and every body with [settings of its own](/animus/04-npc-definitions#body-settings), such as `painting` or `text_display`. Any other type is refused with the list. The console must give `world`, `x`, `y` and `z`, and its NPCs face south. An id another NPC has, in any folder, is refused with `An NPC named <id> already exists` |
 | `/animus mythic <id> <mythic-mob> [name=] [folder=] [world=] [x=] [y=] [z=] [spawned=true]` | Save and spawn a new NPC that takes the body, name, equipment and skills of a [MythicMobs](/animus/36-mythicmobs) mob type, such as `/animus mythic king SkeletonKing`. The other values work as in `create`; `name` defaults to the mob's display name. Needs MythicMobs |
-| `/animus select [npc=]` | Select only this NPC, for example `/animus select guard`. Without an id, selects the NPC you look at, or else the nearest within 16 blocks. The selected NPC glows for you for two seconds. It replaces the wand and palette selection, so `@selected`, `/animus selection` and the toolkit screens all use it. Players only |
-| `/animus selection` | Show every NPC you selected, the same list `@selected` and the toolkit use. Players only |
-| `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or dormant, trait groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then whether it is active, with pose, equipment, text lines, owner and mount problems under **[Details]** |
+| `/animus select [npc=]` | Select only this NPC, for example `/animus select guard`; the id may carry its folders, such as `world/town/guard`. Without an id, selects the NPC you look at, or else the nearest within 16 blocks. `/animus select none` clears the selection (`Selection cleared`), unless an NPC has the id `none`. The selected NPC glows for you for two seconds. It replaces the wand's selection, so `@selected`, `/animus selection` and the Animus menu all use it. Players only |
+| `/animus selection` | Show every NPC you selected, the same list `@selected` and the Animus menu use. Players only |
+| `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or despawned, trait groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then whether it is active, with pose, equipment, text lines, owner and mount problems under **[Details]** |
 | `/animus edit <npc> <patch>` | Merge a JSON object into the definition as a JSON merge patch and save it as a new revision. A `type` Animus cannot show is refused, as in `create`. An object merges into the field of the same name, so `{"modules": {"animus:look-close": {"range": 8}}}` changes that one value and keeps every other module. A field set to `null` is removed, so `{"type": "minecraft:horse", "skin": null, "pose": null}` turns a skinned, seated player into a horse. Any other value, an array included, replaces the field. The reply names what changed, such as `Saved guard: set modules.animus:look-close.range; removed skin`. A refused edit answers `Cannot save` with the first problem; when it changes `type`, the reply shows the `null` that removes the field the new body cannot show |
 | `/animus npc skin <npc> <player>` | Give the NPC the skin of a Minecraft account, by its name, such as `/animus npc skin guard Notch`; `reset` takes the skin off. Animus looks the name up on Mojang, saves the signed skin as `skins/<sha256>.json` labelled with the name, and points the NPC at it. Works from the console. Player bodies only; the server needs internet access |
 | `/animus npc move <npc>` | Move the NPC to where you stand, facing your way, and save its new position. Also `/animus npc tphere`. Players only |
@@ -124,15 +131,16 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 | `/animus npc look <npc> <on\|off\|toggle>` | Turn the NPC's [look-close](/animus/05-movement-mounts-riding#looking-at-nearby-players) on or off. Sets `enabled` in its own `animus:look-close` and keeps the range and other settings; `on` adds the module when it has none. Saves a new revision |
 | `/animus npc anchor <npc> [action=list] [name=] [x=] [y=] [z=] [world=]` | List the NPC's [anchors](/animus/04-npc-definitions#anchors) (`list`), save one where you stand or at the given position (`add`), or remove one (`remove`): `/animus npc anchor guard add gate`, or `/animus npc anchor guard action=add name=gate x=10 y=64 z=-3`. An anchor in the NPC's own world is saved without a world. Saves a new revision |
 | `/animus npc revive <npc>` | Bring a dead NPC back at full health. A permadeath is cleared in the definition and the NPC spawns at its own position; an NPC waiting to respawn comes back at once |
-| `/animus clone <npc> <id>` | Copy a definition under a new id and UUID, dormant. An id another NPC has is refused |
-| `/animus delete <npc>` | Delete the definition. The reply names the transaction, with **[Undo]** |
+| `/animus clone <npc> <id>` | Copy a definition under a new id and UUID, despawned: `Cloned guard as guard2, despawned; tx … [Undo]; Next: /animus spawn guard2`. An id another NPC has is refused |
+| `/animus delete <npc>` | Delete the NPC's file. **[Undo]** on the reply brings it back |
 | `/animus spawn <npc>` | Check the definition against the running server and mark it spawned |
-| `/animus despawn <npc>` | Mark the definition despawned and remove its body |
+| `/animus despawn <npc>` | Mark the definition despawned and remove its body; the file stays. The reply ends with `Next: /animus spawn <npc>` |
+| `/animus undo [change=]` | Revert your own most recent change, from a command or the Animus menu. The reply is `Undid:` and what the change was, or `Nothing to undo`. Besides `animus.tools`, it needs the node the change needed: a command's change needs that command's node, and a menu change the node of what it wrote, such as `animus.npc.move` for a route, `animus.npc.create` for a new NPC or `animus.npc.delete` for a deleted one. Without it the reply is `No permission: <node>; ask an operator to grant it`. Animus keeps the last 20 changes of each of the 200 players who changed something most recently, each for 24 hours. Leaving and rejoining keeps them; a restart forgets them. With an id, which is what **[Undo]** sends, it reverts that change when it is one of your recent changes; any other change needs `animus.admin`. Undoing a delete selects the NPCs it brings back. From the console, `undo <id>` works as `rollback` does. Completion offers your recent change ids |
 | `/animus validate` | Check every definition file without changing anything |
 | `/animus reload` | Load changed definition files and rigs. Each file applies on its own; a broken file keeps its last valid version |
-| `/animus rollback <transaction>` | Undo a transaction from its receipt. A transaction already rolled back answers `already rolled back`, and one whose files a later change wrote names the file to roll back first. The id may be cut to its first characters, at least four, when no other receipt starts with them. See [storage and recovery](/animus/12-storage-recovery#rollback) |
+| `/animus rollback <transaction>` | Undo any change by its id, the one after `tx` in a reply. A change already undone answers `Change 1a2b3c4d is already undone; nothing changed`, and one whose files a later change wrote answers `Cannot undo 1a2b3c4d: npcs/guard.json changed after it; undo the later change first`. The id may be cut to its first characters, at least four, when no other receipt starts with them. See [storage and recovery](/animus/12-storage-recovery#rollback) |
 
-A player with `animus.tools` also selects an NPC by clicking it while holding the [wand](/animus/21-in-game-toolkit#the-wand); a plain click without the wand selects nothing. A command given an id no NPC has answers `No NPC named <id>`. Saved file changes apply without `/animus reload`; see [live apply](/animus/03-configuration#live-apply).
+A player with `animus.tools` also selects an NPC by clicking it while holding the [wand](/animus/21-in-game-toolkit#the-wand); a right-click with the wand also opens its screen. A plain click without the wand selects nothing. A command given an id no NPC has answers `No NPC named <id>`. Saved file changes apply without `/animus reload`; see [live apply](/animus/03-configuration#live-apply).
 
 ```none
 /animus create guard name="Town Guard" folder=town
@@ -156,9 +164,9 @@ A player with `animus.tools` also selects an NPC by clicking it while holding th
 |---|---|
 | `/animus groups list [page=1]` | Every [trait group](/animus/18-trait-groups) with its revision, member count and description, then any refused trait group file |
 | `/animus groups inspect <group>` | One trait group's values and problems |
-| `/animus groups members <group> [page=1]` | The NPCs that list the trait group |
-| `/animus groups assign <group> [folder=] [tag=] [ids=]` | Add the trait group to every matching NPC as one transaction |
-| `/animus groups unassign <group> [folder=] [tag=] [ids=]` | Remove the trait group from every matching NPC as one transaction |
+| `/animus groups members <group> [page=1]` | The NPCs that list the trait group; click one to inspect it |
+| `/animus groups assign <group> [folder=] [tag=] [ids=]` | Add the trait group to every matching NPC as one change |
+| `/animus groups unassign <group> [folder=] [tag=] [ids=]` | Remove the trait group from every matching NPC as one change |
 
 Assign and unassign take exactly one of `folder=<npc-folder>`, `tag=<tag>` or `ids=a,b`, where `@selected` in `ids=` is your selected NPC. A change that would leave any NPC invalid is refused whole.
 
@@ -170,14 +178,14 @@ Assign and unassign take exactly one of `folder=<npc-folder>`, `tag=<tag>` or `i
 
 | Command | Effect |
 |---|---|
-| `/animus navigation go <npc> [x] [y] [z] [mode=walk] [speed=2.0]` | Send an active NPC to a point in its world, or to you when the point is left out. `~` and `^` count from you. Whole-number `x` and `z` mean the center of that block, so `10 64 -3` walks to `10.5 64 -2.5`; give a fraction for an exact point. `mode` is `walk`, `swim` or `fly`; speed is 1 to 10 blocks per second |
+| `/animus navigation go <npc> [x] [y] [z] [mode=walk] [speed=2.0]` | Send an active NPC on a trip to a point in its world, or to you when the point is left out. A trip is one walk and is not saved; the reply names it, such as `heading to 10.5 64 -2.5 (walk); trip 1a2b3c4d`. `~` and `^` count from you. Whole-number `x` and `z` mean the center of that block, so `10 64 -3` walks to `10.5 64 -2.5`; give a fraction for an exact point. `mode` is `walk`, `swim` or `fly`; speed is 1 to 10 blocks per second |
 | `/animus navigation look <npc> [x] [y] [z]` | Turn the NPC toward a point, or toward you |
-| `/animus navigation status <npc>` | Show the NPC's current route and progress |
-| `/animus navigation stop <npc>` | Stop it |
+| `/animus navigation status <npc>` | Show where the NPC is walking: its trip, route or recording, and how far it got |
+| `/animus navigation stop <npc>` | Stop the NPC's trip or route walk: `Stopped guard's walk`, or `guard is not walking anywhere` |
 | `/animus ride status` | List current riders |
 | `/animus ride stop <player>` | Dismount a player |
 
-A manual `navigation go` or `navigation stop` overrides the NPC's route until its definition is applied again. See [movement, mounts and riding](/animus/05-movement-mounts-riding).
+A trip or a `navigation stop` overrides the NPC's route until its definition is applied again. See [movement, mounts and riding](/animus/05-movement-mounts-riding).
 
 | Command | Effect |
 |---|---|
@@ -290,17 +298,18 @@ The start options are `anchor`, `rotation`, `mirror`, `offset`, `yoffset`, `patt
 |---|---|
 | `/animus shop status` | Shop catalog and economy state |
 | `/animus shop list [page=1]` | Loaded shops |
-| `/animus shop open <shop> [player=] [style=]` | Open a shop for yourself or another player; `style=native` or `style=chest` replaces the shop's window style |
+| `/animus shop open <shop> [player=] [style=] [npc=]` | Open a shop for yourself or another player; `style=native` or `style=chest` replaces the shop's window style, and `npc=<id>` opens it as that NPC's click does, with its window style and villager look |
 | `/animus shop stock <shop> [price=] [mode=buy] [page=1]` | Add the item in your main hand to the shop as one offer, in the first free slot of the page. `mode=buy` sells it to players for `price`, `mode=sell` buys it from them for `price`, and `mode=trade` gives it for the item in your off hand, with no price. A shop id with no file makes the shop. See [stocking in game](/animus/10-shops#stocking-a-shop-in-game). Players only |
 | `/animus shop reload` | Reload shops and chest GUIs |
 | `/animus shop reset <shop> [player=]` | Clear purchase limits and stock counters, for everyone or one player by name or UUID |
 | `/animus shop problems [page=1]` | Refused shop documents with their reasons, and notes about offers the chosen window style cannot show exactly |
+| `/animus gui` | Open the Animus menu; see [Tools](#tools). The commands below need `animus.gui` |
 | `/animus gui status` | GUI, menu and hologram state |
 | `/animus gui list [kind=all] [page=1]` | Loaded documents of one kind: `inventory`, `menu`, `hologram` or `animation` |
 | `/animus gui open <gui> [player=]` | Open a chest GUI |
 | `/animus gui menu <menu> [player=]` | Open a holographic menu |
 | `/animus gui close [player=]` | Close an open menu |
-| `/animus gui create <id> [rows=3] [title=]` | Make an empty chest GUI file to fill in the toolkit or web editor. `id` is `namespace:path`, such as `town:board`; `title` defaults to the id |
+| `/animus gui create <id> [rows=3] [title=]` | Make an empty chest GUI file to fill in the web editor; the Animus menu's **GUIs** puts it on NPCs. `id` is `namespace:path`, such as `town:board`; `title` defaults to the id |
 | `/animus hologram create <id> [text=]` | Make a hologram with one text line at head height where you stand, facing your way. `text` defaults to the id; `&` colour codes work. Players only |
 | `/animus gui reload` | Reload GUIs, menus, holograms and shops |
 | `/animus gui problems [page=1]` | Refused GUI and shop documents |
@@ -361,9 +370,9 @@ See [shops](/animus/10-shops) and [GUIs, holograms and menus](/animus/11-guis-ho
 | Command | Effect |
 |---|---|
 | `/animus editor status` | Listener, relay and open connections |
-| `/animus editor pair [label=] [scopes=] [folders=] [expires=]` | Print a single-use pairing link. `scopes` and `folders` are comma-separated; `folders` limits the token to NPCs in those folders; `expires` is like `7d`, `12h` or `30m` |
+| `/animus editor pair [label=] [scopes=] [folders=] [expires=]` | Print a single-use pairing link. It grants every scope except `apply:commands` unless `scopes` lists fewer. `scopes` and `folders` are comma-separated; `folders` limits the token to NPCs in those folders; `expires` is how long it lasts without use, like `7d`, `12h` or `30m` |
 | `/animus editor tokens [page=1]` | Paired browsers, as a paged list |
-| `/animus editor revoke <token>` | Revoke a token, or `all`, and close their connections |
+| `/animus editor revoke <token>` | Revoke a token, or `all`, and close their connections. Also cancels a link not opened yet |
 
 See [web editor](/animus/14-web-editor#pairing).
 
@@ -371,12 +380,13 @@ See [web editor](/animus/14-web-editor#pairing).
 
 | Command | Effect |
 |---|---|
-| `/animus setup [dismiss=false]` | List the first steps on a new server, done steps marked, with a button for each. Also turns off the join greeting; `dismiss=true` only turns it off |
-| `/animus tools` | Open the chest-window tool palette: new NPC, manage, edit, skins, equipment, combat, mounts, routes, recordings, trait groups, folders, behaviors, shops, GUIs and find. Same as `/animus tools open`. Players only |
-| `/animus tools wand` | Give the selection wand: click an NPC to select it, sneak-click to add or remove it. Players only |
-| `/animus tools manage` | Open the manage screen for your selection. Players only |
+| `/animus setup [dismiss=false]` | Show the first steps: make an NPC, change it, pair the web editor. Done steps are marked, and each open step has a button; **[New NPC]** and **[Menu]** run `/animus gui`. The console gets the commands written out, such as `1. Make an NPC: /animus gui, in game`. Also turns off the join hint; `dismiss=true` only turns it off |
+| `/animus gui` | Open the [Animus menu](/animus/21-in-game-toolkit) at Home. Needs `animus.tools`; the console and players without it get the help page of the `gui` commands instead. With more words, `gui` runs the [chest GUI commands](#shops-and-guis) |
+| `/animus tools` | Open the [Animus menu](/animus/21-in-game-toolkit) on the NPCs you selected: one NPC's screen, or one screen for several, titled such as "2 NPCs". With nothing selected it opens Home. Players only |
+| `/animus tools wand` | Take the wand: right-click an NPC to edit it, sneak-click to add it to the selection or take it out. Players only |
+| `/animus tools mode [menu-mode=]` | Show your menu mode, or set it to `simple` or `advanced`. See [Simple and Advanced](/animus/21-in-game-toolkit#simple-and-advanced). Players only |
 
-New operators see a one-line greeting with **[Setup]** two seconds after joining while the server has no NPCs or an unfinished import. See the [tutorial introduction](/animus/20-tutorial-introduction) and the [in-game toolkit](/animus/21-in-game-toolkit).
+Two seconds after joining, operators see a one-line hint while the server has no NPCs: `Ready. /animus gui opens the menu [Menu] [Dismiss]`. **[Menu]** runs `/animus gui`. When Citizens data waits to be imported, the hint names it instead, with **[Setup]**. **[Dismiss]** turns the hint off for every operator. See the [tutorial introduction](/animus/20-tutorial-introduction) and the [Animus menu](/animus/21-in-game-toolkit).
 
 ## Diagnostics
 

@@ -2,7 +2,7 @@
 title: "Animus: Overview"
 description: "What Animus is, how its NPCs work, and where each topic is documented"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, npc, overview"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -20,7 +20,7 @@ Saving any of these files applies it within about a second; see [live apply](/an
 
 ### Spawned, despawned and active
 
-A cloned NPC is saved despawned (`"spawned": false`), which these pages call dormant: it is stored and editable, but has no body, fires no triggers and costs nothing at run time. A new NPC made with **New NPC** in the [toolkit](/animus/21-in-game-toolkit#new-npc) or with `/animus create` spawns at once; a sneak-click on **New NPC** saves it dormant. An NPC imported from Citizens spawns when the import is applied unless Citizens had it despawned. `/animus spawn <id>` marks it spawned, and `/animus despawn <id>` marks it despawned again. Both are saved, so a restart keeps them.
+A despawned NPC (`"spawned": false`) is saved and editable, but has no body, fires no triggers and costs nothing at run time. A copy, from `/animus clone` or **Copy** in the [Animus menu](/animus/21-in-game-toolkit#manage), is saved despawned. A new NPC made with **New NPC** in the [Animus menu](/animus/21-in-game-toolkit#new-npc) or with `/animus create` spawns at once; `spawned=false` on the command, or the **Spawned** switch of New NPC in Advanced mode, saves it despawned. An NPC imported from Citizens spawns when the import is applied unless Citizens had it despawned. `/animus spawn <id>` marks it spawned, and `/animus despawn <id>` marks it despawned again. Both are saved, so a restart keeps them.
 
 A spawned NPC is active while it is loaded in a world: its chunk is loaded and it runs its routes, triggers and combat. A spawned NPC in an unloaded chunk waits and becomes active again when the chunk loads. See [activation and editing](/animus/04-npc-definitions#activation-and-editing).
 
@@ -45,14 +45,19 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | Definition | One NPC's JSON file, `npcs/<folder>/<id>.json` |
 | Folder | The path under `npcs/` a definition sits in, such as `world/town`. The definition's `group` field holds it, and `folder=` on commands names it |
 | Trait group | A file in `groups/` holding values that several NPCs share; an NPC lists the trait groups it takes in its `groups` field. See [trait groups](/animus/18-trait-groups) |
-| Spawned, despawned | Whether the NPC should exist in its world. Saved in the definition as `"spawned"` |
-| Dormant | Saved and not spawned |
+| Spawned, despawned | Spawned: in the world. Despawned: saved, not in the world. Saved in the definition as `"spawned"` |
 | Active | Spawned and loaded in a world right now |
-| Route | The points an NPC walks, from `routes/<name>.json` or written into its `animus:navigation` module. See [routes](/animus/05-movement-mounts-riding#routes) |
-| Recording | A player's captured movement that an NPC replays. See [performance recordings](/animus/19-performance-recordings) |
+| Movement | Everything that makes an NPC move: routes, recordings, a schedule, following |
+| Route | Points on the ground. The NPC walks from one to the next and finds its own way between them. Saved in `routes/<name>.json` or written into the NPC's `animus:navigation` module. See [routes](/animus/05-movement-mounts-riding#routes) |
+| Recording | Your own movement, replayed exactly: steps, looks, sneaks and arm swings. See [recordings](/animus/19-performance-recordings) |
+| Trip | One walk to a place, started with `/animus navigation go`. Not saved |
+| Animus menu | The chest windows `/animus gui` opens in game. See [in-game menu](/animus/21-in-game-toolkit) |
+| Simple, Advanced | The two modes of the Animus menu and of help. Simple shows the common tasks; Advanced shows everything |
+| Wand | The stick that selects NPCs. Right-click an NPC with it to change it |
+| Selection | The NPCs your next action applies to, picked with the wand, the Animus menu or `/animus select` |
 | Live apply | A saved data file taking effect within a second, without a reload. The chat line and permission call it hotload. See [live apply](/animus/03-configuration#live-apply) |
 | Note block chime | The sound operators hear when a saved file is applied or refused |
-| Transaction | One saved change with a rollback receipt. Replies show its id as `tx`, with **[Undo]** |
+| Undo | Reverts one saved change. Each change's reply has **[Undo]**; `/animus undo` reverts your last change, and `/animus rollback <id>` any change by the id after `tx` |
 | Web editor | The web editor at [animus.volmitsoftware.com](https://animus.volmitsoftware.com) |
 | Pairing link | The single-use link `/animus editor pair` prints to connect the web editor to a server |
 | Module | Per-NPC feature settings in a definition's `modules`, such as `animus:navigation`. A Java module is a trusted jar in `modules/` that adds capabilities |
@@ -62,7 +67,7 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | Page | Covers |
 |---|---|
 | [Tutorial: introduction](/animus/20-tutorial-introduction) | Install, set up, and make, skin and walk your first NPC |
-| [Tutorial: first NPC](/animus/22-tutorial-first-npc) | Make, edit, skin, dress and sort NPCs with the in-game toolkit |
+| [Tutorial: first NPC](/animus/22-tutorial-first-npc) | Make, find, dress and sort NPCs with the Animus menu |
 | [Tutorial: movement](/animus/23-tutorial-movement) | Routes, recordings, mounts and riding in game |
 | [Tutorial: conversations, shops and combat](/animus/24-tutorial-interaction) | Behaviors, conversations, shops, holograms, GUIs, combat and health |
 | [Tutorial: web editor](/animus/25-tutorial-web-editor) | Pairing, editing, applying and undoing in the browser |
@@ -82,7 +87,7 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | [Behaviors](/animus/07-behaviors) | JSON behaviors, triggers, actions and stored state |
 | [Combat](/animus/08-combat) | The combat module, targets, guards and protection |
 | [Building](/animus/09-building) | NPCs that build schematics |
-| [In-game toolkit](/animus/21-in-game-toolkit) | Editing NPCs in game with `/animus tools` |
+| [In-game menu](/animus/21-in-game-toolkit) | The Animus menu and the wand: changing NPCs in game with `/animus gui` |
 | [Web editor](/animus/14-web-editor) | Pairing the web editor and what it edits |
 | [Shops](/animus/10-shops) | Shops, trades, stock and the dtlTraders importer |
 | [Quests](/animus/38-quests) | Animus quests: givers, stages, objectives, rewards and the journal |

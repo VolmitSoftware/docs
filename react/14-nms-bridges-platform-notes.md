@@ -25,7 +25,7 @@ On Paper and Paper-based servers, the per-chunk `entities` sampler follows mobs 
 
 Spigot has no asynchronous teleport. On Spigot, `/react chunk worst`, React Web player teleports, and delayed portal traversals from `portal-traffic-smoother` teleport synchronously on the server thread. Paper and Folia use asynchronous teleports for the same operations. Plugin API packs read the target plugin version from its `plugin.yml` or `paper-plugin.yml` on every platform.
 
-Spigot has no world border change events. On Spigot, the world border shown on React Web heatmaps is read when a world loads or its spawn changes, so a border moved or resized with `/worldborder` appears after the next restart or spawn change. Paper and Folia update it as soon as the border changes.
+Spigot has no world border change events. On Spigot, the world border shown on the React Web map is read when a world loads or its spawn changes, so a border moved or resized with `/worldborder` appears after the next restart or spawn change. Paper and Folia update it as soon as the border changes.
 
 Spigot does not expose creeper ignition, enderman screaming and stared-at state, chicken jockey and egg timers, or cow, chicken, and pig sound variants. On Spigot, `mob-stacking` compares the remaining state, including fuse ticks, targets, passengers, saddles, and visual variants. Mobs restored from a stack keep the server defaults for the fields Spigot does not expose.
 

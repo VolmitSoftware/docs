@@ -2,7 +2,7 @@
 title: "Animus: Shops"
 description: "Buy, sell and trade shops, container shops, money, and importing from dtlTraders"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, shops, trading, economy, vault, dtltraders"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -72,13 +72,15 @@ The held stack, with its count, name and other data, becomes one offer in the fi
 | `sell` | Players sell the held stack for `price` |
 | `trade` | Players get the held stack for the stack in your off hand; no price |
 
-`page=2` stocks the second page. An id with no file yet, such as `town:smith`, makes the shop with one three-row page first. The reply names the entry id and slot, such as `Added 4 bread as buy offer bread in slot 0 of page 1`, and the transaction. Limits, discounts, display names and the window layout are set afterwards in the file or the [web editor](/animus/14-web-editor#gui-editors). Stocking needs `animus.shops.edit`, which `animus.admin` includes. The toolkit's **Shops** screen makes an empty shop and binds it to NPCs.
+`page=2` stocks the second page. An id with no file yet, such as `town:smith`, makes the shop with one three-row page first. The reply names the entry id and slot, such as `Added 4 bread as buy offer bread in slot 0 of page 1`, and the transaction. Limits, discounts, display names and the window layout are set afterwards in the file or the [web editor](/animus/14-web-editor#gui-editors). Stocking needs `animus.shops`, which `animus.admin` includes.
+
+In the [Animus menu](/animus/21-in-game-toolkit#shops), **Shop** on an NPC's screen makes an empty shop on that NPC and puts shops on NPCs. A shop's **Add held item** asks for a price and adds the held stack as a buy offer, as this command does, with a reply such as `Added 4 Bread for $12.00`. The question is titled with the economy's money, such as "Price in Dollars", or "Price ($)" when the economy names it only by a symbol, as EssentialsX does, or "Price" when it names none, and its hint shows how a typed number reads: "One number; 2 reads as $2.00". With no economy plugin, or `economy = "none"`, the button and the question say "No economy plugin, so players cannot pay"; the offer is still added. It refuses the wand, so hold the item, then open the NPC's screen again with `/animus tools`. **Offers** lists the offers, each with its price such as "Players buy it for $12.00", and takes one out on a click.
 
 ## Window styles
 
 <div class="animus-demo">
 <p><strong>Shops</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/25-shops-ingame.webm" aria-label="Opening a shop as a chest window and switching it to the trading screen" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/25-shops-ingame.webm" aria-label="Stepping a shop through its window styles and opening it as a player" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A shop opens in one of two windows:
@@ -86,7 +88,7 @@ A shop opens in one of two windows:
 - `native`: the villager trading screen, with every offer in one scrolling list.
 - `chest`: the chest window described below.
 
-The style comes from the first of these that sets one: `style=` on `/animus shop open`, the NPC's `animus:shop` module, the shop's `style` field, and `style` under `[shops]` in `config.toml` (default `chest`).
+The style comes from the first of these that sets one: `style=` on `/animus shop open`, the NPC's `animus:shop` module, the shop's `style` field, and `style` under `[shops]` in `config.toml` (default `chest`). `npc=` on `/animus shop open` uses that NPC's module, as its click does, so you can check what players get without walking to it.
 
 ### The trading screen
 
@@ -203,6 +205,8 @@ A trade runs only when every container is in a loaded chunk on the buyer's threa
 
 Without money, every entry with a price above 0 refuses with "Money trades are unavailable" and nothing changes. Free entries and item trades always work. `[shops] economy = "none"` turns money off on purpose.
 
+Prices are written by the economy itself, such as `$2.00` or `2 Coins`: in the chest window's price and pay lines, the bought and sold messages and an entry's `broadcast`, in the trading screen's price tokens, and in the Animus menu's offer lists and replies. Only while no economy is ready does `[shops] priceFormat` write them, so mod servers use `priceFormat` unless a [Java module](/animus/99-java-modules-api) provides an economy. The `{price}` of an entry's `commands` is always the plain number.
+
 ## Settings
 
 ```toml
@@ -217,7 +221,7 @@ flushMillis = 2000
 bought = "&aBought {item} for {price}."
 ```
 
-`economy` is `auto` or `none`. `style` is `chest` or `native`, for shops and NPCs that do not choose. `priceFormat` is a Java decimal pattern. `flushMillis` (100 to 60,000) is how long counter changes wait before they are written. Any message can be replaced under `[shops.messages]`; an unknown key stops `config.toml` from loading and the error names it. Changes apply when `config.toml` is saved; `flushMillis` applies to the next counter write.
+`economy` is `auto` or `none`. `style` is `chest` or `native`, for shops and NPCs that do not choose. `priceFormat` is a Java decimal pattern for prices while no economy is ready; with one, prices read as the economy writes them. `flushMillis` (100 to 60,000) is how long counter changes wait before they are written. Any message can be replaced under `[shops.messages]`; an unknown key stops `config.toml` from loading and the error names it. Changes apply when `config.toml` is saved; `flushMillis` applies to the next counter write.
 
 A shop that runs commands needs its id or namespace on the command allow-list (`commandBehaviors` or `commandNamespaces` under `[behaviors.actions]`), the same list [behaviors](/animus/07-behaviors#commands) use. Without it the file is refused.
 
@@ -226,7 +230,7 @@ A shop that runs commands needs its id or namespace on the command allow-list (`
 All need `animus.shops`, which `animus.admin` grants; the shop import needs `animus.import`; see [commands](/animus/02-commands-permissions#shops-and-guis) for the full list. The ones you use most:
 
 ```none
-/animus shop open <shop> [player=] [style=]
+/animus shop open <shop> [player=] [style=] [npc=]
 /animus shop stock <shop> [price=] [mode=buy] [page=1]
 /animus shop problems
 /animus shop reset <shop> [player=]
@@ -281,5 +285,5 @@ Imported shops with commands need `commandNamespaces = ["dtltraders"]` under `[b
 - A purchase that fits into partial stacks is allowed; dtlTraders needs an empty slot.
 - Limit windows run per player in real time instead of on one server-uptime clock.
 - Right click buys the listed amount instead of asking for a typed amount.
-- Shops are edited as files or in the [web editor](/animus/14-web-editor). In game, `/animus shop stock` adds offers from held items; there is no chest-style offer editor.
+- Shops are edited as files or in the [web editor](/animus/14-web-editor). In game, `/animus shop stock` and **Add held item** in the Animus menu add offers from held items, and **Offers** removes them; an offer's price and limits change in the file or the web editor.
 - The [web editor](/animus/14-web-editor#gui-editors) offers only trade and static entries in a shop that lists containers, and removes the fields an entry's new type cannot use when you change its type. It also shows the notes `/animus shop problems` gives for the window style, at the offer they are about.

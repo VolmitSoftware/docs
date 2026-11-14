@@ -2,7 +2,7 @@
 title: "Getting Started"
 description: "Install Gloss, check its files, and choose which features to enable"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-18T00:00:00.000Z
@@ -59,9 +59,9 @@ Other paths appear only when Gloss has data to store:
 | `motd.json` | `[features] motd` is turned on |
 | `preview-scales.json` | Shutdown, and whenever a player finishes adjusting a preview scale. Holds every per-player scale that is not 1.0 |
 | `bubble-styles.json` | A player picks a personal chat bubble style |
-| `editor-sync-sessions.json` | A web editor sync session is created. Importers never copy session secrets |
-| `editor-sync-transactions/` | A web editor publication is in flight |
-| `editor-sync-backups/<id>/` | A web editor publication replaced at least one file |
+| `editor/` | The web editor starts. `identity.json` holds the server's key, which gives its fingerprint; `tokens.json` holds paired browsers, stored as hashes |
+| `editor-sync-transactions/` | A web editor publish is in flight |
+| `editor-sync-backups/<id>/` | A web editor publish replaced at least one file |
 | `custom-items.json` | `/gloss item export` runs. Regenerable, so nothing preserves it |
 | `holoui-import.json` | A HoloUi import commits successfully. Its presence prevents automatic repeat imports |
 | `editor-sync-backups/<transaction>/backup/` | A committed import or editor publication replaces existing files |
@@ -92,7 +92,7 @@ Enabling a document-backed feature extracts its defaults on reload; `previews` n
 
 ## Import
 
-On first start, Gloss can import supported menus, images, panels, preview definitions, player preview scales, and settings from `plugins/holoui` or `plugins/HoloUi`. The source remains unchanged, and credentials and editor sessions are excluded. Existing destination conflicts or invalid documents prevent activation. For an explicit import, run `/gloss import holoui mode=preview`, review its results, then `/gloss import holoui mode=apply`; see [Data files](/gloss/03-data-files). HoloUi world boards become Gloss panels; `/gloss board` controls scoreboards.
+On first start, Gloss can import supported menus, images, panels, preview definitions, player preview scales, and settings from `plugins/holoui` or `plugins/HoloUi`. The source remains unchanged, and HoloUi's credentials and editor files are not copied. Existing destination conflicts or invalid documents prevent activation. For an explicit import, run `/gloss import holoui mode=preview`, review its results, then `/gloss import holoui mode=apply`; see [Data files](/gloss/03-data-files). HoloUi world boards become Gloss panels; `/gloss board` controls scoreboards.
 
 ## Uninstalling
 
@@ -104,7 +104,7 @@ Gloss draws its displays with unsaved entities and client packets. Removing it m
 While Gloss is still installed:
 
 1. Save content you want to keep. `/gloss export bundle` writes a workspace archive under `plugins/Gloss/exports/`; copy it outside `plugins/Gloss/`, or back up the whole folder.
-2. End live editor sessions. List them with `/gloss web sessions list` and revoke each with `/gloss web sessions revoke <session>`. A session you do not revoke ends after `[editor.sync] sessionMinutes`.
+2. End web editor pairings with `/gloss editor revoke all`.
 3. If menus use [camera rides](/gloss/12-actions#camera-rides), make sure nobody is riding. A player who disconnected during a ride, or was riding when the server stopped, is returned to their saved position and game mode on their next join only while Gloss is installed. Without Gloss, that player joins in spectator mode; restore them with `/gamemode` and `/tp`.
 
 Remove Gloss:
@@ -115,7 +115,7 @@ Remove Gloss:
 
 | Location | Contents |
 |---|---|
-| Server `plugins/Gloss/` | Settings, documents, images, languages, player state, history, editor-sync backups, `forge/` pack output, `exports/`, downloaded libraries in `.libs/`, and `cache/runtime/` |
+| Server `plugins/Gloss/` | Settings, documents, images, languages, player state, history, the web editor's key and tokens in `editor/`, editor publish backups, `forge/` pack output, `exports/`, downloaded libraries in `.libs/`, and `cache/runtime/` |
 | Proxy `plugins/gloss/` | Proxy settings and documents, including `proxy-ownership.key` |
 | Proxy `plugins/Gloss/` | `cache/runtime/` extracted from an XZ jar |
 | Folders given to `/gloss forge export <path>` | Exported resource-pack trees. Also remove those files from any pack you merged them into |

@@ -2,7 +2,7 @@
 title: "Animus: Migrating from Citizens"
 description: "Import Citizens NPCs with Sentinel, dtlTraders, Shopkeepers, Builder and Denizen data"
 published: true
-date: 2026-11-11T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, citizens, migration, import, sentinel, denizen, shopkeepers, converter"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -50,7 +50,7 @@ The import commands need `animus.import`, which `animus.admin` grants. They work
 
    Every guard becomes a combatant; at most `[combat] maximumNpcs` fight or scan at once and guards with no player near sleep. Apply and `review` say when more guards are imported than that. See [combat work limits](/animus/08-combat#work-limits).
 
-   Apply refuses a preview whose save changed after it was taken, with `<save> changed since the preview`, so NPCs saved in between are not dropped. Run `preview` again, then `apply`. Apply also refuses an import an older Animus staged with NPC files at an older [schema version](/animus/12-storage-recovery#schema-versions): `Import <id> was previewed by an older Animus and is not applied: <file> is schemaVersion 1, this one writes 2; run /animus import citizens preview again, then /animus import citizens apply`. The editor's import screen says to upload and stage the save again. If apply stops part way, for example on a full disk or a schematic that cannot be copied, everything it installed stays recorded: run `apply` again to finish, or `rollback` to undo it. Until then `preview` is refused and the startup notice says an apply was interrupted.
+   Apply refuses a preview whose save changed after it was taken, with `<save> changed since the preview`, so NPCs saved in between are not dropped. Run `preview` again, then `apply`. Apply also refuses an import an older Animus staged with NPC files at an older [schema version](/animus/12-storage-recovery#schema-versions): `Import <id> was previewed by an older Animus and is not applied: <file> is schemaVersion 1, this one writes 2; run /animus import citizens preview again, then /animus import citizens apply`. The editor's **Import** shows the same message; press **Convert** there again. If apply stops part way, for example on a full disk or a schematic that cannot be copied, everything it installed stays recorded: run `apply` again to finish, or `rollback` to undo it. Until then `preview` is refused and the startup notice says an apply was interrupted.
 8. Review:
 
    ```text
@@ -88,7 +88,7 @@ A label uses 1-32 lowercase letters, digits, `_` or `-`, and each copy needs a d
 | `/npc tp` | `/animus npc tp <npc>` |
 | `/npc rename <name>` | `/animus npc rename <npc> <name>` |
 | `/npc lookclose` | `/animus npc look <npc> toggle` |
-| `/npc type <type>`, `/npc equip` | `/animus edit <npc> {"type": "minecraft:villager"}`, or the toolkit's **Equipment** screen |
+| `/npc type <type>`, `/npc equip` | `/animus edit <npc> {"type": "minecraft:villager"}`, or **Equipment** in the [Animus menu](/animus/21-in-game-toolkit#equipment) |
 
 Each takes `@selected` for the NPC you selected. See [commands](/animus/02-commands-permissions#status-and-npc-management).
 
@@ -151,18 +151,18 @@ Import archives and transaction files can hold player names and other private da
 
 ## Converting in the browser
 
-The [web editor](/animus/14-web-editor) converts a `saves.yml` in the browser with the same rules: open it, choose **Import Citizens and others**, and pick the file. The file is read on your computer and converting never uploads it. The browser reads only the save, so Citizens shops and the CitizensCMD and CommandNPC commands convert when the server or the converter previews the import with those files beside the save. The review leads with the migration warnings and the records that will not load, and downloads a zip to unpack into the data folder. The zip holds `imports/saves.yml` and the staged `imports/<import-id>/` folder, so `/animus import citizens preview` on the server finds the same preview and continues from step 6.
+The [web editor](/animus/14-web-editor) converts a `saves.yml` in the browser with the same rules: open **Import**, pick Citizens as the source, pick the file with **Choose saves.yml** and press **Convert**. The file is read on your computer and converting never uploads it. The browser reads only the save, so Citizens shops and the CitizensCMD and CommandNPC commands convert when the server or the converter previews the import with those files beside the save. The review says in plain words what the import makes, then lists what was not converted and the warnings. In Advanced it shows the full migration warnings and downloads a zip to unpack into the data folder. The zip holds `imports/saves.yml` and the staged `imports/<import-id>/` folder, so `/animus import citizens preview` on the server finds the same preview and continues from step 6.
 
 <div class="animus-demo">
 <p><strong>Browser conversion</strong> Browser editor.</p>
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/48-citizens-import-editor.webm" aria-label="Converting a Citizens save in the browser" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-A Shopkeepers `save.yml` (with its `config.yml`, if you have it) converts the same way; its zip holds `imports/shopkeepers/save.yml` and the staged `imports/shopkeepers/<import-id>/` folder. Load the Citizens save first so the browser checks the links.
+A Shopkeepers `save.yml` (with its `config.yml`, if you have it) converts the same way; its zip holds `imports/shopkeepers/save.yml` and the staged `imports/shopkeepers/<import-id>/` folder. Choose the Citizens save beside it in the same step so the browser checks the links.
 
-A Denizen folder converts the same way: choose **Choose Denizen folder** and pick `plugins/Denizen`. The editor reads every `.dsc` and `.yml` file under `scripts/`, `server_flags.dat` and `player_flags/`, lists any other files it skipped, and binds assignments to the NPCs of the Citizens save chosen above. Its zip holds the folder under `imports/denizen/` and the staged `imports/denizen/<import-id>/` tree; unzip it beside the Citizens import and run `/animus import citizens` as in [Denizen](#denizen).
+A Denizen folder converts the same way: pick Denizen as the source, press **Choose folder** and pick `plugins/Denizen`. The editor reads every `.dsc` and `.yml` file under `scripts/`, `server_flags.dat` and `player_flags/`, lists any other files it skipped, and binds assignments to the NPCs of the Citizens save chosen beside it. Its zip holds the folder under `imports/denizen/` and the staged `imports/denizen/<import-id>/` tree; unzip it beside the Citizens import and run `/animus import citizens` as in [Denizen](#denizen).
 
-The same screen can also upload the files to a paired server and run stage, review, apply and rollback there, with the same results as the commands.
+With a paired server whose pairing may import, the Already on my server source has the server convert the saves it has (or files you upload), and **Install** and **Roll back** do what `apply` and `rollback` do.
 
 ## Where the files go
 
@@ -210,6 +210,8 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 | Builder `builder` | An `animus:builder` section. See [builder](#builder). |
 | Denizen assignments, triggers and flags | Converted from the Denizen folder when it is present. See [Denizen](#denizen). |
 | LibsDisguises disguises | `disguise`, from the disguise LibsDisguises saved for the NPC or a script that disguises its UUID. See [LibsDisguises](/animus/34-libsdisguises#citizens-npcs). |
+
+Citizens draws every hologram line on its own, so the import starts a line with `&r` wherever it would otherwise take on the color or format of the line above it, and the hologram looks as it did in Citizens. On NPCs imported by an earlier Animus, a line under a colored or formatted line now shows in that line's color and format; put `&r` at the start of the line to restore it, or import again with `mode=replace` if you have not edited those NPCs since.
 
 ### Skins
 

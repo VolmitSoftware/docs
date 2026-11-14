@@ -133,12 +133,9 @@ Only one benchmark run is accepted at a time. CPU and memory tests execute synth
 
 ## `/react debug`
 
-Version is listed in this help category. `/react version` and `/react v` provide the same output and are hidden from help and completion. Both paths use the normal React administration permission and send the installed version without a message prefix.
-
 | Subcommand | Aliases | Origin | Description |
 |------------|---------|--------|-------------|
 | `entity-data` | `ed` | player | Raycast entity. Print priority and crowding diagnostics |
-| `version` | | both | Show `React v<version>` using the help title gradient |
 
 ## `/react integration` (`int`)
 
@@ -167,22 +164,35 @@ The pack folder is also scanned every three seconds. Invalid changed files retai
 
 | Subcommand | Description |
 |------------|-------------|
-| `pair <label> [role=viewer]` | After the embedded listener is live and bound, create and persist a bearer token, then report its RCT2 pairing payload and fingerprints. A disabled, starting, failed, stopped, or unbound listener creates no token. Players receive a click-to-copy action instead of the raw payload in chat; console and RCON receive raw text. Roles are `viewer`, `operator`, or `admin`. |
-| `list` | List active token IDs, labels, and issue times. |
-| `revoke <id>` | Revoke a token ID and persist the token store. |
+| `pair [label=] [role=] [scopes=a,b] [expires=7d]` | Make a pairing link for one browser. It works once and lasts 10 minutes. See [React Web pairing](/react/01-installation-configuration#pairing). The listener must be running; otherwise no link is made and the reply says why |
+| `status` | State, listener address, relay, how many tokens and open links, open sockets, then the server fingerprint. In game, click the fingerprint to copy it |
+| `tokens` | Each token's id, label, role or scopes, expiry, last use, the browser it paired from and its open sockets |
+| `revoke <id>` | Revoke a token, or `all`. Its sockets close at once and its next request is refused. A link not opened yet is cancelled the same way |
 
-Omitting `role` creates a viewer token. Available roles are `viewer`, `operator`, and `admin`. Set `advertisedUrl` when React Web must connect through a public address or reverse proxy.
+All `/react web` subcommands need `react.use`. Options of `pair` are keyed: `/react web pair label=laptop role=viewer`.
 
-| Role | Effective scopes |
-|------|------------------|
+| Option | Default | Meaning |
+|--------|---------|---------|
+| `label=` | none | A name shown in `/react web tokens`, at most 64 characters |
+| `role=` | `operator` | `viewer`, `operator` or `admin`; a short way to pick scopes |
+| `scopes=` | `read,op:execute` | What the token may do, instead of a role; must include `read` |
+| `expires=` | `tokenDays` in `web.toml` (7 days) | How long the pairing lasts without use, as a number with `d`, `h` or `m`, such as `12h`. Each use starts it again |
+
+| Role | Scopes |
+|------|--------|
 | `viewer` | `read` |
 | `operator` | `read`, `op:execute` |
 | `admin` | `read`, `op:execute`, `admin`, `console:read`, `console:execute` |
 
-Only admin tokens can read the console, run a console command, or teleport a player. Viewer and
-operator sessions can select a heatmap square and copy its coordinates but get no player list or
-teleport control. Every accepted change is written to `plugins/React/web/audit.log` and announced to
-online operators with the token label, role, and what changed.
+| Scope | Allows |
+|-------|--------|
+| `read` | Metrics, history, features, tweaks, worlds, incidents, actions and settings, read only |
+| `op:execute` | Switching features and tweaks, world settings and actions that are not destructive |
+| `admin` | Editing `react.toml`, presets, destructive actions, plugin API packs, and the player list with teleport |
+| `console:read` | Reading the server console |
+| `console:execute` | Running console commands |
+
+Only `admin` and the console scopes reach the console, run a console command, or teleport a player; treat an admin pairing like console access. Viewer and operator sessions can select a heatmap square and copy its coordinates but get no player list or teleport control. Every accepted change is written to `plugins/React/web/audit.log` and announced to online operators with the token label, role, and what changed.
 
 ## Shorthand commands (tweak `shorthands`)
 

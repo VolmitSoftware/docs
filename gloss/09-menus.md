@@ -2,7 +2,7 @@
 title: "Hologram Menus"
 description: "Build private hologram menus from JSON, commands, or the Gloss API"
 published: true
-date: 2026-11-05T00:00:00.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -127,7 +127,7 @@ With `[features] menus = false`, personal menus cannot open. Documents stay edit
 
 ## Text inside menus
 
-Menu and panel text runs through the shared viewer-aware pipeline (functions, inline expressions, PlaceholderAPI, emoji, colors, then MiniMessage) before the menu subsystem converts it to a component. Each line of a text icon's `text` is split on `\n`. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
+Menu and panel text runs through the shared viewer-aware pipeline (functions, inline expressions, PlaceholderAPI, emoji, colors, then MiniMessage) before the menu subsystem converts it to a component. Each line of a text icon's `text` is split on `\n` and shown as its own display, so every line starts with no formatting. See [Emoji, Text & Animations](/gloss/07-emoji-text-animations#the-text-pipeline).
 
 Text resolves for each viewer. `refreshTicks` controls dynamic refreshes from `0` to `1200`, and `0` disables them. A failed refresh keeps the previous text and logs the error.
 
@@ -202,7 +202,7 @@ Use `/gloss menu` or `/gloss menus`. See [Commands & Permissions](/gloss/17-comm
 
 Row numbers are one-based and count components in document order. `seticon` with an image type verifies the file exists under `images/` before writing. `style` writes into the icon `style` object and removes the object entirely when the last property is cleared. If the file changes between reading and saving, Gloss reports a revision conflict and writes nothing.
 
-`/gloss web edit menu <menu>` opens one menu in a restricted live web session. `/gloss web workspace` opens every editable runtime document and image.
+A [paired web editor](/gloss/18-web-editor#pairing) lists every menu and image on the server, and **Publish** writes your changes back.
 
 > `/gloss menu create` and `/gloss menu new` are different commands. `create` makes a persistent world-anchored panel plus its root menu, is player only, and is gated by `gloss.panels`. `new` makes a blank menu document only and is gated by `gloss.menus.edit`.
 {.is-info}

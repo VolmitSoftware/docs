@@ -13,6 +13,8 @@ Pressure-aware governors and world mechanics cover activation ranges, view range
 
 Most governors engage only after sustained tick or incident thresholds. They release through configured hysteresis.
 
+In React Web, open **Tuning** > **Features** in Advanced mode and pick **Governors** in the category filter to list and switch the governors together. Simple mode lists the features by category instead.
+
 ### `activation-range-governor`
 
 This feature scales down per-world Spigot entity activation ranges under sustained pressure. It restores those ranges on release. The range change is instant and server-wide. That differs from continuous `dynamic-activation-range`.

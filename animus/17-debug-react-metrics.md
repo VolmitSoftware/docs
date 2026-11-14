@@ -2,7 +2,7 @@
 title: "Animus: Debug and React Metrics"
 description: "Reading Animus network and server-time measurements with /animus debug and React"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, debug, metrics, react, performance"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -18,7 +18,7 @@ The readings require `animus.debug` (operators by default) and work from the con
 
 | Command | Shows |
 |---|---|
-| `/animus debug summary` | Summary: definitions, active, dormant and sleeping NPCs, viewers, network totals, server time per tick and the busiest subsystems, navigation, presentation and combat pressure, and a rough memory estimate |
+| `/animus debug summary` | Summary: saved and active NPCs, spawned NPCs waiting for a player nearby, sleeping patrols, viewers, network totals, server time per tick and the busiest subsystems, navigation, presentation and combat pressure, and a rough memory estimate |
 | `/animus debug network` | Outgoing packets and estimated bytes by packet kind over 1, 10 and 60 seconds, totals, incoming NPC clicks and rate-limited clicks, and the busiest viewers |
 | `/animus debug network viewer=<player>` | One player's packets, estimated bytes and clicks over the last second and since tracking began, by kind |
 | `/animus debug performance` | Server time per subsystem over 1, 10 and 60 seconds |
@@ -34,7 +34,7 @@ Tab completion offers the subcommands and the names of players with recorded tra
 
 | Line | What it tells you |
 |---|---|
-| `NPCs` | The runtime in use, then definitions on disk, active NPCs, dormant NPCs and routes asleep because no player is near |
+| `NPCs` | The runtime in use, then NPCs saved on disk, active NPCs, spawned NPCs waiting for a player nearby, and routes asleep because no player is near |
 | `Viewers` | Players receiving NPCs, and NPC bodies shown across all of them |
 | `Network` | Packets per second and per tick, estimated bytes per second, and NPC clicks coming in |
 | `Server time` | Milliseconds of server-thread time per tick and its share of a 50 ms tick, then the three busiest subsystems |

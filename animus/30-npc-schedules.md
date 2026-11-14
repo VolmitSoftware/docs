@@ -98,7 +98,7 @@ Arrival commands run from the console, so changing an NPC whose schedule has any
 
 ## Web editor
 
-The NPC's **Modules** section adds a schedule from **Add a known module**: it starts with one location at the block the NPC stands on, at time 1000. Each location is a form with its fields, and the list has add, move and remove buttons. The NPC browser turns `animus:schedule` on and off for several NPCs at once.
+The NPC's **Modules** section adds a schedule from **Add a known module**: it starts with one location at the block the NPC stands on, at time 1000. Each location is a form with its fields, and the list has add, move and remove buttons. In Advanced, the NPC list's **Module** action turns `animus:schedule` on and off for several NPCs at once.
 
 ## Importing NPC Destinations
 

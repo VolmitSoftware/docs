@@ -2,7 +2,7 @@
 title: "Animus: Movement, Mounts and Riding"
 description: "Navigation, routes, look-close, movement settings, mounted NPCs, player riding and hiring"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, navigation, routes, mounts, riding, hire"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -24,7 +24,7 @@ NPC movement runs on the server against real block collision. Animus never loads
 /animus navigation look guard 12 65 4
 ```
 
-`/animus navigation go <npc> <x> <y> <z> [mode=walk] [speed=2.0]` moves an active NPC in its current world at 1-10 blocks per second. A leg may be any length. Short legs are planned whole; longer legs are planned in segments, and the NPC walks each segment to the point closest to the goal before planning the next. Climbs and descents of any height go segment by segment over stairs and slopes, or by swimming or flying when the mode allows it. An NPC whose `movement.style` is `fly` or `glide` flies the leg whatever `mode` says.
+`/animus navigation go <npc> <x> <y> <z> [mode=walk] [speed=2.0]` sends an active NPC on a trip, one walk that is not saved, in its current world at 1-10 blocks per second. A leg may be any length. Short legs are planned whole; longer legs are planned in segments, and the NPC walks each segment to the point closest to the goal before planning the next. Climbs and descents of any height go segment by segment over stairs and slopes, or by swimming or flying when the mode allows it. An NPC whose `movement.style` is `fly` or `glide` flies the leg whatever `mode` says.
 
 When a plan gets no closer:
 
@@ -34,7 +34,7 @@ When a plan gets no closer:
 
 A walking goal names a block: the NPC stands on the ground in it or the block below, or on top of the block itself when it is solid, a top slab or a stair, so a point that names the ground under the feet works. A walking NPC crosses a gap in its footing narrower than a quarter block, such as the open front of a shelf beside a slab.
 
-Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows what the NPC is doing, its goal, its position and the arrival count, such as `Navigation guard: moving to 4.5 64 2.5, now at 3.25 64 1`. A walking goal rounds its feet height to the block, so `^ ^ ^5` works. A manual `navigation go` or `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-riding) for the rest of the movement commands.
+Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows what the NPC is doing, its goal, its position and the arrival count, such as `Navigation guard: moving to 4.5 64 2.5, now at 3.25 64 1`. A walking goal rounds its feet height to the block, so `^ ^ ^5` works. A trip or a `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-riding) for the rest of the movement commands.
 
 ### How bodies move
 
@@ -55,7 +55,7 @@ An NPC that is not following a route falls when the block under it is broken, bu
 
 <div class="animus-demo">
 <p><strong>Route capture</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/15-route-capture-ingame.webm" aria-label="Walking a path and dropping four route points" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/15-route-capture-ingame.webm" aria-label="Making the Plaza loop route for the trader by dropping four points with the wand" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 An NPC follows a route, a list of points, with the `animus:navigation` module:
@@ -67,6 +67,8 @@ An NPC follows a route, a list of points, with the `animus:navigation` module:
 ```
 
 To send an NPC to different places at different times of day, give it a [schedule](/animus/30-npc-schedules) instead.
+
+In game, **Movement** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#movement) makes a route by walking it, puts a saved route on the NPC, and changes a route's points, loop, order, mode and speed.
 
 A reusable route lives at `routes/<name>.json` in the data folder, at most 64 KiB:
 
@@ -174,7 +176,7 @@ Awake routes take turns. Each tick at most `routesPerTick` of them plan or take 
 
 <div class="animus-demo">
 <p><strong>Routes</strong> Browser editor.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/07-routes-editor.webm" aria-label="Setting a random route with a wait range and adding points on the grid" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/07-routes-editor.webm" aria-label="Making a random route with a wait range and adding points on the map" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A definition's `movement` object applies wherever the NPC walks a route:
@@ -291,7 +293,7 @@ An NPC is idle when it follows no route, recording or `navigation go` leg, guard
 
 <div class="animus-demo">
 <p><strong>Mounts</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/20-mounts-ingame.webm" aria-label="Seating an NPC on a horse NPC and dismounting it" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/20-mounts-ingame.webm" aria-label="Seating the greeter on the trader and dismounting it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 An NPC rides another NPC through `animus:mount`:
@@ -302,6 +304,8 @@ An NPC rides another NPC through `animus:mount`:
 }
 ```
 
+In game, **Mounts and riding** on an NPC's Movement screen, in Advanced mode, seats NPCs on each other with the wand; see [mounts and riding](/animus/21-in-game-toolkit#mounts-and-riding).
+
 `vehicle` is the other NPC's id. An imported Citizens `mountedon` reference applies the same way from `migration.references`. A native module takes priority, and `{"enabled": false}` turns an imported relation off without touching the preserved data.
 
 Relations return after a restart, a join, a world change or a chunk leaving and re-entering view. A passenger sits on its vehicle's seat as the client draws it, so hits land where players see it. A chain can be 8 deep and a vehicle can carry 16 passengers. A mounted NPC cannot navigate. When a relation ends, the NPC returns to the position in its definition.
@@ -310,7 +314,7 @@ A relation that cannot be honoured leaves the NPC standing at its own position w
 
 | Problem | Effect |
 |---|---|
-| Vehicle missing or dormant, or an imported reference recorded as missing, ambiguous or invalid | Reported; spawning is still allowed. The NPC attaches once the vehicle becomes active |
+| Vehicle missing or despawned, or an imported reference recorded as missing, ambiguous or invalid | Reported; spawning is still allowed. The NPC attaches once the vehicle becomes active |
 | An imported vehicle id that now belongs to a different NPC | Reported; never attached |
 | Riding itself, a cycle, a chain too deep or a full vehicle | Refused by `/animus spawn` and by `/animus edit` of a spawned NPC. A hand-edited file that creates one is reported, and every member of a cycle stays unattached |
 
@@ -318,7 +322,7 @@ A relation that cannot be honoured leaves the NPC standing at its own position w
 
 <div class="animus-demo">
 <p><strong>Riding</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Changing a horse NPC's riding speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Turning on riding for the trader, raising its speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A player can ride an NPC whose definition opts in:
@@ -336,9 +340,9 @@ A player can ride an NPC whose definition opts in:
 | `leash` | 64 | 4-256 blocks horizontally from where the ride began |
 | `lifetimeSeconds` | 600 | 30-3600 |
 
-An imported Citizens `controllable` trait that is on becomes this module, switched on.
+An imported Citizens `controllable` trait that is on becomes this module, switched on. In game, **Riding** under **Mounts and riding** sets these fields.
 
-The player mounts with a right-click on the NPC. The click passes the same reach, line-of-sight and rate checks as any interaction, and a plugin can stop it by cancelling `VirtualNpcInteractionEvent`. A sneak-right-click does not mount, and the wand selects a rideable NPC as any other. The NPC needs room for its body and rider where it stands: on ground, at a water surface it can swim, or in open air when it flies. Each NPC carries one player, each player rides one NPC, and at most 8 players ride at once. Mounting cancels the NPC's route until the definition is applied again.
+The player mounts with a right-click on the NPC. The click passes the same reach, line-of-sight and rate checks as any interaction, and a plugin can stop it by cancelling `VirtualNpcInteractionEvent`. A sneak-right-click does not mount, and a click with the [wand](/animus/21-in-game-toolkit#the-wand) selects the NPC and never mounts it. The NPC needs room for its body and rider where it stands: on ground, at a water surface it can swim, or in open air when it flies. Each NPC carries one player, each player rides one NPC, and at most 8 players ride at once. Mounting cancels the NPC's route until the definition is applied again.
 
 Press a movement key after mounting to start moving; a key already held while mounting does not count. Steering follows the player's look direction. Sprint and jump give no extra speed. Movement happens only on the server, through the same clearance check as navigation, against the real height of each block; the client's coordinates are never used. How the NPC moves depends on its body:
 

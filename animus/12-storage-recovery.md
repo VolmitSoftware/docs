@@ -2,7 +2,7 @@
 title: "Animus: Storage and Recovery"
 description: "How Animus stores documents, recovers from bad edits and crashes, and rolls changes back"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, storage, recovery, rollback, backups"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -111,7 +111,7 @@ Animus's journal does not cover outside editors. A text editor saving a file whi
 
 ## Rollback
 
-Every transaction made by a command, an import or the web editor leaves a rollback receipt under `backups/`. Commands name the transaction in their reply. In game, click the short id to copy the full one, or **[Undo]** to put the rollback command with the short id in your chat box; the console prints the full id. Rollback takes the full id or its first characters, at least four, when no other receipt starts with them:
+Every transaction made by a command, the Animus menu, an import or the web editor leaves a rollback receipt under `backups/`. Commands name the transaction in their reply; in Simple mode the reply shows only **[Undo]**. In game, click the short id to copy the full one, or **[Undo]** to revert the change at once, as `/animus undo` does; the console prints the full id. Rollback takes the full id or its first characters, at least four, when no other receipt starts with them:
 
 ```none
 /animus delete guard
@@ -123,7 +123,7 @@ Rollback restores the exact previous bytes of every file in the transaction, inc
 
 ### Backup rotation
 
-Receipts rotate right after startup, in the background so a server with years of history starts at normal speed, and every 6 hours while the server runs. The newest `files.backupsKept` receipts (200 by default) and every receipt younger than `files.backupDays` days (14 by default) are kept; older receipts beyond those are removed, and with them the stored copies under `state/objects/transaction-data/` that no remaining receipt names. A Citizens import still waiting for review keeps its receipts until it is accepted or rolled back. The log names how many receipts and copies were removed. A removed transaction can no longer be rolled back, and the editor's **Undo last apply** says so.
+Receipts rotate right after startup, in the background so a server with years of history starts at normal speed, and every 6 hours while the server runs. The newest `files.backupsKept` receipts (200 by default) and every receipt younger than `files.backupDays` days (14 by default) are kept; older receipts beyond those are removed, and with them the stored copies under `state/objects/transaction-data/` that no remaining receipt names. A Citizens import still waiting for review keeps its receipts until it is accepted or rolled back. The log names how many receipts and copies were removed. A removed transaction can no longer be rolled back, and the editor's **Undo** for that apply says so.
 
 Keep `backups/` together with `state/objects/`, since a receipt may refer to stored copies there. Settings archives such as `backups/config-<hash>.json` are not receipts and never rotate.
 

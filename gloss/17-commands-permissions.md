@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Quick reference for Gloss commands and permissions"
 published: true
-date: 2026-11-04T00:49:50.000Z
+date: 2026-11-13T00:00:00.000Z
 tags: "gloss"
 editor: markdown
 dateCreated: 2026-08-19T00:00:00.000Z
@@ -146,9 +146,10 @@ See [Data Files & Hot Reload](/gloss/03-data-files) for pack authoring and file 
 | `/gloss surface reset [name=*]` | `gloss.surfaces.reset` | Restore shipped surfaces |
 | `/gloss strings list` / `/gloss strings missing <locale>` | `gloss.strings` | Inspect content string catalogs |
 | `/gloss strings reset [name=*]` | `gloss.strings.reset` | Restore shipped content strings |
-| `/gloss web open` | `gloss.web.open` | Open the web editor |
-| `/gloss web edit <kind> <id>` | `gloss.web.edit` | Edit one document |
-| `/gloss web workspace` | `gloss.web.workspace` | Open the complete workspace |
+| `/gloss editor pair [label=] [scopes=a,b] [folders=a,b] [expires=7d]` | `gloss.editor.pair` | Make a one-time link that pairs a browser with the [web editor](/gloss/18-web-editor#pairing) |
+| `/gloss editor status` | `gloss.editor.pair` | Show the editor listener, relay and fingerprint |
+| `/gloss editor tokens [page=1]` | `gloss.editor.pair` | List paired browsers |
+| `/gloss editor revoke <token\|all>` | `gloss.editor.pair` | End a pairing or cancel a link |
 | `/gloss import preview <source>` | `gloss.import` | Preview an import |
 | `/gloss import apply <source>` | `gloss.import.apply` | Apply an import without overwriting existing Gloss data; document sources require your unchanged reviewed preview |
 | `/gloss import holoui [mode=preview] [overwrite=false]` | `gloss.import` | Preview HoloUi conversion; `overwrite=true` includes replacement of customized destinations |
@@ -171,6 +172,8 @@ FeatherBoard and AnimatedScoreboard imports produce board and animation document
 - `gloss.indicators.show`
 - `gloss.language.self` (also requires `volmit.language.self`)
 - `volmit.language.self` (shared personal language requirement)
+
+`gloss.editor` grants the three web editor nodes, all operator-only by default: `gloss.editor.pair` for the `/gloss editor` commands, `gloss.editor.commands` to pair the `publish:commands` scope in game (the console always may), and `gloss.editor.notify` for chat lines about pairings, publishes, revocations and failed pairings. A player's tokens end when they lose `gloss.editor.pair`. See [Web Editor & Sync](/gloss/18-web-editor#managing-tokens).
 
 Dynamic permissions are `gloss.open.<menuId>`, `gloss.bubbles.style.<styleId>`, and, when enabled, `gloss.emoji.<emojiId>`.
 

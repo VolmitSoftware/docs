@@ -2,7 +2,7 @@
 title: "Animus: GUIs, Holograms and Menus"
 description: "Chest GUIs, holograms, holographic menus and text animations in the Gloss formats"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, gui, holograms, menus, gloss"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -21,7 +21,7 @@ Animus opens chest windows, shows holograms and opens holographic menus from JSO
 
 Files live in `plugins/Animus/gui/inventories/` (`config/animus/gui/inventories/` on mod servers). A file at `town/menu.json` has the id `town:menu`. Files must be in a namespace folder.
 
-To start one in game, `/animus gui create town:board rows=4 title="&8Notice board"` writes an empty chest window of that size and reloads the GUIs. Fill it in the file or the [web editor](/animus/14-web-editor#gui-editors), and bind it to NPCs with the toolkit's **GUIs** screen.
+To start one in game, `/animus gui create town:board rows=4 title="&8Notice board"` writes an empty chest window of that size and reloads the GUIs. Fill it in the file or the [web editor](/animus/14-web-editor#gui-editors), and put it on NPCs with **GUIs** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#guis-and-holograms), in Advanced mode.
 
 ```json
 {
@@ -122,12 +122,14 @@ A window closes when the player logs out, dies, changes world or respawns, telep
 
 <div class="animus-demo">
 <p><strong>GUIs and holograms</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/27-guis-holograms-ingame.webm" aria-label="Showing a hologram over the greeter and binding a chest GUI to it" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/27-guis-holograms-ingame.webm" aria-label="Adding a hologram line and a saved hologram to the greeter, then opening a chest GUI from the guard" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 A hologram file in `gui/holograms/<namespace>/` is a Gloss hologram. Animus shows it to every player within `viewDistance` of its anchor, drawn with display entities that exist only in that player's client. No entity is created on the server, and each player can see a different page, variant or text.
 
 To make one where you stand, run `/animus hologram create town:welcome text="&6Welcome to town"`. It writes a hologram with that one line, anchored 1.5 blocks above your feet and facing your way, and shows it at once. Add lines, pages and actions in the file or the web editor afterwards.
+
+In game, **Hologram** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#hologram) edits the NPC's own text lines and picks a saved hologram to show above it, at the height you set. **Holograms** in the menu's library lists the hologram files.
 
 ```json
 {
@@ -144,7 +146,7 @@ To make one where you stand, run `/animus hologram create town:welcome text="&6W
 | Field | Meaning |
 | --- | --- |
 | `anchor` | `world` (a world name or key) and `position`. The bottom of the text sits on the anchor. |
-| `lines` | Rows from top to bottom. A string is a text row. An object has one of `text`, `item` (an item icon), `head` (a player name), `block` (a block id) or `entity` (an entity type), with optional `show` and `scale` (the row height of an object, in blocks). All text rows share one text display; an object takes blank rows of its height. A hidden text row keeps its space while the hologram has object lines. |
+| `lines` | Rows from top to bottom. A string is a text row. An object has one of `text`, `item` (an item icon), `head` (a player name), `block` (a block id) or `entity` (an entity type), with optional `show` and `scale` (the row height of an object, in blocks). All text rows share one text display, so a color or format carries on to the rows below until the next color code or `&r`, as in vanilla, where a color code also clears bold, italic, underline, strikethrough and obfuscated. Each page starts unstyled. An object takes blank rows of its height. A hidden text row keeps its space while the hologram has object lines. |
 | `pages` | Pages of `id`, `lines` and `show`, instead of `lines`. Each player reads one page. `navigate` with `mode` `page` and `target` `next`, `prev` or a page id moves them, and wraps around. |
 | `variants` | `id`, `priority`, `when` and `presentation` (`lines`, `style`). The first variant that matches, by priority and then id, replaces those fields. |
 | `actions` | Up to 32 actions that run on a click. Animus puts an interaction box over the text (`hitbox`: `width`, `height` per row, `perLine`). A click counts only when the player is in the hologram's world (for a hologram bound to an NPC, the NPC's world), within 8 blocks and looking at the box. A hologram has no window, so `close`, `call` and navigate modes other than `page` are refused. |

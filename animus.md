@@ -2,7 +2,7 @@
 title: "Animus"
 description: "JSON-defined NPCs with behaviors, navigation, combat, shops, GUIs, and a web editor"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-12T00:00:00.000Z
 tags: "animus, npc, bukkit, paper, spigot, folia, fabric, neoforge, forge"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -10,14 +10,14 @@ dateCreated: 2026-11-05T00:00:00.000Z
 
 ![Animus](/home-assets/animus.png =96x){.align-center}
 
-Animus manages NPCs. Each NPC is a JSON definition file that you can edit by hand, from commands, or in the web editor. NPCs are packet-only and shown separately to each viewer. An NPC is either spawned, and shown to players, or dormant: saved but not shown. Behaviors, routes, combat, shops, chest GUIs, and builds are all set in JSON.
+Animus manages NPCs. Each NPC is a JSON definition file that you can edit by hand, from commands, or in the web editor. NPCs are packet-only and shown separately to each viewer. An NPC is either spawned, and shown to players, or despawned: saved but not in the world. Behaviors, routes, combat, shops, chest GUIs, and builds are all set in JSON.
 
 | | |
 |---|---|
 | Minecraft | 26.1.2, 26.2, and 26.3 |
 | Server software | Paper, Spigot, Folia; Fabric, NeoForge, and Forge as an experimental server-side mod |
 | Java | 25 or newer |
-| Main command | `/animus` |
+| Main command | `/animus`; `/animus gui` opens the in-game menu |
 | Config file | `plugins/Animus/config.toml` |
 | Editor | [animus.volmitsoftware.com](https://animus.volmitsoftware.com) |
 
@@ -54,7 +54,7 @@ Animus manages NPCs. Each NPC is a JSON definition file that you can edit by han
 
 ## Interfaces
 
-- [In-game toolkit *Edit NPCs in game with /animus tools*](/animus/21-in-game-toolkit)
+- [In-game menu *Change NPCs in game with /animus gui*](/animus/21-in-game-toolkit)
 - [Web editor *Pairing and editing in the browser*](/animus/14-web-editor)
 - [Shops *Buy, sell, and trade pages*](/animus/10-shops)
 - [Quests *Givers, stages, rewards, and the journal*](/animus/38-quests)
