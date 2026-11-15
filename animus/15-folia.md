@@ -22,6 +22,8 @@ On Folia 26.1.2, 26.2 and 26.3, each saved NPC runs on the region that owns its 
 | Navigation: `/animus navigation go`, `look`, `stop`, routes, waiting behaviors | Yes |
 | Riding an NPC (`animus:riding`) | Yes; see [riding](#riding) |
 | Mounted NPCs (`animus:mount`) | Yes; see [mounted NPCs](#mounted-npcs) |
+| NPCs on real entities (`animus:mount` with `entity`) | Yes; see [NPCs on real entities](#npcs-on-real-entities) |
+| Seats (`animus:seat`), `/animus seat toggle`, `/animus seat status` | Yes; see [seats](#seats) |
 | Combat module, `/animus combat`, the `animus:combat` action, hiring | Yes; see [combat](#combat) |
 | Ender dragon wing phases | Yes |
 | Model Engine models (`animus:modelengine`) | No; the NPC shows its own body |
@@ -67,13 +69,27 @@ A ride runs on the NPC's region and moves with the NPC on every handoff. The rid
 
 A logout, death, teleport or world change ends the ride without moving the rider further. A rider that something else moved more than 3 blocks from the NPC's feet, including Folia's same-region teleport that fires no event, is dismounted where it is. Steering into terrain the NPC's region does not hold ends the ride as unavailable terrain. At most 8 players ride at once on the whole server. When Animus stops, rides end without a dismount teleport.
 
+## NPCs on real entities
+
+An NPC on a real horse, boat, minecart or mob runs on the region that owns it, and reads the entity only while that region holds it as well. Each turn it sits on the entity's seat, so it moves with the entity and is handed to the next chunk's region as the entity goes. Every viewer sees it on the entity's own passenger list, as on Paper. A search for the nearest entity of a type looks only in chunks the NPC's region holds.
+
+When the entity dies, is removed, unloads or goes to another world, the NPC stands at its own position again and `/animus inspect` shows `mount-problem=` with the reason; an NPC never follows its entity into another world on Folia. When the entity moves to a region that does not hold the NPC, for example after a long teleport, the NPC gets off and `/animus inspect` shows `its vehicle is on another region`. The entity's own region is asked where it stands about once a second, and the NPC steps onto its seat, which hands the NPC to that region like any chunk crossing, and gets on again there. One NPC rides each entity across all regions.
+
+## Seats
+
+A seat runs on the NPC's region and moves with the NPC on every handoff. Seated players stand on the ground under the NPC, so the same region holds them. A click sits a player down only when the player's region also owns the NPC. A seated player that the NPC's region does not hold for 2 seconds gets off where they are, and one that something else moved more than 3 blocks from the seat, including Folia's same-region teleport that fires no event, gets off there too.
+
+Stacked seats, `/animus seat toggle`, `/animus seat status`, `[seats] maximum` across the whole server and GSit's player-sit rules work as on Paper; GSit is asked on the region that holds the player. A logout, death, teleport or world change ends the seat without moving the player. When Animus stops, seats end without the teleport beside the NPC.
+
 ## Combat
 
 Each combat NPC fights on its own region, and its combat state moves with it. An NPC only chooses targets that its region owns. A hit on a real entity another region holds is checked again by that entity's region (still alive, same world, within reach, protection) before it applies. A hit on another NPC goes to that NPC's region, which applies its own armor and defense and makes it fight back. Healing potions and squad alerts work the same way. A fight reaches the guards of either side and the NPCs that watch fights, at most 64 per fight; dropped messages are counted in `/animus combat status` as `messages-dropped`.
 
 Helper projectiles spawn only in chunks the NPC's region holds. A helper that flies into another region keeps its last known position until it lands or expires. Protection is checked on the region that owns the hit's target.
 
-A player's hit on an NPC counts only when the player's region also owns the NPC. `/animus combat status npc=<npc>` reads the NPC's published combat state; `engage`, `disengage`, `release`, `target` and `guard` run on the NPC's region and log their result. A guard teleport, a knockback and a respawn hand the NPC over like any chunk crossing.
+A player's hit on an NPC counts only when the player's region also owns the NPC. It follows the same vanilla rules as on Paper, except that it shows the critical particles or the enchanted sparkle, never both, and a sweep reaches only NPCs. An explosion hurts the NPCs near it through their own regions. A chase keeps walking its last path while its moved target is planned again, as on Paper; the plan counts against the region's `planningStartsPerTick`, and when no planning turn is free the NPC walks on and asks again.
+
+`targetableByMobs` works as on Paper, on the NPC's region: its decoy is spawned in the chunk under the NPC, moved with the NPC without a teleport, and only mobs in chunks the NPC's region holds are drawn to it, so a mob and the decoy it targets always share a region. A mob's melee hit on the decoy goes to the NPC's region, after `VirtualNpcDamagedByMobEvent` on the mob's region; a projectile that touches the decoy strikes the NPC once. When another region adopts the NPC and does not hold its decoy, the old decoy is removed on its own region and the new region draws again. `/animus combat status` counts `decoys`. The scoreboard `teams` entries match nobody, as Folia has no main scoreboard. `/animus combat status npc=<npc>` reads the NPC's published combat state; `engage`, `disengage`, `release`, `target` and `guard` run on the NPC's region and log their result. A guard teleport, a knockback and a respawn hand the NPC over like any chunk crossing.
 
 The `[combat]` limits `brainsPerTick`, `targetScansPerTick`, `pathRequestsPerTick`, `squadAlertsPerTick` and `helperUpdatesPerTick` apply to each region tick. `maximumNpcs` does not apply on Folia. `helpersPerNpc` applies to each NPC. When a region is short of combat turns, the NPCs that waited longest go first. Damage and death triggers fire as on Paper. Killable NPCs (`animus:health`) take damage, die and respawn on their own region:
 
@@ -107,7 +123,7 @@ The web editor's terrain reads run on the region that owns each chunk. A chunk t
 
 ## Viewers
 
-A player's view of NPCs is rebuilt after a teleport (including Folia's same-region teleport that fires no event), a world change, death and respawn, and is removed at logout. A player who leaves the range, or whose client loses the chunk, stops seeing the NPC. An NPC that starts waiting or is removed disappears for every viewer on their next tick.
+A player's view of NPCs is rebuilt after a teleport (including Folia's same-region teleport that fires no event), a world change, death and respawn, and is removed at logout; a hit sent during the few ticks the rebuild takes does not count. On Paper and Spigot a teleport inside one world keeps the view, so a hit right after it counts. A player who leaves the range, or whose client loses the chunk, stops seeing the NPC. An NPC that starts waiting or is removed disappears for every viewer on their next tick.
 
 ## Placeholders
 

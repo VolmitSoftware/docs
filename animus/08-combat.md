@@ -45,11 +45,11 @@ Combat runs on Spigot and Paper 26.1.2, 26.2 and 26.3, and on Fabric, NeoForge a
 | --- | --- |
 | `killable` | Players, mobs, NPCs and their projectiles can hurt and kill it. Off by default. A Sentinel import sets it from `invincible`. |
 | `maximumHealth` | 1-2048. Left out, the `max_health` [attribute](/animus/04-npc-definitions#attributes), or 20. Applies whether or not the NPC is killable. An NPC starts at full health each time it becomes active. Raising the maximum keeps the same share of health, so a full NPC fills to the new maximum; lowering it clamps current health to fit. |
-| `armor`, `armorFromEquipment` | A 0-1 share of each hit, or the worn pieces as for combat. Left out, the `armor` and `armor_toughness` attributes apply as vanilla armor points. |
+| `armor`, `armorFromEquipment` | A 0-1 share of each hit, or the worn pieces as vanilla armor; see [equipment](#equipment). Left out, the `armor` and `armor_toughness` attributes apply as vanilla armor points. |
 | `invulnerableTicks` | 0-100, default 10. Hits during this time after a hit do nothing. |
 | `knockback` | Default `true`. A hit pushes the NPC back, less by the `knockback_resistance` attribute, onto clear ground only. |
 | `regenerate`, `regenerateTicks` | Heals 1 health each `regenerateTicks` (1-72,000, default 100). Off by default. |
-| `sources` | What can hurt it: `players` (melee), `mobs` (controlled mobs), `npcs` (other NPCs' melee), `projectiles` (shots from players, mobs and combat NPCs), `fire`, `lava` and `fall`. Left out, the first four. `fire`, `lava` and `fall` count only when listed. |
+| `sources` | What can hurt it: `players` (melee), `mobs` (mobs that attack it), `npcs` (other NPCs' melee), `projectiles` (shots from players, mobs and combat NPCs), `explosions` (creepers, TNT, fireballs and beds), `fire`, `lava` and `fall`. Left out, the first five. `fire`, `lava` and `fall` count only when listed. |
 | `attackerPermission` | A player needs this node to hurt it. |
 | `showHealth` | The player who hits it sees its name and health above the hotbar. |
 | `protectFromRange` | 0-256, default 0. Only attackers this close can hurt it; 0 means any distance. |
@@ -69,7 +69,7 @@ After a respawn delay it comes back at full health at its next point and walks b
 
 ### Projectiles and the environment
 
-Arrows, spectral and tipped arrows, tridents, snowballs, eggs, small and large fireballs, wither skulls and splash or lingering potions fired by a player or a mob strike a killable NPC's body, which follows its `scale`. Each tick, every such projectile's last move is tested against nearby NPC bodies. A hit counts as a `projectiles` hit by the shooter, so protection, `attackerPermission`, hurt feedback and kill credit follow the shooter.
+Arrows, spectral and tipped arrows, tridents, snowballs, eggs, small and large fireballs, wither skulls and splash or lingering potions fired by a player or a mob strike a killable NPC's body, which follows its `scale`. Each tick, every such projectile's last move is tested against nearby NPC bodies. A hit counts as a `projectiles` hit by the shooter, so protection, `attackerPermission`, hurt feedback and kill credit follow the shooter. Any other NPC, and one whose `sources` leave out `projectiles`, lets every projectile fly through its body; a behavior's [`hit_by_projectile`](/animus/07-behaviors#sensed-triggers) trigger still sees it, with `context.stopped` false.
 
 | Projectile | Damage | Afterwards |
 | --- | --- | --- |
@@ -110,7 +110,8 @@ Settings live in the NPC definition as JSON. Every section and field is optional
     "guard": {"player": "00000000-0000-0000-0000-000000000001", "followDistance": 7, "pointRange": 4, "assist": false, "catchUpDistance": 24, "replanDistance": 1.5},
     "pursuit": {"closeChase": true, "rangedChase": false, "speed": 4, "giveUpRange": 32, "leashRange": 64, "returnToPost": true, "teleportWhenStuck": false, "replanTicks": 20, "region": "castle"},
     "melee": {"enabled": true, "damage": 4, "reach": 3, "cooldownTicks": 20, "knockback": 0.4, "fromEquipment": false, "weaponDamage": {"minecraft:stick": 6}},
-    "ranged": {"enabled": true, "weapon": "arrow", "damage": 3, "range": 24, "minimumRange": 4, "cooldownTicks": 40, "velocity": 1.6, "inaccuracy": 0, "safeShot": true, "knockback": 0.2, "fromEquipment": false, "useAmmo": false},
+    "ranged": {"enabled": true, "weapon": "arrow", "damage": 3, "range": 24, "minimumRange": 4, "cooldownTicks": 40, "velocity": 1.6, "inaccuracy": 0, "safeShot": true, "knockback": 0.4, "fromEquipment": false, "useAmmo": false},
+    "weapons": {"autoswitch": false, "redirects": {"minecraft:stick": "minecraft:bow"}},
     "greetings": {"friendly": "Welcome to town.", "hostile": "Leave now.", "range": 10, "cooldownTicks": 100},
     "victimDrops": true
   },
@@ -126,8 +127,9 @@ Settings live in the NPC definition as JSON. Every section and field is optional
 | `squad` | Members never target each other or each other's guarded player. A member that picks a target alerts idle members within `alertRange` (1-64, default 16). |
 | `guard` | Either `player` or `npc` (a UUID). Once farther than `followDistance` (1-64, default 7), the guard walks to a point `pointRange` (0-16, default 4) behind its charge, against the way the charge last moved, and walks faster when more than twice `followDistance` behind. It replans when the charge moved more than `replanDistance` (0.25-16, default 1.5) since the last plan or the plan is `pursuit.replanTicks` old, at most every 5 ticks. Beyond `catchUpDistance` (0-256, default 24; 0 turns it off), in another world or after a teleport, it stops fighting and teleports to clear ground beside its charge. It follows a player in any game mode, creative and spectator included. It attacks whatever hurts its charge and never targets it; with `protect: false` (default `true`) it only follows. With `assist` (default `false`), it also attacks whatever its charge attacks. A guard ignores `leashRange` and `returnToPost`. |
 | `pursuit` | `speed` is 1-10 blocks per second (default 4), limited further by `maximumSpeed` in `config.toml`. A target farther than `giveUpRange` (1-256, default 32) is dropped. `leashRange` (1-256, default 64) is measured from where the fight began; past it the NPC drops the target and, with `returnToPost` (default `true`), walks back before its patrol resumes. `closeChase` (default `true`) makes an NPC that fights in melee walk after its target. `rangedChase` (default `false`) makes an NPC keep walking toward a target it can already shoot, and toward one it can neither shoot nor reach in melee. `replanTicks` (5-200, default 20) is how old a chase path may get before it is planned again. `teleportWhenStuck` (default `false`) moves the NPC to its goal after three refused path requests. `region` names a protection region: targets outside it are not chosen, and a target that leaves it is dropped (checked every 10 ticks). |
-| `melee` | On by default: `damage` 2 (0.01-100), `reach` 3 (0.5-6), `cooldownTicks` 20 (1-1200), `knockback` 0.4 (0-4). Every hit swings the NPC's main arm for everyone who sees it. Reach is measured from the NPC's body center to the nearest point of the target's bounds. `fromEquipment` takes damage from the definition's `main_hand` item (see [equipment](#equipment)). `weaponDamage` maps a held item to its damage and replaces any other damage, for melee and ranged, while that item is held. |
-| `ranged` | Off by default. Defaults: `weapon` `arrow`, `damage` 3 (0.01-100), `range` 24 (1-256), `minimumRange` 0, `cooldownTicks` 40 (1-1200), `velocity` 1.6 (0.5-4), `inaccuracy` 0 (0-16), `knockback` 0.2 (0-4). `weapon` is `arrow`, `spectral_arrow`, `trident`, `snowball`, `egg`, `fireball`, `small_fireball`, `wither_skull`, `llama_spit` or `potion`. A potion needs `effect`; see [weapons](#weapons). An NPC with `arrow`, `spectral_arrow` or `trident` holds its weapon drawn while a target is in range and lowers it when the fight ends; any other weapon is thrown with an arm swing. `minimumRange` makes the NPC switch to melee or walk closer. `safeShot` holds fire when a friend is in the line and makes a shot that hits anything other than its target do nothing. `fromEquipment` and `useAmmo` are described below. |
+| `melee` | On by default: `damage` 2 (0.01-100), `reach` 3 (0.5-6), `cooldownTicks` 20 (1-1200), `knockback` 0.4 (0-4). Every hit swings the NPC's main arm for everyone who sees it. Reach is measured from the NPC's body center to the nearest point of the target's bounds. A hit on a player or mob pushes it 0.4 as a zombie's does; a `knockback` above 0.4 pushes harder by the difference, less by the target's knockback resistance, and one below it pushes no less. `fromEquipment` takes damage from the held item and adds its enchantments, as a mob's hit does (see [equipment](#equipment)). `weaponDamage` maps a held item to its damage and replaces any other damage, for melee and ranged, while that item is held. |
+| `ranged` | Off by default. Defaults: `weapon` `arrow`, `damage` 3 (0.01-100), `range` 24 (1-256), `minimumRange` 0, `cooldownTicks` 40 (1-1200), `velocity` 1.6 (0.5-4), `inaccuracy` 0 (0-16), `knockback` 0.4 (0-4), a vanilla arrow's push; Punch adds 0.6 a level along the shot, less by the target's knockback resistance as in vanilla. `weapon` is `arrow`, `spectral_arrow`, `trident`, `snowball`, `egg`, `fireball`, `small_fireball`, `wither_skull`, `llama_spit` or `potion`. A potion needs `effect`; see [weapons](#weapons). An NPC with `arrow`, `spectral_arrow` or `trident` holds its weapon drawn while a target is in range and lowers it when the fight ends; any other weapon is thrown with an arm swing. `minimumRange` makes the NPC switch to melee or walk closer. `safeShot` holds fire when a friend is in the line and makes a shot that hits anything other than its target do nothing. `lingering` makes a potion leave a cloud; see [potions](#potions). `fromEquipment` and `useAmmo` are described below. |
+| `weapons` | `autoswitch` (default `false`) and `redirects`; see [weapon switching](#weapon-switching). |
 | `greetings` | When a player the NPC can see comes within `range` (1-64, default 10), it says `hostile` to a player it would target and `friendly` to anyone else, as `[NPC name]: text` in that player's chat. A player is spoken to again only after leaving range and coming back, and at most once per `cooldownTicks` (default 100). Either line may be left out. |
 | `victimDrops` | Default `true`. `false` stops mobs killed by this NPC from dropping loot or experience. |
 
@@ -137,9 +139,11 @@ A combat NPC that respawns comes back with full ammunition and no target, and th
 
 Current health, targets, cooldowns, ammunition and greeting memory are runtime state. They are never written into the definition and do not survive a restart or despawn.
 
-`"targetableByMobs": true` in the module lets nearby hostile mobs attack the NPC; see [limits](#limits).
+`"targetableByMobs": true` in the module lets nearby mobs attack the NPC as they would a player; see [mobs that attack NPCs](#mobs-that-attack-npcs).
 
-In game, **Combat** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#combat) turns combat on, picks who the NPC attacks, sets whether it can be hurt and its health, and makes it guard you. In Advanced mode it also edits the rule lists and every section above, and **Guard me now** makes the NPC guard you until it is released, without saving anything.
+`/animus inspect <npc>` ends with a **Fights** line for every combat or health NPC: time spawned, spawns, shots by kind, punches, attacks, damage given and taken, kills and deaths. An NPC imported from Sentinel starts from its Sentinel `stats_*` counts, and Animus keeps counting in `state/combat/statistics.json`, written every 30 seconds and when the server stops.
+
+In game, **Combat** on an NPC's screen in the [Animus menu](/animus/21-in-game-toolkit#combat) turns combat on, picks who the NPC attacks, sets whether it can be hurt and its health, and makes it guard you. In Advanced mode it also turns **Switch weapons** on, edits the rule lists and every section above, and **Guard me now** makes the NPC guard you until it is released, without saving anything.
 
 ## Target rules
 
@@ -156,6 +160,7 @@ A rule list matches a candidate when any one rule matches it.
 | `healthAbove`, `healthBelow` | Percentage of the target's maximum health |
 | `permissions` | Permission nodes an online player has |
 | `groups` | Permission groups an online player is in, read as the permission `group.<name>` that permission plugins grant to members |
+| `teams` | Towns, nations, factions and scoreboard teams an online player belongs to; see [plugin teams](#plugin-teams) |
 | `effects` | Status effect ids such as `minecraft:strength` |
 | `all` | Rule sets that one candidate must match completely: every rule listed in the set, such as a player holding a sword |
 | `together` | Groups of 2-8 rule sets. A group matches when different candidates in range match each set at the same scan; then every member is a target. |
@@ -166,50 +171,100 @@ Operators hold every permission node that no plugin defines, on Bukkit and on mo
 
 `together`, `events` and `chat` are allowed in `targets` and `avoids`; `ignores` refuses them. Sets inside `all`, `together` and `events` hold only the plain rules above. A fight or chat message counts only when its source is within `scanRange` (or `avoidance.range` for avoids), visible under the NPC's `lineOfSight` rule and not ignored. An NPC already fighting keeps its target.
 
+### Plugin teams
+
+A `teams` entry is a kind and a name, written as Sentinel writes them:
+
+| Entry | Matches a player who |
+| --- | --- |
+| `towny:<town>`, `nation:<nation>` | Lives in that Towny town, or that nation |
+| `nationenemies:<nation>`, `nationallies:<nation>` | Belongs to a nation that is an enemy, or an ally, of that nation |
+| `factions:<faction>` | Is in that faction |
+| `factionsenemy:<faction>`, `factionsally:<faction>` | Is in a faction that faction counts as an enemy, or an ally |
+| `sbteam:<team>` | Is on that team of the main scoreboard |
+
+Towny and Factions (FactionsUUID or MassiveCraft Factions) are read when they are installed; nothing is needed at build time, and an entry for a plugin that is missing matches nobody. Scoreboard teams work on Paper and Spigot; Folia has no main scoreboard, so `sbteam` entries match nobody there. Mod servers have none of these plugins, so `teams` matches nobody.
+
 A pattern is at most 128 characters, and an invalid one is refused with its field, such as `$.modules.animus:combat.targets.patterns.players[1]: invalid pattern`. Matching reads at most 256 characters of a name and stops after a fixed number of steps, so no pattern can stall the server.
 
 ## Weapons
 
 Every ranged weapon is a real projectile with no shooter. It is not saved with the chunk and cannot be picked up. A shot applies damage at most once, through whichever comes first: a hit on an NPC, a hit on an entity or block, expiry after `helperLifetimeTicks`, or the projectile disappearing or its chunk unloading. Every projectile an NPC owns is removed when it disengages, dies, despawns or loses combat, and every projectile is removed when the plugin stops. Because a projectile has no shooter, no player or mob is credited with its hit or a kill; `VirtualNpcDamageEvent` names the NPC that fired it.
 
-The projectile's own damage, explosion, splash, fire and hatching never happen. Fireballs and skulls never break blocks. Arrows, tridents, snowballs, eggs and potions arc with gravity, so the shot is aimed higher with distance; fireballs, skulls and spit fly straight.
+The projectile's own vanilla damage, explosion, splash, fire and hatching never happen; Animus applies each hit itself. Fireballs and skulls never break blocks. Arrows, tridents, snowballs, eggs and potions arc with gravity, so the shot is aimed higher with distance; fireballs, skulls and spit fly straight.
 
-A `potion` applies its effect once to whatever it hits:
+With `ranged.fromEquipment`, a bow or crossbow shoots as a fully drawn bow, with the enchantments of the held item:
+
+| Enchantment | Effect on the NPC's arrows |
+| --- | --- |
+| Power | Damage: 2 times the full-draw speed of 3, plus 1 at Power I and half a point for each level after, rounded up; every arrow adds the critical bonus, up to half its damage plus 1 |
+| Punch | 0.6 more knockback a level |
+| Flame | What it hits burns for 5 seconds |
+| Piercing | The arrow goes on through one more body a level; with `safeShot` it still lands only on its target |
+| Multishot | Two more arrows, 10 degrees to either side, while `helpersPerNpc` allows |
+
+### Potions
+
+A `potion` breaks where it lands, on a body or on a block:
 
 ```json
 "ranged": {"enabled": true, "weapon": "potion", "effect": {"id": "minecraft:instant_health", "amplifier": 1, "durationTicks": 1}, "range": 12, "cooldownTicks": 40}
 ```
 
-A helpful effect (instant health, regeneration, speed, strength, resistance, fire resistance, absorption, health boost, saturation, night vision, water breathing, invisibility, jump boost, haste, luck, slow falling, conduit power, dolphin's grace, hero of the village) is not an attack: it needs no protection check, it may land on the NPC's charge or squad, and an NPC with such a weapon never uses melee. Any other effect is an attack and passes protection like a hit. On another combat NPC, instant health heals 4 times 2 to the amplifier and instant damage deals 6 times 2 to the amplifier through its defense; other effects do nothing to NPCs. A healer is a potion NPC whose targets select the players it should help, for example `"targets": {"all": [{"categories": ["players"], "healthBelow": 50}]}`.
+A splash potion reaches every participant within 4 blocks of where it broke, as vanilla's does: the one it struck takes the whole effect, the others less with distance, and an effect that would last a second or less is skipped. With `"lingering": true` it leaves a cloud of 3 blocks that shrinks over 30 seconds; every participant inside gets a quarter of the effect, at most once a second. Every viewer sees the potion break and the cloud in the effect's colour; the cloud itself carries no effect, so only the engine applies it. At most 64 clouds last at once. A held splash or lingering potion, through [weapon switching](#weapon-switching) or a Sentinel import, throws the effect of its own `potion_contents`.
+
+A helpful effect (instant health, regeneration, speed, strength, resistance, fire resistance, absorption, health boost, saturation, night vision, water breathing, invisibility, jump boost, haste, luck, slow falling, conduit power, dolphin's grace, hero of the village) is not an attack: it needs no protection check, it reaches only the NPC's charge, squad and the NPC's own friends, and an NPC with such a weapon never uses melee. Any other effect is an attack: it reaches only foes, passes protection like a hit, and with `safeShot` reaches past its target only participants its target rules name. On another combat NPC, instant health heals 4 times 2 to the amplifier and instant damage deals 6 times 2 to the amplifier through its defense, both scaled by distance, and slowness slows its chase; other effects do nothing to NPCs. A healer is a potion NPC whose targets select the players it should help, for example `"targets": {"all": [{"categories": ["players"], "healthBelow": 50}]}`.
+
+### Weapon switching
+
+With `"weapons": {"autoswitch": true}` the NPC fights with what it carries, as Sentinel's `autoswitch` does. For a target beyond `melee.reach` it takes the carried ranged weapon that deals the most damage (a bow, crossbow, trident, snowball, egg, blaze rod for fireballs, wither skeleton skull, white dye for spit, or a splash or lingering potion); within reach, the best sword, axe or mace. It chooses from its main-hand item and its stored `inventory`, and everyone who sees it watches the item change in its hand. When the fight ends it holds its own item again. The definition is never changed. A ranged item it holds is what it fires, with the `ranged` section's range, cooldown and aim; with `useAmmo`, a bow it has no arrows for is passed over.
+
+`redirects` makes a held item fight as another item, keeping its enchantments, as Sentinel's `weapon_redirect_map` does: `{"minecraft:stick": "minecraft:bow"}` makes a stick fire arrows. At most 64 entries.
 
 With `useAmmo`, each shot uses one matching item counted from the definition's stored inventory: arrows (plain, tipped or spectral) for `arrow`, the item itself for `spectral_arrow`, `trident`, `snowball` and `egg`, fire charges for fireballs, wither skeleton skulls for `wither_skull`, and splash or lingering potions for `potion`. `llama_spit` needs none. The count is runtime state: the stored inventory is never changed, the count starts again when the NPC respawns, the definition changes or the server restarts, and an NPC with none left stops shooting and uses melee or closes in. `/animus combat status npc=<npc-id>` shows the count, as `<count> ammunition` on Paper, Spigot and mod servers and `ammunition=<count>` on Folia.
 
 ## Equipment
 
-`melee.fromEquipment` reads the `main_hand` item of the definition's `equipment`:
+`melee.fromEquipment` reads the `main_hand` item of the definition's `equipment`, after any [redirect](#weapon-switching), as a player holding it would hit:
 
 | Held item | Damage |
 | --- | --- |
 | Netherite, diamond, iron, copper and stone, golden or wooden sword | 8, 7, 6, 5 and 4 |
 | Axes | 10 netherite, 9 diamond, iron, copper and stone, 7 golden and wooden |
-| Trident | 8 |
+| Trident | 9 |
 | Mace | 6 |
 | Bow or crossbow | 1 |
 | Anything else or nothing | 1 |
 
-`ranged.fromEquipment` gives 6 for a bow or crossbow and otherwise the same table. `armorFromEquipment` in `animus:health` adds the worn `head`, `chest`, `legs` and `feet` pieces: a full diamond or netherite set is 0.8, iron 0.6, chainmail 0.48, golden 0.44, copper 0.4 and leather 0.28; the total is at most 0.8. Enchantments and item components are not read.
+The item's enchantments, read from its `components` (`[enchantments={sharpness:5}]` or the `minecraft:enchantments` form), add to the hit as they do for a mob: Sharpness 1 at level I and half a point for each level after, Smite 2.5 a level against undead bodies and entities, Bane of Arthropods 2.5 a level against spiders, cave spiders, silverfish, endermites and bees, with Slowness IV for 1.5 seconds up to half a second more a level, Impaling 2.5 a level against aquatic ones, Knockback half a block a level, and Fire Aspect 4 seconds of fire a level. An NPC's hits are never critical. A fixed `damage` or a `weaponDamage` entry is dealt as it is, without enchantments.
+
+`ranged.fromEquipment` gives a bow or crossbow the arrow damage under [weapons](#weapons) and otherwise the same table. `armorFromEquipment` in `animus:health` reads the worn `head`, `chest`, `legs` and `feet` pieces as vanilla armor: their armor points (leather 7 for a full set, golden 11, chainmail 12, copper 10, iron 15, diamond and netherite 20) and toughness (2 a diamond piece, 3 a netherite one) reduce a hit by vanilla's formula, so a strong hit gets through more. Protection on the pieces then removes 4 percent a level of every hit, and Projectile, Blast and Fire Protection 8 percent a level of their own kind, and Feather Falling 12 percent of falls, at most 80 percent together.
 
 ## Who can hurt whom
 
 | Attacker | Victim | How |
 | --- | --- | --- |
-| NPC | Player or mob | Bukkit damage with a damage location and no causing entity. `VirtualNpcDamageEvent` can cancel or change it first. |
+| NPC | Player or mob | Bukkit damage with a damage location and no causing entity, so the victim's own armor, Protection and Resistance apply. `VirtualNpcDamageEvent` can cancel or change it first. |
 | NPC | NPC | Virtual damage applied by Animus. |
-| Player | NPC | A hit that passed the reach, line-of-sight and rate checks. The amount is the player's attack damage attribute scaled by attack charge, like vanilla. Enchantments and potions are not added. |
-| Controlled mob | NPC | `/animus combat mob`, or a mob drawn by `targetableByMobs`, subject to the NPC's health settings. Zombies, husks, drowned, zombie villagers and vindicators. |
+| Player | NPC | A hit that passed the reach, line-of-sight and rate checks, worked out as vanilla works out a player's hit; see [player hits](#player-hits). |
+| Mob | NPC | A mob drawn by `targetableByMobs` (see [mobs that attack NPCs](#mobs-that-attack-npcs)) or controlled with `/animus combat mob` (zombies, husks, drowned, zombie villagers and vindicators), subject to the NPC's health settings. |
+| Explosion | NPC | Vanilla explosion damage: the blast's power, how far the NPC's feet are from its centre, and how much of the body it can see. Counts as an `explosions` hit by the player or mob that caused it, or as the environment for a bed or an unlit TNT. |
 | Projectile from an NPC | Player or mob | The projectile's own effect is cancelled and the hit is applied once through the combat module. |
 | Projectile from an NPC | NPC | Projectiles pass through virtual bodies, so each flight segment is tested against nearby NPC bounds. |
 | Projectile from a player or mob | NPC | The same flight test, against NPCs that take `projectiles`. See [projectiles and the environment](#projectiles-and-the-environment). |
+
+### Player hits
+
+A player's hit on an NPC follows vanilla's rules, from the player's state when the hit lands and the item in their main hand:
+
+- The attack damage attribute, which already holds the held weapon, Strength and Weakness, scaled by the attack charge: a full charge deals all of it, an uncharged swing a fifth.
+- Enchantment damage, scaled by the charge: Sharpness, and Smite, Bane of Arthropods and Impaling against an NPC whose body is undead, an arthropod or aquatic.
+- A critical hit, at full charge while falling, not on the ground, a ladder or in water, not blind, riding or sprinting, adds half the damage before enchantments. Every viewer sees the critical particles, the enchanted sparkle when enchantments added damage, and both when both happened, and the player hears the critical, strong, weak or sweep sound.
+- A falling mace adds its smash damage, with Density, and ends the player's fall.
+- Knockback, sprinting at full charge and the attack knockback attribute push the NPC further. Fire Aspect sets an NPC that takes `fire` burning, Bane of Arthropods slows an arthropod body's chase, and Looting adds to the drops of the NPC the player kills: a hundredth a level to a drop's chance below 1, and up to one more item a level.
+- A sword's sweep, at full charge on the ground and not sprinting, strikes the other combat NPCs within a block of the struck one and three blocks of the player, and, on Paper and Spigot, the real mobs and players there too.
+
+On Folia a hit shows the critical particles or, when it was not critical, the enchanted sparkle, never both, and the sweep reaches only NPCs. On mod servers the same rules apply without the attack sounds.
 
 An NPC without a killable `animus:health` module cannot be hurt by any of these. Every hit, in every direction, asks protection first, then applies armor and the other health settings, then changes health exactly once. Damage and death of an NPC fire the `damage` and `death` [behavior triggers](/animus/07-behaviors#automatic-triggers).
 
@@ -311,16 +366,31 @@ Each tick wakes at most `brainsPerTick` NPCs and runs at most `targetScansPerTic
 
 ## Limits
 
-- Movement uses the NPC navigator: walking only, on full blocks, at most 30 blocks per path request. A path that fails after it was accepted is not reported back, so such a target is dropped only by give-up range, leash or line-of-sight memory.
+- A chase walks on the navigation planner as routes do: slabs, stairs, ladders, doors the NPC may open and its own step and jump heights, and a goal farther than one plan reaches is walked in segments. While its target moves the NPC keeps walking its last path until the new one is planned, on Folia too. A path that fails after it was accepted is not reported back, so such a target is dropped only by give-up range, leash or line-of-sight memory.
 - Knockback and stuck teleports move an NPC only onto loaded, clear, supported ground.
 - A route resumes from its first point after a fight.
 - Lightning, ender pearls, shulker bullets, evoker fangs and gun plugins are not weapons. Item display names, lore and whole-inventory contents are not target rules.
 - Greetings and target rules see only what one scan saw: at most `scanCandidates` entities, and idle NPCs scan less often.
-- Player melee damage against NPCs ignores enchantments, potions and critical hits. Projectile damage reads Power, critical arrows and the potion's level, and nothing else: no Impaling, Punch, Flame or tipped arrow effects.
+- A player's projectile on an NPC reads Power, Punch, Flame, Piercing, critical arrows and the potion's level, and nothing else: no Impaling, Loyalty bonus or tipped arrow effects.
 - A projectile is followed for at most a minute of flight and at most 2,048 at once; one fired by a dispenser or with no shooter passes through NPC bodies. A struck projectile is used up even when protection, `attackerPermission` or invulnerability stops the damage.
 - Virtual bodies never drown or suffocate, and magma blocks, campfires, cactus and sweet berry bushes do not hurt them. Fire-immune body types burn like any other; leave `fire` and `lava` out for them.
 - Current health is runtime state: a restart or despawn brings a living NPC back at full health, and an NPC waiting to respawn comes back at once. Only a permadeath is kept.
 - The hurt and death animations use one generic damage type, so a player body's hurt sound never varies with the cause.
-- Real mobs fight an NPC only through mob control: `/animus combat mob`, or `targetableByMobs`. With `"targetableByMobs": true` in the module, every second the NPC draws up to 3 zombies, husks, drowned, zombie villagers or vindicators within 16 blocks that have no target of their own and can see it. Each walks to the NPC and attacks with its own attack damage every second for up to 10 seconds, showing its own attack animation, then gets its own goals, path and target back. Brain-driven and ranged mobs (piglins, skeletons) are not drawn. This works on Paper and Spigot only; on Folia and mod servers the setting does nothing.
+- Real mobs fight an NPC only when it sets `targetableByMobs` or through `/animus combat mob`; see [mobs that attack NPCs](#mobs-that-attack-npcs).
+
+## Mobs that attack NPCs
+
+With `"targetableByMobs": true` in the module, mobs fight the NPC as they would a player standing where it stands, with their own AI: they walk to it, swing, shoot, swell, leap and throw as vanilla makes them. The NPC gets a decoy, an invisible mannequin that no player is sent, without gravity, collision or sound, kept on its body and sized to it. [Sensed triggers](/animus/07-behaviors#sensed-triggers) never see a decoy, and no NPC rides one. The mob an NPC rides never fights it. Once a second, a share of the targetable NPCs look for mobs within 16 blocks across and 8 up or down that have no target of their own, are within their follow range and can see the NPC; up to 6 mobs at a time target its decoy. Protection's `mob-damage` flag is asked first. A mob may still turn to a player its own goals find, as it would between two players.
+
+| Mob | Fights the NPC |
+| --- | --- |
+| Zombies, husks, drowned, zombie villagers, skeletons, strays, bogged, wither skeletons, creepers, pillagers, vindicators, evokers, illusioners, witches, ravagers, vexes, blazes, endermites, silverfish, slimes and magma cubes | Always, as they hunt players |
+| Spiders and cave spiders | Below light level 12, as they do |
+| Wolves | When the NPC has a skeleton body, or a tame wolf's owner and the NPC fought each other in the last 10 seconds |
+| Iron and snow golems | When the NPC has a monster body, creepers excepted |
+
+Every hit on the decoy is cancelled and dealt to the NPC instead, through its defense: a mob's melee hit with its own damage, after `VirtualNpcDamagedByMobEvent`, which can cancel or change it; an arrow, trident, fireball or potion as a shot by the mob; a creeper's blast as an explosion. A player sitting on or riding the NPC stands inside its decoy for the server, so a mob's arrow or fireball meant for the decoy that strikes that player is dealt to the NPC too. The decoy is removed, and its mobs choose again with their own AI, when the NPC dies, despawns, stops being targetable, or the plugin stops. It is never saved with its chunk.
+
+This works on Paper, Spigot and Folia, where the decoy lives on the NPC's region and only mobs in chunks that region holds are drawn; see [Folia](/animus/15-folia#combat). On mod servers `targetableByMobs` draws no mobs.
 
 Settings imported from Sentinel are described in [migrating from Citizens](/animus/13-migrating-from-citizens#sentinel-settings).

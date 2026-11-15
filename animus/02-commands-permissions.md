@@ -73,6 +73,7 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 | `animus.debug` | Operators | `/animus debug` readings |
 | `animus.debug.mode` | Operators | `/animus debug mode` |
 | `animus.ride` | Operators | Riding NPCs whose `animus:riding` module names no permission of its own |
+| `animus.seat` | Everyone | [Sitting on NPCs](/animus/05-movement-mounts-riding#sitting-on-an-npc) whose `animus:seat` module names no permission of its own, and `/animus seat toggle` |
 | `animus.build.donate` | Everyone | `/animus build donate <build>` |
 | `animus.quests.use` | Everyone | Taking [quests](/animus/38-quests) from NPCs, their `!` markers, the offer buttons, and the journal with `/quests`, `/questlog` or `/animus quest journal` |
 | `animus.hotload.notify` | Operators | The note block chime and per-key message when a data file is applied or refused (see [live apply](/animus/03-configuration#live-apply)) |
@@ -85,10 +86,11 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 |---|---|---|
 | `animus.npc.view` | `list`, `inspect`, `select`, `selection`, `validate` | Inspect |
 | `animus.npc.create` | `create`, `mythic`, `clone` | New NPC, Copy |
-| `animus.npc.edit` | `edit`, `spawn`, `despawn`, `schedule`, `npc rename`, `npc attribute`, `npc health`, `npc model`, `npc disguise`, `npc look`, `npc anchor`, `npc revive`, `groups` | Name, Body, Equipment, Hologram, Spawned, Revive, All fields, Attributes, Modules, Movement settings, Folder, Trait groups, Mounts and riding with its Riding settings |
+| `animus.npc.edit` | `edit`, `spawn`, `despawn`, `schedule`, `npc rename`, `npc attribute`, `npc health`, `npc model`, `npc disguise`, `npc look`, `npc anchor`, `npc revive`, `groups` | Name, Body, Equipment, Hologram, Spawned, Revive, All fields, Attributes, Modules, Movement settings, Folder, Trait groups, Mounts and riding with its Riding and Seat settings |
 | `animus.npc.delete` | `delete` | Delete |
 | `animus.npc.skin` | `npc skin` | Skin |
-| `animus.npc.move` | `npc move`, `npc tp`, `navigation`, `ride` | Routes, route points, Bring here, Stand still, Walk once, Start, Stop now |
+| `animus.npc.move` | `npc move`, `npc tp`, `navigation`, `ride`, `mount`, `seat status` | Routes, route points, Bring here, Stand still, Walk once, Start, Stop now |
+| `animus.npc.speak` | `speak` | |
 | `animus.tools` | `tools`, `setup`, `undo`, and `gui` on its own | The menu and the wand; each screen also needs its own node |
 | `animus.behaviors` | `behaviors`, `modules` | Talk, Behaviors, the conversation editor |
 | `animus.behaviors.state` | `behaviors state` | |
@@ -106,7 +108,7 @@ A builder who places, dresses and moves NPCs but cannot fight players, wipe beha
 
 Feature modules can name their own nodes, such as a `permission` on `animus:riding`, `animus:hire`, a shop, a shop entry or a GUI. Animus does not declare those nodes, so operators hold them (on mod servers, permission level 2 and above) and everyone else needs them granted by your permission plugin.
 
-On mod servers, "Operators" means permission level 2 or higher, and `animus.status` and `animus.build.donate` are open to everyone. A permission mod can grant any node through the vanilla permission formed by replacing the node's first dot with a colon: `animus.admin` is `animus:admin` and `animus.ride.town` is `animus:ride.town`. `animus:admin` grants every management node, as on Paper.
+On mod servers, "Operators" means permission level 2 or higher, and `animus.status`, `animus.build.donate` and `animus.seat` are open to everyone. A permission mod can grant any node through the vanilla permission formed by replacing the node's first dot with a colon: `animus.admin` is `animus:admin` and `animus.ride.town` is `animus:ride.town`. `animus:admin` grants every management node, as on Paper.
 
 ## Status and NPC management
 
@@ -118,9 +120,9 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 | `/animus mythic <id> <mythic-mob> [name=] [folder=] [world=] [x=] [y=] [z=] [spawned=true]` | Save and spawn a new NPC that takes the body, name, equipment and skills of a [MythicMobs](/animus/36-mythicmobs) mob type, such as `/animus mythic king SkeletonKing`. The other values work as in `create`; `name` defaults to the mob's display name. Needs MythicMobs |
 | `/animus select [npc=]` | Select only this NPC, for example `/animus select guard`; the id may carry its folders, such as `world/town/guard`. Without an id, selects the NPC you look at, or else the nearest within 16 blocks. `/animus select none` clears the selection (`Selection cleared`), unless an NPC has the id `none`. The selected NPC glows for you for two seconds. It replaces the wand's selection, so `@selected`, `/animus selection` and the Animus menu all use it. Players only |
 | `/animus selection` | Show every NPC you selected, the same list `@selected` and the Animus menu use. Players only |
-| `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or despawned, trait groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then whether it is active, with pose, equipment, text lines, owner and mount problems under **[Details]** |
+| `/animus inspect <npc>` | Two lines: id, name, type, revision, spawned or despawned, trait groups and position, with **[JSON]** to copy the stored definition (and **[Merged]** for the definition after trait groups); then whether it is active, with pose, equipment, text lines, owner and mount problems under **[Details]**; a combat or health NPC adds a **Fights** line with its [fight counts](/animus/08-combat#settings) |
 | `/animus edit <npc> <patch>` | Merge a JSON object into the definition as a JSON merge patch and save it as a new revision. A `type` Animus cannot show is refused, as in `create`. An object merges into the field of the same name, so `{"modules": {"animus:look-close": {"range": 8}}}` changes that one value and keeps every other module. A field set to `null` is removed, so `{"type": "minecraft:horse", "skin": null, "pose": null}` turns a skinned, seated player into a horse. Any other value, an array included, replaces the field. The reply names what changed, such as `Saved guard: set modules.animus:look-close.range; removed skin`. A refused edit answers `Cannot save` with the first problem; when it changes `type`, the reply shows the `null` that removes the field the new body cannot show |
-| `/animus npc skin <npc> <player>` | Give the NPC the skin of a Minecraft account, by its name, such as `/animus npc skin guard Notch`; `reset` takes the skin off. Animus looks the name up on Mojang, saves the signed skin as `skins/<sha256>.json` labelled with the name, and points the NPC at it. Works from the console. Player bodies only; the server needs internet access |
+| `/animus npc skin <npc> [player] [url=] [file=] [slim=] [follow=] [from-name=]` | Give the NPC a skin. A Minecraft account's by its name, such as `/animus npc skin guard Notch`; Animus looks the name up on Mojang, saves the signed skin as `skins/<sha256>.json` labelled with the name, and points the NPC at it. `reset` takes the skin off. `url=` (a 64x64 PNG on the web) or `file=` (a PNG in `plugins/Animus/skins/`, such as `file=guard.png`) is signed through [MineSkin](/animus/04-npc-definitions#skins) first, with `slim=true` for slim arms. `follow=true` makes a skin from a player name follow that player's changes; `from-name=true` gives an NPC with no skin the skin of the account named like it. Works from the console. Player bodies only; the server needs internet access |
 | `/animus npc move <npc>` | Move the NPC to where you stand, facing your way, and save its new position. Also `/animus npc tphere`. Players only |
 | `/animus npc tp <npc>` | Teleport beside the NPC, facing it. The NPC must be active. Players only |
 | `/animus npc disguise <npc> [disguise=]` | Show the NPC's [LibsDisguises disguise](/animus/34-libsdisguises), the body it gives and the options that body leaves out, or set one, such as `/animus npc disguise guard "zombie setBaby true"` or a custom disguise name, or remove it with `reset`. Text LibsDisguises cannot read is refused. Saves a new revision |
@@ -135,6 +137,7 @@ On mod servers, "Operators" means permission level 2 or higher, and `animus.stat
 | `/animus delete <npc>` | Delete the NPC's file. **[Undo]** on the reply brings it back |
 | `/animus spawn <npc>` | Check the definition against the running server and mark it spawned |
 | `/animus despawn <npc>` | Mark the definition despawned and remove its body; the file stays. The reply ends with `Next: /animus spawn <npc>` |
+| `/animus speak <npc> <text> [target=] [range=] [bubble=]` | Make the NPC say a line through [`animus:say`](/animus/07-behaviors#actions), like Citizens' `/npc speak`: `/animus speak guard "The gate opens at dawn"`. `target` is the one player who hears it, by name, `@me` or UUID; `range` reaches everyone within that many blocks (1-64); with neither, the players within 16 blocks of the NPC hear it. `bubble` also shows the line over the NPC for that many ticks (1-1,200). `target` and `range` cannot be given together. The reply says how many players heard it. Works from the console. Needs `animus.npc.speak` |
 | `/animus undo [change=]` | Revert your own most recent change, from a command or the Animus menu. The reply is `Undid:` and what the change was, or `Nothing to undo`. Besides `animus.tools`, it needs the node the change needed: a command's change needs that command's node, and a menu change the node of what it wrote, such as `animus.npc.move` for a route, `animus.npc.create` for a new NPC or `animus.npc.delete` for a deleted one. Without it the reply is `No permission: <node>; ask an operator to grant it`. Animus keeps the last 20 changes of each of the 200 players who changed something most recently, each for 24 hours. Leaving and rejoining keeps them; a restart forgets them. With an id, which is what **[Undo]** sends, it reverts that change when it is one of your recent changes; any other change needs `animus.admin`. Undoing a delete selects the NPCs it brings back. From the console, `undo <id>` works as `rollback` does. Completion offers your recent change ids |
 | `/animus validate` | Check every definition file without changing anything |
 | `/animus reload` | Load changed definition files and rigs. Each file applies on its own; a broken file keeps its last valid version |
@@ -183,7 +186,11 @@ Assign and unassign take exactly one of `folder=<npc-folder>`, `tag=<tag>` or `i
 | `/animus navigation status <npc>` | Show where the NPC is walking: its trip, route or recording, and how far it got |
 | `/animus navigation stop <npc>` | Stop the NPC's trip or route walk: `Stopped guard's walk`, or `guard is not walking anywhere` |
 | `/animus ride status` | List current riders |
-| `/animus ride stop <player>` | Dismount a player |
+| `/animus ride stop <player>` | Dismount a player from the NPC they ride or sit on |
+| `/animus mount set <npc> <vehicle> [range]` | Put the NPC on another NPC by id, on a real entity by UUID, or on the nearest real entity of a type such as `minecraft:horse` within `range` blocks (1-32, default 8). Writes `modules["animus:mount"]`; see [mounted NPCs](/animus/05-movement-mounts-riding#mounted-npcs) |
+| `/animus mount off <npc>` | Take the NPC off what it rides |
+| `/animus seat toggle [on\|off]` | For players: turn sitting on NPCs on or off for yourself, or flip it, as `/gsit playertoggle` does. Needs `animus.seat` |
+| `/animus seat status` | List who sits on which NPC |
 
 A trip or a `navigation stop` overrides the NPC's route until its definition is applied again. See [movement, mounts and riding](/animus/05-movement-mounts-riding).
 

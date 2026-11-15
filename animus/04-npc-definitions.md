@@ -109,7 +109,7 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 | item | `id`, such as `minecraft:iron_sword` or `iron_sword`, optional `count` (1-99, default 1), optional `components`: the text that follows the item id in `/give`, such as `[enchantment_glint_override=true]`, at most 4096 characters. `imported` holds source item data with no equivalent; it is kept and never read. |
 | `hologram.lines` | Required in a `hologram`. At most 16 lines of at most 256 characters each. `&` color and format codes apply. |
 | `nameplate.visible` | `false` hides the name. Default `true`. |
-| `pose` | `standing` (default). Player bodies also accept `sneaking`, `sleeping`, `swimming` and `sitting`. |
+| `pose` | `standing` (default). Player bodies also accept `sneaking`, `sleeping`, `swimming`, `sitting`, `crawling`, `bellyflop` and `spinning`; every other living body but the ender dragon accepts `sitting`. |
 | `armorStand` | Armor stand bodies only: `small`, `arms`, `basePlate` (default `true`), `invisible`, `marker` (no hitbox, so players cannot click it), and `head`, `body`, `leftArm`, `rightArm`, `leftLeg`, `rightLeg` as `[x, y, z]` degrees within ±360. Parts without angles keep the client's default pose. |
 | `horse`, `sheep`, `villager`, `player`, `fallingBlock` and the other body fields | Settings only that body has; see [body settings](#body-settings). |
 | `bossBar` | A boss bar shown to players near the NPC; see [boss bars, viewers and click redirects](#boss-bars-viewers-and-click-redirects). |
@@ -288,7 +288,9 @@ Every other attribute is stored and sent but changes nothing for an NPC, because
 
 ### Poses
 
-Sneaking, sleeping and swimming set the body's pose. The behavior action `animus:animate` changes it for the running NPC. A sitting player rides a hidden armor stand at its position, so its body appears lower; hits are still measured against the standing body. A sitting NPC cannot also ride another NPC. Named look directions for behaviors are set with `poses`; see [movement](/animus/05-movement-mounts-riding#named-poses).
+Sneaking, sleeping, swimming, crawling, bellyflop and spinning set the body's pose, and the last three are GSit's poses for players: `crawling` is its crawl, `bellyflop` lies face down flat on the ground, lower than a crawl, and `spinning` turns upright in the riptide spin. GSit's lay is `sleeping`. The behavior action `animus:animate` changes the pose for the running NPC; the Animus menu sets it under **All fields**, and the web editor in **Look**.
+
+A sitting body rides a hidden armor stand on the surface under its feet, placed as GSit seats a player. On a bottom slab, a carpet or snow it sits on top. On the lower step of a stair it moves to the middle of the step, faces away from the raised part and sits at half height, also when its position stands on the raised part. Any living body sits this way, as Citizens sits mobs on an armor stand: humanoid mobs bend their legs, and the rest stand on the seat. Hits are still measured against the standing body. A sitting NPC may also ride; while it is on its vehicle the vehicle is its seat. Named look directions for behaviors are set with `poses`; see [movement](/animus/05-movement-mounts-riding#named-poses).
 
 ### Anchors
 
@@ -299,6 +301,38 @@ Sneaking, sleeping and swimming set the body's pose. The behavior action `animus
 ```
 
 Names are 1-32 lowercase letters, digits, `_` or `-`, at most 64 anchors. Without `world` an anchor is in the NPC's own world. Walking reaches only anchors in that world; teleport the NPC to the others. `/animus npc anchor` lists, adds and removes them.
+
+### Skins
+
+A player body wears the skin file its `skin` names, `skins/<sha256>.json`, named by the SHA-256 of its text so a skin never changes under its name.
+
+```json
+{"textureRaw": "ewogICJ0aW1lc3RhbXAiIDog...", "signature": "Kd3x...", "label": "Notch", "player": "Notch"}
+```
+
+| Field | Meaning |
+|---|---|
+| `textureRaw` | Mojang's `textures` property, base64: the skin's address on `textures.minecraft.net` and its arm model |
+| `signature` | Mojang's signature of `textureRaw`. Clients draw the default skin for a texture without one |
+| `label` | The name skin lists show |
+| `player` | The Minecraft account the skin came from, or a PlaceholderAPI placeholder that fills to one. `refresh` looks it up again |
+| `image` | The PNG it was made from, base64, kept until the skin is signed |
+
+A skin from a player name, or your own, comes signed from Mojang. A PNG or a PNG address is signed through [MineSkin](https://mineskin.org) with the key in [`[skins]`](/animus/03-configuration#skins): the web editor's upload on a paired server, `/animus npc skin url=` or `file=`, and **Skin address** in the Animus menu. A skin an NPC or trait group wears that is still unsigned but keeps its `image` or a texture address, such as one uploaded in a web editor that was not paired, is signed within about 15 seconds of being worn: the signed file replaces it, every wearer moves to it as one change with **[Undo]**, and the console says so in one line. An unsigned skin with neither is named once in the console; upload its PNG again. A refused signing is tried again after 30 minutes.
+
+`animus:skin` says where a player body's skin comes from beyond its file:
+
+```json
+"modules": {"animus:skin": {"refresh": true, "fromName": true}}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` when the object is present | Turns the module on |
+| `refresh` | `false` | Looks the skin's `player` up again soon after the option turns on and then every `[skins] refreshMinutes`, and wears the new skin when the player changed theirs. Other NPCs wearing the same file keep it |
+| `fromName` | `false` | With no skin set, wears the skin of the Minecraft account named like the NPC, colour codes left out. A name that is no account name is noted once in the console |
+
+Mojang lookups go one at a time, two seconds apart, and each answer is kept for five minutes. A name with no account is asked again after six hours, and one Mojang did not answer after five minutes. Each skin change is one change with **[Undo]** and one console line. Signing and lookups work on Paper, Spigot, Folia and mod servers; PlaceholderAPI skin sources are filled only where PlaceholderAPI runs.
 
 ### Mirroring the viewer
 
@@ -343,7 +377,7 @@ A player's click is checked against the NPC's current state for reach, line of s
 | `queuePerViewer` | 24 | 4-32 packet operations a viewer may have waiting to send |
 | `degradedIntervalTicks` | 4 | 1-40 updates between two cosmetic updates while a budget runs short |
 
-A player sees only NPCs within `viewDistance`, and at most `maximumVisible` of them at once. With more in range, they see the nearest ones, ranked again as they move; a shown NPC keeps its place until another is 4 blocks nearer, so NPCs at the edge do not flicker. A `config.toml` that still says `maximumVisible = 64` keeps 64; see [configuration](/animus/03-configuration#npcs). A spawned NPC is shown only while its chunk is loaded; Animus never loads a chunk to show one.
+A player sees only NPCs within `viewDistance`, measured horizontally at any height and capped by the player's own view distance, as the server does for real entities. They see at most `maximumVisible` of them at once. With more in range, they see the nearest ones, ranked again as they move; a shown NPC keeps its place until another is 4 blocks nearer, so NPCs at the edge do not flicker. A `config.toml` that still says `maximumVisible = 64` keeps 64; see [configuration](/animus/03-configuration#npcs). A spawned NPC is shown only while its chunk is loaded; Animus never loads a chunk to show one.
 
 When a tick has less packet budget than work, updates give way in this order:
 

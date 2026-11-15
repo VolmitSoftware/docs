@@ -49,6 +49,7 @@ After installing, run `/animus status` from the console or as an operator to che
 | `animus.build.donate` | Everyone |
 | `animus.admin` and the nodes under it, `animus.debug`, `animus.debug.mode`, `animus.hotload.notify`, `animus.editor.commands`, `animus.editor.notify` | Operators (permission level 2 and above) |
 | `animus.ride` and custom riding nodes | Operators |
+| `animus.seat` | Everyone |
 
 A permission mod can grant any node through the vanilla permission named by the node with its first dot as the namespace separator: `animus.admin` is `animus:admin`, which grants every node under it as on Paper, and `animus.ride.town` is `animus:ride.town`.
 

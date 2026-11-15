@@ -222,8 +222,13 @@ Events live in `art.arcane.animus.bukkit.event`. `getNpcId()` is the NPC's UUID 
 | `VirtualNpcDespawnEvent` | An active NPC is despawned, deleted or replaced by another UUID | No |
 | `VirtualNpcDeathEvent` | An NPC's health reaches zero; carries the killer when known | No |
 | `VirtualNpcWaypointEvent` | An NPC reaches a route waypoint; carries the route, index and position | No |
+| `VirtualNpcProjectileHitEvent` | A real projectile flies into an NPC's hitbox; `isStopped()` when combat let it strike the body | No |
+| `VirtualNpcContactEvent` | A real entity starts to touch an NPC's hitbox, `TOP` standing on it or `SIDE` | No |
+| `VirtualNpcVehicleBumpEvent` | A moving minecart or boat runs into an NPC's hitbox | No |
+| `VirtualNpcItemDropEvent` | A player or mob drops an item within three blocks of an NPC, or throws it into its hitbox | No |
+| `VirtualNpcLeashEvent` | A player leading a mob right-clicks an NPC (`TIE`), or a mob on a lead is led within three blocks (`PASS`) | No |
 
-Events fire on the thread that owns the NPC: the main thread on Paper and Spigot, and the NPC's region on Folia. Spawn, despawn and death events are marked asynchronous if they ever fire off a server thread. No world entity stands behind an NPC, so read positions from the event, as an `NpcPosition` with `toLocation()`. Mod servers fire no Bukkit events.
+Events fire on the thread that owns the NPC: the main thread on Paper and Spigot, and the NPC's region on Folia. The projectile event fires on the thread that owns the projectile and the `TIE` lead event on the player's. Those five are what Animus [senses](/animus/07-behaviors#sensed-triggers) around an NPC, since the server reports nothing about a body that is only packets: each fires once per entity, and only while a player is near the NPC. While a plugin listens for the contact, vehicle, item or lead events, every NPC a player is near is looked at, within the `entity` budgets of `[behaviors.triggers]`. Spawn, despawn and death events are marked asynchronous if they ever fire off a server thread. No world entity stands behind an NPC, so read positions from the event, as an `NpcPosition` with `toLocation()`. Mod servers fire no Bukkit events.
 
 ## Shutdown
 

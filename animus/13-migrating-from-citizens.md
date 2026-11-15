@@ -84,9 +84,12 @@ A label uses 1-32 lowercase letters, digits, `_` or `-`, and each copy needs a d
 | `/npc copy` | `/animus clone <npc> <id>` |
 | `/npc spawn`, `/npc despawn` | `/animus spawn <npc>`, `/animus despawn <npc>` |
 | `/npc skin <player>` | `/animus npc skin <npc> <player>`, also from the console |
+| `/npc skin --url <url>`, `--file <name>`, `-s` | `/animus npc skin <npc> url=<url>`, `file=<name>` (a PNG in `plugins/Animus/skins/`), `slim=true`; signed through MineSkin |
+| `/npc skin -l` | `/animus npc skin <npc> follow=true` |
 | `/npc tphere`, `/npc move` | `/animus npc move <npc>` |
 | `/npc tp` | `/animus npc tp <npc>` |
 | `/npc rename <name>` | `/animus npc rename <npc> <name>` |
+| `/npc speak <text> --target <player> --range <n> --bubble <ticks>` | `/animus speak <npc> "<text>" target=<player> range=<n> bubble=<ticks>`; a bubble also sends the line to chat |
 | `/npc lookclose` | `/animus npc look <npc> toggle` |
 | `/npc type <type>`, `/npc equip` | `/animus edit <npc> {"type": "minecraft:villager"}`, or **Equipment** in the [Animus menu](/animus/21-in-game-toolkit#equipment) |
 
@@ -176,14 +179,14 @@ Each NPC becomes `npcs/<world>/citizens-<id>.json`, and one with no world goes i
 | Skin | `skins/<sha256>.json` on player bodies. See [skins](#skins). |
 | Equipment and inventory | `equipment` (all eight slots) and `inventory`, with item names, lore, enchantments, damage, custom model data, item model, dye color, patterns, potions and persistent data written as item components. Item meta with no component is kept in the item's `imported` field. A HorseModifiers saddle or armor fills an empty `saddle` or `body` slot, and its color, style and chest become the horse's coat and markings or a donkey's, mule's or llama's chest. |
 | Hologram lines | `hologram`, top line first, with margins, line height, view range, billboard, shadow, see-through and interpolation. |
-| Poses, sneaking, sitting, armor stand | `poses` for [`animus:pose`](/animus/07-behaviors#actions), sneaking and sitting poses, armor stand parts, angles and marker. |
+| Poses, sneaking, sitting, armor stand | `poses` for [`animus:pose`](/animus/07-behaviors#actions), sneaking and sitting poses, armor stand parts, angles and marker. The sit trait becomes `pose: sitting` on every living body, as Citizens sits mobs on an armor stand, and a mounted NPC keeps it for when it has no vehicle. |
 | Glowing, using an item, player-list visibility, scoreboard color and tags, gravity, baby age | `glowing`, `usingItem`, `listed`, `teamColor`, `tags`, `gravity`, `baby`. An armor stand without gravity also gets `gravity: false`. |
 | Attribute trait | `attributes`, with the older `generic_scale` and `generic.scale` names read as `scale`. A value outside the vanilla range is clamped with a warning; an id no supported Minecraft version registers is kept for review. |
 | Scaled max health | The `max_health` attribute, unless the attribute trait sets one. |
 | Mob looks | The body's [settings](/animus/04-npc-definitions#body-settings). See [mob looks](#mob-looks). |
 | Skin layers and game mode | `player` on player bodies. |
 | Saddle trait | A saddle in the `saddle` slot of a body that shows one. |
-| Sleep and entity pose | `pose: sleeping`, or the matching `pose` of a player body: crouching, sleeping, swimming or sitting. |
+| Sleep and entity pose | `pose: sleeping`, or the matching `pose` of a player body: crouching, sleeping, swimming, sitting, or `spinning` for the spin attack pose. |
 | Boss bar | `bossBar`, with a `health` track as `progress: health`. A hidden bar converts to none. |
 | Player filter | `viewers`, with allowlists as `mode: allow` and the apply range as `range`. |
 | Click redirect | `clickRedirect`. |
@@ -215,7 +218,19 @@ Citizens draws every hologram line on its own, so the import starts a line with 
 
 ### Skins
 
-A skin on a player NPC becomes `skins/<sha256>.json`. Only player bodies show a skin, so a skin on any other body (a llama, frog or ender dragon) is not set. Citizens never drew those skins either. It stays in `modules["citizens:review"]` in case the NPC is changed to a player, the NPC's report says why, and the preview counts it among the skins on non-player NPCs kept unused.
+A skin on a player NPC becomes `skins/<sha256>.json` with its texture and signature. A skin name that is a Minecraft account becomes the file's `label` and `player`. Only player bodies show a skin, so a skin on any other body (a llama, frog or ender dragon) is not set. Citizens never drew those skins either. It stays in `modules["citizens:review"]` in case the NPC is changed to a player, the NPC's report says why, and the preview counts it among the skins on non-player NPCs kept unused.
+
+The rest of the skin trait carries over as [`animus:skin`](/animus/04-npc-definitions#skins):
+
+| Citizens | Animus |
+|---|---|
+| `updateSkins: true` (`/npc skin -l`) on a skin from a player name | `refresh: true`: the NPC wears the player's new skin when they change it |
+| No saved texture, with `fetchDefaultSkin` on (Citizens' default), on an NPC whose name is a Minecraft account | `fromName: true`: the server looks the name up and the NPC wears that skin |
+| Skin name `%player%`, `%player_name%`, `<player>` or `<p>` | [`animus:mirror`](/animus/04-npc-definitions#mirroring-the-viewer): each viewer sees their own skin |
+| Skin name `<npc>` | The NPC's own name |
+| Another PlaceholderAPI skin name, such as `%vault_top_1%` | The skin file's `player`, with `refresh: true`: the server fills it for no viewer and looks the account up again every `[skins] refreshMinutes`, as Citizens refills it |
+
+A skin name with no saved texture and no `fetchDefaultSkin` match, or a Citizens placeholder Animus does not have (`<random_player>`), is listed for review in the NPC's report. A skin trait that is not a map stays in `citizens:review`.
 
 ### Mob looks
 
@@ -288,6 +303,10 @@ Citizens' `hometrait` becomes [`animus:home`](/animus/05-movement-mounts-riding#
 
 `pausepathfinding` becomes the [`pause`](/animus/05-movement-mounts-riding#routes) of the NPC's route: `playerrange` becomes `playerRange` (at most 64), `rightclick` `onClick`, `pauseticks` `ticks` (20 when unset or 0) and `lockoutduration` `lockoutTicks`. An NPC with no route keeps the trait for review.
 
+### Sitting and GSit
+
+The sit trait becomes `pose: sitting` and the entity pose trait the matching pose; see [what converts](#what-converts). GSit keeps no sits or poses across a restart, so a Citizens NPC posed or seated through GSit has nothing of GSit to import; give it the matching [pose](/animus/04-npc-definitions#poses), such as `sleeping` for GSit's lay. A Citizens server where GSit seats players on every player NPC behaves the same in Animus with `[seats] defaultEnabled = true`; see [sitting on an NPC](/animus/05-movement-mounts-riding#sitting-on-an-npc).
+
 ### Text
 
 Citizens text becomes the behavior `citizens:text-<id>` in `behaviors/citizens/`, listed in the NPC's `behaviors`. Talk-close NPCs speak when a player comes within the talk range (at most 32 blocks); others speak when right-clicked. The delay is each player's own cooldown, `playerCooldownTicks` on the trigger (100 ticks when Citizens chose a random delay), as in Citizens. A random talker picks a random line; otherwise the lines take turns. `<br>` starts a new message, `<p>` and `<player>` become the player's name, and color codes are kept. A talk item becomes a check of the clicking player's held item, so only a player holding one of the listed items is answered. Speech bubbles become each line's `bubbleTicks` (Citizens' bubble duration, 50 ticks by default), and an NPC that sent no text to chat speaks only in the bubble.
@@ -295,6 +314,26 @@ Citizens text becomes the behavior `citizens:text-<id>` in `behaviors/citizens/`
 ### Commands
 
 Citizens commands become the behavior `citizens:commands-<id>`. Right-click and left-click commands get their own interaction triggers, and the `SHIFT_RIGHT`, `SHIFT_LEFT` and `SHIFT_BOTH` hands get `sneak_interact` and `sneak_attack` triggers. Player commands run as the player and others from the console; an operator command runs from the console. `random`, `cycle` and `sequential` execution modes take turns per NPC, or per player for `sequential`. In Citizens a sneaking click runs only the SHIFT and BOTH commands; in Animus the RIGHT and LEFT commands run on it too, and the report says so when an NPC has both. A player or operator command that casts a MythicMobs skill, `mm test cast <skill>`, becomes the [`mythic:cast-skill`](/animus/36-mythicmobs#citizens-npcs-that-cast-mythic-skills) action cast as the player.
+
+Citizens rewrites some lines before it runs them, and the import reads them the same way. A line that starts with `say` is the NPC speaking to the clicking player, not the server's `/say`, so it becomes [`animus:say`](/animus/07-behaviors#actions) to that player whatever its `player`, `op` and `npc` settings. `npc`, `waypoints` and `wp` lines act on the clicked NPC, and those Animus can do become actions:
+
+| Citizens line | Animus |
+| --- | --- |
+| `say <text>` | `animus:say` to the clicking player. |
+| `npc speak <text>` | `animus:say`: with `--target <p>` to the clicking player, with `--range <n>` to everyone within that many blocks (at most 64), and with neither to the players within 5 blocks, Citizens' default chat range. `--bubble <duration>` shows only a speech bubble, at most 1,200 ticks. |
+| `npc tp` | `animus:teleport` of the clicking player to the NPC. Needs a player command. |
+| `npc tphere`, `npc tph`, `npc move` | `animus:teleport` of the NPC to the clicking player. Needs a player command. |
+| `npc moveto x:y:z`, or `--x`, `--y` and `--z` | `animus:teleport` of the NPC to that point, with `--yaw` and `--pitch`. |
+| `npc pathto x y z` | `animus:navigate` to that point. |
+| `npc rotate --towards x,y,z`, `--toentity <p>` or `me` | `animus:look` at the point or at the clicking player. |
+| `npc pose --assume <name>` | `animus:pose` with that pose. |
+| `npc panimate <animation>` | `animus:animate`, with the same animations as waypoint animation triggers. |
+| `npc rename <name>` | The console command `animus npc rename citizens-<id> "<name>"`. |
+| `npc despawn` | The console command `animus despawn citizens-<id>`. |
+
+Any other `npc` subcommand, a line for another NPC (`--id`), a `pathto` to the player, a `moveto` that names a world, a `tp` or `tphere` run from the console, and every `waypoints` and `wp` line are not converted: the report gives the reason and the line stays in `citizens:review`. [`/animus speak`](/animus/02-commands-permissions#status-and-npc-management) speaks from chat or the console as `/npc speak` does, except that with neither `target` nor `range` the players within 16 blocks hear it, and a bubble also sends the line to chat.
+
+In a command, `<p>`, `<player>` and `%player%` become the player's name, and `<npc>` and `<id>` the NPC's name and id. Other PlaceholderAPI placeholders stay as written and are filled for the clicking player each time the command runs; a filled value with characters other than letters, digits and `_ . : + -` stops the command unless the behavior is on `rawTextBehaviors`. See [text in commands](/animus/07-behaviors#text-in-commands). The report notes each command that holds one.
 
 Each command keeps its checks, in this order, with Citizens' error message when one fails:
 
@@ -309,7 +348,7 @@ Each command keeps its checks, in this order, with Citizens' error message when 
 | `delay` (ticks) | A wait before the checks. |
 | `npc` | The NPC's name in place of the player's in the command. A command the NPC's own player body ran (`npc` and `player`) runs from the console. |
 
-The command trait's own `cost`, `experienceCost` and `itemRequirements` are charged once per click before any command runs. `customErrorMessages` replace the default messages and `hideErrorMessages` sends none. The flags and stages are named `commands-<id>-<command>-cooldown`, `-global-cooldown`, `-uses` and `-global-uses` in the `citizens` namespace; `/animus behaviors state delete` resets them. Uses and cooldowns counted in Citizens start again from zero. An item cost that cannot be matched exactly, because its item data has no item component, leaves that command out and the report says so. Temporary permissions are reported and not granted.
+The command trait's own `cost`, `experienceCost` and `itemRequirements` are charged once per click before any command runs. `customErrorMessages` replace the default messages and `hideErrorMessages` sends none. The flags and stages are named `commands-<id>-<command>-cooldown`, `-global-cooldown`, `-uses` and `-global-uses` in the `citizens` namespace; `/animus behaviors state delete` resets them. Uses and cooldowns counted in Citizens start again from zero. An item cost that cannot be matched exactly, because its item data has no item component, leaves that command out and the report says so. Temporary permissions (`/npc command permissions`) go on each command the clicking player runs, as the command's [`permissions`](/animus/07-behaviors#permissions-for-a-command): the player holds them while the command runs, or for `temporaryPermissionsDuration` ticks after it, at most 72,000. Console commands need none, so an NPC with only console commands keeps its temporary permissions for review, and the report says so.
 
 Commands and skill casts run once the import is applied, because apply adds `citizens` to `commandNamespaces` under `[behaviors.actions]` in `config.toml`. The preview says how many imported behaviors and shops run commands. A command's cost, cooldown and use count are taken before it runs, and only after an [`animus:commands-allowed`](/animus/07-behaviors#conditions) check, so a command the allow-list refuses costs the player nothing.
 
@@ -322,7 +361,7 @@ Commands saved by the CitizensCMD and CommandNPC add-ons join the same `citizens
 
 | CitizensCMD | Animus |
 | --- | --- |
-| `[console]` and `[none]` lines | Console and player commands. `%p%` and `%player%` become the player's name, and a `(seconds)` delay becomes a wait. |
+| `[console]` and `[none]` lines | Console and player commands. `%p%` and `%player%` become the player's name, other PlaceholderAPI placeholders are filled when the command runs, as above, and a `(seconds)` delay becomes a wait. |
 | `[message]` lines | `animus:message`, with `{name}` as the NPC's name. |
 | `[<permission>]` lines | Player commands, run with the player's own permissions. |
 | `cooldown` | A flag per player and NPC; `-1` (one click) never expires. |
@@ -381,10 +420,10 @@ Each Sentinel record becomes `modules["animus:combat"]` with `enabled` set to `t
 The module keeps three things apart:
 
 - The converted settings, described in [combat](/animus/08-combat). A field missing from a save means Sentinel's own default, so those defaults are written out rather than replaced by Animus defaults.
-- `preservedSettings`: every unsupported or unknown field, plus the original value of any converted field that could not be represented exactly (out of range, malformed, invalid patterns, target entries with no equivalent rule, item data, an unresolvable guarded NPC). Nothing here runs.
-- `historicalStatistics`: the `stats_*` counters, as imported. They are not updated.
+- `preservedSettings`: every unknown field, plus the original value of any converted field that could not be represented exactly (out of range, malformed, invalid patterns, target entries with no equivalent rule, item data, an unresolvable guarded NPC). Nothing here runs.
+- `historicalStatistics`: the `stats_*` counters, as imported. Animus counts on from them, and `/animus inspect` shows the totals; see [combat settings](/animus/08-combat#settings).
 
-`migrationReport` lists which source fields converted, which are unsupported or unknown, and a note for every value that was adjusted. `autoswitch` and `weapon_redirect_map` are kept, not converted.
+`migrationReport` lists which source fields converted, which are unknown, and a note for every value that was adjusted. Every Sentinel setting converts, `autoswitch` and `weapon_redirect_map` included.
 
 | Sentinel field | Animus setting | Notes |
 | --- | --- | --- |
@@ -405,7 +444,9 @@ The module keeps three things apart:
 | `weapon_damage_map` | `melee.weaponDamage` | Material names become `minecraft:` item ids. |
 | `attackRate`, `attackRateRanged` | `melee.cooldownTicks`, `ranged.cooldownTicks` | Ticks. |
 | `reach` | `melee.reach` | Limited to 6. |
-| `projectileRange`, `accuracy`, `safeShot` | `ranged.range`, `inaccuracy`, `safeShot` | Ranged attacks are enabled when the imported held item is a weapon: bow or crossbow (`arrow`), spectral arrow, trident, blaze rod (`fireball`), snowball, egg or wither skeleton skull (`wither_skull`). A held potion is not converted, because its effect is item data. |
+| `projectileRange`, `accuracy`, `safeShot` | `ranged.range`, `inaccuracy`, `safeShot` | Ranged attacks are enabled when the imported held item, after its redirect, is a weapon: bow or crossbow (`arrow`), spectral arrow, trident, blaze rod (`fireball`), snowball, egg, wither skeleton skull (`wither_skull`), white dye (`llama_spit`) or a potion. A held splash, lingering or plain potion becomes `weapon: potion` with the effect of its potion type, or its first custom effect at that effect's level and length, and a lingering one sets `lingering`. The potion is read from the item meta as Citizens saved it: the encoded form Citizens writes on `meta` (or under `meta.encoded-meta` in older saves), or a plain map; a potion whose effect cannot be read throws nothing and the report says so. With `autoswitch`, ranged attacks are enabled for whatever ranged weapon the NPC carries. |
+| `autoswitch` | `weapons.autoswitch` | The NPC takes its best carried melee weapon in reach and its best ranged one beyond it; see [weapon switching](/animus/08-combat#weapon-switching). |
+| `weapon_redirect_map` | `weapons.redirects` | Item names become item ids, such as `minecraft:stick` to `minecraft:bow`. |
 | `needsAmmo` | `ranged.useAmmo` | Counts the imported inventory. |
 | `health` | `animus:health` `maximumHealth` | Maximum, not current health. |
 | `armor` | `animus:health` `armor` | `-1` (the default) becomes `armorFromEquipment: true`. |
@@ -434,7 +475,8 @@ Target list entries:
 | `byEvent` `pv:<target>`, `ev:<target>` | `events.playerAttacks`, `anyAttacks` | |
 | `byEvent` `message:<text>` | `chat` | |
 | `byEvent` `guarded_fight` | `guard.assist: true` | In target lists only. |
-| `byInventoryItem`, `byStatus`, `byOther` from other plugins (`sbteam`, `npc_owned_by`, Towny, Factions and others) | Kept | No equivalent rule. |
+| `byOther` `towny:`, `nation:`, `nationenemies:`, `nationallies:`, `factions:`, `factionsenemy:`, `factionsally:`, `sbteam:` | `teams` | Read through Towny, Factions and the main scoreboard; see [plugin teams](/animus/08-combat#plugin-teams). |
+| `byInventoryItem`, `byStatus`, `byOther` from other plugins (`npc_owned_by`, SimpleClans, War and others) | Kept | No equivalent rule. |
 
 ## Shopkeepers
 

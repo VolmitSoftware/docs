@@ -1,6 +1,6 @@
 ---
 title: "Animus: Movement, Mounts and Riding"
-description: "Navigation, routes, look-close, movement settings, mounted NPCs, player riding and hiring"
+description: "Navigation, routes, look-close, movement settings, mounted NPCs, NPCs on real entities, player riding, seats and hiring"
 published: true
 date: 2026-11-12T00:00:00.000Z
 tags: "animus, navigation, routes, mounts, riding, hire"
@@ -157,7 +157,7 @@ An invalid route edit is reported with its field, such as `$.points[3].next[1].t
 
 ### How many routes run
 
-There is no limit on how many NPCs follow a route. A route with no player within `[npcs] viewDistance` sleeps: it holds no turn and no path plan, its status says `sleeping`, and it continues from where it stood when a player comes near (checked about once a second). A manual `/animus navigation go` leg and a route a behavior waits for never sleep.
+There is no limit on how many NPCs follow a route. A route with no player within `[npcs] viewDistance`, measured horizontally at any height, sleeps: it holds no turn and no path plan, its status says `sleeping`, and it continues from where it stood when a player comes near (checked about once a second). A manual `/animus navigation go` leg and a route a behavior waits for never sleep.
 
 Awake routes take turns. Each tick at most `routesPerTick` of them plan or take a step, and a route that missed its turn goes first on the next tick, so with more walking NPCs than the budget they all move, only slower. On Folia these budgets apply to each region tick.
 
@@ -296,7 +296,7 @@ An NPC is idle when it follows no route, recording or `navigation go` leg, guard
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/20-mounts-ingame.webm" aria-label="Seating the greeter on the trader and dismounting it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-An NPC rides another NPC through `animus:mount`:
+An NPC rides another NPC, or a [real entity](#riding-real-entities), through `animus:mount`:
 
 ```json
 "modules": {
@@ -317,6 +317,33 @@ A relation that cannot be honoured leaves the NPC standing at its own position w
 | Vehicle missing or despawned, or an imported reference recorded as missing, ambiguous or invalid | Reported; spawning is still allowed. The NPC attaches once the vehicle becomes active |
 | An imported vehicle id that now belongs to a different NPC | Reported; never attached |
 | Riding itself, a cycle, a chain too deep or a full vehicle | Refused by `/animus spawn` and by `/animus edit` of a spawned NPC. A hand-edited file that creates one is reported, and every member of a cycle stays unattached |
+
+A sitting NPC may also ride. While it is on its vehicle the vehicle is its seat; whenever it has no vehicle it sits on its own seat at its position.
+
+`/animus mount set <npc> <vehicle>` puts an NPC on another NPC, and `/animus mount off <npc>` takes it off.
+
+### Riding real entities
+
+An NPC rides a real horse, boat, minecart, pig, strider or any other mob with `entity` in place of `vehicle`:
+
+```json
+"modules": {
+  "animus:mount": {"entity": "minecraft:horse", "range": 8}
+}
+```
+
+| Field | Values | Meaning |
+|---|---|---|
+| `entity` | An entity UUID, or an entity type such as `minecraft:horse` | A UUID names one entity. A type rides the nearest loaded entity of that type within `range` of the NPC's own position that no other NPC rides |
+| `range` | 1-32 blocks, default 8 | With a type only |
+
+`vehicle` and `entity` cannot both be set, and players are never vehicles. In game, **Ride a mob** under **Mounts and riding** picks a type. `/animus mount set <npc> <vehicle> [range]` takes an NPC id, an entity UUID or an entity type.
+
+The NPC sits where its vehicle seats a passenger, faces the vehicle's way and goes where it goes: led on a lead, ridden by a player, pushed along rails or carried by water, and into another world through a portal. Every player who sees both is shown the NPC on the vehicle after the vehicle's own passengers, so a player riding the horse sits in front of the NPC. A player who comes near later, or starts seeing the vehicle again, sees the NPC on it at once.
+
+An NPC on a real vehicle does not walk routes, look at players or go home, as on an NPC vehicle. Clicks and hits are measured at its seat, where players see it, and a hit does not knock it off. When the vehicle dies, is removed or unloads, the NPC stands at its own position again and `/animus inspect` shows `mount-problem=` with the reason. It gets back on that entity when it loads again or, for a type, on the nearest free one in range, checked about once a second. One NPC rides each real entity.
+
+Real vehicles work on Paper, Spigot and Folia. On Folia the NPC never follows its vehicle into another world, and a vehicle that moves to another region is boarded again there; see [Folia](/animus/15-folia#npcs-on-real-entities). On mod servers the NPC stands at its own position and reports why.
 
 ## Riding an NPC
 
@@ -362,6 +389,59 @@ While riding, the player's server position is the NPC's feet, not its seat, so v
 ```
 
 A saddled body is steered by the rider's own client while it rides. When the ride ends, every viewer is sent the NPC's position again, so the rider sees it where the server holds it and can click it to ride again.
+
+## Sitting on an NPC
+
+Players sit on top of an NPC with a click, as GSit seats one player on another. Nobody steers: the NPC keeps its route, schedule and fights, and the players move with it. Sneaking gets off.
+
+```json
+"modules": {
+  "animus:seat": {"click": "right", "stack": 4, "permission": "animus.seat", "emptyHand": true}
+}
+```
+
+| Field | Default | Meaning |
+|---|---|---|
+| `enabled` | `true` when the object is present | `false` turns the seat off whatever `[seats] defaultEnabled` says |
+| `click` | `right` | `right` or `sneak-right`: the click that sits down |
+| `permission` | `animus.seat` (everyone by default) | Lowercase permission node |
+| `stack` | 4 | 1-8 players. The next player sits on the one at the top, as GSit stacks players |
+| `emptyHand` | `true` | Only a player with nothing in the main hand sits |
+
+An NPC without the module offers a seat when `[seats] defaultEnabled` is on in `config.toml`, which is off by default; see [configuration](/animus/03-configuration#seats). In game, **Seat** under **Mounts and riding** sets these fields.
+
+The seat takes only its own click, after everything else has had it. A behavior that answers the click, a shop, GUI, quest, hire desk or the wand keeps the click, so talking and trading work as before. A ridable NPC mounts on a plain right-click, so its seat must use `sneak-right`; `click: right` together with `animus:riding` is refused. A player who turned sitting off, lacks the permission or holds an item is told nothing, as with GSit.
+
+`/animus seat toggle [on|off]` turns sitting on NPCs on or off for the player who runs it, as `/gsit playertoggle` does for sitting on players. The choice is kept in `state/seats/toggles.json`, and turning it off gets the player off any NPC. `/animus seat status` lists who sits where, and `/animus ride stop <player>` takes a seated player off too.
+
+While seated, the player's server position is the ground under the NPC, or under the NPC's lowest vehicle, so vanilla never treats them as flying; block reach and clicks are measured from there. Each block that ground enters asks WorldGuard's `entry` flag, as a ride does, and a refused step gets the player off with "Got off …: region entry denied".
+
+A seat ends when the player sneaks, logs out, dies, teleports, changes world, enters a real vehicle, sleeps, turns spectator, loses the permission or turns sitting off, and when the NPC is removed, despawns, dies, changes its definition or turns its seat off. Everyone higher in the stack gets off with the player below. The player is put down beside the NPC, except after a logout, death, teleport, world change or real vehicle, where they stay where the server holds them. Seats do not survive a restart.
+
+A body a rider's own client steers once saddled, such as a saddled horse, pig or strider or a harnessed happy ghast, refuses seats; give it [riding](#riding-an-npc) instead. An NPC that a player rides, or that carries other NPCs, refuses seats, and an NPC with players on it refuses riders. At most `[seats] maximum` players sit at once, 32 by default. On Folia each seat runs on its NPC's region; see [Folia](/animus/15-folia#seats).
+
+### With GSit
+
+GSit never sees a click on an Animus NPC, because NPCs are packets. With GSit running and `[seats] followGSit` on, the default, a seat also asks GSit what its own player-sit asks: the `GSit.PlayerSit` permission, the player's `/gsit playertoggle` choice, `PlayerSit.allow-sit-npc`, `PlayerSit.empty-hand-only`, `PlayerSit.max-distance`, `PlayerSit.max-stack`, GSit's world lists and its player-sit region flag through WorldGuard, PlotSquared or GriefPrevention. GSit's own sit events are not fired, since they need a player target. A player crawling or posing with GSit cannot sit, and a seated player who starts crawling, posing or sitting with GSit gets off.
+
+Everything else stays GSit's: players sit on blocks, lie, crawl and sit on real players as usual. A player on a GSit seat can still click NPCs, talk and trade, but rides or sits on an NPC only after standing up. A player who sits on a seated player through GSit's own player-sit rides that player as usual.
+
+To seat players on every player NPC, as GSit does on a Citizens server, set `[seats] defaultEnabled = true`. GSit's lay, bellyflop, spin and crawl are NPC [poses](/animus/04-npc-definitions#poses).
+
+### Clicks, fights and routes on seats and vehicles
+
+| Case | What happens |
+|---|---|
+| A seated player clicks the NPC under them | Behaviors, shops and GUIs answer as usual, measured from the player's ground position; the seat click does nothing |
+| A seated player clicks another NPC | Behaviors, shops and GUIs answer as usual, measured from the player's ground position. Riding and sitting are refused |
+| Another player clicks an NPC with players on it | Behaviors, shops and GUIs answer as usual; the seat click stacks the player on top while there is room; riding is refused |
+| A player clicks a seated player | Vanilla and other plugins see a click on a player, so GSit's player-sit may stack them through GSit |
+| An NPC with players on it walks a route, follows a schedule or fights | Nothing stops. The players move with it, also through a route point that teleports it within its world; a teleport to another world gets them off |
+| A hit, a knockback or a behavior moves an NPC with players on it | It takes the hit as usual and the players move with it |
+| A player clicks or attacks an NPC on a real vehicle | Measured at the NPC's seat. Behaviors, shops and fights work, and a knockback does not move it off the vehicle |
+| A player clicks the real vehicle | Vanilla handles it: leading, saddling and riding work, and a player who rides it sits in front of the NPC |
+| A real vehicle carries an NPC with players on it | The players sit on the NPC and stand, for the server, on the ground under the vehicle |
+| An NPC on a vehicle has a route or schedule | It does not walk; when it gets off it stands at its own position until its definition is applied again |
 
 ## Hiring an NPC
 

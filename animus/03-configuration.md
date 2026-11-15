@@ -64,7 +64,7 @@ A file refused at startup stops Animus from starting: the log has one line that 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
 | `enabled` | `true` | | Run the NPC runtime |
-| `viewDistance` | `48` | 8-256 blocks | How close a player must be to see an NPC |
+| `viewDistance` | `48` | 8-256 blocks | How close a player must be to see an NPC, measured horizontally at any height, as the server measures for real entities. A player whose own view distance is shorter sees only as far as it reaches; see below |
 | `maximumVisible` | `128` | 1-128 | NPCs shown to one player at once. With more in range, that player sees the nearest ones; see below |
 | `maximumViewers` | `256` | 1-1024 | Players that receive NPCs |
 | `updatesPerTick` | `64` | 1-64 | Players whose NPC view is updated per tick; with more players, they take turns |
@@ -74,6 +74,8 @@ A file refused at startup stops Animus from starting: the log has one line that 
 | `simulationPerTick` | `512` | 16-65536 | NPC upkeep per tick: one idle fall step or one rig animation step each (per region on Folia) |
 | `queuePerViewer` | `24` | 4-32 | Packet operations one player may have waiting to send. Cosmetic updates stop at three quarters of it |
 | `degradedIntervalTicks` | `4` | 1-40 | While a budget runs short, cosmetic updates and moves of distant NPCs happen on one update in this many. `1` turns the spreading off |
+
+A player sees an NPC by the rule the server uses for a real entity, so an NPC is seen where a Citizens NPC in the same spot would be. Only the horizontal distance counts: an NPC 40 blocks away on a floor 30 blocks above or in a cave below is in range. The range is the smaller of `viewDistance` and the player's view distance in chunks times 16, so a player with a 2-chunk view distance sees NPCs within 32 blocks. The NPC's chunk must also have reached the player.
 
 When more NPCs are in range than `maximumVisible`, each player sees the nearest ones. Animus ranks them again when the player has moved 2 blocks, at most every 4 updates of that player's view, and at once after a jump of 16 blocks or more, such as a teleport. It also ranks at once when a shown NPC leaves while others wait, and every 10 updates while NPCs are left out. An NPC whose chunk has not reached the player yet is counted, so when a crowd comes into view the places fill nearest first as the chunks arrive. A shown NPC, or one about to be shown, keeps its place until another one is 4 blocks nearer, so NPCs at the edge of the crowd do not swap in and out.
 
@@ -96,7 +98,7 @@ When `simulationPerTick`, the `[navigation]` route budget or the `[behaviors.tri
 | `planningJobs` | `32` | 1-256 | Path plans in progress at once |
 | `captureReadsPerTick` | `2048` | 256-65536 | Terrain reads those plans make per tick (per region on Folia) |
 
-There is no limit on how many NPCs follow routes. Routes take turns within these budgets, so more walking NPCs than the budget all move, only more slowly. A route with no player within `npcs.viewDistance` sleeps until one comes near. See [movement](/animus/05-movement-mounts-riding).
+There is no limit on how many NPCs follow routes. Routes take turns within these budgets, so more walking NPCs than the budget all move, only more slowly. A route with no player within `npcs.viewDistance`, measured horizontally at any height, sleeps until one comes near. See [movement](/animus/05-movement-mounts-riding).
 
 ## [recordings]
 
@@ -201,6 +203,12 @@ Changing a catalog limit reloads the catalog.
 | `proximityCandidates` | `32` | 1-1024 | NPCs checked around one player |
 | `proximityTrackedPerViewer` | `64` | 1-1024 | NPCs one player can be inside the radius of at once |
 | `playerCooldownTicks` | `20` | 0-72000 | Spacing of one player's runs of an interaction trigger that sets no `cooldownTicks`. `0` turns it off |
+| `entityIntervalTicks` | `5` | 1-200 | Ticks between two looks around one NPC with [sensed triggers](/animus/07-behaviors#sensed-triggers), while a player is near it |
+| `entityScansPerTick` | `16` | 1-256 | NPCs that look around in one tick |
+| `entityCandidates` | `32` | 1-256 | Nearest entities one look considers |
+| `maximumEntityRadius` | `16` | 1-32 | Largest sensed trigger radius accepted |
+| `entityTrackedPerNpc` | `64` | 1-1024 | Entities one NPC remembers as near or touching |
+| `projectilesFollowed` | `256` | 1-2048 | Real projectiles followed at once for `hit_by_projectile` |
 
 Timers, radii and bindings past these limits stay unbound and are listed by `/animus behaviors triggers`.
 
@@ -481,6 +489,27 @@ Animus fills its own `{player_name}` and `{{ }}` holes first, then PlaceholderAP
 A refresh sends only changed text, in place. A filled value is reused for the same player and text for 750 ms, so a refresh, a GUI redraw or a hologram redraw does not ask PlaceholderAPI again inside that window. Standalone holograms already redraw every `refresh.contentTicks` and pick up new values then. A player NPC whose name holds a placeholder shows the name on its text display rather than as the profile nameplate.
 
 PlaceholderAPI runs each expansion on the thread that asks. Animus asks on the thread that owns the player who sees the text: the main thread on Paper and Spigot, and the player's own region on Folia. On Folia, expansions that read that player (name, health, balance through Vault) are safe; expansions that read another region's blocks or entities are not, and are the expansion's own limit. Mod servers have no PlaceholderAPI, so `%` text reaches players as written there.
+
+## [seats]
+
+Players sitting on NPCs; see [sitting on an NPC](/animus/05-movement-mounts-riding#sitting-on-an-npc). Every key applies live; a lowered `maximum` lets players already sitting stay.
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `defaultEnabled` | `false` | | Whether an NPC without an `animus:seat` module takes seated players. An NPC with the module decides for itself |
+| `maximum` | `32` | 1-256 | Players sitting on NPCs at once across the server |
+| `followGSit` | `true` | | With GSit running, its player-sit permission, toggles, worlds, regions, empty hand, distance and stack size apply to seats too |
+
+## [skins]
+
+Clients draw a skin only when Mojang signed its texture. Skins taken from a player name come signed. A PNG uploaded in the web editor, `/animus npc skin url=` and `file=`, and **Skin address** in the Animus menu are signed through [MineSkin](https://mineskin.org): the server sends the PNG or its address and saves the signed texture MineSkin answers with. See [skins](/animus/04-npc-definitions#skins).
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `mineskinKey` | `""` | | A MineSkin API key from <https://account.mineskin.org>. Blank signs without a key, at MineSkin's anonymous limit of about 10 skins a minute; a key raises it. A key MineSkin refuses is reported with the refusal. The key is never written to the log |
+| `refreshMinutes` | `30` | 5-1440 | How often NPCs with `animus:skin refresh` look their player up again |
+
+The server needs internet access to reach MineSkin and Mojang. Signing runs one skin at a time and waits as long as MineSkin asks between requests.
 
 ## Example
 

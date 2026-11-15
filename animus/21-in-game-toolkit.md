@@ -196,6 +196,11 @@ Nothing is saved before the last step. The NPC and any new skin file are saved t
 | **My skin** | Saves your own signed skin, named after you, and puts it on the selected NPCs. Offline-mode servers have no signed skins, so it says so |
 | **Player name** | Asks for a Minecraft name, looks up that account's signed skin on Mojang's servers, saves it under the account's name and puts it on the selection. The lookup needs internet access from the server, not online mode, so it works on offline-mode servers too. A name that is not 1 to 16 letters, digits or `_`, an unknown name or no answer from Mojang is reported in chat and nothing is written |
 | **Default** | Takes the skin off, back to the plain player look |
+| **Skin address** | Asks for the address of a 64x64 skin PNG, has the server sign it through [MineSkin](/animus/04-npc-definitions#skins), saves it under the file's name and puts it on the selection. MineSkin's refusal, such as a PNG it cannot read, is reported in chat and nothing is written |
+| **Follow player** | With NPCs selected: on, an NPC whose skin came from a player name wears that player's new skin when they change it. The server checks soon after you turn it on and then every `[skins] refreshMinutes` |
+| **Skin from name** | With NPCs selected: on, an NPC with no skin wears the skin of the Minecraft account named like it |
+
+An unsigned skin, such as a PNG uploaded in a web editor that was not paired, says **Unsigned: players see the default skin** in its entry until the server signs it.
 
 A skin file is named by the SHA-256 of its text, so a new name makes a new file. Animus writes it, moves every NPC and trait group that wore the old file to it (an NPC's `skin`, a trait group's `values.skin` and `values.skins`) and deletes the old file, all as one change with **[Undo]**. A named skin file looks like this:
 
@@ -251,7 +256,7 @@ An NPC moves by a route or by a recording:
 | **Start** | Starts the NPC's own route or recording now |
 | **Stop now** | Stops the NPC where it is. Nothing is saved |
 | **Movement settings** | The NPC's `movement` fields: speed, doors, water, falls and getting stuck. See [movement settings](/animus/05-movement-mounts-riding#movement-settings) |
-| **Mounts and riding** | Opens [mounts and riding](#mounts-and-riding) |
+| **Mounts and riding** | Opens [mounts and riding](#mounts-and-riding): NPC and mob mounts, riding and seats |
 
 ### Routes
 
@@ -334,13 +339,15 @@ While you record, **New recording** reads **Stop and save**, and **Discard** end
 
 ### Mounts and riding
 
-**Mounts and riding** (Advanced) acts on the first selected NPC. Its top item shows what it rides, what rides it, and any problem with the pair, such as a vehicle that does not exist.
+**Mounts and riding** (Advanced) acts on the first selected NPC. Its top item shows what it rides, another NPC or a real mob, what rides it, and any problem with the pair, such as a vehicle that does not exist.
 
 | Button | Does |
 |---|---|
 | **Ride another NPC** | The window closes; the next NPC you click with the wand becomes the vehicle. Writes `modules["animus:mount"]` |
 | **Carry another NPC** | The next NPC you click rides this one |
 | **Pick a rider** | Click the rider, then the NPC it rides. Works with nothing selected |
+| **Ride a mob** | Pick a kind, such as Horse, Camel, Pig, Oak boat or Minecart: the NPC rides the nearest one within 8 blocks. Writes `modules["animus:mount"]` with `entity`; see [riding real entities](/animus/05-movement-mounts-riding#riding-real-entities) |
+| **Seat** | How players sit on the selected NPCs: **Enabled**, **Click** (`right` or `sneak-right`), **Permission** (`animus.seat` by default), **Stack** (1 to 8 players) and **Empty hand**. Changes wait for **Save**; see [sitting on an NPC](/animus/05-movement-mounts-riding#sitting-on-an-npc) |
 | **Riding** | How players ride the selected NPCs: **Enabled**, **Permission** (`animus.ride` by default), **Speed** (0.5 to 8 blocks a second), **Leash** (4 to 256 blocks) and **Lifetime** (30 to 3600 seconds). Changes wait for **Save**, as on a [combat section](#profile-sections) |
 | **Ride status** | Closes the window and runs `/animus ride status` |
 | **Dismount** | Asks once more, then the NPC stops riding |
@@ -450,7 +457,7 @@ Choices such as Window style move to the next value on a click and to the previo
 | **Guard me** | Saves you as the player each NPC guards. Click again, when they all guard you, to stop. Taking NPCs off another player or NPC they guard asks once more and says how many. To guard an NPC instead, use the Guard section |
 | **Mobs can attack it** | Turns `targetableByMobs` on or off |
 
-Advanced adds three rows:
+Advanced adds **Switch weapons** beside them, which turns `weapons.autoswitch` on or off, and three rows:
 
 - **Rules**: **Targets**, **Ignores** and **Avoids** open the [rule list](#rule-lists) of that name.
 - **Live**: **Status**, **Engage**, **Disengage**, **Release** (back to its own rules), **Guard me now** and **Server status** run `/animus combat` for each selected NPC. They change nothing on disk, and the reply comes as chat. **Guard me now** makes the NPCs guard you until they are released; a right-click stops them guarding.
@@ -485,7 +492,7 @@ Targets, Ignores and Avoids each show the kinds of rule the list can hold.
 | Players, NPCs, Mobs, Monsters, Animals | Turn on or off | Turn on or off | Turn on or off |
 | Owner | Turn on or off | Turn on or off | Turn on or off |
 | Health above, Health below | Turn on at 50%, then add 5% | Take 5% off | Type a percent; nothing turns it off |
-| Mob types, Players by name, Mobs by custom name, Squads, Permissions, Permission groups, Effects, Chat words, and the name patterns | Type an entry | List the entries; click one to remove it | Type an entry |
+| Mob types, Players by name, Mobs by custom name, Squads, Permissions, Permission groups, Teams, Effects, Chat words, and the name patterns | Type an entry | List the entries; click one to remove it | Type an entry |
 | NPCs by id | Type an id | List the entries, with **Pick an NPC** to click one with the wand | Type an id |
 | Main-hand item, Off-hand item, Worn item | Type an item id pattern | List the entries, with **Add held item** | Type a pattern |
 

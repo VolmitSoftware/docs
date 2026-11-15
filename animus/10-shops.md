@@ -54,7 +54,7 @@ The module can also set `style` (`native` or `chest`), which replaces the shop's
 "modules": {"animus:shop": {"shop": "town:baker", "style": "native", "villager": {"profession": "minecraft:farmer", "level": 2}}}
 ```
 
-`profession` defaults to `minecraft:none` and `level` (1 to 5) to 1. Other types ignore `villager`. A villager body cannot be shown (see the [bodies that can be shown](/animus/04-npc-definitions#definition-file)), so the field is kept mainly for NPCs imported from Shopkeepers. Because the module is an ordinary definition field, a [trait group](/animus/18-trait-groups) can set `style` and `villager` for every NPC that lists it.
+`profession` defaults to `minecraft:none` and `level` (1 to 5) to 1. Other types ignore `villager`. The field sets the trading screen only: the villager body's own look comes from its [body settings](/animus/04-npc-definitions#body-settings), so set the profession there too when the NPC should wear it. Because the module is an ordinary definition field, a [trait group](/animus/18-trait-groups) can set `style` and `villager` for every NPC that lists it.
 
 ## Stocking a shop in game
 

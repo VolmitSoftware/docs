@@ -49,7 +49,7 @@ Each location:
 | `weather` | `any` (default), `clear`, `storm` | Only in this weather. `storm` counts rain and thunder |
 | `staySeconds` | Seconds, or `[min, max]` | How long it stays before it draws again among the locations with the same `time` |
 | `wander` | `{"radius": 1-32}` or `{"area": [x1, y1, z1, x2, y2, z2]}`, with optional `waitSeconds` | Walks to random blocks around the place: within `radius` on x and z at the place's height, or anywhere in the area. `waitSeconds` (seconds or `[min, max]`, default 1) is the pause between wander legs |
-| `pose` | `standing`, `sneaking`, `sleeping`, `sitting` | Pose on arrival, player bodies only |
+| `pose` | `standing`, `sneaking`, `sleeping`, `sitting` | Pose on arrival. Player bodies take every one; other living bodies take `sitting` |
 | `equipment` | Slot to [item](/animus/04-npc-definitions#appearance-text-and-inventory) | Items put on at arrival. Only the slots the body shows, as for the NPC's own `equipment` |
 | `clearEquipment` | Boolean | Empties every other slot on arrival |
 | `skin` | A skin file hash from `skins/` | Skin shown on a player body |
@@ -70,7 +70,7 @@ Nothing is saved between restarts: after a restart, or when its chunk loads agai
 
 ## Arriving
 
-On arrival the NPC turns to `yaw` and `pitch`, puts on `equipment` (after emptying the other slots with `clearEquipment`), shows `skin`, takes `pose` and runs `commands`. Equipment, skin and pose last until the NPC's definition is applied again, as with the [appearance actions](/animus/07-behaviors#actions). The pose lasts while the NPC stays: before it moves again it stands up in its own pose. A sitting NPC cannot also ride another NPC.
+On arrival the NPC turns to `yaw` and `pitch`, puts on `equipment` (after emptying the other slots with `clearEquipment`), shows `skin`, takes `pose` and runs `commands`. Equipment, skin and pose last until the NPC's definition is applied again, as with the [appearance actions](/animus/07-behaviors#actions). The pose lasts while the NPC stays: before it moves again it stands up in its own pose.
 
 A location with `wander` starts wandering after its first `waitSeconds` and keeps wandering until the time changes. Wandering stands the NPC up, so give a sleeping place no `wander`.
 
@@ -116,7 +116,7 @@ The NPC's **Modules** section adds a schedule from **Add a known module**: it st
 | Items and clear items | `equipment` and `clearEquipment`. An item in a slot the body does not show is left out and reported |
 | Skin with its texture | A file in `skins/` and `skin`. Without "apply on arrival" it becomes `skinOnDeparture` |
 | Arrival commands | `commands` |
-| Animations add-on sleep and sit | `pose: sleeping` and `pose: sitting` |
+| Animations add-on sleep and sit | `pose: sleeping` on a player body and `pose: sitting` on any living body |
 | Opens gates and wooden doors | `movement.openDoors` |
 | Teleport when no path is found | `movement.stuck.teleport` |
 | The older `x:y:z:time` location list | Locations in the NPC's world |

@@ -292,6 +292,15 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `build_finished` | None. | A build this NPC leads or helps with places its last block. See [building](/animus/09-building). |
 | `build_paused` | None. | A build this NPC works on is paused by command, or starts waiting for unloaded terrain, materials or an active builder. |
 | `animation_finished` | Optional `animation`: an animation id such as `town:golem/wave`. | A clip started by `animus:play-animation` reaches its end: a `once` clip stops and a `hold` clip starts holding its last frame. Looping clips and the rig's own idle and walk clips never fire it. |
+| `entity_proximity` | `phase`: `enter` or `leave`. `radius`: above 0, at most `maximumEntityRadius` (16). The [entity filters](#sensed-triggers). | A real entity, players included, comes within the radius, or leaves it by half a block more. See [sensed triggers](#sensed-triggers). |
+| `entity_collide` | Optional `contact`: `top`, `side` or `any` (default). The entity filters. | A real entity starts to touch the NPC's hitbox; `top` when it stands on it. |
+| `hit_by_projectile` | Optional `projectile`: a projectile type such as `arrow`. The entity filters, which test the shooter. | A real projectile flies into the NPC's hitbox. |
+| `item_dropped` | `radius`. Optional `item`, `thrown` (`true`: only items thrown into the hitbox). The entity filters, which test the thrower. | A player or mob drops an item within the radius or throws it into the hitbox. Each item fires once. |
+| `vehicle_bump` | The entity filters, which test the vehicle. | A moving minecart or boat runs into the NPC's hitbox. |
+| `leash_tie` | The entity filters, which test the mob. | A player leading mobs on a lead right-clicks the NPC, once for each mob within 10 blocks. |
+| `leash_pass` | `radius`. The entity filters, which test the mob. | A mob on a lead is led within the radius. |
+| `npc_proximity` | `phase`, `radius`. Optional `npc`: another NPC's id such as `guard*`, and `entityCooldownTicks`. | Another NPC comes within the radius or leaves it. |
+| `npc_speech` | `radius`. Optional `npc`, `pattern` (matched against the whole text, ignoring case, where `*` matches any text) and `entityCooldownTicks`. | Another NPC within the radius speaks with `animus:say`. |
 | `player_join` | Optional `first`: `true` fires only on a player's first join, `false` only for returning players. | A player joins. Server behaviors only. |
 | `player_quit` | None. | A player leaves. Server behaviors only. |
 | `player_chat` | Optional `pattern` (up to 256 characters): matched against the whole message, ignoring case, where `*` matches any text. | A player sends a chat message. Server behaviors only. |
@@ -311,10 +320,10 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `player_block_place` | Optional `block`, `cancel`. | A player places or breaks a block. Server behaviors only. |
 | `player_block_break` | Optional `block`, `cancel`. | A player places or breaks a block. Server behaviors only. |
 | `player_damaged` | Optional `cause` (a damage type such as `fall`), `damager` (an entity type), `cancel`. | A player takes damage. Server behaviors only. |
-| `player_damage_entity` | Optional `entity`, `cancel`. | A player hits a living entity. NPCs are not entities: a hit on an NPC is its `interaction` with `action: attack`. Server behaviors only. |
+| `player_damage_entity` | Optional `entity`, `cancel`. | A player hits a living entity. NPCs are not entities: a hit on an NPC is its `interaction` with `action: attack`, and its `damage` when combat lets it hurt. Server behaviors only. |
 | `player_kill` | Optional `entity`. | A player kills a living entity. Server behaviors only. |
 | `projectile_launch` | Optional `projectile`, `shooter`, `cancel`. | A projectile such as an arrow, snowball, ender pearl or trident is launched, by a player, a mob, a dispenser or a command. Server behaviors only. |
-| `projectile_hit` | Optional `projectile`, `shooter`, `entity`, `block`, `cancel`. | A projectile hits an entity or a block. NPCs are not entities, so a projectile striking an NPC body does not fire it. Server behaviors only. |
+| `projectile_hit` | Optional `projectile`, `shooter`, `entity`, `block`, `cancel`. | A projectile hits an entity or a block. NPCs are not entities, so a projectile striking an NPC body does not fire it; the NPC's own `hit_by_projectile` does. Server behaviors only. |
 | `entity_shoot_bow` | Optional `shooter`, `bow`, `projectile`, `cancel`. | A player or mob shoots a bow or crossbow. Server behaviors only. |
 | `quest_started` | Optional `quest`. | A player starts an Animus [quest](/animus/38-quests). Server behaviors only. |
 | `quest_stage` | Optional `quest`. | A player's quest moves on to a later stage. Server behaviors only. |
@@ -346,9 +355,9 @@ Clicks and key presses must reach the NPC: the server measures the player's view
 
 Runs and `consume` conditions read `context.action` (`interact`, `attack`, `drop` or `swap_hands`), `context.sneaking` and `context.hand` (`main_hand` or `off_hand`; always `main_hand` for a key press). `sneaking` comes from the click itself for a right-click and from the player's sneaking state for the other inputs.
 
-Interaction, proximity and dialogue runs carry the viewer's UUID, damage and death runs the attacking player's when a player dealt the hit, and module runs carry the UUID the module supplied. The other events carry no player. Triggers pass no other event data to the routine. Trigger-started runs use the same variables as manual runs, and `player` and `relationship` variables resolve from the triggering player. Every routine a behavior's triggers start shares that behavior's variables.
+Interaction, proximity and dialogue runs carry the viewer's UUID, damage and death runs the attacking player's when a player dealt the hit, sensed runs the [player involved](#sensed-triggers) when there is one, and module runs carry the UUID the module supplied. The other events carry no player. Besides `context`, triggers pass no event data to the routine. Trigger-started runs use the same variables as manual runs, and `player` and `relationship` variables resolve from the triggering player. Every routine a behavior's triggers start shares that behavior's variables.
 
-A trigger with no player cannot start a behavior that declares a `player` or `relationship` variable. That start is counted under `START_FAILED`, and `/animus behaviors triggers` shows the most recent refusal with its field. Spawn, despawn, waypoint and timer triggers never have a player, and damage and death triggers have one only when a player dealt the hit, so `/animus behaviors validate` warns with `behavior-trigger-needs-player` on each such trigger in that behavior. The behavior is still accepted, since its other triggers may work. A `module` trigger depends on what its module supplies and is not flagged.
+A trigger with no player cannot start a behavior that declares a `player` or `relationship` variable. That start is counted under `START_FAILED`, and `/animus behaviors triggers` shows the most recent refusal with its field. Spawn, despawn, waypoint, timer, `npc_proximity` and `npc_speech` triggers never have a player, damage and death triggers have one only when a player dealt the hit, and the other sensed triggers only when a player is involved (always for `leash_tie`, `"players": true` or a `permission`), so `/animus behaviors validate` warns with `behavior-trigger-needs-player` on each such trigger in that behavior. The behavior is still accepted, since its other triggers may work. A `module` trigger depends on what its module supplies and is not flagged.
 
 Only active NPCs fire triggers. Despawned NPCs fire nothing, and previews never fire triggers. Editing an active NPC's definition is neither a despawn nor a spawn. A player disconnecting fires no `leave`. Deleting an NPC fires no `despawn`, because no definition remains to run against. Stopping the server fires nothing.
 
@@ -357,6 +366,60 @@ Replacing the behavior, editing or despawning the NPC, or making the behavior un
 Timers, cooldowns and queue lifetimes count behavior ticks, about 50 ms each with the default `tickMillis`. `cooldownTicks` and `defaultCooldownTicks` apply per trigger on each NPC, not per player: a second player entering a `proximity` radius during the cooldown does not fire it, unless the trigger sets `playerCooldownTicks`. Interaction triggers use a [player cooldown](#interaction-actions) instead.
 
 On Folia, triggers run on the region that owns each NPC, damage and death triggers included. Where the NPC runtime is unavailable, or when `behaviors.triggers.enabled` is false, `/animus behaviors triggers` shows `off`, with the reason on the hover and in the console, nothing runs, and module publishes return `UNAVAILABLE` with the same reason. Manual runs still work there.
+
+### Sensed triggers
+
+An NPC body is packets, not an entity, so the server never reports what real entities do to it. Animus looks for itself, and only for NPCs that list a behavior with one of these triggers:
+
+```json
+"triggers": [
+  {"id": "sheep", "event": "entity_proximity", "phase": "enter", "radius": 6, "entity": "sheep", "routine": "count"},
+  {"id": "shot", "event": "hit_by_projectile", "projectile": "arrow,trident", "players": true, "routine": "ouch"},
+  {"id": "gift", "event": "item_dropped", "radius": 3, "item": "emerald", "routine": "thanks"},
+  {"id": "cart", "event": "vehicle_bump", "entity": "*minecart", "routine": "watch-it"}
+]
+```
+
+Every sensed trigger except `npc_proximity` and `npc_speech` takes these filters. Each tests the event's entity: the one that came near or touched the NPC, the shooter of a projectile, the thrower of an item, the vehicle, or the mob on the lead. A trigger with no filters fires for every entity.
+
+| Field | Fires only when |
+| --- | --- |
+| `entity` | The entity's type matches, such as `minecraft:sheep`, `sheep` or `*_minecart`. Commas separate up to eight alternatives: `zombie,skeleton`. |
+| `named` | Its custom name, or a player's name, matches, ignoring case; `*` matches any text. |
+| `tag` | It carries this scoreboard tag, as `/tag` adds. |
+| `players` | `true`: a player is involved, as the entity itself, the shooter, the thrower, the rider or the lead holder. `false`: none is. |
+| `permission` | That player holds the node, so the trigger fires only for players. |
+| `entityCooldownTicks` | At least this many ticks passed since this entity last fired the trigger. |
+
+The player involved is the run's player, so `{player}`, player flags and `animus:message` reach them. Without `cooldownTicks`, each entity has its own cooldown of `defaultCooldownTicks` (20 ticks), so a sheep wandering in and out of the radius fires once a second at most and never holds back another sheep; `entityCooldownTicks` replaces it and `0` turns it off. With `cooldownTicks`, the trigger cools down for everyone at once, unless it also sets `entityCooldownTicks`. Other NPCs count as entities of their own for `npc_proximity` and `npc_speech` cooldowns.
+
+Runs read these `context` keys. `entity` is a UUID that vanilla selectors accept, so a template such as `"effect give {{ context.entity }} minecraft:glowing 5"` reaches the entity.
+
+| Event | `context` |
+| --- | --- |
+| Every sensed event but the two NPC ones | `entity` (empty when there is none, such as a dispenser's arrow), `entity_type`, `entity_name`, and `x`, `y`, `z` where it happened. |
+| `entity_proximity` | `phase` (`enter` or `leave`). |
+| `entity_collide` | `contact` (`top` or `side`). |
+| `hit_by_projectile` | `projectile` (its type), `projectile_uuid`, and `stopped`: `true` when the projectile struck the body and stopped there. |
+| `item_dropped` | `item` (its key), `amount`, `item_entity` (the item's UUID) and `thrown`. |
+| `vehicle_bump` | `speed` in blocks a tick, and `rider`, the UUID of who rides it or empty. |
+| `leash_tie`, `leash_pass` | `holder` and `holder_type`, who holds the lead. |
+| `npc_proximity` | `npc` (the other NPC's id), `npc_uuid` and `phase`. |
+| `npc_speech` | `npc`, `npc_uuid` and `text`, what it said without colours. |
+
+How Animus looks:
+
+- Every `entityIntervalTicks` (5 ticks) an NPC with sensed triggers looks around for entities within its largest radius, on the thread that owns it. At most `entityScansPerTick` NPCs look in one tick, each at its `entityCandidates` nearest entities. An NPC with no player within view distance, measured over x and z as players are shown NPCs, sleeps and looks at nothing, so NPCs nobody is near cost nothing.
+- Mobs, players other than spectators, dropped items, minecarts, boats, falling blocks and lit TNT count. Items count only for `item_dropped`. The decoys of NPCs that [mobs attack](/animus/08-combat#mobs-that-attack-npcs) never count, nor take one of the `entityCandidates`. The NPC's own [mount](/animus/05-movement-mounts-riding#mounted-npcs) and the players riding or sitting on it count for `entity_proximity` only: they never collide with it, bump it or pass it on a lead.
+- NPC bodies have no collision, so an entity walks into the body. `entity_collide` fires when a touch begins, as `top` when the entity's feet are within a quarter block of the hitbox's top, and again only after the entity is 0.3 blocks clear. An entity that passed through the body between two looks still counts, from its speed.
+- `item_dropped` counts an item a player or mob threw, when it is first seen within the radius or flying into the hitbox, while it is fresh: dropped within the last two looks and a second. Items nobody threw never fire: loot, block drops, dispenser shots and the item `/give` shows for a moment. Neither do items already lying there when the NPC wakes, and each item fires once. To take the item, run `kill {{ context.item_entity }}` with [`animus:command`](#commands).
+- `vehicle_bump` needs the vehicle moving at least 0.05 blocks a tick across the ground. The vehicle is not slowed.
+- `leash_tie` fires on a right-click that passes the usual [click checks](#interaction-actions), once for each mob within 10 blocks that the player leads. An NPC cannot hold a lead, so the lead stays with the player; the behavior decides what happens to the mob. `leash_pass` ignores mobs tied to a fence.
+- `npc_proximity` reads where other NPCs stand. `npc_speech` hears every `animus:say` of another NPC, chat or bubble, but never a preview's, and an NPC never hears itself.
+
+Projectiles are followed, not looked for. A projectile launched within 64 blocks of an NPC with a `hit_by_projectile` trigger is followed on the thread that owns it for up to a minute, at most `projectilesFollowed` at once, and each move is tested against NPC hitboxes. It fires the trigger once per NPC it crosses. Whether it stops there follows [combat](/animus/08-combat#projectiles-and-the-environment)'s own rule: when combat counts the projectile and the NPC is killable, alive, and its `sources` include `projectiles`, the projectile strikes the body with combat's damage, knockback and effects and stops there (a Piercing arrow passes one such body per level), and `context.stopped` is `true`. The trigger fires as the strike lands, so a shot that kills the NPC fires it too, and so does a projectile that strikes the decoy of an NPC mobs attack. Every other projectile flies on through the body as if it were not there, and `context.stopped` is `false`.
+
+Paper, Spigot and Folia sense. On Folia each NPC looks on its region and reads only the chunks that region owns, and a projectile is followed on its own region. Fabric, Forge and NeoForge do not sense yet: these triggers are accepted there but never fire. Other plugins hear the same facts as [Bukkit events](/animus/99-java-modules-api#bukkit-plugins).
 
 ### Trigger settings
 
@@ -386,9 +449,15 @@ proximityViewersPerTick = 16
 proximityCandidates = 32
 proximityTrackedPerViewer = 64
 playerCooldownTicks = 20
+entityIntervalTicks = 5
+entityScansPerTick = 16
+entityCandidates = 32
+maximumEntityRadius = 16
+entityTrackedPerNpc = 64
+projectilesFollowed = 256
 ```
 
-`defaultCooldownTicks` applies to every trigger without `cooldownTicks` except timers and interaction triggers, which use `playerCooldownTicks` per player; `0` turns either off. An event that finds its cooldown running is suppressed. An event that finds a full queue is dropped. A start waiting on a concurrency limit stays queued until `queueLifetimeTicks`, then is dropped. All of these are counted. A timer below `minimumTimerTicks`, a radius above `maximumProximityRadius`, and bindings or timers beyond their maximums stay unbound and are listed as diagnostics. When `concurrentTotal` is below `behaviors.engine.executions`, the difference stays free for manual runs.
+`defaultCooldownTicks` applies to every trigger without `cooldownTicks` except timers and interaction triggers, which use `playerCooldownTicks` per player; `0` turns either off. Sensed triggers use it for each entity. The `entity` settings bound [sensed triggers](#sensed-triggers): how often an NPC looks (1-200 ticks), how many NPCs look in one tick (1-256; on Folia in one tick of the global region), the nearest entities one look considers (1-256), the largest radius (1-32), the entities one NPC remembers as near or touching (1-1,024), and the projectiles followed at once (1-2,048). A radius above `maximumEntityRadius` stays unbound with `trigger-entity-budget`. An event that finds its cooldown running is suppressed. An event that finds a full queue is dropped. A start waiting on a concurrency limit stays queued until `queueLifetimeTicks`, then is dropped. All of these are counted. A timer below `minimumTimerTicks`, a radius above `maximumProximityRadius`, and bindings or timers beyond their maximums stay unbound and are listed as diagnostics. When `concurrentTotal` is below `behaviors.engine.executions`, the difference stays free for manual runs.
 
 A valid click on [`animus:choices`](#dialogue-choices) publishes the dialogue event. `dialogue` matches the prompt's `id` and `choice` matches the option's `id`.
 
@@ -448,7 +517,7 @@ The `player_area`, inventory, item, block, combat and projectile events report w
 | `quest_started`, `quest_stage`, `quest_completed` | `quest`, the quest id; `stage`, the quest's stage value afterwards (1 when started, the stage count plus one when completed); `title`, the quest title without colours. |
 | `entity_shoot_bow` | `shooter` and `shooter_uuid`; `bow`, the weapon's item key; `projectile` and `projectile_uuid`; `force`, how far a player drew a bow from 0 to 1, and 1 for crossbows and mobs; `hand` (`main_hand` or `off_hand`); `world`, `x`, `y`, `z` and `location` of the shooter. A multishot crossbow reports each projectile. |
 
-The `inventory`, `click`, `item`, `block`, `cause`, `damager`, `entity`, `projectile`, `shooter`, `bow` and `quest` fields filter on these values. A filter ignores case, `*` matches any text, and a filter without a namespace matches the name after it: `*_log` matches `minecraft:oak_log`. `*` also matches an empty value, while `*:*` matches any key, so `"entity": "*:*"` fires only for hits on an entity. Events that no enabled trigger's filters match are dropped where they happen and take no queue slot, so frequent events such as block clicks and damage cost one comparison per trigger.
+The `inventory`, `click`, `item`, `block`, `cause`, `damager`, `entity`, `projectile`, `shooter`, `bow` and `quest` fields filter on these values. A filter ignores case, `*` matches any text, and a filter without a namespace matches the name after it: `*_log` matches `minecraft:oak_log`. Commas separate up to eight alternatives: `"block": "oak_log,birch_log"`. `*` also matches an empty value, while `*:*` matches any key, so `"entity": "*:*"` fires only for hits on an entity. Events that no enabled trigger's filters match are dropped where they happen and take no queue slot, so frequent events such as block clicks and damage cost one comparison per trigger.
 
 `cancel` is an expression checked on the event's own thread as it happens, over flags, facts and `context`, with no variables. When it holds for a trigger that matches, the event is cancelled: the inventory stays closed, the click is undone, the item stays put, the block stays or is not placed, the damage does not happen, the projectile is not launched or passes as if nothing was hit, or the bow does not shoot. The trigger's run starts either way. A failing expression does not cancel. Closing an inventory, a kill and area events cannot be cancelled.
 
@@ -556,7 +625,7 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:title` | At least one of `title` and `subtitle` (each up to 256 characters), optional `fadeIn`, `stay`, `fadeOut` (0-72,000 ticks; defaults 10, 70 and 20), `player` | Shows a title to the player. |
 | `animus:actionbar` | `text` (up to 256 characters), optional `player` | Shows the text above the player's hotbar. |
 | `animus:choices` | `id`, `prompt`, `options` (1-8 of `id` and `text`, each with optional `color`, `hover`, `style`), optional `lifetimeSeconds` (1-600) | Shows the prompt and a row of colored answer buttons to the triggering player. Completes when shown and does not wait for the answer. |
-| `animus:command` | `command` (no leading slash), optional `as`: `console` (default) or `player`, optional `player` | Runs the command. Each `{player}` becomes the triggering player's UUID, which vanilla selectors accept, such as `clear {player} minecraft:emerald 1`. Each `{player_name}` becomes their current name. Requires the [allow-list](#commands). |
+| `animus:command` | `command` (no leading slash), optional `as`: `console` (default) or `player`, optional `player`; with `"as": "player"` also optional `permissions` (1-16 permission nodes) and `permissionTicks` (0-72,000, default 0) | Runs the command. Each `{player}` becomes the triggering player's UUID, which vanilla selectors accept, such as `clear {player} minecraft:emerald 1`. Each `{player_name}` becomes their current name. PlaceholderAPI placeholders are filled for the command's player; see [text in commands](#text-in-commands). `permissions` are lent to the player while the command runs; see [permissions for a command](#permissions-for-a-command). Requires the [allow-list](#commands). |
 | `animus:navigate` | Either `x`, `y`, `z` or an `anchor` of the NPC's own world, with optional `mode` (`walk`, `swim`, `fly`) and `speed` (1-5), or `route`. Optional `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). | Starts a route or follows `routes/<route>.json`. Completes when requested unless `wait` is true; see [walking a patrol](#walking-a-route). The [movement](/animus/05-movement-mounts-riding) limits apply. |
 | `animus:stop-navigation` | None | Stops any route, including a playing recording. Reports `stopped`. |
 | `animus:play-recording` | `recording` (an id under `recordings/`), optional `playback` (`once`, `loop` or `pingpong`; unset uses the recording's own, else `loop`), `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). `wait` needs a `once` playback. | Plays a [performance recording](/animus/19-performance-recordings) on the NPC. Completes when started unless `wait` is true, then at the last frame, with the same failures as [walking a patrol](#walking-a-route). Unavailable when `[recordings]` is disabled. |
@@ -731,6 +800,18 @@ To pass free text through, list the behavior's exact ID in `rawTextBehaviors`. E
 
 > A raw text grant trusts everything the behavior reads: trigger context such as `context.message`, the NPC's fields, and the flags and quest stages it shares with every other behavior in its namespace. Keep raw text behaviors in a namespace of their own. The web editor changes any behavior in that namespace only with [`apply:commands`](/animus/14-web-editor#console-commands).
 {.is-warning}
+
+With PlaceholderAPI installed on Paper, Spigot or Folia, the `%placeholders%` you write in a command are filled for one player: the player who runs it with `"as": "player"`, otherwise the player named by `player`, otherwise the triggering player. A command with no player has nothing filled. Each placeholder is filled on its own, and each value must pass the rule a `{{ }}` hole passes, so `eco give {player_name} %vault_eco_balance%` runs with `12.50` and fails with `arguments-invalid` on a value such as `[VIP] Alex`. On a behavior in `rawTextBehaviors`, only new lines and control characters are refused. A placeholder PlaceholderAPI does not know stays as written. On Folia the values of a player another region owns are filled on that region; a value refused there is logged and the command does not run.
+
+#### Permissions for a command
+
+A player command can hold permission nodes while it runs, the way Citizens' temporary permissions work:
+
+```json
+{"type": "action", "capability": "animus:command", "arguments": {"command": "warp docks", "as": "player", "permissions": ["essentials.warp", "essentials.warps.docks"], "permissionTicks": 100}}
+```
+
+The nodes are added to the player just before the command runs and taken back right after it, or `permissionTicks` later, at most 72,000 ticks (one hour). They also go when the player leaves or the server stops. `permissions` and `permissionTicks` need `"as": "player"`, since a console command needs no permission. Only Paper, Spigot and Folia can lend permissions; on mod servers the action fails with `permissions-unsupported`.
 
 ### Limits and previews
 

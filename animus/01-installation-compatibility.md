@@ -104,10 +104,13 @@ Paper and Spigot run every feature. Folia and mod servers run the same NPC runti
 |---|---|---|---|
 | NPCs, behaviors, triggers, navigation | Yes | Yes, each NPC on the region that owns its chunk | Yes |
 | Riding, mounted NPCs, combat module, hiring | Yes | Yes | Yes |
+| NPCs on real entities (`animus:mount` with `entity`) | Yes | Yes, in the vehicle's world only | No; the NPC stands and reports why |
+| Seats (`animus:seat`) | Yes, with GSit's player-sit settings when GSit runs | Yes, as Paper; a click counts only when the player's region also owns the NPC | Yes, one player per NPC, no stacking |
 | Building (`/animus build`) | Yes | Yes, each build turn on the region that owns where it works | Yes, with no protection checks |
 | Mob control (`/animus combat mob`) | Yes | Yes, the mob on its own region | No |
 | Manual hit (`/animus combat attack`) | Yes | Yes, answered in the server log | Yes |
-| `targetableByMobs` drawing real mobs | Yes | No effect | No effect |
+| `targetableByMobs` drawing real mobs | Yes, every mob that would fight a player there | Yes, mobs in chunks the NPC's region holds | No effect |
+| Explosions hurting NPCs | Yes | Yes, on the explosion's region | No |
 | Combat and build protection | WorldGuard when installed | Same as Paper, asked on the region that owns the target | None |
 | Money prices | Vault | Vault, called on the player's region | Only through a Java module economy hook; use item prices otherwise |
 | [Bukkit events](/animus/99-java-modules-api#bukkit-plugins) (`VirtualNpcInteractionEvent` and others) and the `AnimusNpcs` service | Yes | Yes, on the owning region | Not fired |
@@ -127,7 +130,7 @@ Paper and Spigot share one runtime, and so do Fabric, NeoForge and Forge. Folia 
 | Holograms | Yes; PlaceholderAPI placeholders are filled for each player when PlaceholderAPI is installed | Yes, as Paper | Yes, as Paper | Yes; `%` placeholders are not filled |
 | Non-player bodies | Yes | Yes | Yes | Yes; a body type the server does not register is not shown |
 | Mounted NPCs | Yes | Yes | Yes; the region that owns the root vehicle owns every NPC stacked on it, and a passenger waits until its vehicle is active | Yes |
-| Poses | Partial: sneaking, sleeping, swimming and sitting show on player bodies only, other bodies stand; named poses (`animus:pose`) turn every body | Partial, as Paper | Partial, as Paper | Partial, as Paper |
+| Poses | Partial: sneaking, sleeping, swimming, crawling, bellyflop and spinning show on player bodies only, sitting on every living body, other bodies stand; named poses (`animus:pose`) turn every body | Partial, as Paper | Partial, as Paper | Partial, as Paper |
 | Text (`animus:say` with click and proximity triggers) | Yes | Yes | Yes; a click counts only when the player's region also owns the NPC | Yes |
 | Riding (`animus:riding`) | Yes; at most 8 riders on the server | Yes, as Paper | Partial: a right-click mounts only when the player's region owns the NPC, and the ride ends when the region does not hold the rider for 2 seconds or the NPC steers into terrain the region does not hold | Yes, as Paper |
 
