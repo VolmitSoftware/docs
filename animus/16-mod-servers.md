@@ -2,7 +2,7 @@
 title: "Animus: Mod Servers"
 description: "Running Animus on Fabric, NeoForge and Forge servers, and what differs from Bukkit"
 published: true
-date: 2026-11-12T00:00:00.000Z
+date: 2026-11-15T00:00:00.000Z
 tags: "animus, fabric, neoforge, forge, mods, compatibility"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -33,7 +33,7 @@ The mod data folder is `config/animus/` in the server folder, the folder that ho
 
 ## Worlds
 
-A world is named by its dimension: `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or a modded dimension such as `example:mining`. Definitions written on Bukkit keep working: the level name from `server.properties` (usually `world`) means the overworld, and `world_nether` and `world_the_end` mean the other two vanilla dimensions. A bare vanilla name such as `the_nether` also works. A Bukkit world UUID cannot be resolved; change the definition to use one of these names.
+A world is named by its dimension: `minecraft:overworld`, `minecraft:the_nether`, `minecraft:the_end`, or a modded dimension such as `example:mining`. Definitions written on Bukkit keep working: the level name from `server.properties` (usually `world`) means the overworld, and `world_nether` and `world_the_end` mean the other two vanilla dimensions. A bare vanilla name such as `the_nether` also works. A Bukkit world UUID cannot be resolved; change the definition to use one of these names. The web editor knows every one of these names, so its preview shows the terrain whichever name a definition uses.
 
 The `world` facts of behavior expressions and the `viewer.world` placeholder give the dimension key. Bukkit gives the world name instead, so a behavior meant for both platforms compares worlds with `same_world`, and a GUI that shows or tests a world on both reads `viewer.world_key`.
 
@@ -68,10 +68,15 @@ A permission mod can grant any node through the vanilla permission named by the 
 | Combat `permissions` and `groups` rules | Read through the permission mapping above. A permission group is the permission `group.<name>`, so it needs a permission mod that grants it |
 | Build protection | No protection adapter: every block a [build](/animus/09-building) changes is allowed; `/animus build` shows `protection=none` |
 | Money prices in shops, GUIs and hiring | No economy unless a Java module provides one. Use item prices. With no economy, shop prices are written by `[shops] priceFormat` |
+| Container shops and [player shops](/animus/10-shops#player-shops) | Not available, because mod servers do not open containers for Animus. A container shop refuses each trade, and `/animus shop create` and `/animus shop item` say player shops need Paper, Spigot or Folia |
 | `animus:charge` and `animus:can-afford` | Items and levels work as on Paper. Money uses the same economy as shops, so without a Java module that provides one a cost with money is never affordable |
 | Mob control (`/animus combat mob <npc> <mob>`) | Not available; the command says so. Use `/animus combat target <npc> <target>` or `combat guard` instead |
+| NPCs on real entities (`animus:mount` with `entity`) | Not available. The NPC stands at its own position and `/animus inspect` shows `mount-problem=` with the reason |
+| Seats (`animus:seat`) | One player per NPC; `stack` above 1 has no effect |
+| Sensed triggers (`entity_proximity`, `entity_collide`, `hit_by_projectile`, `item_dropped`, `vehicle_bump`, `leash_tie`, `leash_pass`, `npc_proximity`, `npc_speech`) | Accepted, validated and listed by `/animus behaviors triggers`, but they never fire |
 | Manual hit (`/animus combat attack <npc> <target> [damage=1]`) | Available, with the same reach, line of sight and protection checks |
-| Plugin events (`VirtualNpcInteractionEvent`, `VirtualNpcDamageEvent` and the others) | Not fired. Behavior triggers receive the same facts on every platform; Java modules receive interaction notices |
+| Plugin events (`VirtualNpcInteractionEvent`, `VirtualNpcDamageEvent` and the others) | Not fired. Behavior triggers receive the same facts on every platform; Java modules receive interaction notices and the click, spawn and tick hooks of their definition modules |
+| [NPC service](/animus/99-java-modules-api#npc-service) | Java modules get it through `context.npcs()`, as on Paper. There is no `AnimusNpcs` lookup, speech it starts does not reach `hear` triggers, and teleports work in any loaded dimension |
 | PlaceholderAPI placeholders (`%player_name%`) | Not filled: PlaceholderAPI is a Bukkit plugin, and mod-side placeholder mods are not read. Text shows the `%` placeholders as written; Animus's own `{player_name}` and `{{ }}` holes still work |
 | React metrics | Not published; [`/animus debug`](/animus/17-debug-react-metrics) works the same |
 | Packet previews (`/animus proof`, `/animus proof folia`) | Not available; they answer that they belong to Bukkit |

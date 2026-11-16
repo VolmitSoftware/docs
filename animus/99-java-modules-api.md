@@ -1,16 +1,21 @@
 ---
 title: "Animus: Java Modules and API"
-description: "Trusted Java modules, the animus-api contract, interaction notices, import converters, integration hooks and the Bukkit plugin API"
+description: "The NPC service for Bukkit plugins and trusted Java modules: creating, editing and driving NPCs, definition modules, events, capabilities, import converters and integration hooks"
 published: true
-date: 2026-11-10T00:00:00.000Z
+date: 2026-11-15T00:00:00.000Z
 tags: "animus, api, modules, developers, integration"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Trusted Java modules add actions, conditions, triggers, import converters and integration hooks to Animus. A module compiles against the standalone `animus-api` artifact (Java 25, no other dependencies) and loads from the Animus data folder at startup. The public package is `art.arcane.animus.api`. The current API version is 1.2.0. Bukkit plugins use a separate artifact; see [Bukkit plugins](#bukkit-plugins).
+Animus has its own API for other plugins. A Bukkit plugin or a trusted Java module can create, edit, remove and drive NPCs, add its own data and hooks to NPC definitions the way Citizens plugins added traits, and listen to NPC events. Java modules also add behavior actions, conditions, triggers, import converters and integration hooks.
 
-The [reference module](https://github.com/VolmitSoftware/Animus/tree/master/examples/modules/reference) is a complete example: it registers a `reference:hello` action and counts interactions. It registers no protection or economy hook, because only one module can provide each and an example that claimed one would keep a real provider from enabling.
+The API comes in two artifacts. `animus-api` (package `art.arcane.animus.api`, Java 25, no other dependencies) holds the platform-neutral contracts: the NPC service, definitions, capabilities and modules. `animus-bukkit-api` (packages `art.arcane.animus.bukkit.api` and `art.arcane.animus.bukkit.event`) adds the Bukkit service lookup and the NPC events. The current API version is 1.3.0.
+
+Two examples show the API in use:
+
+- The [example plugin](https://github.com/VolmitSoftware/Animus/tree/master/examples/plugins/npc-demo) is a Bukkit plugin built on the public API alone. It makes a temporary NPC that walks and talks, cancels left clicks, counts right clicks in its own definition module, and saves a persistent NPC to sit on.
+- The [reference module](https://github.com/VolmitSoftware/Animus/tree/master/examples/modules/reference) is a Java module. It registers a `reference:hello` action and counts interactions. It registers no protection or economy hook, because only one module can provide each and an example that claimed one would keep a real provider from enabling.
 
 ## Depending on the API
 
@@ -22,20 +27,228 @@ repositories {
 }
 dependencies {
     compileOnly 'com.github.VolmitSoftware.Animus:animus-api:<tag>'
+    // Bukkit plugins only:
+    compileOnly 'com.github.VolmitSoftware.Animus:animus-bukkit-api:<tag>'
 }
 ```
 
-Use an API tag such as `api-1.2.0` for `<tag>`; a commit hash also works.
+Use an API tag such as `api-1.3.0` for `<tag>`; a commit hash also works. A Bukkit plugin needs both artifacts, a Java module only `animus-api`.
 
 To build the API locally instead, run this in an Animus checkout with Java 25:
 
 ```sh
-./gradlew :animus-api:publishToMavenLocal
+./gradlew :animus-api:publishToMavenLocal :animus-bukkit-api:publishToMavenLocal
 ```
 
-This writes `art.arcane.animus:animus-api:1.2.0-SNAPSHOT` to `~/.m2/repository`, with sources and JavaDoc jars. Add `mavenLocal()` to the module build and depend on it with `compileOnly`.
+This writes `art.arcane.animus:animus-api:1.3.0-SNAPSHOT` and `art.arcane.animus:animus-bukkit-api:1.3.0-SNAPSHOT` to `~/.m2/repository`, with sources and JavaDoc jars. Add `mavenLocal()` to your build and depend on them with `compileOnly`.
 
-Compile against only the API and the JDK, and leave the API classes out of the module jar.
+The API classes ship inside the Animus plugin and mod jars, so leave them out of your own jar. A Bukkit plugin adds `depend: [Animus]` to its `plugin.yml`, or `softdepend: [Animus]` and checks that the service is there before using it.
+
+## NPC service
+
+`NpcService` creates, edits, removes and drives NPCs for one plugin or Java module:
+
+| Holder | How it gets the service |
+|---|---|
+| A Bukkit plugin | `Bukkit.getServicesManager().load(AnimusNpcs.class).service(this)` |
+| A Java module | `context.npcs()` in `enable` |
+
+Each plugin and module gets its own service, and the same plugin gets the same object every time. What a service makes belongs to its plugin or module: its temporary NPCs, its definition modules, the NPCs it hid from players and its follows all end when the plugin disables or the module stops. From then on its service answers `UNAVAILABLE`. A Java module's service also answers `UNAVAILABLE` while the module is suspended. `AnimusNpcs.service` throws `IllegalStateException` when Animus is still starting or did not start, or when the plugin is not enabled.
+
+```java
+public final class Greeter extends JavaPlugin {
+    private NpcService npcs;
+
+    @Override public void onEnable() {
+        npcs = getServer().getServicesManager().load(AnimusNpcs.class).service(this);
+    }
+
+    /** A temporary NPC beside the player walks to a point, then speaks. */
+    void greet(Player player, Location start, Location goal) {
+        NpcSpec spec = NpcSpec.builder().name("&bGuide").location(BukkitNpcs.location(start)).build();
+        npcs.createTemporary(spec).thenCompose(created -> {
+            if (created.status() != Outcome.Status.OK) return CompletableFuture.completedFuture(null);
+            NpcHandle npc = created.value().orElseThrow().npc();
+            return npcs.navigate(npc, BukkitNpcs.location(goal), 0)
+                    .thenCompose(arrived -> npcs.speak(npc, "&aThis way!", Audience.within(16), NpcService.Speech.BOTH));
+        });
+    }
+}
+```
+
+`BukkitNpcs` converts between Bukkit types and the service's own: `location(Location)` and `location(NpcLocation)` (when the world is loaded), and `item(ItemStack)` for an `ItemSpec` with the stack's id, count and components.
+
+`AnimusNpcs` also looks NPCs up at once, from any thread: by id (`byKey`), by UUID (`byUuid`), by display name ignoring case and colours (`byName`), and all of them in id order (`all`). Each `NpcInfo` holds the UUID, id, folder, display name and whether it is spawned. Temporary NPCs are included. These answers come from the loaded definitions, not from where an NPC stands now; `npcs.state(npc)` gives that.
+
+## Creating and editing NPCs
+
+An `NpcSpec` holds the parts of a definition a plugin sets. Every setter is optional, and building never fails; the service checks the result as the web editor does and answers `INVALID` with one diagnostic per problem.
+
+| Builder call | Definition field |
+|---|---|
+| `id("guard")` | `id`: 1-64 lowercase letters, digits, `_` or `-` |
+| `group("town")` | `group`: the folder under `npcs/` |
+| `type("minecraft:villager")` | `type`, the body |
+| `name("&6Guard")` | `name`, with `&` colour codes |
+| `location(NpcLocation.of("world", x, y, z).facing(yaw, pitch))` | `position`; a world UUID is written as the world's name |
+| `spawned(false)` | `spawned` |
+| `skin(SkinSource.player("Notch"))` | `skin`, as a saved skin file; see [skins](#skins) |
+| `pose(NpcSpec.Pose.SITTING)` | `pose` |
+| `equip(NpcSpec.Slot.MAIN_HAND, ItemSpec.of("minecraft:iron_sword"))`, `unequip(slot)` | `equipment` |
+| `module("shop:prices", "{\"tier\":2}")`, `removeModule(key)` | one key of `modules` |
+| `json("{\"hologram\":{\"lines\":[\"Open daily\"]}}")` | any other top-level field |
+
+Raw `json` fields are laid down first and the typed parts over them. A raw field set to `null` is removed, and `uuid`, `revision` and `schemaVersion` are refused because Animus writes them.
+
+| Method | Result |
+|---|---|
+| `create(spec)` | A persistent NPC, saved under `npcs/<group>/<id>.json` like one made in game. It needs an id and a location. |
+| `createTemporary(spec)` | A temporary NPC that is never saved. It needs a location; without an id it gets one such as `temp-1a2b3c4d`. |
+| `edit(npc, changes)` | Applies only the parts set in `changes` to the NPC's current definition. The id and folder cannot change. |
+| `updateModule(npc, key, change)` | Changes one module's data from what it holds at that moment. |
+| `remove(npc)` | Deletes a persistent NPC's file, or forgets a temporary NPC. |
+| `state(npc)` | `NpcState`: id, whether it is temporary and which plugin or module made it (`owner()`), whether its body is active, and where it stands (its definition's facing). |
+
+New NPCs default to a `minecraft:player` body, their id as the name, the `npcs/` folder itself and `spawned: true`. For a spawned NPC, `create` and `createTemporary` complete once its body is active, so the next call can drive it; one whose chunk is still loading completes after five seconds, saved but not yet active, which `state` shows. An id another NPC already has, saved or temporary, answers `CONFLICT`. A body type the server cannot show, an invalid field, a plugin module that refuses its data, and a spawned NPC the server could not show (for example in a world that is not loaded) answer `INVALID`, and nothing is saved.
+
+A persistent NPC's changes are saved through the same file queue as commands and the web editor, as one transaction each. The console names each one with the command that reverts it, such as `plugin:Shops created guard; /animus undo 3f9a1c2b reverts it`; run that from the console or as an admin. `updateModule` saves quietly, without a console line.
+
+A temporary NPC behaves like a saved one: behaviors, modules, clicks, combat and events all apply. It disappears on restart and when the plugin that made it disables. File commands such as `/animus delete` refuse it with `<id> is a temporary NPC from <plugin>; it has no file`. A saved NPC that later takes its id or UUID ends it.
+
+An NPC a plugin makes is a server NPC unless its `json` names an `owner`, the UUID of the player who owns it. An owned NPC, saved or temporary, is held to the same rules as one the player made: anything it would newly do that needs an `animus.owned.*` node its owner lacks answers `INVALID` with the reason, its behaviors check the owner's nodes again as they run, and a temporary one counts toward that player's limit. A plugin may put its own definition modules on an NPC a player owns freely: it answers for what its module does, and the `owner` in the definition that `npcs.definitions().find(npc)` returns lets it check the player itself. See [NPCs players own](/animus/02-commands-permissions#npcs-players-own).
+
+`updateModule` hands the module's current data (a JSON object, or empty when the NPC has none) to a function on the file queue and saves what it returns, or removes the module for an empty answer. Two updates never lose each other, which suits counters. Keep the function quick. A change to a plugin's own module data leaves the NPC's body and its running behaviors alone, so a counter saved from a click hook does not stop the behavior the same click started.
+
+### Skins
+
+A skin comes from a `SkinSource`:
+
+| Source | How Animus gets the textures |
+|---|---|
+| `SkinSource.player("Notch")` | Looked up on Mojang; `NOT_FOUND` when no account has the name, `UNAVAILABLE` when Mojang cannot be reached |
+| `SkinSource.image(url)`, `new SkinSource.Image(url, true)` for slim arms | Signed through MineSkin with `[skins] mineskinKey`; `UNAVAILABLE` when signing fails |
+| `SkinSource.texture(value, signature)` | Used as given; an empty signature saves it unsigned, and Animus signs it through MineSkin once a definition wears it |
+
+Each skin is saved once as a skin file under `skins/`, which other NPCs and the web editor can then use. Skins need a `minecraft:player` body.
+
+## Driving NPCs
+
+These methods change only the live NPC, except `mount` and `dismount`. A restart, a reload or an edit of its definition shows the definition again. Unless the table says otherwise, the NPC must be active: an inactive one answers `UNAVAILABLE`, and a UUID no NPC has answers `NOT_FOUND`.
+
+| Method | What it does | Notes |
+|---|---|---|
+| `teleport(npc, location)` | Moves the NPC onto clear ground and turns it to the location's facing | The destination must be loaded and clear, and the NPC must not ride, sit on a seat or carry anyone; otherwise `UNAVAILABLE`. On Folia a destination another region holds is checked by that region and the NPC is handed over to it, saved and temporary NPCs alike; a destination in another world answers `UNAVAILABLE` there |
+| `navigate(npc, location, speed)` | Walks the NPC to a point in its own world | Speed is 1 to 5 blocks per second, or 0 for 2. Completes with where it arrived; `FAILED` when the way is blocked or no path is found, `CANCELLED` when `stop`, another route, a follow, a definition change or a despawn ends it |
+| `follow(npc, entity, distance)` | Keeps the NPC walking after a player, mob or NPC, `distance` (1 to 16) blocks short | Runs until something ends it: `CANCELLED` for `stop`, `navigate` or another follow, `NOT_FOUND` once the target has been gone or out of reach for five seconds or the NPC was removed, `UNAVAILABLE` when the NPC stops being active. On Folia a mob is followed while it is in the NPC's region |
+| `stop(npc)` | Stops the NPC's route, follow or patrol where it stands | |
+| `lookAt(npc, location)`, `lookAt(npc, entity)` | Turns the NPC toward a point, player, mob or NPC in its world within 64 blocks | A target further away answers `INVALID`; an entity Animus cannot find (on Folia, outside the NPC's region) answers `NOT_FOUND` |
+| `speak(npc, text, audience, speech)` | Says up to 1024 characters with `&` colour codes, in chat (`CHAT`), a speech bubble (`BUBBLE`) or both (`BOTH`) | `Audience.player(uuid)`, `Audience.within(radius)` (1 to 128 blocks) or `Audience.everyone()`. Players the NPC is hidden from hear nothing. The bubble shows the first 256 characters for five seconds to everyone who sees the NPC. Answers how many players got the chat line. On Bukkit, speech reaches the `hear` triggers of NPCs near it |
+| `gesture(npc, gesture)` | Plays `SWING`, `SWING_OFFHAND`, `HURT`, `CRIT`, `MAGIC_CRIT`, `USE_ITEM` or `STOP_USING_ITEM` once | |
+| `pose(npc, pose)` | Holds a body pose until the NPC moves | `INVALID` for a pose its body cannot take: every body stands, living bodies other than the ender dragon sit, and the other poses need a player body |
+| `playAnimation(npc, name)` | Plays one animation of the NPC's [rig](/animus/06-rigs-animations) once | `UNAVAILABLE` without a rig, `INVALID` for an animation the rig does not have |
+| `equip(npc, slot, item)` | Puts an item in a slot, or empties it with an empty item | `INVALID` for an item the server does not know or a slot the body has no use for |
+| `skin(npc, source)` | Shows the live NPC in another skin | The definition keeps its own skin. A texture needs its signature here; an unsigned one answers `INVALID` |
+| `mount(npc, vehicle)`, `dismount(npc)` | Puts the NPC on another NPC or a real entity, or takes it off | These change the definition's `animus:mount` module: saved for a persistent NPC, so it stays mounted after a restart while the vehicle exists. They work while the NPC is inactive. A real entity must be loaded, and on Folia in the NPC's region |
+| `seat(npc, player)` | Seats an online player on the NPC, as clicking a seat does | Skips the seat's permission, empty-hand and sitting-toggle checks, and the seat does not end when the player lacks the permission. The checks that keep the player safe still apply: a dead, sleeping or riding player, a full seat, another world, or region entry denied. On Folia the player must be in the NPC's region |
+| `unseat(player)` | Gets the player off any NPC they sit on or ride | `true` when they were seated or riding |
+| `startBehavior(npc, behavior, player, variables)` | Starts one run of a behavior, as `/animus behaviors run` does | Expressions read each variable as `context.<name>`: at most 32 names of letters, digits and `_`, with text values up to 1024 characters. One manual run per NPC at a time; a second answers `BUSY`. Answers the run's UUID |
+| `stopBehavior(run)` | Cancels a run | `true` when it was still going |
+| `flag(flag)`, `setFlag(flag, json)` | Reads or writes a flag in behavior state | See [flags](#flags) |
+| `show(npc, player, shown)` | Hides the NPC from one player, or shows it again | A hidden NPC is gone for that player alone: no body, speech, sounds, particles or triggers. It lasts until the plugin shows it, the player leaves or the plugin disables, and works while the NPC is inactive |
+| `run(npc, work)` | Runs `work` on the thread that owns the NPC, where the blocks and entities around it may be used | Completes after it ran; `FAILED` when it threw |
+
+### Flags
+
+A `Flag` names one value in behavior state, the same values `animus:set-flag` and `animus:flag-state` use. Flags belong to a behavior namespace: the behaviors `town:greet` and `town:farewell` share the flags of namespace `town`, so a plugin that names `town` reads and writes what those behaviors see.
+
+```java
+Flag greeted = Flag.relationship("town", "greeted", npc, player.getUniqueId());
+npcs.setFlag(greeted, Optional.of("true"));
+npcs.flag(greeted).thenAccept(value -> ...);   // Optional.of("true"), or empty when unset or expired
+```
+
+`Flag.npc`, `Flag.player`, `Flag.relationship` and `Flag.global` pick the scope. Values are JSON (`true`, `3`, `"gold"`, lists and objects within the behavior value bounds); `null` is refused, and an empty value unsets the flag. Flags are saved as behaviors save them.
+
+## Definition modules
+
+A plugin or Java module can add its own module to NPC definitions. A module owns one key in a definition's `modules` object, keeps its data there as a JSON object, and gets hooks for the NPCs that carry the key.
+
+```java
+NpcModules.Descriptor clicks = new NpcModules.Descriptor(new Capabilities.Key("shop", "visits"), "Counts visits", 0);
+npcs.modules().register(clicks, new NpcModules.Module() {
+    @Override public List<Diagnostic> validate(String data) { return List.of(); }
+    @Override public void clicked(NpcModules.Context npc, UUID player, boolean attack) {
+        npcs.updateModule(npc.npc(), "shop:visits", data -> Optional.of("{\"count\":" + (count(data) + 1) + "}"));
+    }
+});
+```
+
+The descriptor names the key, a description and a tick interval (1 to 1200 ticks, or 0 for no tick hook). The namespaces `animus`, `minecraft`, `mythic`, `citizens`, `shopkeepers` and `denizen` are reserved, and one plugin or module holds each key: a second registration answers `CONFLICT`. A registration lasts until that plugin disables or that module stops.
+
+Every hook is optional:
+
+| Hook | When it runs | Thread |
+|---|---|---|
+| `validate(data)` | Before Animus saves a definition whose data for this key changed, from the service, commands or the web editor. An `ERROR` diagnostic refuses the save, with the field reported as `$.modules.<key>.<field>`; a validator that throws refuses it too | Any thread; keep it quick and free of side effects |
+| `spawned(npc)` | The NPC became active: it spawned, loaded with its chunk or came back after dying | The NPC's thread |
+| `clicked(npc, player, attack)` | A player clicked the NPC and no `VirtualNpcInteractionEvent` listener cancelled it, after the click's behavior trigger, whether or not a behavior used the click | The clicking player's thread |
+| `ticked(npc)` | Every tick interval while the NPC is active | The NPC's thread |
+
+Each hook gets an `NpcModules.Context`: the NPC, its id, whether it is temporary, and the module's data as it was when the hook was called. Hooks must not wait on a service result; start the work and return. A hook that throws is reported in the console once a minute and does not stop the others.
+
+Changing only a plugin module's data leaves the live NPC as it is: it is not shown again, and its route, seats and runtime changes carry on. Data for a key no plugin has registered is kept unchanged, so it survives while its plugin is missing.
+
+## Threads
+
+Every service method may be called from any thread and returns at once; none waits for the answer. Work that touches an NPC runs on the thread that owns it: the main thread on Paper, Spigot and mod servers, the NPC's region on Folia. File work runs on the shared file queue.
+
+Every stage the service returns completes on an Animus worker thread, never on a server thread, so a callback that runs then must not touch players, entities or blocks directly. Schedule that work where the target is owned (on Bukkit, the entity's, region's or main thread's scheduler), or use `run` for work beside the NPC. As with any `CompletionStage`, a non-async callback added after the stage completed runs at once on the thread that adds it. Never call `join()` or `get()` on a server thread: the work it waits for may need that thread.
+
+## Results
+
+Every answer is an `Outcome` with a status and diagnostics. Expected refusals are outcomes, never exceptions; a null argument is a programming error and throws `NullPointerException`.
+
+| Status | Meaning |
+|---|---|
+| `OK` | Done; the value is present |
+| `INVALID` | Bad input, with one diagnostic per problem naming its field |
+| `NOT_FOUND` | No NPC, player, entity, account or behavior with that name or UUID |
+| `CONFLICT` | An id is taken, or the definition changed since it was read |
+| `UNAVAILABLE` | Not possible now: the NPC is not active, the plugin or module stopped, a feature is off or this platform lacks it |
+| `BUSY` | Animus's queues are full; try again later |
+| `CANCELLED` | Stopped before it finished, such as a walk replaced by another |
+| `FAILED` | Something went wrong; the diagnostic says what |
+| `TIMED_OUT` | A Java module call ran past its deadline |
+
+## Bukkit events
+
+Events live in `art.arcane.animus.bukkit.event`. `getNpcId()` is the NPC's UUID and `getNpcKey()` its id.
+
+| Event | Fired when | Cancelling it |
+|---|---|---|
+| `VirtualNpcInteractionEvent` | A player clicks or hits an NPC, after reach and sight checks | Stops the click: no behavior trigger, module click hook, shop, GUI, ride or seat, and no damage from the player's hit |
+| `VirtualNpcDamageEvent` | An NPC is about to damage a player or mob | Stops the hit; `setDamage` changes it |
+| `VirtualNpcDamagedByMobEvent` | A mob controlled by `/animus combat mob` is about to damage an NPC | Stops the hit |
+| `VirtualNpcDialogueChoiceEvent` | A player picks a dialogue choice, before the behavior hears it | Drops the answer, so the `dialogue_choice` trigger does not fire; the prompt is used up either way |
+| `VirtualNpcSpawnEvent` | An NPC becomes active, or comes back after dying | Not cancellable |
+| `VirtualNpcDespawnEvent` | An active NPC is despawned, deleted or replaced by another UUID | Not cancellable |
+| `VirtualNpcDeathEvent` | An NPC's health reaches zero; carries the killer when known | Not cancellable |
+| `VirtualNpcWaypointEvent` | An NPC reaches a route waypoint; carries the route, index and position | Not cancellable |
+| `VirtualNpcProjectileHitEvent` | A real projectile flies into an NPC's hitbox; `isStopped()` when combat let it strike the body | Not cancellable |
+| `VirtualNpcContactEvent` | A real entity starts to touch an NPC's hitbox, `TOP` standing on it or `SIDE` | Not cancellable |
+| `VirtualNpcVehicleBumpEvent` | A moving minecart or boat runs into an NPC's hitbox | Not cancellable |
+| `VirtualNpcItemDropEvent` | A player or mob drops an item within three blocks of an NPC, or throws it into its hitbox | Not cancellable |
+| `VirtualNpcLeashEvent` | A player leading a mob right-clicks an NPC (`TIE`), or a mob on a lead is led within three blocks (`PASS`) | Not cancellable |
+
+Events fire on the thread that owns the NPC: the main thread on Paper and Spigot, and the NPC's region on Folia. The interaction, dialogue choice and `TIE` lead events fire on the player's thread, and the projectile event on the projectile's. The projectile, contact, vehicle, item and lead events are what Animus [senses](/animus/07-behaviors#sensed-triggers) around an NPC, since the server reports nothing about a body that is only packets: each fires once per entity, and only while a player is near the NPC. While a plugin listens for the contact, vehicle, item or lead events, every NPC a player is near is looked at, within the `entity` budgets of `[behaviors.triggers]`. Spawn, despawn and death events are marked asynchronous if they ever fire off a server thread. No world entity stands behind an NPC, so read positions from the event, as an `NpcPosition` with `toLocation()`.
+
+## Platforms
+
+| Platform | What it offers |
+|---|---|
+| Paper and Spigot | Everything on this page |
+| Folia | Everything, with region limits: `teleport` stays within the NPC's world (other regions are fine), `seat` needs the player in the NPC's region, and a followed mob is followed while it is in the NPC's region. Speech to a radius or everyone also reaches players other regions own, found by where their region last saw them |
+| Fabric, Forge and NeoForge | The platform-neutral `NpcService` to Java modules through `context.npcs()`. There is no `AnimusNpcs` and no Bukkit events; Java modules get interaction notices and module hooks instead. Speech does not reach `hear` triggers, and `teleport` works in any loaded world |
 
 ## Installing a module
 
@@ -56,9 +269,20 @@ Each jar contains an `animus-module.json` at its root. Animus does not generate 
 }
 ```
 
-`api` may also hold `minimumMinor`, the lowest minor of `minimumMajor` the module needs: `{"minimumMajor": 1, "maximumMajor": 1, "minimumMinor": 2}` refuses a 1.1 engine with `requires API 1.2 or newer within 1.x`. In Java the same range is `ApiRange.atLeast(new Version(1, 2, 0))`.
+`api` may also hold `minimumMinor`, the lowest minor of `minimumMajor` the module needs: `{"minimumMajor": 1, "maximumMajor": 1, "minimumMinor": 3}` refuses a 1.2 engine with `requires API 1.3 or newer within 1.x`. In Java the same range is `ApiRange.atLeast(new Version(1, 3, 0))`.
 
 Its `id`, `version`, `api`, `platforms` and `dependencies` must match what `TrustedModule.manifest()` returns, or the module is refused before it enables. `main` names the module's entry class and `exports` the packages its dependents may see; they appear only in this file. Platforms are `SPIGOT`, `PAPER`, `FOLIA`, `FABRIC`, `FORGE` and `NEOFORGE`. The `animus` namespace is reserved for [built-in capabilities](/animus/07-behaviors), which stay available when `modules.enabled` is false.
+
+A module's NPC service is `context.npcs()`. Its temporary NPCs and definition modules end when the module stops, and the service answers `UNAVAILABLE` while the module is suspended.
+
+```java
+@Override public void enable(ModuleContext context) {
+    NpcService npcs = context.npcs();
+    npcs.modules().register(new NpcModules.Descriptor(new Capabilities.Key("reference", "visits"), "Counts visits", 0), new NpcModules.Module() {
+        @Override public void spawned(NpcModules.Context npc) { /* the NPC's thread */ }
+    });
+}
+```
 
 ### Archive limits
 
@@ -132,7 +356,9 @@ Handlers run on two bounded module workers with a deadline. A call holds its slo
 
 ## Definitions
 
-`DefinitionService` reads and replaces NPC definitions asynchronously. Snapshots are immutable and carry a revision and hash token. A replacement is a full JSON document that keeps the UUID, readable id and folder, and names the revision it was based on. Animus validates it before writing, raises the revision and keeps unmodified unknown module settings. A stale token is a conflict. The API cannot spawn NPCs: replacement definitions must be dormant, and spawning goes through `/animus spawn`.
+`npcs().definitions()` reads and replaces whole definitions, saved and temporary, against a token. Snapshots are immutable and carry a revision and hash token; a temporary NPC's token is its in-memory revision and the hash of its JSON. A replacement is a full JSON document that keeps the UUID, readable id and folder, and names the revision it was based on. Animus validates it before writing, raises the revision and keeps unmodified unknown module settings. A stale token is a conflict.
+
+A replacement may spawn an NPC or change a live one. Before it is written, Animus checks that the server can show it, as the web editor does when it spawns an NPC; a definition it could not show answers `INVALID` with the reason (code `activation-refused`), and nothing is saved. A dormant replacement, or one that changes only the revision or plugin module data, is written without that check.
 
 `resolve(id)` finds the handle of the NPC with a readable id such as `guard`, for a module configured by id. `list(group, page)` pages through NPCs in id order, 100 per page, each with its handle, id, folder and whether it is spawned; pass `Optional.of("world/town")` for one folder or `Optional.empty()` for all. Both use the same file queue as reads.
 
@@ -143,13 +369,15 @@ Commands, imports and API edits share one file queue, so each validation and sav
 `AnimusApi.API_VERSION` is the contract version. The published artifact version follows it.
 
 - A major version may remove or change contracts. A module declares the majors it supports in `ApiRange`, and the loader refuses it on any other major.
-- A minor version stays binary compatible: a module built against 1.0 runs unchanged on every 1.x engine. The Animus build checks each API change against the last released tag.
-- A minor version can add types, and methods on interfaces the engine implements: `ModuleContext`, `DefinitionService` and the registrars.
-- Interfaces a module implements gain only `default` methods in a minor version. These are `TrustedModule`, `Capabilities.Action`, `Capabilities.Condition`, `InteractionNotice.Listener`, `ImportConverters.Converter`, `Integrations.Protection` and `Integrations.Economy`.
+- A minor version normally stays binary compatible: a module built against 1.0 runs unchanged on every 1.x engine. The Animus build checks each API change against the last released tag, which is now `api-1.3.0`.
+- A minor version can add types, and methods on interfaces the engine implements: `ModuleContext`, `DefinitionService`, `NpcService` and the registrars.
+- Interfaces a module implements gain only `default` methods in a minor version. These are `TrustedModule`, `Capabilities.Action`, `Capabilities.Condition`, `InteractionNotice.Listener`, `ImportConverters.Converter`, `Integrations.Protection`, `Integrations.Economy` and `NpcModules.Module`.
 - Enums can gain constants in a minor version, for example `Integrations.ProtectionAction`, `Outcome.Status`, `Platform` and `Capabilities.Kind`. Give every `switch` over them a `default` branch. An exhaustive switch without one throws when it meets a constant added later.
 - A module that calls a newer addition declares that minor with `minimumMinor` (see [installing a module](#installing-a-module)), or checks `AnimusApi.API_VERSION.minor()` at enable time when it also supports older engines. The constant is read from the running engine.
 
-Interaction notices, import converters and integration hooks require API 1.1. `BLOCK_USE`, `DefinitionService.resolve` and `list`, and `minimumMinor` require API 1.2.
+1.3 broke the minor rule once: `ModuleContext.definitions()` became `ModuleContext.npcs().definitions()`. A module built against 1.2 or earlier that reads definitions needs a rebuild; one that does not still loads. Bukkit plugins built against the 1.2 `animus-bukkit-api` keep working, since `AnimusNpcs` only gained `service`.
+
+Interaction notices, import converters and integration hooks require API 1.1. `BLOCK_USE`, `DefinitionService.resolve` and `list`, and `minimumMinor` require API 1.2. The NPC service, definition modules, edits that spawn NPCs and the cancellable dialogue choice event require API 1.3.
 
 ## Interaction notices
 
@@ -157,7 +385,7 @@ Interaction notices, import converters and integration hooks require API 1.1. `B
 
 Notices are sent only after the platform's checks and any `VirtualNpcInteractionEvent` listeners accept the click. Listeners cannot cancel the click; on Bukkit, cancellation stays with that event. Notices run as module work on the same workers, slots and deadline as actions. A listener that throws fails only that notice, and a listener past the deadline suspends its module. When a module has no free slot, the notice is dropped and counted in `/animus modules status`. Notices can arrive out of order; use `sequence` to order them.
 
-Paper, Spigot, Folia, Fabric, Forge and NeoForge all send notices. Notices with `preview=true` come only from the packet and Folia preview bodies, which have no definition.
+Paper, Spigot, Folia, Fabric, Forge and NeoForge all send notices. Notices with `preview=true` come only from the packet and Folia preview bodies, which have no definition. A [definition module's](#definition-modules) click hook is the synchronous counterpart: it runs on the player's thread for the NPCs that carry its key.
 
 ## Import converters
 
@@ -186,54 +414,10 @@ Hooks run synchronously on the thread that needs the answer, so they must be qui
 
 One slow hook call does not suspend its module, since a lag spike or a garbage collection pause can hold any call up. Each call past `modules.invocationTimeoutMillis` is logged, and the third within 60 seconds suspends the module. It resumes on its own after a cool-off of 30 seconds, which doubles with each further suspension up to 15 minutes and starts over after an hour without one. The console names the module and the cool-off, and `/animus modules list` shows it. Run `/animus modules resume <module>` to bring it back sooner.
 
-## Bukkit plugins
-
-A Bukkit plugin that works with Animus NPCs compiles against `animus-bukkit-api`, which holds the NPC events and a lookup service. It shares the API version and tags:
-
-```groovy
-repositories {
-    maven { url = 'https://jitpack.io' }
-}
-dependencies {
-    compileOnly 'com.github.VolmitSoftware.Animus:animus-bukkit-api:<tag>'
-}
-```
-
-`./gradlew :animus-bukkit-api:publishToMavenLocal` writes `art.arcane.animus:animus-bukkit-api:1.2.0-SNAPSHOT` instead. The classes ship inside the Animus plugin, so leave them out of your jar and add `depend: [Animus]` or `softdepend: [Animus]` to your `plugin.yml`.
-
-`AnimusNpcs` is registered with Bukkit's services manager while Animus is enabled:
-
-```java
-AnimusNpcs npcs = Bukkit.getServicesManager().load(AnimusNpcs.class);
-Optional<NpcInfo> guard = npcs.byKey("guard");
-```
-
-It finds an NPC by id (`byKey`), by UUID (`byUuid`) or by display name (`byName`, ignoring case and colors), and lists them all in id order (`all`). Each `NpcInfo` holds the UUID, id, folder, display name and whether it is spawned. Answers come from the loaded definitions and are safe from any thread.
-
-Events live in `art.arcane.animus.bukkit.event`. `getNpcId()` is the NPC's UUID and `getNpcKey()` its id.
-
-| Event | Fired when | Cancellable |
-|---|---|---|
-| `VirtualNpcInteractionEvent` | A player clicks or hits an NPC, after reach and sight checks | Yes |
-| `VirtualNpcDamageEvent` | An NPC is about to damage a player or mob | Yes |
-| `VirtualNpcDamagedByMobEvent` | A mob controlled by `/animus combat mob` is about to damage an NPC | Yes |
-| `VirtualNpcDialogueChoiceEvent` | A player picks a dialogue choice | No |
-| `VirtualNpcSpawnEvent` | An NPC becomes active, or comes back after dying | No |
-| `VirtualNpcDespawnEvent` | An active NPC is despawned, deleted or replaced by another UUID | No |
-| `VirtualNpcDeathEvent` | An NPC's health reaches zero; carries the killer when known | No |
-| `VirtualNpcWaypointEvent` | An NPC reaches a route waypoint; carries the route, index and position | No |
-| `VirtualNpcProjectileHitEvent` | A real projectile flies into an NPC's hitbox; `isStopped()` when combat let it strike the body | No |
-| `VirtualNpcContactEvent` | A real entity starts to touch an NPC's hitbox, `TOP` standing on it or `SIDE` | No |
-| `VirtualNpcVehicleBumpEvent` | A moving minecart or boat runs into an NPC's hitbox | No |
-| `VirtualNpcItemDropEvent` | A player or mob drops an item within three blocks of an NPC, or throws it into its hitbox | No |
-| `VirtualNpcLeashEvent` | A player leading a mob right-clicks an NPC (`TIE`), or a mob on a lead is led within three blocks (`PASS`) | No |
-
-Events fire on the thread that owns the NPC: the main thread on Paper and Spigot, and the NPC's region on Folia. The projectile event fires on the thread that owns the projectile and the `TIE` lead event on the player's. Those five are what Animus [senses](/animus/07-behaviors#sensed-triggers) around an NPC, since the server reports nothing about a body that is only packets: each fires once per entity, and only while a player is near the NPC. While a plugin listens for the contact, vehicle, item or lead events, every NPC a player is near is looked at, within the `entity` budgets of `[behaviors.triggers]`. Spawn, despawn and death events are marked asynchronous if they ever fire off a server thread. No world entity stands behind an NPC, so read positions from the event, as an `NpcPosition` with `toLocation()`. Mod servers fire no Bukkit events.
-
 ## Shutdown
 
-Shutdown stops new work at once. Queued file work is cancelled, and a save already in progress finishes first. Registrations are revoked and dependencies and resources are cleaned up in reverse order. `/animus modules status` shows `STOPPING` until cleanup and every tracked callback have returned.
+Shutdown stops new work at once. Queued file work is cancelled, and a save already in progress finishes first. Every plugin's and module's temporary NPCs, definition modules and follows end. Registrations are revoked and dependencies and resources are cleaned up in reverse order. `/animus modules status` shows `STOPPING` until cleanup and every tracked callback have returned.
 
 ## Missing modules
 
-A missing or refused module never deletes its JSON settings or its behaviors' stored state, but that configuration does not run until the module is back. A [pack](/animus/07-behaviors) that needs a module names it in its `pack.json`. While that module is missing, the pack's behaviors are unavailable, and the manifest, including the module's `configuration`, is kept as written.
+A missing or refused module never deletes its JSON settings or its behaviors' stored state, but that configuration does not run until the module is back. A [pack](/animus/07-behaviors) that needs a module names it in its `pack.json`. While that module is missing, the pack's behaviors are unavailable, and the manifest, including the module's `configuration`, is kept as written. A missing plugin's definition module data stays in each definition the same way.

@@ -255,6 +255,7 @@ Lowering a budget below existing data keeps the data; only growth is refused.
 | `commandNamespaces` | `[]` | At most 256 | Namespaces whose behaviors, shops and GUIs may run commands |
 | `navigationWaits` | `8` | 1-64 | Actions waiting for an NPC to finish walking |
 | `rawTextBehaviors` | `[]` | At most 256 | Behavior ids whose commands may take [interpolated text](/animus/07-behaviors#text-in-commands) outside letters, digits and `_ . : + -` |
+| `explosionsDamageBlocks` | `false` | | Lets `animus:explode` start fires and break blocks. Off, explosions only hurt what stands near them. [Player shop](/animus/10-shops#player-shops) chests stand either way |
 
 Commands are denied unless the behavior, shop or GUI is on one of the allow-lists. Anyone who can edit an allowed document can run console commands, so keep the lists narrow. The web editor changes such a document only with the [`apply:commands`](/animus/14-web-editor#console-commands) scope.
 
@@ -309,6 +310,8 @@ See [building](/animus/09-building).
 | `style` | `"chest"` | `chest` or `native` | The window a shop opens when neither the shop nor its NPC chooses: the chest window or the villager trading screen |
 | `priceFormat` | `"#,##0.##"` | Java decimal pattern | How prices are written while no economy is ready. With one, prices read in the economy's own format, such as `$2.00` or `2 Coins` |
 | `flushMillis` | `2000` | 100-60000 | How long limit and stock counter changes wait before they are written |
+| `playerLimit` | `3` | 0-1000 | How many [player shops](/animus/10-shops#player-shops) a player may own without an `animus.shops.limit.<n>` node. The highest such node wins; `animus.admin` has no limit. `0` leaves making shops to players with a limit node |
+| `currency` | `"minecraft:emerald"` | Item id | The item a new offer in a selling or buying player shop asks for, or pays, at first |
 
 ### [shops.messages]
 
@@ -499,6 +502,14 @@ Players sitting on NPCs; see [sitting on an NPC](/animus/05-movement-mounts-ridi
 | `defaultEnabled` | `false` | | Whether an NPC without an `animus:seat` module takes seated players. An NPC with the module decides for itself |
 | `maximum` | `32` | 1-256 | Players sitting on NPCs at once across the server |
 | `followGSit` | `true` | | With GSit running, its player-sit permission, toggles, worlds, regions, empty hand, distance and stack size apply to seats too |
+
+## [owners]
+
+NPCs players make for themselves; see [NPCs players own](/animus/02-commands-permissions#npcs-players-own). Applies live.
+
+| Key | Default | Range | Meaning |
+|---|---|---|---|
+| `defaultLimit` | `3` | 0-1000 | How many NPCs a player may own without an `animus.npc.limit.<n>` node. The highest such node a player holds wins; `animus.admin` has no limit. `0` leaves making NPCs to players with a limit node |
 
 ## [skins]
 

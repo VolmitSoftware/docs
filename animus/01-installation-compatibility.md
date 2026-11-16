@@ -2,7 +2,7 @@
 title: "Animus: Installation and Compatibility"
 description: "Requirements, installation, data folder layout and platform differences"
 published: true
-date: 2026-11-09T00:00:00.000Z
+date: 2026-11-15T00:00:00.000Z
 tags: "animus, installation, compatibility, paper, spigot, folia, fabric, neoforge, forge"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -113,7 +113,8 @@ Paper and Spigot run every feature. Folia and mod servers run the same NPC runti
 | Explosions hurting NPCs | Yes | Yes, on the explosion's region | No |
 | Combat and build protection | WorldGuard when installed | Same as Paper, asked on the region that owns the target | None |
 | Money prices | Vault | Vault, called on the player's region | Only through a Java module economy hook; use item prices otherwise |
-| [Bukkit events](/animus/99-java-modules-api#bukkit-plugins) (`VirtualNpcInteractionEvent` and others) and the `AnimusNpcs` service | Yes | Yes, on the owning region | Not fired |
+| [Bukkit events](/animus/99-java-modules-api#bukkit-events) (`VirtualNpcInteractionEvent` and others) and the `AnimusNpcs` service | Yes | Yes, on the owning region | Not fired |
+| [NPC service](/animus/99-java-modules-api#npc-service) for plugins and Java modules | Yes | Yes, NPC work on the owning region; teleports stay within the region | Java modules only, through `context.npcs()` |
 | Packet preview tools | `/animus proof` | `/animus proof folia` | No |
 | Data folder | `plugins/Animus/` | `plugins/Animus/` | `config/animus/` |
 

@@ -2,7 +2,7 @@
 title: "Animus: Overview"
 description: "What Animus is, how its NPCs work, and where each topic is documented"
 published: true
-date: 2026-11-12T00:00:00.000Z
+date: 2026-11-15T00:00:00.000Z
 tags: "animus, npc, overview"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -36,7 +36,7 @@ Each player gets their own copy of the presentation, built from what that player
 
 A definition's `modules` object holds per-NPC feature settings keyed by `namespace:name`, such as `animus:navigation`, `animus:combat`, `animus:riding` or `animus:shop`. The `animus` namespace belongs to the built-in features. Settings from other namespaces, including data kept by an import, are preserved even when nothing reads them.
 
-Trusted Java modules extend Animus with new behavior actions, conditions, triggers and import converters. They are jars placed in `modules/` and load at startup. See [Java modules and API](/animus/99-java-modules-api).
+Other plugins use Animus through its own API: a Bukkit plugin gets an NPC service that creates, edits and drives NPCs, adds its own definition modules and listens to NPC events. Trusted Java modules get the same service and also add behavior actions, conditions, triggers and import converters; they are jars placed in `modules/` and load at startup. See [Java modules and API](/animus/99-java-modules-api).
 
 ## Glossary
 
@@ -60,7 +60,7 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | Undo | Reverts one saved change. Each change's reply has **[Undo]**; `/animus undo` reverts your last change, and `/animus rollback <id>` any change by the id after `tx` |
 | Web editor | The web editor at [animus.volmitsoftware.com](https://animus.volmitsoftware.com) |
 | Pairing link | The single-use link `/animus editor pair` prints to connect the web editor to a server |
-| Module | Per-NPC feature settings in a definition's `modules`, such as `animus:navigation`. A Java module is a trusted jar in `modules/` that adds capabilities |
+| Module | Per-NPC feature settings in a definition's `modules`, such as `animus:navigation`; a plugin can register its own key. A Java module is a trusted jar in `modules/` that adds capabilities |
 
 ## Sections
 
@@ -97,4 +97,4 @@ Trusted Java modules extend Animus with new behavior actions, conditions, trigge
 | [Mod servers](/animus/16-mod-servers) | Fabric, NeoForge and Forge (experimental) |
 | [MythicMobs](/animus/36-mythicmobs) | NPCs made from Mythic mobs, their skills and the `mythic:cast-skill` action |
 | [Debug, React and metrics](/animus/17-debug-react-metrics) | `/animus debug summary` and the metrics published to React |
-| [Java modules and API](/animus/99-java-modules-api) | Trusted modules, capabilities and the Java API |
+| [Java modules and API](/animus/99-java-modules-api) | The NPC service for plugins, definition modules, events, trusted modules and capabilities |

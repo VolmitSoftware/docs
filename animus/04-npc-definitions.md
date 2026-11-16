@@ -47,7 +47,7 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 | `behaviors` | No | `namespace:id` references to [behaviors](/animus/07-behaviors). |
 | `tags` | No | See [appearance](#appearance-text-and-inventory). |
 | `groups` | No | 1-16 [trait group](/animus/18-trait-groups) ids whose shared values the NPC takes before its own. |
-| `owner` | No | Canonical player UUID. `/animus create`, the Animus menu and the paired web editor set it to the player who made the NPC. |
+| `owner` | No | Canonical player UUID of the player who owns the NPC; none for a server NPC. `/animus create`, `clone`, the Animus menu and the paired web editor set it to the player who made the NPC. See [Owner](#owner). |
 | `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat`, `animus:health`, `animus:riding` or [`mythic:mob`](/animus/36-mythicmobs#the-mythicmob-module). `animus:modelengine` shows a [Model Engine model](/animus/32-model-engine). Unknown module data is kept as written. |
 
 Appearance, inventory, `movement`, `poses` and `rig` fields are described below and on [movement, mounts and riding](/animus/05-movement-mounts-riding) and [rigs and animations](/animus/06-rigs-animations). Health, cooldowns and running behavior state never belong in a definition; Animus does not write them there.
@@ -349,11 +349,17 @@ A player-bodied NPC with `animus:mirror` shows each viewer that viewer's own ski
 | `name` | `false` | The viewer's own name above the NPC |
 | `equipment` | `false` | What the viewer held and wore when the NPC came into view |
 
-### Inventory and owner
+### Inventory
 
-The inventory is stored data. Nothing renders it and no item moves in or out of it at run time. Modules read it from the definition snapshot, and Java code can use `NpcInventory.of(definition)`. The owner is exposed by `NpcDefinition.owner()`, `/animus inspect` and the definition snapshot, for plugins and modules to use in their own permission rules. Animus management commands still require `animus.admin`.
+The inventory is stored data. Nothing renders it and no item moves in or out of it at run time. Modules read it from the definition snapshot, and Java code can use `NpcInventory.of(definition)`.
 
 `/animus inspect` shows the pose, the number of equipped slots and text lines, the owner, and `presentation=unavailable` on a server build that lacks the needed packet support. NPCs still appear there, with their plain body and profile name.
+
+### Owner
+
+`owner` names the player who owns the NPC, as Citizens' owner trait does; an NPC without it is a server NPC. A player owns what they make, and without `animus.admin` they change only NPCs they own, up to their limit of NPCs; only an admin changes the field itself. An owned NPC can never do more than its owner may: running commands, operator commands, lent permissions, server behaviors, reaching other players and making items each need an `animus.owned.*` node its owner holds, checked whenever the definition is saved and again as its behaviors run. [NPCs players own](/animus/02-commands-permissions#npcs-players-own) lists the nodes and what each allows.
+
+`/animus inspect` ends its first line with `owner` and the player's last known name, or their UUID when the server never saw them. The web editor shows the UUID under Basics, Identity in Advanced mode, with the player's name beneath it while it is paired to a server that knows the name. Plugins and modules read it with `NpcDefinition.owner()` and from the definition snapshot.
 
 ## Interactions
 

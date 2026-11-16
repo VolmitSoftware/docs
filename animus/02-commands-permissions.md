@@ -69,7 +69,7 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 | Node | Default | Grants |
 |---|---|---|
 | `animus.status` | Everyone | `/animus status` and the help page. Without `animus.admin`, status shows its one line only |
-| `animus.admin` | Operators | Every node in the next table, plus `reload`, `rollback` and the [packet preview tools](#packet-preview-tools) |
+| `animus.admin` | Operators | Every node in the next table, plus `reload`, `rollback`, the [packet preview tools](#packet-preview-tools), and every NPC whoever [owns](#npcs-players-own) it |
 | `animus.debug` | Operators | `/animus debug` readings |
 | `animus.debug.mode` | Operators | `/animus debug mode` |
 | `animus.ride` | Operators | Riding NPCs whose `animus:riding` module names no permission of its own |
@@ -85,11 +85,12 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 | Node | Commands | Animus menu |
 |---|---|---|
 | `animus.npc.view` | `list`, `inspect`, `select`, `selection`, `validate` | Inspect |
-| `animus.npc.create` | `create`, `mythic`, `clone` | New NPC, Copy |
+| `animus.npc.create` | `create`, `mythic`, `clone`, up to the player's [limit](#npcs-players-own) | New NPC, Copy |
 | `animus.npc.edit` | `edit`, `spawn`, `despawn`, `schedule`, `npc rename`, `npc attribute`, `npc health`, `npc model`, `npc disguise`, `npc look`, `npc anchor`, `npc revive`, `groups` | Name, Body, Equipment, Hologram, Spawned, Revive, All fields, Attributes, Modules, Movement settings, Folder, Trait groups, Mounts and riding with its Riding and Seat settings |
 | `animus.npc.delete` | `delete` | Delete |
 | `animus.npc.skin` | `npc skin` | Skin |
 | `animus.npc.move` | `npc move`, `npc tp`, `navigation`, `ride`, `mount`, `seat status` | Routes, route points, Bring here, Stand still, Walk once, Start, Stop now |
+| `animus.npc.others` | The player's other nodes reach NPCs they do not [own](#npcs-players-own) | The same in the menu: the NPCs list, the wand and every screen |
 | `animus.npc.speak` | `speak` | |
 | `animus.tools` | `tools`, `setup`, `undo`, and `gui` on its own | The menu and the wand; each screen also needs its own node |
 | `animus.behaviors` | `behaviors`, `modules` | Talk, Behaviors, the conversation editor |
@@ -97,14 +98,39 @@ Replies are one or two lines. In game, values you may need again are clickable, 
 | `animus.combat` | `combat` | Combat, its settings sections, target rules |
 | `animus.import` | `import`, including `import shops`, `import gloss` and the quest plugin links | |
 | `animus.editor.pair` | `editor` | Web editor, Open in editor |
-| `animus.shops` | `shop`, including `shop stock` | Shop |
+| `animus.shops` | `shop`, including `shop stock`, but not the three below | Shop |
+| `animus.shops.create` | `shop create`, `shop item`, `shop manage`: making and running [player shops](/animus/10-shops#player-shops), up to the player's shop limit | New shop on a chest, and each shop's own menu |
 | `animus.gui` | The `gui` commands, such as `gui open` and `gui create`, and `hologram` | GUIs, saved holograms |
 | `animus.build` | `build`, except `donate` | |
 | `animus.record` | `record` | Recordings |
 | `animus.rigs` | `rigs`, `pack` | |
 | `animus.quests` | `quest`, except `journal` and the offer buttons | |
 
-A builder who places, dresses and moves NPCs but cannot fight players, wipe behavior data, import or pair the editor needs `animus.tools`, `animus.npc.view`, `animus.npc.create`, `animus.npc.edit`, `animus.npc.skin` and `animus.npc.move`. Pairing the web editor is close to full access, since a paired browser can change NPCs, behaviors and GUIs; a token stays valid only while the player who paired it holds `animus.editor.pair`.
+A builder who places, dresses and moves NPCs but cannot fight players, wipe behavior data, import or pair the editor needs `animus.tools`, `animus.npc.view`, `animus.npc.create`, `animus.npc.edit`, `animus.npc.skin` and `animus.npc.move`. Without `animus.admin`, those nodes reach only the NPCs the builder owns; add `animus.npc.others` for a builder who works on server NPCs too, see [NPCs players own](#npcs-players-own). Pairing the web editor is close to full access, since a paired browser can change NPCs, behaviors and GUIs; a token stays valid only while the player who paired it holds `animus.editor.pair`.
+
+### NPCs players own
+
+An NPC can belong to a player: its `owner` is their UUID (see [Owner](/animus/04-npc-definitions#owner)). A player owns what they make with `create`, `mythic` and `clone`, and with New NPC and Copy in the menu. The console and players with `animus.admin` or `animus.npc.others` act on every NPC; any other player acts only on NPCs they own, whatever nodes they hold. Listing, selecting, inspecting, editing, moving, reskinning, renaming, spawning and deleting all follow this rule, in commands and in the menu; `list` shows such a player only their own NPCs. Trying it on someone else's NPC answers in one line: `mayor is not yours; you can change only NPCs you own`.
+
+`animus.npc.others` is for staff who look after server NPCs and players' NPCs without `animus.admin`. It lifts only the ownership rule: what a player may do to any NPC is still decided by their other nodes, so `animus.npc.others` with `animus.npc.move` moves every NPC and edits none. It does not let them change an owner, use `import` or `editor`, or pass their limit, and an owned NPC they edit is still held to what its owner may do. It defaults to operators and comes with `animus.admin`.
+
+To let players make their own NPCs, grant `animus.tools`, `animus.npc.view`, `animus.npc.create`, `animus.npc.edit`, `animus.npc.skin`, `animus.npc.move` and `animus.npc.delete`. A player may own as many NPCs as their highest `animus.npc.limit.<n>` node allows (up to 1000), or `defaultLimit` in [`[owners]`](/animus/03-configuration#owners) without one; `animus.npc.limit.0` stops them making any. Only NPCs they own count, including temporary NPCs a plugin made for them. Over the limit, `create`, `clone`, New NPC and Copy answer `You own 2 NPCs, your limit; remove one to make another`. Admins have no limit.
+
+To let players run their own shops, as in Shopkeepers, grant `animus.shops.create`. Each [player shop](/animus/10-shops#player-shops) has an NPC the player owns, so it counts against their NPC limit, and the shop itself against their shop limit: the highest `animus.shops.limit.<n>` node (up to 1000), or `playerLimit` in [`[shops]`](/animus/03-configuration#shops) without one. Over it, a new shop answers `You own 3 shops, your limit; remove one to make another`. A player changes only shops they own that keep their stock in chests; a shop without chests, another player's shop and who owns a shop are an admin's. Players with `animus.npc.others` run every player's shop.
+
+Only an admin changes who owns an NPC: an `owner` in `/animus edit` or the Owner field of All fields is refused for anyone else, and the menu hides the field. `animus.import` and `animus.editor.pair` change NPCs whoever owns them, so a player needs `animus.admin` as well to use `import` or `editor`; the console always can. Without `animus.admin` or `animus.npc.others`, `behaviors state delete` works only on the player's own NPCs, `behaviors cancel` only on their runs, and `build pause`, `resume`, `cancel`, `rollback`, `survey` and `team` take a build by the id of the player's own NPC.
+
+An NPC a player owns can never do more than its owner may. Its definition, with its trait groups, and the behaviors, shops and menus it uses are checked when it is saved, by anyone: in game, in the web editor, by an import, by hand, or by a plugin through the [NPC service](/animus/99-java-modules-api#npc-service), whose temporary NPCs are checked the same way. Each of these needs a node its owner holds:
+
+| Node | What an owned NPC may then do |
+|---|---|
+| `animus.owned.commands` | Run commands: `animus:command`, another plugin's privileged action, schedule arrival commands, MythicMobs skills, and shops or menus that run commands |
+| `animus.owned.operator` | Run a command with `asOperator`, as the clicking player made an operator for that one command |
+| `animus.owned.server` | Use a server behavior, pass its clicks to or ride an NPC its owner does not own, act on another NPC through an action's `npc` argument or a routine run for it, build, set off explosions, teleport players, and carry another plugin's module. A plugin putting its own [definition module](/animus/99-java-modules-api#definition-modules) on the NPC needs no node, but a player adding or changing that module's data does; what an import kept in `citizens:review` or `shopkeepers:review` needs no node |
+| `animus.owned.players` | Reach players other than the one who clicked: a `player` argument, a routine run for another player, sounds and particles placed at another player with `atPlayer`, messages to every player, the world or the console, combat that targets players, and another player's shop stock |
+| `animus.owned.items` | Create items or money: gifts, books, quest rewards, free shop goods, menu gifts and payouts, and death drops |
+
+A command that lends permissions also needs each lent node held by the owner. A save that adds any of these without the node is refused with the reason, such as `stall is owned by a player, so it cannot run commands (behavior town:reward) unless its owner holds animus.owned.commands`. What the NPC already did stays when its owner loses a node, so an unrelated edit still saves; while it runs, each action checks the owner's nodes again and does nothing the owner no longer holds. For an owner who is offline, Animus asks LuckPerms or Vault where they run, else the operator list, and remembers the answer; until it has one, a running action of that owner's NPC that needs a node is refused. All five nodes default to operators and come with `animus.admin`.
 
 Feature modules can name their own nodes, such as a `permission` on `animus:riding`, `animus:hire`, a shop, a shop entry or a GUI. Animus does not declare those nodes, so operators hold them (on mod servers, permission level 2 and above) and everyone else needs them granted by your permission plugin.
 
@@ -307,6 +333,9 @@ The start options are `anchor`, `rotation`, `mirror`, `offset`, `yoffset`, `patt
 | `/animus shop list [page=1]` | Loaded shops |
 | `/animus shop open <shop> [player=] [style=] [npc=]` | Open a shop for yourself or another player; `style=native` or `style=chest` replaces the shop's window style, and `npc=<id>` opens it as that NPC's click does, with its window style and villager look |
 | `/animus shop stock <shop> [price=] [mode=buy] [page=1]` | Add the item in your main hand to the shop as one offer, in the first free slot of the page. `mode=buy` sells it to players for `price`, `mode=sell` buys it from them for `price`, and `mode=trade` gives it for the item in your off hand, with no price. A shop id with no file makes the shop. See [stocking in game](/animus/10-shops#stocking-a-shop-in-game). Players only |
+| `/animus shop create` | New shop for the chest, barrel or other container you look at, as sneaking with the shop item does; needs `animus.shops.create`. See [player shops](/animus/10-shops#player-shops). Players only |
+| `/animus shop item` | The shop item: sneak and right-click your chest with it to make a shop there; needs `animus.shops.create`. Players only |
+| `/animus shop manage [shop]` | The menu of one of your shops, or with no shop the list of them; staff with `animus.npc.others` see every player's shop; needs `animus.shops.create`. Players only |
 | `/animus shop reload` | Reload shops and chest GUIs |
 | `/animus shop reset <shop> [player=]` | Clear purchase limits and stock counters, for everyone or one player by name or UUID |
 | `/animus shop problems [page=1]` | Refused shop documents with their reasons, and notes about offers the chosen window style cannot show exactly |

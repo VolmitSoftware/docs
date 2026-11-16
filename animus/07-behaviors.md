@@ -2,7 +2,7 @@
 title: "Animus: Behaviors"
 description: "JSON behavior documents, triggers, built-in capabilities, packs and state"
 published: true
-date: 2026-11-12T00:00:00.000Z
+date: 2026-11-15T00:00:00.000Z
 tags: "animus, behaviors, triggers, dialogue, quests, packs"
 editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
@@ -59,16 +59,16 @@ Restarts never resume work in progress. Declared persistent variables survive. E
 | Node | Fields and behavior |
 | --- | --- |
 | `sequence` | `steps`: ordered child nodes. |
-| `action` | `capability`, optional object `arguments`, optional `bindings`, `expressions` and `templates`; waits for the capability's result. |
+| `action` | `capability`, optional object `arguments`, optional `bindings`, `expressions` and `templates`; waits for the capability's result. Optional `result`: a declared variable that receives the result map, such as the items `animus:read-inventory` reads. |
 | `condition` | Either `capability` with optional `arguments`, `bindings`, `expressions` and `templates`, or an `expression`; plus `then` and optional `else`. |
-| `wait` | Integer `ticks` from 1 to 72,000. |
+| `wait` | `ticks`: a literal from 1 to 72,000, or an operand read when the wait starts and held to 0 to 72,000. A computed wait of 0 goes on at once. |
 | `repeat` | `count`: a literal from 0 to 128 or an operand. Optional `maximum` (1 to 1,024, default 128) and `index`. A `body`. |
 | `foreach` | `list`: an operand giving a list or map. `as`, optional `index`, `key` and `maximum` (1 to 1,024, default 128). A `body`. |
 | `while` | `expression`, optional `maximum` passes (1 to 1,024, default 128) and a `body`. |
 | `break` | No fields. Leaves the innermost loop. |
 | `continue` | No fields. Starts the innermost loop's next pass. |
 | `parallel` | One to eight independent `branches`, then join. |
-| `call` | `routine`: a reusable routine in this document. Optional `arguments` and `result`. |
+| `call` | `routine`: a reusable routine in this document. Optional `arguments` and `result`. Optional `player` and `npc`: operands giving the UUID of a player or NPC the routine runs for, as Denizen's `run player:` and `npc:` do. Inside it, player and NPC facts, flags and actions address them; after it returns, the run's own player and NPC again. |
 | `return` | Optional `value`. Ends the current routine. |
 | `set` | `variable` and a `value`: a literal of the variable's type or an [operand](#operands). |
 
@@ -186,7 +186,7 @@ An expression reads:
 | --- | --- |
 | A declared variable, such as `visits` | Its current value. A dotted name reads map keys: `item.name` is key `name` of the map `item`. |
 | `player.<fact>` | `name`, `uuid`, `online`, `health`, `max_health`, `food`, `level`, `world`, `x`, `y`, `z`, `location`, `gamemode`, `op`, `sneaking`, `flying`, `item_in_hand`, `item_in_hand_amount` of the run's player. |
-| `npc.<fact>` | `name`, `id`, `citizens_id`, `uuid`, `spawned`, `health`, `world`, `x`, `y`, `z`, `location` of the run's NPC. `citizens_id` is the numeric Citizens id of an NPC imported from Citizens, such as `284` for `citizens-284`, and the Animus id of any other NPC. |
+| `npc.<fact>` | `name`, `id`, `citizens_id`, `uuid`, `spawned`, `health`, `world`, `x`, `y`, `z`, `location`, `behaviors` of the run's NPC. `citizens_id` is the numeric Citizens id of an NPC imported from Citizens, such as `284` for `citizens-284`, and the Animus id of any other NPC. `behaviors` lists the behavior ids in its definition. |
 | `server.<fact>` | `online_players` (a number), `players` (the online players' UUIDs, at most 1,024), `max_players`, `tick`, `time_millis`. |
 | `context.<key>` | A value of the event that started the run, such as `context.message`. |
 
@@ -214,6 +214,19 @@ Functions, in addition to the GUI ones such as `min`, `max`, `round`, `len`, `co
 | `players(x)` | The player UUIDs in a list or a single value, in order and without repeats, at most 100. Items written `p@<uuid>`, as Denizen stores players, count too; anything else is skipped. |
 | `player_info(player)` | Another online player's facts as a map with the `player.<fact>` keys; an empty map when that player is offline. |
 | `player_flag(player, name[, default])`, `player_has_flag(player, name)` | A `player` flag of this namespace for another player, read as `flag` and `has_flag` read the run's player. |
+| `npcs()` | The UUIDs of every NPC the server knows, spawned or not, at most 1,024. |
+| `npc_info(npc)` | An NPC's facts as a map with the `npc.<fact>` keys, from its UUID (`n@<uuid>` counts too); an empty map for anything that is no NPC. An NPC that is not spawned has `spawned` false and no position. |
+| `npc_flag(npc, name[, default])`, `npc_has_flag(npc, name)` | An `npc` flag of this namespace for another NPC, read as `flag` and `has_flag` read the run's NPC. |
+| `distance(from, to)` | The distance in blocks between two locations written `x,y,z` or `x,y,z,world`, as the `location` facts give them. Locations in two different worlds are 1,000,000,000 apart. |
+| `offset(location, dx, dy, dz)` | The location moved by those blocks, written `x,y,z,world` to two decimals. |
+| `players_near(location, radius)` | The UUIDs of the online players within `radius` blocks of the location in its world, nearest first, at most 100. |
+| `within(location, area)` | Whether the location is inside an area map: `world`, `shape` (`cuboid` or `ellipsoid`) and six `bounds`. A cuboid's bounds are two corner blocks, both inside; an ellipsoid's are its center and its three radii. |
+| `has_player()` | Whether a player started the run. A command run from the console has none. |
+| `player_named(name)` | The UUID of the online player with that name, ignoring case; otherwise the shortest name that starts with it, then the shortest that contains it; empty text for none. |
+| `now()` | The time now in epoch milliseconds, read as the expression runs. `server.time_millis` is the same clock as of the last facts refresh, up to half a second behind. |
+| `type_of(x)` | `'list'`, `'map'`, `'text'`, `'number'` or `'boolean'`. |
+| `duration_seconds(x)`, `duration_text(seconds)` | Seconds in a number or in duration text such as `10m`, `30t`, `1h30m` or `d@1d`; seconds written as `2h 30m`: days and hours, minutes under a day, seconds under ten minutes, `0s` for none. |
+| `flag_expiry(scope, name)`, `player_flag_expiry(player, name)` | When a flag of this namespace expires, in epoch milliseconds; 0 when it never expires or is unset. `server.time_millis` is the time now. |
 
 Collection functions return new values and never change a variable; write the result with `set`. Lists and maps hold at most 256 items. One evaluation takes at most 4,096 steps, counting each part of the expression and each item a function walks, and builds text of at most 65,536 characters. Strings, lists and maps it produces must still fit the value bounds before they are stored or sent. A failure ends the run as FAILED with the reason `expression-failed:<field>:<message>` and a `behavior-expression-failed` diagnostic.
 
@@ -419,7 +432,7 @@ How Animus looks:
 
 Projectiles are followed, not looked for. A projectile launched within 64 blocks of an NPC with a `hit_by_projectile` trigger is followed on the thread that owns it for up to a minute, at most `projectilesFollowed` at once, and each move is tested against NPC hitboxes. It fires the trigger once per NPC it crosses. Whether it stops there follows [combat](/animus/08-combat#projectiles-and-the-environment)'s own rule: when combat counts the projectile and the NPC is killable, alive, and its `sources` include `projectiles`, the projectile strikes the body with combat's damage, knockback and effects and stops there (a Piercing arrow passes one such body per level), and `context.stopped` is `true`. The trigger fires as the strike lands, so a shot that kills the NPC fires it too, and so does a projectile that strikes the decoy of an NPC mobs attack. Every other projectile flies on through the body as if it were not there, and `context.stopped` is `false`.
 
-Paper, Spigot and Folia sense. On Folia each NPC looks on its region and reads only the chunks that region owns, and a projectile is followed on its own region. Fabric, Forge and NeoForge do not sense yet: these triggers are accepted there but never fire. Other plugins hear the same facts as [Bukkit events](/animus/99-java-modules-api#bukkit-plugins).
+Paper, Spigot and Folia sense. On Folia each NPC looks on its region and reads only the chunks that region owns, and a projectile is followed on its own region. Fabric, Forge and NeoForge do not sense yet: these triggers are accepted there but never fire. Other plugins hear the same facts as [Bukkit events](/animus/99-java-modules-api#bukkit-events).
 
 ### Trigger settings
 
@@ -505,7 +518,7 @@ The `player_area`, inventory, item, block, combat and projectile events report w
 | Event | `context` |
 | --- | --- |
 | `player_area` | `area`, `world`, `phase` (`enter` or `leave`) and `cause`: `join` for the first check after a player joins, `quit` when they leave the server, `move` otherwise. |
-| `player_inventory_open`, `player_inventory_close` | `inventory_type`: a lowercase type such as `chest`, `player`, `furnace`, `workbench` or `hopper`. |
+| `player_inventory_open`, `player_inventory_close` | `inventory_type`: a lowercase type such as `chest`, `player`, `furnace`, `workbench` or `hopper`; `inventory_items`: the filled slots of the opened inventory, not the player's own, as maps of `slot`, `item`, `amount`, `name` and `data` as `animus:read-inventory` gives them; `inventory_location`: the block that holds it, written `x,y,z,world`, or empty text for an inventory of no block. |
 | `player_inventory_click` | `inventory_type`; `click`: `left`, `right`, `shift_left`, `shift_right`, `middle`, `number_key`, `double_click`, `drop`, `control_drop` and so on; `slot`: the raw slot from 0, or -1 outside the window; `item`: the clicked item's key. |
 | `player_item_drop`, `player_item_pickup`, `player_item_consume` | `item`, a key such as `minecraft:bread`, and `amount`. |
 | `player_block_click`, `player_block_place`, `player_block_break` | `block`, a key; `world`, `x`, `y`, `z` and `location` (`x,y,z,world`). A click adds `click` (`left` or `right`) and `hand` (`main_hand` or `off_hand`). |
@@ -536,6 +549,18 @@ An action of a run reaches one player: the run's player, or the one its `player`
 ```
 
 `players` keeps at most 100 players, so one loop never sends more than 100 actions.
+
+### NPC lists
+
+`npcs()` lists every NPC the server knows, and `npc_info`, `npc_flag` and `npc_has_flag` read one of them by UUID. To act on the NPCs that hold a flag, loop over the list and name each one with the `npc` argument of `animus:set-flag` or `animus:flag-state`. Here every NPC with the flag `post` gets the flag `alert`:
+
+```json
+{"type": "foreach", "list": {"expression": "npcs()"}, "as": "guard", "maximum": 1024,
+ "body": {"type": "condition", "expression": "npc_has_flag(guard, 'post')",
+          "then": {"type": "action", "capability": "animus:set-flag", "arguments": {"name": "alert", "scope": "npc", "npc": null}, "expressions": {"/npc": "guard"}}}}
+```
+
+`npc_info(guard).behaviors` lists the NPC's behaviors, so `contains(get(npc_info(guard), 'behaviors', []), 'town:guard')` finds the NPCs that run `town:guard`.
 
 ### Server commands
 
@@ -610,10 +635,11 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:has-permission` | `permission` | The triggering player holds the permission. False with no triggering player. |
 | `animus:npc-state` | At least one of `spawned`, `minimumHealth`, `maximumHealth` | The NPC matches all of them. A despawned or removed NPC has `spawned` false and health 0. |
 | `animus:player-in-range` | `radius` (1-64), optional `anyPlayer` | The triggering player, or any player with `anyPlayer`, is within the radius in the NPC's world. |
-| `animus:flag-state` | `name`, optional `scope`, optional `value` (default true: any JSON value, including a list or map) | The flag has exactly that value: `3` never equals `3.0` or `"3"`. An unset or expired flag is false: it equals `false` and nothing else. |
+| `animus:flag-state` | `name`, optional `scope`, optional `value` (default true: any JSON value, including a list or map), optional `player` (with `player` or `relationship` scope) or `npc` (with `npc` or `relationship` scope) | The flag has exactly that value: `3` never equals `3.0` or `"3"`. An unset or expired flag is false: it equals `false` and nothing else. `player` and `npc` name, by UUID, another player or NPC whose flag it is. |
 | `animus:quest-state` | `name`, optional `scope`, at least one of `equals`, `atLeast`, `atMost` | The stage matches all of them. An unset quest is stage 0. |
 | `animus:quest-status` | `quest`, `status` (`none`, `active`, `ready` or `finished`), optional `player` | The player is at that point of the [quest](/animus/38-quests). `ready` means every stage is done and the turn-in NPC waits. |
 | `animus:can-afford` | The [cost](#charging-players) arguments of `animus:charge` | The triggering player, or the player named by `player`, holds all of it. False with no triggering player. |
+| `animus:can-fit` | The item arguments of `animus:give-item`, optional `player` | That many of the item, with its name, lore and enchantments, fit in the player's storage slots without dropping any. False with no triggering player. |
 | `animus:commands-allowed` | None | The running behavior is on the [command allow-list](#commands), so `animus:command` would run. Check it before charging for a command. |
 
 ### Actions
@@ -625,21 +651,28 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:title` | At least one of `title` and `subtitle` (each up to 256 characters), optional `fadeIn`, `stay`, `fadeOut` (0-72,000 ticks; defaults 10, 70 and 20), `player` | Shows a title to the player. |
 | `animus:actionbar` | `text` (up to 256 characters), optional `player` | Shows the text above the player's hotbar. |
 | `animus:choices` | `id`, `prompt`, `options` (1-8 of `id` and `text`, each with optional `color`, `hover`, `style`), optional `lifetimeSeconds` (1-600) | Shows the prompt and a row of colored answer buttons to the triggering player. Completes when shown and does not wait for the answer. |
-| `animus:command` | `command` (no leading slash), optional `as`: `console` (default) or `player`, optional `player`; with `"as": "player"` also optional `permissions` (1-16 permission nodes) and `permissionTicks` (0-72,000, default 0) | Runs the command. Each `{player}` becomes the triggering player's UUID, which vanilla selectors accept, such as `clear {player} minecraft:emerald 1`. Each `{player_name}` becomes their current name. PlaceholderAPI placeholders are filled for the command's player; see [text in commands](#text-in-commands). `permissions` are lent to the player while the command runs; see [permissions for a command](#permissions-for-a-command). Requires the [allow-list](#commands). |
+| `animus:command` | `command` (no leading slash), optional `as`: `console` (default) or `player`, optional `player`; with `"as": "player"` also optional `asOperator`, `permissions` (1-16 permission nodes) and `permissionTicks` (0-72,000, default 0) | Runs the command. Each `{player}` becomes the triggering player's UUID, which vanilla selectors accept, such as `clear {player} minecraft:emerald 1`. Each `{player_name}` becomes their current name. PlaceholderAPI placeholders are filled for the command's player; see [text in commands](#text-in-commands). `permissions` are lent to the player while the command runs, and `asOperator` makes them an operator for it; see [permissions for a command](#permissions-for-a-command). Requires the [allow-list](#commands). |
 | `animus:navigate` | Either `x`, `y`, `z` or an `anchor` of the NPC's own world, with optional `mode` (`walk`, `swim`, `fly`) and `speed` (1-5), or `route`. Optional `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). | Starts a route or follows `routes/<route>.json`. Completes when requested unless `wait` is true; see [walking a patrol](#walking-a-route). The [movement](/animus/05-movement-mounts-riding) limits apply. |
 | `animus:stop-navigation` | None | Stops any route, including a playing recording. Reports `stopped`. |
 | `animus:play-recording` | `recording` (an id under `recordings/`), optional `playback` (`once`, `loop` or `pingpong`; unset uses the recording's own, else `loop`), `wait`, and with it `timeoutTicks` (20-12,000, default 1,200). `wait` needs a `once` playback. | Plays a [performance recording](/animus/19-performance-recordings) on the NPC. Completes when started unless `wait` is true, then at the last frame, with the same failures as [walking a patrol](#walking-a-route). Unavailable when `[recordings]` is disabled. |
 | `animus:resume-patrol` | None | Restarts the NPC's declared route or recording, continuing from where combat, `/animus navigation go` or a stop interrupted it. Reports `resumed`, or `nothing-to-resume` when there is none. |
-| `animus:look` | Either `x`, `y`, `z`, or `"target": "player"` | Turns the NPC. The target must be within 64 blocks in the same world. |
-| `animus:animate` | `animation`: `swing`, `swing_offhand`, `hurt`, `crit`, `magic_crit`, `wake`, `sneak`, `sleep`, `sit`, `stand`, `use_item` or `stop_using_item` | Shows a vanilla animation. Swings, the hurt flash and critical hits show once to everyone who sees the NPC. `sneak`, `sleep`, `sit` and `stand` change its pose, `wake` stands it up from sleeping, and `use_item` raises the held item until `stop_using_item`; these last until something else changes them, such as a route's style or a definition change. Sleeping and sitting need a player body. |
+| `animus:look` | Either `x`, `y`, `z`, or `"target": "player"`; optional `npc` | Turns the NPC, or the NPC that `npc` names by UUID. The target must be within 64 blocks in the same world. |
+| `animus:animate` | `animation`: `swing`, `swing_offhand`, `hurt`, `crit`, `magic_crit`, `wake`, `sneak`, `sleep`, `sit`, `stand`, `use_item` or `stop_using_item`; optional `npc` | Shows a vanilla animation on the NPC, or the NPC that `npc` names by UUID. Swings, the hurt flash and critical hits show once to everyone who sees the NPC. `sneak`, `sleep`, `sit` and `stand` change its pose, `wake` stands it up from sleeping, and `use_item` raises the held item until `stop_using_item`; these last until something else changes them, such as a route's style or a definition change. Sleeping and sitting need a player body. |
 | `animus:pose` | `pose`: a name from the definition's `poses` | Turns the NPC to the yaw and pitch of that named pose. A name the definition does not declare is refused. |
 | `animus:set-appearance` | Any of `name` (up to 16 characters) and `skin` (a skin file hash), or `"reset": true` | Shows a new name on any body, or a skin on a player body. Viewers receive a fresh body. |
 | `animus:set-equipment` | `slot` (`main_hand`, `off_hand`, `head`, `chest`, `legs`, `feet`, `body`, `saddle`), optional `item` | Shows the item, such as `minecraft:iron_sword`. Without `item`, clears the slot. A slot the NPC's body cannot show fails the action and names the body and slot; see [equipment](/animus/04-npc-definitions). Equipment declared in the definition returns after a restart or a definition change. |
 | `animus:set-attribute` | `attribute` (a vanilla [attribute](/animus/04-npc-definitions#attributes) id such as `scale`), and either `value` (inside the attribute's range) or `"reset": true` | Sets the attribute for the running NPC, or returns it to the definition's value. Viewers get it at once, and movement uses it from the next step; a new `scale` also resizes the hitbox and shows the body again. Combat settings taken from attributes keep their values until the definition is applied again. The change lasts until a restart or a definition change. |
-| `animus:play-sound` | `sound`, optional `volume` (0-4), `pitch` (0.5-2), `audience`, `radius`, `at`: `npc` (default) or `player`, `player` | Plays the sound at the NPC, or at the player, for its audience only. Server behaviors always play at the player. |
-| `animus:spawn-particle` | `particle`, optional `count` (1-64), `spread` (0-8), `audience`, `radius`, `at`: `npc` (default) or `player`, `player` | Shows the particle at the NPC, or at the player, to its audience only. Server behaviors always show it at the player. Particles that need extra data are rejected. |
+| `animus:play-sound` | `sound`, optional `volume` (0-4), `pitch` (0.5-2), `audience`, `radius`, `at`: `npc` (default) or `player`, `atPlayer`, `npc`, `player` | Plays the sound at the NPC, or at the player, for its audience only. `atPlayer` names, by UUID, another player to play it at while `player` and `audience` still say who hears it. `npc` names, by UUID, another NPC to play it at. Server behaviors play at a player unless `npc` names an NPC. |
+| `animus:spawn-particle` | `particle`, optional `count` (1-64), `spread` (0-8), `height` (-16-16), `audience`, `radius`, `at`: `npc` (default) or `player`, `atPlayer`, `npc`, `player` | Shows the particle at the NPC, or at the player, to its audience only: at the middle of the body, or `height` blocks above the feet. `atPlayer` names, by UUID, another player to show it at while `player` and `audience` still say who sees it. `npc` names, by UUID, another NPC to show it at. Server behaviors show it at a player unless `npc` names an NPC. Particles that need extra data are rejected. |
 | `animus:teleport` | Optional `target`: `player` (default) or `npc`. Either `x`, `y`, `z` with optional `world`, `yaw` (-360-360), `pitch` (-90-90), `to`: `npc` or `player`, or with `"target": "npc"` an `anchor`. Optional `player`. | Teleports the player or the NPC, or the NPC to one of its [anchors](/animus/04-npc-definitions#anchors). Without `world` the target stays in its world. Reports `teleported`. On Folia a teleport the platform cannot make is refused with its reason. |
-| `animus:give-item` | `item` (such as `minecraft:bread`), optional `amount` (1-6,400, default 1), `name`, `lore` (up to 16 lines), `player` | Gives the items; what does not fit drops at the player's feet. Reports `given`. |
+| `animus:give-item` | `item` (such as `minecraft:bread`), optional `amount` (1-6,400, default 1), `name`, `lore` (up to 16 lines), `enchantments` (up to 32, such as `{"minecraft:sharpness": 5}`, levels 1-255), `player`. Instead of `item`, `name`, `lore` and `enchantments`, `stack`: one map of those keys, such as an item `animus:read-inventory` lists, whose `data` gives that exact item back; an `amount` next to it replaces the stack's. | Gives the items; what does not fit drops at the player's feet. An unknown item or enchantment is refused. Reports `given`. |
+| `animus:read-inventory` | Optional `player` | Reads the filled slots of the player's inventory into the node's `result` as `items`: a list of maps with `slot` (0-35 storage, 36-39 armour, 40 off hand), `item`, `amount`, for a renamed item `name` as plain text, and for an item with components `data`: the server's own text for the whole item, which `stack` gives back exactly. Items past about 48,000 characters of data in one read go without it. |
+| `animus:ray-trace` | Optional `range` (1-128, default 50), `player` | Finds the block the player looks at and reads it into the node's `result`: `location`, written `x,y,z,world` as the location facts write it, and `block`, its key; both are empty text when the player looks at no block within range. |
+| `animus:read-block` | `location`, written `x,y,z,world` | Reads the block there into the node's `result` as `block`, its key, or empty text when the location is empty or its world or chunk is not loaded. A server behavior reads it where the triggering player is owned. |
+| `animus:explode` | Optional `x`, `y`, `z` and `world` (default the NPC's place and world), `power` (0-16, default 1), `fire`, `breakBlocks`, `npc` | Sets off an explosion that hurts what stands near it. `fire` and `breakBlocks` start fires and break blocks only when [`explosionsDamageBlocks`](/animus/03-configuration#behaviorsactions) is on; protection plugins decide what it may break, as for any explosion. Needs an NPC, or `npc` naming one. |
+| `animus:look-close` | `enabled`, optional `range` (1-64), `lineOfSight`, `npc` | Turns the NPC's [look-close](/animus/04-npc-definitions) on or off, with the range and line of sight given and its other settings kept, until a restart or a definition change, as `animus:set-attribute` does. |
+| `animus:bossbar` | `id` (lowercase letters, digits, `_`, `.`, `-`), optional `operation`: `show` (default) or `remove`, and to show `title` (up to 256 characters), `progress` (0-1), `color` (`pink`, `blue`, `red`, `green`, `yellow`, `purple`, `white`), `style` (`solid`, `segmented_6`, `segmented_10`, `segmented_12`, `segmented_20`), optional `player` | Shows the player a boss bar by its id, or changes the parts given. A new bar starts empty, white, solid and untitled. Each player's bars are their own: the same id for another player is another bar. |
+| `animus:sidebar` | Optional `operation`: `show` (default), `add`, `set_line` or `remove`; to show `title` (up to 128 characters) and `lines` (up to 15, each up to 128 characters); `add` takes `lines`, `set_line` takes `line` (1-15) and one line in `lines`; optional `player` | Shows the player a sidebar, its lines top first, replacing the last one a behavior showed them, or removes it. `add` puts lines below the last sidebar's, up to 15, and `set_line` replaces one line, filling any lines above it with blank ones. Only that player sees it. On Paper, Spigot and Folia the sidebar is a scoreboard of the player's own, so it replaces any other plugin's scoreboard for that player until it is removed. |
 | `animus:take-item` | `item`, optional `amount` (1-6,400, default 1), `player` | Takes up to that many. Reports `taken`, never more than the player held. |
 | `animus:charge` | At least one of `money`, `levels` and `items`, optional `match`, `player` | Takes the whole [cost](#charging-players) or nothing. Reports `charged`; a player who cannot pay ends the run with `cannot-afford`. |
 | `animus:give-book` | `title` and `author` (each up to 32 characters), `pages` (1-50, each up to 1,024 characters and [formatted](#text-formatting)), optional `player` | Gives a written book. Reports `given`. |
@@ -649,7 +682,7 @@ This greeter faces the player who started it, asks a question, and records that 
 | `animus:combat-control` | `operation` (`enable`, `disable`, `target`, `release`, `guard`), `target` (an entity or NPC UUID, or `player` for the triggering player): required for `target`, optional for `guard`, refused otherwise | Drives the [combat module](/animus/08-combat#behaviors-and-commands). Needs enabled combat settings; protection still applies. |
 | `animus:open-shop` | `shop` (a shop id such as `town:baker`), optional `player` | Opens the [shop](/animus/10-shops) for the triggering player. Reports `delivered` 0 when they are offline. |
 | `animus:open-gui` | `gui`, optional `kind`: `inventory` (default), `menu`, `shop` or `gloss`, optional `player` | Opens the [chest GUI](/animus/11-guis-holograms-menus), [holographic menu](/animus/11-guis-holograms-menus#holographic-menus) or shop with that id for the triggering player. `gloss` opens a Gloss menu by its Gloss id, such as `lobby/main`, and refuses as `gloss-unavailable` when Gloss is not installed. |
-| `animus:set-flag` | `name`, optional `scope`, and either optional `value` (default true: any JSON value, including a list or map) with optional `expireSeconds` (1-31,536,000), or `"clear": true` | Sets the flag, which reads as unset once `expireSeconds` pass. `clear` unsets it. A value outside the value bounds is refused with `flag-value-unsupported`. |
+| `animus:set-flag` | `name`, optional `scope`, and either optional `value` (default true: any JSON value, including a list or map) with optional `expireSeconds` (1-31,536,000), or `"clear": true`. Optional `player` (with `player` or `relationship` scope) or `npc` (with `npc` or `relationship` scope). | Sets the flag, which reads as unset once `expireSeconds` pass. `clear` unsets it. A value outside the value bounds is refused with `flag-value-unsupported`. `player` and `npc` name, by UUID, another player or NPC whose flag it is; a server behavior can set a named NPC's flags. |
 | `animus:set-quest-state` | `name`, optional `scope`, and either `value` or `random` (1-1,000,000) | Sets the stage to `value`, or to a random stage from 0 up to but not including `random`. `"random": 3` picks 0, 1 or 2. |
 | `animus:advance-quest-state` | `name`, optional `scope`, optional `by` (default 1), optional `maximum` | Adds to the stage without passing `maximum`. Reports `value`. |
 | `animus:start-quest` | `quest`, optional `force`, `player` | Starts the [quest](/animus/38-quests) for the player with its start messages and trigger. `force: true` skips its requirements and repeat rule. Reports `stage`. |
@@ -812,6 +845,8 @@ A player command can hold permission nodes while it runs, the way Citizens' temp
 ```
 
 The nodes are added to the player just before the command runs and taken back right after it, or `permissionTicks` later, at most 72,000 ticks (one hour). They also go when the player leaves or the server stops. `permissions` and `permissionTicks` need `"as": "player"`, since a console command needs no permission. Only Paper, Spigot and Folia can lend permissions; on mod servers the action fails with `permissions-unsupported`.
+
+`"asOperator": true` runs a player command the way Citizens runs an `op` command: a player who is not an operator is made one for that one command and stops being one as it returns, even when it fails. Animus writes the player to `state/temporary-operators.json` before making them an operator and crosses them off after, so a quit, a stop or a crash during the command never leaves them one: the quit and the stop take it back at once, and the next start takes it back from everyone the file still lists. A player who is already an operator is left as they are. On Folia this happens on the player's own region. On Fabric, Forge and NeoForge the command runs with the server's operator level for that one command and the operator list is never changed. Only an NPC without an owner, or one whose owner holds `animus.owned.operator`, may run it; see [NPCs players own](/animus/02-commands-permissions#npcs-players-own).
 
 ### Limits and previews
 
@@ -1039,7 +1074,7 @@ Variables are never removed implicitly. Deleting or disabling a behavior, deleti
 
 ### Traces
 
-Each run keeps a fixed number of recent steps, set by `traceEntries`, and its report lists current waits, such as `condition:example:allowed@$.routines.main` or `tick:1200@$.routines.main.steps[1]`. Java plugins read the same views through `BehaviorRuntime.observe(uuid)` and `observeNpc(idOrUuid)`; see [Java modules and API](/animus/99-java-modules-api).
+Each run keeps a fixed number of recent steps, set by `traceEntries`, and its report lists current waits, such as `condition:example:allowed@$.routines.main` or `tick:1200@$.routines.main.steps[1]`. `/animus behaviors trace <npc>` shows them. Plugins start and cancel runs through the [NPC service](/animus/99-java-modules-api#driving-npcs).
 
 ## Settings
 

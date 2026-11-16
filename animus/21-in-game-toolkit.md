@@ -444,6 +444,26 @@ A setting in the details shows the value the selected NPCs that use the shop sha
 
 Choices such as Window style move to the next value on a click and to the previous on a right-click. Prices read as the server's economy writes them, such as `$5.00` or `5 Coins`; while no economy is ready, `[shops] priceFormat` writes them. See [money](/animus/10-shops#money).
 
+### Player shops
+
+Players with `animus.shops.create` make and run their own shops on their chests without `animus.tools`; see [player shops](/animus/10-shops#player-shops) for what each kind does.
+
+**New shop** opens when you sneak and right-click your chest with the shop item from `/animus shop item`, or run `/animus shop create` while looking at it. Pick **Selling**, **Buying**, **Trading** or **Book**, and the NPC's body, then **Make shop**. Selling and the villager start picked.
+
+Clicking your shop's NPC opens the shop's menu, and `/animus shop manage` lists your shops:
+
+| Button | Does |
+|---|---|
+| **Edit offers** | The offers, one column each: the top item is what players get (what the shop buys, in a buying shop; the book, in a book shop), the one or two below what they pay. Click an empty slot, then an item in your own inventory, to copy that item into it; with no slot picked, the item starts a new offer. Click an item to add one, right-click to take one away, sneak-click for ten. **Save** and **Discard** as on every screen that keeps changes |
+| **Stock** | Opens your chest |
+| **Chests** | Your chests: click one to open it, right-click it to stop using it, **Add chest** and then right-click another container |
+| **Kind** | Selling, Buying, Trading or Book; a click moves to the next, a right-click to the previous. Refused while an offer does not fit the new kind |
+| **Rename** | The shop and its NPC |
+| **Skin** | For a player body, the skins list; needs `animus.npc.skin` |
+| **Open** / **Closed** | Closes the shop or opens it again; a closed shop shows why |
+| Body row | The NPC's body |
+| **Remove shop** | Asks once more, then removes the shop and its NPC; your chests and their items stay |
+
 ## Combat
 
 **Combat** changes every selected NPC. Each control saves at once, with **[Undo]** in chat. With several NPCs, a switch reads "on for 2 of 3" when they differ, **Attacks** and **Health** read "Mixed", and **Guard me** reads "Mixed" when some of them guard someone else.
@@ -655,14 +675,22 @@ Every screen and the wand need `animus.tools`. A screen or button that changes s
 | `animus.npc.delete` | **Delete** |
 | `animus.npc.skin` | **Skin** and the skins list |
 | `animus.npc.move` | **Bring here**, **Stand still**, **Walk once**, **Start**, **Stop now**, routes and route points |
+| `animus.npc.others` | Your other nodes on NPCs you do not own; see [NPCs you own](#npcs-you-own) |
 | `animus.record` | Recordings |
 | `animus.behaviors` | **Talk**, the conversation editor, **Behaviors** |
 | `animus.shops` | **Shop** and the shops list |
+| `animus.shops.create` | **New shop** and the menu of your own [player shops](#player-shops), without `animus.tools` |
 | `animus.gui` | **GUIs**, saved holograms, and a saved hologram on **Hologram** with its height and offsets |
 | `animus.combat` | **Combat**, its sections and rule lists |
 | `animus.editor.pair` | **Web editor**, **Open in editor** |
 
 `/animus undo` and **[Undo]** need `animus.tools` and the node of the change they revert; see [undo](/animus/02-commands-permissions#status-and-npc-management).
+
+### NPCs you own
+
+Without `animus.admin` or `animus.npc.others`, the menu works only on the NPCs you own: the NPCs list shows only those, the wand answers `guard is not yours; you can change only NPCs you own` on any other NPC, and a selection keeps only yours. **New NPC** and **Copy** make NPCs you own, up to your limit; past it they answer `You own 2 NPCs, your limit; remove one to make another`. A change that would reach another player's NPC or a server NPC is refused with the reason, such as renaming a folder, route, recording or skin that one of them uses, or changing a trait group one of them lists. With `animus.npc.others`, the list, the wand and every screen reach all NPCs, and your other nodes still decide which buttons work.
+
+**All fields** hides **Owner**, which only an admin changes, and hides what your NPC may do only with a node you lack: **Click redirect** without `animus.owned.server`, the MythicMobs module and schedule arrival commands without `animus.owned.commands`, and death drops without `animus.owned.items`. **Behaviors** lists only behaviors your nodes allow on an NPC you own. Anything else your NPC cannot do is refused when you save it, with the reason and the node; see [NPCs players own](/animus/02-commands-permissions#npcs-players-own).
 
 ## Left to the web editor
 
@@ -680,6 +708,6 @@ Every NPC definition field has either a menu screen or a line in this table.
 | Import leftovers such as `preservedSettings` | Kept and never read |
 | Behavior node graphs other than conversations; inside a conversation, conditions, actions, go-to steps, a line's wait, sound and animation, answer colours and hover text | The conversation editor moves and deletes those steps but does not edit them |
 | Chest GUI layouts, menus, saved hologram lines, text animation frames | Drawn in the web editor |
-| An offer once it is in a shop: its price, limits and other fields; `sell` and `trade` offers | **Add held item** adds offers players buy and **Offers** removes offers. `/animus shop stock` adds sell and trade offers |
+| An offer once it is in a shop: its price, limits and other fields; `sell` and `trade` offers | **Add held item** adds offers players buy and **Offers** removes offers. `/animus shop stock` adds sell and trade offers. A player shop's **Edit offers** sets its trades' items and amounts |
 | `animus:gui.open` kinds `shop` and `gloss` | **Shop** puts shops on NPCs through `animus:shop` |
 | Rig keyframes; a recording's description, tags, speed and own playback | Rig and recording files are written, not toggled |
