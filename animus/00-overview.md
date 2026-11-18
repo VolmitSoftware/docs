@@ -14,7 +14,7 @@ Animus manages NPCs on Paper, Spigot and Folia servers, and, as an experimental 
 
 ### JSON definitions
 
-Each NPC is one definition file at `npcs/<folder>/<id>.json` in the data folder. The `id` is unique across all folders and the `uuid` never changes. Every accepted change raises the definition's `revision`. Behaviors, routes, skins, shops, GUIs, rigs and animations are separate JSON documents that a definition refers to by id. Plugin-wide settings are the one exception: they live in [`config.toml`](/animus/03-configuration).
+Each NPC is stored in one NPC file, `npcs/<folder>/<id>.json` in the data folder. The `id` is unique across all folders and the `uuid` never changes. Every accepted change raises the file's `revision`. Behaviors, routes, skins, shops, GUIs, rigs and animations are separate JSON files that an NPC file refers to by id. Plugin-wide settings are the one exception: they live in [`config.toml`](/animus/03-configuration).
 
 Saving any of these files applies it within about a second; see [live apply](/animus/03-configuration#live-apply). An invalid edit is refused with its exact field error, and the last valid version stays in use. See [storage and recovery](/animus/12-storage-recovery).
 
@@ -68,7 +68,7 @@ Other plugins use Animus through its own API: a Bukkit plugin gets an NPC servic
 |---|---|
 | [Tutorial: introduction](/animus/20-tutorial-introduction) | Install, set up, and make, skin and walk your first NPC |
 | [Tutorial: first NPC](/animus/22-tutorial-first-npc) | Make, find, dress and sort NPCs with the Animus menu |
-| [Tutorial: movement](/animus/23-tutorial-movement) | Routes, recordings, mounts and riding in game |
+| [Tutorial: movement](/animus/23-tutorial-movement) | Routes, recordings, mounts and NPCs players can ride, in game |
 | [Tutorial: conversations, shops and combat](/animus/24-tutorial-interaction) | Behaviors, conversations, shops, holograms, GUIs, combat and health |
 | [Tutorial: web editor](/animus/25-tutorial-web-editor) | Pairing, editing, applying and undoing in the browser |
 | [Installation and compatibility](/animus/01-installation-compatibility) | Requirements, supported versions, file layout and platform differences |
@@ -79,7 +79,7 @@ Other plugins use Animus through its own API: a Bukkit plugin gets an NPC servic
 | [NPC definitions](/animus/04-npc-definitions) | Definition fields, spawning, appearance, equipment, holograms and poses |
 | [Trait groups](/animus/18-trait-groups) | Values shared by many NPCs, and how they merge |
 | [LibsDisguises](/animus/34-libsdisguises) | NPCs that look like a LibsDisguises disguise, and importing Citizens disguises |
-| [Movement, mounts and riding](/animus/05-movement-mounts-riding) | Navigation, routes, look-close, mounted NPCs, riding and hiring |
+| [Movement and mounts](/animus/05-movement-mounts-riding) | Navigation, routes, look-close, mounted NPCs, NPCs players can ride, seats and hiring |
 | [NPC schedules](/animus/30-npc-schedules) | Places an NPC goes at set times of day, and importing NPC Destinations |
 | [Performance recordings](/animus/19-performance-recordings) | Recording a player's movement and replaying it on an NPC |
 | [Rigs and animations](/animus/06-rigs-animations) | Bone rigs, animation clips and the resource pack |

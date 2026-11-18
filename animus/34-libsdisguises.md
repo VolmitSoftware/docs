@@ -44,7 +44,7 @@ The file keeps the NPC's own `type`, `name` and body fields. The disguise's valu
 | --- | --- |
 | The disguise type, such as `zombie` or `horse` | `type` |
 | `player <name>`, `setName`, `setNameVisible` | `type: minecraft:player`, `name` and `nameplate.visible` |
-| `setSkin`, or the skin of the named player | A skin document in `skins/`, set as `skin` |
+| `setSkin`, or the skin of the named player | A skin file in `skins/`, set as `skin` |
 | `setDisplayedInTab` | `listed` |
 | `setCustomName`, `setCustomNameVisible` | `name` and `nameplate.visible` |
 | `setBaby` | `baby` |

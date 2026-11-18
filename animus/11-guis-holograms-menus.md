@@ -41,7 +41,7 @@ To start one in game, `/animus gui create town:board rows=4 title="&8Notice boar
 }
 ```
 
-Open a GUI with `/animus gui open <id> [player=]`, with the behavior action `animus:open-gui`, from an NPC click (see [NPC bindings](#npc-bindings)), or from another GUI, a hologram or a menu with an `inventory` or `navigate` action. An id without a namespace, such as `"id": "shop"`, names a file in the same namespace as the document that uses it, so a folder copied from Gloss keeps its links.
+Open a GUI with `/animus gui open <id> [player=]`, with the behavior action `animus:open-gui`, from an NPC click (see [NPC bindings](#npc-bindings)), or from another GUI, a hologram or a menu with an `inventory` or `navigate` action. An id without a namespace, such as `"id": "shop"`, names a file in the same namespace as the file that uses it, so a folder copied from Gloss keeps its links.
 
 ### Chest GUI fields
 
@@ -52,7 +52,7 @@ Open a GUI with `/animus gui open <id> [player=]`, with the behavior action `ani
 | `title` | Window title. `&` color codes, `&#RRGGBB` and common MiniMessage color and style tags such as `<red>` and `<bold>` work. `{{ expr }}` holes are filled for each viewer. |
 | `resolution` | `9x1` to `9x6`, `5x1` (hopper) or `3x3` (dropper). Mod servers draw only the `9xN` sizes; a `5x1` or `3x3` window does not open there. |
 | `mask`, `keys` | One row of characters per window row; each character draws the key with that name. A space is empty. |
-| `slots` | Slot number to component. Explicit slots draw over the mask. |
+| `slots` | Slot number to component, counted from 0 at the top left. Explicit slots draw over the mask. |
 | `list` | Fills the slots of one mask character with pages of a template. `var` names each entry, `source` is an expression that gives a list, `pageSize` defaults to the area, `refreshTicks` re-reads the source. List cells draw over everything else, as in Gloss. A shop that uses the GUI as its [layout](/animus/10-shops#layout-guis) fills the list with its offers instead. |
 | `refresh` | `titleTicks` and `slotsTicks` redraw the window on a timer. `0` turns a timer off. |
 | `show` | A condition. When false, the GUI does not open for that viewer. |
@@ -191,7 +191,7 @@ Icons are `text`, `item`, `playerHead`, `block` and `entity`. Animus finds the h
 
 ## Text animations
 
-A text animation file in `gui/text-animations/<namespace>/` is a Gloss animation: `schemaVersion` 1, `revision`, `show`, `mode` (`ascend`, `descend`, `ascend_descend` or `random`), `frameIntervalMs` and `frames`. Text in holograms and menus shows the current frame with `|animation.<id>|`. An id without a namespace is found in the namespace of the document that uses it. All players see the same frame at the same time, and the `{{ }}` holes in a frame are filled for each player. A hologram or menu that shows an animation that did not load is refused. Chest GUIs refuse `|animation.` tokens.
+A text animation file in `gui/text-animations/<namespace>/` is a Gloss animation: `schemaVersion` 1, `revision`, `show`, `mode` (`ascend`, `descend`, `ascend_descend` or `random`), `frameIntervalMs` and `frames`. Text in holograms and menus shows the current frame with `|animation.<id>|`. An id without a namespace is found in the namespace of the file that uses it. All players see the same frame at the same time, and the `{{ }}` holes in a frame are filled for each player. A hologram or menu that shows an animation that did not load is refused. Chest GUIs refuse `|animation.` tokens.
 
 Gloss's `[RRGGBB]` color shorthand works, so frames such as those of Gloss's rainbow animation color the text that follows them.
 
@@ -218,7 +218,7 @@ All of these need `animus.gui`, which `animus.admin` grants; the imports need `a
 /animus gui export file <name> [format=]
 ```
 
-`<kind>` is `inventory`, `menu`, `hologram`, `animation` or `all`. `import gloss live` copies documents from Gloss's folders on this server. `gui export file` writes `exports/gui/<name>/` or, with `format=bundle`, `exports/gui/<name>.json`.
+`<kind>` is `inventory`, `menu`, `hologram`, `animation` or `all`. `import gloss live` copies files from Gloss's folders on this server. `gui export file` writes `exports/gui/<name>/` or, with `format=bundle`, `exports/gui/<name>.json`.
 
 ## With and without Gloss
 
@@ -227,11 +227,11 @@ Everything on this page works without Gloss, on Bukkit, Paper, Spigot, Folia, Fa
 When Gloss is installed on a Bukkit server, Animus finds it at startup through Gloss's public API, by name only, so Animus has no dependency on Gloss. Then:
 
 - `animus:open-gui` and NPC bindings with `"kind": "gloss"` open Gloss menus by their Gloss id. Without Gloss they refuse with `gloss-unavailable`.
-- `import gloss live` reads Gloss's `inventories/`, `menus/`, `holograms/` and `animations/` folders. A Gloss id becomes `<namespace>:<id>` (namespace `gloss` by default), lowercased, with other characters changed to `-`. Each document is checked exactly as Animus would load it, and a hologram or menu may show an animation that the same import brings. A newer `schemaVersion` or a Gloss-only feature refuses that document with the field, and nothing is written for it. Gloss's folders do not change. An Animus file that already exists with other content is kept unless you add `replace=true`.
-- `gui export gloss` writes Animus documents into Gloss's folders, where Gloss's file watcher loads them. A document in namespace `gloss` keeps its id; other documents become `<namespace>.<path>`. Documents with `animus:` actions are listed and skipped. A Gloss file that already exists with other content is kept unless you add `replace=true`. Documents that name another document with a namespace are reported, because Gloss does not know Animus namespaces.
+- `import gloss live` reads Gloss's `inventories/`, `menus/`, `holograms/` and `animations/` folders. A Gloss id becomes `<namespace>:<id>` (namespace `gloss` by default), lowercased, with other characters changed to `-`. Each file is checked exactly as Animus would load it, and a hologram or menu may show an animation that the same import brings. A newer `schemaVersion` or a Gloss-only feature refuses that file with the field, and nothing is written for it. Gloss's folders do not change. An Animus file that already exists with other content is kept unless you add `replace=true`.
+- `gui export gloss` writes Animus files into Gloss's folders, where Gloss's file watcher loads them. A file in namespace `gloss` keeps its id; other files become `<namespace>.<path>`. Files with `animus:` actions are listed and skipped. A Gloss file that already exists with other content is kept unless you add `replace=true`. Files that name another file with a namespace are reported, because Gloss does not know Animus namespaces.
 
-Without Gloss on the same server, move documents as files. `gui export file` writes the `/gloss export documents` layout (`<kind>/<id>.json` and `workspace.json`) or, with `format=bundle`, a `gloss-editor-workspace` bundle that Gloss Web opens. `import gloss file` reads either form, including bundles saved from Gloss Web. Bundle documents of kinds that Animus does not adopt are listed and skipped.
+Without Gloss on the same server, move the files yourself. `gui export file` writes the `/gloss export documents` layout (`<kind>/<id>.json` and `workspace.json`) or, with `format=bundle`, a `gloss-editor-workspace` bundle that Gloss Web opens. `import gloss file` reads either form, including bundles saved from Gloss Web. Bundle entries of kinds that Animus does not adopt are listed and skipped.
 
-Both imports rewrite Gloss's PlaceholderAPI calls into placeholders. A `{{ }}` hole that holds only `papi('vault_prefix')`, `papi('vault_prefix', 'Member')`, `papiNumber('player_ping', 0)` or `papi('viewer', 'player_name', '')` becomes `%vault_prefix%`, `%player_ping%` or `%player_name%`, and the import lists how many calls it rewrote in each document. The fallback is dropped: when PlaceholderAPI has no value, the placeholder shows as written. A call inside a larger expression, such as `{{ papiNumber('player_ping') < 80 ? '&a' : '&c' }}`, or for the `sender` or `subject` role, is not rewritten, and the document is refused with `unknown function 'papi'`. Write that hole without `papi` and import it again.
+Both imports rewrite Gloss's PlaceholderAPI calls into placeholders. A `{{ }}` hole that holds only `papi('vault_prefix')`, `papi('vault_prefix', 'Member')`, `papiNumber('player_ping', 0)` or `papi('viewer', 'player_name', '')` becomes `%vault_prefix%`, `%player_ping%` or `%player_name%`, and the import lists how many calls it rewrote in each file. The fallback is dropped: when PlaceholderAPI has no value, the placeholder shows as written. A call inside a larger expression, such as `{{ papiNumber('player_ping') < 80 ? '&a' : '&c' }}`, or for the `sender` or `subject` role, is not rewritten, and the file is refused with `unknown function 'papi'`. Write that hole without `papi` and import it again.
 
-The web editor's **Export Gloss bundle** writes each document's Animus id as its Gloss title, so the same bundle imports back to the same ids in the editor. `import gloss file` and `import gloss live` map ids from the Gloss id alone: `town:menu` leaves as `town.menu` and returns as `gloss:town-menu`.
+The web editor's **Export Gloss bundle** writes each file's Animus id as its Gloss title, so the same bundle imports back to the same ids in the editor. `import gloss file` and `import gloss live` map ids from the Gloss id alone: `town:menu` leaves as `town.menu` and returns as `gloss:town-menu`.

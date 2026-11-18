@@ -47,7 +47,7 @@ Stand where the NPC should stand, face the way it should face, and run:
 /animus create guard name="Town Guard"
 ```
 
-The NPC is saved to `npcs/guard.json` at your position, facing your way, with a player body, and it appears for every player in range. It stays spawned after a restart. Add `type=llama` for another body (the [bodies that can be shown](/animus/04-npc-definitions#definition-file) are listed there), `folder=town` to keep it in `npcs/town/`, or `spawned=false` to save it without showing it yet. `/animus despawn guard` takes it away again without deleting the file, and `/animus spawn guard` brings it back.
+The NPC is saved to `npcs/guard.json` at your position, facing your way, with a player body, and it appears for every player in range. It stays spawned after a restart. Add `type=llama` for another body (the [bodies that can be shown](/animus/04-npc-definitions#npc-file) are listed there), `folder=town` to keep it in `npcs/town/`, or `spawned=false` to save it without showing it yet. `/animus despawn guard` takes it away again without deleting the file, and `/animus spawn guard` brings it back.
 
 ## 4. Give it a skin
 
@@ -84,13 +84,13 @@ The [route's details](/animus/21-in-game-toolkit#route-details) change its point
 
 ## 7. Pair the web editor
 
-The [web editor](/animus/14-web-editor) edits every Animus document with a 3D preview. Connect it to this server:
+The [web editor](/animus/14-web-editor) edits every Animus file with a 3D preview. Connect it to this server:
 
 ```none
 /animus editor pair
 ```
 
-Click **[Open editor]** in the reply. The pairing link works once, within 10 minutes. The default token can read, check and apply documents but cannot spawn or despawn NPCs; add the `spawn` scope when you want that:
+Click **[Open editor]** in the reply. The pairing link works once, within 10 minutes. The default token can read, check and apply files but cannot spawn or despawn NPCs; add the `spawn` scope when you want that:
 
 ```none
 /animus editor pair scopes=read,validate,preview,apply:npcs,apply:behaviors,apply:gui,apply:rigs,terrain,spawn
@@ -111,7 +111,7 @@ Every Citizens NPC arrives as it was, with its routes, guards, shops and command
 
 - [Tutorial: first NPC](/animus/22-tutorial-first-npc): the Animus menu, step by step, with videos.
 - [NPC definitions](/animus/04-npc-definitions): every field of `guard.json`, equipment, holograms and poses.
-- [Behaviors](/animus/07-behaviors): greetings, dialogue, quests and reactions to clicks.
+- [Behaviors](/animus/07-behaviors): greetings, conversations, quests and reactions to clicks.
 - [Combat](/animus/08-combat): guards that fight.
 - [Shops](/animus/10-shops) and [GUIs](/animus/11-guis-holograms-menus): trading and chest menus.
 - [Commands and permissions](/animus/02-commands-permissions): every command.

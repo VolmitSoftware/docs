@@ -61,7 +61,7 @@ Quest files live in `plugins/Animus/quests/` (`config/animus/quests/` on mod ser
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/36-native-quest-ingame.webm" aria-label="Taking a quest from the Healer, completing its talk, wheat and fight objectives, turning it in and seeing it finished in the journal" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-An NPC with a quest the player can take shows a yellow `!` above its head to that player. Right-clicking it says the quest's title, the giver speaks the `offer` message (or the description), and **[ Accept ]** and **[ Decline ]** buttons follow, in the same style as [dialogue choices](/animus/07-behaviors#dialogue-choices). The buttons work for two minutes. A giver with several quests offers the first one the player can take, by id.
+An NPC with a quest the player can take shows a yellow `!` above its head to that player. Right-clicking it says the quest's title, the giver speaks the `offer` message (or the description), and **[ Accept ]** and **[ Decline ]** buttons follow, in the same style as [conversation answers](/animus/07-behaviors#conversations). The buttons work for two minutes. A giver with several quests offers the first one the player can take, by id.
 
 Once a quest is active, the chat lists the stage and its objectives, and each counted objective shows its progress on the action bar. A gold `?` marks every NPC the player should talk to, bring items to, or turn the quest in at. Markers show for NPCs within 48 blocks. A player without `animus.quests.use` sees no `!` and gets no offers, though quests already taken keep counting.
 
@@ -181,4 +181,4 @@ Each player's quests are saved in `plugins/Animus/state/quests/<uuid>.json` two 
 
 Quests run the same on Paper, Spigot, Folia and the mod loaders. On Folia, quest work runs on the player's region, and a kill counts on the killer's region. On mod servers, use `/animus quest journal` for the journal; the economy is the one a [Java module](/animus/99-java-modules-api) provides, and NPC kill objectives do not count.
 
-The [web editor](/animus/14-web-editor) edits quests as the Quest document type.
+The [web editor](/animus/14-web-editor) edits quests as Quest files.

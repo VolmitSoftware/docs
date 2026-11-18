@@ -1,6 +1,6 @@
 ---
-title: "Animus: Movement, Mounts and Riding"
-description: "Navigation, routes, look-close, movement settings, mounted NPCs, NPCs on real entities, player riding, seats and hiring"
+title: "Animus: Movement and Mounts"
+description: "Navigation, routes, look-close, movement settings, mounted NPCs, NPCs on real entities, NPCs players can ride, seats and hiring"
 published: true
 date: 2026-11-12T00:00:00.000Z
 tags: "animus, navigation, routes, mounts, riding, hire"
@@ -34,7 +34,7 @@ When a plan gets no closer:
 
 A walking goal names a block: the NPC stands on the ground in it or the block below, or on top of the block itself when it is solid, a top slab or a stair, so a point that names the ground under the feet works. A walking NPC crosses a gap in its footing narrower than a quarter block, such as the open front of a shelf beside a slab.
 
-Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows what the NPC is doing, its goal, its position and the arrival count, such as `Navigation guard: moving to 4.5 64 2.5, now at 3.25 64 1`. A walking goal rounds its feet height to the block, so `^ ^ ^5` works. A trip or a `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-riding) for the rest of the movement commands.
+Missing terrain pauses navigation until the chunk loads. A world change, a definition replacement, despawn, death, shutdown or conflicting movement cancels the route. `navigation status` shows what the NPC is doing, its goal, its position and the arrival count, such as `Navigation guard: moving to 4.5 64 2.5, now at 3.25 64 1`. A walking goal rounds its feet height to the block, so `^ ^ ^5` works. A trip or a `navigation stop` overrides the NPC's route until its definition is applied again. See [commands](/animus/02-commands-permissions#movement-and-mounts) for the rest of the movement commands.
 
 ### How bodies move
 
@@ -296,7 +296,7 @@ An NPC is idle when it follows no route, recording or `navigation go` leg, guard
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/20-mounts-ingame.webm" aria-label="Seating the greeter on the trader and dismounting it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-An NPC rides another NPC, or a [real entity](#riding-real-entities), through `animus:mount`:
+An NPC rides another NPC, or a [real entity](#npcs-on-real-entities), through `animus:mount`, which the Animus menu's Modules list calls **Rides on**:
 
 ```json
 "modules": {
@@ -304,7 +304,7 @@ An NPC rides another NPC, or a [real entity](#riding-real-entities), through `an
 }
 ```
 
-In game, **Mounts and riding** on an NPC's Movement screen, in Advanced mode, seats NPCs on each other with the wand; see [mounts and riding](/animus/21-in-game-toolkit#mounts-and-riding).
+In game, **Mounts** on an NPC's Movement screen, in Advanced mode, seats NPCs on each other with the wand; see [Mounts](/animus/21-in-game-toolkit#mounts).
 
 `vehicle` is the other NPC's id. An imported Citizens `mountedon` reference applies the same way from `migration.references`. A native module takes priority, and `{"enabled": false}` turns an imported relation off without touching the preserved data.
 
@@ -316,13 +316,13 @@ A relation that cannot be honoured leaves the NPC standing at its own position w
 |---|---|
 | Vehicle missing or despawned, or an imported reference recorded as missing, ambiguous or invalid | Reported; spawning is still allowed. The NPC attaches once the vehicle becomes active |
 | An imported vehicle id that now belongs to a different NPC | Reported; never attached |
-| Riding itself, a cycle, a chain too deep or a full vehicle | Refused by `/animus spawn` and by `/animus edit` of a spawned NPC. A hand-edited file that creates one is reported, and every member of a cycle stays unattached |
+| An NPC set to ride itself, a cycle, a chain too deep or a full vehicle | Refused by `/animus spawn` and by `/animus edit` of a spawned NPC. A hand-edited file that creates one is reported, and every member of a cycle stays unattached |
 
 A sitting NPC may also ride. While it is on its vehicle the vehicle is its seat; whenever it has no vehicle it sits on its own seat at its position.
 
 `/animus mount set <npc> <vehicle>` puts an NPC on another NPC, and `/animus mount off <npc>` takes it off.
 
-### Riding real entities
+### NPCs on real entities
 
 An NPC rides a real horse, boat, minecart, pig, strider or any other mob with `entity` in place of `vehicle`:
 
@@ -337,7 +337,7 @@ An NPC rides a real horse, boat, minecart, pig, strider or any other mob with `e
 | `entity` | An entity UUID, or an entity type such as `minecraft:horse` | A UUID names one entity. A type rides the nearest loaded entity of that type within `range` of the NPC's own position that no other NPC rides |
 | `range` | 1-32 blocks, default 8 | With a type only |
 
-`vehicle` and `entity` cannot both be set, and players are never vehicles. In game, **Ride a mob** under **Mounts and riding** picks a type. `/animus mount set <npc> <vehicle> [range]` takes an NPC id, an entity UUID or an entity type.
+`vehicle` and `entity` cannot both be set, and players are never vehicles. In game, **Ride a mob** under **Mounts** picks a type. `/animus mount set <npc> <vehicle> [range]` takes an NPC id, an entity UUID or an entity type.
 
 The NPC sits where its vehicle seats a passenger, faces the vehicle's way and goes where it goes: led on a lead, ridden by a player, pushed along rails or carried by water, and into another world through a portal. Every player who sees both is shown the NPC on the vehicle after the vehicle's own passengers, so a player riding the horse sits in front of the NPC. A player who comes near later, or starts seeing the vehicle again, sees the NPC on it at once.
 
@@ -345,14 +345,14 @@ An NPC on a real vehicle does not walk routes, look at players or go home, as on
 
 Real vehicles work on Paper, Spigot and Folia. On Folia the NPC never follows its vehicle into another world, and a vehicle that moves to another region is boarded again there; see [Folia](/animus/15-folia#npcs-on-real-entities). On mod servers the NPC stands at its own position and reports why.
 
-## Riding an NPC
+## Players can ride it
 
 <div class="animus-demo">
-<p><strong>Riding</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Turning on riding for the trader, raising its speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
+<p><strong>Players can ride it</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Letting players ride the trader, raising its speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-A player can ride an NPC whose definition opts in:
+A player can ride an NPC that has `animus:riding`, which the Modules list calls **Players can ride it**:
 
 ```json
 "modules": {
@@ -367,7 +367,7 @@ A player can ride an NPC whose definition opts in:
 | `leash` | 64 | 4-256 blocks horizontally from where the ride began |
 | `lifetimeSeconds` | 600 | 30-3600 |
 
-An imported Citizens `controllable` trait that is on becomes this module, switched on. In game, **Riding** under **Mounts and riding** sets these fields.
+An imported Citizens `controllable` trait that is on becomes this module, switched on. In game, **Players can ride it** under **Mounts** sets these fields.
 
 The player mounts with a right-click on the NPC. The click passes the same reach, line-of-sight and rate checks as any interaction, and a plugin can stop it by cancelling `VirtualNpcInteractionEvent`. A sneak-right-click does not mount, and a click with the [wand](/animus/21-in-game-toolkit#the-wand) selects the NPC and never mounts it. The NPC needs room for its body and rider where it stands: on ground, at a water surface it can swim, or in open air when it flies. Each NPC carries one player, each player rides one NPC, and at most 8 players ride at once. Mounting cancels the NPC's route until the definition is applied again.
 
@@ -381,7 +381,7 @@ Reaching the leash holds the NPC in place without ending the ride. The NPC stays
 
 Sneaking dismounts. A ride also ends on excess input, a stale connection, expiry, losing permission, entering a real vehicle, sleeping, spectator mode, unavailable terrain, a step into a region the player may not enter, the NPC's despawn, death or definition change, and plugin shutdown. The player is placed beside the NPC, or at its feet when nothing beside it is clear, and is told the reason unless they chose to sneak off. Death, logout, an outside teleport and a world change end the ride without moving the player further. Rides do not survive a restart, and a player who logs out or crashes while riding is saved at the NPC's feet.
 
-While riding, the player's server position is the NPC's feet, not its seat, so vanilla does not treat the rider as flying. Block reach, other players' hits and anything else measured from the server position use the ground, which is most noticeable on a tall body. Plugins do not see `PlayerMoveEvent` for the ride's motion, so riding bypasses their region entry rules unless Animus checks them itself. With WorldGuard installed, Animus checks the `entry` flag for the rider on each block the ride steps into, as when the player walks in: members and players with region bypass enter, and a denied step ends the ride with "Dismounted: region entry denied". A WorldGuard that is disabled or fails to answer ends the ride too. Other claim and region plugins, and movement checks such as flight, see none of the ride's motion, so keep ridable NPCs away from areas they guard.
+While riding, the player's server position is the NPC's feet, not its seat, so vanilla does not treat the rider as flying. Block reach, other players' hits and anything else measured from the server position use the ground, which is most noticeable on a tall body. Plugins do not see `PlayerMoveEvent` for the ride's motion, so the ride bypasses their region entry rules unless Animus checks them itself. With WorldGuard installed, Animus checks the `entry` flag for the rider on each block the ride steps into, as when the player walks in: members and players with region bypass enter, and a denied step ends the ride with "Dismounted: region entry denied". A WorldGuard that is disabled or fails to answer ends the ride too. Other claim and region plugins, and movement checks such as flight, see none of the ride's motion, so keep ridable NPCs away from areas they guard.
 
 ```none
 /animus ride status
@@ -408,7 +408,7 @@ Players sit on top of an NPC with a click, as GSit seats one player on another. 
 | `stack` | 4 | 1-8 players. The next player sits on the one at the top, as GSit stacks players |
 | `emptyHand` | `true` | Only a player with nothing in the main hand sits |
 
-An NPC without the module offers a seat when `[seats] defaultEnabled` is on in `config.toml`, which is off by default; see [configuration](/animus/03-configuration#seats). In game, **Seat** under **Mounts and riding** sets these fields.
+An NPC without the module offers a seat when `[seats] defaultEnabled` is on in `config.toml`, which is off by default; see [configuration](/animus/03-configuration#seats). In game, **Seat** under **Mounts** sets these fields.
 
 The seat takes only its own click, after everything else has had it. A behavior that answers the click, a shop, GUI, quest, hire desk or the wand keeps the click, so talking and trading work as before. A ridable NPC mounts on a plain right-click, so its seat must use `sneak-right`; `click: right` together with `animus:riding` is refused. A player who turned sitting off, lacks the permission or holds an item is told nothing, as with GSit.
 
@@ -418,7 +418,7 @@ While seated, the player's server position is the ground under the NPC, or under
 
 A seat ends when the player sneaks, logs out, dies, teleports, changes world, enters a real vehicle, sleeps, turns spectator, loses the permission or turns sitting off, and when the NPC is removed, despawns, dies, changes its definition or turns its seat off. Everyone higher in the stack gets off with the player below. The player is put down beside the NPC, except after a logout, death, teleport, world change or real vehicle, where they stay where the server holds them. Seats do not survive a restart.
 
-A body a rider's own client steers once saddled, such as a saddled horse, pig or strider or a harnessed happy ghast, refuses seats; give it [riding](#riding-an-npc) instead. An NPC that a player rides, or that carries other NPCs, refuses seats, and an NPC with players on it refuses riders. At most `[seats] maximum` players sit at once, 32 by default. On Folia each seat runs on its NPC's region; see [Folia](/animus/15-folia#seats).
+A body a rider's own client steers once saddled, such as a saddled horse, pig or strider or a harnessed happy ghast, refuses seats; turn on [Players can ride it](#players-can-ride-it) for it instead. An NPC that a player rides, or that carries other NPCs, refuses seats, and an NPC with players on it refuses riders. At most `[seats] maximum` players sit at once, 32 by default. On Folia each seat runs on its NPC's region; see [Folia](/animus/15-folia#seats).
 
 ### With GSit
 
@@ -433,13 +433,13 @@ To seat players on every player NPC, as GSit does on a Citizens server, set `[se
 | Case | What happens |
 |---|---|
 | A seated player clicks the NPC under them | Behaviors, shops and GUIs answer as usual, measured from the player's ground position; the seat click does nothing |
-| A seated player clicks another NPC | Behaviors, shops and GUIs answer as usual, measured from the player's ground position. Riding and sitting are refused |
-| Another player clicks an NPC with players on it | Behaviors, shops and GUIs answer as usual; the seat click stacks the player on top while there is room; riding is refused |
+| A seated player clicks another NPC | Behaviors, shops and GUIs answer as usual, measured from the player's ground position. The player cannot ride it or sit on it |
+| Another player clicks an NPC with players on it | Behaviors, shops and GUIs answer as usual; the seat click stacks the player on top while there is room; the player cannot ride it |
 | A player clicks a seated player | Vanilla and other plugins see a click on a player, so GSit's player-sit may stack them through GSit |
 | An NPC with players on it walks a route, follows a schedule or fights | Nothing stops. The players move with it, also through a route point that teleports it within its world; a teleport to another world gets them off |
 | A hit, a knockback or a behavior moves an NPC with players on it | It takes the hit as usual and the players move with it |
 | A player clicks or attacks an NPC on a real vehicle | Measured at the NPC's seat. Behaviors, shops and fights work, and a knockback does not move it off the vehicle |
-| A player clicks the real vehicle | Vanilla handles it: leading, saddling and riding work, and a player who rides it sits in front of the NPC |
+| A player clicks the real vehicle | Vanilla handles it: players can lead, saddle and ride it, and a player who rides it sits in front of the NPC |
 | A real vehicle carries an NPC with players on it | The players sit on the NPC and stand, for the server, on the ground under the vehicle |
 | An NPC on a vehicle has a route or schedule | It does not walk; when it gets off it stands at its own position until its definition is applied again |
 

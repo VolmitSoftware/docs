@@ -18,7 +18,7 @@ Player bodies keep their vanilla body. A rig with `"body": "shown"` adds its par
 
 Each visible bone rides the body in its passenger list, so it follows movement without teleports. The server plans the animation in segments and sends each changed bone's transform once per segment, and the client interpolates between them. Segments start at `sampleTicks` and grow up to 20 ticks while every bone moves in a straight line within 0.01 blocks and 0.5 degrees. A turn of the body starts a new segment at once. Bones are removed with the body, when the viewer leaves and at shutdown.
 
-## Rig documents
+## Rig files
 
 ```json
 {
@@ -48,9 +48,9 @@ Each visible bone rides the body in its passenger list, so it follows movement w
   - `text` visuals take `billboard` (`fixed` by default, or `vertical`, `horizontal`, `center`), `background` as `#AARRGGBB`, `shadow` (`true` or `false`) and `lineWidth` (1-1024, default 200).
 - `sockets` attach equipment slots to bones. The NPC's item in a socketed slot (from its definition, `animus:set-equipment` or a recording) shows on that bone and follows its animation, and the body no longer shows it. Main and off hand items are posed as held in the right and left hand, head items as worn on the head, and other slots as fixed items. An empty slot shows nothing, and a hidden bone hides its item.
 - `animations` names the rig's clips. `idle` and `walk` are played automatically; see [playback](#playback).
-- Limits: 64 bones per rig, depth 16, 256 KiB per document. Bone ids must be unique and parents are listed before their children.
+- Limits: 64 bones per rig, depth 16, 256 KiB per file. Bone ids must be unique and parents are listed before their children.
 
-## Animation documents
+## Animation files
 
 ```json
 {
@@ -83,7 +83,7 @@ Each visible bone rides the body in its passenger list, so it follows movement w
 
 ## Loading and playback
 
-Rigs and animations load at startup, on save (see [live apply](/animus/03-configuration#live-apply)), on `/animus reload` and on `/animus rigs reload`. A broken or refused edit keeps the last valid document, and a changed document needs a higher `revision`. After a restart the last valid copy comes from `state/rig-catalog/`.
+Rigs and animations load at startup, on save (see [live apply](/animus/03-configuration#live-apply)), on `/animus reload` and on `/animus rigs reload`. A broken or refused edit keeps the last valid file, and a changed file needs a higher `revision`. After a restart the last valid copy comes from `state/rig-catalog/`.
 
 ```none
 /animus rigs problems
@@ -145,7 +145,7 @@ The server also reads `models/<namespace>/<name>.bbmodel` and converts each into
 - Every group becomes a bone, except groups named `hitbox` or `shadow` (any case). Those are Model Engine's hitbox and shadow: they are left out with their cubes and animation tracks, the import warns about each, and the NPC keeps its body type's hitbox.
 - A cube rotation that is not on one axis in 22.5-degree steps up to 45 degrees becomes a bone of its own.
 - The model turns 180 degrees to face +Z: pivots become `(-x, y, -z) / 16` and rotations `(-x, y, -z)`. Item displays turn their models back.
-- Each Blockbench animation becomes an animation document.
+- Each Blockbench animation becomes an animation file.
 
 Only embedded PNG textures are read, and nothing is downloaded. Models over 16 MiB, more than 64 models, 64 bones, 4,096 cubes, 16 textures, textures over 4 MiB or 1,024 pixels wide, 64 animations, 256 keyframes per channel or 16,384 source files are refused. Molang keyframe values play as 0, and `catmullrom` and `bezier` keyframes play as `ease_in_out`.
 
@@ -183,7 +183,7 @@ The server and the web editor sample animations with the same rules, so the edit
    - `ease_in_out`: 4u^3 below 0.5, else 1 - (-2u + 2)^3 / 2
    - `back_out`: 1 + 2.70158 s^3 + 1.70158 s^2 with s = u - 1
    - `bezier(x1,y1,x2,y2)`: the CSS cubic Bezier from (0,0) to (1,1); solve x(s) = u for s and return y(s)
-4. **Channels.** Every bone starts each sample with rotation (0,0,0), translation (0,0,0), scale (1,1,1) and visible true. Layers apply in order, and within a clip tracks apply in document order: `replace` sets the channel, `add` adds per component, `multiply` multiplies per component. `visible` always replaces. Animation channels are relative to the rest pose.
+4. **Channels.** Every bone starts each sample with rotation (0,0,0), translation (0,0,0), scale (1,1,1) and visible true. Layers apply in order, and within a clip tracks apply in the order the file lists them: `replace` sets the channel, `add` adds per component, `multiply` multiplies per component. `visible` always replaces. Animation channels are relative to the rest pose.
 5. **Bone transform.** With `R(e) = Rz(e.z) * Ry(e.y) * Rx(e.x)` (Euler degrees, X applied first, right-handed, column vectors), a bone's local transform is `T(pivot - parentPivot) * T(translation) * R(restRotation) * R(rotation) * S(scale)`, with parent pivot (0,0,0) for bones without a parent. Its model transform is the parent's model transform times the local one. Bones without a parent start from `Ry(-yaw)`, the body yaw in Minecraft degrees (0 faces +Z, 90 faces -X). A bone is visible when it and every ancestor are visible.
 6. **Visual transform.** A visual's display transform is `model * T(visual.translation) * R(visual.rotation) * S(visual.scale)`. Display entities take it as translation, left rotation, scale and right rotation; any decomposition that reproduces the matrix is correct, so the reference samples record the matrix (12 numbers, rows of `[r0 r1 r2 t]`).
 

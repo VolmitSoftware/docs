@@ -66,7 +66,7 @@ Everything lives in `plugins/Animus/` (or `config/animus/` on mod servers). The 
 | `npcs/<folder>/<id>.json` | [NPC definitions](/animus/04-npc-definitions) |
 | `groups/<id>.json` | [Trait groups](/animus/18-trait-groups) |
 | `recordings/<id>.json` | [Performance recordings](/animus/19-performance-recordings) |
-| `skins/<sha256>.json` | Skin documents, named by content hash |
+| `skins/<sha256>.json` | Skin files, named by content hash |
 | `routes/` | Reusable [navigation routes](/animus/05-movement-mounts-riding) |
 | `behaviors/<namespace>/<path>.json` | [Behaviors](/animus/07-behaviors) |
 | `packs/<pack-id>/` | Behavior packs |
@@ -84,7 +84,7 @@ Everything lives in `plugins/Animus/` (or `config/animus/` on mod servers). The 
 | `backups/` | Rollback receipts for each transaction |
 | `logs/` | Shop transaction logs |
 
-Plugin settings use TOML. Every other document uses JSON. Do not edit or delete `state/` or `backups/` by hand; see [storage and recovery](/animus/12-storage-recovery).
+Plugin settings use TOML. Every other file uses JSON. Do not edit or delete `state/` or `backups/` by hand; see [storage and recovery](/animus/12-storage-recovery).
 
 ## Removing Animus
 
@@ -98,12 +98,12 @@ The web editor's pairing for this server lives in `state/editor/`. Deleting the 
 
 ## Platform differences
 
-Paper and Spigot run every feature. Folia and mod servers run the same NPC runtime, definitions, commands, behaviors, navigation, mounts, riding, combat and building, with these differences:
+Paper and Spigot run every feature. Folia and mod servers run the same NPC runtime, definitions, commands, behaviors, navigation, mounts, NPCs players can ride, combat and building, with these differences:
 
 | Feature | Paper and Spigot | Folia | Fabric, NeoForge, Forge |
 |---|---|---|---|
 | NPCs, behaviors, triggers, navigation | Yes | Yes, each NPC on the region that owns its chunk | Yes |
-| Riding, mounted NPCs, combat module, hiring | Yes | Yes | Yes |
+| Players can ride it (`animus:riding`), mounted NPCs, combat module, hiring | Yes | Yes | Yes |
 | NPCs on real entities (`animus:mount` with `entity`) | Yes | Yes, in the vehicle's world only | No; the NPC stands and reports why |
 | Seats (`animus:seat`) | Yes, with GSit's player-sit settings when GSit runs | Yes, as Paper; a click counts only when the player's region also owns the NPC | Yes, one player per NPC, no stacking |
 | Building (`/animus build`) | Yes | Yes, each build turn on the region that owns where it works | Yes, with no protection checks |
@@ -133,7 +133,7 @@ Paper and Spigot share one runtime, and so do Fabric, NeoForge and Forge. Folia 
 | Mounted NPCs | Yes | Yes | Yes; the region that owns the root vehicle owns every NPC stacked on it, and a passenger waits until its vehicle is active | Yes |
 | Poses | Partial: sneaking, sleeping, swimming, crawling, bellyflop and spinning show on player bodies only, sitting on every living body, other bodies stand; named poses (`animus:pose`) turn every body | Partial, as Paper | Partial, as Paper | Partial, as Paper |
 | Text (`animus:say` with click and proximity triggers) | Yes | Yes | Yes; a click counts only when the player's region also owns the NPC | Yes |
-| Riding (`animus:riding`) | Yes; at most 8 riders on the server | Yes, as Paper | Partial: a right-click mounts only when the player's region owns the NPC, and the ride ends when the region does not hold the rider for 2 seconds or the NPC steers into terrain the region does not hold | Yes, as Paper |
+| Players can ride it (`animus:riding`) | Yes; at most 8 riders on the server | Yes, as Paper | Partial: a right-click mounts only when the player's region owns the NPC, and the ride ends when the region does not hold the rider for 2 seconds or the NPC steers into terrain the region does not hold | Yes, as Paper |
 
 ## Building from source
 

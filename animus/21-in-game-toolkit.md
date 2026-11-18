@@ -14,10 +14,10 @@ Every change saves as soon as you click, except on the few screens that collect 
 
 | Command | Does |
 |---|---|
-| `/animus gui` | Opens the menu at **Home**. From the console, or without `animus.tools`, it shows the help page of the `gui` commands instead |
+| `/animus gui` | Opens the menu at **Home**. Without `animus.tools`, the console and players with `animus.gui` get the help page of the `gui` commands instead, and anyone else is told `No permission: animus.tools; ask an operator to grant it` |
 | `/animus tools` | Opens the screen of the NPC you selected, one screen for all of them when you selected several, or **Home** when nothing is selected |
 | `/animus tools wand` | Puts the wand in your hand |
-| `/animus tools mode [simple\|advanced]` | Shows your menu mode, or sets it |
+| `/animus tools mode [menu-mode=]` | Shows your menu mode, or sets it to `simple` or `advanced`, such as `/animus tools mode advanced` |
 
 These need `animus.tools` and a player. Each screen and button also needs the node of what it changes; see [permissions](#permissions).
 
@@ -37,7 +37,7 @@ The mode also changes two things in chat. In Simple, a change's reply shows **[U
 | New NPC | The **Id** question, and **Type an id** and **Spawned** on the Body step |
 | Body | **Type an id**, for bodies from mods or newer game versions |
 | Hologram | **Offset X**, **Offset Z**, **Above the head**, **More settings** |
-| Movement | **Walk once**, **Start**, **Stop now**, **Movement settings**, **Mounts and riding** |
+| Movement | **Walk once**, **Start**, **Stop now**, **Movement settings**, **Mounts** |
 | Recordings | **Show my trail** |
 | Shops | **Reload** |
 | Combat | The **Rules**, **Live** and **Settings** rows |
@@ -49,7 +49,7 @@ The mode also changes two things in chat. In Simple, a change's reply shows **[U
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/03-wand-selection-ingame.webm" aria-label="Selecting two NPCs with the wand and clearing the selection" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-The wand is a glinting stick named **Animus wand**. **Wand** on Home and `/animus tools wand` give you one, or move the one you carry into your hand; with a full inventory it drops at your feet. The server knows the wand by a marker on the item, not by its name, so renaming it keeps it a wand. On Paper, Spigot and Folia the marker is the persistent data key `animus:tool` with the value `wand`; on mod servers it is the same key in the item's `minecraft:custom_data`.
+The wand is a glinting stick named **Animus wand**. **Wand** on Home and `/animus tools wand` put it in your main hand: the one you carry moves there, and a new one goes into your empty hand or a free hotbar slot, which is then selected. With a full hotbar the item you hold moves into your inventory to make room; with a full inventory the wand drops at your feet. The server knows the wand by a marker on the item, not by its name, so renaming it keeps it a wand. On Paper, Spigot and Folia the marker is the persistent data key `animus:tool` with the value `wand`; on mod servers it is the same key in the item's `minecraft:custom_data`.
 
 | With the wand in your main hand | Does |
 |---|---|
@@ -64,9 +64,9 @@ The wand is a glinting stick named **Animus wand**. **Wand** on Home and `/animu
 
 Each click says what it did above the hotbar, with the name players see, such as `Selected Town Guard` or `Added Baker, 2 selected`. In Advanced the id follows a name that differs from it: `Selected Town Guard (guard)`.
 
-The wand, the menu, `@selected`, `/animus selection` and `/animus select` share one selection. With one NPC selected, commands that take `@selected` act on it; with several, they refuse and ask you to name one. A newly selected NPC glows for you for two seconds, and small particles mark the corners of the nearest selected NPCs within 48 blocks for as long as they stay selected. Only you see them. The selection holds at most 256 NPCs, `/animus select none` clears it, and it is forgotten when you leave the server.
+The wand, the menu, `@selected`, `/animus selection` and `/animus select` share one selection. With one NPC selected, commands that take `@selected` act on it, and so does a command you give no NPC, such as `/animus inspect`; with several, they refuse and ask you to name one. A newly selected NPC glows for you for two seconds, and small particles mark the corners of the nearest selected NPCs within 48 blocks for as long as they stay selected. Only you see them. The selection holds at most 256 NPCs, `/animus select none` clears it, and it is forgotten when you leave the server.
 
-Without the wand, a click on an NPC opens its shop, GUI, conversation or hire window as usual and never changes the selection. With the wand, a click is for editing only: the NPC's behaviors, shop, GUI, quests and riding do not run, and a left-click does not hit it.
+Without the wand, a click on an NPC opens its shop, GUI, conversation or hire window as usual and never changes the selection. With the wand, a click is for editing only: the NPC's behaviors, shop, GUI and quests do not run, the click does not put you on the NPC, and a left-click does not hit it.
 
 ## Home
 
@@ -81,7 +81,8 @@ Home opens from `/animus gui`, from `/animus tools` when nothing is selected, fr
 |---|---|
 | **New NPC** | Makes an NPC where you stand; see [New NPC](#new-npc) |
 | **NPCs** | Lists every NPC so you can find one and change it |
-| **Wand** | Gives you the wand |
+| **Wand** | Puts the wand in your hand |
+| **Your shops** | With `animus.shops.create`, on Paper, Spigot and Folia: the shops you run from your chests, as `/animus shop manage` lists them. The row then holds five buttons |
 | **Web editor** | Closes the window and sends a pairing link for the [web editor](/animus/14-web-editor), as `/animus editor pair` does |
 
 While you make a route, the top of Home shows **Finish route (4 points)**, which opens its [points](#points). While you record, it shows **Stop recording**, which stops and saves the recording. The NPC screen shows the same button beside its top item.
@@ -175,6 +176,8 @@ Nothing is saved before the last step. The NPC and any new skin file are saved t
 
 **Body** shows the same bodies as New NPC; the current one glints. Click another body to change every selected NPC to it. A new body drops the settings only the old one could show, such as a skin, a pose or a horse's coat: the button asks once more and names what goes, and **[Undo]** brings it back.
 
+**Pose** on the same screen shows the selection's pose and lists the poses every selected body can take: a player body takes standing, sneaking, sleeping, swimming, sitting, crawling, bellyflop and spinning; other living bodies stand or sit; the rest stand. Click one to set it on every selected NPC. Standing writes no `pose` at all.
+
 ### Skins
 
 <div class="animus-demo">
@@ -193,7 +196,7 @@ Nothing is saved before the last step. The NPC and any new skin file are saved t
 
 | Button | Does |
 |---|---|
-| **My skin** | Saves your own signed skin, named after you, and puts it on the selected NPCs. Offline-mode servers have no signed skins, so it says so |
+| **My skin** | Saves your own signed skin, named after you, and puts it on the selected NPCs. Offline-mode servers have no signed skins, so there it is grey and says to use **Player name** |
 | **Player name** | Asks for a Minecraft name, looks up that account's signed skin on Mojang's servers, saves it under the account's name and puts it on the selection. The lookup needs internet access from the server, not online mode, so it works on offline-mode servers too. A name that is not 1 to 16 letters, digits or `_`, an unknown name or no answer from Mojang is reported in chat and nothing is written |
 | **Default** | Takes the skin off, back to the plain player look |
 | **Skin address** | Asks for the address of a 64x64 skin PNG, has the server sign it through [MineSkin](/animus/04-npc-definitions#skins), saves it under the file's name and puts it on the selection. MineSkin's refusal, such as a PNG it cannot read, is reported in chat and nothing is written |
@@ -256,7 +259,7 @@ An NPC moves by a route or by a recording:
 | **Start** | Starts the NPC's own route or recording now |
 | **Stop now** | Stops the NPC where it is. Nothing is saved |
 | **Movement settings** | The NPC's `movement` fields: speed, doors, water, falls and getting stuck. See [movement settings](/animus/05-movement-mounts-riding#movement-settings) |
-| **Mounts and riding** | Opens [mounts and riding](#mounts-and-riding): NPC and mob mounts, riding and seats |
+| **Mounts** | Opens [Mounts](#mounts): what the NPC rides and carries, its seat, and whether players can ride it |
 
 ### Routes
 
@@ -337,18 +340,18 @@ While you record, **New recording** reads **Stop and save**, and **Discard** end
 | **Playback** | How the selected NPCs that play it repeat it: **Once**, **Loop** or **Back and forth**. Click for the next, right-click for the previous. Grey until a selected NPC plays the recording |
 | **Delete** | Asks once more, then deletes the file and stops it on every NPC that plays it, as one change. A recording that is a step in a route is never deleted here; edit those routes in the web editor first |
 
-### Mounts and riding
+### Mounts
 
-**Mounts and riding** (Advanced) acts on the first selected NPC. Its top item shows what it rides, another NPC or a real mob, what rides it, and any problem with the pair, such as a vehicle that does not exist.
+**Mounts** (Advanced) on the Movement screen opens **Mounts**, which acts on the first selected NPC. Its top item shows what it rides, another NPC or a real mob, what rides it, and any problem with the pair, such as a vehicle that does not exist.
 
 | Button | Does |
 |---|---|
 | **Ride another NPC** | The window closes; the next NPC you click with the wand becomes the vehicle. Writes `modules["animus:mount"]` |
 | **Carry another NPC** | The next NPC you click rides this one |
 | **Pick a rider** | Click the rider, then the NPC it rides. Works with nothing selected |
-| **Ride a mob** | Pick a kind, such as Horse, Camel, Pig, Oak boat or Minecart: the NPC rides the nearest one within 8 blocks. Writes `modules["animus:mount"]` with `entity`; see [riding real entities](/animus/05-movement-mounts-riding#riding-real-entities) |
+| **Ride a mob** | Pick a kind, such as Horse, Camel, Pig, Oak boat or Minecart: the NPC rides the nearest one within 8 blocks. Writes `modules["animus:mount"]` with `entity`; see [NPCs on real entities](/animus/05-movement-mounts-riding#npcs-on-real-entities). On mod servers its lore says `NPCs ride mobs only on Paper, Spigot or Folia` and a click is refused |
 | **Seat** | How players sit on the selected NPCs: **Enabled**, **Click** (`right` or `sneak-right`), **Permission** (`animus.seat` by default), **Stack** (1 to 8 players) and **Empty hand**. Changes wait for **Save**; see [sitting on an NPC](/animus/05-movement-mounts-riding#sitting-on-an-npc) |
-| **Riding** | How players ride the selected NPCs: **Enabled**, **Permission** (`animus.ride` by default), **Speed** (0.5 to 8 blocks a second), **Leash** (4 to 256 blocks) and **Lifetime** (30 to 3600 seconds). Changes wait for **Save**, as on a [combat section](#profile-sections) |
+| **Players can ride it** | How players ride the selected NPCs: **Enabled**, **Permission** (`animus.ride` by default), **Speed** (0.5 to 8 blocks a second), **Leash** (4 to 256 blocks) and **Lifetime** (30 to 3600 seconds). Changes wait for **Save**, as on a [combat section](#profile-sections); see [players can ride it](/animus/05-movement-mounts-riding#players-can-ride-it) |
 | **Ride status** | Closes the window and runs `/animus ride status` |
 | **Dismount** | Asks once more, then the NPC stops riding |
 
@@ -369,7 +372,7 @@ A conversation is a [behavior](/animus/07-behaviors) of one shape, the one the w
 
 | Item | Click | Right-click |
 |---|---|---|
-| **Starts on** | Next start: right-click, sneak and right-click, left-click, sneak and left-click, drop key, sneak and drop key, swap hands, sneak and swap hands, walk near, or a command | Previous start |
+| **Starts when** | Next start: right-click, sneak and right-click, left-click, sneak and left-click, drop key, sneak and drop key, swap hands, sneak and swap hands, walk near, or a command | Previous start |
 | **Distance** | Shown for walk near: one block more, 1 to 64. Sneak-click for ten | One block less |
 | **Block**, or **Start** on the first block | What leads to the block and any problem that would stop a save. On the first block it also says when a selected NPC opens a shop on the same right-click: players get both | |
 | **Add line** | Asks for a line and adds it at the end of the block, above its question | |
@@ -397,13 +400,13 @@ Lines may use `{npc.name}` and `{player_name}`; a line with `{npc.name}` is save
 |---|---|
 | **New conversation** | Asks for an id such as `town:greeter`, saves `behaviors/town/greeter.json` as a conversation that says "Hello" on a right click, and opens it |
 | **Reload** | Runs `/animus behaviors reload` |
-| **Trigger bindings** | Closes the window and lists in chat what each NPC listens for, as `/animus behaviors triggers` does |
+| **Triggers** | Closes the window and lists in chat each NPC's triggers and how often they fired, as `/animus behaviors triggers` does |
 
 ### Behavior controls
 
 | Button | Does |
 |---|---|
-| **Run** | Runs the behavior once on each selected NPC, as `/animus behaviors run npc=<id> behavior=<behavior>` does |
+| **Run** | Runs the behavior once on each selected NPC, as `/animus behaviors run <npc> <behavior>` does |
 | **Trace** | Closes the window and prints each selected NPC's running and recent runs. Click a run in chat to inspect it |
 | **Cancel a run** | Lists this behavior's runs on the selected NPCs. Click one to stop it; it asks once more |
 | **Validate** | Checks the file without loading it, as `/animus behaviors validate` does |
@@ -426,14 +429,15 @@ The replies are the commands' own.
 | Click | Puts it on every selected NPC: writes `modules["animus:shop"].shop` and keeps the NPC's other shop settings. When a selected NPC opens another shop, it asks once more and names the shop it replaces. With nothing selected, opens its details |
 | Right-click | Opens its details |
 
-**New shop** asks for a name, such as `Bakery`, puts the new shop on the selected NPCs and opens its details. The shop and the NPCs are saved as one change, so one **[Undo]** takes both back. The name becomes the shop's title and, in lowercase, its id, in the folder of the first selected NPC: `Bakery` for an NPC in `town` is `town:bakery`, for `guard` outside any folder `guard:bakery`, and with nothing selected `shops:bakery`, numbered when that is taken. A typed id such as `town:baker` is used as it is. The shop starts with one empty page. In Advanced, **Reload** runs `/animus shop reload`. When a selected NPC also has a conversation that starts on the right-click that opens its shop, the list says so: players get both.
+**New shop** asks for a name, such as `Bakery`, puts the new shop on the selected NPCs and opens its details. The shop and the NPCs are saved as one change, so one **[Undo]** takes both back. The name becomes the shop's title and, in lowercase, its id, in the folder of the first selected NPC: `Bakery` for an NPC in `town` is `town:bakery`, for `guard` outside any folder `guard:bakery`, and with nothing selected `shops:bakery`, numbered when that is taken. A typed id such as `town:baker` is used as it is. The shop starts with one empty page. In Advanced, **Reload** runs `/animus shop reload`. When a selected NPC also has a conversation that starts when a player right-clicks it, the same click that opens its shop, the list says so: players get both.
 
 A setting in the details shows the value the selected NPCs that use the shop share, or "Mixed" when they differ. It changes every selected NPC that uses it, and is grey with "Put it on an NPC first" until one does. From Mixed, a click sets all of them to the first choice and a right-click to the last, after asking once more.
 
 | Button | Does |
 |---|---|
-| **Add held item** | Asks for a price, 0 or more, and adds the item in your main hand as an offer players buy, in the first free slot of the first page, as [`/animus shop stock`](/animus/10-shops#stocking-a-shop-in-game) does. The question is titled with the money the economy names, such as "Price in Dollars", "Price ($)" for a symbol only, or "Price" when it names none, and its hint shows the economy's own text for 2: "One number; 2 reads as $2.00". The reply names the offer, such as `Added Bread for $5.00`. With no economy plugin, or `[shops] economy = "none"`, the button and the question say "No economy plugin, so players cannot pay", and the offer is still added. The wand and an empty hand are refused, so hold the item, then open the NPC's screen again with `/animus tools` |
-| **Offers** | Lists the offers, each with its price such as "Players buy it for $5.00". Click one to take it out; it asks once more, and **[Undo]** puts it back |
+| **Add held item** | Click an item in your own inventory while the shop's details show, or hold it and click this button: it asks for a price, 0 or more, and adds a copy of that stack as an offer the shop sells, in the first free slot of the first page, as [`/animus shop stock`](/animus/10-shops#stocking-a-shop-in-game) does. Your item stays where it is. The question is titled with the money the economy names, such as "Price in Dollars", "Price ($)" for a symbol only, or "Price" when it names none, and its hint shows the economy's own text for 2: "One number; 2 reads as $2.00". The reply names the whole stack and its price, such as `Added an offer: players buy 16 Cod for $5.00`. With no economy plugin, or `[shops] economy = "none"`, the button and the question say "No economy plugin, so players cannot pay"; the offer is still added and the reply says why no one can pay yet, such as `no one can pay money yet: Vault is not installed`. Clicking the button with the wand or an empty hand asks you to click the item in your inventory instead |
+| **Offers** | Lists the offers, each with its price such as "Sells it for $5.00". Click one to take it out; it asks once more, and **[Undo]** puts it back |
+| **Shop menu** | Shown for a [player shop](#player-shops): names its owner and opens the shop's own menu |
 | **Open** | Closes the window and opens the shop for you as an NPC's click opens it, in that NPC's window style and villager look: the first selected NPC that uses the shop, else the first NPC that does. Its lore names that NPC. With no NPC on it, the shop's own style |
 | **Window style** | **Chest window**, **Villager trades** or **Shop default**, the shop's own `style`. Writes `style`, or removes it for Shop default |
 | **Opens on** | **Right-click**, **Left-click** or **Both clicks** |
@@ -450,19 +454,22 @@ Players with `animus.shops.create` make and run their own shops on their chests 
 
 **New shop** opens when you sneak and right-click your chest with the shop item from `/animus shop item`, or run `/animus shop create` while looking at it. Pick **Selling**, **Buying**, **Trading** or **Book**, and the NPC's body, then **Make shop**. Selling and the villager start picked.
 
-Clicking your shop's NPC opens the shop's menu, and `/animus shop manage` lists your shops:
+Clicking your shop's NPC opens the shop's menu, and `/animus shop manage` lists your shops; **Your shops** on Home lists them too. `/animus shop manage <shop>` opens one by its name, as tab completion offers it, or by its title. The top item names the shop with its kind, offers and chests, says whether it is open, and counts its sales since you last opened the menu, such as "3 sales since last opened". Staff who open another player's shop see its owner by name instead of the sales count:
 
 | Button | Does |
 |---|---|
-| **Edit offers** | The offers, one column each: the top item is what players get (what the shop buys, in a buying shop; the book, in a book shop), the one or two below what they pay. Click an empty slot, then an item in your own inventory, to copy that item into it; with no slot picked, the item starts a new offer. Click an item to add one, right-click to take one away, sneak-click for ten. **Save** and **Discard** as on every screen that keeps changes |
+| **Edit offers** | The offers, one column each. The top item is what the shop sells, read **It sells**: in a buying shop it is what the shop buys (**It buys**), in a book shop the book. Below it is the **Price** and an optional **Second price**; a buying shop has one item there instead, **It pays**, what the shop pays for the item. The next free column starts with a pink pane, such as "Click an item in your inventory to sell it"; in a book shop with no book yet it says to put a signed book in your chest. Click an empty slot, then an item in your own inventory, to copy that item into it; with no slot picked, the item starts a new offer. Click an item to add one, right-click to take one away, sneak-click for ten. **Save**, green wool here since prices are often emeralds, and **Discard** as on every screen that keeps changes |
 | **Stock** | Opens your chest |
 | **Chests** | Your chests: click one to open it, right-click it to stop using it, **Add chest** and then right-click another container |
 | **Kind** | Selling, Buying, Trading or Book; a click moves to the next, a right-click to the previous. Refused while an offer does not fit the new kind |
 | **Rename** | The shop and its NPC |
 | **Skin** | For a player body, the skins list; needs `animus.npc.skin` |
-| **Open** / **Closed** | Closes the shop or opens it again; a closed shop shows why |
+| **Open** / **Closed** | Closes the shop or opens it again; a closed shop shows why, and buyers read the reason too. A shop whose chest is gone stays closed until you add a chest in **Chests**, which also drops the broken one from the list |
+| **Sale messages** | On, you get a chat line for each sale while you are online, such as `Gem Shop sold 1x Diamond to Sam for 5x Emerald`. Off stops the lines; the menu still counts the sales. On to start with |
 | Body row | The NPC's body |
 | **Remove shop** | Asks once more, then removes the shop and its NPC; your chests and their items stay |
+
+Deleting the shop's NPC on its own, from its screen or with `/animus delete`, is refused with `This NPC runs your shop; remove the shop in /animus shop manage`, since the shop would be left with no NPC. Staff with `animus.admin` or `animus.npc.others` are asked once more and then delete both in one change, which one **[Undo]** brings back.
 
 ## Combat
 
@@ -643,8 +650,8 @@ In Advanced, Home has a row for everything saved on the server: **Folders**, **B
 - **Bottom row.** The last row only moves you around: **Back** (Home has **Close**), **Search**, the page arrows and page count, **Discard**, **Save** or **Mode**, and **Help** at the right end.
 - **Lists.** A list shows 36 entries a page. The row under it holds the list's own buttons, such as **New route**. **Search** asks for text and shows the entries whose name contains it; click it again to clear. A sneak-click on a page arrow jumps to the first or last page.
 - **Asking once more.** A button that deletes something, or changes more than 20 NPCs, turns red and reads "Click again to confirm", with what it will do. A second click on it runs it; any other click cancels.
-- **Save and Discard.** The combat sections, rule lists, riding settings and conversations collect changes. **Save** is green while there are changes and reads **Saved** in grey when there are none. **Discard** drops them. **Back** with unsaved changes asks once more.
-- **Help.** The paper at the right end of the bottom row explains the screen in chat, with a **[Wiki]** link to the page that covers it. The window stays open.
+- **Save and Discard.** The combat sections, rule lists, the **Seat** and **Players can ride it** settings, a player shop's offers and conversations collect changes. **Save** is green while there are changes and reads **Saved** in grey when there are none. **Discard** drops them. **Back** with unsaved changes asks once more.
+- **Help.** The paper at the right end of the bottom row explains the screen in chat, with a **[Docs]** link to the page that covers it, as every reply has. The window stays open.
 - **Results.** After a change the screen redraws with the new values. A refusal shows in red in chat and on the bottom row of the window until your next click. Buttons that answer in chat, such as **Inspect**, say "Shows in chat" and close the window. A screen for the selected NPCs goes to the NPCs list, or to Home when no NPC is left, once all of them are gone, such as after another player deletes them.
 - **Sounds.** A handled click makes a quiet tick. A refusal plays a low tone.
 
@@ -652,7 +659,7 @@ In Advanced, Home has a row for everything saved on the server: **Folders**, **B
 
 Buttons that need a name, a number or a line of text hide the window and ask for one line. When you answer, the window comes back where you left it and the change runs.
 
-The question opens as an anvil titled with what it asks for. The left slot holds a paper named with the current value, or nothing when there is none. Edit the name in the anvil's text field, then click the paper in the result slot, whose lore reads "Click to confirm". No experience is spent and no item moves: the paper never reaches your inventory. On Paper, Spigot and Folia the anvil shows no cost.
+The question opens as an anvil titled with what it asks for, and chat says how to answer it, such as `Shop name: click the paper to confirm, Esc to cancel`. The left slot holds a paper named with the current value, or nothing when there is none. Edit the name in the anvil's text field, then click the glinting paper in the result slot, whose lore reads "Click to confirm" and "Esc to cancel". No experience is spent and no item moves: the paper never reaches your inventory. On Paper, Spigot and Folia the anvil shows no cost.
 
 | To | Do |
 |---|---|
@@ -671,7 +678,7 @@ Every screen and the wand need `animus.tools`. A screen or button that changes s
 |---|---|
 | `animus.npc.view` | **Inspect** |
 | `animus.npc.create` | **New NPC**, **Copy** |
-| `animus.npc.edit` | **Name**, **Body**, **Equipment**, **Hologram**, **Spawned**, **Revive**, **All fields**, **Attributes**, **Modules**, **Movement settings**, **Folder** and **Folders**, **Trait groups**, **Mounts and riding** and its **Riding** settings |
+| `animus.npc.edit` | **Name**, **Body**, **Equipment**, **Hologram**, **Spawned**, **Revive**, **All fields**, **Attributes**, **Modules**, **Movement settings**, **Folder** and **Folders**, **Trait groups**, **Mounts**, and on **Mounts** the **Seat** and **Players can ride it** settings |
 | `animus.npc.delete` | **Delete** |
 | `animus.npc.skin` | **Skin** and the skins list |
 | `animus.npc.move` | **Bring here**, **Stand still**, **Walk once**, **Start**, **Stop now**, routes and route points |
@@ -688,13 +695,13 @@ Every screen and the wand need `animus.tools`. A screen or button that changes s
 
 ### NPCs you own
 
-Without `animus.admin` or `animus.npc.others`, the menu works only on the NPCs you own: the NPCs list shows only those, the wand answers `guard is not yours; you can change only NPCs you own` on any other NPC, and a selection keeps only yours. **New NPC** and **Copy** make NPCs you own, up to your limit; past it they answer `You own 2 NPCs, your limit; remove one to make another`. A change that would reach another player's NPC or a server NPC is refused with the reason, such as renaming a folder, route, recording or skin that one of them uses, or changing a trait group one of them lists. With `animus.npc.others`, the list, the wand and every screen reach all NPCs, and your other nodes still decide which buttons work.
+Without `animus.admin` or `animus.npc.others`, the menu works only on the NPCs you own: the NPCs list shows only those, the wand answers `guard is not yours; you can change only NPCs you own` on any other NPC, and a selection keeps only yours. **New NPC** and **Copy** make NPCs you own, up to your limit; past it they answer `You own 2 NPCs, your limit; remove one to make another`. A [player shop's](#player-shops) NPC counts too, so a new shop at the limit answers `A shop needs an NPC and you own 2, your limit; remove one to open a shop`. A change that would reach another player's NPC or a server NPC is refused with the reason, such as renaming a folder, route, recording or skin that one of them uses, or changing a trait group one of them lists. With `animus.npc.others`, the list, the wand and every screen reach all NPCs, and your other nodes still decide which buttons work.
 
 **All fields** hides **Owner**, which only an admin changes, and hides what your NPC may do only with a node you lack: **Click redirect** without `animus.owned.server`, the MythicMobs module and schedule arrival commands without `animus.owned.commands`, and death drops without `animus.owned.items`. **Behaviors** lists only behaviors your nodes allow on an NPC you own. Anything else your NPC cannot do is refused when you save it, with the reason and the node; see [NPCs players own](/animus/02-commands-permissions#npcs-players-own).
 
 ## Left to the web editor
 
-Every NPC definition field has either a menu screen or a line in this table.
+Every field of an NPC file has either a menu screen or a line in this table.
 
 | Field | Why |
 |---|---|
@@ -708,6 +715,6 @@ Every NPC definition field has either a menu screen or a line in this table.
 | Import leftovers such as `preservedSettings` | Kept and never read |
 | Behavior node graphs other than conversations; inside a conversation, conditions, actions, go-to steps, a line's wait, sound and animation, answer colours and hover text | The conversation editor moves and deletes those steps but does not edit them |
 | Chest GUI layouts, menus, saved hologram lines, text animation frames | Drawn in the web editor |
-| An offer once it is in a shop: its price, limits and other fields; `sell` and `trade` offers | **Add held item** adds offers players buy and **Offers** removes offers. `/animus shop stock` adds sell and trade offers. A player shop's **Edit offers** sets its trades' items and amounts |
+| An offer once it is in a shop: its price, limits and other fields; `sell` and `trade` offers | **Add held item** adds offers the shop sells and **Offers** removes offers. `/animus shop stock` also adds offers the shop buys (`mode=sell`) and trade offers. A player shop's **Edit offers** sets its trades' items and amounts |
 | `animus:gui.open` kinds `shop` and `gloss` | **Shop** puts shops on NPCs through `animus:shop` |
 | Rig keyframes; a recording's description, tags, speed and own playback | Rig and recording files are written, not toggled |

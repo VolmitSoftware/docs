@@ -1,6 +1,6 @@
 ---
 title: "Animus: Shops"
-description: "Buy, sell and trade shops, container shops, money, and importing from dtlTraders"
+description: "Shops that sell, buy and trade, chest shops, player shops, money, and importing from dtlTraders"
 published: true
 date: 2026-11-12T00:00:00.000Z
 tags: "animus, shops, trading, economy, vault, dtltraders"
@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-A shop is a JSON file of pages. Each page has up to three grids: **buy** (the player pays money for items), **sell** (the player is paid for items) and **trade** (items for items, with an optional money price). An NPC opens a shop on click, a behavior opens it with `animus:open-shop`, and a [chest GUI](/animus/11-guis-holograms-menus) opens it with the `animus:open-shop` action.
+A shop is a JSON file of pages. Each page has up to three grids: **buy** (the shop sells items for money), **sell** (the shop buys items for money) and **trade** (the shop trades items for items, with an optional money price). An NPC opens a shop on click, a behavior opens it with `animus:open-shop`, and a [chest GUI](/animus/11-guis-holograms-menus) opens it with the `animus:open-shop` action.
 
 Shop files live in `plugins/Animus/shops/` (`config/animus/shops/` on mod servers). A file at `town/baker.json` has the id `town:baker`, and its `id` field must say so.
 
@@ -40,7 +40,7 @@ Shop files live in `plugins/Animus/shops/` (`config/animus/shops/` on mod server
 }
 ```
 
-Bind it to an NPC in the NPC definition:
+Bind it to an NPC in the NPC file:
 
 ```json
 "modules": {"animus:shop": {"shop": "town:baker", "openOn": "right"}}
@@ -54,7 +54,7 @@ The module can also set `style` (`native` or `chest`), which replaces the shop's
 "modules": {"animus:shop": {"shop": "town:baker", "style": "native", "villager": {"profession": "minecraft:farmer", "level": 2}}}
 ```
 
-`profession` defaults to `minecraft:none` and `level` (1 to 5) to 1. Other types ignore `villager`. The field sets the trading screen only: the villager body's own look comes from its [body settings](/animus/04-npc-definitions#body-settings), so set the profession there too when the NPC should wear it. Because the module is an ordinary definition field, a [trait group](/animus/18-trait-groups) can set `style` and `villager` for every NPC that lists it.
+`profession` defaults to `minecraft:none` and `level` (1 to 5) to 1. Other types ignore `villager`. The field sets the trading screen only: the villager body's own look comes from its [body settings](/animus/04-npc-definitions#body-settings), so set the profession there too when the NPC should wear it. Because the module is an ordinary field of the NPC file, a [trait group](/animus/18-trait-groups) can set `style` and `villager` for every NPC that lists it.
 
 ## Stocking a shop in game
 
@@ -68,13 +68,13 @@ The held stack, with its count, name and other data, becomes one offer in the fi
 
 | Mode | Offer |
 |---|---|
-| `buy` (default) | Players buy the held stack for `price` |
-| `sell` | Players sell the held stack for `price` |
-| `trade` | Players get the held stack for the stack in your off hand; no price |
+| `buy` (default) | The shop sells the held stack for `price` |
+| `sell` | The shop buys the held stack for `price` |
+| `trade` | The shop gives the held stack for the stack in your off hand; no price |
 
-`page=2` stocks the second page. An id with no file yet, such as `town:smith`, makes the shop with one three-row page first. The reply names the entry id and slot, such as `Added 4 bread as buy offer bread in slot 0 of page 1`, and the transaction. Limits, discounts, display names and the window layout are set afterwards in the file or the [web editor](/animus/14-web-editor#gui-editors). Stocking needs `animus.shops`, which `animus.admin` includes.
+`page=2` stocks the second page. An id with no file yet, such as `town:smith`, makes the shop with one three-row page first. The reply says what the shop sells or buys and the slot, counted from 1, such as `town:smith now sells 4 bread in slot 1 of page 1`, and the transaction; a new shop reads `Made shop town:smith; it sells ...`. The file numbers that slot `0`. Limits, discounts, display names and the window layout are set afterwards in the file or the [web editor](/animus/14-web-editor#gui-editors). Stocking needs `animus.shops`, which `animus.admin` includes.
 
-In the [Animus menu](/animus/21-in-game-toolkit#shops), **Shop** on an NPC's screen makes an empty shop on that NPC and puts shops on NPCs. A shop's **Add held item** asks for a price and adds the held stack as a buy offer, as this command does, with a reply such as `Added 4 Bread for $12.00`. The question is titled with the economy's money, such as "Price in Dollars", or "Price ($)" when the economy names it only by a symbol, as EssentialsX does, or "Price" when it names none, and its hint shows how a typed number reads: "One number; 2 reads as $2.00". With no economy plugin, or `economy = "none"`, the button and the question say "No economy plugin, so players cannot pay"; the offer is still added. It refuses the wand, so hold the item, then open the NPC's screen again with `/animus tools`. **Offers** lists the offers, each with its price such as "Players buy it for $12.00", and takes one out on a click.
+In the [Animus menu](/animus/21-in-game-toolkit#shops), **Shop** on an NPC's screen lists the shops: **New shop** makes an empty one, a click puts a shop on the selected NPCs, and a right-click opens its details. On a shop's details, click an item in your own inventory, or hold it and click **Add held item**: it asks for a price and adds a copy of that stack as a buy offer, as this command does, with a reply such as `Added an offer: sells 4 Bread for $12.00`, the whole stack for that price. The question is titled with the economy's money, such as "Price in Dollars", or "Price ($)" when the economy names it only by a symbol, as EssentialsX does, or "Price" when it names none, and its hint shows how a typed number reads: "One number; 2 reads as $2.00". With no economy plugin, or `economy = "none"`, the button and the question say "No economy plugin, so players cannot pay"; the offer is still added, and the reply says why no one can pay yet, such as `no one can pay money yet: Vault is not installed`. **Offers** lists the offers, each with its price such as "Sells it for $12.00", and takes one out on a click.
 
 ## Window styles
 
@@ -110,7 +110,7 @@ When a villager NPC opens the shop, the title gets the villager's level, such as
 
 ## The chest window
 
-The bottom row holds the controls: previous page in slot 2, close in slot 4, next page in slot 6 and the mode switch in slot 8. Each shows only when it does something, and an entry under a shown control is hidden. Pages a player has no permission for are skipped, and a mode with no entries on any visible page is not offered. Left and right click take the entry's amount; shift click takes a full stack when `allowStack` is true. With `confirm` on, a purchase waits for a click on the confirm button.
+The bottom row holds the controls, counting its slots from 1 at the left: previous page in slot 3, close in slot 5, next page in slot 7 and the mode switch in slot 9. Each shows only when it does something, and an entry under a shown control is hidden. Pages a player has no permission for are skipped, and a mode with no entries on any visible page is not offered. Left and right click take the entry's amount; shift click takes a full stack when `allowStack` is true. With `confirm` on, a purchase waits for a click on the confirm button.
 
 ### Layout GUIs
 
@@ -145,10 +145,10 @@ A layout applies to the chest style only. When the GUI is not loaded or has no l
 | `defaultMode` | The mode shown first. Default the first in `modes`. |
 | `match` | How sold and traded items are compared: `strict` (default; every piece of item data) or `legacy` (type, damage, name, lore, enchantments, potion and book text; used by imports). |
 | `closeAfterPurchase`, `confirm`, `log` | Close after a completed purchase, ask before each purchase, and write each completed purchase to `logs/shops/<namespace>/<path>/<date>.log`. |
-| `pages` | 1 to 64 pages of `name`, `rows` (1 to 6, default 3), optional `permission`, and the `buy`, `sell` and `trade` grids, each a map of slot number to entry. |
-| `owner` | `uuid` and an optional `name` of the player who owns a [container shop](#container-shops). Required with `containers`. |
-| `containers` | 1 to 8 blocks (`world`, `x`, `y`, `z`) that hold the stock of a container shop. |
-| `kind` | How a container shop trades: `selling`, `buying`, `trading` or `book`, as in [player shops](#player-shops). Only with `containers`. |
+| `pages` | 1 to 64 pages of `name`, `rows` (1 to 6, default 3), optional `permission`, and the `buy`, `sell` and `trade` grids, each a map of slot number to entry. Slot keys count from `0` at the top left; the web editor and the game number slots from 1, so key `0` is slot 1. |
+| `owner` | `uuid` and an optional `name` of the player who owns a [chest shop](#chest-shops). Required with `containers`. |
+| `containers` | 1 to 8 blocks (`world`, `x`, `y`, `z`) that hold the stock of a chest shop. |
+| `kind` | How a chest shop trades: `selling`, `buying`, `trading` or `book`, as in [player shops](#player-shops). Only with `containers`. |
 | `closed` | Why the shop is closed, up to 256 characters. A closed shop tells players it is closed and opens nothing. Leave it out for an open shop. |
 | `imported` | Source data an importer kept. Never read. |
 
@@ -162,10 +162,10 @@ A layout applies to the chest style only. When the GUI is not loaded or has no l
 | Field | Meaning |
 | --- | --- |
 | `id` | Unique in the shop. Limits and stock are kept under it, so keep it when you edit the entry. |
-| `type` | `static` (decoration), `buy`, `sell`, `trade` or `command`. Buy and command entries belong in the buy grid, sell in the sell grid, trade in the trade grid. |
+| `type` | `static` (decoration), `buy` (the shop sells the item for money), `sell` (the shop buys the item for money), `trade` or `command`. Buy and command entries belong in the buy grid, sell in the sell grid, trade in the trade grid; the web editor heads these grids **Sells**, **Buys** and **Trades**. |
 | `item` | The icon, and for buy and sell the goods: `id`, `count` (1 to 99) and `components` in `/give` syntax such as `[custom_name="Fresh"]`. |
 | `price` | Money for `item.count` items, from 0 to 1,000,000,000,000 with at most 4 decimals. A full stack costs the price per item times the stack. Optional for trades. |
-| `levels` | Experience levels a buy, command or trade entry costs, a whole number from 0 to 100,000, taken with the price. A full stack costs the levels per item times the stack, rounded up. A player with too few levels is refused and nothing is taken. Not allowed in a container shop. Optional: an entry without it costs no levels. |
+| `levels` | Experience levels a buy, command or trade entry costs, a whole number from 0 to 100,000, taken with the price. A full stack costs the levels per item times the stack, rounded up. A player with too few levels is refused and nothing is taken. Not allowed in a chest shop. Optional: an entry without it costs no levels. |
 | `display` | `name`, `lore` lines, `showPrice` and `showLimit` (both default true). |
 | `needs`, `gives` | For trades: 1 to 27 items each, as `{"item": {...}, "amount": n}`. |
 | `allowStack`, `sellPartial`, `dropWhenFull` | Shift click takes a full stack; a sale may take fewer items than listed (never zero); items that do not fit drop at the player's feet instead of refusing. |
@@ -185,22 +185,22 @@ Limits count items for buy and sell entries and purchases for trade and command 
 
 Every purchase runs on the player's own thread and either completes fully or changes nothing. Limits and stock are held for a purchase before anything moves and given back if it fails, so on Folia two players in different regions cannot both take the last unit.
 
-- **Buy**: checks permission, limits and stock, checks that the items fit (partial stacks count as room), takes the money, then gives the items. If giving fails, the items are taken back and the money is refunded.
-- **Sell**: counts matching items anywhere in the 36 main slots, takes them from as many stacks as needed, then pays. If the payment fails, the items are put back.
+- **Buy** (the shop sells): checks permission, limits and stock, checks that the items fit (partial stacks count as room), takes the money, then gives the items. If giving fails, the items are taken back and the money is refunded.
+- **Sell** (the shop buys): counts matching items anywhere in the 36 main slots, takes them from as many stacks as needed, then pays. If the payment fails, the items are put back.
 - **Trade**: takes every needed item, gives every reward, then takes any money price. If any step fails, the player gets back exactly what they had.
-- **Trade in a container shop**: takes the rewards out of the shop's containers, takes every needed item from the player, puts the needed items into the containers, then gives the rewards. If the containers lack a reward the trade is out of stock; if they have no room for the needed items it is refused with `containerFull`. Either way both sides keep exactly what they had. A book trade takes a blank book and quill instead of a reward and gives a copy of the book, which stays in the container.
+- **Trade in a chest shop**: takes the rewards out of the shop's containers, takes every needed item from the player, puts the needed items into the containers, then gives the rewards. If the containers lack a reward the trade is out of stock; if they have no room for the needed items it is refused with `containerFull`. Either way both sides keep exactly what they had. A book trade takes a blank book and quill instead of a reward and gives a copy of the book, which stays in the container.
 
 Only the hotbar and the three storage rows are used; armor, the offhand and the cursor are never touched. Every click in either window is cancelled, so no item can be taken out of it; see [chest GUI safety](/animus/11-guis-holograms-menus#safety).
 
-## Container shops
+## Chest shops
 
-A shop with `owner` and `containers` is a player's shop: its stock is whatever is in those chests, barrels or other container blocks, and its earnings go into them. It trades items for items only, so its entries are `trade` or `static`, with no money price, no levels, no `stock` field and no `commands`. Players make these shops themselves in game; see [player shops](#player-shops).
+A shop with `owner` and `containers` is a chest shop: its stock is whatever is in those chests, barrels or other container blocks, and its earnings go into them. It trades items for items only, so its entries are `trade` or `static`, with no money price, no levels, no `stock` field and no `commands`. Players make these shops themselves in game; see [player shops](#player-shops). In the [web editor](/animus/14-web-editor#gui-editors), **New shop** with **Chest shop** makes one: pick its owner by name, its kind and the chest's world and position.
 
-A trade runs only when every container is in a loaded chunk on the buyer's thread, still holds an inventory, and protection lets the owner open it; otherwise the buyer sees `containerUnavailable` with the reason. A container that is gone, or that protection no longer lets the owner open, also closes the shop with that reason in `closed`. On Bukkit the protection check is WorldGuard's `build` and `chest-access` rules for the owner, online or not. Without WorldGuard every container can be used, and if WorldGuard is installed but disabled or cannot be used, container shops stay closed. Two listed halves of one double chest count once. Container shops refuse on mod servers, which do not open containers. Shopkeepers player shops import as container shops; see [migrating from Citizens](/animus/13-migrating-from-citizens#shopkeepers).
+A trade runs only when every container is in a loaded chunk on the buyer's thread, still holds an inventory, and protection lets the owner open it; otherwise the buyer sees `containerUnavailable` with the reason. A container that is gone, or that protection no longer lets the owner open, also closes the shop with that reason in `closed`. On Bukkit the protection check is WorldGuard's `build` and `chest-access` rules for the owner, online or not. Without WorldGuard every container can be used, and if WorldGuard is installed but disabled or cannot be used, chest shops stay closed. Two listed halves of one double chest count once. Chest shops refuse on mod servers, which do not open containers. Shopkeepers player shops import as chest shops; see [migrating from Citizens](/animus/13-migrating-from-citizens#shopkeepers).
 
 ## Player shops
 
-Players with `animus.shops.create` make and run their own shops in game, as in Shopkeepers. A player shop is a [container shop](#container-shops) with an NPC in front of it: its stock is the player's own chests, what it earns goes into them, and it trades items for items only.
+A player shop is a [chest shop](#chest-shops) a player made and runs in game, with an NPC in front of its chests, as in Shopkeepers. Players need `animus.shops.create` to make and run one.
 
 ### Making a shop
 
@@ -208,41 +208,46 @@ Players with `animus.shops.create` make and run their own shops in game, as in S
 2. Sneak and right-click your chest, barrel or other container with it. Looking at the container and running `/animus shop create` does the same.
 3. In **New shop**, pick what the shop does and the body of its NPC, then click **Make shop**. The NPC stands on the free side of the container nearest you, facing you.
 
-| Kind | What players do | Columns in Edit offers |
+| Kind | What the shop does | Columns in Edit offers |
 | --- | --- | --- |
-| Selling | Buy items from your chest | The item sold, then one or two price items |
-| Buying | Sell you items and get paid from your chest | The item bought, then what the shop pays |
-| Trading | Swap items with your chest | The item given, then one or two items asked |
-| Book | Buy copies of the signed books in your chest | The book, then one or two price items |
+| Selling | Sells items from your chest to players | The item sold, then one or two price items |
+| Buying | Buys items from players and pays them from your chest | The item bought, then what the shop pays |
+| Trading | Gives items from your chest for items players hand over | The item given, then one or two items asked |
+| Book | Sells copies of the signed books in your chest | The book, then one or two price items |
 
 The shop file is `shops/players/<npc id>.json`, and the NPC is an ordinary NPC whose `owner` is the player, with the shop bound in its `animus:shop` module. Both are saved in one change, so [Undo] takes both back. The shop opens in the villager trading screen, as Shopkeepers shows it.
 
 A shop is refused when the player cannot open the container (a protection plugin cancels the click, or WorldGuard's `build` and `chest-access` rules refuse them), when another shop already uses it, when no side of it is free for the NPC, or when the player is at a limit:
 
 - Shops: the highest `animus.shops.limit.<n>` the player holds, else `[shops] playerLimit` (default 3).
-- NPCs: the shop's NPC counts against `animus.npc.limit.<n>`, as any NPC a player owns does; see [NPCs players own](/animus/02-commands-permissions#npcs-players-own).
+- NPCs: the shop's NPC counts against `animus.npc.limit.<n>`, as any NPC a player owns does; see [NPCs players own](/animus/02-commands-permissions#npcs-players-own). At that limit the refusal says so: `A shop needs an NPC and you own 2, your limit; remove one to open a shop`.
 
 `animus.admin` has no limit on either.
 
 ### Running a shop
 
-Clicking your own shop's NPC opens its menu instead of the shop, while you hold `animus.shops.create`. `/animus shop manage` lists your shops and `/animus shop manage <shop>` opens one. Players with `animus.admin` or `animus.npc.others` run every player's shop the same way.
+Clicking your own shop's NPC opens its menu instead of the shop, while you hold `animus.shops.create`. `/animus shop manage` lists your shops, as **Your shops** on the menu's Home does, and `/animus shop manage <shop>` opens one: `<shop>` is the name tab completion offers, such as `alex-s-shop`, the shop's title in any case, or its id `players:alex-s-shop`. `/animus help` lists `shop item` for every player who may make shops, and `shop manage` once they own one. Players with `animus.admin` or `animus.npc.others` run every player's shop the same way.
 
-- **Edit offers**: one column per offer, as in Shopkeepers. Click an empty slot, then click an item in your own inventory: a copy of that stack goes in the slot and your item stays where it is. With no slot picked, the item starts a new offer; in a selling or buying shop its price starts at one `[shops] currency` item, an emerald unless the config says otherwise. Click an item to add one, right-click to take one away, and sneak to change ten at a time; at none the item goes, and taking away the top item removes its offer. **Save** writes the offers; **Discard** drops the changes. An offer needs at least one price item.
+The menu's top item counts the sales since the owner last opened it, such as "3 sales since last opened", and while the owner is online each sale sends them a line from the shop's side, such as `Gem Shop sold 1x Diamond to Sam for 5x Emerald`, or `Fish Stall bought 16x Cod from Sam for 1x Emerald` for a buying shop. The count and the **Sale messages** switch below are kept in `state/shop-sales.json`.
+
+- **Edit offers**: one column per offer, as in Shopkeepers. The next free column starts with a pink pane named for the kind, such as "Click an item in your inventory to sell it". Click an empty slot, then click an item in your own inventory: a copy of that stack goes in the slot and your item stays where it is. With no slot picked, the item starts a new offer; in a selling or buying shop its price starts at one `[shops] currency` item, an emerald unless the config says otherwise. Click an item to add one, right-click to take one away, and sneak to change ten at a time; at none the item goes, and taking away the top item removes its offer. **Save** writes the offers; **Discard** drops the changes. An offer needs at least one price item.
 - **Stock**: opens your chest so you can stock it and take what the shop earned. The chest must be loaded, and on Folia close enough to be in your region.
 - **Chests**: up to 8 chests. Click one to open it, right-click it to stop using it (the chest and its items stay), and **Add chest**, then right-click another container. A shop always keeps one chest.
 - **Kind**: switches between selling, buying, trading and book; refused while an offer does not fit the new kind.
 - **Rename**: the shop's title and its NPC's name together.
 - **Skin**: for a player body, the toolkit's [skins](/animus/21-in-game-toolkit#skins), which needs `animus.npc.skin`.
-- **Open** and **Closed**: a closed shop tells players it is closed and trades nothing.
+- **Open** and **Closed**: a closed shop trades nothing and tells players why, such as `Gem Shop is closed: its owner closed it.` A shop whose chest is gone stays closed until a chest is added in **Chests**; adding one drops the broken chest from the list.
+- **Sale messages**: turns the chat line for each sale off for this shop, and on again; the count goes on either way. Only the owner has this button.
 - The body row changes the NPC's body.
 - **Remove shop** asks once, then removes the NPC and the shop file. The chests and their items stay.
+
+Deleting the shop's NPC by itself, with `/animus delete` or from its screen, would leave the shop with no NPC, so its owner is refused: `This NPC runs your shop; remove the shop in /animus shop manage`. Staff with `animus.admin` or `animus.npc.others` are asked once more, `/animus delete <npc> confirm` from chat, and then the NPC and the shop go in one change that one **[Undo]** brings back. An NPC that shares its shop with another NPC deletes as usual.
 
 Offers that Edit offers cannot lay out, such as ones with three price items made in the web editor, stay as they are and keep their place after the others.
 
 ### Book shops
 
-A book shop sells copies of the signed books in its chests, found by title. Edit offers lists every title in the chests; give the ones to sell a price, and leave the rest unpriced. Each copy uses up one blank book and quill from the chest, the original stays, and the buyer gets a copy one generation on. An original or a copy of an original can be copied; a copy of a copy cannot, as in vanilla. Without a book and quill in the chest, the offer is out of stock.
+A book shop sells copies of the signed books in its chests, found by title. Edit offers lists every title in the chests; give the ones to sell a price, and leave the rest unpriced. Each copy uses up one blank book and quill from the chest, the original stays, and the buyer gets a copy one generation on. An original or a copy of an original can be copied; a copy of a copy cannot, as in vanilla. Without a book and quill in the chest, the offer is out of stock, and the buyer reads `Gem Shop is out of Copy of Tales: its chest needs a book and quill for the copy.`
 
 ### Protecting the stock
 
@@ -250,12 +255,14 @@ A book shop sells copies of the signed books in its chests, found by title. Edit
 - Explosions leave the chests standing, including an NPC's [`animus:explode`](/animus/07-behaviors#actions) with [`explosionsDamageBlocks`](/animus/03-configuration#behaviorsactions) on.
 - Hoppers and hopper minecarts take nothing out of them. Putting items in is left alone.
 - A chest placed beside a shop's chest, where it would join it into a double chest, is refused.
-- When the owner breaks one of the shop's chests, the shop stops using it. Breaking its last chest closes the shop instead, so the owner can add another one first.
+- When the owner breaks one of the shop's chests, the shop stops using it. Breaking its last chest closes the shop instead, so the owner can add another one first; it cannot open again until they do.
 - When a chest is gone, or protection no longer lets the owner open it, the next trade closes the shop with the reason. The owner is told if online, and the shop's menu shows why. A chunk that is not loaded only refuses that one trade.
 
-A player shop never runs commands, asks for or pays money or experience levels, or gives an item its chests do not hold. A trade either completes on both sides or changes nothing, as for every [container shop](#how-a-purchase-works). A player writes only shops they own that keep their stock in chests; changing who owns a shop, or any other shop, is an admin's.
+A buyer who lacks the price reads what is missing, such as `You need 5x Emerald; you have 2.`, and a sold-out offer says why: `Gem Shop is out of 1x Diamond: its owner has to restock the chest.`
 
-Player shops work on Paper, Spigot and Folia. On Folia every check and trade runs on the region thread of the player or the chest. Mod servers have no player shops: `/animus shop create` and `/animus shop item` say so, as container shops refuse there.
+A trade never gives an item the chests do not hold, and either completes on both sides or changes nothing, as for every [chest shop](#how-a-purchase-works). A player writes only shops they own that keep their stock in chests; changing who owns a shop, or any other shop, is an admin's.
+
+Player shops work on Paper, Spigot and Folia. On Folia every check and trade runs on the region thread of the player or the chest. Mod servers have no player shops: `/animus shop create` and `/animus shop item` say so, as chest shops refuse there.
 
 ## Money
 
@@ -353,4 +360,4 @@ Imported shops with commands need `commandNamespaces = ["dtltraders"]` under `[b
 - Limit windows run per player in real time instead of on one server-uptime clock.
 - Right click buys the listed amount instead of asking for a typed amount.
 - Shops are edited as files or in the [web editor](/animus/14-web-editor). In game, `/animus shop stock` and **Add held item** in the Animus menu add offers from held items, and **Offers** removes them; an offer's price and limits change in the file or the web editor.
-- The [web editor](/animus/14-web-editor#gui-editors) offers only trade and static entries in a shop that lists containers, and removes the fields an entry's new type cannot use when you change its type. It also shows the notes `/animus shop problems` gives for the window style, at the offer they are about.
+- The [web editor](/animus/14-web-editor#gui-editors) removes the fields an entry's new type cannot use when you change its type. It also shows the notes `/animus shop problems` gives for the window style, at the offer they are about.

@@ -18,7 +18,7 @@ A key or table Animus does not know is ignored in every table, never refused. Th
 
 Every value is checked against the ranges below. An out-of-range or mistyped value, or a key with no value after `=`, refuses the whole file with one line that names the file, the line, the table, the key and the value, such as `config.toml line 52: npcs: viewDistance must be within 8..256, not 300`. Broken TOML names the line and column the same way.
 
-NPC definitions and every other document use JSON. Per-NPC settings belong in the definition's `modules`, not here.
+NPC files and every other Animus file use JSON. Per-NPC settings belong in the NPC file's `modules`, not here.
 
 ## Live apply
 
@@ -168,11 +168,11 @@ A running execution keeps the step, lifetime, call depth and trace budgets it st
 
 | Key | Default | Range | Meaning |
 |---|---|---|---|
-| `maximumDocuments` | `1024` | 1-4096 | Behavior documents loaded |
+| `maximumDocuments` | `1024` | 1-4096 | Behavior files loaded |
 | `maximumEntries` | `4096` | 1-32768 | Files and folders scanned under `behaviors/` and `packs/` |
 | `maximumDepth` | `8` | 2-16 | Folder depth scanned |
-| `maximumDocumentBytes` | `262144` | 1-262144 | Size of one behavior document |
-| `maximumAggregateBytes` | `16777216` | 1-67108864 | Size of all behavior documents together |
+| `maximumDocumentBytes` | `262144` | 1-262144 | Size of one behavior file |
+| `maximumAggregateBytes` | `16777216` | 1-67108864 | Size of all behavior files together |
 | `maximumCapabilityChecks` | `8192` | 1-16384 | Capability references checked per catalog load |
 
 Changing a catalog limit reloads the catalog.
@@ -194,7 +194,7 @@ Changing a catalog limit reloads the catalog.
 | `concurrentPerTrigger` | `1` | 1-16 | Executions per trigger |
 | `defaultCooldownTicks` | `20` | 0-72000 | Cooldown of a trigger that sets none |
 | `npcCooldownTicks` | `0` | 0-72000 | Cooldown shared by all triggers on one NPC |
-| `maximumBindings` | `4096` | 1-65536 | Trigger bindings across all active NPCs |
+| `maximumBindings` | `4096` | 1-65536 | Triggers across all active NPCs |
 | `maximumTimers` | `1024` | 1-16384 | Timer triggers across all active NPCs |
 | `minimumTimerTicks` | `20` | 1-72000 | Shortest timer interval accepted |
 | `maximumProximityRadius` | `32` | 1-64 | Largest proximity radius accepted |
@@ -249,15 +249,15 @@ Lowering a budget below existing data keeps the data; only growth is refused.
 | `actionsPerTick` | `32` | 1-256 | Built-in world and player actions run per tick |
 | `actionsPerNpcPerTick` | `4` | 1-64, at most `actionsPerTick` | Built-in actions per NPC per tick |
 | `queuedActions` | `256` | 1-1024 | Actions waiting. A full queue fails the action as busy |
-| `pendingChoices` | `256` | 1-4096 | Open dialogue prompts |
-| `choiceLifetimeSeconds` | `60` | 1-600 | How long a dialogue prompt can be answered |
+| `pendingChoices` | `256` | 1-4096 | Conversation prompts waiting for an answer |
+| `choiceLifetimeSeconds` | `60` | 1-600 | How long a player has to answer a conversation prompt |
 | `commandBehaviors` | `[]` | At most 256 | Behavior, shop and GUI ids allowed to run commands, such as `"town:gate/open"` |
 | `commandNamespaces` | `[]` | At most 256 | Namespaces whose behaviors, shops and GUIs may run commands |
 | `navigationWaits` | `8` | 1-64 | Actions waiting for an NPC to finish walking |
 | `rawTextBehaviors` | `[]` | At most 256 | Behavior ids whose commands may take [interpolated text](/animus/07-behaviors#text-in-commands) outside letters, digits and `_ . : + -` |
 | `explosionsDamageBlocks` | `false` | | Lets `animus:explode` start fires and break blocks. Off, explosions only hurt what stands near them. [Player shop](/animus/10-shops#player-shops) chests stand either way |
 
-Commands are denied unless the behavior, shop or GUI is on one of the allow-lists. Anyone who can edit an allowed document can run console commands, so keep the lists narrow. The web editor changes such a document only with the [`apply:commands`](/animus/14-web-editor#console-commands) scope.
+Commands are denied unless the behavior, shop or GUI is on one of the allow-lists. Anyone who can edit an allowed file can run console commands, so keep the lists narrow. The web editor changes such a file only with the [`apply:commands`](/animus/14-web-editor#console-commands) scope.
 
 ## [combat]
 
@@ -328,16 +328,18 @@ Each key replaces one player-facing shop text of at most 512 characters. `&` col
 | `noPermission` | `&cYou do not have permission for that.` |
 | `limitReached` | `&cYou have reached the limit for {item}.` |
 | `outOfStock` | `&c{item} is out of stock.` |
+| `outOfStockChest` | `&c{shop} is out of {item}: {reason}.` A [player shop's](/animus/10-shops#player-shops) chest lacks what the trade gives; `{reason}` says what to restock |
 | `economyUnavailable` | `&cMoney trades are unavailable: {reason}` |
 | `insufficientFunds` | `&cYou need {price} for that.` |
 | `notEnoughLevels` | `&cYou need {levels} levels for that.` |
 | `inventoryFull` | `&cYour inventory has no room for {item}.` |
-| `notEnoughItems` | `&cYou do not have the items for that.` |
+| `notEnoughItems` | `&cYou need {reason}.` `{reason}` names the item and how many you have, such as `5x Emerald; you have 2` |
 | `nothingToSell` | `&cYou have no {item} to sell.` |
 | `paymentFailed` | `&cThe payment failed; your items were returned.` |
 | `failed` | `&cThat trade failed and was undone: {reason}` |
 | `containerFull` | `&cThe shop's chest has no room for your items.` |
 | `containerUnavailable` | `&cThe shop's chest cannot be used: {reason}` |
+| `closed` | `&c{shop} is closed: {reason}.` `{reason}` is why the shop closed, such as `its owner closed it` |
 | `shopMissing` | `&cThe shop {shop} is not available.` |
 | `shopPermission` | `&cYou cannot use this shop.` |
 | `noPages` | `&cThis shop has nothing you can use.` |
@@ -408,7 +410,7 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `auditDays` | `30` | 1-3650 | Days of editor audit log kept |
 | `requestBodyBytes` | `4194304` | 1024-67108864 | Size of one request |
 | `importBodyBytes` | `16777216` | 1024-268435456 | Size of one uploaded import |
-| `changeSetDocuments` | `512` | 1-512 | Documents in one change set |
+| `changeSetDocuments` | `512` | 1-512 | Files in one change set |
 | `concurrentRequestsPerToken` | `8` | 1-64 | Requests one paired browser may have running |
 | `requestsPerSecond` | `20` | 1-1000 | Requests per second per paired browser, bursting to twice that. A browser over it is told when to retry, and the console logs one line per browser per minute |
 | `pairAttemptsPerMinute` | `10` | 1-600 | Pairing attempts accepted per minute |
@@ -480,7 +482,7 @@ On Paper, Spigot and Folia with [PlaceholderAPI](https://modrinth.com/plugin/pla
 - NPC names and nameplates, and the hologram lines in a definition
 - standalone holograms and holographic menus
 - `animus:say`, `animus:message`, `animus:actionbar` and `animus:title` text
-- dialogue prompts and choice buttons
+- conversation prompts and answer buttons
 - chest GUI and shop titles, item names, lore and trade offers
 
 Animus fills its own `{player_name}` and `{{ }}` holes first, then PlaceholderAPI, then colours the text, so `&` codes a placeholder returns still render. Text with no pair of `%` signs never reaches PlaceholderAPI. A placeholder that needs a player uses the player who sees the text; with no such player, or if the expansion fails, the text stays as written. The Animus menu shows placeholders as written, since it edits them.

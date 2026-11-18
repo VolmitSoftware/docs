@@ -1,6 +1,6 @@
 ---
 title: "Animus: NPC Definitions"
-description: "Definition files, spawning, live edits, appearance, text, inventory and presentation limits"
+description: "NPC files, spawning, live edits, appearance, text, inventory and presentation limits"
 published: true
 date: 2026-11-12T00:00:00.000Z
 tags: "animus, npcs, definitions, appearance, hotload"
@@ -8,11 +8,11 @@ editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Each NPC is a JSON definition at `npcs/<folders>/<id>.json` in the Animus data folder, directly in `npcs/` or up to 8 folders deep, and the file name must be the `id` (`plugins/Animus/` on Bukkit, `config/animus/` on [mod servers](/animus/16-mod-servers)). Animus shows NPCs to players with packets only: no NPC body is registered as a world entity, and a dormant definition creates nothing in the world.
+Each NPC is defined in its NPC file, a JSON file at `npcs/<folders>/<id>.json` in the Animus data folder, directly in `npcs/` or up to 8 folders deep, and the file name must be the `id` (`plugins/Animus/` on Bukkit, `config/animus/` on [mod servers](/animus/16-mod-servers)). Animus shows NPCs to players with packets only: no NPC body is registered as a world entity, and a dormant definition creates nothing in the world.
 
 Folders are yours to arrange: `npcs/guard.json`, `npcs/town/guard.json` and `npcs/world/town/market/guard.json` are all valid places. The folder path is the NPC's folder, stored in its `group` field. `folder=` on commands, editor tokens limited to folders and the web editor's folder tree use it. Ids stay unique across every folder, so moving an NPC between folders never clashes with another NPC of the same id. The web editor's NPC browser can make, rename, move and delete folders; see [the web editor](/animus/14-web-editor).
 
-## Definition file
+## NPC file
 
 ```json
 {
@@ -42,7 +42,7 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 | `type` | Yes | An entity type, such as `minecraft:llama` or `llama`. Animus shows every living entity type, such as `minecraft:zombie` or the body a [`disguise`](/animus/34-libsdisguises) gives, and every body listed under [body settings](#body-settings), such as `minecraft:painting`; a server shows those its Minecraft version registers. `/animus create`, `/animus edit` and their completion offer every body the server shows. A type the server cannot show is saved but refused at spawn with `packet presentation is unavailable for <type>`. |
 | `spawned` | Yes | `true` when the NPC is spawned: it becomes active whenever its chunk is loaded. `false` keeps it despawned: saved, not in the world. |
 | `position` | Yes | `world`, and `x`, `y`, `z`, `yaw`, `pitch` as finite numbers within ±30000000. `pitch` must be within -90 to 90 for the NPC to spawn; `/animus spawn` refuses anything else. On Bukkit, `world` is a world name, a world UUID or a dimension key such as `minecraft:the_nether`; mod servers take the forms [their own page](/animus/16-mod-servers#worlds) lists. |
-| `skin` | No | SHA-256 of a skin document in `skins/`. |
+| `skin` | No | SHA-256 of a skin file in `skins/`. See [skins](#skins). |
 | `disguise` | No | A [LibsDisguises](/animus/34-libsdisguises) disguise, as `/disguise` takes it or the name of a custom disguise, such as `zombie setBaby true`. With LibsDisguises installed, the NPC shows that body in place of its own `type` and body fields. |
 | `behaviors` | No | `namespace:id` references to [behaviors](/animus/07-behaviors). |
 | `tags` | No | See [appearance](#appearance-text-and-inventory). |
@@ -50,13 +50,13 @@ A Minecraft id written without a namespace, such as `netherite_axe` or `villager
 | `owner` | No | Canonical player UUID of the player who owns the NPC; none for a server NPC. `/animus create`, `clone`, the Animus menu and the paired web editor set it to the player who made the NPC. See [Owner](#owner). |
 | `modules` | No | Module settings keyed by module id, such as `animus:navigation`, `animus:combat`, `animus:health`, `animus:riding` or [`mythic:mob`](/animus/36-mythicmobs#the-mythicmob-module). `animus:modelengine` shows a [Model Engine model](/animus/32-model-engine). Unknown module data is kept as written. |
 
-Appearance, inventory, `movement`, `poses` and `rig` fields are described below and on [movement, mounts and riding](/animus/05-movement-mounts-riding) and [rigs and animations](/animus/06-rigs-animations). Health, cooldowns and running behavior state never belong in a definition; Animus does not write them there.
+Appearance, inventory, `movement`, `poses` and `rig` fields are described below and on the [movement](/animus/05-movement-mounts-riding) and [rigs and animations](/animus/06-rigs-animations) pages. Health, cooldowns and running behavior state never belong in the NPC file; Animus does not write them there.
 
 A wrong value names its exact field, for example `$.equipment.head.count: expected integer 1..99`.
 
 ## Activation and editing
 
-`/animus create` and **New NPC** in the [Animus menu](/animus/21-in-game-toolkit#new-npc) save a new NPC spawned. A clone, or a copy made with **Copy** in the menu, is saved despawned (`spawned: false`). An import keeps whether the source plugin had the NPC spawned. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves `spawned: true`. The NPC is active while its chunk is loaded, and it appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC despawned and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
+`/animus create` and **New NPC** in the [Animus menu](/animus/21-in-game-toolkit#new-npc) save a new NPC spawned. A clone, a copy made with **Copy** in the menu, or one made with **Duplicate** in the [web editor](/animus/14-web-editor#npcs-trait-groups-routes-recordings-skins-and-packs), is saved despawned (`spawned: false`), so it does not stand on top of the NPC it came from. An import keeps whether the source plugin had the NPC spawned. `/animus spawn <id>` checks the world, body type, name and equipment against the running server, then saves `spawned: true`. The NPC is active while its chunk is loaded, and it appears once a player is in range and their client has received the chunk. `/animus despawn <id>` saves the NPC despawned and ends its combat immediately; its body disappears for viewers shortly after. A restart restores which NPCs are spawned. It does not resume interrupted work or restore combat health.
 
 ```none
 /animus create guard name="Town Guard" folder=town
@@ -71,11 +71,11 @@ Management commands require `animus.admin` or the [narrower node](/animus/02-com
 
 `/animus edit` applies a JSON merge patch: an object merges into the field of the same name, `null` removes a field, any other value replaces it, the rest stay, and the revision goes up. The reply names each changed path. An active NPC keeps its health and current position through an appearance-only edit. An edit that changes `position` moves it. Despawning and spawning again starts the NPC with fresh runtime state.
 
-Skins are content-hashed JSON documents in `skins/` holding the texture and signature. When a changed skin reference is missing or invalid, the NPC keeps its last valid look and the field error is reported. Accepted definitions have recovery checkpoints: a broken hand edit found at startup keeps the previous accepted definition and leaves the edited file untouched. Deleting a definition file deletes the NPC. See [storage and recovery](/animus/12-storage-recovery).
+When a changed [skin](#skins) reference is missing or invalid, the NPC keeps its last valid look and the field error is reported. Accepted definitions have recovery checkpoints: a broken hand edit found at startup keeps the previous accepted definition and leaves the edited file untouched. Deleting an NPC file deletes the NPC. See [storage and recovery](/animus/12-storage-recovery).
 
 ### Hand edits apply live
 
-Saving a definition file applies it within about a second, without `/animus reload`, and a broken edit keeps the last valid version. See [live apply](/animus/03-configuration#live-apply) for the chat line, what needs a restart and the `[hotload]` settings.
+Saving an NPC file applies it within about a second, without `/animus reload`, and a broken edit keeps the last valid version. See [live apply](/animus/03-configuration#live-apply) for the chat line, what needs a restart and the `[hotload]` settings.
 
 ## Appearance, text and inventory
 
@@ -98,8 +98,7 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
   "hologram": {"lines": ["&6Quest giver", "Right-click to talk"]},
   "nameplate": {"visible": true},
   "pose": "sitting",
-  "inventory": {"size": 36, "slots": {"0": {"id": "minecraft:bread", "count": 16}}},
-  "owner": "8667ba71-b85a-4004-af54-457a9734eed7"
+  "inventory": {"size": 36, "slots": {"0": {"id": "minecraft:bread", "count": 16}}}
 }
 ```
 
@@ -115,8 +114,7 @@ These fields are optional. Every viewer sees the same result, and it is rebuilt 
 | `bossBar` | A boss bar shown to players near the NPC; see [boss bars, viewers and click redirects](#boss-bars-viewers-and-click-redirects). |
 | `viewers` | Which players see the NPC. |
 | `clickRedirect` | The UUID of another NPC that receives this NPC's clicks. |
-| `inventory` | `size` is a multiple of 9 from 9 to 72; `slots` maps slot numbers below `size` to items. |
-| `owner` | The owning player's UUID. |
+| `inventory` | `size` is a multiple of 9 from 9 to 72; `slots` maps slot numbers to items. The file counts slots from 0, so each number is below `size`. See [inventory](#inventory). |
 | `tags` | At most 32 distinct labels of 1-32 lowercase letters, digits, `_` or `-`, starting with a letter or digit. The [web editor](/animus/14-web-editor) uses them to find and group NPCs. The server stores them and does not act on them. |
 
 `skin`, a pose other than `standing`, `armorStand` and another body's settings are refused on a body that cannot show them, so after changing `type`, remove what the old body used. The [web editor](/animus/14-web-editor) lists these fields with a remove button.
@@ -236,7 +234,7 @@ A turtle has no settings of its own; `baby` gives a hatchling. A [trait group](/
 
 A player the `viewers` filter hides is never sent the NPC's body, its hologram lines, its GUI hologram or its boss bar, hears none of its speech, sounds or particles, and fires none of its triggers. They are checked again as their permissions change. A `deny` filter counts only groups and permissions set for the player, so an operator still sees the NPC unless they are named or a listed group or permission is set for them. A boss bar shows only while the NPC is spawned and to players who can see it.
 
-Clicking an NPC with `clickRedirect` counts as clicking the NPC with that UUID: its triggers, shops, GUIs and `VirtualNpcInteractionEvent` see the target. The redirect applies while the target is spawned and the `viewers` filter shows it to the player, and on Folia while the same region owns both NPCs; otherwise the click stays with the NPC that was clicked. An attack still hurts only the NPC that was hit, and its `VirtualNpcInteractionEvent` names that NPC, while the target's attack triggers fire. A redirected click never starts riding.
+Clicking an NPC with `clickRedirect` counts as clicking the NPC with that UUID: its triggers, shops, GUIs and `VirtualNpcInteractionEvent` see the target. The redirect applies while the target is spawned and the `viewers` filter shows it to the player, and on Folia while the same region owns both NPCs; otherwise the click stays with the NPC that was clicked. An attack still hurts only the NPC that was hit, and its `VirtualNpcInteractionEvent` names that NPC, while the target's attack triggers fire. A redirected click never lets the player ride or sit on either NPC.
 
 ### Other presentation flags
 
@@ -313,12 +311,14 @@ A player body wears the skin file its `skin` names, `skins/<sha256>.json`, named
 | Field | Meaning |
 |---|---|
 | `textureRaw` | Mojang's `textures` property, base64: the skin's address on `textures.minecraft.net` and its arm model |
-| `signature` | Mojang's signature of `textureRaw`. Clients draw the default skin for a texture without one |
+| `signature` | Mojang's signature of `textureRaw`. Clients draw the NPC's default skin for a texture without one |
 | `label` | The name skin lists show |
 | `player` | The Minecraft account the skin came from, or a PlaceholderAPI placeholder that fills to one. `refresh` looks it up again |
 | `image` | The PNG it was made from, base64, kept until the skin is signed |
 
-A skin from a player name, or your own, comes signed from Mojang. A PNG or a PNG address is signed through [MineSkin](https://mineskin.org) with the key in [`[skins]`](/animus/03-configuration#skins): the web editor's upload on a paired server, `/animus npc skin url=` or `file=`, and **Skin address** in the Animus menu. A skin an NPC or trait group wears that is still unsigned but keeps its `image` or a texture address, such as one uploaded in a web editor that was not paired, is signed within about 15 seconds of being worn: the signed file replaces it, every wearer moves to it as one change with **[Undo]**, and the console says so in one line. An unsigned skin with neither is named once in the console; upload its PNG again. A refused signing is tried again after 30 minutes.
+A player body without a skin shows one of Minecraft's nine default characters (Steve, Alex, Ari, Efe, Kai, Makena, Noor, Sunny or Zuri) with slim or classic arms, picked from the NPC's `uuid`, so it is the same one on every client. The [web editor](/animus/14-web-editor#npcs-trait-groups-routes-recordings-skins-and-packs) names and draws that same skin.
+
+A skin from a player name, or your own, comes signed from Mojang: `/animus npc skin <npc> <name>`, or **Player name** in the web editor's skin chooser on a paired server. A skin [MineSkin](https://mineskin.org) already signed is read by its link or id (`https://mineskin.org/skins/<uuid>`, `https://minesk.in/<id>`): `url=` with a MineSkin link, **Skin address** in the Animus menu, or **MineSkin link or id** in the web editor. A PNG or any other PNG address is signed through MineSkin with the key in [`[skins]`](/animus/03-configuration#skins): the web editor's upload on a paired server, `/animus npc skin url=` or `file=`, and **Skin address** in the Animus menu. A skin an NPC or trait group wears that is still unsigned but keeps its `image` or a texture address, such as one uploaded in a web editor that was not paired, is signed within about 15 seconds of being worn: the signed file replaces it, every wearer moves to it as one change with **[Undo]**, and the console says so in one line. An unsigned skin with neither is named once in the console; upload its PNG again. A refused signing is tried again after 30 minutes.
 
 `animus:skin` says where a player body's skin comes from beyond its file:
 
@@ -359,11 +359,19 @@ The inventory is stored data. Nothing renders it and no item moves in or out of 
 
 `owner` names the player who owns the NPC, as Citizens' owner trait does; an NPC without it is a server NPC. A player owns what they make, and without `animus.admin` they change only NPCs they own, up to their limit of NPCs; only an admin changes the field itself. An owned NPC can never do more than its owner may: running commands, operator commands, lent permissions, server behaviors, reaching other players and making items each need an `animus.owned.*` node its owner holds, checked whenever the definition is saved and again as its behaviors run. [NPCs players own](/animus/02-commands-permissions#npcs-players-own) lists the nodes and what each allows.
 
-`/animus inspect` ends its first line with `owner` and the player's last known name, or their UUID when the server never saw them. The web editor shows the UUID under Basics, Identity in Advanced mode, with the player's name beneath it while it is paired to a server that knows the name. Plugins and modules read it with `NpcDefinition.owner()` and from the definition snapshot.
+`/animus inspect` ends its first line with `owner` and the player's last known name, or their UUID when the server never saw them. In the web editor, **Owner** sits under Basics, Identity in Advanced mode, and picks the player by name from the players the paired server has seen; it also takes a UUID typed in. Plugins and modules read it with `NpcDefinition.owner()` and from the definition snapshot.
 
 ## Interactions
 
 A player's click is checked against the NPC's current state for reach, line of sight, rate and visibility, then fires the cancellable `VirtualNpcInteractionEvent` with `preview=false` on Bukkit. An NPC with the [combat module](/animus/08-combat) takes player hits as combat damage.
+
+A click with the [wand](/animus/21-in-game-toolkit#the-wand) edits the NPC, and nothing else on the NPC sees it. Any other click that passes goes to these in order:
+
+1. Every behavior with an `interaction` trigger for that click starts. A trigger with a `consume` check keeps the click from everything below while the check holds.
+2. The first of these that answers opens, and the rest never see the click: hiring (`animus:hire`, right-click), a [quest](/animus/38-quests) that has something for the player (right-click), the shop (`animus:shop`) and the GUI (`animus:gui`), each on the click its `openOn` names.
+3. A right-click without sneaking that nothing above took: the player rides the NPC when **Players can ride it** (`animus:riding`) is on, else takes the [seat](/animus/05-movement-mounts-riding#sitting-on-an-npc).
+
+A sneaking player with `animus.admin` skips the shop, the GUI, quests and hiring. The web editor's **Talk and trade** tab says who answers each click when more than one thing does, such as "Right-click starts Greeter, then opens Bakery."
 
 ## Work and visibility limits
 
@@ -415,4 +423,4 @@ On Paper and Spigot, with `packetProofEnabled = true`, an administrator can stee
 /animus proof control stop
 ```
 
-The administrator stays a normal player and is not mounted. Control starts on a fresh movement key press, moves the body at most 0.1 block per 50 ms step, holds it within 8 blocks of where control began and lasts 30 seconds. Releasing the keys stops it. Sneaking, excessive input, a stale connection, lifecycle changes or unavailable terrain end control. Sprint and jump give no extra speed or flight. At most 8 players control a preview at once, one body each. Previews run no routes, behaviors or real combat. To let players ride saved NPCs, use [riding](/animus/05-movement-mounts-riding#riding-an-npc).
+The administrator stays a normal player and is not mounted. Control starts on a fresh movement key press, moves the body at most 0.1 block per 50 ms step, holds it within 8 blocks of where control began and lasts 30 seconds. Releasing the keys stops it. Sneaking, excessive input, a stale connection, lifecycle changes or unavailable terrain end control. Sprint and jump give no extra speed or flight. At most 8 players control a preview at once, one body each. Previews run no routes, behaviors or real combat. To let players ride saved NPCs, use [Players can ride it](/animus/05-movement-mounts-riding#players-can-ride-it).

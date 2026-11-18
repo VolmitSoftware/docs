@@ -229,7 +229,7 @@ Events live in `art.arcane.animus.bukkit.event`. `getNpcId()` is the NPC's UUID 
 | `VirtualNpcInteractionEvent` | A player clicks or hits an NPC, after reach and sight checks | Stops the click: no behavior trigger, module click hook, shop, GUI, ride or seat, and no damage from the player's hit |
 | `VirtualNpcDamageEvent` | An NPC is about to damage a player or mob | Stops the hit; `setDamage` changes it |
 | `VirtualNpcDamagedByMobEvent` | A mob controlled by `/animus combat mob` is about to damage an NPC | Stops the hit |
-| `VirtualNpcDialogueChoiceEvent` | A player picks a dialogue choice, before the behavior hears it | Drops the answer, so the `dialogue_choice` trigger does not fire; the prompt is used up either way |
+| `VirtualNpcDialogueChoiceEvent` | A player clicks a conversation answer, before the behavior hears it | Drops the answer, so the `dialogue_choice` trigger does not fire; the prompt is used up either way |
 | `VirtualNpcSpawnEvent` | An NPC becomes active, or comes back after dying | Not cancellable |
 | `VirtualNpcDespawnEvent` | An active NPC is despawned, deleted or replaced by another UUID | Not cancellable |
 | `VirtualNpcDeathEvent` | An NPC's health reaches zero; carries the killer when known | Not cancellable |
@@ -240,7 +240,7 @@ Events live in `art.arcane.animus.bukkit.event`. `getNpcId()` is the NPC's UUID 
 | `VirtualNpcItemDropEvent` | A player or mob drops an item within three blocks of an NPC, or throws it into its hitbox | Not cancellable |
 | `VirtualNpcLeashEvent` | A player leading a mob right-clicks an NPC (`TIE`), or a mob on a lead is led within three blocks (`PASS`) | Not cancellable |
 
-Events fire on the thread that owns the NPC: the main thread on Paper and Spigot, and the NPC's region on Folia. The interaction, dialogue choice and `TIE` lead events fire on the player's thread, and the projectile event on the projectile's. The projectile, contact, vehicle, item and lead events are what Animus [senses](/animus/07-behaviors#sensed-triggers) around an NPC, since the server reports nothing about a body that is only packets: each fires once per entity, and only while a player is near the NPC. While a plugin listens for the contact, vehicle, item or lead events, every NPC a player is near is looked at, within the `entity` budgets of `[behaviors.triggers]`. Spawn, despawn and death events are marked asynchronous if they ever fire off a server thread. No world entity stands behind an NPC, so read positions from the event, as an `NpcPosition` with `toLocation()`.
+Events fire on the thread that owns the NPC: the main thread on Paper and Spigot, and the NPC's region on Folia. The interaction, conversation answer and `TIE` lead events fire on the player's thread, and the projectile event on the projectile's. The projectile, contact, vehicle, item and lead events are what Animus [senses](/animus/07-behaviors#sensed-triggers) around an NPC, since the server reports nothing about a body that is only packets: each fires once per entity, and only while a player is near the NPC. While a plugin listens for the contact, vehicle, item or lead events, every NPC a player is near is looked at, within the `entity` budgets of `[behaviors.triggers]`. Spawn, despawn and death events are marked asynchronous if they ever fire off a server thread. No world entity stands behind an NPC, so read positions from the event, as an `NpcPosition` with `toLocation()`.
 
 ## Platforms
 
@@ -356,7 +356,7 @@ Handlers run on two bounded module workers with a deadline. A call holds its slo
 
 ## Definitions
 
-`npcs().definitions()` reads and replaces whole definitions, saved and temporary, against a token. Snapshots are immutable and carry a revision and hash token; a temporary NPC's token is its in-memory revision and the hash of its JSON. A replacement is a full JSON document that keeps the UUID, readable id and folder, and names the revision it was based on. Animus validates it before writing, raises the revision and keeps unmodified unknown module settings. A stale token is a conflict.
+`npcs().definitions()` reads and replaces whole definitions, saved and temporary, against a token. Snapshots are immutable and carry a revision and hash token; a temporary NPC's token is its in-memory revision and the hash of its JSON. A replacement is the whole NPC file as JSON, keeping the UUID, readable id and folder, and names the revision it was based on. Animus validates it before writing, raises the revision and keeps unmodified unknown module settings. A stale token is a conflict.
 
 A replacement may spawn an NPC or change a live one. Before it is written, Animus checks that the server can show it, as the web editor does when it spawns an NPC; a definition it could not show answers `INVALID` with the reason (code `activation-refused`), and nothing is saved. A dormant replacement, or one that changes only the revision or plugin module data, is written without that check.
 
@@ -377,7 +377,7 @@ Commands, imports and API edits share one file queue, so each validation and sav
 
 1.3 broke the minor rule once: `ModuleContext.definitions()` became `ModuleContext.npcs().definitions()`. A module built against 1.2 or earlier that reads definitions needs a rebuild; one that does not still loads. Bukkit plugins built against the 1.2 `animus-bukkit-api` keep working, since `AnimusNpcs` only gained `service`.
 
-Interaction notices, import converters and integration hooks require API 1.1. `BLOCK_USE`, `DefinitionService.resolve` and `list`, and `minimumMinor` require API 1.2. The NPC service, definition modules, edits that spawn NPCs and the cancellable dialogue choice event require API 1.3.
+Interaction notices, import converters and integration hooks require API 1.1. `BLOCK_USE`, `DefinitionService.resolve` and `list`, and `minimumMinor` require API 1.2. The NPC service, definition modules, edits that spawn NPCs and the cancellable conversation answer event require API 1.3.
 
 ## Interaction notices
 

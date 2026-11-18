@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-08T00:00:00.000Z
 ---
 
-This is the last part of the Animus tutorial. The [web editor](https://animus.volmitsoftware.com) edits every Animus document in the browser, with a 3D preview of each NPC. Paired with a server, it reads the server's documents and writes your changes back as one transaction. [Web editor](/animus/14-web-editor) is the full reference. The steps below assume the server from the [earlier parts](/animus/22-tutorial-first-npc).
+This is the last part of the Animus tutorial. The [web editor](https://animus.volmitsoftware.com) edits every Animus file in the browser, with a 3D preview of each NPC. Paired with a server, it reads the server's files and writes your changes back as one transaction. [Web editor](/animus/14-web-editor) is the full reference. The steps below assume the server from the [earlier parts](/animus/22-tutorial-first-npc).
 
 ## 1. Pair with a server
 
@@ -84,21 +84,21 @@ The **Conversation** tab edits a conversation as a tree of blocks, and most of i
 - Type the opening line. Type `{` to insert a placeholder such as `{player_name}`.
 - End a line with `[Ferry] [Market]` and press Enter to turn it into a question with two answers.
 - In an answer, press Ctrl+Enter (Cmd+Enter on a Mac) to add what follows it.
-- Open a step's menu to delete it. Deleting a question leaves the parts its answers led to under **Other parts**; delete those from their own menus.
+- Open a step's menu to delete it. Deleting a question leaves the routines its answers led to under **Other routines**; delete those from their own menus.
 - In **Test**, pick how it starts, press **Run**, then pick an answer.
 - Under **NPCs**, pick an NPC from the list.
 
 ## 6. Add shop offers
 
-The shop page lists offers as rows that read as what the player gets for what it costs, and draws the window players get beside them. **Add offer** adds an offer; the **...** beside it picks another kind: trade, buy, sell, command or decoration. **Opened by** on the **Settings** tab attaches the shop to an NPC. [GUI editors](/animus/14-web-editor#gui-editors) describes every field.
+The shop page lists offers as rows that read as what the player gets for what it costs, and draws the window players get beside them. **Add offer** adds an offer; the **...** beside it adds the other kinds, such as a trade, an item to buy, a command offer or a decoration. **Opened by** on the **Settings** tab attaches the shop to an NPC. [GUI editors](/animus/14-web-editor#gui-editors) describes every field.
 
 <div class="animus-demo">
 <p><strong>Shop offers</strong> Browser editor.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/06-shop-offers-editor.webm" aria-label="Adding a trade and a buy offer and attaching the shop to an NPC" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/06-shop-offers-editor.webm" aria-label="Adding a trade and an item to sell and attaching the shop to an NPC" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 - Open **Shops**, click **New shop**, type the title and keep **Blank**.
-- Click the **...** beside **Add offer**, pick **Add trade** and set the items. Click **Add offer** for a buy offer and set its price. Money prices need Vault and an economy plugin on the server; without them, use item prices.
+- Click the **...** beside **Add offer**, pick **Add trade** and set the items. Click **Add offer** for an item the shop sells and set its price. Money prices need Vault and an economy plugin on the server; without them, use item prices.
 - In Advanced, the preview's **...** switches between **Trading screen** and **Chest window**; check both.
 - On the **Settings** tab, pick the NPC under **Opened by**.
 
@@ -131,7 +131,7 @@ Text, expression and id fields complete as you type. Ctrl+Space opens the list a
 
 ## 9. Apply and undo
 
-Edits to a server stay in the browser until you apply them, and the save bar at the bottom counts them. **Apply** checks every change and writes them all as one transaction, or writes nothing. The document's revision goes up by one. **Undo** on the save bar, right after the apply, rolls the change set back after a confirm; in Advanced, the **Applied** list in **Review** undoes earlier applies too. Online operators see a chat line for each apply. [Applying changes](/animus/14-web-editor#applying-changes) covers conflicts and merges.
+Edits to a server stay in the browser until you apply them, and the save bar at the bottom counts them. **Apply** checks every change and writes them all as one transaction, or writes nothing. The file's revision goes up by one. **Undo** on the save bar, right after the apply, rolls the change set back after a confirm; in Advanced, the **Applied** list in **Review** undoes earlier applies too. Online operators see a chat line for each apply. [Applying changes](/animus/14-web-editor#applying-changes) covers conflicts and merges.
 
 <div class="animus-demo">
 <p><strong>Apply and undo</strong> Browser editor.</p>
@@ -151,7 +151,7 @@ The same change set can be undone in game from its transaction id:
 
 ## 10. Learn the shortcuts
 
-Press `?` outside a text box for the shortcut sheet. It lists the keys that work everywhere and the keys of the part you are in. [Keyboard and commands](/animus/14-web-editor#keyboard-and-commands) lists them too.
+Press `?` outside a text box for the shortcut sheet. It lists the keys that work everywhere and the keys of the screen you are in. [Keyboard and commands](/animus/14-web-editor#keyboard-and-commands) lists them too.
 
 <div class="animus-demo">
 <p><strong>Shortcut sheet</strong> Browser editor.</p>
@@ -161,7 +161,7 @@ Press `?` outside a text box for the shortcut sheet. It lists the keys that work
 | Keys | Does |
 |---|---|
 | `?` | Show the shortcut sheet |
-| N | New document |
+| N | New file |
 | B | Open the NPC list |
 | Ctrl+K (Cmd+K) or `/` | Search |
 | Ctrl+Z (Cmd+Z) | Undo |

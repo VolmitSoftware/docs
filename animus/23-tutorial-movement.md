@@ -1,6 +1,6 @@
 ---
 title: "Animus Tutorial: Movement"
-description: "Make routes by walking them, send NPCs on trips, record your movement and set up mounts and riding"
+description: "Make routes by walking them, send NPCs on trips, record your movement, set up mounts and let players ride NPCs"
 published: true
 date: 2026-11-12T00:00:00.000Z
 tags: "animus, tutorial, routes, recordings, mounts, riding"
@@ -100,28 +100,28 @@ For a clean loop, end the recording close to where you started it.
 
 ## 6. Seat one NPC on another
 
-An NPC can ride another NPC. Here the greeter rides the trader, the llama from the first part. **Mounts and riding** is in Advanced mode; switch with the **Mode** lever on the NPC screen. It acts on the first selected NPC and shows what it rides and what rides it. [Mounted NPCs](/animus/05-movement-mounts-riding#mounted-npcs) lists the limits.
+An NPC can ride another NPC. Here the greeter rides the trader, the llama from the first part. **Mounts** is in Advanced mode; switch with the **Mode** lever on the NPC screen. It acts on the first selected NPC and shows what it rides and what rides it. [Mounted NPCs](/animus/05-movement-mounts-riding#mounted-npcs) lists the limits.
 
 <div class="animus-demo">
 <p><strong>Mounts</strong> Minecraft client.</p>
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/20-mounts-ingame.webm" aria-label="Seating the greeter on the trader and dismounting it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- On the greeter's Movement screen, click **Mounts and riding**.
+- On the greeter's Movement screen, click **Mounts**.
 - Click **Ride another NPC**. The window closes.
 - Click the trader with the wand.
-- Open **Mounts and riding** again and click **Dismount** twice to take the greeter off.
+- Open **Mounts** again and click **Dismount** twice to take the greeter off.
 
 ## 7. Let players ride an NPC
 
-A player can ride an NPC whose riding is on. The player right-clicks the NPC with an empty hand to get on, steers with the movement keys and sneaks to get off. Riding needs `animus.ride`, which operators have by default, unless the NPC names another permission. [Riding an NPC](/animus/05-movement-mounts-riding#riding-an-npc) covers speed, leash and lifetime.
+A player can ride an NPC that has **Players can ride it** turned on. The player right-clicks the NPC with an empty hand to get on, steers with the movement keys and sneaks to get off. A ride needs `animus.ride`, which operators have by default, unless the NPC names another permission. [Players can ride it](/animus/05-movement-mounts-riding#players-can-ride-it) covers speed, leash and lifetime.
 
 <div class="animus-demo">
-<p><strong>Riding</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Turning on riding for the trader, raising its speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
+<p><strong>Players can ride it</strong> Minecraft client.</p>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/21-riding-ingame.webm" aria-label="Letting players ride the trader, raising its speed and riding it" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-- Right-click the trader with the wand, then click **Movement**, **Mounts and riding** and **Riding**.
+- Right-click the trader with the wand, then click **Movement**, **Mounts** and **Players can ride it**.
 - Click **Enabled** to turn it on and click **Speed** to raise it.
 - Click **Save**.
 - Close the window and right-click the trader with an empty hand to ride it. Sneak to get off.

@@ -45,7 +45,7 @@ Each recording lives at `recordings/<id>.json` in the data folder. The id uses 1
 | Field | Meaning |
 |---|---|
 | `schemaVersion` | Always `1` |
-| `revision` | Starts at 1 and goes up with each save, like other documents |
+| `revision` | Starts at 1 and goes up with each save, like other files |
 | `id` | The recording's id, matching the file name |
 | `recordedBy` | UUID of the player who recorded it |
 | `world` | The world it was recorded in: its Bukkit world name, or a dimension key such as `minecraft:the_nether`. A world UUID is also accepted, but only works on the server that made it. A recording plays only for NPCs in that world; when the world is not loaded, the NPC reports why in `route-error` and does not play it |
@@ -86,7 +86,7 @@ Events are objects sorted by `tick`, then by `type`. No event may come after `du
 | Type | Fields | Meaning |
 |---|---|---|
 | `swing` | `tick` | The main arm swung |
-| `equipment` | `tick`, `slot`, `item` | A slot changed. `slot` is `main_hand`, `off_hand`, `head`, `chest`, `legs` or `feet`. `item` has `id` and optional `count` (1-99) and `components`, the same shape as definition items, or is `null` when the slot was emptied |
+| `equipment` | `tick`, `slot`, `item` | A slot changed. `slot` is `main_hand`, `off_hand`, `head`, `chest`, `legs` or `feet`. `item` has `id` and optional `count` (1-99) and `components`, the same shape as items in an NPC file, or is `null` when the slot was emptied |
 | `use` | `tick`, `x`, `y`, `z`, `block` | The recorder opened or closed the door, fence gate or trapdoor at that block |
 
 Nothing else is recorded: other right-clicks, block breaking, chat and inventory moves are left out.
@@ -105,7 +105,7 @@ Before saving, Animus drops frames that add nothing. A frame is left out when it
 
 Recording again under an existing id replaces the frames and events but keeps the file's `description`, `tags`, `playback` and `speed`.
 
-Saves go through the same document store as definitions and routes, so [live apply](/animus/03-configuration#live-apply), [web editor](/animus/14-web-editor) undo and [rollback](/animus/12-storage-recovery) all see them.
+Saves go through the same file store as NPC files and routes, so [live apply](/animus/03-configuration#live-apply), [web editor](/animus/14-web-editor) undo and [rollback](/animus/12-storage-recovery) all see them.
 
 ## Recording a performance
 

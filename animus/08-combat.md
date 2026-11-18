@@ -308,7 +308,7 @@ The built-in [`animus:combat-control`](/animus/07-behaviors#actions) action driv
 | `release` | None | Drops the current target; rules keep running. |
 | `guard` | Optional | Guards this player or NPC; without `target`, stops guarding. Replaces the definition's guard until despawn. |
 
-`target` is a UUID, or `player` for the player who started the run, so a hire dialogue can guard whoever answered it. The action fails with a reason when the NPC has no enabled combat, is dead, or the target is not available in its world. Use the `damage` and `death` triggers to react to fights.
+`target` is a UUID, or `player` for the player who started the run, so a hire conversation can guard whoever answered it. The action fails with a reason when the NPC has no enabled combat, is dead, or the target is not available in its world. Use the `damage` and `death` triggers to react to fights.
 
 Administrators have the same operations as `/animus combat` commands, which need `animus.combat` (granted by `animus.admin`). A target is a player name, an NPC id, `@me` or a UUID; see [commands](/animus/02-commands-permissions#combat) for the full list. The ones you use most:
 

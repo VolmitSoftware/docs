@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-09T00:00:00.000Z
 ---
 
-Animus NPCs work in three quest plugins: they give quests, start conversations, and count as talk, delivery and kill targets. Install the quest plugin beside Animus and start the server; each integration starts on its own when its plugin is installed, and Animus runs the same without them. None of them needs Citizens. For quests written as Animus documents, without another plugin, see [quests](/animus/38-quests).
+Animus NPCs work in three quest plugins: they give quests, start conversations, and count as talk, delivery and kill targets. Install the quest plugin beside Animus and start the server; each integration starts on its own when its plugin is installed, and Animus runs the same without them. None of them needs Citizens. For quests written as Animus files, without another plugin, see [quests](/animus/38-quests).
 
 | Plugin | Versions | Servers | What works with Animus NPCs |
 |---|---|---|---|

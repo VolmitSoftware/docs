@@ -20,7 +20,7 @@ On Folia 26.1.2, 26.2 and 26.3, each saved NPC runs on the region that owns its 
 | Triggers: spawn, despawn, interaction, waypoint, proximity, timers | Yes |
 | Built-in behavior actions that touch the world or a player | Yes |
 | Navigation: `/animus navigation go`, `look`, `stop`, routes, waiting behaviors | Yes |
-| Riding an NPC (`animus:riding`) | Yes; see [riding](#riding) |
+| Players can ride it (`animus:riding`) | Yes; see [Players can ride it](#players-can-ride-it) |
 | Mounted NPCs (`animus:mount`) | Yes; see [mounted NPCs](#mounted-npcs) |
 | NPCs on real entities (`animus:mount` with `entity`) | Yes; see [NPCs on real entities](#npcs-on-real-entities) |
 | Seats (`animus:seat`), `/animus seat toggle`, `/animus seat status` | Yes; see [seats](#seats) |
@@ -29,14 +29,17 @@ On Folia 26.1.2, 26.2 and 26.3, each saved NPC runs on the region that owns its 
 | Model Engine models (`animus:modelengine`) | No; the NPC shows its own body |
 | `/animus combat attack`, `/animus combat mob` | Yes; see [manual attack and mob control](#manual-attack-and-mob-control) |
 | Builds (`/animus build`, `animus:build`), scaffolding, doors and beds | Yes; see [builds](#builds) |
-| Packet preview (`/animus proof`) | No. Use the [stationary preview](#stationary-preview) |
+| Packet preview (`/animus proof`) | No. Help lists only `proof folia`, and the other preview commands answer `Not on Folia; use /animus proof folia`. Use the [stationary preview](#stationary-preview) |
+| The Animus menu (`/animus gui`), the wand and anvil prompts | Yes, same as Paper |
+| [Player shops](/animus/10-shops#player-shops): `/animus shop create`, `shop item`, `shop manage`, chests as stock, shops that sell and shops that buy | Yes, same as Paper |
+| Imports (`/animus import citizens preview`, `apply`, `review`, `discard`, `rollback`) | Yes, same as Paper |
 | Recording (`/animus record`), the recording ghost and previews | Yes; every session and preview runs on the recording player's own thread |
 
 Changing `npcs.enabled` needs a restart on Folia, and the `[behaviors.server]` keys need one on every platform; see [live apply](/animus/03-configuration#live-apply). Every other `config.toml` key applies live, on each region's next tick.
 
-## Ownership
+## The NPC's region
 
-Each NPC has one owner: the region that owns the chunk under its feet. That region reads terrain, plans routes, moves the NPC and runs its queued work. Before each turn it checks that it owns every chunk the NPC's body covers and that all of them are loaded.
+Each NPC runs on one region: the region that owns the chunk under its feet. That region reads terrain, plans routes, moves the NPC and runs its queued work. Before each turn it checks that it owns every chunk the NPC's body covers and that all of them are loaded.
 
 An NPC whose chunk is not loaded waits. It starts when that chunk loads, or when a player whose region owns the chunk comes within view distance. Animus never loads or generates a chunk to start, move or show an NPC. A waiting NPC is not counted as `active` in `/animus status`; `/animus inspect` shows it as waiting.
 
@@ -51,7 +54,7 @@ Behavior actions run on the NPC's region:
 
 ## Moving between chunks
 
-When an NPC moves into a chunk another region owns, the new region adopts it after checking that it owns the whole body and the chunk is loaded. The route and its goal, waypoint progress, a behavior waiting for the route, queued behavior actions and pending skin or route reads move with the NPC. The new owner plans the route again from where the NPC stands, and each crossing pauses the NPC for at least one tick.
+When an NPC moves into a chunk another region owns, the new region adopts it after checking that it owns the whole body and the chunk is loaded. The route and its goal, waypoint progress, a behavior waiting for the route, queued behavior actions and pending skin or route reads move with the NPC. The new region plans the route again from where the NPC stands, and each crossing pauses the NPC for at least one tick.
 
 If the new chunk is not loaded, or the new region has not adopted the NPC within 5 seconds, the NPC waits where it stands. A waiting behavior is told the route is unavailable; any other route continues when the NPC starts again. Queued actions for a waiting NPC are refused with the reason. The same happens if a chunk unloads under an NPC. When regions split or merge, the NPC moves with its chunk.
 
@@ -59,11 +62,11 @@ A long leg walks to the edge of its region and the handoff carries the route on.
 
 ## Mounted NPCs
 
-A vehicle and every NPC riding it share one owner: the region that owns the root vehicle. Passengers move right after their vehicle, so they always sit on the current seat. When the root crosses into another chunk, the whole stack is handed over at once. When the stack stops being active, every passenger stops with it and becomes active again on its own later.
+A vehicle and every NPC riding it run on one region: the region that owns the root vehicle. Passengers move right after their vehicle, so they always sit on the current seat. When the root crosses into another chunk, the whole stack is handed over at once. When the stack stops being active, every passenger stops with it and becomes active again on its own later.
 
 A passenger whose vehicle is on another region steps onto the vehicle's seat, which hands it to the vehicle's region, and it joins the stack there. A passenger whose vehicle is not active waits where it stands; `/animus inspect` shows `mounted-on=<vehicle> (not seated yet ...)`. When a relation ends or its vehicle is removed, the passenger returns to the position in its definition. Cycles, chains deeper than 8 and full vehicles are refused as on Paper.
 
-## Riding
+## Players can ride it
 
 A ride runs on the NPC's region and moves with the NPC on every handoff. The rider stands at the NPC's feet, so the same region owns both. If the NPC's region does not hold the rider for 2 seconds, the ride ends. A right-click mounts only when the player's region also owns the NPC.
 
@@ -96,7 +99,7 @@ The `[combat]` limits `brainsPerTick`, `targetScansPerTick`, `pathRequestsPerTic
 - A projectile hits an NPC as it does on Paper, even when it was shot from another region.
 - Fire, lava and fall damage come from blocks in the NPC's own region.
 - Every viewer sees the hurt flash and the death fall.
-- A permadeath is saved to the definition a moment after the death.
+- A permadeath is saved to the NPC file a moment after the death.
 - `/animus npc revive` on an NPC waiting to respawn runs on the NPC's region and logs its result.
 
 ## Manual attack and mob control
@@ -153,7 +156,7 @@ Route turns go to the NPCs that waited longest, so no route waits forever. Every
 
 ## Stationary preview
 
-`/animus proof folia` shows one stationary player-shaped NPC privately to an administrator. It does not use or activate saved definitions. Enable it with `packetProofEnabled = true` in `config.toml`; the change applies when the file is saved, and turning it off clears existing preview bodies.
+`/animus proof folia` shows one stationary player-shaped NPC privately to an administrator. It does not use or activate saved NPCs. Enable it with `packetProofEnabled = true` in `config.toml`; the change applies when the file is saved, and turning it off clears existing preview bodies.
 
 ```none
 /animus proof folia spawn [skin=]

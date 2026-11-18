@@ -1,6 +1,6 @@
 ---
 title: "Animus: Storage and Recovery"
-description: "How Animus stores documents, recovers from bad edits and crashes, and rolls changes back"
+description: "How Animus stores files, recovers from bad edits and crashes, and rolls changes back"
 published: true
 date: 2026-11-12T00:00:00.000Z
 tags: "animus, storage, recovery, rollback, backups"
@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-05T00:00:00.000Z
 ---
 
-Animus keeps every document as a plain file in its data folder, `plugins/Animus/` (`config/animus/` on mod servers). Plugin settings are TOML; definitions, behaviors, packs, routes, skins, shops, GUIs, rigs and all generated state are JSON. Original import sources are archived in their own format.
+Animus keeps everything as plain files in its data folder, `plugins/Animus/` (`config/animus/` on mod servers). Plugin settings are TOML; NPC files, behaviors, packs, routes, skins, shops, GUIs, rigs and all generated state are JSON. Original import sources are archived in their own format.
 
 Every write made by Animus goes through a journal, so a crash never leaves a file half-written, and every change made by a command, an import or the [web editor](/animus/14-web-editor) can be rolled back.
 
@@ -32,7 +32,7 @@ When a definition is accepted, Animus also records a checkpoint of it under `sta
 
 A definition kept from its checkpoint stays active. A skipped file logs `Skipped NPC file <file>: <error>` at startup. Fix it, then run `/animus reload` to load it. `/animus validate` lists every file with its field errors, and `/animus status` counts the files needing repair.
 
-Folders under a document folder such as `npcs/` may be at most 8 deep, and symbolic links are not allowed; a deeper folder or a link is skipped with a warning that names the path. Invalid TOML in `config.toml` stops Animus from starting.
+Folders under `npcs/` and every other folder Animus loads files from may be at most 8 deep, and symbolic links are not allowed; a deeper folder or a link is skipped with a warning that names the path. Invalid TOML in `config.toml` stops Animus from starting.
 
 ### Refused hand edits
 
@@ -59,7 +59,7 @@ Rigs and animations keep their last valid copies under `state/rig-catalog/`.
 
 ## Behavior state
 
-Stored [behavior variables](/animus/07-behaviors) live under `state/behavior-state/`, one JSON document per behavior and subject:
+Stored [behavior variables](/animus/07-behaviors) live under `state/behavior-state/`, one JSON file per behavior and subject:
 
 ```none
 state/behavior-state/npc/<npc-uuid>/<namespace>/<path>.json
@@ -86,9 +86,9 @@ Each entry names the value's own type (`boolean`, `integer`, `decimal`, `string`
 
 These files are generated; do not edit them. Use `/animus behaviors state delete` to remove state.
 
-Values are held in memory and written in batches. The first change after a quiet period starts a timer of `behaviors.state.flushMillis` (5 seconds by default), later changes join it, and one journaled write then saves every changed document. If a write fails, the values stay in memory, the failure shows in `/animus behaviors state status`, and the write is retried. A clean shutdown writes everything still waiting. A crash loses at most the changes since the last completed write.
+Values are held in memory and written in batches. The first change after a quiet period starts a timer of `behaviors.state.flushMillis` (5 seconds by default), later changes join it, and one journaled write then saves every changed file. If a write fails, the values stay in memory, the failure shows in `/animus behaviors state status`, and the write is retried. A clean shutdown writes everything still waiting. A crash loses at most the changes since the last completed write.
 
-State writes leave no rollback receipt, so `/animus rollback` does not apply to them. A stored file that fails validation is left as it is and reported with its reason; only runs that need that one document are refused, with `behavior-state-document-invalid`. A file whose path names no subject is reported and removed only by `/animus behaviors state delete all confirm`.
+State writes leave no rollback receipt, so `/animus rollback` does not apply to them. A stored file that fails validation is left as it is and reported with its reason; only runs that need that one file are refused, with `behavior-state-document-invalid`. A file whose path names no subject is reported and removed only by `/animus behaviors state delete all confirm`.
 
 ## Transactions and crash recovery
 
@@ -131,14 +131,14 @@ At the same times, Animus removes checkpoint and import copies under `state/obje
 
 ## Schema versions
 
-Every versioned document carries a `schemaVersion`: NPC definitions, behaviors, pack manifests (`pack.json`), shops, routes, recordings, trait groups, chest GUIs, holograms, text animations, rigs, animations and `server-behaviors.json`. NPC definitions and trait groups are at version 2, holograms keep Gloss's version 3, and every other kind is at version 1.
+Every versioned file carries a `schemaVersion`: NPC files, behaviors, pack manifests (`pack.json`), shops, routes, recordings, trait groups, chest GUIs, holograms, text animations, rigs, animations and `server-behaviors.json`. NPC files and trait groups are at version 2, holograms keep Gloss's version 3, and every other kind is at version 1.
 
-At startup, before loading and before backups rotate, Animus upgrades any document whose version is older than the running build reads:
+At startup, before loading and before backups rotate, Animus upgrades any file whose version is older than the running build reads:
 
 - The original bytes go into the journal before any file changes, so a crash part way through finishes on the next start.
-- Upgraded documents are written in transactions of up to 2,000 documents, each with a rollback receipt. The log names every transaction, and `/animus rollback <transaction-id>` on each one restores the original files.
-- A document at the current version is never rewritten.
-- A document newer than the running build reads, or one that cannot be upgraded, is left unchanged and reported by the normal loader.
+- Upgraded files are written in transactions of up to 2,000 files, each with a rollback receipt. The log names every transaction, and `/animus rollback <transaction-id>` on each one restores the original files.
+- A file at the current version is never rewritten.
+- A file newer than the running build reads, or one that cannot be upgraded, is left unchanged and reported by the normal loader.
 
 NPC definitions and trait groups copied into the data folder while the server runs are upgraded the same way before they load, in one transaction with a rollback receipt. [Live apply](/animus/03-configuration#live-apply) names the transaction in its chat line and the log, and `/animus reload` starts its reply with `Upgraded <n> files to schemaVersion 2; rollback <transaction-id>`. The [web editor](/animus/14-web-editor) upgrades them in the browser as a folder, zip or workspace opens.
 
@@ -169,13 +169,13 @@ The startup banner says `Startup: READY`, `DEGRADED (...)` naming each part that
 
 | Limit | Value |
 |---|---|
-| One document | 16 MiB |
+| One file | 16 MiB |
 | One journal | 16 MiB encoded |
 | Entries in one transaction, including checkpoints and receipts | 10,000 |
 | Previous and next contents in one transaction | 256 MiB |
 | JSON nesting | 64 levels |
-| Documents under `npcs/` | 100,000 |
+| NPC files under `npcs/` | 100,000 |
 | Files and folders under `npcs/` | 250,000 |
 | Folder depth under `npcs/` | 8 |
 
-A symbolic link inside `npcs/` (or any other document folder), or anything nested deeper than the limit, is skipped with a warning that names its path, and everything else loads; move the file into a real folder to use it. A data folder that is itself a symbolic link, such as `plugins/Animus` mounted from another volume, is resolved once at startup and works normally. Imports refuse a skipped path instead, since they must see every installed definition. An import must fit the same limits together with the definitions already installed, and is validated completely before anything is written.
+A symbolic link inside `npcs/` (or any other folder Animus loads files from), or anything nested deeper than the limit, is skipped with a warning that names its path, and everything else loads; move the file into a real folder to use it. A data folder that is itself a symbolic link, such as `plugins/Animus` mounted from another volume, is resolved once at startup and works normally. Imports refuse a skipped path instead, since they must see every installed definition. An import must fit the same limits together with the definitions already installed, and is validated completely before anything is written.

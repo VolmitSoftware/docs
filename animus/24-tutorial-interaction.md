@@ -30,12 +30,12 @@ A behavior is what an NPC does when something happens: a click, a player nearby,
 
 <div class="animus-demo">
 <p><strong>Behaviors and triggers</strong> Minecraft client.</p>
-<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/22-behaviors-list-ingame.webm" aria-label="Taking the greeter's conversation off and putting it back, then listing trigger bindings" autoplay muted loop playsinline controls preload="metadata"></video>
+<video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/22-behaviors-list-ingame.webm" aria-label="Taking the greeter's conversation off and putting it back, then listing triggers" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 - Switch to Advanced with the **Mode** lever on the greeter's screen, then click **Behaviors**. The greeter's conversation shows it is on 1 of 1 selected.
 - Right-click it and click **Remove from NPC** to take it off the greeter. Click **Back**: the conversation now shows it is on 0 of 1. Click it to put it back.
-- Click **Trigger bindings** to list in chat what each NPC listens for.
+- Click **Triggers** to list in chat what each NPC listens for.
 
 ```none
 /animus behaviors triggers
@@ -43,7 +43,7 @@ A behavior is what an NPC does when something happens: a click, a player nearby,
 
 ## 3. Talk to the NPC
 
-Players start the conversation by right-clicking the NPC. Lines show in chat with the NPC's name. Answers are bracketed chat buttons; hover one to read it and click it to choose. [Dialogue choices](/animus/07-behaviors#dialogue-choices) has the details.
+Players start the conversation by right-clicking the NPC. Lines show in chat with the NPC's name. Answers are bracketed chat buttons; hover one to read it and click it to choose. [Conversations](/animus/07-behaviors#conversations) has the details.
 
 <div class="animus-demo">
 <p><strong>Conversation in play</strong> Minecraft client.</p>
@@ -62,11 +62,11 @@ A [shop](/animus/10-shops) is a trade window an NPC opens, either as a chest win
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/in-game/26-new-shop-ingame.webm" aria-label="Making the plaza:stall shop on the trader and stocking it with bread" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-A click on an NPC does one thing, and the trader still carries players from the [movement part](/animus/23-tutorial-movement). Turn its riding off first: on the trader's screen, click **Movement**, **Mounts and riding** and **Riding**, click **Enabled** to turn it off, and click **Save**.
+A click on an NPC does one thing, and the trader still carries players from the [movement part](/animus/23-tutorial-movement). Turn off **Players can ride it** first: on the trader's screen, click **Movement**, **Mounts** and **Players can ride it**, click **Enabled** to turn it off, and click **Save**.
 
 - On the trader's screen, click **Shop**, then **New shop**, and type `plaza:stall`. It writes `shops/plaza/stall.json` with no offers, puts it on the trader and opens its details.
 - Close the window, hold a stack of bread and run `/animus tools`. The trader is selected, so its screen opens.
-- Click **Shop**, right-click `plaza:stall`, click **Add held item** and type `5`. Players can buy that stack for 5, which the shop writes in the server economy's format, such as `$5.00`. Without an economy plugin the offer is still added, but players cannot pay for it.
+- Click **Shop**, right-click `plaza:stall`, click **Add held item** and type `5`. The shop now sells that stack for 5, which it writes in the server economy's format, such as `$5.00`. Without an economy plugin the offer is still added, but players cannot pay for it.
 
 To trade the bread for items instead, hold emeralds in your off hand and run:
 

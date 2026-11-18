@@ -120,7 +120,7 @@ After conversion, every set of two or more NPCs whose `modules` (apart from `cit
 <video src="https://media.volmitsoftware.com/animus-assets/tutorial/editor/04-trait-groups-editor.webm" aria-label="Creating a trait group and assigning it to three NPCs" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
-The [web editor](/animus/14-web-editor) edits group files in the same parts as an NPC, with the same checks as a saved file. An NPC's **What it takes** list, under Trait groups on Basics in Advanced, shows its effective definition with the source of each value, and in Advanced the NPC list adds picked NPCs to a group or takes them out as one change (filter by a folder or a tag and select all to reach those). An NPC saved from the editor with a missing group is refused.
+The [web editor](/animus/14-web-editor) edits group files in the same sections as an NPC, with the same checks as a saved file. An NPC's **What it takes** list, under Trait groups on Basics in Advanced, shows its effective definition with the source of each value, and in Advanced the NPC list adds picked NPCs to a group or takes them out as one change (filter by a folder or a tag and select all to reach those). An NPC saved from the editor with a missing group is refused.
 
 ## In game
 
