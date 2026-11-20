@@ -255,7 +255,8 @@ A book shop sells copies of the signed books in its chests, found by title. Edit
 - Explosions leave the chests standing, including an NPC's [`animus:explode`](/animus/07-behaviors#actions) with [`explosionsDamageBlocks`](/animus/03-configuration#behaviorsactions) on.
 - Hoppers and hopper minecarts take nothing out of them. Putting items in is left alone.
 - A chest placed beside a shop's chest, where it would join it into a double chest, is refused.
-- When the owner breaks one of the shop's chests, the shop stops using it. Breaking its last chest closes the shop instead, so the owner can add another one first; it cannot open again until they do.
+- When the owner breaks one of the shop's chests, the shop stops using it. Breaking its last chest closes the shop instead, so the owner can add another one first; it cannot open again until they do. A break that a protection plugin or any other plugin cancels leaves the chest in the shop.
+- Some plugins, such as Adapt and Gloss, ask protection plugins whether a player may use, break or place a block before they act for that player. A shop's chests answer those questions as above, without telling the player, and a question never starts a shop or takes a chest out of one.
 - When a chest is gone, or protection no longer lets the owner open it, the next trade closes the shop with the reason. The owner is told if online, and the shop's menu shows why. A chunk that is not loaded only refuses that one trade.
 
 A buyer who lacks the price reads what is missing, such as `You need 5x Emerald; you have 2.`, and a sold-out offer says why: `Gem Shop is out of 1x Diamond: its owner has to restock the chest.`

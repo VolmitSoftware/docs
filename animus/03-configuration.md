@@ -22,28 +22,52 @@ NPC files and every other Animus file use JSON. Per-NPC settings belong in the N
 
 ## Live apply
 
-Saving any data file applies it within about a second, without `/animus reload`. This covers `config.toml`, NPC definitions and the module settings inside them, trait groups, behaviors, packs, routes, recordings, skins, shops, chest GUIs, menus, holograms, text animations, rigs, animations and schematics. Each change goes through the same validators as commands and the web editor. The server log and chat call this hotload.
+Saving any data file applies it within about a second, without `/animus reload`. This covers `config.toml`, NPC definitions and the module settings inside them, trait groups, behaviors, packs, routes, recordings, skins, shops, chest GUIs, menus, holograms, text animations, rigs, animations and schematics. Each change goes through the same validators as commands and the web editor. The server log, the permission and the `[hotload]` settings call this hotload.
 
-Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block chime and see one line per changed key, at most 5 per file, then `[+N more changes]`:
-
-```none
-[Animus]: Hotloaded [npcs/town/guard.json] [name] ["Guard" -> "Captain Guard"]
-```
-
-An invalid edit is refused with its field error, and the last valid version stays in use. Each NPC file applies on its own, so one broken file does not block valid edits to others. `/animus reload` follows the same rules.
-
-An NPC definition or trait group at an older [schema version](/animus/12-storage-recovery#schema-versions) is upgraded before it loads, as at startup, and its line names the rollback transaction:
+Online players with `animus.hotload.notify` (operators by default; permission level 2 on mod servers) hear a note block chime and get one line per file. The line names the file the way players do: an NPC by its name, a behavior, shop, route or other file by its id, and `config.toml` as Settings. It says whether the file was added, changed or removed, and names the changed fields when there are three or fewer, otherwise how many:
 
 ```none
-[Animus]: Upgraded [npcs/town/guard.json] [schemaVersion 1 -> 2] [rollback <transaction-id>]
+[Animus]: Added behavior town:greeter.
+[Animus]: Changed NPC Captain Guard: name and position.
+[Animus]: Changed Settings: NPCs view distance.
+[Animus]: Removed NPC Captain Guard.
 ```
+
+The server log keeps the detail: each changed key with its old and new value, up to 10 per file. When more than 5 files change in one poll, it has one summary line instead.
+
+```none
+[Animus] Hotloaded npcs/town/guard.json (2 changes): name "Guard" -> "Captain Guard"; position.y 64 -> 70
+```
+
+An invalid edit is refused and the last valid version stays in use. The chat line says why in words; the WARN line in the server log has the file and the exact field:
+
+```none
+[Animus]: Refused NPC Guard: position y should be a coordinate within ±30000000; the last working version stays.
+[Animus] Hotload refused npcs/town/guard.json: $.position.y: expected finite coordinate within ±30000000
+```
+
+Broken JSON is refused with its line and column. Each NPC file applies on its own, so one broken file does not block valid edits to others. `/animus reload` follows the same rules.
+
+An NPC definition or trait group at an older [schema version](/animus/12-storage-recovery#schema-versions) is upgraded before it loads, as at startup. Its line has **[Rollback]**, which puts the `/animus rollback` command for the upgrade in your chat box:
+
+```none
+[Animus]: Upgraded NPC Guard to the current file format. [Rollback]
+```
+
+The server log names the transaction. Rolling back restores the original file for an older Animus. This version does not load it, so the running NPC stays and the reply says so:
+
+```none
+[Animus]: Restored the original file of NPC Guard; this version cannot load it, so the current one stays in use.
+```
+
+To stop the lines for one player, take `animus.hotload.notify` away from them. `[hotload] sound = false` keeps the lines and drops the chime, and `[hotload] enabled = false` stops watching every file except `config.toml`.
 
 Every `config.toml` key applies live except the ones listed below. Each service picks up a new value by its next tick (on Folia, each region by its next region tick), and `/animus status` shows the main budgets in effect. Lowering a cap never stops work already running: visible NPCs, viewers, routes, fights, builds, behavior runs, queued actions and file operations above the new cap finish normally, and new work waits until usage drops under it. A smaller `viewDistance` despawns NPCs that are now out of range on the next tick. Turning `[npcs]`, `[combat]`, `[builds]`, `[behaviors]`, triggers, `[rigs]`, modules, the editor listener or the relay off and on restarts only that part.
 
 These changes need a restart:
 
-- `npcs.enabled` on Folia. Its chat line ends in `[restart required]`.
-- Every key under [`[behaviors.server]`](#behaviorsserver). The new values are saved but used only after a restart, and no `[restart required]` marker is shown.
+- `npcs.enabled` on Folia. Its chat line says `NPCs enabled (needs a restart)`.
+- Every key under [`[behaviors.server]`](#behaviorsserver). The new values are saved but used only after a restart, and the chat line does not say so.
 - Adding, removing or replacing a [Java module](/animus/99-java-modules-api) jar.
 - Replacing the TLS certificate or key files at the same paths. Change the path instead to apply new files live.
 
@@ -403,6 +427,7 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `listenAddress` | `"127.0.0.1"` | Host or address | Where the listener binds. A non-loopback address needs `tlsCertificate` and `tlsPrivateKey` |
 | `port` | `9797` | 0-65535 | Listener port. `0` binds any free port; the listener status and pairing links show the one it bound |
 | `advertisedUrl` | `""` | `http` or `https` URL | Public `https://` address of a TLS proxy in front of the listener, put into pairing links |
+| `trustedProxies` | `[]` | At most 32 IP addresses | Reverse proxies in front of the listener, such as `127.0.0.1`. Their `X-Forwarded-For` names the browser, so each browser keeps its own connection share and pairing limit |
 | `tlsCertificate` | `""` | File path | PEM certificate. Set together with `tlsPrivateKey` |
 | `tlsPrivateKey` | `""` | File path | PEM private key |
 | `allowedOrigins` | `["https://animus.volmitsoftware.com", "https://animus-editor.web.app", "https://animus-editor.firebaseapp.com"]` | At most 32 | Browser origins accepted, as `scheme://host[:port]`. `http://` only on loopback. To use an editor you serve yourself, add its origin, such as `http://127.0.0.1:8098` |
@@ -413,7 +438,7 @@ These keys control how the [web editor](/animus/14-web-editor) reaches the serve
 | `changeSetDocuments` | `512` | 1-512 | Files in one change set |
 | `concurrentRequestsPerToken` | `8` | 1-64 | Requests one paired browser may have running |
 | `requestsPerSecond` | `20` | 1-1000 | Requests per second per paired browser, bursting to twice that. A browser over it is told when to retry, and the console logs one line per browser per minute |
-| `pairAttemptsPerMinute` | `10` | 1-600 | Pairing attempts accepted per minute |
+| `pairAttemptsPerMinute` | `10` | 1-600 | Pairing attempts accepted per minute from one address. An IPv6 address counts by its /64 |
 | `openConnections` | `64` | 1-1024 | Open listener connections |
 | `eventFramesPerSecond` | `20` | 1-100 | Event messages per second per connection |
 | `previewsPerServer` | `4` | 0-64 | Previews at once. `0` turns previews off |

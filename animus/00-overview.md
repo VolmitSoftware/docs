@@ -55,7 +55,7 @@ Other plugins use Animus through its own API: a Bukkit plugin gets an NPC servic
 | Simple, Advanced | The two modes of the Animus menu and of help. Simple shows the common tasks; Advanced shows everything |
 | Wand | The stick that selects NPCs. Right-click an NPC with it to change it |
 | Selection | The NPCs your next action applies to, picked with the wand, the Animus menu or `/animus select` |
-| Live apply | A saved data file taking effect within a second, without a reload. The chat line and permission call it hotload. See [live apply](/animus/03-configuration#live-apply) |
+| Live apply | A saved data file taking effect within a second, without a reload. The server log and permission call it hotload. See [live apply](/animus/03-configuration#live-apply) |
 | Note block chime | The sound operators hear when a saved file is applied or refused |
 | Undo | Reverts one saved change. Each change's reply has **[Undo]**; `/animus undo` reverts your last change, and `/animus rollback <id>` any change by the id after `tx` |
 | Web editor | The web editor at [animus.volmitsoftware.com](https://animus.volmitsoftware.com) |

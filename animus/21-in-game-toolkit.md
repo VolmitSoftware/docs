@@ -484,6 +484,8 @@ Deleting the shop's NPC on its own, from its screen or with `/animus delete`, is
 | **Guard me** | Saves you as the player each NPC guards. Click again, when they all guard you, to stop. Taking NPCs off another player or NPC they guard asks once more and says how many. To guard an NPC instead, use the Guard section |
 | **Mobs can attack it** | Turns `targetableByMobs` on or off |
 
+An NPC holding a bow, crossbow or trident shoots with it once **Fights** is on and **Attacks** names who it fights; see [drawing and loading](/animus/08-combat#drawing-and-loading).
+
 Advanced adds **Switch weapons** beside them, which turns `weapons.autoswitch` on or off, and three rows:
 
 - **Rules**: **Targets**, **Ignores** and **Avoids** open the [rule list](#rule-lists) of that name.

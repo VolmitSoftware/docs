@@ -30,7 +30,7 @@ When a definition is accepted, Animus also records a checkpoint of it under `sta
 | A checkpoint is corrupt | That NPC is skipped and the log names the checkpoint. The broken copy is never loaded |
 | A source file was deleted | The NPC is removed. Recovery never brings back a missing source |
 
-A definition kept from its checkpoint stays active. A skipped file logs `Skipped NPC file <file>: <error>` at startup. Fix it, then run `/animus reload` to load it. `/animus validate` lists every file with its field errors, and `/animus status` counts the files needing repair.
+A definition kept from its checkpoint stays active. A skipped file logs `Skipped NPC file <file>: <error>` at startup. Fix it, then run `/animus reload` to load it. `/animus validate` names each broken file the way players do, such as `NPC Bob: position y should be a coordinate within ±30000000.`, and the server log has the exact lines with their file paths. `/animus status` counts the files needing repair.
 
 Folders under `npcs/` and every other folder Animus loads files from may be at most 8 deep, and symbolic links are not allowed; a deeper folder or a link is skipped with a warning that names the path. Invalid TOML in `config.toml` stops Animus from starting.
 
@@ -136,11 +136,11 @@ Every versioned file carries a `schemaVersion`: NPC files, behaviors, pack manif
 At startup, before loading and before backups rotate, Animus upgrades any file whose version is older than the running build reads:
 
 - The original bytes go into the journal before any file changes, so a crash part way through finishes on the next start.
-- Upgraded files are written in transactions of up to 2,000 files, each with a rollback receipt. The log names every transaction, and `/animus rollback <transaction-id>` on each one restores the original files.
+- Upgraded files are written in transactions of up to 2,000 files, each with a rollback receipt. The log names every transaction, and `/animus rollback <transaction-id>` on each one restores the original files for an older Animus. This version does not load them, so the running NPCs and groups stay. The reply names each restored file and only counts other files that cannot load, which `/animus validate` names.
 - A file at the current version is never rewritten.
 - A file newer than the running build reads, or one that cannot be upgraded, is left unchanged and reported by the normal loader.
 
-NPC definitions and trait groups copied into the data folder while the server runs are upgraded the same way before they load, in one transaction with a rollback receipt. [Live apply](/animus/03-configuration#live-apply) names the transaction in its chat line and the log, and `/animus reload` starts its reply with `Upgraded <n> files to schemaVersion 2; rollback <transaction-id>`. The [web editor](/animus/14-web-editor) upgrades them in the browser as a folder, zip or workspace opens.
+NPC definitions and trait groups copied into the data folder while the server runs are upgraded the same way before they load, in one transaction with a rollback receipt. The [live apply](/animus/03-configuration#live-apply) chat line has **[Rollback]**, which puts the rollback command in the chat box, and the log names the transaction. `/animus reload` starts its reply with `Upgraded NPC Guard and trait group guards to the current file format; /animus rollback <transaction-id> restores the originals`, naming up to three files and counting the rest. The [web editor](/animus/14-web-editor) upgrades them in the browser as a folder, zip or workspace opens.
 
 NPC files and trait groups from an import made with an older Animus are upgraded automatically, and every converted module in them runs as converted.
 
@@ -161,6 +161,7 @@ A damaged file never stops Animus as a whole:
 - An NPC definition that cannot be read is skipped with one warning and keeps its last valid version, as described above.
 - A damaged `state/shops/ledger.json` is moved to `ledger.json.bad-<time>`, and shop limits and stock counts start empty; readable lines of `ledger.journal` still apply. A damaged journal line is skipped and the journal copied to `ledger.journal.bad-<time>`. The log warns and the banner says `DEGRADED (shops)`.
 - A damaged `state/editor/identity.json` turns the editor off with one warning. Delete the file and restart to create a new identity, then pair the editor again.
+- A damaged `state/editor/tokens.json` is moved to `tokens.damaged-<time>.json` beside it with one warning, and the editor starts with no paired browsers, so each one pairs again.
 - A refused `config.toml` stops the start with one line that names the line and key; see [configuration](/animus/03-configuration).
 
 The startup banner says `Startup: READY`, `DEGRADED (...)` naming each part that did not come up, or `FAILED`. Behaviors load just after the banner; if their catalog cannot load, the log has a `Behaviors reload: FAILED` warning with the reason, and `/animus behaviors status` repeats it.

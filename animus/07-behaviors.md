@@ -296,7 +296,7 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `proximity` | `phase`: `enter` or `leave`. `radius`: above 0, at most 64 blocks; the server's `maximumProximityRadius` (32 by default) caps it. Optional `playerCooldownTicks` (0 to 72,000) gives each player their own cooldown instead of one for the trigger. | A viewer crosses that radius. Leaving needs half a block of extra distance. |
 | `spawn` | None. | The NPC is first presented. At startup it waits for the first behavior catalog. |
 | `despawn` | None. | A spawned NPC is despawned. It runs against the new despawned definition. |
-| `damage` | None. | The NPC's health falls. Runs read `context.damage`, `context.attacker` (a UUID) and `context.attacker_type` (`player`, `mob`, `npc`, or empty when unknown). A player attacker is the run's player. |
+| `damage` | Optional `players`: `true` fires only when a player dealt the damage, by hand or with a projectile; `false` only when no player did. | The NPC's health falls. Runs read `context.damage`, `context.attacker` (a UUID) and `context.attacker_type` (`player`, `mob`, `npc`, or empty when unknown). A player attacker, or the player who shot the projectile, is the run's player. |
 | `death` | None. | The NPC's health reaches zero. Runs read `context.killer` and `context.killer_type`, and a player killer is the run's player, so `animus:command` with `{player}` rewards them. No despawn trigger follows a death. `say`, `play-sound` and `spawn-particle` still come from where the NPC fell; actions that need a living body are unavailable until it respawns. |
 | `waypoint` | Optional `waypoint`: -1 to 4,095. | The NPC arrives at a route point; -1 is a manually requested destination. Without the field, any arrival fires. |
 | `timer` | `intervalTicks`: 1 to 72,000; 20 to 72,000 in a server behavior. | The interval passes while the NPC is active, or while the server runs in a [server behavior](#server-behaviors). |
@@ -329,9 +329,9 @@ This example needs a module that provides `example:wave` and `example:bow`. Ever
 | `player_item_drop` | Optional `item`, `cancel`. | A player drops an item. Server behaviors only. |
 | `player_item_pickup` | Optional `item`, `cancel`. | A player picks up an item. Server behaviors only. |
 | `player_item_consume` | Optional `item`, `cancel`. | A player finishes eating or drinking an item. Server behaviors only. |
-| `player_block_click` | Optional `block`, `click` (`left` or `right`), `cancel`. | A player clicks a block. Clicks in the air are not reported. Server behaviors only. |
-| `player_block_place` | Optional `block`, `cancel`. | A player places a block. Server behaviors only. |
-| `player_block_break` | Optional `block`, `cancel`. | A player breaks a block. Server behaviors only. |
+| `player_block_click` | Optional `block`, `click` (`left` or `right`), `cancel`. | A player clicks a block. Clicks in the air are not reported, nor are the checks plugins such as Adapt and Gloss send to ask protection plugins. Server behaviors only. |
+| `player_block_place` | Optional `block`, `cancel`. | A player places a block. Protection checks from other plugins are not reported. Server behaviors only. |
+| `player_block_break` | Optional `block`, `cancel`. | A player breaks a block. Protection checks from other plugins are not reported. Server behaviors only. |
 | `player_damaged` | Optional `cause` (a damage type such as `fall`), `damager` (an entity type), `cancel`. | A player takes damage. Server behaviors only. |
 | `player_damage_entity` | Optional `entity`, `cancel`. | A player hits a living entity. NPCs are not entities: a hit on an NPC is its `interaction` with `action: attack`, and its `damage` when combat lets it hurt. Server behaviors only. |
 | `player_kill` | Optional `entity`. | A player kills a living entity. Server behaviors only. |
@@ -791,7 +791,7 @@ Each answer is a bracketed button, `[ Yes ]`, with hover text. An option may set
 {"id": "rumours", "text": "Heard any rumours?", "color": "gold", "hover": "&7Ask what the regulars whisper about", "style": "bold"}
 ```
 
-Each prompt has a random single-use token. A click runs `/animus choice <token> <option>`, which any player may send and which does nothing without a matching prompt. A click is rejected unless the token is live, it comes from the player who was asked, the option exists, the NPC is still spawned and the player is within 64 blocks. Every rejection shows the same message and publishes nothing. A rejected click from the wrong player, on an unknown option or from too far away leaves the prompt open for its rightful answer. A new prompt from the same NPC to the same player replaces the earlier one.
+Each prompt has a random single-use token. A click runs `/animus choice <token> <option>`, which any player may send and which does nothing without a matching prompt. A player who cannot click can type it: while a prompt waits for them, tab completion offers `choice`, then the prompt's token, then its option ids, and an id typed in capitals counts too. An answer is rejected unless the token is live, it comes from the player who was asked, the option exists, the NPC is still spawned and the player is within 64 blocks. With no prompt waiting the reply is `No question is waiting for you`, an option the prompt lacks lists the ones it has, such as `"bagel" is not an answer here; pick loaf or leave`, and every other rejection reads `That choice is no longer available`. A rejection publishes nothing. A rejected answer from the wrong player, on an unknown option or from too far away leaves the prompt open for its rightful answer. A new prompt from the same NPC to the same player replaces the earlier one.
 
 An accepted click starts any matching [`dialogue_choice` trigger](#automatic-triggers) with the clicking player, then fires `VirtualNpcDialogueChoiceEvent`. The trigger's `dialogue` matches the prompt's `id` and its `choice` the option's `id`. The NPC needs the behavior in its `behaviors` list, and the trigger's cooldown and queue limits apply. This pairs a question with its answer:
 
@@ -944,7 +944,7 @@ Imported NPCs keep their Denizen flags, assignments and trigger records as prese
 | Imported | Behavior |
 | --- | --- |
 | Assignment script | A behavior listed in the NPC's `behaviors`. |
-| Click trigger | An `interaction` trigger. Damage, proximity and spawn triggers map to `damage`, `proximity` and `spawn`. |
+| Click trigger | An `interaction` trigger. Damage, proximity and spawn triggers map to `damage` (with `players: true`), `proximity` and `spawn`. |
 | Chat trigger | `animus:choices` with a `dialogue_choice` trigger per answer. Free-typed chat has no equivalent. |
 | `on assignment` | A routine run by a `spawn` trigger behind an NPC flag, so it runs once per NPC. |
 | Player flag | `animus:set-flag` and `animus:flag-state` with `"scope": "player"`, or `flag('player', name, default)` and `has_flag('player', name)` in an expression. The value can be any JSON value, and `expireSeconds` makes it expire. |

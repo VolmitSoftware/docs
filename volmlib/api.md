@@ -52,13 +52,13 @@ Presentation plugins create one `ProjectionViewAccess(plugin)` and close it when
 
 ## Startup splash helpers
 
-`art.arcane.volmlib.util.plugin.SplashScreenSupport` supplies `javaMajorVersion()`, `startupDate()`, `releaseTrain(String version)`, and `serverVersionWithoutMcSuffix(String serverVersion)`. Pass the platform's server description explicitly; Bukkit callers can pass `Bukkit.getVersion()`. The server helper removes a trailing Minecraft version description beginning with ` (MC:`.
+`art.arcane.volmlib.util.plugin.SplashScreenSupport` supplies `javaMajorVersion()`, `startupDate()`, `releaseTrain(String version)`, and `serverVersionWithoutMcSuffix(String serverVersion)`. Pass the platform's server description explicitly; Bukkit callers can pass `Bukkit.getVersion()`. The server helper removes a trailing Minecraft version description beginning with ` (MC:`. `colorizeArt(row, fill, edge)` paints one row of block-letter banner art: `fill` goes before each run of `█` and `edge` before each run of the other glyphs, while spaces keep the current colour. The colours are inserted as given, so legacy codes, MiniMessage tags and ANSI escapes all work.
 
 These helpers are available in both `volmlib-shared` and the Bukkit-free `volmlib-localization` artifact. Mod loaders can use the localization artifact for splash, typed configuration, and atomic file APIs without bundling Bukkit classes. The [Husk template](/husk) demonstrates these APIs across the supported server platforms.
 
 ## File replacement
 
-`util.io.AtomicFileIO.writeString(target, content)` writes UTF-8 content to a forced temporary file and replaces the destination; `replace(source, target)` publishes an already-staged file. Replacement is atomic where the filesystem supports it and uses ordinary replacement only when atomic moves are unsupported.
+`util.io.AtomicFileIO.writeString(target, content)` writes UTF-8 content to a forced temporary file and replaces the destination; `replace(source, target)` publishes an already-staged file. Replacement is atomic where the filesystem supports it and uses ordinary replacement only when atomic moves are unsupported. `writeString` creates missing parent directories one at a time and flushes each new entry into its parent, and every replacement then flushes the destination's directory, so the new file survives a crash. Directory flushes are skipped on Windows and wherever the filesystem refuses them.
 
 On Windows, access-denied replacements make up to 50 attempts with 10-millisecond waits, allowing brief reader locks to clear. Persistent denial propagates the filesystem exception; an interrupted wait preserves the interrupt flag and raises `InterruptedIOException`. Run these blocking operations on an IO worker.
 
@@ -109,6 +109,8 @@ Relocate `art.arcane.volmlib` to a package owned by your plugin when shading. Do
 Use `ComponentText.markup(...)` for trusted MiniMessage templates and `ComponentText.literal(...)` for player or external text. Send it with `ComponentMessenger`. `clickOpenUrl(...)` accepts HTTP and HTTPS URLs.
 
 `ComponentMessenger` uses native rich messages where available. Its Spigot player delivery preserves RGB gradients, nested click actions, and hover text through Bukkit's Bungee component API. Director help and language menus use this delivery path for Bukkit senders; generic non-Bukkit sinks use their plain text fallback. Action-bar delivery also preserves translatable components, their arguments, and RGB colors through this API; consumers without the optional JSON serializer retain legacy text delivery.
+
+`ComponentMessenger.send(sender, component)` and `ComponentLog.log(plugin, fallbackLogger, level, component, failure)` take an Adventure `Component` directly. Paper receives it as MiniMessage, Spigot players as Bungee components, and consoles and other senders as plain text. These overloads never load `ComponentText` or Adventure's legacy and plain-text serializers, so a plugin that sends text only through them can leave both serializers out of its jar.
 
 `art.arcane.volmlib.util.bukkit.BukkitCommandMaps.commandMap(server)` returns the runtime command map on Paper and Spigot. `knownCommands(map)` returns its live registration table for exact command ownership checks and removal. Call these on the server thread. Access failures throw `IllegalStateException` with the reflective cause; callers must retain foreign registrations and unregister only their own commands.
 
