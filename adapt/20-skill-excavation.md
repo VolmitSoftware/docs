@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-06T16:00:00.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -289,7 +289,7 @@ Breaking `CLAY`, `MUD`, `MUDDY_MANGROVE_ROOTS`, `SOUL_SAND`, or `SOUL_SOIL` with
 
 ### Skill XP and stats
 
-Two sources, both spaced by `cooldownDelay`:
+Two sources: every qualifying shovel break pays, and shovel damage pays at most once per `cooldownDelay`:
 
 Block value is `MaterialValue * valueXPMultiplier + min(maxHardnessBonus, hardness) + min(maxBlastResistanceBonus, blastResistance)`.
 
@@ -313,7 +313,7 @@ Written to `plugins/Adapt/skills/excavation.toml` on first load.
 | `maxBlastResistanceBonus` | `10` | Cap on the blast-resistance term added to a block's XP value. |
 | `challengeExcavationReward` | `1200` | Base knowledge reward for the Excavation milestones. |
 | `valueXPMultiplier` | `0.6` | Multiplier on the base material value before the hardness terms are added. |
-| `cooldownDelay` | `1250` | Minimum milliseconds between skill XP awards. |
+| `cooldownDelay` | `1250` | Milliseconds between Excavation combat XP awards. Digging has no cooldown. |
 | `axeDamageXPMultiplier` | `4.0` | Skill XP per point of melee damage dealt with a shovel. The key name says axe. The code uses it for shovels. |
 
 ### Shared knobs

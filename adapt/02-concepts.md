@@ -2,13 +2,13 @@
 title: "Concepts"
 description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-10-18T01:55:01.954Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Playing awards skill XP. A skill level awards knowledge for that skill and master XP. Master level sets ability power. An adaptation level costs knowledge and one power.
+Playing awards skill XP. A skill level awards knowledge for that skill and master XP. Master level sets ability power. An adaptation level costs knowledge; holding the adaptation uses one power at any level.
 
 An adaptation runs only when all of these hold:
 
@@ -36,13 +36,13 @@ One level costs `max(1, baseCost + baseCost * level * costFactor)` knowledge. Le
 
 `requires` lists adaptations a player must learn first, each written as `adaptationId:level`, for example `requires = ["rift-blink:2"]`. Entries may name adaptations from any skill. Learning or leveling is refused until every entry is met by levels the player bought; region-granted levels do not count. An entry naming an unknown adaptation can never be met and is logged as a warning at load. Malformed entries are ignored with a warning. While a learned adaptation requires another, players cannot unlearn the required one below that level. A forced removal also removes the learned adaptations whose requirement it breaks, then any that required those, and logs each removal. A requirement that was already unmet, or that names an unknown adaptation or one in a disabled skill, never causes a removal.
 
-Holding level `L` costs `L` power. Region-granted levels cost none. A purchase that fails charges nothing.
+Holding an adaptation uses 1 power at any level; raising it further costs knowledge only. Region-granted adaptations use none. A purchase that fails charges nothing.
 
 Every adaptation file also has `enabled`, `permanent`, `requires`, `showParticles`, and `showSounds`.
 
 ## Knowledge
 
-Crossing skill level `i` pays `(i / 13) + 1` knowledge, using integer division. `i` is the level just left. Levels 1 through 12 pay 1. Levels 13 through 25 pay 2.
+Reaching a skill level pays knowledge: level 1 pays nothing, levels 2 to 5 pay 3 each, levels 6 to 30 pay 2 each, and every level from 31 on pays 3. A skill at level 5 has earned 12 knowledge, at level 15 32, and at level 25 52. See [Progression and costs](/adapt/38-progression-costs) for the full table.
 
 ## Master level and power
 
@@ -55,11 +55,11 @@ playerXpPerSkillLevelUpBase + i * playerXpPerSkillLevelUpLevelMultiplier
 `i` is the level just left. Master level uses the same `xpCurve`.
 
 ```
-maxPower  = max(0, floor(masterLevel * powerPerLevel) + regionPowerBonus)
-usedPower = sum of learned adaptation levels that are not region-granted
+maxPower  = max(0, floor(maxPowerScale * sqrt(masterLevel)) + regionPowerBonus)
+usedPower = number of learned adaptations that are not region-granted
 ```
 
-A purchase that would exceed `maxPower` fails. If max power drops below used power, Adapt removes learned levels, lowest first, until used power fits. It takes levels that no other learned adaptation requires before prerequisite levels; if a prerequisite level must still drop, the adaptations whose requirement it breaks are removed too. Those levels are not refunded. Region grants are not removed.
+Learning a new adaptation that would exceed `maxPower` fails; raising one you already hold never needs power. If max power drops below used power, Adapt removes whole learned adaptations until used power fits, with no refund. It removes adaptations no other learned adaptation requires first, then the lowest-level ones, breaking ties by skill id and then adaptation id; removing a prerequisite also removes the adaptations whose requirement it breaks. Region grants are not removed.
 
 `regionPowerBonus` is the current WorldGuard `adapt-power-bonus`. It is not saved. See [Protection and region policy](/adapt/08-protection-region-policy).
 

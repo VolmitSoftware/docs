@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Pickaxes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Pickaxes (`pickaxe`) gains XP from mining stone or ore and from damage dealt wit
 
 ## Earning XP
 
-Breaking a block with a pickaxe pays from that block's material value, plus hardness and blast resistance, both capped, plus an ore bonus that is multiplied again for deepslate ore, then scaled by a fixed factor. Those config values are relative weights, not raw XP. Silk Touch skips that formula and pays a flat 5 XP. Blocks the anti-farm system has already devalued, including placed blocks and repeatedly farmed areas, pay nothing. Player-placed blocks and rejected replacements also provide no mining milestone credit. Hitting a valid mob with a pickaxe pays XP from credited damage, counts toward the `pickaxe.damage` challenges, and shares one cooldown with block-break XP.
+Breaking a block with a pickaxe pays from that block's material value, plus hardness and blast resistance, both capped, plus an ore bonus that is multiplied again for deepslate ore, then scaled by a fixed factor. Those config values are relative weights, not raw XP. Silk Touch skips that formula and pays a flat 5 XP. Blocks the anti-farm system has already devalued, including placed blocks and repeatedly farmed areas, pay nothing. Player-placed blocks and rejected replacements also provide no mining milestone credit. Hitting a valid mob with a pickaxe pays XP from credited damage, and counts toward the `pickaxe.damage` challenges, at most once per `cooldownDelay`. Mining has no cooldown.
 
 Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
@@ -281,7 +281,7 @@ Written to `plugins/Adapt/skills/pickaxe.toml` on first load.
 | `emeraldBonus` | `210` | Value added for emerald ore, and the base unit for every Pickaxes milestone reward. |
 | `debrisBonus` | `210` | Value added for ancient debris. |
 | `deepslateMultiplier` | `1.35` | Multiplier applied to the ore bonus of deepslate ore variants. |
-| `cooldownDelay` | `1250` | Milliseconds between XP awards from mining or pickaxe damage. |
+| `cooldownDelay` | `1250` | Milliseconds between pickaxe combat XP awards. Mining has no cooldown. |
 
 ### Challenges
 

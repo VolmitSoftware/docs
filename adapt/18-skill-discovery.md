@@ -2,12 +2,12 @@
 title: "Skill - Discovery"
 description: "Discovery XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Discovery awards XP once for each new block state, item, food, recipe, enchantment, entity, player, effect, biome, dimension, and world. It also scans the targeted block and mirrors collected vanilla experience into Discovery XP. Its 14 adaptations add block and entity details, structure guidance, chest detection, archaeology loot, armor, damage resistance, villager discounts, and faster mending.
+Discovery awards XP once for each new block state, item, food, recipe, enchantment, entity, player, effect, biome, dimension, and world. It also scans the targeted block, mirrors collected vanilla experience into Discovery XP, pays for entering new chunks and for opening untouched loot chests, barrels, and minecart chests, and pays for completing advancements from vanilla, datapacks, or other mods: `advancementTaskXP`, `advancementGoalXP`, or `advancementChallengeXP` by frame. Adapt's own advancements, recipe unlocks, and advancements without a display pay nothing. Its 14 adaptations add block and entity details, structure guidance, chest detection, archaeology loot, armor, damage resistance, villager discounts, and faster mending.
 
 ## Player controls
 
@@ -324,6 +324,11 @@ Each discovery pays once. The record is kept per player per key.
 | Changing world, 15 ticks after arrival | world identity plus seed | `discoverWorldXP` | none |
 | The dimension of a newly seen world | `World.Environment` | `discoverEnvironmentXP` | none |
 | Collecting vanilla experience | not a discovery | the raw vanilla amount | none |
+| Entering a chunk for the first time | world plus chunk position | `discoverChunkXP` | none |
+| Opening a naturally generated loot container before anyone else | not a discovery | `discoverLootContainerXP` | none |
+| Completing a non-Adapt advancement with a display | not a discovery | `advancementTaskXP`, `advancementGoalXP`, or `advancementChallengeXP` by frame | none |
+
+Each player remembers the chunks they have entered in 32 by 32 chunk regions, up to 1,024 regions (about a million chunks). Past that, the oldest regions are forgotten and their chunks pay again.
 
 The look-ahead check takes up to `maxTargetChecksPerPass` players per skill tick and looks five blocks ahead, ignoring fluids. Looking at the same block again is skipped.
 
@@ -338,12 +343,16 @@ Written to `plugins/Adapt/skills/discovery.toml` on first load.
 | `enabled` | `true` | Turns the whole skill on or off. |
 | `skillColor` | `"&b"` | Legacy ampersand color code for this skill in menus and text. |
 | `showParticles` | `true` | Plays the discovery particle and sound flourishes. |
+| `forceDiscoveryParticles` | `true` | Sends the new block reveal particles forced, so they show on reduced particle settings and are never thinned under load. |
 | `discoverBiomeXP` | `15` | XP for a biome you have never been in. |
 | `discoverPotionXP` | `36` | XP for a potion effect and amplifier pair you have never seen. |
 | `discoverEntityTypeXP` | `125` | XP for an entity type you have never inspected. |
 | `discoverFoodTypeXP` | `75` | XP the first time you consume a given food. |
 | `discoverPlayerXP` | `125` | XP for a player you have never inspected. |
 | `discoverEnvironmentXP` | `750` | XP for a dimension you have never entered. |
+| `advancementTaskXP` | `150` | XP for completing a task advancement from vanilla, a datapack, or another mod. |
+| `advancementGoalXP` | `400` | XP for completing a goal advancement from vanilla, a datapack, or another mod. |
+| `advancementChallengeXP` | `1000` | XP for completing a challenge advancement from vanilla, a datapack, or another mod. |
 | `discoverWorldXP` | `750` | XP for a world you have never entered, keyed by identity and seed. |
 | `discoverEnchantMaxXP` | `250` | Ceiling on the level-scaled part of an enchantment discovery. |
 | `discoverEnchantLevelXPMultiplier` | `52` | XP per enchantment level, before the ceiling. |
@@ -354,21 +363,23 @@ Written to `plugins/Adapt/skills/discovery.toml` on first load.
 | `discoverBlockBaseXP` | `3` | Flat XP added to every block discovery. |
 | `discoverBlockValueXPMultiplier` | `0.333` | Multiplier applied to a block's value in a block discovery. |
 | `maxTargetChecksPerPass` | `64` | Players given a look-ahead ray trace per skill tick, taken from a rotating cursor. |
+| `discoverChunkXP` | `2` | XP the first time you enter each chunk. |
+| `discoverLootContainerXP` | `40` | XP for opening a naturally generated loot container before anyone else. |
 
 ### Challenges
 
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_discover_items_50` | 50 | 500 |
-| `challenge_discover_items_250` | 250 | 2500 |
+| `challenge_discover_items_250` | 250 | 1500 |
 | `challenge_discover_blocks_50` | 50 | 500 |
-| `challenge_discover_blocks_250` | 250 | 2500 |
+| `challenge_discover_blocks_250` | 250 | 1500 |
 | `challenge_discover_mobs_25` | 25 | 500 |
-| `challenge_discover_mobs_75` | 75 | 2500 |
+| `challenge_discover_mobs_75` | 75 | 1500 |
 | `challenge_discover_biomes_10` | 10 | 500 |
-| `challenge_discover_biomes_40` | 40 | 2500 |
+| `challenge_discover_biomes_40` | 40 | 1500 |
 | `challenge_discover_foods_10` | 10 | 500 |
-| `challenge_discover_foods_30` | 30 | 2500 |
+| `challenge_discover_foods_30` | 30 | 1500 |
 
 ## See also
 

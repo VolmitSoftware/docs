@@ -2,12 +2,12 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Nether gains XP from wither damage, damaging or killing the Wither, killing wither skeletons, and breaking wither roses. Its 14 adaptations add fire, ghast, wither, and magma protection, lava and soul-sand movement, strider control, netherrack mining, piglin barter bonuses, Nether foods, wither loot, fire-based recovery, and thrown wither skulls, and many of those actions pay XP of their own.
+Nether gains XP from wither damage, damaging or killing the Wither, killing wither skeletons, breaking wither roses, mining nether quartz ore, nether gold ore, or ancient debris (`netherQuartzOreXp`, `netherGoldOreXp`, `ancientDebrisXp`), and killing blazes, ghasts, piglins, piglin brutes, hoglins, zoglins, magma cubes, or zombified piglins (`netherMobMaxHealthXpMultiplier` per point of maximum health). Mobs from spawners, spawn eggs, buckets, breeding, nether portals, or golem and snowman builds, summoned minions, grave mobs, and your own pets pay no kill XP. Placed ore pays nothing. Its 14 adaptations add fire, ghast, wither, and magma protection, lava and soul-sand movement, strider control, netherrack mining, piglin barter bonuses, Nether foods, wither loot, fire-based recovery, and thrown wither skulls, and many of those actions pay XP of their own.
 
 Breaking a player-placed wither rose or a rejected replacement earns neither base rose XP nor rose milestone credit. Wither-hit XP requires positive final damage and uses a per-target damage allowance equal to the Wither's maximum health over ten minutes.
 
@@ -362,22 +362,26 @@ Written to `plugins/Adapt/skills/nether.toml` on first load.
 | `challengeWitherSkelReward` | `500` | Base XP for the wither-skeleton challenges. The second tier pays 2x. |
 | `challengeWitherBossReward` | `1000` | Base XP for the Wither boss challenges. The second tier pays 2x. |
 | `challengeRosesReward` | `500` | Base XP for the wither-rose challenges. The second tier pays 2x. |
+| `netherMobMaxHealthXpMultiplier` | `2` | XP per point of maximum health for killing blazes, ghasts, piglins, piglin brutes, hoglins, zoglins, magma cubes, and zombified piglins. |
+| `netherQuartzOreXp` | `62.5` | XP for mining nether quartz ore. |
+| `netherGoldOreXp` | `52.5` | XP for mining nether gold ore. |
+| `ancientDebrisXp` | `105` | XP for mining ancient debris. |
 
 ### Challenges
 
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_nether_50` | 50 | `challengeNetherReward` |
-| `challenge_nether_500` | 500 | `challengeNetherReward` x2 |
-| `challenge_nether_5k` | 5000 | `challengeNetherReward` x5 |
+| `challenge_nether_500` | 500 | `challengeNetherReward` x3 |
+| `challenge_nether_5k` | 5000 | `challengeNetherReward` x8 |
 | `challenge_wither_dmg_500` | 500 | `challengeWitherDmgReward` |
-| `challenge_wither_dmg_5k` | 5000 | `challengeWitherDmgReward` x2 |
+| `challenge_wither_dmg_5k` | 5000 | `challengeWitherDmgReward` x3 |
 | `challenge_wither_skel_25` | 25 | `challengeWitherSkelReward` |
-| `challenge_wither_skel_250` | 250 | `challengeWitherSkelReward` x2 |
+| `challenge_wither_skel_250` | 250 | `challengeWitherSkelReward` x3 |
 | `challenge_wither_boss_1` | 1 | `challengeWitherBossReward` |
 | `challenge_wither_boss_10` | 10 | `challengeWitherBossReward` x2 |
 | `challenge_roses_10` | 10 | `challengeRosesReward` |
-| `challenge_roses_100` | 100 | `challengeRosesReward` x2 |
+| `challenge_roses_100` | 100 | `challengeRosesReward` x3 |
 
 ## See also
 

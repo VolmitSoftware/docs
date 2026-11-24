@@ -2,7 +2,7 @@
 title: "Configuration Math"
 description: "XP multipliers, progression curves, knowledge, and ability power"
 published: true
-date: 2026-10-22T22:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,20 +73,20 @@ Level 1 is 1,300 XP. Level 10 is 22,000. Level 100 is 1,120,000. Other names are
 On that tick, for each level `i` just left (`lastLevel <= i < level`):
 
 ```
-knowledge += (i / 13) + 1
+knowledge += knowledgeFor(i + 1)   # level reached: 1 -> 0, 2-5 -> 3, 6-30 -> 2, 31+ -> 3
 masterXp  += playerXpPerSkillLevelUpBase + (i * playerXpPerSkillLevelUpLevelMultiplier)
 ```
 
-The step from 9 to 10 uses `i = 9`: 885 master XP and 1 knowledge. The step from 49 to 50 grants 2,645 master XP and 4 knowledge. Several levels in one tick each run once.
+The step from 9 to 10 uses `i = 9`: 885 master XP and 2 knowledge. The step from 49 to 50 grants 2,645 master XP and 3 knowledge. Several levels in one tick each run once.
 
 ```
-maxPower  = max(0, floor(masterLevel * powerPerLevel) + regionPowerBonus)
-usedPower = sum of learned adaptation levels that are not region-granted
+maxPower  = max(0, floor(maxPowerScale * sqrt(masterLevel)) + regionPowerBonus)
+usedPower = number of learned adaptations that are not region-granted
 ```
 
 `regionPowerBonus` is the current WorldGuard `adapt-power-bonus`. It is not saved. See [Protection and region policy](/adapt/08-protection-region-policy).
 
-If max power falls below used power, the lowest learned adaptation levels are removed until it fits. Nothing is refunded. Region grants cost no power and are not removed. `/adapt debug mode` skips the power check, knowledge spend, and that removal.
+If max power drops below used power, Adapt removes whole learned adaptations until used power fits, with no refund. It removes adaptations no other learned adaptation requires first, then the lowest-level ones, breaking ties by skill id and then adaptation id; removing a prerequisite also removes the adaptations whose requirement it breaks. Region grants are not removed. `/adapt debug mode` skips the power check, knowledge spend, and that removal.
 
 ## Reference
 
@@ -98,7 +98,7 @@ If max power falls below used power, the lowest learned adaptation levels are re
 | `experienceMaxLevel` | `1000` | Skill level cap. Lookups clamp to this value |
 | `playerXpPerSkillLevelUpBase` | `489` | Flat master XP per skill level crossed |
 | `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Extra master XP per level already reached |
-| `powerPerLevel` | `0.65` | Power per master level, truncated to a whole number |
+| `maxPowerScale` | `1.6` | Max power is `floor(maxPowerScale * sqrt(masterLevel))`; each held adaptation uses 1 |
 
 ### Curve families
 

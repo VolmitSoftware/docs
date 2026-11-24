@@ -1,0 +1,25 @@
+Table,Milestone,Ordinary,Focused
+Adaptations held,1 adaptation,1 h,1 h
+Adaptations held,2 adaptations,3 h,2 h
+Adaptations held,3 adaptations,5 h,3 h
+Adaptations held,4 adaptations,10 h,6 h
+Adaptations held,5 adaptations,16 h,12 h
+Adaptations held,6 adaptations,29 h,19 h
+Adaptations held,8 adaptations,74 h,51 h
+Adaptations held,10 adaptations,169 h,115 h
+Adaptations held,12 adaptations,340 h,225 h
+Knowledge in the main skill,First level of a Minor adaptation (2 knowledge),3 h (main skill level 2),1 h (main skill level 3)
+Knowledge in the main skill,First level of a Utility adaptation (4 knowledge),4 h (main skill level 3),1 h (main skill level 3)
+Knowledge in the main skill,First level of a Core adaptation (6 knowledge),4 h (main skill level 3),1 h (main skill level 3)
+Knowledge in the main skill,First level of a Strong adaptation (11 knowledge),7 h (main skill level 5),2 h (main skill level 5)
+Knowledge in the main skill,First level of a Keystone adaptation (17 knowledge),12 h (main skill level 8),4 h (main skill level 9)
+Knowledge in the main skill,A Core adaptation at level 5 (42 knowledge),48 h (main skill level 20),14 h (main skill level 20)
+Knowledge in the main skill,A Strong adaptation at level 5 (73 knowledge),116 h (main skill level 34),32 h (main skill level 34)
+Knowledge in the main skill,A Keystone adaptation at level 5 (111 knowledge),206 h (main skill level 47),57 h (main skill level 47)
+Knowledge in the main skill,Three Core adaptations at level 5 (126 knowledge),247 h (main skill level 52),68 h (main skill level 52)
+Snapshot,7 h,skills 5 / 4 / 3 / 2 / 2 / 2; master level 5; 3 adaptations; 12 knowledge,skills 13 / 3 / 3 / 3; master level 7; 4 adaptations; 28 knowledge
+Snapshot,20 h,skills 11 / 10 / 7 / 5 / 5 / 5; master level 11; 5 adaptations; 24 knowledge,skills 25 / 7 / 7 / 7; master level 14; 6 adaptations; 52 knowledge
+Snapshot,50 h,skills 20 / 18 / 13 / 10 / 10 / 10; master level 20; 7 adaptations; 42 knowledge,skills 43 / 13 / 13 / 13; master level 24; 7 adaptations; 101 knowledge
+Snapshot,100 h,skills 31 / 28 / 20 / 16 / 16 / 16; master level 29; 8 adaptations; 65 knowledge,skills 64 / 21 / 21 / 21; master level 36; 9 adaptations; 164 knowledge
+Snapshot,200 h,skills 46 / 41 / 31 / 24 / 24 / 24; master level 42; 10 adaptations; 110 knowledge,skills 93 / 31 / 31 / 31; master level 52; 11 adaptations; 251 knowledge
+Snapshot,500 h,skills 76 / 69 / 52 / 41 / 41 / 41; master level 68; 13 adaptations; 200 knowledge,skills 150 / 53 / 53 / 53; master level 85; 14 adaptations; 422 knowledge

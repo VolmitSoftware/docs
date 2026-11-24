@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -260,7 +260,7 @@ Written to `plugins/Adapt/skills/crafting.toml` on first load.
 | `furnaceXPDuration` | `10000` | Milliseconds the furnace XP pulse stays claimable by players in range. |
 | `furnaceXpCooldown` | `10000` | Milliseconds before the same furnace block can pay out again. |
 | `craftingValueXPMultiplier` | `2.0` | Multiplier applied to crafted item value for both XP and the `crafted.value` stat. |
-| `baseCraftingXP` | `3.0` | Flat XP added on top of value XP for every paying craft. |
+| `baseCraftingXP` | `1.5` | Flat XP added on top of value XP for every paying craft. |
 | `challengeCraft1kReward` | `1200` | Base knowledge reward for the Crafting challenge chains. |
 
 ### Challenges

@@ -2,7 +2,7 @@
 title: "Skill - Swords"
 description: "Swords XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -331,7 +331,7 @@ Base damage XP and its damage milestones use final damage after mitigation, capp
 | Trigger | Award | Notes |
 |---------|-------|-------|
 | Damaging a valid living entity with a sword in the main hand | `damageXPMultiplier` times the damage dealt | Rate-limited by `cooldownDelay`. Hit, damage, critical, and heavy-hit milestones count only qualifying credited hits. Parrots and invalid targets are excluded. |
-| Killing with a sword in the main hand | No XP | Adds `sword.kills` only. |
+| Killing with a sword in the main hand | `killXp` | Adds `sword.kills`. Mobs from spawners, spawn eggs, buckets, breeding, nether portals, or golem and snowman builds, summoned minions, grave mobs, and your own pets pay no kill XP. |
 
 A hit counts as critical for `sword.critical` when the attacker's fall distance is above 0 and the attacker is not on the ground. A hit counts as heavy for `sword.heavy.hits` when the event damage is above 8.
 
@@ -344,20 +344,21 @@ Written to `plugins/Adapt/skills/swords.toml` on first load.
 | `enabled` | `true` | Set to false to disable the whole skill. |
 | `skillColor` | `"&e"` | Legacy ampersand color code used for this skill in menus and text. |
 | `cooldownDelay` | `1250` | Milliseconds between sword damage XP awards, per player. |
-| `damageXPMultiplier` | `4.5` | Multiplier applied to sword damage dealt when converting it to XP. |
+| `damageXPMultiplier` | `6` | Multiplier applied to sword damage dealt when converting it to XP. |
 | `challengeSwordReward` | `500` | XP paid for `challenge_sword_100`. The 1k tier pays double and the 10k tier pays five times this value. |
 | `challengeSwordDmgReward` | `500` | XP paid for `challenge_sword_dmg_1k`. The 10k tier pays triple. |
 | `challengeSwordKillsReward` | `500` | XP paid for `challenge_sword_kills_50`. The 500 tier pays triple. |
 | `challengeSwordCritReward` | `500` | XP paid for `challenge_sword_crit_50`. The 500 tier pays triple. |
 | `challengeSwordHeavyReward` | `500` | XP paid for `challenge_sword_heavy_25`. The 250 tier pays triple. |
+| `killXp` | `40` | XP for killing a mob with a sword. |
 
 ### Challenges
 
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_sword_100` | 100 | `challengeSwordReward` |
-| `challenge_sword_1k` | 1000 | `challengeSwordReward` x2 |
-| `challenge_sword_10k` | 10000 | `challengeSwordReward` x5 |
+| `challenge_sword_1k` | 1000 | `challengeSwordReward` x3 |
+| `challenge_sword_10k` | 10000 | `challengeSwordReward` x8 |
 | `challenge_sword_dmg_1k` | 1000 | `challengeSwordDmgReward` |
 | `challenge_sword_dmg_10k` | 10000 | `challengeSwordDmgReward` x3 |
 | `challenge_sword_kills_50` | 50 | `challengeSwordKillsReward` |

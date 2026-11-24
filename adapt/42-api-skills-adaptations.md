@@ -2,7 +2,7 @@
 title: "API - Skills & Adaptations"
 description: "Read Adapt skills and adaptations or change learned levels"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -145,7 +145,7 @@ The base TOML shape for a first-party adaptation. External code may read these b
 | `UNLEARNED` | The level was lowered |
 | `NO_CHANGE` | The target matched or was worse than the current paid level |
 | `SKILL_LINE_UNAVAILABLE` | The player has no skill line for the owning skill |
-| `INSUFFICIENT_POWER` | Not enough power for the requested levels |
+| `INSUFFICIENT_POWER` | Learning an adaptation the player does not hold yet needs one free power |
 | `INSUFFICIENT_KNOWLEDGE` | Not enough knowledge, or the knowledge spend failed |
 | `INSUFFICIENT_FUNDS` | Vault refused the withdrawal for lack of balance |
 | `ECONOMY_UNAVAILABLE` | Vault or its economy provider is missing |

@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Agility gains XP from movement, sprinting, swimming, airtime, and climbing. Its 
 
 ## How you earn Agility XP
 
-Movement on foot credits `move` and pays `moveXpPassive` per block. Sneaking, swimming, or sprinting also credits the matching distance milestone. Flying and gliding credit `move` and `move.fly` milestones without per-block or pulse XP. Teleports, vehicles, and individual movement changes above eight blocks earn no movement credit. Every 975 ms a pulse checks for at least a quarter block of displacement, then pays the matching sprinting, swimming, upward airborne movement, or climbing award; remaining stationary earns none. Sneaking blocks those four pulse awards, and sprinting and swimming exclude each other.
+Movement on foot credits `move` and adds the distance to a running total. The next pulse pays `moveXpPassive` per block of that total in one award, so walking does not flood the XP integrity checks with one tiny award per movement packet. Sneaking, swimming, or sprinting also credits the matching distance milestone. Flying and gliding credit `move` and `move.fly` milestones without per-block or pulse XP. Teleports, vehicles, and individual movement changes above eight blocks earn no movement credit. Every 975 ms a pulse checks for at least a quarter block of displacement, then pays the matching sprinting, swimming, upward airborne movement, or climbing award; remaining stationary earns none. Sneaking blocks those four pulse awards, and sprinting and swimming exclude each other.
 
 ## Adaptations
 
@@ -327,11 +327,11 @@ Written to `plugins/Adapt/skills/agility.toml` on first load.
 | `challengeMove1kReward` | `500` | Skill XP paid for completing `challenge_move_1k`. |
 | `challengeSprint5kReward` | `2000` | Skill XP paid for `challenge_sprint_dist_5k`, the two swim challenges, the two fly challenges, and the two sneak challenges. The larger tier of each pair pays double this. |
 | `challengeSprintMarathonReward` | `6500` | Skill XP paid for `challenge_sprint_marathon`. |
-| `sprintXpPassive` | `0.35` | Skill XP per pulse while sprinting, scaled by elapsed time. |
+| `sprintXpPassive` | `1.05` | Skill XP per pulse while sprinting, scaled by elapsed time. |
 | `swimXpPassive` | `0.4` | Skill XP per pulse while swimming, scaled by elapsed time. |
-| `jumpXpPassive` | `0.15` | Skill XP per pulse while moving upward off the ground, scaled by elapsed time. |
-| `climbXpPassive` | `0.4` | Skill XP per pulse while climbing, scaled by elapsed time. |
-| `moveXpPassive` | `0.05` | Skill XP per eligible block travelled on foot. |
+| `jumpXpPassive` | `0.3` | Skill XP per pulse while moving upward off the ground, scaled by elapsed time. |
+| `climbXpPassive` | `0.8` | Skill XP per pulse while climbing, scaled by elapsed time. |
+| `moveXpPassive` | `0.15` | Skill XP per eligible block travelled on foot, paid once per pulse. |
 
 ### Challenges
 

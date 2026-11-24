@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,11 +14,11 @@ Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, 
 ## How you earn Taming XP
 
 - Taming an animal pays `tameSuccessXP` and counts toward `taming.tamed`.
-- Breeding pays `tameXpBase` and counts toward `taming.bred`.
+- Breeding pays `breedXp` and counts toward `taming.bred`. The same two parents pay again only after `breedPairCooldownMs`.
 - A tamed pet damaging an eligible target pays credited damage times `tameDamageXPMultiplier` and adds that credited damage to `taming.pet.damage`.
-- A mob killed by your pet pays `petKillXP` and counts toward `taming.pet.kills`. The credit only fires when no player is the mob's killer, and TragOul skeletal servants and Excavation grave mobs are excluded.
+- A mob killed by your pet pays `petKillXP` plus `petKillMaxHealthXpMultiplier` per point of its maximum health and counts toward `taming.pet.kills`. Mobs from spawners, eggs, buckets, breeding, or portals pay nothing. The credit only fires when no player is the mob's killer, and TragOul skeletal servants and Excavation grave mobs are excluded.
 
-Breeding XP and pet damage XP share one `cooldownDelay` millisecond cooldown. Tame and pet-kill XP have no cooldown.
+Pet damage XP has a `cooldownDelay` millisecond cooldown. Tame and pet-kill XP have no cooldown.
 
 Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
@@ -357,8 +357,7 @@ Written to `plugins/Adapt/skills/taming.toml` on first load.
 |-----|--------------|------------------|
 | `enabled` | `true` | Turns the whole Taming skill on or off. |
 | `skillColor` | `"&6"` | Legacy ampersand color code used for Taming in menus and text. |
-| `tameXpBase` | `65` | Skill XP paid when you breed an animal. |
-| `cooldownDelay` | `1500` | Milliseconds between breeding and pet-damage XP awards for one player. |
+| `cooldownDelay` | `1500` | Milliseconds between pet-damage XP awards for one player. |
 | `tameDamageXPMultiplier` | `8.0` | Skill XP per point of damage your pets deal. |
 | `tameSuccessXP` | `150` | Skill XP paid when you tame an animal. |
 | `petKillXP` | `25` | Skill XP paid when one of your pets kills a mob. |
@@ -366,20 +365,23 @@ Written to `plugins/Adapt/skills/taming.toml` on first load.
 | `challengePetDmgReward` | `500` | Knowledge paid by the pet damage challenges. |
 | `challengeTamedReward` | `500` | Knowledge paid by the tamed-animal challenges. |
 | `challengePetKillsReward` | `500` | Knowledge paid by the pet kill challenges. |
+| `breedXp` | `40` | XP for breeding two animals. |
+| `breedPairCooldownMs` | `300000` | Milliseconds before the same two parents can pay breeding XP again. |
+| `petKillMaxHealthXpMultiplier` | `1` | Extra pet kill XP per point of the victim's maximum health. |
 
 ### Challenges
 
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_taming_10` | 10 | `challengeTamingReward` |
-| `challenge_taming_50` | 50 | `challengeTamingReward` x 2 |
-| `challenge_taming_500` | 500 | `challengeTamingReward` x 5 |
+| `challenge_taming_50` | 50 | `challengeTamingReward` x 3 |
+| `challenge_taming_500` | 500 | `challengeTamingReward` x 8 |
 | `challenge_pet_dmg_500` | 500 | `challengePetDmgReward` |
-| `challenge_pet_dmg_5k` | 5000 | `challengePetDmgReward` x 5 |
+| `challenge_pet_dmg_5k` | 5000 | `challengePetDmgReward` x 3 |
 | `challenge_tamed_10` | 10 | `challengeTamedReward` |
-| `challenge_tamed_100` | 100 | `challengeTamedReward` x 5 |
+| `challenge_tamed_100` | 100 | `challengeTamedReward` x 3 |
 | `challenge_pet_kills_25` | 25 | `challengePetKillsReward` |
-| `challenge_pet_kills_250` | 250 | `challengePetKillsReward` x 5 |
+| `challenge_pet_kills_250` | 250 | `challengePetKillsReward` x 3 |
 
 ## See also
 

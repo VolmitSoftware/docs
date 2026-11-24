@@ -2,12 +2,12 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Hunter gains XP from killing mobs, scaled by maximum health, with separate adjustments for creepers and spawner mobs. Killing an ender dragon, wither, elder guardian, or warden advances a boss challenge. Its 14 adaptations add hunger-funded combat buffs, low-health bonuses, focused-target damage, boss loot, extra drops, blood trails, snares, and direct inventory collection.
+Hunter gains XP from killing mobs: `killFlatXp` plus `killMaxHealthXPMultiplier` per point of maximum health, doubled for creepers. Mobs from spawners, spawn eggs, buckets, breeding, nether portals, or golem and snowman builds pay `spawnerMobReductionXpMultiplier` of that, and your own pets pay nothing. Killing an ender dragon, wither, elder guardian, or warden advances a boss challenge. Its 14 adaptations add hunger-funded combat buffs, low-health bonuses, focused-target damage, boss loot, extra drops, blood trails, snares, and direct inventory collection.
 
 ## Player preferences
 
@@ -354,11 +354,12 @@ Written to `plugins/Adapt/skills/hunter.toml` on first load.
 | `skillColor` | `"&c"` | Legacy ampersand color code used for Hunter in menus and text. |
 | `getXpForAttackingWithTools` | `true` | Master switch for the kill handler. False means no kill XP, no kill stats, and no boss celebration. |
 | `creeperKillMultiplier` | `2` | Extra multiplier applied to XP from creeper kills only. |
-| `killMaxHealthXPMultiplier` | `3.0` | XP per point of the victim's max health. |
+| `killMaxHealthXPMultiplier` | `4` | XP per point of the victim's max health. |
 | `cooldownDelay` | `1000` | Milliseconds that must pass between two kill XP awards for the same player. |
-| `spawnerMobReductionXpMultiplier` | `0.3` | Multiplier applied when the victim spawned from a monster spawner. |
+| `spawnerMobReductionXpMultiplier` | `0.3` | Multiplier applied when the victim came from a spawner, spawn egg, bucket, breeding, a nether portal, or a golem or snowman build. |
 | `killsChallengeReward` | `500` | Base XP paid by the kill-count challenges. Some tiers pay 2x or 5x this. |
 | `bossKillReward` | `1000` | Base XP paid by the boss challenges. The 10-boss tier pays 5x this. |
+| `killFlatXp` | `30` | Flat XP added to every kill reward. |
 
 ### Shared knobs
 
@@ -382,12 +383,12 @@ The seven struck buffs also share this knob set:
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_novice_hunter` | 100 | `killsChallengeReward` |
-| `challenge_intermediate_hunter` | 500 | `killsChallengeReward` x2 |
-| `challenge_advanced_hunter` | 5000 | `killsChallengeReward` x5 |
+| `challenge_intermediate_hunter` | 500 | `killsChallengeReward` x3 |
+| `challenge_advanced_hunter` | 5000 | `killsChallengeReward` x8 |
 | `challenge_creeper_conqueror` | 50 | `killsChallengeReward` |
-| `challenge_creeper_annihilator` | 200 | `killsChallengeReward` x2 |
+| `challenge_creeper_annihilator` | 200 | `killsChallengeReward` x3 |
 | `challenge_kills_500` | 500 | `killsChallengeReward` |
-| `challenge_kills_5k` | 5000 | `killsChallengeReward` x5 |
+| `challenge_kills_5k` | 5000 | `killsChallengeReward` x3 |
 | `challenge_boss_1` | 1 | `bossKillReward` |
 | `challenge_boss_10` | 10 | `bossKillReward` x5 |
 

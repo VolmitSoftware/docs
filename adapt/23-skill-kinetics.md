@@ -2,12 +2,12 @@
 title: "Skill - Kinetics"
 description: "Kinetics XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Kinetics gains XP from mace smashes, spear charges, knockback, slime or bed bounces, piston launches, levitation, large survived falls, and falling anvils. Its 18 adaptations change movement, mace attacks, and spear combat. Most combat hooks require Paper events. Placed anvils stay tracked through piston movement and falling, so the owner and nearby players receive credit when an anvil hits.
+Kinetics gains XP from mace smashes, spear charges, knockback, slime or bed bounces, piston launches, levitation, large survived falls, falling anvils, and working an anvil or grindstone. A fall that hurts you pays `fallXpPerBlock` per block past the first `fallXpFreeBlocks`, up to `fallXpCap`, at most once per `fallXpCooldownMs`; landing within `fallXpRepeatRadius` blocks of one of your last three paid landings pays nothing. Softened or cushioned falls pay the break-fall award instead. Taking an anvil result pays `anvilUseXpPerLevel` per experience level it cost. Taking a grindstone result pays `grindstoneXpPerEnchantLevel` per enchantment level removed, curses excluded; repairs that strip nothing pay nothing. Its 18 adaptations change movement, mace attacks, and spear combat. Most combat hooks require Paper events. Placed anvils stay tracked through piston movement and falling, so the owner and nearby players receive credit when an anvil hits.
 
 ## Adaptations
 
@@ -86,7 +86,7 @@ Fall damage is reduced on slime, honey, any bed, a hay bale, powder snow, sponge
 
 5 levels · 2 knowledge, then 4 per level
 
-Sprinting cancels a fraction of the supporting surface's friction loss. Without the friction attribute, that same fraction of actual ground momentum is kept, vertical motion and stronger knockback stay, and the player is never accelerated from rest. A grounded sneak press brakes once rather than locking movement while sneak remains held.
+Sprinting cancels a fraction of the supporting surface's friction loss through the friction attribute, up to 95% at max level, and the surface stays that slick until the player comes to rest or sneaks. On versions without the friction attribute the player instead keeps that fraction of their momentum after letting go. The player is never accelerated from rest. A grounded sneak press brakes once rather than locking movement while sneak remains held.
 
 In the demonstration, gold, red, and lime mark the player's starting position and resting positions after two equal-duration sprint inputs on stone. The learned run uses Always, sneak to brake to retain momentum after movement input ends; the player then crouches, restoring normal friction before settling to a stop.
 
@@ -95,7 +95,7 @@ Personal controls: Skating control (While sprinting/Always, sneak to brake). Arm
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `slidePercentBase` | `0.15` | Base percentage of each surface's friction loss cancelled while sprinting. Clamped to `0`-`1`. |
-| `slidePercentFactor` | `0.35` | Additional percentage at max level. Clamped to `0` through `1 - slidePercentBase`, so the total never exceeds 100%. |
+| `slidePercentFactor` | `0.8` | Additional percentage at max level. Clamped to `0` through `1 - slidePercentBase`, so the total never exceeds 100%. |
 | `sneakBrakePercent` | `1.0` | Horizontal velocity removed on a grounded sneak press. Clamped to `0`-`1`. `1.0` is a complete stop and `0` disables the brake. |
 
 ### Terminal Toggle (`kinetics-terminal-toggle`)
@@ -406,35 +406,35 @@ Written to `plugins/Adapt/skills/kinetics.toml` on first load.
 | `enabled` | `true` | Turns the whole Kinetics skill on or off. |
 | `skillColor` | `"&6"` | Legacy ampersand color code used for Kinetics in menus and text. |
 | `cooldownDelay` | `1000` | Milliseconds between combat XP awards (smash, mace hit, spear jab, charge, mounted charge share one cooldown). |
-| `smashHitXp` | `12` | XP for a mace smash attack that lands. |
-| `plainMaceHitXp` | `3` | XP for an ordinary mace hit with no smash. |
-| `spearJabXp` | `6` | XP for a spear hit inside the sweet range band. |
-| `spearChargeXp` | `12` | XP for a spear hit that counts as charged. |
-| `mountedChargeXp` | `14` | XP for a spear hit landed while riding a vehicle. |
+| `smashHitXp` | `24` | XP for a mace smash attack that lands. |
+| `plainMaceHitXp` | `6` | XP for an ordinary mace hit with no smash. |
+| `spearJabXp` | `12` | XP for a spear hit inside the sweet range band. |
+| `spearChargeXp` | `24` | XP for a spear hit that counts as charged. |
+| `mountedChargeXp` | `28` | XP for a spear hit landed while riding a vehicle. |
 | `sweetRangeMin` | `3.0` | Minimum distance in blocks for a spear jab reward. |
 | `sweetRangeMax` | `6.0` | Maximum distance in blocks for a spear jab reward. |
 | `chargeMinSpeed` | `0.18` | Horizontal speed in blocks per tick, while sprinting, that makes a spear hit count as charged. |
 | `lungeChargeWindowMs` | `1200` | Milliseconds after a lunge during which any spear hit counts as charged regardless of speed. |
 | `breakFallXpPerBlock` | `1.2` | XP per block of a survived fall of 3 blocks or more. |
 | `breakFallCap` | `25` | Maximum XP from one broken fall. |
-| `bounceXp` | `4` | XP for bouncing off a slime block, honey block, or bed. |
-| `bounceChainBonus` | `2` | Extra XP per additional bounce in the same chain. |
+| `bounceXp` | `8` | XP for bouncing off a slime block, honey block, or bed. |
+| `bounceChainBonus` | `4` | Extra XP per additional bounce in the same chain. |
 | `bounceChainWindowMs` | `4000` | Milliseconds allowed between bounces to stay in one chain. |
-| `bounceCap` | `20` | Maximum XP from one bounce. |
-| `launchXp` | `4` | XP for being launched by a slime block or piston. |
+| `bounceCap` | `40` | Maximum XP from one bounce. |
+| `launchXp` | `8` | XP for being launched by a slime block or piston. |
 | `launchMinDeltaY` | `0.6` | Upward movement in blocks, from a standstill or a fall, needed to count as a launch. |
 | `motionRewardCooldownMs` | `1000` | Milliseconds between bounce or launch rewards. |
 | `motionRewardMinDistance` | `1.5` | Horizontal blocks you must cover between bounce or launch rewards, which is what stops a fixed bounce farm. |
-| `kbDealtBaseXp` | `3` | XP for knockback you deal at vanilla base magnitude. Scales with actual magnitude. |
-| `kbTakenBaseXp` | `1.5` | XP for knockback you take at vanilla base magnitude. Scales with actual magnitude. |
+| `kbDealtBaseXp` | `6` | XP for knockback you deal at vanilla base magnitude. Scales with actual magnitude. |
+| `kbTakenBaseXp` | `3` | XP for knockback you take at vanilla base magnitude. Scales with actual magnitude. |
 | `kbMinMagnitude` | `0.25` | Knockback vector length below which nothing is paid. |
-| `kbXpCap` | `12` | Maximum XP from one knockback event. |
+| `kbXpCap` | `24` | Maximum XP from one knockback event. |
 | `kbCooldownMs` | `750` | Milliseconds between knockback rewards, shared by dealt and taken. |
 | `selfKnockbackFactor` | `0.35` | Multiplier applied when you knocked yourself back. |
-| `levitationReceiveXp` | `5` | Base XP when Levitation is applied to you. Scaled by amplifier and duration. |
-| `levitationApplyXp` | `5` | Base XP per target when you apply Levitation with a splash potion or lingering cloud. |
-| `levitationPulseXp` | `0.8` | XP per skill interval while you are levitating. |
-| `levitationXpCap` | `15` | Maximum XP from one levitation award. |
+| `levitationReceiveXp` | `10` | Base XP when Levitation is applied to you. Scaled by amplifier and duration. |
+| `levitationApplyXp` | `10` | Base XP per target when you apply Levitation with a splash potion or lingering cloud. |
+| `levitationPulseXp` | `1.6` | XP per skill interval while you are levitating. |
+| `levitationXpCap` | `30` | Maximum XP from one levitation award. |
 | `levitationCooldownMs` | `1500` | Milliseconds between levitation rewards. |
 | `anvilBaseXp` | `20` | Flat starting value of an anvil crush payout. |
 | `anvilFallFactor` | `6` | XP added per block the anvil fell. |
@@ -448,6 +448,13 @@ Written to `plugins/Adapt/skills/kinetics.toml` on first load.
 | `anvilLedgerTtlMs` | `120000` | Milliseconds a placed-anvil ownership record stays valid. |
 | `anvilAdvancementMinFall` | `8` | Minimum anvil fall distance in blocks for a kill to count toward the challenge. |
 | `anvilDropReward` | `500` | XP paid by the anvil-drop challenge. |
+| `anvilUseXpPerLevel` | `15` | XP per experience level spent taking an anvil result. |
+| `grindstoneXpPerEnchantLevel` | `10` | XP per enchantment level a grindstone removes, curses excluded. |
+| `fallXpPerBlock` | `1.5` | XP per block fallen past fallXpFreeBlocks when the fall hurts you. |
+| `fallXpFreeBlocks` | `3` | Blocks of a damaging fall that pay nothing. |
+| `fallXpCap` | `40` | Most XP one damaging fall can pay. |
+| `fallXpCooldownMs` | `30000` | Milliseconds between paid damaging falls. |
+| `fallXpRepeatRadius` | `8` | A damaging fall that lands within this many blocks of one of your last three paid landings pays nothing. |
 
 ### Challenges
 

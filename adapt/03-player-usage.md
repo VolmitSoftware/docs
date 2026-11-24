@@ -2,7 +2,7 @@
 title: "Player Usage"
 description: "Open the Adapt menu and learn or remove adaptations"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -27,7 +27,7 @@ The main menu shows skill level, knowledge, master level, and used power. Owned 
 
 ## Learn and unlearn adaptations
 
-Buying levels charges knowledge and one power for each level between your current and selected levels. Vault currency also applies when `learningEconomy.enabled` is true. The first purchase of a `permanent` adaptation needs a second click within six seconds.
+Buying levels charges knowledge for each level between your current and selected levels. Learning an adaptation you do not hold yet also needs one free power; further levels need none. Vault currency also applies when `learningEconomy.enabled` is true. The first purchase of a `permanent` adaptation needs a second click within six seconds.
 
 Unlearning returns the knowledge and configured Vault refund. Permanent adaptations cannot be unlearned by players. With `hardcoreNoRefunds`, unlearning returns neither knowledge nor currency.
 

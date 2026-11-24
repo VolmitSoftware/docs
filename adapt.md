@@ -2,13 +2,13 @@
 title: "Adapt"
 description: "Skills, progression, and abilities for Paper, Purpur, and Folia servers"
 published: true
-date: 2026-10-17T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys adaptations. Learned adaptation levels spend a shared ability-power budget.
+Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys adaptations. Each learned adaptation takes one slot of a shared ability-power budget.
 
 | | |
 |---|---|
@@ -22,6 +22,7 @@ Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys
 - [Installation and configuration *Files and settings*](/adapt/01-installation-configuration)
 - [Progression *XP, knowledge, power, and gates*](/adapt/02-concepts)
 - [Progression math *Curves, multipliers, and anti-farm*](/adapt/05-configuration-math)
+- [Progression and costs *Adaptation prices, knowledge, power, and time to level*](/adapt/38-progression-costs)
 - [Commands and permissions](/adapt/04-commands-permissions)
 - [GUI](/adapt/06-gui-customization)
 - [Protection and regions](/adapt/08-protection-region-policy)

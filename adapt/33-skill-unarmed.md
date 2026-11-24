@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,7 @@ Unarmed gains XP from attacks with no melee tool in the main hand. Axes, pickaxe
 
 ## How you earn Unarmed XP
 
-A qualifying hit with a non-melee main hand adds 1 to `unarmed.hits` and the credited damage to `unarmed.damage`, then pays `damageXPMultiplier` times that damage. XP and hit milestones share `cooldownDelay`.
+A qualifying hit with a non-melee main hand adds 1 to `unarmed.hits` and the credited damage to `unarmed.damage`, then pays `damageXPMultiplier` times that damage, 10 XP per heart at the default. XP and hit milestones share `cooldownDelay`. Killing a mob with a non-melee main hand pays `killXp`; summoned minions, grave mobs, and your own tamed pets pay nothing.
 
 A hit while falling (fall distance above zero and not on the ground) adds to `unarmed.critical`. A hit above 6 damage adds to `unarmed.heavy`. A kill while not holding a melee tool adds to `unarmed.kills`.
 
@@ -297,7 +297,8 @@ Written to `plugins/Adapt/skills/unarmed.toml` on first load.
 |-----|--------------|------------------|
 | `enabled` | `true` | Turns the whole Unarmed skill on or off. |
 | `skillColor` | `"&e"` | Legacy ampersand color code used for Unarmed in menus and text. |
-| `damageXPMultiplier` | `4.5` | Skill XP per point of damage you deal without a melee tool. |
+| `damageXPMultiplier` | `5.0` | Skill XP per point of damage you deal without a melee tool. |
+| `killXp` | `300` | Skill XP for a kill made without a melee tool. |
 | `cooldownDelay` | `1250` | Milliseconds between XP awards for unarmed damage. |
 | `challengeUnarmedReward` | `500` | Knowledge paid by the hit-count challenges. |
 | `challengeUnarmedDmgReward` | `500` | Knowledge paid by the damage challenges. |
@@ -310,8 +311,8 @@ Written to `plugins/Adapt/skills/unarmed.toml` on first load.
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_unarmed_100` | 100 | `challengeUnarmedReward` |
-| `challenge_unarmed_1k` | 1000 | `challengeUnarmedReward` x 2 |
-| `challenge_unarmed_10k` | 10000 | `challengeUnarmedReward` x 5 |
+| `challenge_unarmed_1k` | 1000 | `challengeUnarmedReward` x 3 |
+| `challenge_unarmed_10k` | 10000 | `challengeUnarmedReward` x 8 |
 | `challenge_unarmed_dmg_1k` | 1000 | `challengeUnarmedDmgReward` |
 | `challenge_unarmed_dmg_10k` | 10000 | `challengeUnarmedDmgReward` x 3 |
 | `challenge_unarmed_kills_25` | 25 | `challengeUnarmedKillsReward` |

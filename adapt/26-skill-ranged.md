@@ -2,12 +2,12 @@
 title: "Skill - Ranged"
 description: "Ranged XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Ranged gains XP from firing arrows, spectral arrows, or tridents and from projectile hits, with distance and damage increasing hit XP. Its 12 adaptations change projectile speed, damage, piercing, recovery, and ricochets, and add trajectory preview, item retrieval, snares, slows, lifts, and guided shots.
+Ranged gains XP from firing arrows, spectral arrows, or tridents, from projectile hits, with distance and damage increasing hit XP, and `killXp` for a kill made with a bow or crossbow in hand. Mobs from spawners, spawn eggs, buckets, breeding, nether portals, or golem and snowman builds, summoned minions, grave mobs, and your own pets pay no kill XP. Its 12 adaptations change projectile speed, damage, piercing, recovery, and ricochets, and add trajectory preview, item retrieval, snares, slows, lifts, and guided shots.
 
 ## Earning XP
 
@@ -342,14 +342,15 @@ Written to `plugins/Adapt/skills/ranged.toml` on first load.
 | `challengeRangedDistReward` | `500` | Base XP reward for the hit-distance challenge chain. |
 | `challengeRangedKillsReward` | `500` | Base XP reward for the ranged-kills challenge chain. |
 | `challengeRangedLongshotReward` | `500` | Base XP reward for the longshot challenge chain. |
+| `killXp` | `40` | XP for a kill made with a bow or crossbow in hand. |
 
 ### Challenges
 
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_ranged_100` | 100 | `challengeRangedReward` |
-| `challenge_ranged_1k` | 1000 | `challengeRangedReward` x 2 |
-| `challenge_ranged_10k` | 10000 | `challengeRangedReward` x 5 |
+| `challenge_ranged_1k` | 1000 | `challengeRangedReward` x 3 |
+| `challenge_ranged_10k` | 10000 | `challengeRangedReward` x 8 |
 | `challenge_ranged_dmg_1k` | 1000 | `challengeRangedDmgReward` |
 | `challenge_ranged_dmg_10k` | 10000 | `challengeRangedDmgReward` x 3 |
 | `challenge_ranged_dist_5k` | 5000 | `challengeRangedDistReward` |

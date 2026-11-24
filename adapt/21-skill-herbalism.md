@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -374,8 +374,8 @@ Sneak-placing `RED_MUSHROOM` or `BROWN_MUSHROOM` on `MYCELIUM` or `PODZOL` cance
 |---|---|---|
 | Eat food (not a potion) | `foodConsumeXP` | Yes |
 | Shear an entity | `shearXP` | No |
-| Harvest or break a crop | `harvestPerAgeXP` × crop age × anti-farm multipliers | Yes |
-| Plant a crop | Same formula, but a new seed is age 0, so this pays nothing | Yes |
+| Harvest or break a crop | `harvestPerAgeXP` × crop age × anti-farm multipliers | No |
+| Plant a crop | Same formula, but a new seed is age 0, so this pays nothing | No |
 | Use a composter | See below | No |
 
 Only `Ageable` blocks pay — breaking a non-crop block awards nothing. `plantCropSeedsXP` is what
@@ -390,7 +390,7 @@ Written to `plugins/Adapt/skills/herbalism.toml` on first load.
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `enabled` | `true` | Turns the whole skill and its adaptations off when false. |
-| `harvestXpCooldown` | `3500` | Minimum milliseconds between cooldown-gated XP awards. |
+| `harvestXpCooldown` | `3500` | Minimum milliseconds between XP awards for eating. Harvesting has no cooldown. |
 | `foodConsumeXP` | `35` | Skill XP for eating one non-potion item. |
 | `shearXP` | `35` | Skill XP for one shear. |
 | `harvestPerAgeXP` | `5.0` | Skill XP per age step of the harvested or placed crop. |
@@ -400,16 +400,16 @@ Written to `plugins/Adapt/skills/herbalism.toml` on first load.
 | `composterNonZeroLevelBonus` | `25` | Bonus skill XP when the composter ends above level zero. |
 | `composterEmptyBonus` | `5` | Bonus skill XP when the composter empties after producing bone meal. |
 | `challengeEat100Reward` | `1250` | Knowledge reward for `challenge_eat_100`. |
-| `challengeEat1kReward` | `6250` | Knowledge reward for `challenge_eat_1000`. The 10000 tier pays this times 5. |
+| `challengeEat1kReward` | `4000` | Knowledge reward for `challenge_eat_1000`. The 10000 tier pays this times 5. |
 | `challengeHarvest100Reward` | `1250` | Knowledge reward for `challenge_harvest_100`. |
-| `challengeHarvest1kReward` | `6250` | Knowledge reward for `challenge_harvest_1000`. |
+| `challengeHarvest1kReward` | `4000` | Knowledge reward for `challenge_harvest_1000`. |
 | `challengePlant100Reward` | `1250` | Knowledge reward for `challenge_plant_100`. |
-| `challengePlant1kReward` | `6250` | Knowledge reward for `challenge_plant_1k`. |
-| `challengePlant5kReward` | `25000` | Knowledge reward for `challenge_plant_5k`. |
+| `challengePlant1kReward` | `4000` | Knowledge reward for `challenge_plant_1k`. |
+| `challengePlant5kReward` | `8000` | Knowledge reward for `challenge_plant_5k`. |
 | `challengeCompost50Reward` | `1250` | Knowledge reward for `challenge_compost_50`. |
-| `challengeCompost500Reward` | `6250` | Knowledge reward for `challenge_compost_500`. |
+| `challengeCompost500Reward` | `4000` | Knowledge reward for `challenge_compost_500`. |
 | `challengeShear50Reward` | `1250` | Knowledge reward for `challenge_shear_50`. |
-| `challengeShear250Reward` | `6250` | Knowledge reward for `challenge_shear_250`. |
+| `challengeShear250Reward` | `4000` | Knowledge reward for `challenge_shear_250`. |
 | `skillColor` | `"&a"` | Legacy ampersand color code used for this skill in menus and text. |
 
 ### Shared knobs
@@ -426,7 +426,7 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 |---|---|---|
 | `challenge_eat_100` | 100 | `challengeEat100Reward` |
 | `challenge_eat_1000` | 1000 | `challengeEat1kReward` |
-| `challenge_eat_10000` | 10000 | `challengeEat1kReward` * 5 |
+| `challenge_eat_10000` | 10000 | `challengeEat1kReward` * 2 |
 | `challenge_harvest_100` | 100 | `challengeHarvest100Reward` |
 | `challenge_harvest_1000` | 1000 | `challengeHarvest1kReward` |
 | `challenge_plant_100` | 100 | `challengePlant100Reward` |

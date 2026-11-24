@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, settings, and uninstalling"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -131,7 +131,7 @@ plugins/Adapt/
 | `experienceMaxLevel` | `1000` | Skill level cap. Lookups clamp to this value |
 | `playerXpPerSkillLevelUpBase` | `489` | Flat master XP granted per skill level crossed |
 | `playerXpPerSkillLevelUpLevelMultiplier` | `44` | Extra master XP per level already reached |
-| `powerPerLevel` | `0.65` | Power per master level, truncated to a whole number |
+| `maxPowerScale` | `1.6` | Max power is `floor(maxPowerScale * sqrt(masterLevel))`; each held adaptation uses 1 |
 | `xpInCreative` | `false` | Allows skill XP while in creative or spectator |
 | `allowAdaptationsInCreative` | `false` | Allows adaptation effects while in creative |
 | `blacklistedWorlds` | two placeholder keys | Namespaced world keys where Adapt gameplay is off |

@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -359,6 +359,7 @@ Base damage XP and its damage milestones use final damage after mitigation, capp
 |---------|-------|-------|
 | Passive sneak pulse (every `1412` ms) | `sneakXP` scaled by elapsed time over the interval | Requires at least a quarter block of displacement between pulses while sneaking, without riding, swimming, sprinting, flying, or gliding, in survival or adventure mode. |
 | Damaging any valid living entity while sneaking | Damage dealt times `sneakCombatXPMultiplier` | Rate-limited by `sneakCombatXpCooldown`. Damage milestones count only qualifying credited hits. Parrots and invalid targets are excluded. |
+| First melee hit on a mob that is not targeting you | `unawareOpenerXp`, plus `unseenOpenerBonusXp` when you are sneaking and the mob is not looking at you | The base needs no sneaking. "Not looking" means you are more than 60 degrees off its gaze. Mobs from spawners, eggs, buckets, breeding, or portals pay nothing. Each mob pays once per player every ten minutes; summoned minions, grave mobs, and your own tamed pets pay nothing. |
 | Killing while sneaking | `sneakKillXP` | Tragoul skeletal servants and Excavation grave mobs are excluded. |
 | Launching a projectile while sneaking | No XP | Adds `stealth.arrows.sneaking` only. |
 
@@ -376,13 +377,15 @@ Written to `plugins/Adapt/skills/stealth.toml` on first load.
 | `sneakXP` | `0.4` | Base passive sneak XP per interval, before cadence scaling. |
 | `sneakCombatXPMultiplier` | `3.0` | Multiplier applied to damage dealt while sneaking when converting it to XP. |
 | `sneakCombatXpCooldown` | `1250` | Milliseconds between XP awards for sneaking combat damage. |
-| `sneakKillXP` | `15` | XP for a kill made while sneaking. |
+| `sneakKillXP` | `60` | XP for a kill made while sneaking. |
 | `challengeStealthDmg500Reward` | `1500` | XP paid for `challenge_stealth_dmg_500`. |
 | `challengeStealthDmg5kReward` | `5000` | XP paid for `challenge_stealth_dmg_5k`. |
 | `challengeStealthKills10Reward` | `1000` | XP paid for `challenge_stealth_kills_10`. |
 | `challengeStealthKills100Reward` | `5000` | XP paid for `challenge_stealth_kills_100`. |
 | `challengeStealthArrows50Reward` | `1250` | XP paid for `challenge_stealth_arrows_50`. |
 | `challengeStealthArrows500Reward` | `5000` | XP paid for `challenge_stealth_arrows_500`. |
+| `unawareOpenerXp` | `150` | XP for the first melee hit on a mob that is not targeting you. |
+| `unseenOpenerBonusXp` | `200` | Extra XP for that first hit when you are sneaking and the mob is not looking at you. |
 
 ### Challenges
 

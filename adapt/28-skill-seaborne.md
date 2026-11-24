@@ -2,12 +2,12 @@
 title: "Skill - Seaborne"
 description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Seaborne gains XP from swimming, fishing, reeling in a non-fish entity, underwater block breaks, drowned damage, and trident damage. Killing a drowned, guardian, or elder guardian awards no Seaborne XP. Its 14 adaptations add air, swim speed, underwater vision and mining, damage protection, escape tools, wreck salvage, coral growth, aquatic allies, trident upgrades, and burst movement.
+Seaborne gains XP from swimming, fishing, reeling in a non-fish entity, underwater block breaks, drowned damage, trident damage, and killing sea creatures. Swimming pays per second and per block of horizontal distance; vertical movement alone, such as idling in a bubble column, pays nothing. Sea creatures are fish, squid, glow squid, dolphins, guardians, elder guardians, drowned, turtles, axolotls, tadpoles, and nautiluses, plus any mob the platform tags as a water mob or fish. Ones spawned from buckets, spawners, spawn eggs, dispensed eggs, or breeding pay no kill XP. Its 14 adaptations add air, swim speed, underwater vision and mining, damage protection, escape tools, wreck salvage, coral growth, aquatic allies, trident upgrades, and burst movement.
 
 ## Adaptations
 
@@ -340,13 +340,13 @@ Base damage XP and its damage milestones use final damage after mitigation, capp
 
 | Trigger | Award | Notes |
 |---------|-------|-------|
-| Passive swim pulse (every `2120` ms) | `swimXP` scaled by elapsed time over the interval | You must have moved in water within the last `2500` ms without riding or flying. Water Breathing or Conduit Power multiplies the award by `1 + waterBreathingSwimXpBonusMultiplier`; without either effect, air must also be below maximum. |
-| `CAUGHT_FISH` | `fishCaughtXp` | Rate-limited by `fishXpCooldown`. The `seaborne.fish.caught` stat is added before the rate limit, so the stat always counts. |
+| Passive swim pulse (every `2120` ms) | `swimXpPerSecond` per elapsed second plus `swimXpPerBlock` per block swum horizontally | You must have moved horizontally in water within the last `2500` ms and at least half a block since the last pulse, without riding or flying. Water Breathing or Conduit Power multiplies the award by `1 + waterBreathingSwimXpBonusMultiplier`; without either effect, air must also be below maximum. |
+| `CAUGHT_FISH` | `treasureCaughtXp` for treasure (enchanted books, name tags, nautilus shells, saddles, enchanted bows or rods), otherwise `fishCaughtXp` | Rate-limited by `fishXpCooldown`. The `seaborne.fish.caught` stat is added before the rate limit, so the stat always counts. |
 | `CAUGHT_ENTITY` | `entityCaughtXp` | Rate-limited by `fishXpCooldown`. |
 | Breaking a block while in water or swimming | `10` for a sea pickle broken while swimming with air below maximum, otherwise `3` | Rate-limited by `seaPickleCooldown`; player-placed blocks and rejected replacements earn neither XP nor underwater block milestone credit. |
 | Damaging a drowned | `damagedrownxpmultiplier` times final damage, capped at remaining health | Rate-limited by `drownedDamageXpCooldown`. |
 | Damaging with a trident, thrown or held in the main hand | `tridentxpmultiplier` times final damage, capped at remaining health | Rate-limited by `tridentDamageXpCooldown`. |
-| Killing a drowned, guardian, or elder guardian | No XP | Adds the kill stat and plays effects only. |
+| Killing a sea creature | `seaCreatureKillXp + seaCreatureMaxHealthXpMultiplier * maximum health` | Sea creatures from buckets, spawners, spawn eggs, dispensed eggs, or breeding, summoned minions, grave mobs, and your own tamed pets pay nothing. Drowned and guardian kills also add their kill stats and effects. |
 
 ### Skill configuration defaults
 
@@ -357,7 +357,7 @@ Written to `plugins/Adapt/skills/seaborne.toml` on first load.
 | `seaPickleCooldown` | `60000` | Milliseconds between underwater block-break XP awards and `seaborne.underwater.blocks` stat increments, per player. |
 | `drownedDamageXpCooldown` | `1500` | Milliseconds between XP awards for damaging drowned. |
 | `tridentDamageXpCooldown` | `1500` | Milliseconds between XP awards for trident damage. |
-| `fishCaughtXp` | `250` | XP for reeling in a fish. |
+| `fishCaughtXp` | `120` | XP for reeling in a fish or junk. |
 | `entityCaughtXp` | `10` | XP for reeling in an entity instead of a fish. |
 | `fishXpCooldown` | `5000` | Milliseconds between fishing XP awards. |
 | `tridentxpmultiplier` | `4.0` | Multiplier applied to trident damage when converting it to XP. |
@@ -367,8 +367,12 @@ Written to `plugins/Adapt/skills/seaborne.toml` on first load.
 | `challengeSwim1nmReward` | `750` | XP paid for `challenge_swim_1nm`, and also for the first tier of the fish, drowned, guardian, and underwater-block challenges. Their second tiers pay double this value. |
 | `challengeSwim5kReward` | `1500` | XP paid for `challenge_swim_5k`. |
 | `challengeSwim20kReward` | `3750` | XP paid for `challenge_swim_20k`. |
-| `swimXP` | `0.4` | Base passive swim XP per interval, before cadence scaling and the Water Breathing bonus. |
+| `swimXpPerSecond` | `1.0` | Swim XP per second while moving at least half a block horizontally in each pulse, before the Water Breathing bonus. |
+| `swimXpPerBlock` | `0.5` | Swim XP per block of horizontal distance swum. |
+| `seaCreatureKillXp` | `150` | XP for killing a sea creature. |
+| `seaCreatureMaxHealthXpMultiplier` | `5.0` | Extra sea creature kill XP per point of the victim's maximum health. |
 | `waterBreathingSwimXpBonusMultiplier` | `1.0` | Extra passive swim XP multiplier while moving in water with Water Breathing or Conduit Power. `1.0` doubles the award, `0` disables the bonus. |
+| `treasureCaughtXp` | `250` | XP for reeling in treasure: enchanted books, name tags, nautilus shells, saddles, or an enchanted bow or rod. |
 
 ### Challenges
 

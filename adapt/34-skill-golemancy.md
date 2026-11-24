@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -1531,7 +1531,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `witnessRadius` | `16.0` | Blocks from a killing golem within which players earn witness XP. |
 | `witnessXpMultiplier` | `0.35` | Fraction of the kill value paid to each witness. |
 | `witnessCooldownMillis` | `6000` | Milliseconds before one golem pays the same player witness XP again. |
-| `witnessHourlyCap` | `600` | Most witness XP one player can earn in any 60 minutes. |
+| `witnessHourlyCap` | `1200` | Most witness XP one player can earn in any 60 minutes. |
 | `golemKillXpBase` | `15` | Base kill value before the victim's health is added. |
 | `golemKillMaxHealthMultiplier` | `1.0` | Kill value added per point of the victim's maximum health. |
 | `repairXpPerHealth` | `2.0` | Skill XP per point of hostile damage repaired on an iron golem or healed on a bound golem with Golem Mending. |
@@ -1549,7 +1549,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `bindCopperXp` | `220` | Skill XP for the first binding of a copper golem. |
 | `bindIronXp` | `450` | Skill XP for the first binding of an iron golem. |
 | `bindXpCooldownMillis` | `20000` | Milliseconds before one player earns bind XP again for the same golem type. |
-| `bindXpHourlyCap` | `600` | Most build and bind XP one player can earn together in any 60 minutes. First-bind challenges do not count. Values below 0 count as 0. |
+| `bindXpHourlyCap` | `1200` | Most build and bind XP one player can earn together in any 60 minutes. First-bind challenges do not count. Values below 0 count as 0. |
 | `firstBindXp` | `600` | Skill XP paid with each first-bind challenge. |
 | `assistDamageXpMultiplier` | `3.0` | Skill XP per point of damage your bound golems deal to hostile mobs, before the body multiplier. |
 | `assistBodyMultiplierFrost` | `2.0` | Body multiplier for damage XP from bound frost golems, including their snowballs. |
@@ -1598,7 +1598,7 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | `stuckTimeoutSeconds` | `4` | Seconds a golem walking to a job or a container may go without getting half a block closer before it gives up and skips that job or container for 10 seconds, clamped to 1-60. |
 | `stuckReleasesBeforePause` | `3` | Jobs or containers in a row a golem may give up because it got stuck before it rests for `stuckPauseSeconds`, clamped to 1-100. |
 | `stuckPauseSeconds` | `15` | Seconds a trapped golem rests without looking for jobs or containers, clamped to 0-600. 0 never rests it. |
-| `workXpHourlyCap` | `1200` | Most work XP one player can earn from their golems' finished jobs in any 60 minutes. Values below 0 count as 0. |
+| `workXpHourlyCap` | `2400` | Most work XP one player can earn from their golems' finished jobs in any 60 minutes. Values below 0 count as 0. |
 | `workXpOwnerRadius` | `96` | Blocks from a working golem within which its owner earns work XP. Owners farther away or in another world earn none. Values below 0 count as 0. |
 | `challengeTasksReward` | `500` | Skill XP paid by the golem job challenges. |
 | `challengeItemsMovedReward` | `500` | Skill XP paid by the golem item hauling challenges. |
@@ -1615,21 +1615,21 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_golemancy_built_10` | 10 | `challengeBuiltReward` |
-| `challenge_golemancy_built_100` | 100 | `challengeBuiltReward` x 5 |
+| `challenge_golemancy_built_100` | 100 | `challengeBuiltReward` x 3 |
 | `challenge_golemancy_bound_5` | 5 | `challengeBoundReward` |
-| `challenge_golemancy_bound_25` | 25 | `challengeBoundReward` x 5 |
+| `challenge_golemancy_bound_25` | 25 | `challengeBoundReward` x 3 |
 | `challenge_golemancy_golem_kills_50` | 50 | `challengeGolemKillsReward` |
-| `challenge_golemancy_golem_kills_500` | 500 | `challengeGolemKillsReward` x 2 |
-| `challenge_golemancy_golem_kills_5000` | 5000 | `challengeGolemKillsReward` x 5 |
+| `challenge_golemancy_golem_kills_500` | 500 | `challengeGolemKillsReward` x 3 |
+| `challenge_golemancy_golem_kills_5000` | 5000 | `challengeGolemKillsReward` x 8 |
 | `challenge_golemancy_first_bind_frost` | First frost golem bound | `firstBindXp` |
 | `challenge_golemancy_first_bind_copper` | First copper golem bound | `firstBindXp` |
 | `challenge_golemancy_first_bind_iron` | First iron golem bound | `firstBindXp` |
 | `challenge_golemancy_tasks_1000` | 1000 | `challengeTasksReward` |
-| `challenge_golemancy_tasks_25000` | 25000 | `challengeTasksReward` x 5 |
+| `challenge_golemancy_tasks_25000` | 25000 | `challengeTasksReward` x 3 |
 | `challenge_golemancy_items_moved_10000` | 10000 | `challengeItemsMovedReward` |
-| `challenge_golemancy_items_moved_250000` | 250000 | `challengeItemsMovedReward` x 5 |
+| `challenge_golemancy_items_moved_250000` | 250000 | `challengeItemsMovedReward` x 3 |
 | `challenge_golemancy_infusions_10` | 10 | `challengeInfusionsReward` |
-| `challenge_golemancy_infusions_100` | 100 | `challengeInfusionsReward` x 5 |
+| `challenge_golemancy_infusions_100` | 100 | `challengeInfusionsReward` x 3 |
 
 ## See also
 

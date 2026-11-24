@@ -1,0 +1,330 @@
+Skill,Adaptation,Description,Max level,Tier,Base cost,Initial cost,Cost factor,Level 1 cost,Cost per level,Total cost,Permanent
+Agility,Featherfoot,"Sprinting ignores farmland, pressure plates, sweet-berry snags, and eventually powder snow.",4,Minor,1,1,0.5,2,"2, 2, 2, 3",9,no
+Agility,Ladder Slide,"Look up to climb quickly and look down to descend quickly. Looking near the horizon returns to normal ladder control, sneaking halts directional movement, and the first and last two climbable blocks always use normal control.",1,Minor,1,1,1,3,3,3,no
+Agility,Marathoner,"Sprinting drains less saturation, letting you run further before hunger bites.",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Agility,Vault,Jump toward a fence to clear it.,1,Minor,1,1,1,3,3,3,no
+Agility,Armor-Up,Get more armor the longer you sprint! Stop and it fades away slowly.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Agility,Kip-Up,Jump right after taking a hit to convert knockback into recovered momentum and a speed burst.,4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Agility,Roll Landing,Timed crouch before landing converts part of fall damage into hunger cost.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Agility,Slipstream Slide,"Tap sneak while sprinting to enter a sustained prone slide and shed ground friction, keeping momentum through 1-block gaps.",4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Agility,Air Dash,Left-click air after a sprint-jump to dash forward with pure horizontal velocity.,4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Agility,Cat Reflexes,A chance while sprinting to dodge incoming projectiles entirely.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Agility,Super Jump,Sneak and jump to launch a super jump. Configured levels scale the apex from 1.5 to 2.5 blocks.,4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Agility,Wall Jump,"Hold shift while mid-air against a wall to latch, then release shift to jump.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Agility,Wind Up,Get faster the longer you sprint!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Architect,Smart Shape,Sneak-punch blocks with an empty hand to rotate orientation.,1,Minor,1,1,1,3,3,3,no
+Architect,Stonecutter Savant,"Sneak-punch the air with an empty hand to open a stonecutter wherever you are, as long as you carry a stonecutter!",1,Minor,1,1,1,3,3,3,no
+Architect,Chalk Line,"Craft persistent Chalk Wands from one Stick and one String in different orientations. Level 1 unlocks straight lines, level 2 polylines, level 3 circles, and level 4 arcs. Each level immediately reveals its new crafting recipe in the vanilla recipe book. Their private block guides appear only while that wand is held; sneak-click the air to clear its saved plan.",4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Architect,Mason's Eraser,Erase your own recent placements near-instantly without producing drops.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Architect,Scaffolder,Sneak-place blocks as temporary scaffolds that dissolve on their own and refund the block to you!,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Architect,Silk-Touch Glass,Break glass blocks with an empty hand to pick them up without shattering them.,1,Utility,2,2,1,6,6,6,yes
+Architect,Steady Hands,"While bridging over open air you take no knockback, shrug off falls, and place with a steadier rhythm!",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Architect,Elevator,"Build fast vertical elevators. Craft each Elevator Block with an Ender Pearl in the center, surrounded by 8 Wool.",1,Core,3,4,1,10,10,10,no
+Architect,Magic Foundation,This allows for you to sneak and place a temporary foundation beneath you!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Architect,Redstone Remote,"This allows for you to use a redstone torch to toggle redstone, remotely!",1,Core,3,4,1,10,10,10,yes
+Architect,Supply Line,"When the stack in your hand runs out, it refills automatically from shulker boxes or bundles in your inventory!",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Architect,Builders Wand,Sneak while holding a block that matches the surface you are looking at to place multiple blocks across it at once. You may need to move slightly to refresh the placement preview.,1,Strong,5,6,1,16,16,16,no
+Axes,Axe Drop-To-Inventory,Blocks you break send their drops straight into your inventory.,1,Minor,1,1,1,3,3,3,no
+Axes,Lucy's Log-Swapper,Change the flavor of logs in a Crafting Table!,1,Minor,1,1,1,3,3,3,yes
+Axes,Bark Hide,Chopping logs layers on short-lived absorption that fades once you stop working.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Axes,Leaf-miner,Allows you to break bulk leaves at once!,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Axes,Shield Splitter,Axe hits on blocking foes disable their shield longer and deal bonus damage.,4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Axes,Cleave,Melee axe swings cleave extra enemies in a short frontal arc.,3,Core,3,2,0.6,6,"6, 6, 8",20,no
+Axes,Sunder,Axe hits shred a target's armor and armor toughness in stacking layers that fade over time.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Axes,Throwing Axe,Left-click air with an axe to hurl it as a spinning projectile that deals its melee damage.,4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Axes,Axe Chop,Chop down trees by right clicking the base log!,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Axes,Axe Ground Smash,"Jump, then crouch and smash all nearby enemies.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Axes,Wood-miner,Allows you to break bulk wood at once!,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Blocking,Chains of Mephistopheles,Allows you to craft Chainmail Armor,1,Minor,1,1,1,3,3,3,yes
+Blocking,Craftable Horse Armor,Allows you to craft Horse Armor,1,Minor,1,1,1,3,3,3,yes
+Blocking,Craftable Saddle,Craft a Saddle with Leather,1,Minor,1,1,1,3,3,3,yes
+Blocking,Phalanx Crafter,"Unlock two shaped shield recipes; level 2 reinforces a shield to 1,200 durability and preserves its banner face.",2,Minor,1,1,0.5,2,"2, 2",4,no
+Blocking,Bastion Stance,"While sneaking and actively blocking with a shield, reduce knockback and incoming projectile pressure.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Blocking,Interpose,Sneak-block near a wounded ally to redirect part of the damage they take onto your shield.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Blocking,Shield Wall,"While blocking, allies sheltered behind your shield take reduced projectile damage.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Blocking,Shieldbearer's Resolve,"When an axe disables your shield, brace with resistance and recover the shield faster.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Blocking,Tempered Guard,"Blocked hits can temper your gear, restoring a sliver of shield and armor durability.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Blocking,Bulwark Bash,Sprint-jump and land a shielded crit to trigger a bash shockwave.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Blocking,Counter Guard,Each blocked hit builds shield stacks. Your next proc consumes stacks to reflect damage to the attacker.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Blocking,Mirror Block,Blocking with a shield can reflect incoming projectiles with reduced follow-up force.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Blocking,Multi-Armor,Bind an elytra to your chestplate and swap between them on the fly.,1,Strong,5,6,1,16,16,16,no
+Blocking,Perfect Guard,Raise your shield the instant before a hit lands to negate it entirely and stagger the attacker.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Brewing,Bottled Blindness,"Unlocks brewing Potions of Blindness, which shroud a target's sight.",1,Minor,1,1,1,3,3,3,yes
+Brewing,Bottled Darkness,"Unlocks brewing Potions of Darkness, which shroud vision and prevent sprinting.",1,Minor,1,1,1,3,3,3,yes
+Brewing,Bottled Decay,"Unlocks brewing Potions of Wither, which afflict a target with decay.",1,Minor,1,1,1,3,3,3,yes
+Brewing,Bottled Fatigue,"Unlocks brewing Potions of Mining Fatigue, which slow a target's digging and attacks.",1,Minor,1,1,1,3,3,3,yes
+Brewing,Bottled Hunger,"Unlocks brewing Potions of Hunger, which drain a target's food.",1,Minor,1,1,1,3,3,3,yes
+Brewing,Bottled Nausea,"Unlocks brewing Potions of Nausea, which warp a target's vision.",1,Minor,1,1,1,3,3,3,yes
+Brewing,Bottled Absorption,Unlocks brewing Potions of Absorption for temporary bonus hearts.,1,Utility,2,2,1,6,6,6,yes
+Brewing,Bottled Haste,"Unlocks brewing Potions of Haste for faster mining, when Efficiency is not enough.",1,Utility,2,2,1,6,6,6,yes
+Brewing,Bottled Life,Unlocks brewing Potions of Health Boost for extra maximum hearts.,1,Utility,2,2,1,6,6,6,yes
+Brewing,Bottled Resistance,"Unlocks brewing Potions of Resistance, which reduce incoming damage.",1,Utility,2,2,1,6,6,6,yes
+Brewing,Bottled Saturation,"Unlocks brewing Potions of Saturation, which restore hunger.",1,Utility,2,2,1,6,6,6,yes
+Brewing,Lingering Brew,Brewed potions last longer!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Brewing,Super Heated Brew,Brewing stands work faster the hotter they are.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Chronos,Deja Vu,Your body remembers recent pain; taking the same kind of damage again within a short window hurts noticeably less.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Chronos,Pocket Watch,"Sneak while falling with a clock in your inventory to drift in slow motion for a limited, level scaled duration each airtime.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Chronos,Aberrant Touch,"Melee attacks apply stacking slowness at the cost of hunger, with strict PvP caps, and root targets at 5 stacks.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Chronos,Accelerate,"Passively accelerate time around you, occasionally growing nearby crops and fast-forwarding furnaces, smokers, blast furnaces, and brewing stands.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Chronos,Borrowed Time,A portion of incoming damage is deferred and quietly drained back once per second over the following seconds.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Chronos,Overtime,"Beneficial potion effects applied to you last longer, scaled by adaptation level. At max level, harmful effects applied to you last half as long.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Chronos,Temporal Echo,Projectile actions can replay once after a short delay at reduced strength.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Chronos,Instant Recall,"Rewind to a recent snapshot with health and hunger restored. Costs the clock and part of your remaining health, but never kills you.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Chronos,Rewind,"Sneak and swap hands to mark a moment in time, then do it again within the window to snap back with health and hunger restored. Each rewind costs hunger.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Chronos,Stasis Field,Sneak and right click with an amethyst shard to deploy a stasis bubble that freezes projectiles in midair and locks down mobs inside. Consumes the shard on cast.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Chronos,Time Bomb,"Throw a crafted chrono bomb that creates a temporal field, slows entities, and freezes projectiles.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Chronos,Time In A Bottle,"Carry a temporal bottle that stores time and spend it to accelerate timed blocks, growables, and Ageable entities such as baby animals. Recipe (Shapeless): Swiftness Potion + Clock + Glass Bottle.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Chronos,Hourglass Guard,"A killing blow instead leaves you at half a heart, granting brief invulnerability and slowing nearby enemies, on a long cooldown.",3,Keystone,7,6,0.7,17,"17, 16, 21",54,no
+Crafting,Bulk Artisan,Shift-click a craft result to pull extra ingredients from your inventory and craft a bigger batch at once.,5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Crafting,Compactor,Sneak and swap hands while aiming at a Crafting Table to compact full stacks into blocks immediately.,1,Minor,1,1,1,3,3,3,no
+Crafting,Craftable Leather,Craft Leather from Rotten Flesh,1,Minor,1,1,1,3,3,3,yes
+Crafting,Crafting XP,Periodically gain a bounded vanilla XP orb when crafting,7,Minor,1,1,0.5,2,"2, 2, 2, 3, 3, 4, 4",20,no
+Crafting,Craftable skulls!,Using Materials you can Craft Mob Skulls!,1,Utility,2,2,1,6,6,6,yes
+Crafting,Provisioner,Crafting or cooking food has a chance to yield bonus portions.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Crafting,Thrifty Hands,Crafts using at least three different materials have a chance to refund one ingredient unit.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Crafting,Masterwork,"Each tool and armor piece you craft independently rolls variable bonus durability, a minor beneficial enchantment, and a full-level attribute bonus.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Crafting,Ore Reconstruction,Recraft ores from their base components!,1,Core,3,4,1,10,10,10,yes
+Crafting,Portable Tables!,"Click the air while holding an anvil, crafting table, grindstone, stonecutter, cartography table, or loom to open it without placing it. Each open costs hunger.",1,Core,3,4,1,10,10,10,yes
+Crafting,Tinkerer,Combine two damaged tools of the same type in the crafting grid to keep their best enchantments.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Crafting,A Boutilier's Backpacks!,Craft a Backpack that stores whole stacks and opens as its own container.,1,Strong,5,6,1,16,16,16,yes
+Crafting,Deconstruction,Deconstruct blocks & items into salvageable base components!,1,Keystone,8,8,1,24,24,24,no
+Discovery,Insight,"Look at a creature to reveal its health, armor, and attack. Higher levels add its effects, movement, defenses, and detection range, then nearby creatures.",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Discovery,Relic Appraiser,"Sneak-right-click rare drops (heads, discs, armor trims, pottery sherds) for Discovery XP and XP in one random eligible skill; placed appraised heads and skulls keep their stamp when broken.",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Discovery,Archaeologist,Brushing suspicious blocks can yield bonus archaeology rewards.,6,Utility,2,1,0.5,4,"4, 4, 5, 6, 7, 8",34,no
+Discovery,Cartographer Pulse,Sneak-right-click with a compass to lock it toward a nearby structure and see a private glowing direction line. Each pulse costs hunger.,4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Discovery,Keen Eye,Chests and spawners in your line of sight briefly appear as private glowing block displays.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Discovery,Sixth Sense,A compact HUD cue names the nearest supported structure and shows its direction and distance.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Discovery,Trailblazer,Your first visit to each biome or structure type grants a skill-XP burst and brief speed.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Discovery,Villager Attraction,"Get better trades with villagers, at the cost of XP per interaction.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Discovery,World Armor,Passive armor depending on nearby block hardness.,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Discovery,Field Notes,Your first kill of each mob species pays big XP and banks a small permanent damage bonus against that species.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Discovery,Better Mending,Sneak-left-click to spend your stored XP and directly mend the Mending item in your hand.,6,Strong,5,3,0.6,11,"11, 11, 14, 17, 20, 23",96,no
+Discovery,Experimental Resistance,Consume experience to mitigate damage only when a hit would drop you below 5 hearts or kill you.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Discovery,Polymath,Each skill you have leveled past a threshold adds a small global XP-gain bonus.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Discovery,Experimental Unity,Gaining vanilla experience adds XP to random skills.,7,Keystone,7,6,0.7,17,"17, 16, 21, 26, 31, 36, 41",188,no
+Enchanting,XP Return,Committed enchants periodically return a bounded vanilla XP orb.,7,Minor,1,1,0.5,2,"2, 2, 2, 3, 3, 4, 4",20,no
+Enchanting,Arcane Siphon,Killing equipped enchanted entities grants bonus XP and can siphon a book; players qualify at maximum level.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Enchanting,Lapis Return,"Enchanting at a table has a chance to refund spent lapis, more at higher levels.",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Enchanting,Rune Sight,"Reveal the enchantments behind enchanting-table offers before you commit. One at first, the full list at max.",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Enchanting,Anvil Savant,"Reduce anvil XP cost when combining, repairing, and renaming.",4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Enchanting,Bookshelf Attunement,Gain virtual bookshelf power to improve enchanting table offer quality.,4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Enchanting,Curse Cleansing,"Sneak while taking a grindstone result to remove curses from the original item first, preserve every other property, and gain Enchanting XP.",4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Enchanting,Grindstone Recovery,Disenchanting can recover one removed enchantment onto a book with bonus XP.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Enchanting,Offer Reroll,Sneak-right-click an enchanting table to reroll its offers. Each reroll costs lapis and XP levels.,4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Enchanting,Tome Rebinding,"Drop one multi-enchant book while aiming at an anvil to divide it into single-enchant books. Lossy at low levels, lossless at max.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Enchanting,Echo of Knowledge,Hold an enchanted book while collecting XP to charge it and upgrade an enchantment within vanilla caps.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Enchanting,Quick-Click Enchant,Enchant items by clicking enchant books directly on them.,7,Strong,5,3,0.6,11,"11, 11, 14, 17, 20, 23, 26",122,no
+Enchanting,Infusion Transfer,Right-click the base item in an anvil to move one enchantment onto it from the sacrifice item.,5,Keystone,7,6,0.7,17,"17, 16, 21, 26, 31",111,no
+Enchanting,Soul Link,"Sneak-right-click an anvil to soul-link an enchanted item so it survives death, gated by an XP level buffer.",5,Keystone,7,6,0.7,17,"17, 16, 21, 26, 31",111,no
+Excavation,Shovel Drop-To-Inventory,Blocks you break send their drops straight into your inventory.,1,Minor,1,1,1,3,3,3,no
+Excavation,Grave Digger,"Digging earthen ground can unearth bone loot, and rarely disturbs a hostile grave.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Excavation,Hasty Excavator,Starting a block break grants stable Haste long enough to finish slower excavation blocks.,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Excavation,Mudlark,"Bonus drops from muddy blocks, plus haste while digging in water or rain.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Excavation,Soft Fall,"Landing on soft diggable ground reduces fall damage, up to full negation.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Excavation,Burrow,"Sneak-right-click soft ground with a shovel to rapidly dig straight down, stopping before hazards. Each burrow costs hunger and tool durability.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Excavation,Earth Mover,"Sneak-right-click the air with a shovel to damage, knock back, and slow hostile mobs with a wave of earth. Damage scales from the held shovel. Each wave costs hunger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Excavation,Seismic Ping,Mining can temporarily reveal a nearby ore block with a private colored glow.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Excavation,Treasure Hunter,"Digging sand, gravel, mud, or clay can unearth archaeology treasure.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Excavation,OMNI - T.O.O.L.,Merge your tools into one omni-tool that swaps to the right tool for the job. Shift-click one tool onto another in your inventory to merge; sneak-drop to disassemble.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Excavation,Super-Seeing Spelunker!,Hold glow berries in your main hand to reveal glowing ore displays through the ground.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Excavation,Tunneler,Sneak while digging soft blocks to carve a whole plane at once.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Golemancy,Animus Binding,Sneak-right-click a golem while holding an Animus Core to bind it to you as a companion.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Golemancy,Bone Frame,"Brings your Tragoul skeletal servants into Golemancy: they answer your Crook signals, glow in your servant channel with owner-only status labels, wear a Bone Lattice of runes, and pay Golemancy XP for their kills.",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Golemancy,Golem Mending,"Heal your golems with copper ingots, snow blocks and bone meal, let them mend near you and at home, and rebuild fallen golems from their Shattered Core.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Golemancy,Node Weaving,Sneak-right-click a block face while holding a node to anchor it there and direct your golems' work.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Golemancy,Overseer,"Lets you signal your bound golems with the Artificer's Crook to follow you, hold, go home or work, and as it grows, to attack what you look at, answer by channel, rally to you and guard you in formation.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Golemancy,Angler Core,"Golems bound with an Angler Core fish the open water in front of a Fishing Node and carry the catch, with more luck, a junk filter, faster catches in the rain and double catches as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Breaker Core,"Golems bound with a Breaker Core break the blocks a Breaker Node's filter lists inside its area and carry the drops, mining harder blocks with better pickaxes as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Copper Frame,"Lets you bind copper golems and strengthens them with extra health, carry capacity and speed, plus armor from their patina.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Frost Frame,"Strengthens your bound frost golems with extra health, damaging snowballs and protection from rain and heat.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Gatherer Core,"Golems bound with a Gatherer Core pick up dropped items around their home or a Collection Node and deliver them, and store experience orbs as essence as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Guardian Core,"Golems bound with a Guardian Core defend their home, you or a Guard Node's area, and shield you as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Harvester Core,"Golems bound with a Harvester Core harvest and replant ripe crops in a Harvest Node's area, and tend and till the field as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Iron Frame,"Lets you bind iron golems and strengthens them with extra health, armor and attack, stronger ingot repairs, sweeping punches and a full-size Colossus Form.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Lumber Core,"Golems bound with a Lumber Core fell natural trees in a Lumber Node's area from the top down and collect the logs, then replant, sweep leaves and fell bigger trees as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Rancher Core,"Golems bound with a Rancher Core tend the animals in a Pasture Node's area: they breed pairs up to the node's keep count, then shear sheep, milk cows and goats, and cull spare adults as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Sorter Core,"Copper golems bound with a Sorter Core empty the container under an Input Node into nearby containers that already hold each item, and learn item groups, Filter Nodes, restocking and fetching as the core grows stronger.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Golemancy,Stasis,"Pack your bound golems into Dormant Golem blocks with the Crook and place the block to wake them anywhere, with their cores, runes, cargo and health intact.",3,Core,3,2,0.6,6,"6, 6, 8",20,no
+Golemancy,Masterwork,"Infuse a Masterwork Heart at the Animus Plinth and slot it into a golem for an extra rune slot, more health, a second core and stronger runes.",3,Strong,5,3,0.6,11,"11, 11, 14",36,no
+Golemancy,Runic Augments,"Lets you infuse runes at the Animus Plinth and slot them into your bound golems for speed, carrying, fire, reach, channels, yield and armor.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Herbalism,Herbalist's Myconid,Gives you the ability to craft Mycelium,1,Minor,1,1,1,3,3,3,yes
+Herbalism,Herbalist's Terralid,Gives you the ability to craft Grass Blocks,1,Minor,1,1,1,3,3,3,yes
+Herbalism,Hoe Drop-To-Inventory,Blocks you break send their drops straight into your inventory.,1,Minor,1,1,1,3,3,3,no
+Herbalism,Mushroom Maker,Gives you the ability to craft Mushroom Blocks in a Crafting Table,1,Minor,1,1,1,3,3,3,yes
+Herbalism,Spore Bloom,Sneak-right-click mycelium with mushrooms to spread controlled bloom patches.,5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Herbalism,Webby Creator,Gives you the ability to craft Cobwebs in a Crafting Table,1,Minor,1,1,1,3,3,3,yes
+Herbalism,Bee Shepherd,Hold flowers near crops to pulse growth and draw nearby bees toward you.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Herbalism,Herbalist's Hippo,"Consuming food, gives you more saturation",7,Utility,2,1,0.5,4,"4, 4, 5, 6, 7, 8, 9",43,no
+Herbalism,Herbalist's Luck,"When you break Grass/Flowers, you have a chance to get a random item",7,Utility,2,1,0.5,4,"4, 4, 5, 6, 7, 8, 9",43,no
+Herbalism,Rooted Footing,Permanent passive: protect farmland and convert part of fall damage into hunger while on natural ground.,1,Utility,2,2,1,6,6,6,yes
+Herbalism,Seed Sower,Sneak-right-click with seeds to plant nearby farmland and soul-sand plots.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Herbalism,Compost Cascade,"Sneak-right-click a composter to consume nearby drops, harvest and replant mature crops, compost your inventory, and spend the compost maturing nearby crops. Leaves are only consumed when enabled in the config.",6,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13",55,no
+Herbalism,Harvest & Replant,Right click a crop with a hoe to harvest & replant it.,3,Core,3,2,0.6,6,"6, 6, 8",20,no
+Herbalism,Growth Aura,Grow nature around you in an aura,7,Strong,5,3,0.6,11,"11, 11, 14, 17, 20, 23, 26",122,no
+Herbalism,Hungry Shield,"Take damage to your hunger before your health, covering more damage types as it levels up.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Hunter,Blood Trail,Mobs you wound below half health leave a private glowing blood trail only you can see.,5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Hunter,Hunter's Heights,"When you are struck you gain jump-boost, at the cost of hunger",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Hunter,Items Drop-To-Inventory,Kills and blocks broken with a sword in hand send their drops straight into your inventory.,1,Minor,1,1,1,3,3,3,no
+Hunter,Hunter's Luck,"When you are struck you gain luck, at the cost of hunger",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Hunter,Hunter's Speed,"When you are struck you gain speed, at the cost of hunger",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Hunter,Snare Line,Craft a string-and-iron snare; hostile mobs that cross it are rooted briefly.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Hunter,Trophy Skinner,Precision kills can yield bonus trophy drops and occasional mob heads.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Hunter,Vanishing Step,"When you are struck you gain invisibility, at the cost of hunger",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Hunter,Adrenaline,Deal more damage the lower health you are (Melee),5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Hunter,Big Game Hunter,Deal bonus damage to and reap extra drops from large and boss-class mobs.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Hunter,Hunter's Regen,"When you are struck you gain regeneration, at the cost of hunger",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Hunter,Hunter's Resistance,"When you are struck you gain resistance, at the cost of hunger",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Hunter,Hunter's Strength,"When you are struck you gain strength, at the cost of hunger",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Hunter,Predator Focus,Repeated strikes on the same target ramp your damage; switching targets resets the ramp.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Dead Zone,"Enemies that crowd inside your spear's dead zone get shoved out, arming a riposte.",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Kinetics,Heavy Frame,Plant your feet while sneaking with a mace or spear: heavy knockback resistance at the cost of speed.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Kinetics,Impale Pin,Spear hits at sweet range pin the target with heavy slowness.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Kinetics,Lunge Conductor,Your spear lunges strike harder and carry you farther.,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Kinetics,Mounted Shock,Spear charges from the saddle hit harder the faster your mount moves.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Kinetics,Quake Guard,"Landing a smash braces you: knockback resistance, toughness, and safe footing for a moment.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Kinetics,Rebound Anvil,"Each smash coils your legs: land springy and cushioned, ready for a second meteor.",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Kinetics,Rubber Soul,"Your landings carry spring. Bouncy blocks send you higher, and every landing keeps more momentum.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Kinetics,Soft Catch,"Soft and springy blocks break your fall, and a fresh bounce grants a grace window.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Kinetics,Terminal Toggle,Sneak in midair to switch between a hard dive and a drifting hang.,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Kinetics,Breachwright,Your mace smashes shred the target's armor for a short time.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Charge Lance,Spear hits scale with your speed. Hit them at a run.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Meteor Cadence,Sneak while falling with a mace to accelerate sharply downward into your smash.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Moon Jump,"Each level raises every jump by 0.5 blocks. Sneak-jump for an additional floaty, low-gravity hop.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Phalanx Reach,Spears strike farther in your hands.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Surface Skate,"Sprint to slide on every ground surface; levels cancel more friction, and pressing sneak stops horizontal motion immediately.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Windburst,Heavy smashes erupt in a radial shockwave that hurls nearby enemies away.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Kinetics,Mass Shift,"Sneak and swap hands: look up for persistent Titan form, down for persistent Pocket form, or level to return to normal. Titan grants 20% damage and health with Slowness I; Pocket trades 20% damage and health for Speed I.",3,Strong,5,3,0.6,11,"11, 11, 14",36,no
+Nether,Crimson Feast,"Eat nether fungi and warped flora, and gain fire resistance from any meal in the Nether.",4,Minor,1,1,0.5,2,"2, 2, 2, 3",9,no
+Nether,Strider Bond,"Ride striders faster, keep their pace out of lava, and land safely when dismounting over lava.",4,Minor,1,1,0.5,2,"2, 2, 2, 3",9,no
+Nether,Ashwalker,"Ignore magma-block and campfire burns, and shrug off most soul-fire damage at mastery.",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Nether,Blaze Leech,Fire interactions can trigger brief hunger and regeneration gains.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Nether,Magma Skin,"While burning, melee attackers catch fire and your own strikes deal bonus fire damage.",4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Nether,Netherrack Mason,"Mine netherrack, basalt, and blackstone faster in the Nether with occasional bonus drops.",4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Nether,Soul Strider,"Move at full speed across soul sand and soul soil, gaining soul-speed bursts at mastery.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Nether,Wither Harvest,"Wither skeletons yield extra bones and coal, with slightly improved skull odds.",4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Nether,Wither Resistance,Resists withering through the power of Netherite.,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Nether,Fire Resistance,Resists fire by hardening your skin.,3,Core,3,2,0.6,6,"6, 6, 8",20,no
+Nether,Ghast Ward,Harden against ghast blasts and wither-skeleton ranged pressure in the Nether.,6,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13",55,no
+Nether,Piglin Broker,Nearby barters can grant extra rolls and occasional premium bonus items.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Nether,Lava Walker,Stride over lava in the Nether at the cost of hunger.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Nether,Wither Skull Throw,Unleash your inner Wither by using someone's head.,3,Strong,5,3,0.6,11,"11, 11, 14",36,no
+Pickaxe,Pickaxe Drop-To-Inventory,Blocks you break send their drops straight into your inventory.,1,Minor,1,1,1,3,3,3,no
+Pickaxe,Trophy Polish,"Mining naturally generated heads, skulls, and dragon eggs grants bounded vanilla XP",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Pickaxe,Deep Core,Mining deepslate grants Haste so it digs like normal stone,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Pickaxe,Obsidian Rush,Mining obsidian with a diamond or netherite pickaxe grants a strong Haste burst,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Pickaxe,Stone Skin,Breaking stone-type blocks builds short-lived stacking damage resistance,4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Pickaxe,Ore Chisel,"Right Click Ores to Chisel more ore out of them, at a severe durability cost.",7,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13, 15",70,no
+Pickaxe,Repair Rhythm,Sustained mining has a chance to restore durability to your pickaxe,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Pickaxe,Autosmelt,Allows you to smelt mined Vanilla ores,4,Strong,5,3,0.6,11,"11, 11, 14, 17",53,no
+Pickaxe,Quarry Sense,Sneak-right-click a block with an iron+ pickaxe to reveal nearby ores as private glowing block displays.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Pickaxe,Tunnel Bore,Sneak and mine stone-type blocks to bore out a whole tunnel face at once,3,Strong,5,3,0.6,11,"11, 11, 14",36,no
+Pickaxe,Unbreakable Pact,"Your pickaxe refuses to break, surviving at 1 durability instead",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Pickaxe,Pickaxe Silk-Spawner,Makes Spawners drop when broken,2,Keystone,7,6,0.7,17,"17, 16",33,no
+Pickaxe,Veinminer,Allows you to break blocks in a Vein/Cluster of Vanilla ores,5,Keystone,7,6,0.7,17,"17, 16, 21, 26, 31",111,no
+Ranged,Fetch Shot,Shoot dropped items with projectiles to pull them straight into your inventory.,3,Minor,1,1,0.5,2,"2, 2, 2",6,no
+Ranged,Trajectory Sight,"Sneak or draw a ranged weapon to preview projectile flight as a clear dotted line with a ringed impact marker. With a Heartseeker lock active, the preview shows the arrow's curved seeking path to the mark instead.",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Ranged,Arrow Recovery,Recover Arrows after you have killed an enemy.,8,Utility,2,1,0.5,4,"4, 4, 5, 6, 7, 8, 9, 10",53,no
+Ranged,Force Shot,"Shoot projectiles further, faster!",7,Utility,2,1,0.5,4,"4, 4, 5, 6, 7, 8, 9",43,no
+Ranged,Lunge Shot,"While airborne, firing arrows kicks you backward, away from your aim",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Ranged,Arrow Piercing,Adds Piercing to projectiles! Shoot through things!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Ranged,Floaters,Projectiles have a chance to apply levitation and hold targets in the air.,6,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13",55,no
+Ranged,Heavy Draw,Heavier projectiles fly slower but hit far harder.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Ranged,Pinning Shot,Any player-fired projectile can pin targets with heavy slowness.,6,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13",55,no
+Ranged,Ricochet Bolt,Projectiles ricochet off solid blocks with chained bounces.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Ranged,Web Snare,Surround cobwebs around your target when you hit them!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Ranged,Heartseeker,"Draw a bow while looking at a creature to lock on - it glows red for you, and your arrow whistles and curves through the air to find it no matter where you aim, weaving around obstacles. Piercing levels and Ricochet Bolt's available bounce capacity add seeking passes: the arrow punches through its target, exits the far side, then bends toward a fresh nearby target; without a new target it keeps flying forward. Ricochet passes preserve their reflection, speed, damage, and rewards when seeking arrows strike blocks. Every seeking shot puts your bow on a short cooldown.",5,Keystone,7,6,0.7,17,"17, 16, 21, 26, 31",111,no
+Rift,Anti-Levitation,Tap sneak while levitating to cancel Levitation and drift down gently with Slow Falling.,1,Minor,1,1,1,3,3,3,yes
+Rift,Easy Enderchest,Click while holding an ender chest to open your ender chest without placing it.,1,Utility,2,2,1,6,6,6,no
+Rift,Pearl Rebound,"A plain thrown ender pearl bounces once instead of teleporting at the first surface it hits. The rebound steers toward your crosshair, then teleports normally at its next impact. Pearl landing damage is also reduced; leveling improves both reduction and steering.",4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Rift,Rift Resistance,Gain Resistance when using Ender Items & Abilities,1,Utility,2,2,1,6,6,6,no
+Rift,Rift Visage,Prevents Endermen from becoming aggressive if you have Ender Pearls in your inventory.,1,Utility,2,2,1,6,6,6,yes
+Rift,Void Magnet,"Sneak to pull nearby item drops into your ender chest first, then inventory overflow.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Rift,Ender Taglock,"Sneak-left-click entities with an ender pearl to bind them, then throw the tagged pearl to relocate only that target. The thrower is never teleported.",3,Strong,5,3,0.6,11,"11, 11, 14",36,no
+Rift,Inflated Pocket Dimension,Empty-hand right-click a block to pull matching stacks from your ender chest; sneak-drop to store items into it.,1,Strong,5,6,1,16,16,16,yes
+Rift,Remote Access,"Craft a Reliquary Portkey (ender pearl + compass), bind it to a container, and use it to open that container from anywhere.",1,Strong,5,6,1,16,16,16,no
+Rift,Rift Conduit,"Sneak-right-click a container with an ender pearl to capture a conduit taglock, then right-click a second container to link them. Items left in one linked container flow into the other when you close it. At max level the two containers can even be in different dimensions.",4,Strong,5,3,0.6,11,"11, 11, 14, 17",53,no
+Rift,Rift Blink,"Double-jump to blink where you look. Choose distance or higher landings, and phase while sneaking, by aiming, or never. At level 2, reactive mode replaces double-jump with a dodge when attacked: blink where you look or away from the attacker. Successful blinks consume no pearl, but deal ender pearl damage that decreases by level. Server rules limit the available choices.",5,Keystone,7,6,0.7,17,"17, 16, 21, 26, 31",111,no
+Rift,Rift Gate,"Craft a recall gate (Emerald + Amethyst Shard + Ender Pearl), then sneak-left-click it to bind your location and right-click to teleport back after a 5 second channel. Sneak-left-click into the air to unbind.",1,Keystone,8,8,1,24,24,24,no
+Rift,Void Skin,"Any lethal damage blinks you to a nearby safe spot instead of killing you, using the current world's spawn when no nearby spot exists, and grants brief resistance. Costs an ender pearl and has a long cooldown. Leveling shortens the cooldown and extends the protection.",4,Keystone,7,6,0.7,17,"17, 16, 21, 26",80,no
+Seaborne,Coral Gardener,"Coral you place survives out of water far longer, bonemeal grows coral, and reef blocks grant bonus XP.",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Seaborne,Ink Veil,Taking damage underwater bursts an ink cloud that blinds hostiles and briefly hides you from drowned and guardians.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Seaborne,Organic Oxygen Tank,Hold more oxygen in your tiny lungs!,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Seaborne,Turtle's Vision,"While underwater, you gain Night Vision",1,Utility,2,2,1,6,6,6,no
+Seaborne,Brine Skin,"While wet you slowly regenerate and take reduced damage, and the buff lingers briefly after you dry off.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Seaborne,Deep Salvager,Underwater containers appear as private aqua glowing block displays and reward bonus treasure the first time you open them submerged.,4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Seaborne,Dolphin's Grace,"Swim like a dolphin, without the dolphins - sprint-swimming channels real Dolphin's Grace",7,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13, 15",70,no
+Seaborne,Fish Whisperer,"Fish school toward you, dolphins and axolotls assist your hunts, and you fish with a permanent Luck of the Sea tier.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Seaborne,Fisher's Fantasy,"Fishing can grant one bounded bonus item, vanilla XP, and Seaborne XP.",7,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13, 15",70,no
+Seaborne,Hydro Jet,Tap sneak while swimming to burst forward on a jet of water. Costs hunger and consumes a charge.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Seaborne,Pressure Diver,Gain absorption hearts and depth-based protection underwater while partially countering Mining Fatigue.,4,Core,3,2,0.6,6,"6, 6, 8, 10",30,no
+Seaborne,Tidecaller,"Surge forward with a water burst while in water or rain, triggered by sneaking or an attack swing depending on server settings.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Seaborne,Trident Mastery,Tridents deal bonus damage and home back to you faster after a throw.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Seaborne,Turtle Miner,Mine faster underwater whether standing or floating.,1,Core,3,4,1,10,10,10,no
+Stealth,Stealth,"Core concealment for backstabs, Cutpurse, and Assassinate. Sneaking uses observer awareness; invisibility or an active Shadow Decoy always counts as undetected.",3,Minor,1,1,0.5,2,"2, 2, 2",6,no
+Stealth,Trap Sense,"While sneaking, nearby trapped chests, tripwire string, hooks, pressure plates, and sculk blocks privately glow. Maximum level prevents all of your movement vibrations from triggering sculk.",4,Minor,1,1,0.5,2,"2, 2, 2, 3",9,no
+Stealth,Cutpurse,"While Stealth reports you undetected, hits on pillagers, vindicators, and piglins can steal loot without a kill.",4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Stealth,Enderveil,Look at Endermen freely - prevents Enderman aggression without wearing a pumpkin.,2,Utility,2,1,0.5,4,"4, 4",8,no
+Stealth,Item Snatch,Snatch Dropped items instantly while sneaking!,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Stealth,Smoke Pellet,"Sneak while holding gunpowder in either hand to cast an aimed smoke cloud. Players inside turn invisible, mobs drop aggro and cannot retarget them, and living entities are blinded.",3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Stealth,Stealth Vision,"While sneaking, gain night vision, ignore Blindness, and see invisible players outlined.",1,Utility,2,2,1,6,6,6,no
+Stealth,Umbral Recovery,Kills made while sneaking refund hunger and extend any active invisibility window.,4,Utility,2,1,0.5,4,"4, 4, 5, 6",19,no
+Stealth,Decoy Swap,"Requires Shadow Decoy. While your decoy is alive, double-tap sneak to swap places with it.",3,Core,3,2,0.6,6,"6, 6, 8",20,no
+Stealth,Ghost's Armor,Slowly builds a separate armor layer while you avoid damage. It stacks beyond worn armor and is consumed by the next armor-respecting hit.,7,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13, 15",70,no
+Stealth,Shadow Decoy,Stop sneaking to spawn a decoy wearing your skin and equipment that pulls nearby mob aggression.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Stealth,Sneak Speed,"Sneak faster with each level - max level sneaks at full walk speed, the vanilla sneak-speed cap",3,Core,3,2,0.6,6,"6, 6, 8",20,no
+Stealth,Shadowmeld,"Remain sneaking while Stealth reports you undetected to become invisible. Detection, acting, taking damage, or standing ends the meld.",4,Strong,5,3,0.6,11,"11, 11, 14, 17",53,no
+Stealth,Assassinate,"While Stealth reports you undetected, strike eligible non-boss mobs for exactly their current health instead of synthetic overkill damage.",4,Keystone,7,6,0.7,17,"17, 16, 21, 26",80,no
+Swords,Machete,Cut through foliage with ease!,3,Minor,1,1,0.5,2,"2, 2, 2",6,no
+Swords,Crescent Guard,Killing blows with a sword grant a brief burst of absorption hearts.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Swords,Hamstring,Strikes on sprinting or fleeing targets slow them and stop them sprinting.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Swords,Lunge Strike,Sprint-attack with a sword to lunge into the blow with extra reach.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Swords,Riposte Window,Blocking with a shield arms a short riposte for your next strike.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Swords,Whetstone Ritual,Sneak right-click a grindstone with a sword to grind a temporary sharpness buff for durability and XP levels.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Swords,Blade Flow,Chain sword hits to build attack-speed stacks. Taking damage breaks the flow.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Swords,Bloody Blade,"Strikes with your sword, cause Bleeding!",7,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13, 15",70,no
+Swords,Duelist's Focus,Deal more damage and take less while exactly one hostile is engaged with you; the focused attacker briefly glows when the defense activates.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Swords,Executioner's Edge,Sword strikes deal extra damage to low-health targets.,6,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13",55,no
+Swords,Poisoned Blade,"Strikes with your sword, cause Poison!",7,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13, 15",70,no
+Swords,Crimson Cyclone,Land a sword crit to unleash a bleeding area slash around your target.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Swords,Dual Wield Stance,Holding a sword in each hand grants bonus melee damage. Matching swords grant the higher bonus.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Swords,Heirloom Edge,Name a sword at an anvil to make it an heirloom that banks a tiny permanent damage bonus every few kills.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+Taming,Fetch,"Idle tamed wolves physically run to nearby drops, pick them up, and carry them back to you.",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Taming,Wild Empathy,"Taming succeeds more often, and neutral mobs are slower to anger at you.",5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+Taming,Battle Bond,"When one of your pets lands a kill, you and the nearby pack gain brief strength, speed, and regeneration with a visible bond.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Taming,Beast Recall,Sneak-right-click with a lead to recall your nearest tamed companion to a safe nearby spot. Each recall costs hunger.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Taming,Mounted Tactics,Gain mount-specific combat and handling bonuses while riding.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Taming,Pack Leader Aura,Nearby tamed companions gain speed and regeneration near their owner.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Taming,Stable Hand,"Animals you tame or breed keep a permanent bias toward better speed, jump, health, and safe fall distance.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Taming,Tame Health,Increase your tamed animal health.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Taming,Tame Regeneration,Increase your tamed animal regeneration.,3,Utility,2,1,0.5,4,"4, 4, 5",13,no
+Taming,Alpha's Command,"Sneak-left-click while holding a bone to raycast a target, mark it with a private red glow, and command nearby combat pets to focus it. Successful commands consume one bone.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Taming,Guardian Instinct,"Nearby pets leap to intercept projectiles aimed at you, taking reduced damage themselves.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Taming,Shared Pain,Spread a portion of your incoming damage across nearby owned companions without reducing them below their health floor.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Taming,Tame Damage,Increase your tamed animal damage dealt.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Taming,Last Breath,"On a lethal hit a pet drops to 1 HP, is briefly invulnerable, and recalls to your side.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+TragOul,Death Sense,Sense wounded creatures and players near you through walls with a private outline that intensifies in color as their health falls.,5,Minor,1,1,0.5,2,"2, 2, 2, 3, 3",12,no
+TragOul,Blood Pact,"Losing at least 2 hearts after armor, Resistance, and absorption can trigger random beneficial effects.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+TragOul,Bone Harvest,Kills can spawn blood globes or bone snowball globes that grant buffs when picked up.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+TragOul,Curse of Frailty,"Enemies that dare strike you are cursed with weakness, and slowness at higher levels!",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+TragOul,Corpse Explosion,Mobs you kill immediately display a blood nova and damage nearby hostile mobs.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+TragOul,Corpse Lances,Killing an enemy launches a red-tipped corpse lance that never targets you. Its damage is tripled while you wear no armor.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+TragOul,Globe of Pain,Divide the Damage you deal based on the number of enemies around you!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+TragOul,Marrow Armor,Bones in your inventory shatter to absorb part of incoming hits!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+TragOul,Plague Bearer,Mobs that die poisoned or withered by you spread an amplified affliction across a large radius to any nearby mob you can damage.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+TragOul,Thorns,Reflect damage back to your attacker!,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+TragOul,Skeletal Servant,"Sneak and right-click with bones to raise temporary skeletal servants, one living servant per level! Servants spawn with level-scaled random gear, inherit your other Tragoul perks, and hunt your mark: whatever you strike, or whatever struck you last. Summoning at the cap recycles your oldest servant. Consumes bones on summon, fewer at higher levels.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+TragOul,Soul Siphon,Every player-attributed damage source siphons part of its final damage as health.,5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+TragOul,Will of Pain,"Every eligible attacker who damages you loses a small fixed amount of life, which is restored to you.",5,Strong,5,3,0.6,11,"11, 11, 14, 17, 20",73,no
+TragOul,Last Rites,A killing blow leaves you at 1 HP as a fleeting spirit instead of dying!,5,Keystone,7,6,0.7,17,"17, 16, 21, 26, 31",111,no
+Unarmed,Iron Fists,Bare fists hit harder and punch through soft blocks faster.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Unarmed,Meditation,"Meditate while sneaking, still, and empty-handed to slowly build absorption hearts.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Unarmed,Pressure Point,"Bare-hand hits apply stacking slowness, with weakness at higher levels.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Unarmed,Second Wind,Bare-hand kills restore hunger and grant a short regeneration burst.,5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Unarmed,Sucker Punch,"Sprint punches, but more deadly.",5,Utility,2,1,0.5,4,"4, 4, 5, 6, 7",26,no
+Unarmed,Battering Charge,Sprint into enemies with fists or a shield to deal impact damage.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Unarmed,Combo Chain,Consecutive unarmed hits build combo stacks that increase punch damage.,6,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13",55,no
+Unarmed,Disarm,"Bare-hand hits can knock the held item out of players and mobs alike, and mobs may have a worn armor piece knocked loose too.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Unarmed,Grapple,"Sneak-punch a mob or player to grab it, then hurl it where you look. Player grapples respect PvP protection. Each throw adds exhaustion.",5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Unarmed,Shockwave Clap,Sneak and punch the air to clap a shockwave that knocks back enemies in a cone. Each clap costs hunger.,5,Core,3,2,0.6,6,"6, 6, 8, 10, 12",42,no
+Unarmed,Unarmed Power,Your bare-handed strikes deal more damage.,7,Core,3,2,0.6,6,"6, 6, 8, 10, 12, 13, 15",70,no
+Unarmed,Glass Cannon,Bonus Unarmed Damage the lower your armor value is,7,Strong,5,3,0.6,11,"11, 11, 14, 17, 20, 23, 26",122,no

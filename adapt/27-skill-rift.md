@@ -2,12 +2,12 @@
 title: "Skill - Rift"
 description: "Rift XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Rift (`rift`) gains XP from teleporting, throwing ender pearls or eyes of ender, and fighting End creatures. Its 13 adaptations add short teleports, recall points, bouncing pearls, lethal-hit escape, remote storage, linked containers, item collection, targeted pearls, enderman protection, anti-levitation, and resistance after ender items are used.
+Rift (`rift`) gains XP from teleporting, throwing ender pearls or eyes of ender, and fighting End creatures. Travelling through a nether portal, end portal, or end gateway pays `portalTripXp` at most once per `portalTripXpCooldown`; a chorus fruit teleport pays `chorusTeleportXp` at most once per `chorusTeleportXpCooldown`. Killing a shulker or endermite pays its maximum health times `shulkerKillMaxHealthXpMultiplier` or `endermiteKillMaxHealthXpMultiplier`. Mobs from spawners, spawn eggs, buckets, breeding, nether portals, or golem and snowman builds, summoned minions, grave mobs, and your own pets pay no kill XP. Its 13 adaptations add short teleports, recall points, bouncing pearls, lethal-hit escape, remote storage, linked containers, item collection, targeted pearls, enderman protection, anti-levitation, and resistance after ender items are used.
 
 ## Earning XP
 
@@ -322,22 +322,28 @@ Written to `plugins/Adapt/skills/rift.toml` on first load.
 | `damageEndermiteXPMultiplier` | `2` | XP per point of damage dealt to endermites. |
 | `damageEnderdragonXPMultiplier` | `8` | XP per point of damage dealt to the ender dragon. |
 | `challengeRiftReward` | `500` | Base XP reward for every Rift challenge chain. |
+| `portalTripXp` | `40` | XP for travelling through a nether portal, end portal, or end gateway. |
+| `portalTripXpCooldown` | `60000` | Milliseconds between paid portal trips. |
+| `chorusTeleportXp` | `20` | XP for a chorus fruit teleport. |
+| `chorusTeleportXpCooldown` | `10000` | Milliseconds between paid chorus fruit teleports. |
+| `shulkerKillMaxHealthXpMultiplier` | `3` | XP per point of maximum health for killing a shulker. |
+| `endermiteKillMaxHealthXpMultiplier` | `3` | XP per point of maximum health for killing an endermite. |
 
 ### Challenges
 
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_rift_50` | 50 | `challengeRiftReward` |
-| `challenge_rift_500` | 500 | `challengeRiftReward` x 2 |
-| `challenge_rift_5k` | 5000 | `challengeRiftReward` x 5 |
+| `challenge_rift_500` | 500 | `challengeRiftReward` x 3 |
+| `challenge_rift_5k` | 5000 | `challengeRiftReward` x 8 |
 | `challenge_rift_pearls_50` | 50 | `challengeRiftReward` |
-| `challenge_rift_pearls_500` | 500 | `challengeRiftReward` x 2 |
+| `challenge_rift_pearls_500` | 500 | `challengeRiftReward` x 3 |
 | `challenge_rift_enderman_50` | 50 | `challengeRiftReward` |
-| `challenge_rift_enderman_500` | 500 | `challengeRiftReward` x 2 |
+| `challenge_rift_enderman_500` | 500 | `challengeRiftReward` x 3 |
 | `challenge_rift_dragon_500` | 500 | `challengeRiftReward` |
-| `challenge_rift_dragon_5k` | 5000 | `challengeRiftReward` x 2 |
+| `challenge_rift_dragon_5k` | 5000 | `challengeRiftReward` x 3 |
 | `challenge_rift_crystal_10` | 10 | `challengeRiftReward` |
-| `challenge_rift_crystal_100` | 100 | `challengeRiftReward` x 2 |
+| `challenge_rift_crystal_100` | 100 | `challengeRiftReward` x 3 |
 
 ## See also
 

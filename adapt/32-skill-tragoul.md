@@ -2,7 +2,7 @@
 title: "Skill - TragOul"
 description: "TragOul XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -373,8 +373,8 @@ Written to `plugins/Adapt/skills/tragoul.toml` on first load.
 | `skillColor` | `"&b"` | Legacy ampersand color code used for TragOul in menus and text. |
 | `showParticles` | `true` | Emits the skill's own damage and death particle effects. Sounds still play. |
 | `cooldownDelay` | `450` | Milliseconds between XP awards for taking damage. |
-| `damageReceivedXpMultiplier` | `4.8` | Skill XP per point of damage you take. |
-| `lowHealthSurvivalXP` | `28` | Extra skill XP when a survived hit leaves you at 8 health (4 hearts) or less. |
+| `damageReceivedXpMultiplier` | `14.4` | Skill XP per point of damage you take. |
+| `lowHealthSurvivalXP` | `84` | Extra skill XP when a survived hit leaves you at 8 health (4 hearts) or less. |
 | `challengeTragReward` | `500` | Knowledge paid by the TragOul challenges. |
 
 ### Challenges
@@ -382,10 +382,10 @@ Written to `plugins/Adapt/skills/tragoul.toml` on first load.
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_trag_1k` | 1000 | `challengeTragReward` |
-| `challenge_trag_10k` | 10000 | `challengeTragReward` x 2 |
-| `challenge_trag_100k` | 100000 | `challengeTragReward` x 5 |
+| `challenge_trag_10k` | 10000 | `challengeTragReward` x 3 |
+| `challenge_trag_100k` | 100000 | `challengeTragReward` x 8 |
 | `challenge_trag_hits_500` | 500 | `challengeTragReward` |
-| `challenge_trag_hits_5k` | 5000 | `challengeTragReward` x 2 |
+| `challenge_trag_hits_5k` | 5000 | `challengeTragReward` x 3 |
 
 ## See also
 

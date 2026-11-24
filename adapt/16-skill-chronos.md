@@ -2,7 +2,7 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-23T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -356,6 +356,7 @@ Repaying deferred damage does not knock you back.
 | `maxDeferFraction` | `0.45` | Ceiling on the deferred fraction. |
 | `minimumDeferDamage` | `1.0` | Final damage a hit must reach before any of it is deferred. |
 | `paybackPulses` | `10` | One-second pulses the deferred damage is repaid over. |
+| `xpPerDeferredDamage` | `3` | Chronos XP per point of damage deferred. `0` disables it. |
 
 ### Overtime (`chronos-overtime`)
 
@@ -485,12 +486,14 @@ The same damage cause inside the memory window deals less damage, and each repea
 | Active movement per pulse | `minutes.online`, `chronos.active.distance` |
 | Passive activity while recently active | none |
 | Survival time, checked once per minute | none |
-| Entering a bed (only when it works) | `chronos.beds.used` |
+| Sleeping until the night is skipped | `chronos.beds.used` |
 | Speed potion drunk, splashed, or lingering cloud applied to a player | none |
 | Throwing an ender pearl | none |
 | Arriving from an ender pearl | `chronos.teleports` |
 
 Clock multipliers apply to all of these. One lingering Speed cloud pays out once.
+
+Entering or leaving a bed pays nothing. When enough players sleep for the night to be skipped, including under a sleep-percentage game rule, every player asleep long enough at that moment earns `sleepThroughNightXp`. Each world day pays once. Sleeping through the night after the one you last slept through, in the same world, extends a streak that adds `sleepStreakBonusXp` per extra night, up to `sleepStreakBonusCap`; missing a night resets it to 1. The streak is saved with your Chronos data, so logging out or dying does not break it.
 
 ### Skill configuration defaults
 
@@ -503,21 +506,22 @@ Written to `plugins/Adapt/skills/chronos.toml` on first load.
 | `skillColor` | `"&b"` | Legacy ampersand color code for this skill in menus and text. |
 | `minimumMovementForActiveCheck` | `0.35` | Blocks moved since the last pulse before the pulse counts as active movement. |
 | `distancePerBonusXP` | `5` | Blocks travelled that equal one unit of `activeMovementXP`. |
-| `activeMovementXP` | `3.5` | XP per `distancePerBonusXP` blocks of active movement. |
-| `activeMovementXPCapPerTick` | `6` | Ceiling on movement XP per pulse, scaled by actual elapsed time. |
-| `clockOffhandXpMultiplier` | `3` | Multiplier on all Chronos XP while a clock is in the off hand. Takes precedence over the inventory multiplier. |
+| `activeMovementXP` | `5.25` | XP per `distancePerBonusXP` blocks of active movement. |
+| `activeMovementXPCapPerTick` | `9` | Ceiling on movement XP per pulse, scaled by actual elapsed time. |
+| `clockOffhandXpMultiplier` | `5` | Multiplier on all Chronos XP while a clock is in the off hand. Takes precedence over the inventory multiplier. |
 | `clockInventoryXpMultiplier` | `2` | Multiplier on all Chronos XP while a clock is anywhere in the inventory and none is in the off hand. |
 | `positionHistorySize` | `12` | Recent positions kept for the AFK variance check. |
 | `afkVarianceThreshold` | `2.0` | Mean distance from the average position, in blocks, below which you may be judged AFK. |
 | `afkMinActionTypes` | `3` | Distinct recent action categories that keep you out of the AFK penalty. |
 | `afkPenaltyMultiplier` | `0.03` | Multiplier applied to Chronos XP while judged AFK. |
-| `passiveActiveXP` | `0.4` | Base XP per pulse for having done anything inside the activity window. |
+| `passiveActiveXP` | `0.6` | Base XP per pulse for having done anything inside the activity window. |
 | `activityWindow` | `15000` | Milliseconds an action stays counted for passive XP and for the diversity bonus. |
 | `activityTypesForBonus` | `4` | Distinct action categories inside the window that trigger the diversity bonus. |
 | `activityBonusMultiplier` | `1.5` | Multiplier on passive XP once the diversity threshold is met. |
 | `nightActivityMultiplier` | `1.3` | Multiplier on passive XP while world time is between 12542 and 23460. |
-| `sleepXP` | `150` | XP for a successful bed entry. |
-| `sleepCooldown` | `30000` | Milliseconds before another bed entry can pay out. |
+| `sleepThroughNightXp` | `150` | XP for sleeping until the night is skipped. |
+| `sleepStreakBonusXp` | `15` | Extra XP per consecutive night slept through, from the second night on. |
+| `sleepStreakBonusCap` | `300` | Largest streak bonus paid for one night. |
 | `speedPotionBaseXP` | `120` (`DEFAULT_SPEED_POTION_BASE_XP`) | Base XP for applying Speed to yourself or another player. |
 | `speedPotionLevelMultiplier` | `1.5` | Multiplier applied when the Speed amplifier is 1 or higher. |
 | `speedPotionRewardCooldown` | `1000` | Minimum milliseconds between Speed potion payouts from one player. |
@@ -527,7 +531,7 @@ Written to `plugins/Adapt/skills/chronos.toml` on first load.
 | `enderPearlThrowXP` | `35` | XP for throwing an ender pearl. |
 | `enderPearlTeleportXP` | `15` | XP on arriving from an ender pearl teleport. |
 | `enderPearlCooldown` | `10000` | Milliseconds before another pearl throw can pay out. |
-| `survivalXPPerMinute` | `3` | XP per minute survived since your last death. |
+| `survivalXPPerMinute` | `4.5` | XP per minute survived since your last death. |
 | `survivalStreakBonusPerHour` | `0.2` | Extra survival multiplier earned per continuous hour alive. |
 | `survivalStreakHourCap` | `5` | Hours counted toward the survival multiplier before it stops growing. |
 | `challengeChronosReward` | `500` | Base knowledge reward for the Chronos challenge chain. |
@@ -539,14 +543,14 @@ A `speedPotionBaseXP` of exactly `45` is rewritten to `120` on load.
 | Challenge | Threshold | Reward knob |
 |---|---|---|
 | `challenge_chronos_1h` | 60 | `challengeChronosReward` |
-| `challenge_chronos_24h` | 1440 | `challengeChronosReward` x2 |
+| `challenge_chronos_24h` | 1440 | `challengeChronosReward` x3 |
 | `challenge_active_dist_1k` | 1000 | `challengeChronosReward` |
-| `challenge_active_dist_10k` | 10000 | `challengeChronosReward` x2 |
-| `challenge_active_dist_100k` | 100000 | `challengeChronosReward` x5 |
+| `challenge_active_dist_10k` | 10000 | `challengeChronosReward` x3 |
+| `challenge_active_dist_100k` | 100000 | `challengeChronosReward` x8 |
 | `challenge_beds_10` | 10 | `challengeChronosReward` |
-| `challenge_beds_100` | 100 | `challengeChronosReward` x2 |
+| `challenge_beds_100` | 100 | `challengeChronosReward` x3 |
 | `challenge_chronos_tp_50` | 50 | `challengeChronosReward` |
-| `challenge_chronos_tp_500` | 500 | `challengeChronosReward` x2 |
+| `challenge_chronos_tp_500` | 500 | `challengeChronosReward` x3 |
 
 ## See also
 
