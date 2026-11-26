@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -76,22 +76,22 @@ Right-click a log with a main-hand axe to remove the top log of the column above
 | `damagePerBlockBase` | `1` | Durability spent per log at max level. |
 | `damagePerBlockInverseLevelMultiplier` | `4` | Extra durability per log at level 1, removed as you level. |
 
-### Axe Drop-To-Inventory (`axe-drop-to-inventory`)
+### Axe Drop to Inventory (`axe-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Axe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Axe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Axe Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Axe Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 3 knowledge
 
 Logs and leaves broken with an axe go into the inventory. Drops blocked by protection stay on the ground. Overflow drops at the feet with a fail sound. No adaptation-specific config keys.
 
-### Leaf-miner (`axe-leaf-veinminer`)
+### Leaf-Miner (`axe-leaf-veinminer`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Leaf-miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-leaf-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Leaf-miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-leaf-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Leaf-Miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-leaf-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Leaf-Miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-leaf-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 1 knowledge, then 6 per level
@@ -119,16 +119,16 @@ Registers only when Iris is installed. Sneak-break a naturally generated Iris tr
 | `hungerCost` | `2` | Hunger points reserved per log and spent only after that log actually comes out. Clamped to 0 through 20. 0 disables the cost. |
 | `cooldownSeconds` | `30` | Seconds before another fell can be accepted. 0 disables the cooldown. |
 
-### Wood-miner (`axe-wood-veinminer`)
+### Wood-Miner (`axe-wood-veinminer`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Wood-miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-wood-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Wood-miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-wood-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Wood-Miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-wood-veinminer-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Wood-Miner" src="https://media.volmitsoftware.com/adapt-assets/demos/axes/axe-wood-veinminer-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 5 levels · 4 knowledge, then 3 per level
 
-Sneak-break a log or wood block with a main-hand axe to break matching blocks in range. Planks do not match. Blocks the player cannot break are skipped. Drops still follow Drop-To-Inventory when that adaptation is learned.
+Sneak-break a log or wood block with a main-hand axe to break matching blocks in range. Planks do not match. Blocks the player cannot break are skipped. Drops still follow Drop to Inventory when that adaptation is learned.
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
@@ -308,3 +308,5 @@ Written to `plugins/Adapt/skills/axes.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Axes upgrades](/adapt/upgrades/axes).

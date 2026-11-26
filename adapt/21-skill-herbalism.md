@@ -2,7 +2,7 @@
 title: "Skill - Herbalism"
 description: "Herbalism XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -19,7 +19,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 | Compost Cascade (`herbalism-compost-cascade`) | `materials`: Allowed plant materials; `leaves`: Consume leaves; `dropped-items`: Consume dropped items; `inventory-items`: Consume inventory items; `item-reserve`: Keep eight items per stack |
 | Growth Aura (`herbalism-growth-aura`) | Growables submenu with one `growable-<plant>` toggle per plant; `surface-only`: Only surface crops; `food-reserve`: Keep sixteen food points; `radius`: Growth radius |
 | Harvest & Replant (`herbalism-replant`) | `materials`: Allowed plant materials; `sneak`: Require sneak to replant |
-| Hoe Drop-To-Inventory (`herbalism-drop-to-inventory`) | `materials`: Allowed plant materials; `seeds-only`: Only collect planting items |
+| Hoe Drop to Inventory (`herbalism-drop-to-inventory`) | `materials`: Allowed plant materials; `seeds-only`: Only collect planting items |
 | Hungry Shield (`herbalism-hungry-shield`) | `food-reserve`: Keep eight food points; `basics`: Environmental damage; `melee`: Melee damage; `fire`: Fire damage; `burst`: Projectile and explosion damage; `magic`: Magic damage |
 | Rooted Footing (`herbalism-rooted-footing`) | `farmland`: Farmland protection; `fall-conversion`: Fall-to-hunger conversion; `food-reserve`: Keep eight food points |
 | Seed Sower (`herbalism-seed-sower`) | `materials`: Allowed plant materials; `radius`: Planting radius; `seed-reserve`: Keep eight held seeds |
@@ -29,7 +29,7 @@ Food reserves retain eight food points for Bee Shepherd, Hungry Shield and Roote
 
 Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
-Harvesting advances crop milestones only when the harvest has positive XP integrity. A harvest excluded by the server's bone-meal policy provides no milestone credit.
+Harvesting advances crop milestones only when the harvest has positive XP integrity. A harvest excluded by the server's bone-meal policy provides no milestone credit. Crops that Growth Aura, Bee Shepherd, Compost Cascade or any other Adapt growth effect aged count as bone-mealed, the same as crops a player bone-mealed.
 
 ## Adaptations
 
@@ -97,7 +97,7 @@ Right-click a fully grown crop with a hoe that is not on cooldown. Adapt checks 
 - **Cooldown:** `cooldownLvl1` ticks at level 1, otherwise `(baseCooldown - cooldownFactor * levelPercent) + bonusCooldown` ticks.
 - **XP:** `harvestPerAgeXP * age`, plus `plantCropSeedsXP` when a seed is reclaimed.
 
-Hoe Drop-To-Inventory sends the loot to the inventory.
+Hoe Drop to Inventory sends the loot to the inventory.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -140,11 +140,11 @@ Damage is reduced by moving `min(damage * effectiveness, max(0, foodLevel + satu
 
 Eating anything on the food list adds `2 + level` food, capped at 20, and the same amount of saturation, capped at the new food value, plus 5 skill XP. Golden apples, enchanted golden apples, and golden carrots use that same bonus, and there are no adaptation-specific config keys.
 
-### Hoe Drop-To-Inventory (`herbalism-drop-to-inventory`)
+### Hoe Drop to Inventory (`herbalism-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Hoe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Hoe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Hoe Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Hoe Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/herbalism/herbalism-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 2 knowledge
@@ -440,3 +440,5 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Herbalism upgrades](/adapt/upgrades/herbalism).

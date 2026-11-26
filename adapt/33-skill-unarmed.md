@@ -2,7 +2,7 @@
 title: "Skill - Unarmed"
 description: "Unarmed XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -254,7 +254,7 @@ With both hands free of tools, sneak-punch to grab a target, then punch again or
 
 5 levels · 4 knowledge, then 3 per level
 
-A direct bare-hand kill on a non-player mob restores hunger and saturation and starts Regeneration. Friendly targets, including your pets, are skipped, food is clamped to 20, and saturation is clamped to your current food level.
+A direct bare-hand kill on a non-player mob restores hunger and saturation and starts Regeneration. Friendly targets, including your pets, are skipped, food is clamped to 20, and saturation is clamped to your current food level. A kill the [Unarmed Boon](/adapt/mutation-blocks/unarmed) already paid for restores nothing more.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -325,3 +325,5 @@ Written to `plugins/Adapt/skills/unarmed.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Unarmed upgrades](/adapt/upgrades/unarmed).

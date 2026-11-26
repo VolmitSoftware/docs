@@ -2,12 +2,12 @@
 title: "Skill - Chronos"
 description: "Chronos XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Chronos gains XP from movement, sleep, ender pearls, Speed effects, and survival time. Carrying a clock raises payouts, with the largest bonus in the off hand. Low movement reduces XP, while varied recent actions add a bonus. Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks.
+Chronos gains XP from movement, sleep, Speed effects, and survival time. Carrying a clock raises payouts, with the largest bonus in the off hand. Low movement reduces XP, while varied recent actions add a bonus. Its 13 adaptations store and spend time, throw time bombs, create stasis, rewind players, extend potion effects, improve survival, and accelerate nearby blocks.
 
 ## Player controls
 
@@ -25,7 +25,7 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 | Stasis Field (`chronos-stasis-field`) | `clock-sounds`: Clock sounds; `offhand-shard`: Require shard in offhand |
 | Temporal Echo (`chronos-temporal-echo`) | `arrow`: Arrow; `snowball`: Snowball; `egg`: Egg; `ender-pearl`: Ender Pearl |
 | Time Bomb (`chronos-time-bomb`) | `clock-sounds`: Clock sounds; `private-visuals`: Owner-only field visuals |
-| Time In A Bottle (`chronos-time-bottle`) | `clock-sounds`: Clock sounds; `trees`: Sapling tree generation; `furnaces`: Furnace targets; `brewing`: Brewing targets; `campfires`: Campfire targets; `growth`: Growth targets; `animals`: Animal aging targets |
+| Time in a Bottle (`chronos-time-bottle`) | `clock-sounds`: Clock sounds; `trees`: Sapling tree generation; `furnaces`: Furnace targets; `brewing`: Brewing targets; `campfires`: Campfire targets; `growth`: Growth targets; `animals`: Animal aging targets |
 
 Trigger options can restrict the server’s enabled inputs and add sprint or held-clock requirements. An eligible Manual Blink owns the double-jump gesture ahead of Instant Recall, including during its cooldown; Recall’s other enabled inputs remain available. Clock sounds remain subject to the server sound gate. Borrowed Time always repays existing damage debt. Pocket Watch’s automatic falling mode still requires any server-required clock and shares its existing airtime budget. Changing Pocket Watch preferences ends its own current slow-fall pulse while preserving unrelated potion effects and the spent airtime budget. Time Bomb presentation choices are captured for each deployed field and never alter its mechanics. Overtime’s individual effect toggles only filter its supported beneficial effects, and harmful shortening still requires maximum level.
 
@@ -33,11 +33,11 @@ Toggle defaults preserve the standard behavior. Size and rate presets default to
 
 ## Adaptations
 
-### Time In A Bottle (`chronos-time-bottle`)
+### Time in a Bottle (`chronos-time-bottle`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Time In A Bottle" src="https://media.volmitsoftware.com/adapt-assets/demos/chronos/chronos-time-bottle-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Time In A Bottle" src="https://media.volmitsoftware.com/adapt-assets/demos/chronos/chronos-time-bottle-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Time in a Bottle" src="https://media.volmitsoftware.com/adapt-assets/demos/chronos/chronos-time-bottle-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Time in a Bottle" src="https://media.volmitsoftware.com/adapt-assets/demos/chronos/chronos-time-bottle-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 6 knowledge
@@ -488,8 +488,6 @@ The same damage cause inside the memory window deals less damage, and each repea
 | Survival time, checked once per minute | none |
 | Sleeping until the night is skipped | `chronos.beds.used` |
 | Speed potion drunk, splashed, or lingering cloud applied to a player | none |
-| Throwing an ender pearl | none |
-| Arriving from an ender pearl | `chronos.teleports` |
 
 Clock multipliers apply to all of these. One lingering Speed cloud pays out once.
 
@@ -528,9 +526,6 @@ Written to `plugins/Adapt/skills/chronos.toml` on first load.
 | `speedPotionDiminishingDecay` | `0.15` | Fraction shaved per consecutive Speed payout, compounding. |
 | `speedPotionDiminishingFloor` | `0.25` | Lowest multiplier the diminishing chain can reach. |
 | `speedPotionResetWindow` | `300000` | Milliseconds without a Speed payout before the consecutive counter resets. |
-| `enderPearlThrowXP` | `35` | XP for throwing an ender pearl. |
-| `enderPearlTeleportXP` | `15` | XP on arriving from an ender pearl teleport. |
-| `enderPearlCooldown` | `10000` | Milliseconds before another pearl throw can pay out. |
 | `survivalXPPerMinute` | `4.5` | XP per minute survived since your last death. |
 | `survivalStreakBonusPerHour` | `0.2` | Extra survival multiplier earned per continuous hour alive. |
 | `survivalStreakHourCap` | `5` | Hours counted toward the survival multiplier before it stops growing. |
@@ -549,9 +544,9 @@ A `speedPotionBaseXP` of exactly `45` is rewritten to `120` on load.
 | `challenge_active_dist_100k` | 100000 | `challengeChronosReward` x8 |
 | `challenge_beds_10` | 10 | `challengeChronosReward` |
 | `challenge_beds_100` | 100 | `challengeChronosReward` x3 |
-| `challenge_chronos_tp_50` | 50 | `challengeChronosReward` |
-| `challenge_chronos_tp_500` | 500 | `challengeChronosReward` x3 |
 
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Chronos upgrades](/adapt/upgrades/chronos).

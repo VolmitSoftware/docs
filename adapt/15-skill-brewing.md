@@ -2,7 +2,7 @@
 title: "Skill - Brewing"
 description: "Brewing XP sources, custom potions, and configuration"
 published: true
-date: 2026-10-29T19:18:51.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -269,3 +269,5 @@ Written to `plugins/Adapt/skills/brewing.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Brewing upgrades](/adapt/upgrades/brewing).

@@ -2,12 +2,12 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Excavation gains XP from breaking blocks or dealing damage with a shovel, and block XP scales with material value, hardness, and blast resistance. Its 12 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, and OMNI - T.O.O.L.
+Excavation gains XP from breaking blocks or dealing damage with a shovel, and block XP scales with material value, hardness, and blast resistance. Its 13 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, thrown clods, and OMNI - T.O.O.L.
 
 Player-placed blocks and rejected replacements earn neither base digging XP nor digging milestone credit.
 
@@ -19,14 +19,15 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 
 | Adaptation | Additional controls |
 |---|---|
+| Clod Hurler (`excavation-clod-hurler`) | `trigger`: Throw when |
 | Burrow (`excavation-burrow`) | `depth`: Burrow depth; `food-reserve`: Keep eight food points; `durability-reserve`: Keep a quarter of tool durability |
 | Earth Mover (`excavation-earth-mover`) | `ignore-passive`: Exclude neutral mobs; `food-reserve`: Keep eight food points; `offhand-empty`: Require empty offhand |
 | Hasty Excavator (`excavation-haste`) | `tier`: Haste tier |
 | Mudlark (`excavation-mudlark`) | `wet-haste`: Wet-weather Haste; `bonus-drops`: Bonus drops |
 | OMNI - T.O.O.L. (`excavation-omnitool`) | `combat-selection`: Automatic combat selection; `mining-selection`: Automatic mining selection; `swap-sounds`: Swap sounds |
 | Seismic Ping (`excavation-seismic-ping`) | `color`: Marker color; `ores`: Allowed ore markers; `cue-frequency`: Cue frequency |
-| Shovel Drop-To-Inventory (`excavation-drop-to-inventory`) | `materials`: Allowed materials; `blocks-only`: Only collect block materials |
-| Super-Seeing Spelunker! (`excavation-spelunker`) | `color`: Marker color; `ores`: Allowed ore markers; `range`: Reveal range |
+| Shovel Drop to Inventory (`excavation-drop-to-inventory`) | `materials`: Allowed materials; `blocks-only`: Only collect block materials |
+| Super-Seeing Spelunker (`excavation-spelunker`) | `color`: Marker color; `ores`: Allowed ore markers; `range`: Reveal range |
 | Tunneler (`excavation-tunneler`) | `trigger`: Activation gesture; `materials`: Allowed materials; `block-limit`: Extra block limit |
 
 Depth, range and extra-block presets use 100%, 50% or 25% of the earned cap. Food reserves retain eight food points; Burrow’s durability reserve retains a quarter of the tool’s base durability in addition to paying every dug block. Ore filters select one supported ore family or all; Seismic Ping performs its normal single proc roll before the filtered scan. Lower cue frequency extends its cooldown. Tunneler supports sneak-to-activate, sneak-to-suppress or always. Omni-Tool opt-outs preserve stored tools. Disabling marker adaptations removes that player’s markers, and changing Haste preferences clears their owned attribute bonus until the next eligible trigger.
@@ -50,11 +51,11 @@ Starting to break any block, not only shovel blocks, adds a block-break speed mo
 |-----|--------------|------------------|
 | `hasteDurationTicks` | `100` | Ticks the speed bonus lasts after a block break starts. Clamped to 40-600. |
 
-### Super-Seeing Spelunker! (`excavation-spelunker`)
+### Super-Seeing Spelunker (`excavation-spelunker`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Super-Seeing Spelunker!" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-spelunker-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Super-Seeing Spelunker!" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-spelunker-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Super-Seeing Spelunker" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-spelunker-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Super-Seeing Spelunker" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-spelunker-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 5 levels · 10 knowledge, then 5 per level
@@ -90,11 +91,11 @@ Sneak-drop the combined tool to separate its components, preserving their names,
 |-----|--------------|------------------|
 | `startingSlots` | `1` | Component slots granted before adaptation levels are added. |
 
-### Shovel Drop-To-Inventory (`excavation-drop-to-inventory`)
+### Shovel Drop to Inventory (`excavation-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Shovel Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-drop-to-inventory-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Shovel Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-drop-to-inventory-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Shovel Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-drop-to-inventory-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Shovel Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/excavation/excavation-drop-to-inventory-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -285,6 +286,60 @@ Breaking `CLAY`, `MUD`, `MUDDY_MANGROVE_ROOTS`, `SOUL_SAND`, or `SOUL_SOIL` with
 | `hasteDurationTicks` | `60` | Ticks the wet-dig speed bonus lasts. 0 or less disables it. |
 | `xpPerBonusDrop` | `3` | Excavation skill XP per bonus drop. |
 
+### Clod Hurler (`excavation-clod-hurler`)
+
+5 levels · 6 knowledge for level 1, 42 in all
+
+Break a natural soft-ground block with a shovel while a hostile mob is in sight and in range, and the block flings out of the hole at the nearest one. It tumbles on an arc with a dust trail, bursts with its own break particles and sound where it lands, and deals damage to the mob it hits. Then the block's drop (what the dig would have dropped, Silk Touch and Fortune included) hops back to you and goes into your inventory with the pickup sound. A full inventory drops it at your feet; if you died or changed worlds before it arrived, it drops where the block landed. With no target in range the dig is an ordinary dig, Shovel Drop to Inventory included.
+
+Targets are hostile mobs only: never players, pets, passive animals, or mobs that only fight back (endermen, piglins, spiders). Protection and PvE rules are checked when the block hits. Player-placed blocks, Tunneler and Landshaper bonus blocks, and build batches never throw, so one dig throws at most one block. Breaks that drop more than one stack dig normally.
+
+Damage is `min(maxDamage, shovel * heft * distance * (damageMultiplierBase + levelPercent * damageMultiplierFactor))`:
+
+- `shovel` is the vanilla attack damage: wood and gold 2.5, stone 3.5, iron 4.5, diamond 5.5, netherite 6.5, plus Sharpness at `0.5 * level + 0.5`.
+- `heft`: snow 0.4, snow block 0.5, sand and red sand 0.7, dirt, farmland and dirt path 0.8, coarse dirt, rooted dirt, grass, mycelium and podzol 0.85, soul sand and soul soil 0.9, mud and muddy mangrove roots 1.0, gravel 1.15, clay 1.25.
+- `distance` rises from `closeFactor` at point blank to 1 at `sweetSpotBlocks` and holds there, so a long shot hits hardest.
+
+| Throw | Level | Damage |
+|-------|-------|--------|
+| Diamond shovel, gravel, 8+ blocks | 5 | 8.9 |
+| Iron shovel, dirt, 8+ blocks | 5 | 5.0 |
+| Iron shovel, dirt, point blank | 5 | 3.0 |
+| Wooden shovel, sand, 2 blocks | 1 | 1.1 |
+| Netherite shovel with Sharpness V, clay, 10 blocks | 5 | 14 (cap) |
+
+| Level | Range | Damage multiplier | Cooldown |
+|-------|-------|-------------------|----------|
+| 1 | 8 blocks | 0.92 | 2.6 s |
+| 3 | 12 blocks | 1.16 | 1.9 s |
+| 5 | 16 blocks | 1.40 | 1.2 s |
+
+Each hit on a natural mob pays `xpPerHit`; spawner, bred and other farmed mobs pay nothing. Hits also count as shovel damage for the skill's own combat XP.
+
+The flying block is a snowball carrying the drop with a half-size block display riding it. Neither is ever saved: a quit, chunk unload, timeout or server stop returns the drop to you, and the drop is written into your player data until it arrives, so a crash returns it on your next join. Tagged leftovers are removed when their chunk loads.
+
+No upgrade fuses Clod Hurler: a player who mutates Excavation keeps it at level 1, free and without a power slot.
+
+Personal controls: Throw when (always, sneak to activate, or sneak to suppress).
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `rangeBase` | `6` | Range in blocks at level 0. |
+| `rangeFactor` | `10` | Range in blocks added at full level. |
+| `damageMultiplierBase` | `0.8` | Damage multiplier at level 0. |
+| `damageMultiplierFactor` | `0.6` | Damage multiplier added at full level. |
+| `maxDamage` | `14` | Most damage one throw deals. |
+| `sweetSpotBlocks` | `8` | Flight distance at which damage peaks. |
+| `closeFactor` | `0.6` | Share of full damage at point blank. |
+| `cooldownMillisBase` | `3000` | Milliseconds between throws at level 0. |
+| `cooldownMillisLevelReduction` | `1800` | Milliseconds of cooldown removed at full level. |
+| `minCooldownMillis` | `600` | Shortest cooldown at any level. |
+| `throwSpeed` | `1.1` | Blocks per tick before the arc. Sets the flight time. |
+| `flightGraceTicks` | `20` | Extra ticks a miss may fly before it returns on its own. |
+| `returnTicks` | `7` | Ticks the drop takes to fly back after landing. |
+| `maxInFlight` | `64` | Most flung blocks in the air on the server. |
+| `xpPerHit` | `4` | Excavation skill XP per hit on a natural mob. |
+
 ## Reference
 
 ### Skill XP and stats
@@ -341,3 +396,5 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Excavation upgrades](/adapt/upgrades/excavation).

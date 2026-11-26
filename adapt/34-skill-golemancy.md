@@ -2,7 +2,7 @@
 title: "Skill - Golemancy"
 description: "Golemancy XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-10-17T00:00:00.000Z
@@ -1430,7 +1430,7 @@ Shift-right-click a packed golem in the Roster GUI to release it for good. Its D
 | `recallCooldownSeconds` | `60` | Seconds after a Pocket Roster recall before you can recall another golem. Values load clamped to 0 through 60. |
 | `awakenRiseTicks` | `20` | Ticks an awakened golem takes to rise from a tenth of its normal size to its bound size. 0 skips the rise. |
 
-### Masterwork (`golem-masterwork`)
+### Golem Masterwork (`golem-masterwork`)
 
 <div class="adapt-demo">
 <video aria-label="First-person demonstration of Masterwork" src="https://media.volmitsoftware.com/adapt-assets/demos/golemancy/golem-masterwork-pov.webm" muted loop playsinline controls preload="none"></video>
@@ -1634,3 +1634,5 @@ Written to `plugins/Adapt/skills/golemancy.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts). Golem commands: [04 - Commands & Permissions](/adapt/04-commands-permissions#golems).
+
+Upgrades after a mutation: [Golemancy upgrades](/adapt/upgrades/golemancy).

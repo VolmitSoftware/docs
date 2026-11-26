@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Pickaxes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -81,11 +81,11 @@ Sneak-breaking ore, obsidian, or ancient debris with a pickaxe also breaks conne
 
 Iron, gold, and copper ore, including deepslate variants, drop ingots when the pickaxe is the correct tool and lacks Silk Touch. The extra-ingot chance is `level * 1.25%` and is not a config key.
 
-### Pickaxe Drop-To-Inventory (`pickaxe-drop-to-inventory`)
+### Pickaxe Drop to Inventory (`pickaxe-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Pickaxe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Pickaxe Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Pickaxe Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Pickaxe Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/pickaxe/pickaxe-drop-to-inventory-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 3 knowledge
@@ -300,3 +300,5 @@ Written to `plugins/Adapt/skills/pickaxe.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Pickaxes upgrades](/adapt/upgrades/pickaxe).

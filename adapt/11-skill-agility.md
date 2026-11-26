@@ -2,7 +2,7 @@
 title: "Skill - Agility"
 description: "Agility XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -221,7 +221,6 @@ While sprinting, an incoming projectile can miss, cancelling the hit and applyin
 | `dodgeChanceBase` | `0.08` | Chance to dodge a projectile while sprinting before level scaling, 0-1. |
 | `dodgeChanceFactor` | `0.3` | Extra dodge chance granted at max level. |
 | `maxDodgeChance` | `0.35` | Hard cap on dodge chance regardless of level. |
-| `xpPerDodge` | `4` | Skill XP paid per dodged projectile. |
 
 ### Featherfoot (`agility-featherfoot`)
 
@@ -269,7 +268,6 @@ Personal controls: Vault trigger (Any jump/While sprinting/While sneaking).
 | Key | Code default | What it does |
 |-----|--------------|--------------|
 | `jumpHeight` | `1.75` | Jump apex in blocks when clearing a fence. Values below the built-in minimum are clamped up. |
-| `xpPerVault` | `3` | Skill XP paid per successful vault. |
 
 ### Marathoner (`agility-marathoner`)
 
@@ -351,3 +349,5 @@ Written to `plugins/Adapt/skills/agility.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Agility upgrades](/adapt/upgrades/agility).

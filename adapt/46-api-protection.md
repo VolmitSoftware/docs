@@ -48,8 +48,8 @@ Before Adapt performs container or item work that vanilla would route through a 
 | Initial Rift Conduit gesture | Uses its real clicked-block event and probes any other physical half |
 | Indirect item-entity transfers | `PlayerAttemptPickupItemEvent` first on Paper. When capacity allows, `PlayerPickupItemEvent` then `EntityPickupItemEvent` on both Paper and Spigot |
 | Veinminer | Waits for the original block to finish breaking, then uses the player's native break action for every sibling |
-| Time In A Bottle | Plans a sapling tree without changing the world, authorizes the complete footprint, then fires `StructureGrowEvent` before generation |
-| Chronos crop acceleration, Compost Cascade, Builders Wand, Magic Foundation, Seed Sower, Coral Gardener | Marked `BlockBreakEvent` or `BlockPlaceEvent` authorization checks as applicable, before committing |
+| Time in a Bottle | Plans a sapling tree without changing the world, authorizes the complete footprint, then fires `StructureGrowEvent` before generation |
+| Chronos crop acceleration, Compost Cascade, Builder's Wand, Magic Foundation, Seed Sower, Coral Gardener | Marked `BlockBreakEvent` or `BlockPlaceEvent` authorization checks as applicable, before committing |
 | Deconstruction | The normal pickup-event sequence before it replaces a dropped item |
 
 ## XP entry points and region policy

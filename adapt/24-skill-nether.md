@@ -2,7 +2,7 @@
 title: "Skill - Nether"
 description: "Nether XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -325,7 +325,7 @@ Standing on magma blocks causes no damage at any learned level, and campfire dam
 
 4 levels · 4 knowledge, then 3 per level
 
-A wither skeleton kill adds extra bones and coal, and adds a skull only when that mob did not already drop one.
+A wither skeleton kill adds extra bones and coal, and adds a skull only when that mob did not already drop one. Spawner, egg and other farmed wither skeletons give no extra drops.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -386,3 +386,5 @@ Written to `plugins/Adapt/skills/nether.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Nether upgrades](/adapt/upgrades/nether).

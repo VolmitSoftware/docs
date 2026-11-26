@@ -35,7 +35,7 @@ Line freshness falls while that skill is used and recovers while it is idle.
 
 ## Provenance and novelty
 
-Placed blocks are stamped for `placedBlockTtlMillis` and pay no harvest XP while the stamp lasts. Provenance follows piston moves and falling blocks. A break stamps the position for `replaceDenyTtlMillis`. Re-placing there inside that window pays nothing. Bonemealed growth uses `bonemealTtlMillis` and pays `bonemealHarvestMultiplier`.
+Placed blocks are stamped for `placedBlockTtlMillis` and pay no harvest XP while the stamp lasts. Provenance follows piston moves and falling blocks. Fluids poured from a bucket count as placed. Mobs from spawners, eggs, buckets, breeding and portals, and withers or golems players build, pay no kill or damage XP. A break stamps the position for `replaceDenyTtlMillis`. Re-placing there inside that window pays nothing. Bonemealed growth uses `bonemealTtlMillis` and pays `bonemealHarvestMultiplier`.
 
 Novelty is three multipliers. Spatial repeats reset after `spatialCellTtlMillis` idle. Activity variety depends on the frequencies in recent reward history; a dominant repeated activity receives less than an evenly varied history. Stillness multiplies the award by `stillnessFloorMultiplier` after a continuous run spanning `stillnessWindowMillis` and at least `stillnessMinEvents` awards. Positional movement beyond `stillnessEpsilon` or a world change restarts the run; turning the camera does not.
 
@@ -143,6 +143,27 @@ XL20L7  XL40L7  XL80L7  XL100L7  XL160L7
 | `absoluteBurstXp` | `80000` | Initial allowance counted in final credited XP |
 | `absoluteXpPerMinute` | `48000` | Continuous refill rate counted in final credited XP |
 | `maximumAllowanceBoost` | `4` | Largest multiplier used to normalize skill and shared allowance usage |
+
+### `[mutations]`
+
+| Key | Default | What it does |
+|---|---:|---|
+| `requiredSkillLevel` | `15` | Level both skills need before they can be merged |
+| `maxMutations` | `0` | Most mutations one player may hold; `0` means no limit. A skill is in one mutation only, so 24 skills allow at most 12 |
+| `sameActionSmallerShare` | `0.25` | Share of the smaller award kept when one action pays both parents of a mutated skill |
+| `rateAllowanceMultiplier` | `1.5` | Scales a mutated skill's per-skill allowance in `[xpEarningLimits]` |
+| `triggerCooldownMillisAtFirstLevel` | `8000` | Graft and Echo cooldown at level 1 |
+| `triggerCooldownMillisAtTopLevel` | `4000` | Graft and Echo cooldown at the top level; levels between scale linearly |
+| `convergenceCooldownMillis` | `45000` | Convergence cooldown |
+| `barterCooldownMillis` | `6000` | Barter cooldown, at least 500 |
+| `attunementIntervalMillis` | `20000` | Time between Attunement boons while its State holds, at least 1000 |
+| `hostileRadius` | `6.0` | Blocks within which a hostile makes an either Trigger use the fight Strike and becomes its target |
+| `doubleSneakWindowMillis` | `400` | Longest gap between the two presses of Barter's double-tap sneak, at least 50 |
+| `upgradeXpPerMinute` | `600.0` | Most skill XP one upgrade pays a player each minute |
+| `overchargeStrength` | `1.5` | Multiplier on an upgrade's effect when it spends the partner skill's Fuel, from 1 to 4 |
+| `buildBlocksPerTick` | `64` | Most blocks all build batches together place, break or undo in one tick, from 1 to 4096 |
+
+How merging works: [Mutations](/adapt/35-mutations).
 
 ### `[xpIntegrity]`, provenance
 

@@ -2,7 +2,7 @@
 title: "Skill - Crafting"
 description: "Crafting XP sources, adaptations, recipes, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -21,12 +21,12 @@ Every adaptation has an Enabled control in its level screen. These controls chan
 
 | Adaptation | Additional controls |
 |---|---|
-| A Boutilier's Backpacks! (`crafting-backpacks`) | `storage`: New backpack storage; `mode-switch`: Allow storage mode switching |
+| A Boutilier's Backpacks (`crafting-backpacks`) | `storage`: New backpack storage; `mode-switch`: Allow storage mode switching |
 | Bulk Artisan (`crafting-bulk-artisan`) | `materials`: Allowed material categories; `batch-limit`: Extra batch limit; `ingredient-reserve`: Ingredient reserve |
 | Compactor (`crafting-compactor`) | `materials`: Allowed material categories; `batch-limit`: Compaction batch limit; `loose-reserve`: Loose ingredient reserve |
 | Deconstruction (`crafting-deconstruction`) | `materials`: Allowed material categories; `confirmation`: Confirm named or enchanted salvage |
 | Masterwork (`crafting-masterwork`) | `durability`: Durability bonus; `enchantments`: Enchantment bonus; `attributes`: Attribute bonus |
-| Portable Tables! (`crafting-stations`) | `sneak`: Require sneak to open; `workbench`: Crafting table; `grindstone`: Grindstone; `anvil`: Anvil; `stonecutter`: Stonecutter; `cartography`: Cartography table; `loom`: Loom |
+| Portable Tables (`crafting-stations`) | `sneak`: Require sneak to open; `workbench`: Crafting table; `grindstone`: Grindstone; `anvil`: Anvil; `stonecutter`: Stonecutter; `cartography`: Cartography table; `loom`: Loom |
 
 Material filters select supported result or ingredient categories; they never enable a new recipe. Batch limits apply only to bonus production. Ingredient reserves keep 0, 8 or 32 matching items; Compactor leaves that loose reserve before compressing. Masterwork opt-outs suppress the selected bonus without another roll. Backpack preferences apply to newly crafted bags; existing bags retain their storage and contents, and mode conversion still requires an empty bag. Disabling Backpacks closes and saves its open container. Confirmations require repeating the same action on the same items within five seconds.
 
@@ -85,7 +85,7 @@ Right-click a campfire with rotten flesh to cook it into leather (`crafting-leat
 
 Five shaped recipes place eight of a ring material around one `BONE_BLOCK`: `crafting-skeletonskull` maps `BONE` to `SKELETON_SKULL`, `crafting-witherskeletonskull` maps `NETHER_BRICK` to `WITHER_SKELETON_SKULL`, `crafting-zombieskull` maps `ROTTEN_FLESH` to `ZOMBIE_HEAD`, `crafting-creeperhead` maps `GUNPOWDER` to `CREEPER_HEAD`, and `crafting-dragonhead` maps `DRAGON_BREATH` to `DRAGON_HEAD`.
 
-### Backpacks (`crafting-backpacks`)
+### A Boutilier's Backpacks (`crafting-backpacks`)
 
 <div class="adapt-demo">
 <video aria-label="First-person demonstration of Backpacks" src="https://media.volmitsoftware.com/adapt-assets/demos/crafting/crafting-backpacks-pov.webm" muted loop playsinline controls preload="none"></video>
@@ -140,7 +140,7 @@ Nineteen shapeless recipes turn eight drops plus one host into one ore: `STONE` 
 
 5 levels · 4 knowledge, then 3 per level
 
-A completed shift-click craft pulls matching ingredients from the inventory and crafts extra items up to the batch cap. Custom recipes retain their exact ingredient requirements, including item metadata.
+A completed shift-click craft pulls matching ingredients from the inventory and crafts extra items up to the batch cap. Custom recipes retain their exact ingredient requirements, including item metadata. Buckets and bottles from milk, water, lava, powder snow, honey and dragon's breath come back as they do at a table.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -280,3 +280,5 @@ Written to `plugins/Adapt/skills/crafting.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Crafting upgrades](/adapt/upgrades/crafting).

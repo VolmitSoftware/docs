@@ -176,27 +176,28 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 | Scaffolder | Sneak-place blocks as temporary scaffolds that dissolve on their own and refund the block to you! | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Silk-Touch Glass | Break glass blocks with an empty hand to pick them up without shattering them. | 1 | Utility | 2 | 2 | 1 | 6 | 6 | 6 | yes |
 | Steady Hands | While bridging over open air you take no knockback, shrug off falls, and place with a steadier rhythm! | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
+| Brickbat | Punch a creature with a block in hand, or swing at one in range, to throw one block at it. Heavier blocks hit harder, and the block drops where it lands. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Elevator | Build fast vertical elevators. Craft each Elevator Block with an Ender Pearl in the center, surrounded by 8 Wool. | 1 | Core | 3 | 4 | 1 | 10 | 10 | 10 | no |
 | Magic Foundation | This allows for you to sneak and place a temporary foundation beneath you! | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Redstone Remote | This allows for you to use a redstone torch to toggle redstone, remotely! | 1 | Core | 3 | 4 | 1 | 10 | 10 | 10 | yes |
 | Supply Line | When the stack in your hand runs out, it refills automatically from shulker boxes or bundles in your inventory! | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
-| Builders Wand | Sneak while holding a block that matches the surface you are looking at to place multiple blocks across it at once. You may need to move slightly to refresh the placement preview. | 1 | Strong | 5 | 6 | 1 | 16 | 16 | 16 | no |
+| Builder's Wand | Sneak while holding a block that matches the surface you are looking at to place multiple blocks across it at once. You may need to move slightly to refresh the placement preview. | 1 | Strong | 5 | 6 | 1 | 16 | 16 | 16 | no |
 
 ### Axes
 
 | Adaptation | Description | Max level | Tier | Base cost | Initial cost | Cost factor | Level 1 cost | Cost per level | Total cost | Permanent |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Axe Drop-To-Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
+| Axe Drop to Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
 | Lucy's Log-Swapper | Change the flavor of logs in a Crafting Table! | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | yes |
 | Bark Hide | Chopping logs layers on short-lived absorption that fades once you stop working. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
-| Leaf-miner | Allows you to break bulk leaves at once! | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
+| Leaf-Miner | Allows you to break bulk leaves at once! | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Shield Splitter | Axe hits on blocking foes disable their shield longer and deal bonus damage. | 4 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6 | 19 | no |
 | Cleave | Melee axe swings cleave extra enemies in a short frontal arc. | 3 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8 | 20 | no |
 | Sunder | Axe hits shred a target's armor and armor toughness in stacking layers that fade over time. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Throwing Axe | Left-click air with an axe to hurl it as a spinning projectile that deals its melee damage. | 4 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10 | 30 | no |
 | Axe Chop | Chop down trees by right clicking the base log! | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 | Axe Ground Smash | Jump, then crouch and smash all nearby enemies. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
-| Wood-miner | Allows you to break bulk wood at once! | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
+| Wood-Miner | Allows you to break bulk wood at once! | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 
 ### Blocking
 
@@ -250,7 +251,7 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 | Rewind | Sneak and swap hands to mark a moment in time, then do it again within the window to snap back with health and hunger restored. Each rewind costs hunger. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 | Stasis Field | Sneak and right click with an amethyst shard to deploy a stasis bubble that freezes projectiles in midair and locks down mobs inside. Consumes the shard on cast. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 | Time Bomb | Throw a crafted chrono bomb that creates a temporal field, slows entities, and freezes projectiles. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
-| Time In A Bottle | Carry a temporal bottle that stores time and spend it to accelerate timed blocks, growables, and Ageable entities such as baby animals. Recipe (Shapeless): Swiftness Potion + Clock + Glass Bottle. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
+| Time in a Bottle | Carry a temporal bottle that stores time and spend it to accelerate timed blocks, growables, and Ageable entities such as baby animals. Recipe (Shapeless): Swiftness Potion + Clock + Glass Bottle. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 | Hourglass Guard | A killing blow instead leaves you at half a heart, granting brief invulnerability and slowing nearby enemies, on a long cooldown. | 3 | Keystone | 7 | 6 | 0.7 | 17 | 17, 16, 21 | 54 | no |
 
 ### Crafting
@@ -261,14 +262,14 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 | Compactor | Sneak and swap hands while aiming at a Crafting Table to compact full stacks into blocks immediately. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
 | Craftable Leather | Craft Leather from Rotten Flesh | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | yes |
 | Crafting XP | Periodically gain a bounded vanilla XP orb when crafting | 7 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2, 3, 3, 4, 4 | 20 | no |
-| Craftable skulls! | Using Materials you can Craft Mob Skulls! | 1 | Utility | 2 | 2 | 1 | 6 | 6 | 6 | yes |
+| Craftable Skulls | Using Materials you can Craft Mob Skulls! | 1 | Utility | 2 | 2 | 1 | 6 | 6 | 6 | yes |
 | Provisioner | Crafting or cooking food has a chance to yield bonus portions. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Thrifty Hands | Crafts using at least three different materials have a chance to refund one ingredient unit. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Masterwork | Each tool and armor piece you craft independently rolls variable bonus durability, a minor beneficial enchantment, and a full-level attribute bonus. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Ore Reconstruction | Recraft ores from their base components! | 1 | Core | 3 | 4 | 1 | 10 | 10 | 10 | yes |
-| Portable Tables! | Click the air while holding an anvil, crafting table, grindstone, stonecutter, cartography table, or loom to open it without placing it. Each open costs hunger. | 1 | Core | 3 | 4 | 1 | 10 | 10 | 10 | yes |
+| Portable Tables | Click the air while holding an anvil, crafting table, grindstone, stonecutter, cartography table, or loom to open it without placing it. Each open costs hunger. | 1 | Core | 3 | 4 | 1 | 10 | 10 | 10 | yes |
 | Tinkerer | Combine two damaged tools of the same type in the crafting grid to keep their best enchantments. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
-| A Boutilier's Backpacks! | Craft a Backpack that stores whole stacks and opens as its own container. | 1 | Strong | 5 | 6 | 1 | 16 | 16 | 16 | yes |
+| A Boutilier's Backpacks | Craft a Backpack that stores whole stacks and opens as its own container. | 1 | Strong | 5 | 6 | 1 | 16 | 16 | 16 | yes |
 | Deconstruction | Deconstruct blocks & items into salvageable base components! | 1 | Keystone | 8 | 8 | 1 | 24 | 24 | 24 | no |
 
 ### Discovery
@@ -313,17 +314,18 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 
 | Adaptation | Description | Max level | Tier | Base cost | Initial cost | Cost factor | Level 1 cost | Cost per level | Total cost | Permanent |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Shovel Drop-To-Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
+| Shovel Drop to Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
 | Grave Digger | Digging earthen ground can unearth bone loot, and rarely disturbs a hostile grave. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Hasty Excavator | Starting a block break grants stable Haste long enough to finish slower excavation blocks. | 3 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5 | 13 | no |
 | Mudlark | Bonus drops from muddy blocks, plus haste while digging in water or rain. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Soft Fall | Landing on soft diggable ground reduces fall damage, up to full negation. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Burrow | Sneak-right-click soft ground with a shovel to rapidly dig straight down, stopping before hazards. Each burrow costs hunger and tool durability. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
+| Clod Hurler | Dig soft ground with a shovel while a hostile mob is in sight to fling the dug block at the nearest one. Its drop flies back to you. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Earth Mover | Sneak-right-click the air with a shovel to damage, knock back, and slow hostile mobs with a wave of earth. Damage scales from the held shovel. Each wave costs hunger. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Seismic Ping | Mining can temporarily reveal a nearby ore block with a private colored glow. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Treasure Hunter | Digging sand, gravel, mud, or clay can unearth archaeology treasure. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | OMNI - T.O.O.L. | Merge your tools into one omni-tool that swaps to the right tool for the job. Shift-click one tool onto another in your inventory to merge; sneak-drop to disassemble. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
-| Super-Seeing Spelunker! | Hold glow berries in your main hand to reveal glowing ore displays through the ground. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
+| Super-Seeing Spelunker | Hold glow berries in your main hand to reveal glowing ore displays through the ground. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 | Tunneler | Sneak while digging soft blocks to carve a whole plane at once. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 
 ### Golemancy
@@ -347,7 +349,7 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 | Rancher Core | Golems bound with a Rancher Core tend the animals in a Pasture Node's area: they breed pairs up to the node's keep count, then shear sheep, milk cows and goats, and cull spare adults as the core grows stronger. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Sorter Core | Copper golems bound with a Sorter Core empty the container under an Input Node into nearby containers that already hold each item, and learn item groups, Filter Nodes, restocking and fetching as the core grows stronger. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Stasis | Pack your bound golems into Dormant Golem blocks with the Crook and place the block to wake them anywhere, with their cores, runes, cargo and health intact. | 3 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8 | 20 | no |
-| Masterwork | Infuse a Masterwork Heart at the Animus Plinth and slot it into a golem for an extra rune slot, more health, a second core and stronger runes. | 3 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14 | 36 | no |
+| Golem Masterwork | Infuse a Masterwork Heart at the Animus Plinth and slot it into a golem for an extra rune slot, more health, a second core and stronger runes. | 3 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14 | 36 | no |
 | Runic Augments | Lets you infuse runes at the Animus Plinth and slot them into your bound golems for speed, carrying, fire, reach, channels, yield and armor. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 
 ### Herbalism
@@ -356,7 +358,7 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 |---|---|---|---|---|---|---|---|---|---|---|
 | Herbalist's Myconid | Gives you the ability to craft Mycelium | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | yes |
 | Herbalist's Terralid | Gives you the ability to craft Grass Blocks | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | yes |
-| Hoe Drop-To-Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
+| Hoe Drop to Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
 | Mushroom Maker | Gives you the ability to craft Mushroom Blocks in a Crafting Table | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | yes |
 | Spore Bloom | Sneak-right-click mycelium with mushrooms to spread controlled bloom patches. | 5 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2, 3, 3 | 12 | no |
 | Webby Creator | Gives you the ability to craft Cobwebs in a Crafting Table | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | yes |
@@ -376,7 +378,7 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 |---|---|---|---|---|---|---|---|---|---|---|
 | Blood Trail | Mobs you wound below half health leave a private glowing blood trail only you can see. | 5 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2, 3, 3 | 12 | no |
 | Hunter's Heights | When you are struck you gain jump-boost, at the cost of hunger | 5 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2, 3, 3 | 12 | no |
-| Items Drop-To-Inventory | Kills and blocks broken with a sword in hand send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
+| Items Drop to Inventory | Kills and blocks broken with a sword in hand send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
 | Hunter's Luck | When you are struck you gain luck, at the cost of hunger | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Hunter's Speed | When you are struck you gain speed, at the cost of hunger | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Snare Line | Craft a string-and-iron snare; hostile mobs that cross it are rooted briefly. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
@@ -435,7 +437,7 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 
 | Adaptation | Description | Max level | Tier | Base cost | Initial cost | Cost factor | Level 1 cost | Cost per level | Total cost | Permanent |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Pickaxe Drop-To-Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
+| Pickaxe Drop to Inventory | Blocks you break send their drops straight into your inventory. | 1 | Minor | 1 | 1 | 1 | 3 | 3 | 3 | no |
 | Trophy Polish | Mining naturally generated heads, skulls, and dragon eggs grants bounded vanilla XP | 5 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2, 3, 3 | 12 | no |
 | Deep Core | Mining deepslate grants Haste so it digs like normal stone | 3 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5 | 13 | no |
 | Obsidian Rush | Mining obsidian with a diamond or netherite pickaxe grants a strong Haste burst | 3 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5 | 13 | no |
@@ -490,24 +492,25 @@ The same data is available as a spreadsheet: [adaptation-costs.csv](/adapt-asset
 |---|---|---|---|---|---|---|---|---|---|---|
 | Coral Gardener | Coral you place survives out of water far longer, bonemeal grows coral, and reef blocks grant bonus XP. | 5 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2, 3, 3 | 12 | no |
 | Ink Veil | Taking damage underwater bursts an ink cloud that blinds hostiles and briefly hides you from drowned and guardians. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
-| Organic Oxygen Tank | Hold more oxygen in your tiny lungs! | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
-| Turtle's Vision | While underwater, you gain Night Vision | 1 | Utility | 2 | 2 | 1 | 6 | 6 | 6 | no |
+| Organic Oxygen Tank | Hold far more air underwater, and see in the dark there from level 2. | 5 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6, 7 | 26 | no |
 | Brine Skin | While wet you slowly regenerate and take reduced damage, and the buff lingers briefly after you dry off. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Deep Salvager | Underwater containers appear as private aqua glowing block displays and reward bonus treasure the first time you open them submerged. | 4 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10 | 30 | no |
 | Dolphin's Grace | Swim like a dolphin, without the dolphins - sprint-swimming channels real Dolphin's Grace | 7 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12, 13, 15 | 70 | no |
 | Fish Whisperer | Fish school toward you, dolphins and axolotls assist your hunts, and you fish with a permanent Luck of the Sea tier. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Fisher's Fantasy | Fishing can grant one bounded bonus item, vanilla XP, and Seaborne XP. | 7 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12, 13, 15 | 70 | no |
 | Hydro Jet | Tap sneak while swimming to burst forward on a jet of water. Costs hunger and consumes a charge. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
-| Pressure Diver | Gain absorption hearts and depth-based protection underwater while partially countering Mining Fatigue. | 4 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10 | 30 | no |
+| Rain-Fed | While you are in water or rain, moving, mining and fighting cost no hunger, and your food and saturation slowly refill. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
+| Tidal Ward | Absorption hearts build up while you are in water or rain. Any hit pauses the ward, and it drains away soon after you dry off. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Tidecaller | Surge forward with a water burst while in water or rain, triggered by sneaking or an attack swing depending on server settings. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
 | Trident Mastery | Tridents deal bonus damage and home back to you faster after a throw. | 5 | Core | 3 | 2 | 0.6 | 6 | 6, 6, 8, 10, 12 | 42 | no |
-| Turtle Miner | Mine faster underwater whether standing or floating. | 1 | Core | 3 | 4 | 1 | 10 | 10 | 10 | no |
+| Turtle Miner | Mine faster underwater whether standing or floating, and shrug off most of a guardian's Mining Fatigue. | 1 | Core | 3 | 4 | 1 | 10 | 10 | 10 | no |
+| Storm Strike | While rain falls on you or you are in water, your melee and trident hits call lightning: the first hit on each target, then every few hits. Thunderstorms strike harder and more often. | 5 | Strong | 5 | 3 | 0.6 | 11 | 11, 11, 14, 17, 20 | 73 | no |
 
 ### Stealth
 
 | Adaptation | Description | Max level | Tier | Base cost | Initial cost | Cost factor | Level 1 cost | Cost per level | Total cost | Permanent |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Stealth | Core concealment for backstabs, Cutpurse, and Assassinate. Sneaking uses observer awareness; invisibility or an active Shadow Decoy always counts as undetected. | 3 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2 | 6 | no |
+| Silent Step | Core concealment for backstabs, Cutpurse, and Assassinate. Sneaking uses observer awareness; invisibility or an active Shadow Decoy always counts as undetected. | 3 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2 | 6 | no |
 | Trap Sense | While sneaking, nearby trapped chests, tripwire string, hooks, pressure plates, and sculk blocks privately glow. Maximum level prevents all of your movement vibrations from triggering sculk. | 4 | Minor | 1 | 1 | 0.5 | 2 | 2, 2, 2, 3 | 9 | no |
 | Cutpurse | While Stealth reports you undetected, hits on pillagers, vindicators, and piglins can steal loot without a kill. | 4 | Utility | 2 | 1 | 0.5 | 4 | 4, 4, 5, 6 | 19 | no |
 | Enderveil | Look at Endermen freely - prevents Enderman aggression without wearing a pumpkin. | 2 | Utility | 2 | 1 | 0.5 | 4 | 4, 4 | 8 | no |

@@ -2,12 +2,14 @@
 title: "Skill - Seaborne"
 description: "Seaborne XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Seaborne gains XP from swimming, fishing, reeling in a non-fish entity, underwater block breaks, drowned damage, trident damage, and killing sea creatures. Swimming pays per second and per block of horizontal distance; vertical movement alone, such as idling in a bubble column, pays nothing. Sea creatures are fish, squid, glow squid, dolphins, guardians, elder guardians, drowned, turtles, axolotls, tadpoles, and nautiluses, plus any mob the platform tags as a water mob or fish. Ones spawned from buckets, spawners, spawn eggs, dispensed eggs, or breeding pay no kill XP. Its 14 adaptations add air, swim speed, underwater vision and mining, damage protection, escape tools, wreck salvage, coral growth, aquatic allies, trident upgrades, and burst movement.
+Seaborne gains XP from swimming, fishing, reeling in a non-fish entity, underwater block breaks, drowned damage, trident damage, and killing sea creatures. Swimming pays per second and per block of horizontal distance; vertical movement alone, such as idling in a bubble column, pays nothing. Sea creatures are fish, squid, glow squid, dolphins, guardians, elder guardians, drowned, turtles, axolotls, tadpoles, and nautiluses, plus any mob the platform tags as a water mob or fish. Ones spawned from buckets, spawners, spawn eggs, dispensed eggs, or breeding pay no kill XP. Its 15 adaptations add air and underwater sight, swim speed, underwater mining, storm lightning, an absorption ward, food that lasts in the rain, damage protection, escape tools, wreck salvage, coral growth, aquatic allies, trident upgrades, and burst movement.
+
+Rain counts as wet only where rain actually falls on the player: during a storm, with nothing above their feet or head that stops rain, in a biome where it rains rather than snows or stays dry. Deserts, savannas, badlands, snowy biomes and any roofed spot never count.
 
 ## Adaptations
 
@@ -20,13 +22,14 @@ Every adaptation has an Enabled control at the bottom of its level screen. Perso
 <video aria-label="Third-person demonstration of Organic Oxygen Tank" src="https://media.volmitsoftware.com/adapt-assets/demos/seaborne/seaborne-oxygen-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
-5 levels · 5 knowledge, then 3 per level
+5 levels · 4, 4, 5, 6, 7 knowledge
 
-Passive oxygen bonus is `level * airPerLevelTics / 75`, clamped to 1, and 1 is a bonus of 1024.
+Passive oxygen bonus is `level * airPerLevelTics / 75`, clamped to 1, and 1 is a bonus of 1024; at the default of 19 the air bar never runs out from level 4. From `nightVisionFromLevel` the player also has Night Vision while in water. It is removed on surfacing only when it is this adaptation's own effect: non-ambient, particle-free, and amplifier 0. A Night Vision potion from another source is left in place. Turtle's Vision, which gave only that Night Vision, is now part of this adaptation; a player who had learned it gets its 6 knowledge back on their next login.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `airPerLevelTics` | `15` | Air ticks saved per level out of a 75 tick drowning pulse. The resulting fraction becomes the oxygen bonus attribute. |
+| `airPerLevelTics` | `19` | Air ticks saved per level out of a 75 tick drowning pulse. The resulting fraction becomes the oxygen bonus attribute. |
+| `nightVisionFromLevel` | `2` | First level that also gives Night Vision while in water. `0` gives it at every level. |
 
 ### Dolphin's Grace (`seaborne-speed`)
 
@@ -60,23 +63,6 @@ Each committed fish catch makes one roll, with chance interpolated from `bonusCh
 | `skillXpOnSuccess` | `8` | Seaborne skill XP granted after a successful roll. |
 | `cooldownMillis` | `5000` | Minimum milliseconds between successful reward bundles. |
 
-### Turtle's Vision (`seaborne-turtles-vision`)
-
-<div class="adapt-demo">
-<video aria-label="First-person demonstration of Turtle&#x27;s Vision" src="https://media.volmitsoftware.com/adapt-assets/demos/seaborne/seaborne-turtles-vision-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Turtle&#x27;s Vision" src="https://media.volmitsoftware.com/adapt-assets/demos/seaborne/seaborne-turtles-vision-observer.webm" muted loop playsinline controls preload="none"></video>
-</div>
-
-1 level · 3 knowledge
-
-Night Vision stays on while the player is in water and is removed on surfacing only when it is this adaptation's own effect: non-ambient, particle-free, and amplifier 0. A Night Vision potion from another source is left in place.
-
-| Key | Code default | Behavior / units |
-|-----|--------------|------------------|
-| `nightVisionDurationTicks` | `600` | Duration of the hidden-particle Night Vision refresh, clamped from 20 to 6000 ticks. |
-| `nightVisionRefreshThresholdTicks` | `500` | Remaining duration at which Adapt reapplies its effect, clamped below the configured duration. |
-| `refreshIntervalMillis` | `3000` | Underwater-state check interval, clamped from 250 to 10000 ms and applied immediately on hot reload. |
-
 ### Turtle Miner (`seaborne-turtles-mining-speed`)
 
 <div class="adapt-demo">
@@ -86,7 +72,7 @@ Night Vision stays on while the player is in water and is removed on surfacing o
 
 1 level · 3 knowledge
 
-In water, submerged mining speed is raised and stacks with Aqua Affinity; it is an attribute, not Haste, and it does not require Water Breathing. Off the ground, a separate break-speed modifier covers the airborne penalty, and both modifiers clear on surfacing.
+In water, submerged mining speed is raised and stacks with Aqua Affinity; it is an attribute, not Haste, and it does not require Water Breathing. Off the ground, a separate break-speed modifier covers the airborne penalty, and both modifiers clear on surfacing. Under Mining Fatigue in water, as a guardian gives it, a third modifier cancels most of the slowdown: Mining Fatigue III mines about as fast as Mining Fatigue I, and Mining Fatigue I itself is never offset. Needs Minecraft 1.21 or newer, like the rest of Turtle Miner.
 
 Personal controls: Compensate floating penalty (on/off).
 
@@ -97,6 +83,9 @@ Personal controls: Compensate floating penalty (on/off).
 | `floatingMiningSpeedMultiplier` | `5.0` | Effective floating compensation multiplier, clamped from 1 to 10. Five cancels vanilla's one-fifth penalty. |
 | `attributeDurationTicks` | `160` | Duration of each refreshed modifier, clamped from 20 to 1200 ticks. |
 | `refreshIntervalMillis` | `3000` | Passive state-refresh interval, clamped from 250 to 10000 ms and applied immediately on hot reload. |
+| `fatigueTrimChance` | `0.65` | Share, 0-1, of Mining Fatigue's slowdown cancelled each tick while mining in water. |
+| `fatigueTrimAmount` | `2` | Mining Fatigue amplifier steps each cancelled tick removes. |
+| `fatigueCounterDurationTicks` | `80` | Ticks the fatigue counter lasts per refresh, clamped to the remaining Mining Fatigue duration and from 20 to 1200. Zero disables it. |
 
 ### Tidecaller (`seaborne-tidecaller`)
 
@@ -107,7 +96,7 @@ Personal controls: Compensate floating penalty (on/off).
 
 5 levels · 4 knowledge
 
-Dash cooldown is displayed on the heart of the sea. Water means the player is in water, swimming, or has feet or eyes in liquid; rain means a storm with open sky above the player.
+Dash cooldown is displayed on the heart of the sea. Water means the player is in water, swimming, or has feet or eyes in liquid; rain means rain falling on the player, as described at the top of this page.
 
 Personal controls: Sneak trigger (on/off); Attack trigger (on/off); Sneak required for attacks (on/off); Water required for attacks (on/off); Water dashes (on/off); Rain dashes (on/off); Horizontal direction (on/off). Hydro Jet’s Shared sneak priority decides which adaptation receives overlapping sneak input. Attack input is independent. Server requirements for sneak, water and horizontal direction still apply.
 
@@ -140,36 +129,23 @@ Personal controls: Sneak trigger (on/off); Attack trigger (on/off); Sneak requir
 | `replaceVerticalMomentum` | `false` | True replaces current vertical velocity with `verticalMomentum` instead of adding it. |
 | `preserveSwimmingAfterDash` | `true` | Re-applies the swimming pose after a dash when the player was swimming and is still in water. |
 
-### Pressure Diver (`seaborne-pressure-diver`)
+### Tidal Ward (`seaborne-pressure-diver`)
 
-<div class="adapt-demo">
-<video aria-label="First-person demonstration of Pressure Diver" src="https://media.volmitsoftware.com/adapt-assets/demos/seaborne/seaborne-pressure-diver-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Pressure Diver" src="https://media.volmitsoftware.com/adapt-assets/demos/seaborne/seaborne-pressure-diver-observer.webm" muted loop playsinline controls preload="none"></video>
-</div>
+5 levels · 6, 6, 8, 10, 12 knowledge
 
-4 levels · 4 knowledge
-
-Depth is sea level minus eye height. Crossing the depth threshold grants Resistance and a max-absorption pool that fills once per dive and grows only when the adaptation level rises; surfacing removes only that pool, the deep threshold raises Resistance to amplifier 1, Water Breathing is not granted, and Mining Fatigue is only partly offset because Aqua Affinity and Turtle Miner still cover the ordinary underwater and floating penalties.
+While the player is wet (in water, swimming, or in rain that falls on them), the ward gains absorption health each second up to its cap. Any damage stops it from gaining for the pause time, so it cannot keep refilling during a fight, and drowning damage counts. After the player dries off, the ward keeps its hearts for the linger time and then drains them. The ward holds only its own points: it raises the absorption limit by what it holds, never refills absorption from a golden apple or another adaptation, and absorption it lost to damage only comes back at the normal gain rate. Leaving and re-entering water refills nothing. The id is still `seaborne-pressure-diver`, so players who had Pressure Diver keep their levels. Pressure Diver's Mining Fatigue counter moved to Turtle Miner.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `depthThresholdBase` | `10` | Blocks below sea level required for the buff, before level scaling. |
-| `depthThresholdFactor` | `6` | Blocks removed from the depth requirement at max level. Floors at 2. |
-| `deepThresholdBase` | `18` | Blocks below sea level required for the stronger Resistance tier, before level scaling. |
-| `deepThresholdFactor` | `8` | Blocks removed from the deep tier requirement at max level. Floors at 4. |
-| `damageReductionBase` | `0.12` | Damage reduction while deep, as a fraction 0-1, before level scaling. |
-| `damageReductionFactor` | `0.26` | Extra damage reduction fraction gained at max level. |
-| `maxDamageReduction` | `0.45` | Hard cap on the damage reduction fraction, 0-1. |
-| `absorptionHealthBase` | `4` | Absorption health points granted at level 1. Two health points display as one heart. |
-| `absorptionHealthFactor` | `8` | Additional absorption health points granted at level 4, for 12 points or six hearts total by default. |
-| `fatigueTrimChanceBase` | `0.2` | Chance term, 0-1, feeding the fatigue cancellation math, before level scaling. |
-| `fatigueTrimChanceFactor` | `0.45` | Extra chance term gained at max level. Total is clamped to 1. |
-| `fatigueTrimAmountBase` | `1` | Mining Fatigue amplifier steps represented by each conceptual trim proc, before level scaling. |
-| `fatigueTrimAmountFactor` | `1` | Extra amplifier steps per conceptual trim proc at max level. |
-| `effectTicks` | `60` | Duration in ticks of each Resistance refresh, clamped from 20 to 1200, and the basis for the refresh cadence. |
-| `fatigueCounterDurationTicks` | `80` | Maximum ticks the mining-speed counter lasts, clamped to the remaining Mining Fatigue duration and from 20 to 1200. Zero disables it. |
-| `xpPerDepthPulse` | `6` | Skill XP granted per depth pulse. |
-| `xpPulseCooldownMillis` | `3000` | Milliseconds between depth XP pulses. |
+| `capAtLevelOne` | `4` | Most absorption health the ward holds at level 1. Two health points are one heart. |
+| `capAtTopLevel` | `12` | Most absorption health at the top level. Levels between are linear. |
+| `gainPerSecondAtLevelOne` | `0.5` | Absorption health gained each wet second at level 1. |
+| `gainPerSecondAtTopLevel` | `1` | Absorption health gained each wet second at the top level. |
+| `pauseMillisAtLevelOne` | `6000` | Milliseconds without gain after any damage, at level 1. |
+| `pauseMillisAtTopLevel` | `4000` | Milliseconds without gain after any damage, at the top level. |
+| `lingerMillisAtLevelOne` | `2000` | Milliseconds the ward keeps its hearts after drying off, at level 1. |
+| `lingerMillisAtTopLevel` | `6000` | Milliseconds the ward keeps its hearts after drying off, at the top level. |
+| `drainPerSecond` | `2` | Absorption health lost each second once dry and past the linger time. |
 
 ### Coral Gardener (`seaborne-coral-gardener`)
 
@@ -322,7 +298,7 @@ Personal controls: Jet gesture (Single sneak/Double sneak); Food reserve (No res
 
 5 levels · 3 knowledge
 
-In water, while swimming, or under open sky in a storm, Regeneration is applied at amplifier `floor(levelPercent * 3)`, capped at 2 (Regeneration III), and incoming damage is reduced. Both effects last through the linger after that wet state ends.
+In water, while swimming, or with rain falling on the player, Regeneration is applied at amplifier `floor(levelPercent * 3)`, capped at 2 (Regeneration III), and incoming damage is reduced. Both effects last through the linger after that wet state ends.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -331,6 +307,44 @@ In water, while swimming, or under open sky in a storm, Regeneration is applied 
 | `maxDamageReduction` | `0.25` | Hard cap on the damage reduction fraction, 0-1. |
 | `lingerSecondsBase` | `3` | Seconds the wet state persists after leaving water, before level scaling. |
 | `lingerSecondsFactor` | `4` | Extra linger seconds gained at max level. |
+
+### Storm Strike (`seaborne-storm-strike`)
+
+5 levels · 11, 11, 14, 17, 20 knowledge
+
+While rain falls on the player or they are in water, their melee hits and thrown trident hits call lightning on the target: the first hit on each target strikes, then every `strikeEvery` hits after it. In a thunderstorm's rain the strike deals `thunderDamageMultiplier` times the damage and comes one hit sooner, never more often than every second hit. Sweep hits do not count. A target is forgotten `targetMemoryMillis` after the last hit on it.
+
+The lightning is drawn with particles and thunder sounds and its damage is added to the hit itself. No lightning entity is spawned, so it starts no fire, charges no creeper, turns no pig, villager or mooshroom, powers no lightning rod and scrapes no copper. Because the damage rides on the hit, it reaches only targets the hit could reach: protected areas and PvP rules apply as for the hit, and the player's own pets are never struck. Mobs from spawners, spawn eggs, breeding and other farmed sources, minions and grave mobs are never struck, so a mob farm gains no damage, drops or XP from it. Strikes on natural mobs pay `xpPerStrike`; strikes on players pay nothing, so two players cannot trade strikes for XP.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `damageAtLevelOne` | `3` | Damage added to the hit at level 1. |
+| `damageAtTopLevel` | `7` | Damage added to the hit at the top level. Levels between are linear. |
+| `thunderDamageMultiplier` | `1.5` | Damage multiplier in a thunderstorm's rain. |
+| `strikeEveryAtLevelOne` | `3` | Hits on one target from one strike to the next at level 1. |
+| `strikeEveryAtTopLevel` | `2` | Hits from one strike to the next at the top level. |
+| `thunderStrikeEveryReduction` | `1` | Hits removed from that count in a thunderstorm. |
+| `minimumStrikeEvery` | `2` | Fewest hits from one strike to the next; never below 2. |
+| `targetStrikeGapMillis` | `1500` | Shortest time between two strikes on the same target. |
+| `strikeGapMillis` | `600` | Shortest time between any two strikes by the player, which limits strikes across a crowd. |
+| `targetMemoryMillis` | `20000` | Time a target is remembered after the last hit; after that the next hit counts as the first again. |
+| `xpPerStrike` | `4` | Skill XP per strike on a natural mob. |
+
+### Rain-Fed (`seaborne-rain-fed`)
+
+5 levels · 6, 6, 8, 10, 12 knowledge
+
+While the player is wet, walking, sprinting, swimming, jumping, mining, attacking and taking damage cost no hunger. Each second wet also adds to an allowance of `refillPerMinute` points a minute, held at most one minute's worth, which first refills the food bar and then, once it is full, saturation. From `graceFromLevel` the same holds for a grace time after drying off.
+
+Natural regeneration and the Hunger effect still drain food, and every ability that costs hunger still pays its full cost at once; only the allowance refills them, so Rain-Fed returns at most `refillPerMinute` points a minute however they are spent. Food it restores is marked as granted rather than eaten, the same as Herbalism's boons, so TragOul's work Strike cannot turn it into health, and it never counts as eating for Herbalism's meal effects.
+
+| Key | Code default | Behavior / units |
+|-----|--------------|------------------|
+| `refillPerMinuteAtLevelOne` | `2` | Food and saturation points restored each wet minute at level 1. |
+| `refillPerMinuteAtTopLevel` | `10` | Points restored each wet minute at the top level. Levels between are linear. |
+| `graceFromLevel` | `3` | First level that keeps the player fed after drying off. |
+| `graceMillisAtFirstLevel` | `5000` | Grace in milliseconds at that level. |
+| `graceMillisAtTopLevel` | `15000` | Grace in milliseconds at the top level. |
 
 ## Reference
 
@@ -393,3 +407,5 @@ Written to `plugins/Adapt/skills/seaborne.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Seaborne upgrades](/adapt/upgrades/seaborne).

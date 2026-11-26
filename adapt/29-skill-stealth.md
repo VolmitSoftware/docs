@@ -2,7 +2,7 @@
 title: "Skill - Stealth"
 description: "Stealth XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -14,7 +14,7 @@ The core Stealth adaptation checks whether nearby mobs or players can see you, t
 
 Every adaptation has an Enabled control at the bottom of its level screen. Personal choices are saved per player; the server can lock controls and restrict choices. Full, half and quarter settings only reduce the earned server value. Defaults retain ordinary behavior unless a shared gesture needs one adaptation to take priority.
 
-### Stealth (`stealth-silent-step`)
+### Silent Step (`stealth-silent-step`)
 
 <div class="adapt-demo">
 <video aria-label="First-person demonstration of Stealth" src="https://media.volmitsoftware.com/adapt-assets/demos/stealth/stealth-silent-step-pov.webm" muted loop playsinline controls preload="none"></video>
@@ -404,3 +404,5 @@ Written to `plugins/Adapt/skills/stealth.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Stealth upgrades](/adapt/upgrades/stealth).

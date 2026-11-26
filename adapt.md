@@ -36,6 +36,7 @@ Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys
 ## Skills
 
 - [Skills catalog](/adapt/10-skills-catalog)
+- [Mutations *Merged skills and upgraded adaptations*](/adapt/35-mutations)
 - [Player menu](/adapt/03-player-usage)
 - [Localization](/adapt/07-localization)
 {.links-list}

@@ -2,7 +2,7 @@
 title: "Skill - Enchanting"
 description: "Enchanting XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -147,7 +147,7 @@ Offers gain `max(1, round(powerBase + levelPercent * powerFactor))` virtual book
 
 5 levels · 4 knowledge
 
-Taking a completed grindstone result can return one random enchantment from an enchanted input as a book, plus `round(min(maximumBonusXp, bonusXpBase + levelPercent * bonusXpFactor))` vanilla XP on top of the usual grindstone payout, then starts a `GRINDSTONE` cooldown of `max(minimumCooldownTicks, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks at chance `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Sneaking lets Curse Cleansing take the click instead, and the book level is clamped to the enchantment maximum. The bonus XP also qualifies for Discovery XP, Experimental Unity, and Echo of Knowledge when their requirements are met.
+Taking a completed grindstone result can return one random enchantment from an enchanted input as a book, plus `round(min(maximumBonusXp, bonusXpBase + levelPercent * bonusXpFactor))` vanilla XP on top of the usual grindstone payout, then starts a `GRINDSTONE` cooldown of `max(minimumCooldownTicks, round(cooldownTicksBase - levelPercent * cooldownTicksFactor))` ticks at chance `min(maxRecoverChance, recoverChanceBase + levelPercent * recoverChanceFactor)`. Sneaking lets Curse Cleansing take the click instead, and the book level is clamped to the enchantment maximum. Curses, which the grindstone leaves on the item, are never recovered. While Arcane Hand runs for you, its grindstone library takes the grind and Grindstone Recovery makes no book. The bonus XP also qualifies for Discovery XP, Experimental Unity, and Echo of Knowledge when their requirements are met.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -206,7 +206,7 @@ Dropping exactly one book that stores two or more enchantments, while looking at
 
 5 levels · 6 knowledge
 
-Sneak-right-click an anvil block while holding an enchanted item or book in the main hand to store one `adapt:soul-link-token` on it, replacing any previous link, with re-mark cooldown `max(minRemarkCooldown, round(remarkCooldownBase - levelPercent * remarkCooldownFactor))` ms. On death the item is removed from drops and returned on respawn, or one second after the next join, at `max(minSaveCost, round(saveCostBase - levelPercent * saveCostFactor))` levels taken from kept levels or from dropped XP at 7 XP per level; keep-inventory deaths are skipped, and too few levels lets the item drop normally.
+Sneak-right-click an anvil block while holding an enchanted item or book in the main hand to store one `adapt:soul-link-token` on it, replacing any previous link, with re-mark cooldown `max(minRemarkCooldown, round(remarkCooldownBase - levelPercent * remarkCooldownFactor))` ms. On death the item is removed from drops and returned on respawn, or one second after the next join, at `max(minSaveCost, round(saveCostBase - levelPercent * saveCostFactor))` levels taken from kept levels or from dropped XP at 7 XP per level; keep-inventory deaths are skipped, including keep inventory another plugin turns on, and too few levels lets the item drop normally.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -262,7 +262,7 @@ Hidden enchanting-table offers are shown on the action bar as name, level, and c
 
 5 levels · 6 knowledge
 
-With an empty cursor and without sneaking, right-click the left anvil slot, which cannot be a book, to move the donor's highest-level enchantment that the base can hold and does not already have, ignoring anvil combine rules and prior-work penalty. Donor survival is `min(maxSurvival, survivalBase + levelPercent * survivalFactor)`, a book left with no enchantments becomes a plain book, and the level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`.
+With an empty cursor and without sneaking, right-click the left anvil slot, which cannot be a book, to move the donor's highest-level enchantment that the base can hold, does not already have and holds nothing conflicting with, ignoring anvil combine rules and prior-work penalty. Donor survival is `min(maxSurvival, survivalBase + levelPercent * survivalFactor)`, a book left with no enchantments becomes a plain book, and the level cost is `max(minXpCost, round(xpCostBase - levelPercent * xpCostFactor))`.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -341,3 +341,5 @@ In the formulas below, `levelPercent` is the learned level divided by `maxLevel`
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Enchanting upgrades](/adapt/upgrades/enchanting).

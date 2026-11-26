@@ -2,7 +2,7 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-11-01T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -29,6 +29,9 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | `/adapt knowledge <skill> [amount=10] [player]` | `adapt.cheatitem` | Give a knowledge orb item |
 | `/adapt claim-skill <skill> <level> [player]` | `adapt.determine` | Set a skill to level 0–100 |
 | `/adapt claim-adaptation <skill:adaptation> <level> [force=false] [player]` | `adapt.determine` | Set an adaptation level |
+| `/adapt mutate [lead] [partner]` | `adapt.mutate` | Merge two of your skills into a mutated skill. See [Mutations](/adapt/35-mutations) |
+| `/adapt unmutate <player> <skill>` | `adapt.mutate.reset` | Remove one of a player's mutations; both parent skills come back. `skill` is the mutated skill, its lead or its partner. See [Mutations](/adapt/35-mutations#undoing-a-mutation) |
+| `/adapt mutation-reset [player]` | `adapt.mutate.reset` | Remove all of a player's mutations, each as `unmutate` does |
 
 Boosts stack. The final XP multiplier is limited to `0.01`–`1000`.
 
@@ -90,7 +93,7 @@ The player-targeted admin commands default to you. `list` also reads an offline 
 
 ## Permissions
 
-Most command permissions default to operators. `adapt.effects`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
+Most command permissions default to operators. `adapt.effects`, `adapt.mutate`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
 
 | Permission | Purpose |
 |---|---|
@@ -102,6 +105,8 @@ Most command permissions default to operators. `adapt.effects`, `adapt.language.
 | `adapt.boost` / `adapt.boost.global` | Apply XP boosts |
 | `adapt.cheatitem` | Give XP and knowledge orbs |
 | `adapt.determine` | Set skills and adaptations |
+| `adapt.mutate` | Merge your own skills |
+| `adapt.mutate.reset` | Remove a player's mutations with `unmutate` or `mutation-reset`; default `op` |
 | `adapt.clear` | Clear or reset profiles |
 | `adapt.golemancy.admin` | List, release, and wake other players' golems, give Golemancy items, and manage node returns; node returns also require operator status |
 | `adapt.effects` | Toggle personal effects |

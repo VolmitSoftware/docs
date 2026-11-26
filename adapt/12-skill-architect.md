@@ -2,12 +2,12 @@
 title: "Skill - Architect"
 description: "Architect XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
-Architect gains XP from placing blocks, scaled by material value. Breaking blocks advances demolition challenges but awards no Architect XP. Adaptations cover glass drops, temporary floors, face fills, wireless redstone, elevators, rotation, scaffolds, hand refills, bridge protection, build guides, placement undo, and a portable stonecutter.
+Architect gains XP from placing blocks, scaled by material value. Breaking blocks advances demolition challenges but awards no Architect XP. Brickbat hits on natural mobs pay a little. Adaptations cover glass drops, temporary floors, face fills, wireless redstone, elevators, rotation, scaffolds, hand refills, bridge protection, build guides, placement undo, a portable stonecutter, and thrown blocks.
 
 ## How you earn Architect XP
 
@@ -52,16 +52,16 @@ Personal controls: Foundation control (Hold sneak/Tap sneak to start or stop); R
 | `maxBlocks` | `35` | Block budget granted per activation at max level. |
 | `cooldown` | `5000` | Milliseconds after releasing sneak before you can activate again. |
 
-### Builders Wand (`architect-placement`)
+### Builder's Wand (`architect-placement`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Builders Wand" src="https://media.volmitsoftware.com/adapt-assets/demos/architect/architect-placement-pov.webm" muted loop playsinline controls preload="none"></video>
-<video aria-label="Third-person demonstration of Builders Wand" src="https://media.volmitsoftware.com/adapt-assets/demos/architect/architect-placement-observer.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="First-person demonstration of Builder's Wand" src="https://media.volmitsoftware.com/adapt-assets/demos/architect/architect-placement-pov.webm" muted loop playsinline controls preload="none"></video>
+<video aria-label="Third-person demonstration of Builder's Wand" src="https://media.volmitsoftware.com/adapt-assets/demos/architect/architect-placement-observer.webm" muted loop playsinline controls preload="none"></video>
 </div>
 
 1 level · 4 knowledge
 
-Sneak while aiming at the same block within 5 blocks, with a matching stack held, previews a flat-face fill. The preview updates as aim or position changes. Placing consumes one matching item per filled position, including the block that starts the fill. Containers are never targeted. Denied positions are skipped and consume nothing.
+Sneak while aiming at the same block within 5 blocks, with a matching stack held, previews a flat-face fill. The preview updates as aim or position changes. Placing consumes one matching item per filled position, including the block that starts the fill. Containers are never targeted. Denied positions are skipped and consume nothing. Filled blocks count as player-placed, so breaking them pays no mining XP and never counts as a natural break.
 
 Personal controls: Building control (Sneak to build/All eligible placements); Placement preview (on/off); Placement size (full/half/quarter); Block selection (All eligible blocks/Wood and planks/Stone and bricks/Glass). Wood includes planks, logs, wood, stems and hyphae; stone includes stone, brick and deepslate families; glass includes glass materials. Armed building stays active until its mode or Enabled control is changed.
 
@@ -254,6 +254,54 @@ Personal controls: Require stonecutter in offhand (on/off).
 | `requireOffhand` | `false` | When true, the stonecutter must be held in the offhand rather than anywhere in the inventory. |
 | `xpPerUse` | `2` | Skill XP paid per stonecutter opened. |
 
+### Brickbat (`architect-brickbat`)
+
+5 levels · 6 knowledge for level 1, 42 in all
+
+Hold a placeable block and punch a creature: instead of the punch, one block leaves the stack and flies at it. You can also swing at a creature you are aiming at within range (left-click in the air), which the server sees on every platform. Swinging at nothing throws nothing. The block tumbles on an arc with a dust trail, bursts with its own break particles and sound, deals damage to the creature it hits, and then drops where it landed as the same block item, so you can walk over and pick it back up. Glass, stained glass, panes and ice shatter and drop nothing, as they do when broken without Silk Touch. Blocks at `knockbackHeft` or heavier also shove the target.
+
+Only plain blocks are thrown. Containers, shulker boxes, spawners and anything else with block contents, beds, doors, signs, banners, torches, rails, carpets, saplings, heads, TNT, scaffolding, ladders, plants, eggs, unbreakable blocks and tools never are, and a punch with them is an ordinary punch. Tamed animals are never targets. Players are hit only where PvP is allowed and mobs only where protection allows PvE. The thrown block never places or breaks anything. Creative players punch normally.
+
+`heft = sqrt(min(50, hardness)) + log10(1 + blastResistance)`, so obsidian, ancient debris and anvils hit hard while wool, leaves and glass barely sting. Damage is `clamp(heft * (damageMultiplierBase + levelPercent * damageMultiplierFactor), minDamage, maxDamage)`. Each throw waits `(cooldownMillisBase + heft * cooldownMillisPerHeft) * (1 - levelPercent * cooldownLevelReduction)` milliseconds before the next, so heavy blocks throw slower. A punch during the wait lands as an ordinary punch.
+
+| Block | Heft | Damage at level 5 | Wait at level 5 |
+|-------|------|-------------------|-----------------|
+| Obsidian | 10.2 | 12 (cap) | 2.0 s |
+| Ancient debris | 8.6 | 12 (cap) | 1.8 s |
+| Anvil | 5.3 | 8.0 | 1.2 s |
+| Iron block | 3.1 | 4.6 | 0.9 s |
+| Stone | 2.1 | 3.1 | 0.7 s |
+| Wool | 1.1 | 1.7 | 0.6 s |
+| Glass | 0.7 | 1.0 | 0.5 s |
+| Leaves | 0.5 | 0.8 | 0.5 s |
+
+Range is 6 blocks at level 1 and 14 at level 5. Each hit on a natural mob pays `xpPerHit`; players and farmed mobs pay nothing.
+
+The flying block is a snowball carrying the item with a half-size block display riding it. Neither is ever saved: a quit, chunk unload or server stop returns the block to your inventory, a throw that flies out its time drops where it ended, and the block is written into your player data until it lands, so a crash returns it on your next join. Tagged leftovers are removed when their chunk loads.
+
+No upgrade fuses Brickbat: a player who mutates Architect keeps it at level 1, free and without a power slot.
+
+Personal controls: Throw at aimed targets (on/off).
+
+| Key | Code default | What it does |
+|-----|--------------|--------------|
+| `rangeBase` | `4` | Range in blocks at level 0. |
+| `rangeFactor` | `10` | Range in blocks added at full level. |
+| `damageMultiplierBase` | `0.9` | Damage per point of heft at level 0. |
+| `damageMultiplierFactor` | `0.6` | Damage per point of heft added at full level. |
+| `minDamage` | `0.5` | Least damage any throw deals. |
+| `maxDamage` | `12` | Most damage one throw deals. |
+| `cooldownMillisBase` | `700` | Wait in milliseconds for a weightless block at level 0. |
+| `cooldownMillisPerHeft` | `260` | Milliseconds added per point of heft. |
+| `cooldownLevelReduction` | `0.4` | Share of the wait removed at full level. |
+| `knockbackHeft` | `3` | Heft at which a throw starts to shove. |
+| `knockbackPerHeft` | `0.06` | Knockback speed per point of heft. |
+| `maxKnockback` | `0.6` | Most knockback speed a throw adds. |
+| `throwSpeed` | `1.2` | Blocks per tick before the arc. Sets the flight time. |
+| `flightGraceTicks` | `20` | Extra ticks a miss may fly before it drops on its own. |
+| `maxInFlight` | `64` | Most thrown blocks in the air on the server. |
+| `xpPerHit` | `3` | Architect skill XP per hit on a natural mob. |
+
 ## Reference
 
 ### Skill configuration defaults
@@ -287,3 +335,5 @@ Written to `plugins/Adapt/skills/architect.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Architect upgrades](/adapt/upgrades/architect).

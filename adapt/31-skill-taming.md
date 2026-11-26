@@ -2,7 +2,7 @@
 title: "Skill - Taming"
 description: "Taming XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -15,7 +15,7 @@ Its 14 adaptations improve pet health, damage, regeneration, targeting, recall, 
 
 - Taming an animal pays `tameSuccessXP` and counts toward `taming.tamed`.
 - Breeding pays `breedXp` and counts toward `taming.bred`. The same two parents pay again only after `breedPairCooldownMs`.
-- A tamed pet damaging an eligible target pays credited damage times `tameDamageXPMultiplier` and adds that credited damage to `taming.pet.damage`.
+- A tamed pet damaging an eligible target that is not from a spawner, egg, bucket, breeding or portal pays credited damage times `tameDamageXPMultiplier` and adds that credited damage to `taming.pet.damage`.
 - A mob killed by your pet pays `petKillXP` plus `petKillMaxHealthXpMultiplier` per point of its maximum health and counts toward `taming.pet.kills`. Mobs from spawners, eggs, buckets, breeding, or portals pay nothing. The credit only fires when no player is the mob's killer, and TragOul skeletal servants and Excavation grave mobs are excluded.
 
 Pet damage XP has a `cooldownDelay` millisecond cooldown. Tame and pet-kill XP have no cooldown.
@@ -144,7 +144,7 @@ Sneak-right-click with a lead in the main hand to teleport the nearest owned pet
 
 5 levels · 4 knowledge
 
-A share of damage aimed at you is split across nearby pets and removed from your hit, and no pet is taken below its health floor. Fully blocked hits and projectiles intercepted by Guardian Instinct do not trigger Shared Pain.
+A share of the damage that would reach you after armor is split across nearby pets and removed from your hit, and no pet is taken below its health floor. Fully blocked hits and projectiles intercepted by Guardian Instinct do not trigger Shared Pain.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -386,3 +386,5 @@ Written to `plugins/Adapt/skills/taming.toml` on first load.
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Taming upgrades](/adapt/upgrades/taming).

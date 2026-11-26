@@ -2,7 +2,7 @@
 title: "Skills Catalog"
 description: "All Adapt skills, their XP sources, and their adaptation guides"
 published: true
-date: 2026-10-18T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -17,7 +17,7 @@ Adapt has 24 skills. Each page lists XP sources, adaptations, and the keys in `s
 | [Axes](/adapt/13-skill-axes) | Breaking wood with axes and dealing axe damage | Tree cutting, vein mining, thrown axes, and armor damage |
 | [Blocking](/adapt/14-skill-blocking) | Blocking damage with a shield | Counters, projectile reflection, ally defense, and recipes |
 | [Brewing](/adapt/15-skill-brewing) | Drinking potions and hitting targets with splash potions | Faster brewing, longer effects, and custom potions |
-| [Chronos](/adapt/16-skill-chronos) | Movement, sleep, ender pearls, Speed effects, and survival time | Stored time, stasis, rewinds, and nearby acceleration |
+| [Chronos](/adapt/16-skill-chronos) | Movement, sleep, Speed effects, and survival time | Stored time, stasis, rewinds, and nearby acceleration |
 | [Crafting](/adapt/17-skill-crafting) | Crafting items and using furnaces | Salvage, bulk crafting, portable stations, and backpacks |
 | [Discovery](/adapt/18-skill-discovery) | Finding new blocks, items, entities, places, and effects | HUD details, structure guidance, chest detection, and XP utilities |
 | [Enchanting](/adapt/19-skill-enchanting) | Enchanting items | Refunds, offer previews, rerolls, transfers, and Soul Link |
@@ -30,7 +30,7 @@ Adapt has 24 skills. Each page lists XP sources, adaptations, and the keys in `s
 | [Pickaxes](/adapt/25-skill-pickaxes) | Mining or fighting with a pickaxe | Vein mining, autosmelting, ore detection, haste, and durability |
 | [Ranged](/adapt/26-skill-ranged) | Firing projectiles and landing ranged hits | Piercing, ricochets, trajectory previews, retrieval, and seeking arrows |
 | [Rift](/adapt/27-skill-rift) | Teleporting, using ender items, and fighting End creatures | Blinks, recall, remote storage, item transfer, and emergency escape |
-| [Seaborne](/adapt/28-skill-seaborne) | Swimming, underwater work, fishing, tridents, and aquatic combat | Air, swim speed, underwater vision, salvage, and trident upgrades |
+| [Seaborne](/adapt/28-skill-seaborne) | Swimming, underwater work, fishing, tridents, and aquatic combat | Storm lightning, a rain and water ward, food that lasts in the rain, air, swim speed, salvage, and trident upgrades |
 | [Stealth](/adapt/29-skill-stealth) | Sneaking and attacking while crouched | Concealment, backstabs, decoys, smoke, and trap detection |
 | [Swords](/adapt/30-skill-swords) | Dealing damage and killing with swords | Bleed, poison, counters, lunges, combos, and bonded weapons |
 | [Taming](/adapt/31-skill-taming) | Taming, breeding, and fighting with pets | Pet stats, recall, commands, item retrieval, and damage sharing |
@@ -39,5 +39,7 @@ Adapt has 24 skills. Each page lists XP sources, adaptations, and the keys in `s
 {.dense}
 
 330 adaptation types are declared. `axe-iris-feller` registers only when the Iris tree-feller service is available.
+
+Merging two skills unlocks upgraded adaptations: [Mutations](/adapt/35-mutations).
 
 Progression rules: [Concepts](/adapt/02-concepts).

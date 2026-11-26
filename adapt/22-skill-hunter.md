@@ -2,7 +2,7 @@
 title: "Skill - Hunter"
 description: "Hunter XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-23T00:00:00.000Z
+date: 2026-11-24T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -217,11 +217,11 @@ Taking a hit applies Resistance.
 | `basePoisonFromLevel` | `6` | Poison amplifier is 6 minus your level. |
 | `consumable` | `"ROTTEN_FLESH"` | Item eaten per activation when `useConsumable` is true. |
 
-### Items Drop-To-Inventory (`hunter-drop-to-inventory`)
+### Items Drop to Inventory (`hunter-drop-to-inventory`)
 
 <div class="adapt-demo">
-<video aria-label="First-person demonstration of Items Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
-<video aria-label="Third-person demonstration of Items Drop-To-Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="First-person demonstration of Items Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-drop-to-inventory-pov.webm" autoplay muted loop playsinline controls preload="metadata"></video>
+<video aria-label="Third-person demonstration of Items Drop to Inventory" src="https://media.volmitsoftware.com/adapt-assets/demos/hunter/hunter-drop-to-inventory-observer.webm" autoplay muted loop playsinline controls preload="metadata"></video>
 </div>
 
 1 level · 2 knowledge
@@ -262,7 +262,7 @@ A kill is clean when the shot covered the minimum range or the killing blow was 
 
 5 levels · 6 knowledge, then 5 per level
 
-Melee hits on the same target add `perStackBonus * (stacks - 1)` damage after the first hit, which sets one stack and adds nothing, up to `rampCapBase + round(levelPercent * rampCapFactor)` stacks. A different target, or a gap longer than `decayMillis`, resets the ramp to one stack.
+Melee hits on the same target add `perStackBonus * (stacks - 1)` damage after the first hit, which sets one stack and adds nothing, up to `rampCapBase + round(levelPercent * rampCapFactor)` stacks. A different target, or a gap longer than `decayMillis`, resets the ramp to one stack; sword sweep hits on bystanders are ignored.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -281,16 +281,16 @@ Melee hits on the same target add `perStackBonus * (stacks - 1)` damage after th
 
 5 levels · 7 knowledge, then 6 per level
 
-Melee damage increases against `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `ENDER_DRAGON`, and `ELDER_GUARDIAN`. Any credited kill of those mobs can duplicate items already in the drop list.
+Melee damage increases against `RAVAGER`, `IRON_GOLEM`, `WARDEN`, `WITHER`, `ENDER_DRAGON`, and `ELDER_GUARDIAN`. A credited kill of a natural one of those mobs can add extra drops rolled from its own loot table; items it carried are never copied, and farmed mobs and player-built withers add nothing.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
 | `bonusDamageBase` | `0.15` | Melee damage bonus fraction at level 0. |
 | `bonusDamageFactor` | `0.45` | Bonus fraction added across levels, reaching 0.6 at max level. |
-| `extraDropChanceBase` | `0.15` | Chance per existing drop to be duplicated, at level 0. |
-| `extraDropChanceFactor` | `0.45` | Duplication chance added across levels. |
-| `maxExtraDropChance` | `0.75` | Ceiling on duplication chance, 0 to 1. |
-| `maxExtraDropsPerKill` | `6` | Hard cap on duplicated stacks from one kill. |
+| `extraDropChanceBase` | `0.15` | Chance of an extra loot roll, at level 0. |
+| `extraDropChanceFactor` | `0.45` | Extra roll chance added across levels. |
+| `maxExtraDropChance` | `0.75` | Ceiling on the extra roll chance, 0 to 1. |
+| `maxExtraDropsPerKill` | `6` | Hard cap on extra stacks from one kill. |
 | `xpPerBigGameKill` | `45` | Hunter XP paid per big-game kill. |
 
 ### Blood Trail (`hunter-blood-trail`)
@@ -395,3 +395,5 @@ The seven struck buffs also share this knob set:
 ## See also
 
 Catalog: [Skills](/adapt/10-skills-catalog). Rules: [Concepts](/adapt/02-concepts).
+
+Upgrades after a mutation: [Hunter upgrades](/adapt/upgrades/hunter).
