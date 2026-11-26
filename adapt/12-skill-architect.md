@@ -275,7 +275,7 @@ Only plain blocks are thrown. Containers, shulker boxes, spawners and anything e
 | Glass | 0.7 | 1.0 | 0.5 s |
 | Leaves | 0.5 | 0.8 | 0.5 s |
 
-Range is 6 blocks at level 1 and 14 at level 5. Each hit on a natural mob pays `xpPerHit`; players and farmed mobs pay nothing.
+Range is 9 blocks at level 1 and 28 at level 5. Each hit on a natural mob pays `xpPerHit`; players and farmed mobs pay nothing.
 
 The flying block is a snowball carrying the item with a half-size block display riding it. Neither is ever saved: a quit, chunk unload or server stop returns the block to your inventory, a throw that flies out its time drops where it ended, and the block is written into your player data until it lands, so a crash returns it on your next join. Tagged leftovers are removed when their chunk loads.
 
@@ -285,8 +285,8 @@ Personal controls: Throw at aimed targets (on/off).
 
 | Key | Code default | What it does |
 |-----|--------------|--------------|
-| `rangeBase` | `4` | Range in blocks at level 0. |
-| `rangeFactor` | `10` | Range in blocks added at full level. |
+| `rangeBase` | `4.25` | Range in blocks at level 0. |
+| `rangeFactor` | `23.75` | Range in blocks added at full level. |
 | `damageMultiplierBase` | `0.9` | Damage per point of heft at level 0. |
 | `damageMultiplierFactor` | `0.6` | Damage per point of heft added at full level. |
 | `minDamage` | `0.5` | Least damage any throw deals. |

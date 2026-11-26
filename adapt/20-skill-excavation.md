@@ -296,7 +296,7 @@ Targets are hostile mobs only: never players, pets, passive animals, or mobs tha
 
 Damage is `min(maxDamage, shovel * heft * distance * (damageMultiplierBase + levelPercent * damageMultiplierFactor))`:
 
-- `shovel` is the vanilla attack damage: wood and gold 2.5, stone 3.5, iron 4.5, diamond 5.5, netherite 6.5, plus Sharpness at `0.5 * level + 0.5`.
+- `shovel` is the attack damage of the shovel in hand, read from the player while they hold it, so shovels from other mods count at their own damage. For vanilla shovels that is wood and gold 2.5, stone 3.5, iron 4.5, diamond 5.5, netherite 6.5. Sharpness adds `0.5 * level + 0.5`.
 - `heft`: snow 0.4, snow block 0.5, sand and red sand 0.7, dirt, farmland and dirt path 0.8, coarse dirt, rooted dirt, grass, mycelium and podzol 0.85, soul sand and soul soil 0.9, mud and muddy mangrove roots 1.0, gravel 1.15, clay 1.25.
 - `distance` rises from `closeFactor` at point blank to 1 at `sweetSpotBlocks` and holds there, so a long shot hits hardest.
 
@@ -310,9 +310,9 @@ Damage is `min(maxDamage, shovel * heft * distance * (damageMultiplierBase + lev
 
 | Level | Range | Damage multiplier | Cooldown |
 |-------|-------|-------------------|----------|
-| 1 | 8 blocks | 0.92 | 2.6 s |
-| 3 | 12 blocks | 1.16 | 1.9 s |
-| 5 | 16 blocks | 1.40 | 1.2 s |
+| 1 | 12 blocks | 0.92 | 2.0 s |
+| 3 | 22 blocks | 1.16 | 1.25 s |
+| 5 | 32 blocks | 1.40 | 0.5 s |
 
 Each hit on a natural mob pays `xpPerHit`; spawner, bred and other farmed mobs pay nothing. Hits also count as shovel damage for the skill's own combat XP.
 
@@ -324,16 +324,15 @@ Personal controls: Throw when (always, sneak to activate, or sneak to suppress).
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
-| `rangeBase` | `6` | Range in blocks at level 0. |
-| `rangeFactor` | `10` | Range in blocks added at full level. |
+| `rangeBase` | `7` | Range in blocks at level 0. |
+| `rangeFactor` | `25` | Range in blocks added at full level. |
 | `damageMultiplierBase` | `0.8` | Damage multiplier at level 0. |
 | `damageMultiplierFactor` | `0.6` | Damage multiplier added at full level. |
 | `maxDamage` | `14` | Most damage one throw deals. |
 | `sweetSpotBlocks` | `8` | Flight distance at which damage peaks. |
 | `closeFactor` | `0.6` | Share of full damage at point blank. |
-| `cooldownMillisBase` | `3000` | Milliseconds between throws at level 0. |
-| `cooldownMillisLevelReduction` | `1800` | Milliseconds of cooldown removed at full level. |
-| `minCooldownMillis` | `600` | Shortest cooldown at any level. |
+| `cooldownMillisAtLevelOne` | `2000` | Milliseconds between throws at level 1. |
+| `cooldownMillisAtTopLevel` | `500` | Milliseconds between throws at the top level; levels between are linear. |
 | `throwSpeed` | `1.1` | Blocks per tick before the arc. Sets the flight time. |
 | `flightGraceTicks` | `20` | Extra ticks a miss may fly before it returns on its own. |
 | `returnTicks` | `7` | Ticks the drop takes to fly back after landing. |
