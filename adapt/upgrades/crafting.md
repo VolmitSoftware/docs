@@ -56,7 +56,7 @@ Personal controls: enable switch; `materials` limits compacting to all, minerals
 
 While you hold Field Workshop, Portable Tables and A Boutilier's Backpacks work for you at all three upgrade levels, and Bulk Artisan works at level 3 at upgrade level 1, level 4 at upgrade level 2 and level 5 at upgrade level 3.
 
-[Portable Tables](/adapt/17-skill-crafting#portable-tables-crafting-stations) opens a crafting table, grindstone, anvil, stonecutter, cartography table or loom held in your main hand. [A Boutilier's Backpacks](/adapt/17-skill-crafting#backpacks-crafting-backpacks) unlocks the backpack recipe and lets you open backpacks. [Bulk Artisan](/adapt/17-skill-crafting#bulk-artisan-crafting-bulk-artisan) crafts extra items from your inventory when you shift-click a craft, up to a batch cap that grows with level.
+[Portable Tables](/adapt/17-skill-crafting#portable-tables-crafting-stations) opens a crafting table, grindstone, anvil, stonecutter, cartography table or loom held in your main hand. [A Boutilier's Backpacks](/adapt/17-skill-crafting#a-boutiliers-backpacks-crafting-backpacks) unlocks the backpack recipe and lets you open backpacks. [Bulk Artisan](/adapt/17-skill-crafting#bulk-artisan-crafting-bulk-artisan) crafts extra items from your inventory when you shift-click a craft, up to a batch cap that grows with level.
 
 Field Workshop also hands out the Artisan's Ledger, crafted from a book, a leather and a crafting table. Without Field Workshop it is an inert written book. Right-click it to open its pages: 4, 8 or 12 at levels 1, 2 and 3.
 

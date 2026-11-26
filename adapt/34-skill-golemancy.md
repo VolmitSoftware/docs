@@ -622,7 +622,7 @@ A bone golem works like your other bound golems, with these differences:
 
 - The ritual shrinks the skeleton to the skill's `bodyScaleBone`, 0.49 by default, so it stands under one block tall. It keeps that size through chunk unloads and restarts.
 - It leaves your servant pack: it never expires, takes no slot of your Skeletal Servant cap, and shows a golem label instead of a servant label. It stays in the world, counts toward your golem cap, sleeps while you are offline, and answers Crook signals as a golem.
-- Binding strips the gear it was summoned with, which vanishes without dropping, and the lattice effects, and it keeps the Skeletal Servant bonuses. It starts with nothing equipped; you equip it from the equipment row of its Golem GUI, as described under [Golem GUI](/adapt/34-skill-golemancy#golem-gui). Unbound servants keep their summon gear. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It can become a masterwork like your other golems, as described under [Masterwork](/adapt/34-skill-golemancy#masterwork-golem-masterwork).
+- Binding strips the gear it was summoned with, which vanishes without dropping, and the lattice effects, and it keeps the Skeletal Servant bonuses. It starts with nothing equipped; you equip it from the equipment row of its Golem GUI, as described under [Golem GUI](/adapt/34-skill-golemancy#golem-gui). Unbound servants keep their summon gear. It holds runes in its own slots like your other golems, as described under [Runic Augments](/adapt/34-skill-golemancy#runic-augments-golem-runic-augments). It can become a masterwork like your other golems, as described under [Masterwork](/adapt/34-skill-golemancy#golem-masterwork-golem-masterwork).
 - Skeletal Servant's `healthCostPerMinion` maximum health cost stays reserved while the bone golem lives, including after you rejoin or restart. Each skeleton counts once. The cost also stays while the bone golem is packed or shows as Missing in your roster, until you release it there.
 - When it dies, it drops its core at the skill's `deathDropCoreChance`, each rune at `deathDropRuneChance`, and none of a skeleton's own loot or experience, it drops the items it wears and holds where it dies, and its health cost ends. It never leaves a Shattered Core, even with Golem Mending.
 - Releasing it from its Golem GUI crumbles the skeleton, drops its core and runes, and ends its health cost.
@@ -1175,7 +1175,7 @@ Each bound golem has rune slots: `frostSlots` for a frost golem, `copperSlots` f
 
 Rune item tooltips show configured effects. Installed rune tooltips show active effects with Masterwork strength, or the reason the rune is inactive.
 
-Each rune has an aspect, which determines its effect, and a tier from I to III, which determines its strength. A golem can hold one rune of each aspect. The values below use the default configuration and apply to bound golems. [Masterwork](/adapt/34-skill-golemancy#masterwork-golem-masterwork) can strengthen these effects.
+Each rune has an aspect, which determines its effect, and a tier from I to III, which determines its strength. A golem can hold one rune of each aspect. The values below use the default configuration and apply to bound golems. [Masterwork](/adapt/34-skill-golemancy#golem-masterwork-golem-masterwork) can strengthen these effects.
 
 | Rune | Tier 1 | Tier 2 | Tier 3 |
 |---|---|---|---|
