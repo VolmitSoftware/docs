@@ -298,6 +298,7 @@ Personal controls: Throw at aimed targets (on/off).
 | `knockbackPerHeft` | `0.06` | Knockback speed per point of heft. |
 | `maxKnockback` | `0.6` | Most knockback speed a throw adds. |
 | `throwSpeed` | `1.2` | Blocks per tick before the arc. Sets the flight time. |
+| `hitPlayers` | `false` | Whether blocks may be thrown at other players where PvP is allowed. |
 | `flightGraceTicks` | `20` | Extra ticks a miss may fly before it drops on its own. |
 | `maxInFlight` | `64` | Most thrown blocks in the air on the server. |
 | `xpPerHit` | `3` | Architect skill XP per hit on a natural mob. |

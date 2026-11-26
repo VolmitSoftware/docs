@@ -329,6 +329,8 @@ The lightning is drawn with particles and thunder sounds and its damage is added
 | `strikeGapMillis` | `600` | Shortest time between any two strikes by the player, which limits strikes across a crowd. |
 | `targetMemoryMillis` | `20000` | Time a target is remembered after the last hit; after that the next hit counts as the first again. |
 | `xpPerStrike` | `4` | Skill XP per strike on a natural mob. |
+| `strikePassiveMobs` | `false` | Whether strikes land on mobs that are not hostile: animals, villagers and mobs that only fight back. |
+| `strikePlayers` | `false` | Whether strikes land on other players where PvP is allowed. |
 
 ### Rain-Fed (`seaborne-rain-fed`)
 
