@@ -2,13 +2,13 @@
 title: "Player Usage"
 description: "Open the Adapt menu and learn or remove adaptations"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-Open the menu by clicking a side of the activator block, which is a bookshelf by default. You can also use `/adapt gui` with the `adapt.gui` permission.
+Open the menu by clicking a side of the activator block, which is a bookshelf by default. You can also use `/adapt gui` with the `adapt.gui` permission. On Paper, Purpur, Folia, and Spigot servers that offer the Adapt resource pack, the menus open as book pages; on Fabric, Forge, and NeoForge servers, the Adapt client mod shows them. See [Book menus for players](/adapt/55-book-menus-players).
 
 ## Open and navigate the menu
 

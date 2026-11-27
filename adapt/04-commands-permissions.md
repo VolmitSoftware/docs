@@ -2,17 +2,21 @@
 title: "Commands & Permissions"
 description: "Adapt command syntax, effects, and permission nodes"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
 ---
 
-`/adapt` covers menus, progression, configuration, and player data. Command routes need `adapt.main`, except personal language selection and diagnostic reports.
+`/adapt` covers menus, progression, configuration, and player data. Command routes need `adapt.main`, except personal language selection, diagnostic reports, and `/adapt pack`.
 
 `/adapt language` opens the picker. `/adapt language update` checks the Adapt repository and merges changed translations into installed language files; it needs `adapt.configurator` or `volmit.language.admin`. Permissions and locales: [Localization](/adapt/07-localization) and [Languages](/languages).
 
 `/adapt debug dump` writes `debug/` and uploads to mclo.gs. `upload=false` keeps the file local. Permission `adapt.debugdump` (default op). An upload failure keeps the local file. Report contents: [Shared diagnostic reports](/volmlib/api/diagnostics).
+
+## Skill and adaptation ids
+
+Commands name skills and adaptations by id: `swords`, `rift`, `herbalism/luck`, or a full id such as `alchemist:alchemy/transmute`. A bare id is in the `adapt` namespace, so `swords` and `adapt:swords` are the same skill. An addon's content always needs its namespace. A name that is not a registered id stops the command with `Unknown skill: <id>.` or `Unknown adaptation: <id>.` Tab completion lists the registered ids.
 
 ## Commands
 
@@ -28,10 +32,12 @@ dateCreated: 2026-08-09T00:00:00.000Z
 | `/adapt experience <skill> [amount=10] [player]` | `adapt.cheatitem` | Give an XP orb item |
 | `/adapt knowledge <skill> [amount=10] [player]` | `adapt.cheatitem` | Give a knowledge orb item |
 | `/adapt claim-skill <skill> <level> [player]` | `adapt.determine` | Set a skill to level 0–100 |
-| `/adapt claim-adaptation <skill:adaptation> <level> [force=false] [player]` | `adapt.determine` | Set an adaptation level |
+| `/adapt claim-adaptation <adaptation> <level> [force=false] [player]` | `adapt.determine` | Set an adaptation level |
 | `/adapt mutate [lead] [partner]` | `adapt.mutate` | Merge two of your skills into a mutated skill. See [Mutations](/adapt/35-mutations) |
 | `/adapt unmutate <player> <skill>` | `adapt.mutate.reset` | Remove one of a player's mutations; both parent skills come back. `skill` is the mutated skill, its lead or its partner. See [Mutations](/adapt/35-mutations#undoing-a-mutation) |
 | `/adapt mutation-reset [player]` | `adapt.mutate.reset` | Remove all of a player's mutations, each as `unmutate` does |
+| `/adapt pack offer` | `adapt.pack` | Send yourself the Adapt resource pack again. Paper, Purpur, Folia, and Spigot only. See [Book menus](/adapt/54-book-menus) |
+| `/adapt pack menus style=<book\|chest\|auto>` | `adapt.pack` | Choose book or chest menus for yourself. Paper, Purpur, Folia, and Spigot only |
 
 Boosts stack. The final XP multiplier is limited to `0.01`–`1000`.
 
@@ -53,12 +59,27 @@ These commands require `adapt.clear`. `clear` targets online players; `reset con
 
 Clearing learned adaptations dismisses Skeletal Servants and bound bone golems and restores their reserved maximum health. Bound bone golems return their cores, runes, and supplied equipment as described under [Bone Frame](/adapt/34-skill-golemancy#bone-frame-golem-bone-frame).
 
+## Orphaned progress
+
+Progress a player saved in an addon's content stays in their save when the addon is removed, and counts again when it returns. Until then it is orphaned and counts toward nothing.
+
+| Command | Effect |
+|---|---|
+| `/adapt orphans list <namespace\|*> [player]` | List a namespace's orphaned progress, or every namespace's with `*` |
+| `/adapt orphans refund <namespace\|*> [player]` | Delete the namespace's orphaned adaptations that sit inside skills still installed, and return their knowledge to those skills |
+| `/adapt orphans purge <namespace\|*> [player]` | Delete all of the namespace's orphaned progress without refund |
+
+These commands require `adapt.orphans` (default `op`) and run from a player or the console. Without `player` they act on every online player.
+
+`refund` returns exactly the knowledge the player paid for each adaptation; levels a region grant gave return nothing. It leaves whole orphaned skill lines for `purge`. `purge` splits a mutation with a missing parent before deleting it.
+{.is-warning}
+
 ## Configuration
 
 | Command | Permission | Purpose |
 |---|---|---|
 | `/adapt default skill <skill>` | `adapt.configurator` | Restore one skill config |
-| `/adapt default adaptation <skill:adaptation>` | `adapt.configurator` | Restore one adaptation config |
+| `/adapt default adaptation <adaptation>` | `adapt.configurator` | Restore one adaptation config |
 | `/adapt default all` | `adapt.configurator` | Archive and restore all Adapt configs |
 
 ## Golems
@@ -93,7 +114,7 @@ The player-targeted admin commands default to you. `list` also reads an offline 
 
 ## Permissions
 
-Most command permissions default to operators. `adapt.effects`, `adapt.mutate`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
+Most command permissions default to operators. `adapt.effects`, `adapt.mutate`, `adapt.pack`, `adapt.language.self`, and `volmit.language.self` are available to players by default.
 
 | Permission | Purpose |
 |---|---|
@@ -106,15 +127,17 @@ Most command permissions default to operators. `adapt.effects`, `adapt.mutate`, 
 | `adapt.cheatitem` | Give XP and knowledge orbs |
 | `adapt.determine` | Set skills and adaptations |
 | `adapt.mutate` | Merge your own skills |
+| `adapt.pack` | Ask for the Adapt resource pack and choose book or chest menus |
 | `adapt.mutate.reset` | Remove a player's mutations with `unmutate` or `mutation-reset`; default `op` |
 | `adapt.clear` | Clear or reset profiles |
+| `adapt.orphans` | List, refund, and delete progress of missing addons; default `op` |
 | `adapt.golemancy.admin` | List, release, and wake other players' golems, give Golemancy items, and manage node returns; node returns also require operator status |
 | `adapt.effects` | Toggle personal effects |
 | `adapt.debug` | Use debug mode |
 | `adapt.debugdump` | Save and optionally upload diagnostic reports; default `op` |
 | `adapt.update` | Receive Adapt update notices and see Adapt in `/volmit plugins updates`; default `op`. See [Update notifications](/volmlib/api/github-releases) |
 
-Gameplay access uses `adapt.use.<skill>` and `adapt.use.<adaptation>`. These are allowed unless explicitly denied. Operators bypass them.
+Gameplay access uses `adapt.use.<namespace>.<path>`, with the id's `/` written as `.`: `adapt.use.adapt.swords` for the skill `adapt:swords`, `adapt.use.adapt.sword.poison_blade` for the adaptation `adapt:sword/poison_blade`, and `adapt.use.alchemist.alchemy.transmute` for an addon's `alchemist:alchemy/transmute`. `adapt.use.*` covers every node. These are allowed unless explicitly denied. Operators bypass them. Nodes are registered for every installed skill and adaptation, and removed when an addon is uninstalled. Commands an addon adds below `/adapt` use permission nodes that start with the addon's namespace, such as `example.geology.admin` for the `example` addon, and are removed with the addon.
 
 ## Update notifications
 

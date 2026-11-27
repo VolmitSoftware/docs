@@ -2,7 +2,7 @@
 title: "Concepts"
 description: "Skill XP, knowledge, master level, and ability power"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-26T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -20,21 +20,21 @@ An adaptation runs only when all of these hold:
 - no learned id in `adaptationUsageConflicts` blocks it
 - no ability-use policy denies it
 
-Active level is 0 when any check fails, and the effect does not run. Other plugins can deny or reprice a use. They cannot grant an adaptation the player has not learned. See [Ability use policy](/adapt/43-api-ability-use-policy).
+Active level is 0 when any check fails, and the effect does not run. Other plugins can deny or reprice a use. They cannot grant an adaptation the player has not learned. See [Ability policy, costs and protection](/adapt/50-api-abilities-protection).
 
 ## Skills
 
-A skill id is a name such as `agility` or `pickaxe`. Its file is `plugins/Adapt/skills/<id>.toml`. Level comes from skill XP through `xpCurve`. The default, `ADAPT_BALANCED`, needs `100 * L^2 + 1200 * L` XP to reach level `L`. Lookups clamp at `experienceMaxLevel`.
+A skill id is `<namespace>:<name>`, such as `adapt:agility`. Built-in skills are in the `adapt` namespace; addons bring their own. Commands and config entries accept a bare name such as `agility` for `adapt` content. A skill's file is `plugins/Adapt/skills/<namespace>/<name>.toml`, such as `skills/adapt/agility.toml`. Level comes from skill XP through `xpCurve`. The default, `ADAPT_BALANCED`, needs `100 * L^2 + 1200 * L` XP to reach level `L`. Lookups clamp at `experienceMaxLevel`.
 
 Each enabled skill has one advancement tab.
 
 ## Adaptations
 
-An adaptation id is kebab-case and starts with the skill name, such as `agility-air-dash`. Its file is `plugins/Adapt/adaptations/<id>.toml`. Level 0 is unlearned. The cap is `maxLevel`.
+An adaptation id is `<namespace>:<skill>/<name>`, such as `adapt:agility/air_dash`, and a bare `agility/air_dash` means the same. Its file is `plugins/Adapt/adaptations/<namespace>/<skill>/<name>.toml`, such as `adaptations/adapt/agility/air_dash.toml`. Level 0 is unlearned. The cap is `maxLevel`.
 
 One level costs `max(1, baseCost + baseCost * level * costFactor)` knowledge. Level 1 also costs `initialCost`. A multi-level purchase sums each step. A refund reverses those steps. `hardcoreNoRefunds` returns nothing. Players cannot unlearn a `permanent` adaptation.
 
-`requires` lists adaptations a player must learn first, each written as `adaptationId:level`, for example `requires = ["rift-blink:2"]`. Entries may name adaptations from any skill. Learning or leveling is refused until every entry is met by levels the player bought; region-granted levels do not count. An entry naming an unknown adaptation can never be met and is logged as a warning at load. Malformed entries are ignored with a warning. While a learned adaptation requires another, players cannot unlearn the required one below that level. A forced removal also removes the learned adaptations whose requirement it breaks, then any that required those, and logs each removal. A requirement that was already unmet, or that names an unknown adaptation or one in a disabled skill, never causes a removal.
+`requires` lists adaptations a player must learn first, each written as `<adaptation id>@<level>`, for example `requires = ["adapt:rift/blink@2"]`; a bare id such as `rift/blink@2` is in the `adapt` namespace. Entries may name adaptations from any skill. Learning or leveling is refused until every entry is met by levels the player bought; region-granted levels do not count. An entry naming an unknown adaptation can never be met and is logged as a warning at load. Malformed entries are ignored with a warning. While a learned adaptation requires another, players cannot unlearn the required one below that level. A forced removal also removes the learned adaptations whose requirement it breaks, then any that required those, and logs each removal. A requirement that was already unmet, or that names an unknown adaptation or one in a disabled skill, never causes a removal.
 
 Holding an adaptation uses 1 power at any level; raising it further costs knowledge only. Region-granted adaptations use none. A purchase that fails charges nothing.
 

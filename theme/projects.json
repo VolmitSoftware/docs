@@ -631,6 +631,10 @@
                 "href": "/adapt/06-gui-customization"
               },
               {
+                "title": "Book menus",
+                "href": "/adapt/54-book-menus"
+              },
+              {
                 "title": "Protection and regions",
                 "href": "/adapt/08-protection-region-policy"
               },
@@ -677,6 +681,10 @@
                 "href": "/adapt/03-player-usage"
               },
               {
+                "title": "Book menus for players",
+                "href": "/adapt/55-book-menus-players"
+              },
+              {
                 "title": "Localization",
                 "href": "/adapt/07-localization"
               }
@@ -691,8 +699,56 @@
             "title": "",
             "links": [
               {
-                "title": "API",
+                "title": "Getting started",
                 "href": "/adapt/41-api-getting-started"
+              },
+              {
+                "title": "Addons",
+                "href": "/adapt/42-api-addons"
+              },
+              {
+                "title": "Skills and XP",
+                "href": "/adapt/43-api-skills"
+              },
+              {
+                "title": "Adaptations",
+                "href": "/adapt/44-api-adaptations"
+              },
+              {
+                "title": "Commands",
+                "href": "/adapt/53-api-commands"
+              },
+              {
+                "title": "Text and translations",
+                "href": "/adapt/45-api-text"
+              },
+              {
+                "title": "Icons, art, and themes",
+                "href": "/adapt/46-api-art-themes"
+              },
+              {
+                "title": "Mutations",
+                "href": "/adapt/47-api-mutations"
+              },
+              {
+                "title": "Players and content",
+                "href": "/adapt/48-api-players-content"
+              },
+              {
+                "title": "Events",
+                "href": "/adapt/49-api-events"
+              },
+              {
+                "title": "Abilities, protection, and world",
+                "href": "/adapt/50-api-abilities-protection"
+              },
+              {
+                "title": "PlaceholderAPI",
+                "href": "/adapt/51-api-placeholders"
+              },
+              {
+                "title": "Versioning and compatibility",
+                "href": "/adapt/52-api-versioning"
               }
             ]
           }

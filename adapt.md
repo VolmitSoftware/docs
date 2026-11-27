@@ -1,8 +1,8 @@
 ---
 title: "Adapt"
-description: "Skills, progression, and abilities for Paper, Purpur, and Folia servers"
+description: "Skills, progression, and abilities for Paper, Purpur, Folia, Spigot, and mod servers"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,10 +12,10 @@ Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys
 
 | | |
 |---|---|
-| Server | Paper, Purpur, or Folia |
+| Server | Paper, Purpur, Folia, or Spigot, or Fabric, Forge, or NeoForge |
 | Command | `/adapt` |
 | Menu | Side-click the activator block. Default: bookshelf |
-| Config | `plugins/Adapt/` |
+| Config | `plugins/Adapt/`, or `config/adapt/` on mod servers |
 
 ## Configure
 
@@ -25,6 +25,7 @@ Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys
 - [Progression and costs *Adaptation prices, knowledge, power, and time to level*](/adapt/38-progression-costs)
 - [Commands and permissions](/adapt/04-commands-permissions)
 - [GUI](/adapt/06-gui-customization)
+- [Book menus *Resource pack for vanilla clients on plugin servers*](/adapt/54-book-menus)
 - [Protection and regions](/adapt/08-protection-region-policy)
 - [Integrations](/adapt/09-integrations)
 - [Items](/adapt/36-items-orbs-bound-objects)
@@ -38,12 +39,25 @@ Adapt adds 24 skills. Actions award skill XP. Levels award knowledge, which buys
 - [Skills catalog](/adapt/10-skills-catalog)
 - [Mutations *Merged skills and upgraded adaptations*](/adapt/35-mutations)
 - [Player menu](/adapt/03-player-usage)
+- [Book menus for players](/adapt/55-book-menus-players)
 - [Localization](/adapt/07-localization)
 {.links-list}
 
 ## Developer API
 
-- [API](/adapt/41-api-getting-started)
+- [Getting started *Artifact, dependencies, and stability tiers*](/adapt/41-api-getting-started)
+- [Addons *Namespaces, registration, install, and uninstall*](/adapt/42-api-addons)
+- [Skills and XP *SimpleSkill, XP sources, and advancements*](/adapt/43-api-skills)
+- [Adaptations *Costs, preferences, items, handlers, and threading*](/adapt/44-api-adaptations)
+- [Commands *Subcommands below /adapt with typed arguments*](/adapt/53-api-commands)
+- [Text and translations *Message bundles and convention keys*](/adapt/45-api-text)
+- [Icons, art, and themes *Asset bundles, theme kits, and hover frames*](/adapt/46-api-art-themes)
+- [Mutations *Kits, pair content, and mutated ids. Experimental*](/adapt/47-api-mutations)
+- [Players and content *Catalog, vetoes, profiles, orphans, and settings*](/adapt/48-api-players-content)
+- [Events *Progress, lifecycle, and platform events*](/adapt/49-api-events)
+- [Abilities, protection, and world *Policies, costs, minions, scans, and build batches*](/adapt/50-api-abilities-protection)
+- [PlaceholderAPI *Placeholder keys*](/adapt/51-api-placeholders)
+- [Versioning and compatibility](/adapt/52-api-versioning)
 {.links-list}
 
 ## Support

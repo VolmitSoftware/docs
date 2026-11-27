@@ -2,7 +2,7 @@
 title: "Installation & Configuration"
 description: "Adapt files, requirements, settings, and uninstalling"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,10 +16,21 @@ Startup fills missing player-preference policies and writes adaptation settings 
 
 | | |
 |---|---|
-| Server | Paper, Purpur, or Folia. Minecraft 26.1.2 through 26.2, and Paper 26.3 |
-| Java | 25 |
-| Jar | `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` in each backend `plugins/` folder |
+| Plugin server | Paper, Purpur, Folia, or Spigot. Minecraft 26.1.2 through 26.3 |
+| Mod server | Fabric, Forge, or NeoForge on Minecraft 26.1.2 through 26.3 or 1.21.1, or Fabric or Forge on 1.20.1 |
+| Java | 25. A mod server needs the Java of its Minecraft version: 21 for 1.21.1, 17 for 1.20.1 |
+| Plugin jar | `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` in each backend `plugins/` folder |
+| Mod jar | `Adapt v<version> [<loader>] <minecraft>+<loader version>.jar` in the server's `mods/` folder |
 | Command | `/adapt`, behind `adapt.main`. `adapt.use.*` defaults to true and still needs that root node |
+
+The same mod jar is the client mod. What a player needs depends on the server:
+
+| Server | Player |
+|---|---|
+| Paper, Purpur, Folia, or Spigot | Nothing. The plugin offers a resource pack for book menus; a player who declines it gets chest menus. See [Book menus](/adapt/54-book-menus). Players with the client mod get its own book menus and HUD |
+| Fabric, Forge, or NeoForge | The Adapt client mod for book menus and HUD, with all art built in. Without it, chest menus and the action bar. These servers offer no resource pack |
+
+On a mod server, the files this page places under `plugins/Adapt/` are under `config/adapt/`.
 
 An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That directory must be writable. A non-English `language` is downloaded to `languages/<locale>.toml` only when that file is missing. Installed language files merge repository changes at startup and on `/adapt language update`, at most once every five minutes; see [Localization](/adapt/07-localization#language-files-and-updates).
 
@@ -29,7 +40,7 @@ An XZ packed jar extracts `plugins/Adapt/cache/runtime/` on first start. That di
 
 Set `ignorePassiveMobs = true` to exclude passive and neutral mobs from an adaptation's area, reflected, or chain damage. Add the key at the top level of the adaptation file when it is absent. The default is `false`. Provoked neutral mobs stay excluded when the setting is enabled. Direct attacks are unchanged.
 
-This setting applies to `axe-cleave`, `axe-ground-smash`, `axe-throwing-axe`, `sword-crimson-cyclone`, `excavation-earth-mover`, `ranged-heartseeker`, `nether-skull-toss`, `tragoul-thorns`, `tragoul-globe`, `tragoul-lance`, `tragoul-corpse-explosion`, and `tragoul-plague-bearer`.
+This setting applies to `adapt:axe/cleave`, `adapt:axe/ground_smash`, `adapt:axe/throwing_axe`, `adapt:sword/crimson_cyclone`, `adapt:excavation/earth_mover`, `adapt:ranged/heartseeker`, `adapt:nether/skull_toss`, `adapt:tragoul/thorns`, `adapt:tragoul/globe`, `adapt:tragoul/lance`, `adapt:tragoul/corpse_explosion`, and `adapt:tragoul/plague_bearer`.
 
 Skeletal servants, Shadow Decoys, and the attacker's tamed pets are excluded from those attacks regardless of this setting. Grave Digger's unearthed enemies stay valid targets.
 
@@ -72,7 +83,7 @@ Vault charges `knowledge cost * learningEconomy.moneyPerKnowledge` when `learnin
 
 ## Restore defaults
 
-`/adapt default skill <skill>` and `/adapt default adaptation <skill:adaptation>` regenerate that file. `/adapt default all` is described in [Updates](/adapt/40-operator-runbooks). All three need `adapt.configurator`.
+`/adapt default skill <skill>` and `/adapt default adaptation <adaptation>` regenerate that file, by id such as `swords` or `herbalism/luck`. `/adapt default all` is described in [Updates](/adapt/40-operator-runbooks). All three need `adapt.configurator`.
 
 ## Reference
 
@@ -97,11 +108,12 @@ Details: [Protection and region policy](/adapt/08-protection-region-policy) and 
 plugins/Adapt/
   adapt.toml
   models.toml
-  skills/<skill-id>.toml
-  adaptations/<adaptation-id>.toml
+  skills/<namespace>/<skill-path>.toml
+  adaptations/<namespace>/<adaptation-path>.toml
   config-archive/<timestamp>/
   languages/en_US.toml
   languages/<locale>.toml
+  languages/<namespace>/<locale>.toml
   languages/.upstream/
   languages/language-preferences.properties
   data/players/<uuid>.json
@@ -112,6 +124,8 @@ plugins/Adapt/
   data/advancements.db
   data/mantle/<namespace>/<world-key>/
 ```
+
+Skill and adaptation files are named after their ids: the skill `adapt:swords` is `skills/adapt/swords.toml`, and the adaptation `adapt:sword/poison_blade` is `adaptations/adapt/sword/poison_blade.toml`. An addon's content uses its own namespace folder, such as `adaptations/alchemist/alchemy/transmute.toml`. `languages/<namespace>/` holds admin overrides of an addon's messages, see [Text and translations](/adapt/45-api-text#admin-overrides).
 
 `data/advancements.db` is the SQLite advancement store used while `sql.enabled` is false. `config-archive` timestamps use `yyyy-MM-dd_HHmmss`.
 
@@ -197,7 +211,15 @@ soundsEnabled = true
 | `abilityApi.slowProviderMillis` | `2` | Milliseconds a provider may take before a slow warning is logged. `0` disables the warning |
 | `abilityApi.denyMessageThrottleMillis` | `2000` | Minimum milliseconds between repeated denial messages to the same player |
 
-An unrecognized failure-mode string falls back to `deny` for use policies and `allow` for cost providers. See [43 - API - Ability Use Policy](/adapt/43-api-ability-use-policy) and [44 - API - Ability Cost](/adapt/44-api-ability-cost).
+An unrecognized failure-mode string falls back to `deny` for use policies and `allow` for cost providers. See [Ability policy, costs and protection](/adapt/50-api-abilities-protection).
+
+### `[addons]`
+
+| Key | Default | What it does |
+|---|---:|---|
+| `addons.vetoProtectedNamespaces` | `[]` | Namespaces whose skills and adaptations no addon may disable at runtime. List `adapt` to keep every built-in skill and adaptation available whatever addons are installed. A refused attempt is logged. Hot-reloadable for later attempts; vetoes already in force stay until lifted |
+
+Addons can place runtime vetoes on other addons' content, see [Players and content](/adapt/48-api-players-content#vetoes).
 
 ### `[learningEconomy]`
 
@@ -237,16 +259,16 @@ Backends exchange request-correlated, fence-qualified snapshots through the `Ada
 
 ```toml
 [adaptationUsageConflicts]
-"rift-blink" = ["agility-air-dash"]
+"rift/blink" = ["agility/air_dash"]
 
-[protectionOverrides.rift-blink]
+[protectionOverrides."rift/blink"]
 WorldGuard = true
 GriefPrevention = false
 ```
 
 Both blocks are examples. `adaptationUsageConflicts` is empty by default. `protectionOverrides` contains one placeholder row, `"adaptation-name"` mapped to `WorldGuard = true`.
 
-Conflict pairs are symmetric. Listing `agility-air-dash` under `rift-blink` blocks either adaptation while the other is learned. `protectionOverrides` starts from the default protector set, then adds or removes protectors by the names in [Protection and region policy](/adapt/08-protection-region-policy). An unknown name is skipped.
+Both maps are keyed by adaptation id, quoted because ids contain `/`; a bare id is in the `adapt` namespace. Conflict pairs are symmetric. Listing `agility/air_dash` under `rift/blink` blocks either adaptation while the other is learned. `protectionOverrides` starts from the default protector set, then adds or removes protectors by the names in [Protection and region policy](/adapt/08-protection-region-policy). An unknown name is skipped.
 
 ### Player preferences
 
@@ -254,7 +276,7 @@ Set `playerSettingsEnabled = false` at the top level of `adapt.toml` to disable 
 
 Saved personal choices are retained but ignored while this switch is off. Setting it back to `true` restores eligible saved choices. A valid config save applies the policy to online players and refreshes open menus.
 
-Every adaptation has a personal `enabled` control. Its server policy lives in `adaptations/<adaptation-id>.toml` under `[playerPreferences.<control-id>]`. Skill-wide enable policies use the same shape in `skills/<skill-id>.toml`. Setting a skill off suppresses its adaptations without overwriting their individual choices or stopping ordinary skill XP. Player edits save to player data; they do not edit the server file or hotload a skill.
+Every adaptation has a personal `enabled` control. Its server policy lives in `adaptations/<namespace>/<adaptation-path>.toml` under `[playerPreferences.<control-id>]`. Skill-wide enable policies use the same shape in `skills/<namespace>/<skill-path>.toml`. Setting a skill off suppresses its adaptations without overwriting their individual choices or stopping ordinary skill XP. Player edits save to player data; they do not edit the server file or hotload a skill.
 
 | Field | Meaning |
 |---|---|
@@ -309,10 +331,11 @@ Invalid policy edits keep the last valid live configuration. Save valid policy c
 | `xpIntegrity` | [05 - Configuration Math](/adapt/05-configuration-math) |
 | `permissionXpMultipliers` | [05 - Configuration Math](/adapt/05-configuration-math) |
 | `protectorSupport` | [08 - Protection & Region Policy](/adapt/08-protection-region-policy) |
+| `pack` | [54 - Book Menus](/adapt/54-book-menus) |
 
 ### Reload matrix
 
-Skill, adaptation, GUI, effects, progression, language, model, and protection settings apply on save. SQL, Redis, metrics, and installing or removing an optional plugin need a restart. See [Updates](/adapt/40-operator-runbooks).
+Skill, adaptation, GUI, effects, progression, language, model, and protection settings apply on save. SQL, Redis, metrics, every `pack` key, and installing or removing an optional plugin need a restart. See [Updates](/adapt/40-operator-runbooks).
 
 ## Uninstalling
 
@@ -329,8 +352,8 @@ Removing Adapt deletes every player's skills, knowledge, and learned adaptations
 ### Remove Adapt
 
 1. Stop every backend that runs Adapt. With SQL storage, stop every server that shares the schema.
-2. Delete `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` from each backend's `plugins/` folder. Adapt has no proxy plugin or client mod.
-3. Delete `plugins/Adapt/` on each backend. It holds the configuration, language files and per-player language choices, local player profiles, the advancement store, per-world block data, diagnostic reports, the runtime cache, and downloaded libraries.
+2. Delete `Adapt v<version> [CraftBukkit] 26.1.2-26.3.jar` from each backend's `plugins/` folder, or the Adapt jar from a mod server's `mods/` folder. Players who installed the client mod can remove it from their own `mods/` folder.
+3. Delete `plugins/Adapt/` (`config/adapt/` on a mod server) on each backend. It holds the configuration, language files and per-player language choices, local player profiles, the advancement store, per-world block data, diagnostic reports, the runtime cache, downloaded libraries, and on plugin servers the resource pack cache and export.
 4. With `sql.enabled = true`, drop Adapt's tables from the `sql.database` schema:
 
 | Tables | Created when |

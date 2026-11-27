@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-10-28T00:00:00.000Z
+date: 2026-11-26T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -73,20 +73,20 @@ models.toml (when it actually overrides, and customModels = true)
 
 ### models.toml format
 
-`plugins/Adapt/models.toml` uses dotted-path tables holding `material`, `model`, `modelKey`, and optional `headTexture`:
+`plugins/Adapt/models.toml` uses dotted-path tables holding `material`, `model`, `modelKey`, and optional `headTexture`. Skill and adaptation entries are keyed by the full id, such as `adapt:stealth` or `adapt:stealth/shadowmeld`, quoted because ids contain `:` and `/`:
 
 ```toml
-[skill.stealth]
+[skill."adapt:stealth"]
 material = "PHANTOM_MEMBRANE"
 model = 0
 modelKey = "minecraft:empty"
 
-[adaptation.stealth-shadowmeld.icon]
+[adaptation."adapt:stealth/shadowmeld".icon]
 material = "BLACK_DYE"
 model = 14
 modelKey = "minecraft:empty"
 
-[adaptation.stealth-shadowmeld.level-2]
+[adaptation."adapt:stealth/shadowmeld".level-2]
 material = "BLACK_DYE"
 model = 15
 modelKey = "minecraft:empty"
@@ -94,9 +94,9 @@ modelKey = "minecraft:empty"
 
 | Path | Used for |
 |---|---|
-| `skill.<name>` | The skill card in the skills menu |
-| `adaptation.<name>.icon` | The adaptation entry in a skill's list |
-| `adaptation.<name>.level-<n>` | The level-`n` button in an adaptation's window |
+| `skill.<id>` | The skill card in the skills menu |
+| `adaptation.<id>.icon` | The adaptation entry in a skill's list |
+| `adaptation.<id>.level-<n>` | The level-`n` button in an adaptation's window |
 | `snippets.gui.level.<n>` | Fallback level button when the adaptation defines none |
 | `items.experience-orb` | Newly created experience orbs |
 | `items.knowledge-orb` | Newly created knowledge orbs |

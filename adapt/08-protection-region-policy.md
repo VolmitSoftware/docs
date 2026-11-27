@@ -2,7 +2,7 @@
 title: "Protection & Region Policy"
 description: "WorldGuard flags, claim protection, and region policy"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -30,7 +30,7 @@ With no region-policy provider, gameplay XP uses multiplier 1.0 and players rece
 
 `adapt-power-bonus` is added to max power on the one-second tick from the player's position. It is not saved. The next tick outside a region that sets it clears the bonus. If used power then exceeds max power, whole learned adaptations are removed with no refund: ones no other learned adaptation requires first, then the lowest-level ones, ties by skill id and adaptation id. Removing a prerequisite also removes the adaptations whose requirement it breaks. Moving to an equal or higher bonus removes nothing. Region grants are exempt. `/adapt debug mode` skips that removal.
 
-`adapt-unlock-adaptations` takes adaptation ids, or `*`. Names are trimmed and lowercased. Applicable regions are combined. Each listed adaptation is granted at level 1 while the player is inside, when the skill and adaptation are enabled. Grants cost no knowledge, currency, or power, and are removed on leave, quit, and profile load. An adaptation the player already learned is left as a normal learned adaptation.
+`adapt-unlock-adaptations` takes adaptation ids, such as `rift/blink` or `alchemist:alchemy/transmute`, or `*`. A bare id is in the `adapt` namespace. Names are trimmed and lowercased. Applicable regions are combined. Each listed adaptation is granted at level 1 while the player is inside, when the skill and adaptation are enabled. Grants cost no knowledge, currency, or power, and are removed on leave, quit, and profile load. An adaptation the player already learned is left as a normal learned adaptation.
 
 Buying a grant charges from level 0, including the granted level, and the result is a normal learned adaptation. Unlearning a grant refunds nothing. Unlearning one while still inside grants it again on the next tick.
 
@@ -38,17 +38,40 @@ Buying a grant charges from level 0, including the granted level, and the result
 
 `protectorSupport.*` selects the default set. A core-config reload rebuilds that set. Installing or removing a protection plugin needs a restart.
 
-`protectionOverrides.<adaptation id>` sets a protector name to `true` to add it or `false` to remove it for that adaptation. The activator click uses the default set only.
+`protectionOverrides.<adaptation id>` sets a protector name to `true` to add it or `false` to remove it for that adaptation. Quote the id, which contains `/`; a bare id is in the `adapt` namespace. The activator click uses the default set only.
 
 ```toml
-[protectionOverrides.rift-blink]
+[protectionOverrides."rift/blink"]
 WorldGuard = true
 GriefPrevention = false
 ```
 
 An override cannot add a protector whose plugin was absent at enable. An unknown name is skipped.
 
-Container and item actions also fire the normal Bukkit events before Adapt changes the world. Cancelling the event stops Adapt. Adapt ignores checks it marked itself. Remote inventories do not apply vanilla reach, chest obstruction, spectator, or lock rules. The dispatched events are listed in [API - Protection](/adapt/46-api-protection).
+Addons can register protectors of their own, which appear in overrides under the names their addons give them.
+
+### Fabric, Forge and NeoForge
+
+On modded servers the server's own rules are the protector `claims`, on by default. It checks spawn protection, the world border, build height, adventure mode, the PVP rule and team friendly fire, and fires the loader's break event so claim mods such as FTB Chunks, Open Parties and Claims, Flan, Cadmus and Get Off My Lawn can refuse a break. Turn it off for one adaptation with an override:
+
+```toml
+[protectionOverrides."rift/blink"]
+claims = false
+```
+
+A protector that fails while answering counts as a denial, and the failure is logged with the protector's name.
+
+Container and item actions also fire the normal Bukkit events before Adapt changes the world. Cancelling the event stops Adapt. Adapt ignores checks it marked itself. Remote inventories do not apply vanilla reach, chest obstruction, spectator, or lock rules. Adapt dispatches these events:
+
+| Feature | Events dispatched |
+|---|---|
+| Rift Access and deferred Rift Conduit actions | Marked `RIGHT_CLICK_BLOCK` for every physical container block, including both halves of a double chest. Refused when a listener denies block use |
+| Initial Rift Conduit gesture | Uses its real clicked-block event and probes any other physical half |
+| Indirect item-entity transfers | `PlayerAttemptPickupItemEvent` first on Paper. When capacity allows, `PlayerPickupItemEvent` then `EntityPickupItemEvent` on both Paper and Spigot |
+| Veinminer | Waits for the original block to finish breaking, then uses the player's native break action for every sibling |
+| Time in a Bottle | Plans a sapling tree without changing the world, authorizes the complete footprint, then fires `StructureGrowEvent` before generation |
+| Chronos crop acceleration, Compost Cascade, Builder's Wand, Magic Foundation, Seed Sower, Coral Gardener | Marked `BlockBreakEvent` or `BlockPlaceEvent` authorization checks as applicable, before committing |
+| Deconstruction | The normal pickup-event sequence before it replaces a dropped item |
 
 On Folia, an adaptation whose targets span more than one region is skipped. Air-click targeting is off. A direct block click still runs.
 

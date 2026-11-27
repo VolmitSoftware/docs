@@ -2,7 +2,7 @@
 title: "Integrations"
 description: "Optional plugin integrations and their runtime behavior"
 published: true
-date: 2026-10-20T04:00:00.000Z
+date: 2026-11-26T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -41,7 +41,7 @@ With [Gloss entity overlays](/gloss/20-entity-overlays) on, [Discovery Insight](
 
 ## PlaceholderAPI
 
-The expansion id is `adapt`. Paths are dot-separated, as in `%adapt_player.level%` and `%adapt_skill.agility.level%`. Values refresh about once a second. After a player leaves, the last values stay readable for 60 seconds, then become `---`. If the profile cannot load, `%adapt_available%` is `false` and every value is `---`. An unknown key is left unchanged. Keys: [PlaceholderAPI](/adapt/47-api-placeholderapi).
+The expansion id is `adapt`. Paths are dot-separated, as in `%adapt_player.level%`, `%adapt_skill.agility.level%` and `%adapt_skill.alchemist:alchemy.level%`. Skill and adaptation ids are bare for `adapt` content and full for an addon's. Values refresh about once a second. After a player leaves, the last values stay readable for 60 seconds, then become `---`. If the profile cannot load, `%adapt_available%` is `false` and every value is `---`. An unknown key is left unchanged. Keys: [PlaceholderAPI](/adapt/51-api-placeholders).
 
 ## Vault
 
@@ -72,4 +72,4 @@ MagicCosmetics `HAT` and `BAG` slots are omitted from Adapt's armor-value sum.
 
 SQL remains the authority. Redis carries the handoff when both are enabled. There is no proxy plugin. See [Cross-server SQL and Redis](/adapt/39-velocity-cross-server).
 
-Other plugins can register ability policies, costs, and protectors. Registering one does not grant an unlearned adaptation. See [API](/adapt/41-api-getting-started).
+Other plugins can register ability policies, costs, and protectors. Registering one does not grant an unlearned adaptation. See [Ability policy, costs and protection](/adapt/50-api-abilities-protection).
