@@ -2,7 +2,7 @@
 title: "Skill - Pickaxes"
 description: "Pickaxes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -12,6 +12,8 @@ Pickaxes (`pickaxe`) gains XP from mining stone or ore and from damage dealt wit
 ## Earning XP
 
 Breaking a block with a pickaxe pays from that block's material value, plus hardness and blast resistance, both capped, plus an ore bonus that is multiplied again for deepslate ore, then scaled by a fixed factor. Those config values are relative weights, not raw XP. Silk Touch skips that formula and pays a flat 5 XP. Blocks the anti-farm system has already devalued, including placed blocks and repeatedly farmed areas, pay nothing. Player-placed blocks and rejected replacements also provide no mining milestone credit. Hitting a valid mob with a pickaxe pays XP from credited damage, and counts toward the `pickaxe.damage` challenges, at most once per `cooldownDelay`. Mining has no cooldown.
+
+Modded pickaxes count as described in [Modded tools and blocks](/adapt/01-installation-configuration#modded-tools-and-blocks). A tool that is also an axe or a shovel pays Pickaxes XP only for Pickaxes work: a block in `minecraft:mineable/pickaxe`, `forge:ores`, `c:ores`, `forge:stone` or `c:stones`, or on `extraBlocks`. A block on `extraBlocks` pays its listed XP instead of the formula, and a block on `excludedBlocks` pays nothing.
 
 Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
@@ -63,7 +65,7 @@ A right-click on a vanilla ore with a main-hand pickaxe that has neither Silk To
 
 5 levels · 4 knowledge, then 6 per level
 
-Sneak-breaking ore, obsidian, or ancient debris with a pickaxe also breaks connected blocks of the same family: any material ending in `_ORE`, with `DEEPSLATE_*_ORE` grouped with its base ore, plus `OBSIDIAN` and `ANCIENT_DEBRIS`. Each extra block breaks normally, so enchantments and Autosmelt apply per block, drops are not merged, and HiddenOre veins chain the same way.
+Sneak-breaking ore, obsidian, or ancient debris with a pickaxe also breaks connected blocks of the same family: any material ending in `_ORE`, with `DEEPSLATE_*_ORE` grouped with its base ore, plus `OBSIDIAN` and `ANCIENT_DEBRIS`. Each extra block breaks normally, so enchantments and Autosmelt apply per block, drops are not merged, and HiddenOre veins chain the same way. A modded block in `forge:ores` or `c:ores` counts as an ore.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -112,7 +114,7 @@ A spawner broken with the correct pickaxe drops a spawner item that keeps only t
 
 5 levels · 4 knowledge
 
-A sneak-right-click with an iron, diamond, or netherite pickaxe consumes the click and shows the scanning player private outlines colored by ore type, including HiddenOre veins. Only one scan runs at a time; radius is clamped to 4-32 blocks and markers to 16, whatever the config says.
+A sneak-right-click with an iron, diamond, or netherite pickaxe consumes the click and shows the scanning player private outlines colored by ore type, including HiddenOre veins. A modded pickaxe qualifies when it is on `extraTools` or mines diamond ore. Only one scan runs at a time; radius is clamped to 4-32 blocks and markers to 16, whatever the config says.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -173,7 +175,7 @@ Hitting `DEEPSLATE`, `COBBLED_DEEPSLATE`, `POLISHED_DEEPSLATE`, `DEEPSLATE_BRICK
 
 3 levels · 4 knowledge, then 5 per level
 
-Hitting `OBSIDIAN` or `CRYING_OBSIDIAN` with a diamond or netherite pickaxe refreshes a `BLOCK_BREAK_SPEED` modifier. Any other pickaxe does nothing.
+Hitting `OBSIDIAN` or `CRYING_OBSIDIAN` with a diamond or netherite pickaxe refreshes a `BLOCK_BREAK_SPEED` modifier. A modded pickaxe qualifies when it is on `extraTools` or mines obsidian. Any other pickaxe does nothing.
 
 | Key | Code default | Behavior / units |
 |-----|--------------|------------------|
@@ -282,6 +284,13 @@ Written to `plugins/Adapt/skills/pickaxe.toml` on first load.
 | `debrisBonus` | `210` | Value added for ancient debris. |
 | `deepslateMultiplier` | `1.35` | Multiplier applied to the ore bonus of deepslate ore variants. |
 | `cooldownDelay` | `1250` | Milliseconds between pickaxe combat XP awards. Mining has no cooldown. |
+| `extraTools` | `[]` | Item ids or `#tags` that also count as a pickaxe for this skill and all its adaptations. |
+| `excludedTools` | `[]` | Item ids or `#tags` that never count as a pickaxe, whatever another rule says. |
+| `extraBlocks` | `{}` | Block id or `#tag` to XP. Listed blocks count as Pickaxes work and pay that XP per block before placed-block scaling. |
+| `excludedBlocks` | `[]` | Block ids or `#tags` that never pay Pickaxes XP. |
+| `toolTagRule` | `true` | Counts items in `minecraft:pickaxes`, `forge:tools/pickaxes`, `c:pickaxes` or `fabric:pickaxes` as a pickaxe. |
+| `toolCapabilityRule` | `true` | Counts items the mod loader says dig as a pickaxe. |
+| `toolBehaviourRule` | `true` | Counts items that are the correct tool for stone as a pickaxe, and pays for Pickaxes work broken with its correct tool. |
 
 ### Challenges
 

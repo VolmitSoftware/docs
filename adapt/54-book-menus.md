@@ -8,9 +8,9 @@ editor: markdown
 dateCreated: 2026-11-26T00:00:00.000Z
 ---
 
-On Paper, Purpur, Folia, and Spigot, Adapt builds a resource pack and offers it to players on the vanilla Java client. With the pack loaded, the Skills, skill, adaptation, and Mutate menus open as book pages in each skill's theme, with animated page art. Other Adapt menus open on a plain ledger page. The pack is never forced: a player who declines it, or whose client cannot load it, keeps the chest menus.
+On Paper, Purpur, Folia, and Spigot, Adapt builds a resource pack and offers it to players on the vanilla Java client. With the pack loaded, the Skills, skill, adaptation, and Mutate menus open as book pages in each skill's theme, with animated page art. Other Adapt menus open on a plain ledger page. A player who declines the pack, or whose client cannot load it, keeps the chest menus, unless `pack.required` is on.
 
-Settings are the `pack` keys in `adapt.toml`. Every `pack` key applies on restart. What players see and click is in [Book menus for players](/adapt/55-book-menus-players).
+Settings are the `pack` keys in `adapt.toml`. The keys that build, host and schedule the pack apply on restart; `reofferAfterDecline`, the nudge, menu item, mod, prompt, `required` and `uiSounds` keys apply when the file is saved. What players see and click is in [Book menus for players](/adapt/55-book-menus-players).
 
 ![Skills page of the book menus](/adapt-assets/book-menus/skills.png =520x)
 
@@ -34,28 +34,37 @@ Full pages draw over the player's inventory rows while a page is open. If the se
 |---|---|
 | Vanilla Java client that loaded the pack | Book pages |
 | Vanilla Java client that declined the pack, or whose download failed | Chest menus |
-| Vanilla Java client whose player chose chest menus | Chest menus |
 | Adapt client mod | The mod's own book. The pack is never offered |
 | Bedrock, through Geyser or Floodgate | Chest menus. The pack is never offered |
 
-A player who runs the Adapt client mod is recognised when the mod answers within `pack.handshakeWindowMillis` of joining. Bedrock players are recognised through the Floodgate or Geyser API when either plugin is loaded.
+A player who runs the Adapt client mod is recognised when the mod answers within `pack.handshakeWindowMillis` of joining. Bedrock players are recognised through the Floodgate or Geyser API when either plugin is loaded. Players cannot switch book menus off for themselves: a player with the pack loaded gets book pages.
 
 ## How the pack reaches players
 
 1. On start, Adapt builds the pack off the main thread and stores it in `plugins/Adapt/pack/cache/`. A later start with the same content loads the stored pack. When a [pack zip](#pack-zip) that fits is in `plugins/Adapt/pack/`, Adapt uses it instead of building.
 2. The log reports the result: `Baked the Adapt pack in <seconds> s: <size> MB, sha1 <hash>.`, or `Loaded the cached Adapt pack ...` for a stored pack.
 3. Adapt picks where players download the pack, as described in [Hosting the pack](#hosting-the-pack). By default that is the published copy on GitHub.
-4. Adapt offers the pack as `pack.offer` sets: after the client mod window on join, on the player's first Adapt menu, or only through `/adapt pack offer`.
-5. The client shows the vanilla prompt with the text of the `adapt.pack.prompt` message.
+4. Adapt offers the pack as `pack.offer` sets: on every join after the client mod window, on the player's first Adapt menu after each join, or only through `/adapt pack offer`.
+5. The client shows the vanilla prompt. With `pack.strongPrompt` on, it describes the book menus and, with `pack.mentionMod`, names the Adapt client mod; otherwise it shows the `pack.promptKey` message.
 6. When the client reports the pack loaded, Adapt menus open as book pages.
 
-A player who declines keeps chest menus. Adapt saves the declined pack's hash with the player's data and does not offer that pack again, after a rejoin or a restart, until its content changes or the player runs `/adapt pack offer`.
+A player who declines keeps chest menus and gets a chat line with the steps that let their client load server packs again. Adapt offers the pack again on their next join. With `pack.reofferAfterDecline = false`, Adapt saves the declined pack's hash with the player's data and does not offer that pack again, after a rejoin or a restart, until its content changes or the player runs `/adapt pack offer`.
 
-The client also remembers the decline. For the rest of that connection it declines every server pack without a prompt. `/adapt pack offer` sends the pack again and replies `Your client declined the Adapt pack. Rejoin with Server Resource Packs set to Prompt or Enabled, then run /adapt pack offer.`, but nothing appears. A player who joined from the server list also has that entry's Server Resource Packs setting switched to Disabled, which declines every later offer on that server without a prompt. To get the pack after declining, the player sets that option back to Prompt or Enabled, reconnects, and runs `/adapt pack offer`.
+The client also remembers the decline. For the rest of that connection it declines every server pack without a prompt. `/adapt pack offer` sends the pack again and replies `Your client turns down server packs here. Edit this server in your server list, set Server Resource Packs to Enabled, then rejoin.`, but nothing appears. A player who joined from the server list also has that entry's Server Resource Packs setting switched to Disabled, which declines every later offer on that server without a prompt. To get the pack after declining, the player sets that option back to Prompt or Enabled and reconnects.
 
-A failed download leaves the player on chest menus. Adapt does not retry it; `/adapt pack offer` sends the pack again. The one exception is the first failed download from the [published copy](#published-copy), after which Adapt offers its own hosted pack to every player it had offered the pack to.
+A failed download leaves the player on chest menus and never disconnects them. Adapt does not retry it on that connection; `/adapt pack offer` sends the pack again. The one exception is the first failed download from the [published copy](#published-copy), after which Adapt offers its own hosted pack to every player it had offered the pack to.
 
 When the pack content changes while the server runs, for example because an addon was installed or removed, Adapt builds the pack again. Every player who was offered the old pack gets the new one, including players who declined the old one.
+
+### Nudges
+
+A player who could load the pack and has not is told about it in chat once after joining (`pack.joinNudge`), and again when they open an Adapt menu, at most every two minutes (`pack.menuNudge`). The line has a `[Load the book pack]` click that offers the pack again, or, after a decline, the steps for the server list entry. With `pack.mentionMod`, a second line names the Adapt client mod and links `pack.modUrl`. With `pack.menuItem`, the chest menus show a Get the book menus item in the right corner of the footer; clicking it offers the pack again, or prints the steps when the client refuses server packs. Players with the client mod, Bedrock players and players who loaded the pack see none of this.
+
+### Required pack
+
+With `pack.required = true`, the pack goes out as required. It is offered at join whatever `pack.offer` says, the client prompts even when server packs are disabled for this server, and declining disconnects the player with `This server needs the Adapt pack for its menus. Rejoin and press Proceed on the pack prompt.` Players with `adapt.pack.optional`, which defaults to false, get the pack as optional. Players with the client mod are never sent the pack, and a failed download disconnects no one. When nothing hosts the pack, or `pack.merged` is on, no player is required to load it, and Adapt logs `pack.required is on, but Adapt offers no pack of its own here, so no player is required to load it.`
+
+### Build failures
 
 If the build fails, Adapt logs `Could not build the Adapt resource pack; players keep chest menus` and keeps offering the pack it had before. On the first start, that means chest menus for everyone until the next successful build.
 
@@ -86,11 +95,8 @@ Adapt reads the folder at start and whenever the pack content changes while the 
 | Command | Permission | Purpose |
 |---|---|---|
 | `/adapt pack offer` | `adapt.pack` | Send the pack to yourself again, even after declining it |
-| `/adapt pack menus style=book` | `adapt.pack` | Book menus. Without the pack loaded, Adapt sends it and book menus start once it loads |
-| `/adapt pack menus style=chest` | `adapt.pack` | Always use chest menus |
-| `/adapt pack menus style=auto` | `adapt.pack` | Book menus while the pack is loaded, chest menus otherwise. The default |
 
-`adapt.pack` defaults to true. `/adapt pack` does not need `adapt.main`. The `menus` choice is saved with the player's data. Book pages need a client that reported Adapt's pack loaded, or any server pack in [merged mode](#merged-packs), so a pack the player installed by hand counts only with `pack.merged = true`.
+`adapt.pack` defaults to true. `/adapt pack` does not need `adapt.main`. `adapt.pack.optional`, false by default, keeps the pack optional for its holders while `pack.required` is on. Book pages need a client that reported Adapt's pack loaded, or any server pack in [merged mode](#merged-packs), so a pack the player installed by hand counts only with `pack.merged = true`.
 
 `/adapt pack offer` replies with one of these:
 
@@ -102,16 +108,23 @@ Adapt reads the folder at start and whenever the pack content changes while the 
 | This server does not offer the Adapt pack. | `pack.enabled` is off or `pack.merged` is on |
 | Your Adapt client already shows book menus. | The player runs the Adapt client mod |
 | Bedrock clients cannot load the Adapt pack. | The player is on Bedrock |
-| Your client declined the Adapt pack. Rejoin with Server Resource Packs set to Prompt or Enabled, then run /adapt pack offer. | The pack was sent, but the client declined a pack earlier on this connection and declines this one without a prompt |
-
-`/adapt pack menus` replies with the choice, such as `Adapt menus: chest.` When `style=book` finds no loaded pack, the reply is `Book menus start once the Adapt pack is loaded.` once the pack is on its way, `Run /adapt pack offer to load the Adapt pack for book menus.` when the player declined this pack on an earlier connection, the declined hint above when they declined it on this connection, or one of the replies above when the pack cannot be sent.
+| Your client turns down server packs here. Edit this server in your server list, set Server Resource Packs to Enabled, then rejoin. | The pack was sent, but the client declined a pack earlier on this connection and declines this one without a prompt |
 
 ## Configuration
 
 | Key | Default | What it does |
 |---|---|---|
 | `pack.enabled` | `true` | Builds and offers the pack. `false` keeps everyone on chest menus |
-| `pack.offer` | `"join"` | `join` offers after the client mod window, `first-open` on the player's first Adapt menu, `off` only through `/adapt pack offer`. Another value logs a warning and uses `join` |
+| `pack.offer` | `"join"` | `join` offers on every join after the client mod window, `first-open` on the player's first Adapt menu after each join, `off` only through `/adapt pack offer`. Another value logs a warning and uses `join` |
+| `pack.reofferAfterDecline` | `true` | Offers the pack again on later joins to a player who declined it. `false` waits until the pack changes or the player runs `/adapt pack offer` |
+| `pack.joinNudge` | `true` | Tells a player without the pack about it in chat once after joining, and gives the steps after a decline |
+| `pack.menuNudge` | `true` | Repeats that line when a player without the pack opens an Adapt menu, at most every two minutes |
+| `pack.menuItem` | `true` | Shows the Get the book menus item in the chest menus of players without the pack |
+| `pack.mentionMod` | `true` | Names the Adapt client mod in the prompt, the chat lines, the menu item and the required-pack message |
+| `pack.modUrl` | `"https://github.com/VolmitSoftware/Adapt/releases"` | Download link for the client mod in the chat lines. Blank names the mod without a link |
+| `pack.strongPrompt` | `true` | Shows the full prompt that describes the book menus. `false` shows only the `pack.promptKey` text |
+| `pack.required` | `false` | Sends the pack as required; declining it disconnects the player. See [Required pack](#required-pack) |
+| `pack.uiSounds` | `true` | Plays quiet page and click sounds in book menus. `effects.soundsEnabled` and the player's effects preference also mute them |
 | `pack.handshakeWindowMillis` | `3000` | Milliseconds after joining that Adapt waits for the Adapt client mod before offering. Clamped to 0 to 60000 |
 | `pack.serve` | `true` | Serves the pack from Adapt's own HTTP listener when players cannot use the published copy. Ignored while `pack.externalUrl` is set |
 | `pack.bind` | `"0.0.0.0"` | Address the listener binds. `0.0.0.0` listens on every interface |
@@ -119,14 +132,14 @@ Adapt reads the folder at start and whenever the pack content changes while the 
 | `pack.publicUrl` | `""` | Base address players download from, such as `http://play.example.com:8164`. Blank uses the bind address, or this machine's address when binding `0.0.0.0` |
 | `pack.externalUrl` | `""` | Address of a pack you host yourself. `{sha1}` is replaced with the pack hash. While set, players always download from it and the listener stays closed |
 | `pack.releaseUrl` | `"https://github.com/VolmitSoftware/Adapt/releases/download/ResourcePack/Adapt.Pack.v{version}.zip"` | Address of the published pack. `{version}` is replaced with the Adapt version. Blank always hosts the pack on this server |
-| `pack.promptKey` | `"adapt.pack.prompt"` | Message key of the prompt text. An unknown key uses `adapt.pack.prompt` |
+| `pack.promptKey` | `"adapt.pack.prompt"` | Message key of the prompt text while `pack.strongPrompt` is off. An unknown key uses `adapt.pack.prompt` |
 | `pack.export` | `true` | Writes the pack to `pack/export/` when its hash differs from the export already there |
 | `pack.merged` | `false` | Players get Adapt's files inside another pack. Adapt still builds and exports the pack, but neither serves nor offers it. See [Merged packs](#merged-packs) |
 | `pack.bakeThreads` | `0` | Threads that build the pack. `0` uses half the processor cores, at most four. Clamped to 0 to 16. More threads build faster and use more memory |
 
 Paths are inside `plugins/Adapt/`.
 
-To change the prompt text, edit the `adapt.pack.prompt` message in your language file. See [Localization](/adapt/07-localization).
+To change the prompt text, edit the `adapt.pack.prompt_strong` message, or `adapt.pack.prompt` with `pack.strongPrompt = false`, in your language file. See [Localization](/adapt/07-localization).
 
 ## Hosting the pack
 
@@ -225,7 +238,7 @@ Set `pack.merged = true` when players get Adapt's files inside another server pa
 
 When two packs add the same file, the plugin that builds the merged pack decides which one wins. Adapt's files sit under the `adapt` namespace, apart from the language files that blank the Inventory label and the item atlas file that adds Adapt's icon folders.
 
-In merged mode a player gets book pages once their client reports that a server pack loaded. A later report that a pack was declined, failed, or was discarded returns the player to chest menus. Adapt cannot tell which pack loaded, so a client that loaded an unrelated server pack also gets book pages. Bedrock players and players who chose chest menus keep chest menus.
+In merged mode a player gets book pages once their client reports that a server pack loaded. A later report that a pack was declined, failed, or was discarded returns the player to chest menus. Adapt cannot tell which pack loaded, so a client that loaded an unrelated server pack also gets book pages. Bedrock players keep chest menus.
 
 On Paper, Purpur, and Folia, Adapt reads the pack status the player joined with, so a `server.properties` pack counts. On Spigot, only packs sent after the player joined count, so a `server.properties` pack does not give book pages there.
 

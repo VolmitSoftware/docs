@@ -27,7 +27,7 @@ The same mod jar is the client mod. What a player needs depends on the server:
 
 | Server | Player |
 |---|---|
-| Paper, Purpur, Folia, or Spigot | Nothing. The plugin offers a resource pack for book menus; a player who declines it gets chest menus. See [Book menus](/adapt/54-book-menus). Players with the client mod get its own book menus and HUD |
+| Paper, Purpur, Folia, or Spigot | Nothing. The plugin offers a resource pack for book menus on every join; a player who declines it gets chest menus unless the server requires the pack. See [Book menus](/adapt/54-book-menus). Players with the client mod get its own book menus and HUD |
 | Fabric, Forge, or NeoForge | The Adapt client mod for book menus and HUD, with all art built in. Without it, chest menus and the action bar. These servers offer no resource pack |
 
 On a mod server, the files this page places under `plugins/Adapt/` are under `config/adapt/`.
@@ -59,6 +59,37 @@ This example stops Adapt from growing glow berries. The list applies to:
 - [Harvester Core](/adapt/34-skill-golemancy#harvester-core-golem-harvester-core) tending
 
 Listed blocks can still grow naturally and from bone meal a player applies, and Compost Cascade and Harvesters still harvest them when ripe. Growth Aura's Growables menu shows an entry as unavailable once every block it covers is listed; for glow berries that block is `CAVE_VINES`.
+
+## Modded tools and blocks
+
+Pickaxes, Axes and Excavation each decide whether a held item is their tool by asking these questions in order. The first that answers decides, so an exclusion always wins:
+
+1. Is the item on the skill's `excludedTools`? Then it never counts.
+2. Is it on `extraTools`? Then it counts.
+3. Is it in one of the tool's item tags, for a pickaxe `minecraft:pickaxes`, `forge:tools/pickaxes`, `c:pickaxes` or `fabric:pickaxes`? Turned off by `toolTagRule = false`.
+4. Does the mod loader say it digs as that tool? Forge answers on 1.20.1 through 26.2 and NeoForge on 1.21.1. Fabric, plugin servers, Forge 26.3 and NeoForge 26.x have no such answer. Turned off by `toolCapabilityRule = false`.
+5. Does it actually mine the tool's reference block, stone for a pickaxe, an oak log for an axe, dirt for a shovel? This finds modded drills and hammers that carry no tags. Turned off by `toolBehaviourRule = false`.
+6. Is it a vanilla tool of that kind?
+
+A tool worn down to its maximum damage without breaking never counts. The same answer covers the skill's XP, its adaptations and its upgrades.
+
+A tool can be several kinds at once: a paxel is a pickaxe, an axe and a shovel. The broken block then decides which skill earns. Stone and ores feed Pickaxes, logs feed Axes, dirt and sand feed Excavation, following each block's `minecraft:mineable/pickaxe`, `mineable/axe` or `mineable/shovel` tag. A tool of only one kind earns its skill on any block, as vanilla tools do. An item that answers none of the questions still earns on a block of a skill's work when it is that block's correct tool.
+
+A modded block with no XP of its own earns a derived amount, from its material value, hardness and blast resistance within the skill's caps, the same way a vanilla block does. Placed blocks and farmed areas pay less or nothing as usual.
+
+Each skill file has its own lists. Entries are ids such as `mekanismtools:osmium_paxel`, or tags written with `#` such as `#forge:tools/hammers`; a bare name means `minecraft`. `extraBlocks` maps a block or tag to the XP one block pays. An entry that is not an id, or names nothing on the server, is logged with its file and key when the config loads, and the server keeps running.
+
+```toml
+# skills/adapt/pickaxe.toml
+extraTools = ["mekanismtools:osmium_paxel", "#forge:tools/hammers"]
+excludedTools = ["minecraft:golden_pickaxe"]
+excludedBlocks = ["#forge:ores/tin"]
+
+[extraBlocks]
+"create:limestone" = 6.0
+```
+
+Tinkers' Construct tools count with no setup. The pickaxe, sledge hammer and vein hammer are pickaxes, the hand axe and broad axe are axes, and the excavator is a shovel. The pickadze is a pickaxe and a shovel, the mattock an axe and a shovel, and the block decides which skill a break feeds. A broken Tinkers tool earns nothing and triggers no adaptation until it is repaired. On Forge 1.20.1 and 1.21.1, every extra block a hammer, excavator, vein hammer or broad axe breaks pays XP on its own. Drop to Inventory also collects the drops of those extra blocks. On NeoForge only the block the player breaks pays.
 
 ## SQL and Redis
 
@@ -335,7 +366,7 @@ Invalid policy edits keep the last valid live configuration. Save valid policy c
 
 ### Reload matrix
 
-Skill, adaptation, GUI, effects, progression, language, model, and protection settings apply on save. SQL, Redis, metrics, every `pack` key, and installing or removing an optional plugin need a restart. See [Updates](/adapt/40-operator-runbooks).
+Skill, adaptation, GUI, effects, progression, language, model, and protection settings apply on save. SQL, Redis, metrics, the `pack` keys that build, host and schedule the pack, and installing or removing an optional plugin need a restart; [Book menus](/adapt/54-book-menus) lists which `pack` keys apply on save. See [Updates](/adapt/40-operator-runbooks).
 
 ## Uninstalling
 

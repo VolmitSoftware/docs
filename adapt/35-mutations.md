@@ -2,7 +2,7 @@
 title: "Mutations"
 description: "Merge two skills into a mutated skill and learn its upgraded adaptations"
 published: true
-date: 2026-11-25T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-11-24T00:00:00.000Z
@@ -20,7 +20,7 @@ A mutation merges two of your skills into one mutated skill. The mutated skill r
 
 Open a skill in the Adapt menu and press Mutate. With the client mod, the book opens a spread: the skill you came from on the left page, the partner on the right. Pick the partner from the skills on the right page; skills that cannot join show why when you point at them. The spread shows the new skill's name, level and knowledge, the upgrades, mutated adaptations, tools and kept adaptations each parent brings, and what each parent loses. Swap exchanges the lead and the partner. Press and hold Mutate for about 1.5 seconds to merge; letting go cancels. With the keyboard, focus Mutate and hold Enter or Space.
 
-Without the client mod, the chest menu lists the partners and the preview in one menu. Pick a partner, check the preview and click Mutate twice. The same flow runs from `/adapt mutate`; with both skills given it merges at once.
+With the book pack, Mutate opens the book's partner cards; see [Book menus for players](/adapt/55-book-menus-players#mutate). In the chest menus, Mutate lists the partners. Picking one opens the confirm menu: the new skill in the header, then the lead, Swap lead and the partner, and You lose and You gain. Each of those two lists its entries in the tooltip, grouped per parent and for the new skill, and a click opens the full list. Click Mutate in the footer, then Confirm: permanent, to merge. `/adapt mutate` opens the same flow from Pick a skill; with both skills given it merges at once.
 
 The skill you pick first leads. The mutated skill takes the partner's adjective and the lead's noun, and the lead's icon and colour. Swords led with Stealth as partner becomes Silent Duelist.
 

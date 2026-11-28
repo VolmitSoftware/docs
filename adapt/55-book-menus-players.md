@@ -8,7 +8,7 @@ editor: markdown
 dateCreated: 2026-11-26T00:00:00.000Z
 ---
 
-On Paper, Purpur, Folia, and Spigot servers that offer it, Adapt sends a resource pack after you join. Accept it and the Adapt menus open as book pages in each skill's theme, with animated page art. Decline it and you keep the chest menus. You stay on the server either way. Players with the Adapt client mod use the mod's own book and are not offered the pack.
+On Paper, Purpur, Folia, and Spigot servers that offer it, Adapt sends a resource pack after you join. Accept it and the Adapt menus open as book pages in each skill's theme, with animated page art. Decline it and you keep the chest menus. A server can require the pack; there, declining disconnects you, and you rejoin and accept it. Players with the Adapt client mod use the mod's own book and are not offered the pack.
 
 On Fabric, Forge, and NeoForge servers there is no pack. Install the Adapt client mod for book menus; without it you get the chest menus and the action bar.
 
@@ -22,7 +22,7 @@ Press Esc to close any page.
 
 ## Get the pack
 
-Accept the prompt when it appears. Run `/adapt pack offer` to get the prompt again, for example after declining it. The reply tells you what happened:
+The server offers the pack each time you join. Until you load it, a chat line after joining, and when you open an Adapt menu, tells you about it: click `[Load the book pack]` for the prompt, or `[Download]` for the Adapt client mod. On chest menus, the Get the book menus item in the corner of the bottom row does the same. Run `/adapt pack offer` to get the prompt again. The reply tells you what happened:
 
 | Reply | Meaning |
 |---|---|
@@ -31,29 +31,17 @@ Accept the prompt when it appears. Run `/adapt pack offer` to get the prompt aga
 | This server does not offer the Adapt pack. | The server delivers the pack another way, or not at all |
 | Your Adapt client already shows book menus. | You run the Adapt client mod |
 | Bedrock clients cannot load the Adapt pack. | You play on Bedrock |
-| Your client declined the Adapt pack. Rejoin with Server Resource Packs set to Prompt or Enabled, then run /adapt pack offer. | You declined the pack earlier on this connection, so your client turns it down without asking |
+| Your client turns down server packs here. Edit this server in your server list, set Server Resource Packs to Enabled, then rejoin. | You declined the pack earlier on this connection, so your client turns it down without asking |
 
-Declining changes two things in your client. For the rest of that connection it declines server packs without asking, so `/adapt pack offer` shows no prompt until you reconnect. And when you joined from your server list, the server's entry gets Server Resource Packs: Disabled, which declines every later pack from that server. To get the pack after declining, edit the server's entry, set Server Resource Packs to Prompt or Enabled, reconnect, and run `/adapt pack offer`. The server also remembers that you declined and does not ask again on its own.
+Declining changes two things in your client. For the rest of that connection it declines server packs without asking, so `/adapt pack offer` shows no prompt until you reconnect. And when you joined from your server list, the server's entry gets Server Resource Packs: Disabled, which declines every later pack from that server. To get the pack after declining, go to Multiplayer, select the server, click Edit, set Server Resource Packs to Enabled, and rejoin. The chat line after a decline gives the same steps.
 
 If you accept and the menus stay chests, the download failed. Tell the server staff; `/adapt pack offer` tries again.
 
-## Book or chest menus
-
-On the Skills page, click the book at the right end of the bottom row to open Settings, then pick one:
-
-| Choice | Menus |
-|---|---|
-| Book | Book pages. Without the pack, the server sends it and book pages start once it loads |
-| Chest | Always chest menus |
-| Auto | Book pages while the pack is loaded, chest menus otherwise. The default |
-
-The same choice is a command: `/adapt pack menus style=book`, `style=chest`, or `style=auto`. Your choice is saved. On chest menus, the command is the only way back to book pages.
-
 ## Reading a page
 
-Each menu is one page. Page controls sit in the bottom row of the page, where your hotbar would be: Back on the left, Previous, the page count and Next in the middle, and tabs or Settings on the right. On the Skills page, Search and the knowledge and power chips sit in the top row. Point at anything for its tooltip; costs, XP guides and descriptions are there.
+Each menu is one page. Page controls sit in the bottom row of the page, where your hotbar would be: Back on the left, Previous, the page count and Next in the middle, and tabs on the right. Every icon you can point at or click sits on an inventory slot, and a faint line under the slot marks the one you point at. Point at anything for its tooltip; costs, XP guides and descriptions are there.
 
-Messages such as refusals and confirmations appear in the line at the foot of the page, or in the action bar when they do not fit. Pages redraw on their own when your levels or knowledge change.
+Messages such as refusals and confirmations appear in the line at the foot of the page, or in the action bar when they do not fit. Pages redraw on their own when your levels or knowledge change. Page turns, tabs, Back, confirms and refused clicks play quiet sounds that only you hear, when the server allows them.
 
 ### Skills
 
@@ -61,9 +49,9 @@ Messages such as refusals and confirmations appear in the line at the foot of th
 |---|---|
 | Skill card | Opens the skill. The tooltip shows level, XP to the next level, knowledge, and how the skill earns XP. Greyed cards are skills you have not started |
 | Search | Opens a text box. Right-click clears the search |
-| Knowledge or power chip | Opens Spending: every adaptation you hold, its refund, and the power it uses. Click an entry to open it |
-| Book | Opens Settings |
 | Previous, Next | Turn the page |
+
+The page shows nine skills at a time, with Search and your knowledge and power totals at the top.
 
 On Spigot servers, Search asks in chat instead of a text box. Type `cancel` to stop.
 
@@ -73,16 +61,16 @@ On Spigot servers, Search asks in chat instead of a text box. Type `cancel` to s
 
 | Control | Click |
 |---|---|
-| Skill icon | Tooltip only: description, level, XP, and knowledge |
-| Skill switch | Turns all your adaptations in this skill on or off, when the server allows personal settings |
+| Skill icon | Tooltip only: description, level, XP, and knowledge. Knowledge and power show as text in the header |
+| Skill switch | In the bottom row next to Back. Turns all your adaptations in this skill on or off, when the server allows personal settings |
 | Mutate | Opens Mutate |
 | Split | Shown instead of Mutate on a mutated skill while you are in debug mode. Click, then click again within three seconds to undo the mutation |
 | Adaptation | Opens the adaptation |
 | Adaptation, shift-click | Learns the next level. On a permanent adaptation, shift-click again within three seconds to confirm |
-| Adaptation, shift-right-click | Then shift-right-click again within three seconds to unlearn one level |
+| Adaptation, shift-right-click | Unlearns one level |
 | Previous, Next | Turn the page when the skill has more adaptations |
 
-Each adaptation shows its level as a count and as pips. Its tooltip gives the level, what the next level costs or what stops you from learning it, the description, and the next level's stats. The foot of the page shows how many adaptations you have learned.
+Adaptations sit in two columns, one row each. The row's box shows your level: plain when not learned, filled from the left in the skill's colour by the share of levels learned, and full with an ornament at its right end when maxed. A dotted outline and a faded name mean you do not meet its requirements yet. The tooltip gives the exact level, such as Level I of IV, what the next level costs or what stops you from learning it, the description, and the next level's stats. The foot of the page shows how many adaptations you have learned.
 
 On a mutated skill, adaptations are grouped under the skill they come from. The first page uses the lead skill's theme. The last page, in the partner's theme, lists Kept without learning, the adaptations you keep from the parent skills, and Tools. Click either kind to open it.
 
@@ -96,7 +84,7 @@ Tabs at the bottom right switch between Levels, Recipes, and Settings. Recipes a
 |---|---|---|
 | Levels | Level pip | Previews that level and makes it the target. The tooltip shows that level's stats |
 | Levels | Learn | Learns up to the target level. The cost shows beside it. On a permanent adaptation, click again within three seconds to confirm |
-| Levels | Unlearn | Click, then click again within three seconds: unlearns to the target, or one level when the target is not below your level |
+| Levels | Unlearn | Unlearns to the target, or one level when the target is not below your level |
 | Recipes | Recipe pick | Shows that recipe in the grid. The tooltip gives the level that unlocks it |
 | Settings | Switch | Turns the setting on or off |
 | Settings | Choice | Click for the next choice, right-click for the previous one |
@@ -123,7 +111,7 @@ The seal appears once a partner is picked, and its tooltip warns that a mutation
 
 ## Confirming with a second click
 
-Learn on a permanent adaptation, Unlearn, Reset, Split, and the Mutate seal each take two clicks. The first click arms the control and shows Confirm learn, Confirm unlearn, Confirm reset, Confirm split, or Confirm mutate. Click the same control again within three seconds to go ahead. Clicking a different control arms that one instead, and leaving the page cancels.
+Learn on a permanent adaptation, Reset, Split, and the Mutate seal each take two clicks. Unlearn happens on the first click. The first click arms the control and shows Confirm learn (Confirm on the Learn button), Confirm reset, Confirm split, or Confirm mutate. Click the same control again within three seconds to go ahead. Clicking a different control arms that one instead, and leaving the page cancels.
 
 ## While a page is open
 

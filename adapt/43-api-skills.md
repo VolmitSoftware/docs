@@ -1,6 +1,6 @@
 ---
 title: "API - Skills and XP"
-description: "Defining a skill with SimpleSkill, its config, XP sources, the XP guide, advancements, learner pulses and ticking"
+description: "Defining a skill with SimpleSkill, its config, tool checks, XP sources, the XP guide, advancements, learner pulses and ticking"
 published: true
 date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
@@ -153,6 +153,38 @@ Guard player handlers with one of the `shouldReturnForPlayer` forms. They skip p
 | `shouldReturnForWorld(world)` | True when the skill is disabled or the world is blacklisted |
 
 A skill or adaptation handler does not receive an event another handler cancelled unless the method is marked `@ReceiveCancelledEvents`. `PlayerInteractEvent` is the exception, see [Events](/adapt/49-api-events#subscribing).
+
+## Tool checks
+
+`Tools` answers what kind of tool a stack is the way Pickaxes, Axes and Excavation do, modded tools included, by the rules in [Modded tools and blocks](/adapt/01-installation-configuration#modded-tools-and-blocks). The kinds are the `ToolKind` constants `PICKAXE`, `AXE`, `SHOVEL`, `HOE` and `SWORD`. All four types are experimental.
+
+| Call | Answers |
+|---|---|
+| `Tools.is(item, kind)` | True when the stack counts as `kind` |
+| `Tools.match(item, kind)` | The `ToolMatch` rule that decided: `EXCLUDED`, `BROKEN`, `OPERATOR`, `TAG`, `CAPABILITY`, `BEHAVIOUR`, `VANILLA` or `NONE` |
+| `Tools.kindsOf(item)` | Every kind the stack counts as |
+| `Tools.serves(item, block, kind)` | True when breaking `block` with the stack is `kind`'s work, so a multi-tool feeds the skill the block belongs to |
+| `Tools.rules(kind)` | The `ToolRules` in force for `kind`; `blockXp(block)` is the XP an operator listed for a block |
+
+Excavation's break handler, shortened:
+
+```java
+@Handle(priority = EventPriority.MONITOR)
+public void on(BlockBreakEvent e) {
+  PlayerRef p = e.player();
+  if (!Tools.serves(p.inventory().mainHand(), e.block().state(), ToolKind.SHOVEL)) {
+    return;
+  }
+  shouldReturnForPlayer(p, e, () -> {
+    Id blockType = e.block().type();
+    OptionalDouble listed = Tools.rules(ToolKind.SHOVEL).blockXp(blockType);
+    double v = listed.isPresent() ? listed.getAsDouble() : blockValue(blockType);
+    dig.award(p, e.block().center(), blockXP(e.block(), v));
+  });
+}
+```
+
+`Tools` is in `art.arcane.adapt.api.item` with `ToolMatch` and `ToolRules`; `ToolKind` is in `art.arcane.adapt.platform.item`. A `switch` over `ToolKind` needs a default branch, since minor versions may add kinds.
 
 ## XP sources and the XP guide
 

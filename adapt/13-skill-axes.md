@@ -2,7 +2,7 @@
 title: "Skill - Axes"
 description: "Axes XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -11,7 +11,9 @@ Axes gains XP by breaking logs, wood, mushroom blocks, or mangrove roots with an
 
 ## Earning XP
 
-Breaking a log, wood, mushroom block, mangrove roots, or muddy mangrove roots block with an axe pays XP from that block's material value plus hardness and blast resistance, up to the configured caps. Each log pays on its own break. Damaging a living entity with an axe pays `axeHitXp` plus `axeDamageXPMultiplier` per point of credited damage, at most once per `cooldownDelay`; a hit that earns no damage credit does not start that cooldown. Blocks with zero hardness pay nothing, and blocks already paid by XP provenance do not pay again. Breaking provenance-eligible leaves with an axe only increments `axes.leaves` and does not pay XP. Placed blocks and rejected replacements do not advance block milestones. `leavesMultiplier` does not change earnings.
+Breaking a log, wood, mushroom block, mangrove roots, or muddy mangrove roots block, a modded block in `minecraft:logs`, or a block on `extraBlocks` with an axe pays XP from that block's material value plus hardness and blast resistance, up to the configured caps. A modded block also gets the `logOrWoodXPMultiplier` bonus, and a block on `extraBlocks` pays its listed XP instead. Each log pays on its own break. Damaging a living entity with an axe pays `axeHitXp` plus `axeDamageXPMultiplier` per point of credited damage, at most once per `cooldownDelay`; a hit that earns no damage credit does not start that cooldown. Blocks with zero hardness pay nothing, and blocks already paid by XP provenance do not pay again. Breaking provenance-eligible leaves with an axe only increments `axes.leaves` and does not pay XP. Placed blocks and rejected replacements do not advance block milestones. `leavesMultiplier` does not change earnings.
+
+Modded axes count as described in [Modded tools and blocks](/adapt/01-installation-configuration#modded-tools-and-blocks). A tool that is also a pickaxe or a shovel pays Axes XP only for Axes work: a block in `minecraft:mineable/axe` or on `extraBlocks`. A block on `excludedBlocks` pays nothing. Axe Chop, Wood-Miner, Axe Drop to Inventory, Bark Hide and the other adaptations that act on logs treat a modded block in `minecraft:logs` as a log.
 
 Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
@@ -269,12 +271,19 @@ Written to `plugins/Adapt/skills/axes.toml` on first load.
 | `maxHardnessBonus` | `9` | Cap on how much of a block's hardness is added to its XP value. |
 | `maxBlastResistanceBonus` | `10` | Cap on how much of a block's blast resistance is added to its XP value. |
 | `challengeChopReward` | `1750` | XP paid by the Axes milestones. The larger tier of each pair pays double this. |
-| `logOrWoodXPMultiplier` | `2.0` | Flat bonus added to the value of any `_LOG` or `_WOOD` block. |
+| `logOrWoodXPMultiplier` | `2.0` | Flat bonus added to the value of any `_LOG` or `_WOOD` block and of any modded block. |
 | `leavesMultiplier` | `0.75` | Flat bonus that would be added to the value of any `_LEAVES` block. The Axes block-break path never asks for a leaf block's value, so this knob is inert. |
 | `cooldownDelay` | `1500` | Milliseconds between axe combat XP awards. Chopping has no cooldown. |
 | `valueXPMultiplier` | `0.175` | Multiplier applied to the base material value before the hardness and resistance bonuses. |
 | `axeDamageXPMultiplier` | `7.0` | XP per point of damage dealt with an axe. |
 | `axeHitXp` | `5.0` | Flat XP for each credited axe hit, added to the damage XP. |
+| `extraTools` | `[]` | Item ids or `#tags` that also count as an axe for this skill and all its adaptations. |
+| `excludedTools` | `[]` | Item ids or `#tags` that never count as an axe, whatever another rule says. |
+| `extraBlocks` | `{}` | Block id or `#tag` to XP. Listed blocks count as Axes work and pay that XP per block before placed-block scaling. |
+| `excludedBlocks` | `[]` | Block ids or `#tags` that never pay Axes XP. |
+| `toolTagRule` | `true` | Counts items in `minecraft:axes`, `forge:tools/axes`, `c:axes` or `fabric:axes` as an axe. |
+| `toolCapabilityRule` | `true` | Counts items the mod loader says dig as an axe. |
+| `toolBehaviourRule` | `true` | Counts items that are the correct tool for an oak log as an axe, and pays for Axes work broken with its correct tool. |
 
 ### Challenges
 

@@ -214,7 +214,7 @@ The experimental tier covers:
 - the client API in `art.arcane.adapt.api.client`, and the Insight views and `InsightFeed` in `art.arcane.adapt.api.insight`
 - the effect builders `Fx`, `FxEmitter`, `FxTimeline` and `FxPresets`, and the viewer types in `art.arcane.adapt.api.viewer`
 - per-addon data: `PlayerSection`, `BlockSlice`, `BlockStore`, `ContentRegistrar.playerSection` and `ContentRegistrar.blockSlice`, `PlayerProfile.section`, `PlayerDirectory.peek`, `BlockFlag`, `Chunks`, `BonusBreaks`, `BlockTagSet`
-- items: `MixingRecipe`, `ShapedRecipeParser`, `ExactIngredient`, `ExactItemResolver`, `RecipeItemCatalog`, `ItemArt`, `ItemCooldowns`, `ItemWear`, `MaterialNames`, `MaterialValues`, `MaxDurability`, `Potions`
+- items: `MixingRecipe`, `ShapedRecipeParser`, `ExactIngredient`, `ExactItemResolver`, `RecipeItemCatalog`, `ItemArt`, `ItemCooldowns`, `ItemWear`, `MaterialNames`, `MaterialValues`, `MaxDurability`, `Potions`, and the tool checks `Tools`, `ToolKind`, `ToolMatch` and `ToolRules` ([Skills and XP](/adapt/43-api-skills#tool-checks))
 - abilities and XP: `Minions`, `MinionKind`, `VelocityBurst`, `DoubleJump`, `Experience`, `DiscoveryKind`, `CombatXp`, `MobOrigin`, `XpProvenance`, `MovementXp`, `ItemTransferXp`, `CraftingXpTransaction`, `ProjectileCooperativeKeys`, `ProjectileReplacements`
 - integrations: `Integrations`, `HiddenVein`, `TreeFelling`, `GlossOverlay`, `PluginContainer`, `PluginStateEvent`, `ServiceChangeEvent`
 - `ProtectionProbes`, `AdaptAttributeService`, `LegacyModifierKey`, `AdaptationDamageTargets`, `Markup`, `Text.renderFor`
@@ -231,7 +231,7 @@ See [Versioning and compatibility](/adapt/52-api-versioning) for how versions ar
 | Page | Covers |
 |---|---|
 | [Addons](/adapt/42-api-addons) | Namespaces, `AdaptAddon`, `ContentRegistrar`, install, refresh, uninstall, load errors, id rules |
-| [Skills and XP](/adapt/43-api-skills) | `SimpleSkill`, skill config, XP sources, the XP guide, advancements, learner pulses |
+| [Skills and XP](/adapt/43-api-skills) | `SimpleSkill`, skill config, tool checks, XP sources, the XP guide, advancements, learner pulses |
 | [Adaptations](/adapt/44-api-adaptations) | `SimpleAdaptation`, costs, requirements, preferences, stat lines, recipes, items, HUD, threading |
 | [Commands](/adapt/53-api-commands) | `/adapt` subcommands, typed arguments, completion and permissions |
 | [Text and translations](/adapt/45-api-text) | Message bundles, convention keys, `Text`, admin overrides |

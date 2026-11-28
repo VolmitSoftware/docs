@@ -37,7 +37,6 @@ Commands name skills and adaptations by id: `swords`, `rift`, `herbalism/luck`, 
 | `/adapt unmutate <player> <skill>` | `adapt.mutate.reset` | Remove one of a player's mutations; both parent skills come back. `skill` is the mutated skill, its lead or its partner. See [Mutations](/adapt/35-mutations#undoing-a-mutation) |
 | `/adapt mutation-reset [player]` | `adapt.mutate.reset` | Remove all of a player's mutations, each as `unmutate` does |
 | `/adapt pack offer` | `adapt.pack` | Send yourself the Adapt resource pack again. Paper, Purpur, Folia, and Spigot only. See [Book menus](/adapt/54-book-menus) |
-| `/adapt pack menus style=<book\|chest\|auto>` | `adapt.pack` | Choose book or chest menus for yourself. Paper, Purpur, Folia, and Spigot only |
 
 Boosts stack. The final XP multiplier is limited to `0.01`–`1000`.
 
@@ -127,7 +126,8 @@ Most command permissions default to operators. `adapt.effects`, `adapt.mutate`, 
 | `adapt.cheatitem` | Give XP and knowledge orbs |
 | `adapt.determine` | Set skills and adaptations |
 | `adapt.mutate` | Merge your own skills |
-| `adapt.pack` | Ask for the Adapt resource pack and choose book or chest menus |
+| `adapt.pack` | Ask for the Adapt resource pack |
+| `adapt.pack.optional` | Get the Adapt resource pack as optional while `pack.required` is on; default `false` |
 | `adapt.mutate.reset` | Remove a player's mutations with `unmutate` or `mutation-reset`; default `op` |
 | `adapt.clear` | Clear or reset profiles |
 | `adapt.orphans` | List, refund, and delete progress of missing addons; default `op` |

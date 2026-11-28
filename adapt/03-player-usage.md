@@ -23,11 +23,11 @@ The server selects the block with `adaptActivatorBlock`. The menu still opens in
 
 A skill appears after the player has XP, knowledge, or a learned adaptation in it. `guiShowAllSkills` lists every enabled skill that player may use.
 
-The main menu shows skill level, knowledge, master level, and used power. Owned levels show an enchantment glint. Right-click **Previous** or **Next** to jump five pages. `guiBackButton` controls whether **Back** appears.
+The chest menus share one frame: a header bar with the menu's subject, the body, and a footer bar with **Back**, **Previous**, **Next**, **Settings** and the menu's action. The Skills menu shows your level, knowledge and power in the header. Owned levels show an enchantment glint. `guiBackButton` controls whether **Back** appears. Players without the book pack see a **Get the book menus** item in the corner of the footer when the server offers the pack.
 
 ## Learn and unlearn adaptations
 
-Buying levels charges knowledge for each level between your current and selected levels. Learning an adaptation you do not hold yet also needs one free power; further levels need none. Vault currency also applies when `learningEconomy.enabled` is true. The first purchase of a `permanent` adaptation needs a second click within six seconds.
+Buying levels charges knowledge for each level between your current and selected levels. Learning an adaptation you do not hold yet also needs one free power; further levels need none. Vault currency also applies when `learningEconomy.enabled` is true. In the chest menus, click a level you do not own to learn up to it and a level you own to unlearn down to the level below it; unlearning takes one click. The first purchase of a `permanent` adaptation needs a second click within six seconds.
 
 Unlearning returns the knowledge and configured Vault refund. Permanent adaptations cannot be unlearned by players. With `hardcoreNoRefunds`, unlearning returns neither knowledge nor currency.
 

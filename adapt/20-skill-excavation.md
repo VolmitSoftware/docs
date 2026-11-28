@@ -2,7 +2,7 @@
 title: "Skill - Excavation"
 description: "Excavation XP sources, adaptations, controls, and configuration"
 published: true
-date: 2026-11-24T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -10,6 +10,8 @@ dateCreated: 2026-08-09T00:00:00.000Z
 Excavation gains XP from breaking blocks or dealing damage with a shovel, and block XP scales with material value, hardness, and blast resistance. Its 13 adaptations add faster digging, direct inventory drops, area excavation, downward burrowing, knock-up attacks, ore detection, treasure, safer landings, thrown clods, and OMNI - T.O.O.L.
 
 Player-placed blocks and rejected replacements earn neither base digging XP nor digging milestone credit.
+
+Modded shovels count as described in [Modded tools and blocks](/adapt/01-installation-configuration#modded-tools-and-blocks). A tool that is also a pickaxe or an axe pays Excavation XP only for Excavation work: a block in `minecraft:mineable/shovel` or on `extraBlocks`. A block on `extraBlocks` pays its listed XP instead of the derived value, and a block on `excludedBlocks` pays nothing.
 
 Base damage XP and its damage milestones use final damage after mitigation, capped at the target's remaining health. Each target supplies at most its maximum health in damage credit per skill over ten minutes; healing the target or reconnecting does not refresh that allowance. Self-hits, your own tamed pets, summoned minions, and grave mobs supply no base damage credit.
 
@@ -35,6 +37,8 @@ Depth, range and extra-block presets use 100%, 50% or 25% of the earned cap. Foo
 Toggle defaults preserve the standard behavior. Size and rate presets default to Full; material, ore and structure filters default to the standard selection. Confirmation, additional gesture restrictions and reserves are off by default. Server policies are configured as `[playerPreferences.<control-id>]` in the adaptation’s TOML file.
 
 ## Adaptations
+
+Tunneler, Burrow, Clod Hurler and the upgrades that dig soil dig the vanilla soil blocks, any modded block in `minecraft:mineable/shovel`, and any block on `extraBlocks`, never one on `excludedBlocks`.
 
 ### Hasty Excavator (`excavation-haste`)
 
@@ -369,6 +373,13 @@ Written to `plugins/Adapt/skills/excavation.toml` on first load.
 | `valueXPMultiplier` | `0.6` | Multiplier on the base material value before the hardness terms are added. |
 | `cooldownDelay` | `1250` | Milliseconds between Excavation combat XP awards. Digging has no cooldown. |
 | `axeDamageXPMultiplier` | `4.0` | Skill XP per point of melee damage dealt with a shovel. The key name says axe. The code uses it for shovels. |
+| `extraTools` | `[]` | Item ids or `#tags` that also count as a shovel for this skill and all its adaptations. |
+| `excludedTools` | `[]` | Item ids or `#tags` that never count as a shovel, whatever another rule says. |
+| `extraBlocks` | `{}` | Block id or `#tag` to XP. Listed blocks count as Excavation work and pay that XP per block before placed-block scaling. |
+| `excludedBlocks` | `[]` | Block ids or `#tags` that never pay Excavation XP. |
+| `toolTagRule` | `true` | Counts items in `minecraft:shovels`, `forge:tools/shovels`, `c:shovels` or `fabric:shovels` as a shovel. |
+| `toolCapabilityRule` | `true` | Counts items the mod loader says dig as a shovel. |
+| `toolBehaviourRule` | `true` | Counts items that are the correct tool for dirt as a shovel, and pays for Excavation work broken with its correct tool. |
 
 ### Shared knobs
 

@@ -2,7 +2,7 @@
 title: "GUI Customization"
 description: "Change Adapt menu size, icons, ordering, and resource-pack models"
 published: true
-date: 2026-11-26T00:00:00.000Z
+date: 2026-11-27T00:00:00.000Z
 tags: "adapt"
 editor: markdown
 dateCreated: 2026-08-09T00:00:00.000Z
@@ -16,7 +16,7 @@ Material names are trimmed, stripped of any namespace before `:`, uppercased, an
 
 `skillOrder` and `adaptationOrder` pin listed registry names first. Matching is case-insensitive. Blank entries are skipped. A repeated name keeps its first position. Several differently cased keys for one skill are concatenated. Unknown names are ignored. Disabled entries can be ordered and are not drawn. Order does not change who can use a skill. A skill that groups its adaptations in rows, such as [Golemancy](/adapt/34-skill-golemancy#adaptations), applies `adaptationOrder` inside each row, and adaptations the skill does not place in a row follow in a final row.
 
-`skillsGuiRows` of `0` sizes each page from the cards on that page. `2` through `6` fix the height, and one of those rows is navigation. Right-click Previous or Next jumps five pages. `/adapt configure` edits `skillsGuiRows`. Icon and order maps are read-only there.
+Every chest menu has a header bar with the menu's subject in the middle, up to four body rows, and a footer bar with Back, Previous, the page count, Next, Settings and the menu's action in fixed places. `skillsGuiRows` of `0` sizes each page from the cards on that page. `3` through `6` fix the height, counting the header and footer. `/adapt configure` edits `skillsGuiRows`. Icon and order maps are read-only there.
 
 `guiShowAllSkills` false lists skills with XP, knowledge, or a learned adaptation. True lists every enabled skill the player may use, without writing an empty skill line. `/adapt debug mode` shows every skill and adaptation and treats use permission as granted.
 
@@ -41,27 +41,27 @@ skillOrder = []
 | Key | Default | What it does |
 |---|---|---|
 | `guiShowAllSkills` | `false` | `true` lists every enabled, permitted skill in the skills menu instead of only skills with progress |
-| `gui.skillsGuiRows` | `0` | Skills menu height in rows. `0` auto-sizes per page |
+| `gui.skillsGuiRows` | `0` | Skills menu height in rows, header and footer included. `0` auto-sizes per page |
 | `gui.skillIcons` | empty | Skill registry name to Bukkit material name |
 | `gui.adaptationIcons` | empty | Adaptation registry name to Bukkit material name |
 | `gui.skillOrder` | empty | Skill registry names pinned to the front of the skills menu, in this order |
 | `gui.adaptationOrder` | empty | Skill registry name to that skill's ordered adaptation registry names |
 
-`guiBackButton` (default `true`) reserves the navigation row. `customModels` (default `true`) enables `models.toml`. Both are root keys in `adapt.toml`.
+`guiBackButton` (default `true`) shows Back in the footer. `customModels` (default `true`) enables `models.toml`. Both are root keys in `adapt.toml`.
 
 ### skillsGuiRows values
 
 | Value | Behavior |
 |---|---|
 | `0` | Auto-size to the page's contents |
-| `2` to `6` | Fixed viewport height, always that many rows |
-| `1` | Raised to `2` with a warning, the navigation row needs a row of its own |
+| `3` to `6` | Fixed height, always that many rows |
+| `1` or `2` | Raised to `3` with a warning, the header and footer need rows of their own |
 | `< 0` | Treated as `0` (auto) with a warning |
 | `> 6` | Clamped to `6` with a warning |
 
 ### Skills menu layout
 
-Five cards per row. One navigation row is always reserved. Six rows maximum. Left-click steps one page. Right-click jumps five.
+Seven skills per row, each row centred, between the header and footer bars. Six rows maximum. Previous and Next step one page. The header shows your level, power and knowledge.
 
 ### Icon precedence
 
@@ -159,7 +159,7 @@ stealth = ["stealth-shadowmeld", "stealth-cutpurse"]
 
 ### Player preference controls
 
-The adaptation level screen reserves a bottom row for registered player controls, with navigation above it. Level cards paginate within the remaining space and the inventory never exceeds six rows. `guiBackButton = false` hides Back without removing preference controls. Every adaptation includes Enabled; the skill screen has a separate bottom row with a skill-wide Enabled control and Reset. Turning a skill off preserves each adaptation's individual settings.
+Settings open from the Settings button in the footer of an adaptation's menu or a skill's menu, as a menu of their own under the same header; Back returns to the levels or the skill. Every adaptation includes Enabled; a skill's settings hold a skill-wide Enabled control and Reset. Turning a skill off preserves each adaptation's individual settings.
 
 Click a preference to update its item in the current window. Left-click advances and right-click reverses through permitted unlocked values. Names and lore show the effective value; red/lime panes indicate Off/On, and gray items indicate unavailable or server-controlled choices. Dependent controls appear only when applicable: Blink's Reactive direction is hidden below level 2 and in Manual mode. Changing activation adds or removes it in its reserved slot; other controls and Reset keep their positions, and its saved direction is retained while hidden. Reset clears the choices for that screen: resetting a skill does not reset its child adaptations. Large sets of controls have their own row pagination, separate from the level page.
 
